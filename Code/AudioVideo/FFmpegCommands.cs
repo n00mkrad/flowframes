@@ -38,7 +38,7 @@ namespace Flowframes
             if (deDupe) deDupeStr = "-vf mpdecimate";
             string fmtStr = "";
             if (rgb8) fmtStr = "-pix_fmt rgb8";
-            string args = $"-i {inputFile.Wrap()} {hdrStr} -vsync 0 {fmtStr} {deDupeStr} -s {w}x{h} \"{frameFolderPath}/%08d.png\"";
+            string args = $"-i {inputFile.Wrap()} -compression_level 3 {hdrStr} -vsync 0 {fmtStr} {deDupeStr} -s {w}x{h} \"{frameFolderPath}/%08d.png\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             await Task.Delay(1);
             if (delSrc)
