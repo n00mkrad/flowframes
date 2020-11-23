@@ -227,6 +227,8 @@ namespace Flowframes.IO
 				ShellFile shellFile = ShellFile.FromFilePath(path);
 				fps = (float)shellFile.Properties.System.Video.FrameRate.Value / 1000f;
 				Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
+				if (fps <= 0)
+					throw new Exception("FPS is 0.");
 			}
 			catch
             {
@@ -359,7 +361,7 @@ namespace Flowframes.IO
 
 		public static string GetAudioFile (string basePath)
         {
-			string[] exts = new string[] { "m4a", "ogg", "mp2", "mp3" };
+			string[] exts = new string[] { "m4a", "wav", "ogg", "mp2", "mp3" };
 
 			foreach(string ext in exts)
             {

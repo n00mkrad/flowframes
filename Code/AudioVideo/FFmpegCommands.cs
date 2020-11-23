@@ -167,7 +167,8 @@ namespace Flowframes
             {
                 case "vorbis": return "ogg";
                 case "mp2": return "mp2";
-                default: return "m4a";
+                case "aac": return "m4a";
+                default: return "wav";
             }
         }
 
@@ -175,7 +176,12 @@ namespace Flowframes
         {
             Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
             string tempPath = inputFile + "-temp.mp4";
-            string args = $" -i {inputFile.Wrap()}  -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c copy {tempPath.Wrap()}";
+            if (Path.GetExtension(audioPath) == ".wav")
+            {
+                Logger.Log("Using MKV instead of MP4 to enable support for raw audio.");
+                tempPath = Path.ChangeExtension(tempPath, "mkv");
+            }
+            string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c copy {tempPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if(AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
             {
@@ -189,11 +195,11 @@ namespace Flowframes
         public static float GetFramerate (string inputFile)
         {
             string args = $" -i {inputFile.Wrap()}";
-            string streamInfo = GetFirstStreamInfo(AvProcess.GetFfmpegOutput(args));
-            string[] entries = streamInfo.Split(',');
+            string output = AvProcess.GetFfmpegOutput(args);
+            string[] entries = output.Split(',');
             foreach(string entry in entries)
             {
-                if (entry.Contains(" fps"))
+                if (entry.Contains(" fps") && !entry.Contains("Input "))    // Avoid reading FPS from the filename, in case filename contains "fps"
                 {
                     Logger.Log("[FFCmds] FPS Entry: " + entry, true);
                     string num = entry.Replace(" fps", "").Trim().Replace(",", ".");
