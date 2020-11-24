@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Flowframes.Magick
 {
 
-    class Coverter
+    class Converter
     {
         public static async Task Convert (string dir, MagickFormat format, int quality, string ext = "", bool print = true, bool setProgress = true)
         {

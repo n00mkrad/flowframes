@@ -10,7 +10,7 @@ using ImageMagick;
 
 namespace Flowframes.Magick
 {
-    class FrameDedup
+    class MagickDedupe
     {
         public enum Mode { None, Info, Enabled, Auto }
         public static Mode currentMode;

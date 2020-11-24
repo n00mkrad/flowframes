@@ -191,6 +191,7 @@
     <Compile Include="Main\BatchProcessing.cs" />
     <Compile Include="Main\CreateVideo.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
+    <Compile Include="Main\VfrDedupe.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="AudioVideo\AvProcess.cs" />
@@ -209,8 +210,8 @@
     <Compile Include="IO\IOUtils.cs" />
     <Compile Include="IO\Paths.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Magick\Coverter.cs" />
-    <Compile Include="Magick\FrameDedup.cs" />
+    <Compile Include="Magick\Converter.cs" />
+    <Compile Include="Magick\MagickDedupe.cs" />
     <Compile Include="OS\NvApi.cs" />
     <Compile Include="OS\OSUtils.cs" />
     <Compile Include="OS\Python.cs" />

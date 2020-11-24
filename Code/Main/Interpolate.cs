@@ -62,7 +62,9 @@ namespace Flowframes
             if (cancelled) return;
             sw.Restart();
             await Task.Delay(10);
-            await FrameDedup.Run(framesPath);
+            if (Config.GetBool("vfrDedupe"))
+                VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor);
+            await MagickDedupe.Run(framesPath);
             if (cancelled) return;
             string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
             string outPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
@@ -86,7 +88,6 @@ namespace Flowframes
         {
             Logger.Log("Extracting frames using FFmpeg...");
             await Task.Delay(10);
-            bool rgb8 = Formats.preprocess.Contains(Path.GetExtension(inPath).ToLower());
             Program.mainForm.SetStatus("Extracting frames from video...");
             Size resolution = IOUtils.GetVideoRes(inPath);
             int maxHeight = Config.GetInt("maxVidHeight");
@@ -95,11 +96,11 @@ namespace Flowframes
                 float factor = (float)maxHeight / resolution.Height;
                 int width = (resolution.Width * factor).RoundToInt();
                 Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
-                await FFmpegCommands.VideoToFrames(inPath, outPath, width, maxHeight, false, rgb8, false, false);
+                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetBool("vfrDedupe"), false, new Size(width, maxHeight));
             }
             else
             {
-                await FFmpegCommands.VideoToFrames(inPath, outPath, false, rgb8, false, false);
+                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetBool("vfrDedupe"), false);
             }
             /*
             if (AvProcess.lastOutputFfmpeg.ToLower().Contains("invalid"))
@@ -111,7 +112,7 @@ namespace Flowframes
             if (extractAudio)
             {
                 string audioFile = Path.Combine(currentTempDir, "audio.m4a");
-                if (!File.Exists(audioFile))
+                if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
             if (!cancelled && Config.GetBool("enableLoop"))
@@ -172,7 +173,8 @@ namespace Flowframes
             cancelled = true;
             Program.mainForm.SetStatus("Cancelled.");
             Program.mainForm.SetProgress(0);
-            IOUtils.TryDeleteIfExists(currentTempDir);
+            if(!Config.GetBool("keepTempFolder"))
+                IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
             Logger.Log("Cancelled interpolation.");
             if (!string.IsNullOrWhiteSpace(reason))

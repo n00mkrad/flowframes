@@ -30,7 +30,7 @@ namespace Flowframes.Main
             }
             await Task.Delay(10);
             if(Config.GetInt("timingMode") == 1)
-                await FrameDedup.Reduplicate(path);
+                await MagickDedupe.Reduplicate(path);
             Program.mainForm.SetStatus("Creating output video from frames...");
             try
             {
@@ -61,7 +61,7 @@ namespace Flowframes.Main
                 if (new DirectoryInfo(framesPath).GetFiles()[0].Extension != ".png")
                 {
                     Logger.Log("Converting output frames to PNG to encode with Gifski...");
-                    await Coverter.Convert(framesPath, ImageMagick.MagickFormat.Png00, 20, "png", false);
+                    await Converter.Convert(framesPath, ImageMagick.MagickFormat.Png00, 20, "png", false);
                 }
                 await GifskiCommands.CreateGifFromFrames(i.currentOutFps.RoundToInt(), Config.GetInt("gifskiQ"), framesPath, outPath);
             }

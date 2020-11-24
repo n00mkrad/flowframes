@@ -11,34 +11,19 @@ namespace Flowframes
     {
         static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool rgb8, bool hdr, bool delSrc)
+        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc)
         {
-            if (!Directory.Exists(frameFolderPath))
-                Directory.CreateDirectory(frameFolderPath);
-            string hdrStr = "";
-            if (hdr) hdrStr = FFmpegStrings.hdrFilter;
-            string deDupeStr = "";
-            if (deDupe) deDupeStr = "-vf mpdecimate";
-            string fmtStr = "";
-            if (rgb8) fmtStr = "-pix_fmt rgb8";
-            string args = $"-i {inputFile.Wrap()} {hdrStr} -vsync 0 {fmtStr} {deDupeStr} \"{frameFolderPath}/%08d.png\"";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
-            await Task.Delay(1);
-            if (delSrc)
-                DeleteSource(inputFile);
+            await VideoToFrames(inputFile, frameFolderPath, deDupe, delSrc, new Size());
         }
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, int w, int h, bool deDupe, bool rgb8, bool hdr, bool delSrc)
+        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size)
         {
+            string sizeStr = "";
+            if (size.Width > 1 && size.Height > 1) sizeStr = $"-s {size.Width}x{size.Height}";
             if (!Directory.Exists(frameFolderPath))
                 Directory.CreateDirectory(frameFolderPath);
-            string hdrStr = "";
-            if (hdr) hdrStr = FFmpegStrings.hdrFilter;
-            string deDupeStr = "";
-            if (deDupe) deDupeStr = "-vf mpdecimate";
-            string fmtStr = "";
-            if (rgb8) fmtStr = "-pix_fmt rgb8";
-            string args = $"-i {inputFile.Wrap()} -compression_level 3 {hdrStr} -vsync 0 {fmtStr} {deDupeStr} -s {w}x{h} \"{frameFolderPath}/%08d.png\"";
+            string args = $"-i {inputFile.Wrap()} -compression_level 3 -vsync 0 -pix_fmt rgb24 {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            if(deDupe) args = $"-i {inputFile.Wrap()} -copyts -r 1000 -compression_level 3 -vsync 0 -frame_pts true -vf mpdecimate {sizeStr} \"{frameFolderPath}/%08d.png\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             await Task.Delay(1);
             if (delSrc)

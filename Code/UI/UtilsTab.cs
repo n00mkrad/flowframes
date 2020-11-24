@@ -18,9 +18,8 @@ namespace Flowframes.UI
         public static async Task ExtractVideo(string videoPath, bool withAudio)
         {
             string outPath = Path.ChangeExtension(videoPath, null) + "-extracted";
-            bool rgb8 = Formats.preprocess.Contains(Path.GetExtension(videoPath).ToLower());
             Program.mainForm.SetWorking(true);
-            await FFmpegCommands.VideoToFrames(videoPath, Path.Combine(outPath, "frames"), false, rgb8, false, false);
+            await FFmpegCommands.VideoToFrames(videoPath, Path.Combine(outPath, "frames"), false, false);
             File.WriteAllText(Path.Combine(outPath, "fps.ini"), Interpolate.currentInFps.ToString());
             if (withAudio)
                 await FFmpegCommands.ExtractAudio(videoPath, Path.Combine(outPath, "audio"));
@@ -94,7 +93,8 @@ namespace Flowframes.UI
                 Program.mainForm.SetWorking(true);
                 await Task.Delay(10);
                 framesPath = Path.ChangeExtension(inPath, null) + "-frames";
-                await Interpolate.ExtractFrames(inPath, framesPath);
+                Directory.CreateDirectory(framesPath);
+                await Interpolate.ExtractFrames(inPath, framesPath, false);
             }
             else
             {
@@ -103,7 +103,7 @@ namespace Flowframes.UI
             Program.mainForm.SetWorking(true);
             Logger.Log("Running frame de-duplication", true);
             await Task.Delay(10);
-            await FrameDedup.Run(framesPath, testRun);
+            await MagickDedupe.Run(framesPath, testRun);
             IOUtils.TryDeleteIfExists(framesPath);
             Program.mainForm.SetProgress(0);
             Program.mainForm.SetWorking(false);

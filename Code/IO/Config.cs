@@ -103,6 +103,7 @@ namespace Flowframes.IO
             if (key == "timingMode") return WriteDefault("timingMode", "1");
             if (key == "tempDirCustom") return WriteDefault("tempDirCustom", "C:/");
             if (key == "ffprobeCountFrames") return WriteDefault("ffprobeCountFrames", "False");
+            if (key == "vfrDedupe") return WriteDefault("vfrDedupe", "True");
             return WriteDefault(key, "0");
         }
 
