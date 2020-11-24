@@ -10,6 +10,8 @@ namespace Flowframes
     class FFmpegCommands
     {
         static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
+        static string divisionFilter = "\"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
+        static string pngComprArg = "-compression_level 3";
 
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc)
         {
@@ -22,8 +24,8 @@ namespace Flowframes
             if (size.Width > 1 && size.Height > 1) sizeStr = $"-s {size.Width}x{size.Height}";
             if (!Directory.Exists(frameFolderPath))
                 Directory.CreateDirectory(frameFolderPath);
-            string args = $"-i {inputFile.Wrap()} -compression_level 3 -vsync 0 -pix_fmt rgb24 {sizeStr} \"{frameFolderPath}/%08d.png\"";
-            if(deDupe) args = $"-i {inputFile.Wrap()} -copyts -r 1000 -compression_level 3 -vsync 0 -frame_pts true -vf mpdecimate {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 -vf {divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            if(deDupe) args = $"-i {inputFile.Wrap()} -copyts -r 1000 {pngComprArg} -vsync 0 -frame_pts true -vf mpdecimate,{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             await Task.Delay(1);
             if (delSrc)

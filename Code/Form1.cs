@@ -128,9 +128,13 @@ namespace Flowframes
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;
+            string fpsStr = "Not Found.";
             float fps = IOUtils.GetFpsFolderOrVideo(path);
-            string fpsStr = fps.ToString();
-            fpsInTbox.Text = fpsStr;
+            if(fps > 0)
+            {
+                fpsStr = fps.ToString();
+                fpsInTbox.Text = fpsStr;
+            }
             Interpolate.SetFps(fps);
             Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
             if (!Program.lastInputPathIsSsd)

@@ -22,22 +22,21 @@ namespace Flowframes.Main
             {
                 string filename1 = frameFiles[i].Name;
                 string filename2 = frameFiles[i + 1].Name;
+                //Logger.Log("durationTotal = " + Path.GetFileNameWithoutExtension(filename2).GetInt() + " - " + Path.GetFileNameWithoutExtension(filename1).GetInt());
                 int durationTotal = Path.GetFileNameWithoutExtension(filename2).GetInt() - Path.GetFileNameWithoutExtension(filename1).GetInt();
                 lastFrameDuration = durationTotal;
                 float durationPerInterpFrame = (float)durationTotal / interpFactor;
+                //Logger.Log("durationPerInterpFrame = " + durationPerInterpFrame);
                 int interpolatedFrameCount = interpFactor;
 
                 // If loop is enabled, account for the extra frame added to the end for loop continuity
                 if (loopEnabled && i == (frameFiles.Length - 2))
                     interpolatedFrameCount = interpolatedFrameCount * 2;
 
-                //Logger.Log("Frame " + i);
-
                 // Generate frames file lines
                 for (int frm = 0; frm < interpolatedFrameCount; frm++)
                 {
-                    //Logger.Log("Writing info for interp frame " + frm);
-                    string durationStr = (durationPerInterpFrame / 1000f).ToString("0.0000").Replace(",", ".");
+                    string durationStr = (durationPerInterpFrame / 1000f).ToString("0.00000").Replace(",", ".");
                     File.AppendAllText(vfrFile, $"{totalFileCount.ToString().PadLeft(8, '0')}.png\nduration {durationStr}\n");
                     totalFileCount++;
                 }

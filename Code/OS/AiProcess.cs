@@ -15,14 +15,22 @@ namespace Flowframes
 {
     class AiProcess
     {
+        public static bool hasShownError;
+
         public static Process currentAiProcess;
         public static Stopwatch processTime = new Stopwatch();
 
+        static void Init (Process proc, string ext = "png")
+        {
+            InterpolateUtils.lastExt = ext;
+            if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
+            processTime.Restart();
+            currentAiProcess = proc;
+            hasShownError = false;
+        }
+
         public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)
         {
-            InterpolateUtils.lastExt = "png";
-            if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
-
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -t {tilesize} -g {Config.Get("ncnnGpus")}";
 
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
@@ -35,8 +43,7 @@ namespace Flowframes
                 dain.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "dain-ncnn-log.txt"); };
                 dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log.txt"); };
             }
-            processTime.Restart();
-            currentAiProcess = dain;
+            Init(dain);
             dain.Start();
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -51,9 +58,6 @@ namespace Flowframes
 
         public static async Task RunCainNcnnMulti (string framesPath, string outPath, int tilesize, int times)
         {
-            InterpolateUtils.lastExt = "png";
-            if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
-
             Logger.Log("Running CAIN...", false);
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
@@ -99,8 +103,7 @@ namespace Flowframes
                 cain.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "cain-ncnn-log.txt"); };
                 cain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "cain-ncnn-log.txt"); };
             }
-            processTime.Restart();
-            currentAiProcess = cain;
+            Init(cain);
             cain.Start();
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -113,9 +116,6 @@ namespace Flowframes
 
         public static async Task RunRifeCuda(string framesPath, int interpFactor)
         {
-            InterpolateUtils.lastExt = "png";
-            if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
-
             string script = "interp-parallel.py";
             if(Config.GetInt("rifeMode") == 0 || IOUtils.GetAmountOfFiles(framesPath, false) < 30)
                 script = "interp-basic.py";
@@ -132,8 +132,7 @@ namespace Flowframes
                 rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "rife-cuda-log.txt"); };
                 rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log.txt"); };
             }
-            processTime.Restart();
-            currentAiProcess = rifePy;
+            Init(rifePy);
             rifePy.Start();
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -153,14 +152,32 @@ namespace Flowframes
 
             Logger.LogToFile(line, false, logFilename);
 
-            if (line.ToLower().Contains("modulenotfounderror"))
-                InterpolateUtils.ShowMessage($"A python module is missing. Check {logFilename} for details.\n\n{line}", "Error");
+            if (!hasShownError && line.ToLower().Contains("out of memory"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}", "Error");
+            }
 
-            if (line.ToLower().Contains("ff:nocuda-cpu"))
+            if (!hasShownError && line.ToLower().Contains("modulenotfounderror"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"A python module is missing. Check {logFilename} for details.\n\n{line}", "Error");
+            }
+
+            if (!hasShownError && line.ToLower().Contains("ff:nocuda-cpu"))
                 Logger.Log($"WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
-            if (line.ToLower().Contains("no longer supports this gpu"))
+            if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
+            {
+                hasShownError = true;
                 InterpolateUtils.ShowMessage("Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
+            }
+
+            if (!hasShownError && line.Contains("RuntimeError"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"An error occured during interpolation!\n\n{line}", "Error");
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Flowframes.Main
                 return;
             if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.lastExt}") <= 1)
             {
-                i.Cancel("Output folder does not contain frames - An error must have occured during interpolation!");
+                i.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
             }
             await Task.Delay(10);

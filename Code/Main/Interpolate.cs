@@ -164,7 +164,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(-1);
         }
 
-        public static void Cancel(string reason = "")
+        public static void Cancel(string reason = "", bool noMsgBox = false)
         {
             if (AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)
                 OSUtils.KillProcessTree(AiProcess.currentAiProcess.Id);
@@ -176,8 +176,9 @@ namespace Flowframes
             if(!Config.GetBool("keepTempFolder"))
                 IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
+            Program.mainForm.mainTabControl.SelectedIndex = 0;
             Logger.Log("Cancelled interpolation.");
-            if (!string.IsNullOrWhiteSpace(reason))
+            if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 Utils.ShowMessage($"Cancelled:\n\n{reason}");
         }
 
