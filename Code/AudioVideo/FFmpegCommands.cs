@@ -13,6 +13,9 @@ namespace Flowframes
         static string divisionFilter = "\"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
         static string pngComprArg = "-compression_level 3";
 
+        static string mpDecDef = "\"mpdecimate\"";
+        static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
+
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc)
         {
             await VideoToFrames(inputFile, frameFolderPath, deDupe, delSrc, new Size());
@@ -24,8 +27,12 @@ namespace Flowframes
             if (size.Width > 1 && size.Height > 1) sizeStr = $"-s {size.Width}x{size.Height}";
             if (!Directory.Exists(frameFolderPath))
                 Directory.CreateDirectory(frameFolderPath);
-            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 -vf {divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
-            if(deDupe) args = $"-i {inputFile.Wrap()} -copyts -r 1000 {pngComprArg} -vsync 0 -frame_pts true -vf mpdecimate,{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 -copyts -r 1000 -frame_pts true -vf {divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            if (deDupe)
+            {
+                string mpStr = (Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr;
+                args = $"-i {inputFile.Wrap()} -copyts -r 1000 {pngComprArg} -vsync 0 -pix_fmt rgb24 -frame_pts true -vf {mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            }
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             await Task.Delay(1);
             if (delSrc)
@@ -47,14 +54,23 @@ namespace Flowframes
         {
             Logger.Log($"Encoding MP4 video with CRF {crf}...");
             int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, $"*.{imgFormat}")[0], prefix);
-            string enc = "libx264";
-            if (useH265) enc = "libx265";
+            string enc = useH265 ? "libx265" : "libx264";
             string loopStr = "";
             if (looptimes > 0) loopStr = $"-stream_loop {looptimes}";
             string args = $" {loopStr} -framerate {fps.ToString().Replace(",",".")} -i \"{inputDir}\\{prefix}%0{nums}d.{imgFormat}\" -c:v {enc} -crf {crf} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputDir);
+        }
+
+        public static async Task FramesToMp4Vfr(string framesFile, string outPath, bool useH265, int crf, float fps, int looptimes = -1)
+        {
+            Logger.Log($"Encoding MP4 video with CRF {crf}...");
+            string enc = useH265 ? "libx265" : "libx264";
+            string loopStr = "";
+            if (looptimes > 0) loopStr = $"-stream_loop {looptimes}";
+            string args = $" {loopStr} -vsync 1 -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
         }
 
         public static async Task ConvertFramerate (string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)

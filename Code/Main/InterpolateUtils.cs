@@ -26,7 +26,7 @@ namespace Flowframes.Main
             int percent = (int)Math.Round(((float)frames / target) * 100f);
             Program.mainForm.SetProgress(percent);
 
-            float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - 1000) / 1000f);
+            float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - 2000) / 1000f);
             float fps = (float)frames / generousTime;
             string fpsIn = (fps / Interpolate.interpFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");

@@ -143,8 +143,9 @@ namespace Flowframes.Magick
 
                 Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
                 await Task.Delay(10);
+                if (Interpolate.cancelled) return;
 
-                if(!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && i >= skipAfterNoDupesFrames)
+                if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && i >= skipAfterNoDupesFrames)
                 {
                     skipped = true;
                     break;
@@ -166,8 +167,11 @@ namespace Flowframes.Magick
                 Logger.Log($"[FrameDedup]{testStr} Done. Kept {statsFramesKept} frames, deleted {statsFramesDeleted} frames.", false, true);
             }
 
-            RenameCounterDir(path, "png");
-            ZeroPadDir(path, ext, 8);
+            if (statsFramesKept <= 0)
+                Interpolate.Cancel("No frames were left after de-duplication.");
+
+            //RenameCounterDir(path, "png");
+            //ZeroPadDir(path, ext, 8);
         }
 
         static Dictionary<int, int> UpdateDupeDict(Dictionary<int, int> dict, int frame, int amount)
@@ -315,7 +319,7 @@ namespace Flowframes.Magick
             }
         }
 
-        static void ZeroPadDir(string path, string ext, int targetLength, bool recursive = false)
+        public static void ZeroPadDir(string path, string ext, int targetLength, bool recursive = false)
         {
             FileInfo[] files;
             if (recursive)

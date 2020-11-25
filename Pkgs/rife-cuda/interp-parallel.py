@@ -100,8 +100,8 @@ def clear_buffer(user_args):
         if item is None:
             break
         if user_args.png:
-            print('Writing {}/{:0>7d}.png'.format(interp_output_path, cnt))
-            cv2.imwrite('{}/{:0>7d}.png'.format(interp_output_path, cnt), item[:, :, ::1])
+            print('Writing {}/{:0>8d}.png'.format(interp_output_path, cnt))
+            cv2.imwrite('{}/{:0>8d}.png'.format(interp_output_path, cnt), item[:, :, ::1])
             cnt += 1
         else:
             vid_out.write(item[:, :, ::-1])

@@ -7,8 +7,6 @@ using Flowframes.OS;
 using Flowframes.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,8 +27,8 @@ namespace Flowframes.Main
                 return;
             }
             await Task.Delay(10);
-            if(Config.GetInt("timingMode") == 1)
-                await MagickDedupe.Reduplicate(path);
+            //if(Config.GetInt("timingMode") == 1)
+            //    await MagickDedupe.Reduplicate(path);
             Program.mainForm.SetStatus("Creating output video from frames...");
             try
             {
@@ -76,7 +74,15 @@ namespace Flowframes.Main
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-                await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, looptimes, ext);
+                if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
+                {
+                    string vfrFile = Path.Combine(framesPath.GetParentDir(), "vfr.ini");
+                    await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, looptimes);
+                }
+                else
+                {
+                    await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, looptimes, ext);
+                }
                 await MergeAudio(i.lastInputPath, outPath);
 
                 if (changeFps > 0)

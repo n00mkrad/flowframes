@@ -47,9 +47,16 @@
             this.deleteLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.mpDedupePanel = new System.Windows.Forms.Panel();
+            this.panel13 = new System.Windows.Forms.Panel();
+            this.mpdecimateMode = new System.Windows.Forms.ComboBox();
+            this.label42 = new System.Windows.Forms.Label();
+            this.magickDedupePanel = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.dedupThresh = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.timingMode = new System.Windows.Forms.ComboBox();
             this.label35 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.label27 = new System.Windows.Forms.Label();
             this.jpegInterps = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
@@ -57,8 +64,6 @@
             this.label24 = new System.Windows.Forms.Label();
             this.enableLoop = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.dedupThresh = new System.Windows.Forms.ComboBox();
             this.dedupMode = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.enableAudio = new System.Windows.Forms.CheckBox();
@@ -120,6 +125,8 @@
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
+            this.mpDedupePanel.SuspendLayout();
+            this.magickDedupePanel.SuspendLayout();
             this.aiOptsPage.SuspendLayout();
             this.vidExportTab.SuspendLayout();
             this.debugTab.SuspendLayout();
@@ -330,9 +337,10 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.mpDedupePanel);
+            this.tabListPage2.Controls.Add(this.magickDedupePanel);
             this.tabListPage2.Controls.Add(this.timingMode);
             this.tabListPage2.Controls.Add(this.label35);
-            this.tabListPage2.Controls.Add(this.panel3);
             this.tabListPage2.Controls.Add(this.label27);
             this.tabListPage2.Controls.Add(this.jpegInterps);
             this.tabListPage2.Controls.Add(this.label25);
@@ -340,8 +348,6 @@
             this.tabListPage2.Controls.Add(this.label24);
             this.tabListPage2.Controls.Add(this.enableLoop);
             this.tabListPage2.Controls.Add(this.label15);
-            this.tabListPage2.Controls.Add(this.label4);
-            this.tabListPage2.Controls.Add(this.dedupThresh);
             this.tabListPage2.Controls.Add(this.dedupMode);
             this.tabListPage2.Controls.Add(this.label2);
             this.tabListPage2.Controls.Add(this.enableAudio);
@@ -349,6 +355,104 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // mpDedupePanel
+            // 
+            this.mpDedupePanel.Controls.Add(this.panel13);
+            this.mpDedupePanel.Controls.Add(this.mpdecimateMode);
+            this.mpDedupePanel.Controls.Add(this.label42);
+            this.mpDedupePanel.Location = new System.Drawing.Point(536, 67);
+            this.mpDedupePanel.Margin = new System.Windows.Forms.Padding(0);
+            this.mpDedupePanel.Name = "mpDedupePanel";
+            this.mpDedupePanel.Size = new System.Drawing.Size(218, 21);
+            this.mpDedupePanel.TabIndex = 61;
+            // 
+            // panel13
+            // 
+            this.panel13.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel13.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel13.Location = new System.Drawing.Point(164, 0);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(21, 21);
+            this.panel13.TabIndex = 57;
+            this.toolTip1.SetToolTip(this.panel13, "Allows custom input.");
+            // 
+            // mpdecimateMode
+            // 
+            this.mpdecimateMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.mpdecimateMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mpdecimateMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.mpdecimateMode.ForeColor = System.Drawing.Color.White;
+            this.mpdecimateMode.FormattingEnabled = true;
+            this.mpdecimateMode.Items.AddRange(new object[] {
+            "Normal",
+            "Aggressive"});
+            this.mpdecimateMode.Location = new System.Drawing.Point(46, 0);
+            this.mpdecimateMode.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.mpdecimateMode.Name = "mpdecimateMode";
+            this.mpdecimateMode.Size = new System.Drawing.Size(107, 21);
+            this.mpdecimateMode.TabIndex = 28;
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(3, 3);
+            this.label42.Margin = new System.Windows.Forms.Padding(3);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(37, 13);
+            this.label42.TabIndex = 29;
+            this.label42.Text = "Mode:";
+            // 
+            // magickDedupePanel
+            // 
+            this.magickDedupePanel.Controls.Add(this.panel3);
+            this.magickDedupePanel.Controls.Add(this.dedupThresh);
+            this.magickDedupePanel.Controls.Add(this.label4);
+            this.magickDedupePanel.Location = new System.Drawing.Point(536, 67);
+            this.magickDedupePanel.Margin = new System.Windows.Forms.Padding(0);
+            this.magickDedupePanel.Name = "magickDedupePanel";
+            this.magickDedupePanel.Size = new System.Drawing.Size(218, 21);
+            this.magickDedupePanel.TabIndex = 60;
+            // 
+            // panel3
+            // 
+            this.panel3.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel3.Location = new System.Drawing.Point(164, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(21, 21);
+            this.panel3.TabIndex = 57;
+            this.toolTip1.SetToolTip(this.panel3, "Allows custom input.");
+            // 
+            // dedupThresh
+            // 
+            this.dedupThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.dedupThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dedupThresh.ForeColor = System.Drawing.Color.White;
+            this.dedupThresh.FormattingEnabled = true;
+            this.dedupThresh.Items.AddRange(new object[] {
+            "1%",
+            "2%",
+            "3%",
+            "4%",
+            "5%",
+            "10%"});
+            this.dedupThresh.Location = new System.Drawing.Point(66, 0);
+            this.dedupThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.dedupThresh.Name = "dedupThresh";
+            this.dedupThresh.Size = new System.Drawing.Size(87, 21);
+            this.dedupThresh.TabIndex = 28;
+            this.dedupThresh.Leave += new System.EventHandler(this.dedupThresh_Leave);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 3);
+            this.label4.Margin = new System.Windows.Forms.Padding(3);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 13);
+            this.label4.TabIndex = 29;
+            this.label4.Text = "Threshold:";
             // 
             // timingMode
             // 
@@ -359,10 +463,10 @@
             this.timingMode.FormattingEnabled = true;
             this.timingMode.Items.AddRange(new object[] {
             "Disabled",
-            "Re-Duplicate Deleted Frames"});
+            "Use Timecodes From Source Video"});
             this.timingMode.Location = new System.Drawing.Point(280, 97);
             this.timingMode.Name = "timingMode";
-            this.timingMode.Size = new System.Drawing.Size(200, 21);
+            this.timingMode.Size = new System.Drawing.Size(250, 21);
             this.timingMode.TabIndex = 59;
             // 
             // label35
@@ -371,19 +475,9 @@
             this.label35.Location = new System.Drawing.Point(10, 100);
             this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(122, 13);
+            this.label35.Size = new System.Drawing.Size(197, 13);
             this.label35.TabIndex = 58;
-            this.label35.Text = "Fix Video Timing/Length";
-            // 
-            // panel3
-            // 
-            this.panel3.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel3.Location = new System.Drawing.Point(647, 67);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(21, 21);
-            this.panel3.TabIndex = 57;
-            this.toolTip1.SetToolTip(this.panel3, "Allows custom input.");
+            this.label35.Text = "Frame Handling Mode For Deduplication";
             // 
             // label27
             // 
@@ -457,36 +551,6 @@
             this.label15.TabIndex = 30;
             this.label15.Text = "Animation Loop (Copy First Frame As Last)";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(486, 70);
-            this.label4.Margin = new System.Windows.Forms.Padding(3);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 13);
-            this.label4.TabIndex = 29;
-            this.label4.Text = "Threshold:";
-            // 
-            // dedupThresh
-            // 
-            this.dedupThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.dedupThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.dedupThresh.ForeColor = System.Drawing.Color.White;
-            this.dedupThresh.FormattingEnabled = true;
-            this.dedupThresh.Items.AddRange(new object[] {
-            "1%",
-            "2%",
-            "3%",
-            "4%",
-            "5%",
-            "10%"});
-            this.dedupThresh.Location = new System.Drawing.Point(549, 67);
-            this.dedupThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
-            this.dedupThresh.Name = "dedupThresh";
-            this.dedupThresh.Size = new System.Drawing.Size(87, 21);
-            this.dedupThresh.TabIndex = 28;
-            this.dedupThresh.Leave += new System.EventHandler(this.dedupThresh_Leave);
-            // 
             // dedupMode
             // 
             this.dedupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -496,12 +560,13 @@
             this.dedupMode.FormattingEnabled = true;
             this.dedupMode.Items.AddRange(new object[] {
             "Disabled",
-            "Always Enabled",
-            "Detect Automatically For Each Video"});
+            "Remove After Extraction - Slow, Accurate",
+            "Remove During Extraction - Fast, Less Accurate"});
             this.dedupMode.Location = new System.Drawing.Point(280, 67);
             this.dedupMode.Name = "dedupMode";
-            this.dedupMode.Size = new System.Drawing.Size(200, 21);
+            this.dedupMode.Size = new System.Drawing.Size(250, 21);
             this.dedupMode.TabIndex = 27;
+            this.dedupMode.SelectedIndexChanged += new System.EventHandler(this.dedupMode_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -1210,6 +1275,10 @@
             this.generalTab.PerformLayout();
             this.tabListPage2.ResumeLayout(false);
             this.tabListPage2.PerformLayout();
+            this.mpDedupePanel.ResumeLayout(false);
+            this.mpDedupePanel.PerformLayout();
+            this.magickDedupePanel.ResumeLayout(false);
+            this.magickDedupePanel.PerformLayout();
             this.aiOptsPage.ResumeLayout(false);
             this.aiOptsPage.PerformLayout();
             this.vidExportTab.ResumeLayout(false);
@@ -1310,5 +1379,10 @@
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.CheckBox ffprobeCountFrames;
         private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.Panel mpDedupePanel;
+        private System.Windows.Forms.Panel panel13;
+        private System.Windows.Forms.ComboBox mpdecimateMode;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.Panel magickDedupePanel;
     }
 }

@@ -31,16 +31,6 @@ namespace Flowframes.IO
             packages.Add(Packages.licenses);
         }
 
-        public static FlowPackage GetPkg(string friendlyName)
-        {
-            foreach (FlowPackage pkg in packages)
-            {
-                if (pkg.friendlyName == friendlyName)
-                    return pkg;
-            }
-            return new FlowPackage();
-        }
-
         static Stopwatch sw = new Stopwatch();
         public static async Task DownloadAndInstall(string filename, bool showDialog = true)
         {
@@ -110,25 +100,6 @@ namespace Flowframes.IO
                 Print("Failed to uninstall package!");
                 Logger.Log($"Failed to uninstall package {Path.GetFileNameWithoutExtension(filename)}: {e.Message}");
             }
-        }
-
-        public static bool IsInstalled(FlowPackage pkg)
-        {
-            return IsInstalled(pkg.fileName);
-        }
-
-        public static bool IsInstalled(string filename)
-        {
-            Logger.Log("PkgInstaller.IsInstalled - Checking for pkg with filename " + filename, true);
-            string path = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(filename));
-            return Directory.Exists(path);
-        }
-
-
-        public static bool IsAiAvailable(AI ai, bool msg = true)
-        {
-            Logger.Log("PkgInstaller.IsAiAvailable - Checking for AI " + ai.aiName, true);
-            return IsInstalled(ai.pkg);
         }
 
         static void Print(string s, bool replaceLastLine = false)

@@ -89,7 +89,7 @@ namespace Flowframes.IO
             if (key == "torchGpus") return WriteDefault("torchGpus", "0");
             if (key == "keepTempFolder") return WriteDefault("keepTempFolder", "False");
             if (key == "deleteLogsOnStartup") return WriteDefault("deleteLogsOnStartup", "True");
-            if (key == "autoDedupFrames") return WriteDefault("autoDedupFrames", "10");
+            if (key == "autoDedupFrames") return WriteDefault("autoDedupFrames", "15");
             if (key == "minOutVidLength") return WriteDefault("minOutVidLength", "2");
             if (key == "mp4Enc") return WriteDefault("mp4Enc", "0");
             if (key == "h264Crf") return WriteDefault("h264Crf", "20");

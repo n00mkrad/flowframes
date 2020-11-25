@@ -34,9 +34,9 @@ namespace Flowframes
             ffmpeg.StartInfo.FileName = "cmd.exe";
             ffmpeg.StartInfo.Arguments = "/C cd /D \"" + GetAvDir() + "\" & ffmpeg.exe -hide_banner -loglevel warning -y -stats " + args;
             if(logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
-            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true);
-            ffmpeg.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
-            ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
+            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg.txt");
+            ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
+            ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
             ffmpeg.Start();
             ffmpeg.BeginOutputReadLine();
             ffmpeg.BeginErrorReadLine();
@@ -45,12 +45,13 @@ namespace Flowframes
             Logger.Log("Done running ffmpeg.", true);
         }
 
-        static void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
             lastOutputFfmpeg = lastOutputFfmpeg + outLine.Data + "\n";
             bool hidden = currentLogMode == LogMode.Hidden;
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
-            Logger.Log(outLine.Data, hidden, replaceLastLine, "ffmpeg.txt");
+            string trimmedLine = outLine.Data.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
+            Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg.txt");
         }
 
         public static string GetFfmpegOutput (string args)
@@ -70,7 +71,7 @@ namespace Flowframes
         {
             Process ffprobe = OSUtils.NewProcess(true);
             ffprobe.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
-            Logger.Log("cmd.exe " + ffprobe.StartInfo.Arguments, true);
+            Logger.Log("cmd.exe " + ffprobe.StartInfo.Arguments, true, false, "ffmpeg.txt");
             ffprobe.Start();
             ffprobe.WaitForExit();
             string output = ffprobe.StandardOutput.ReadToEnd();
@@ -87,7 +88,7 @@ namespace Flowframes
             lastProcess = gifski;
             gifski.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & gifski.exe {args}";
             Logger.Log("Running gifski...");
-            Logger.Log("cmd.exe " + gifski.StartInfo.Arguments, true);
+            Logger.Log("cmd.exe " + gifski.StartInfo.Arguments, true, false, "ffmpeg.txt");
             gifski.OutputDataReceived += new DataReceivedEventHandler(OutputHandlerGifski);
             gifski.ErrorDataReceived += new DataReceivedEventHandler(OutputHandlerGifski);
             gifski.Start();

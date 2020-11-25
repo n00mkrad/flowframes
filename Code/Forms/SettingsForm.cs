@@ -51,6 +51,7 @@ namespace Flowframes.Forms
             // Interpolation
             ConfigParser.SaveGuiElement(enableAudio);
             ConfigParser.SaveComboxIndex(dedupMode);
+            ConfigParser.SaveComboxIndex(mpdecimateMode);
             ConfigParser.SaveGuiElement(dedupThresh, ConfigParser.StringMode.Float);
             ConfigParser.SaveComboxIndex(timingMode);
             ConfigParser.SaveGuiElement(enableLoop);
@@ -87,6 +88,7 @@ namespace Flowframes.Forms
             // Interpolation
             ConfigParser.LoadGuiElement(enableAudio);
             ConfigParser.LoadComboxIndex(dedupMode);
+            ConfigParser.LoadComboxIndex(mpdecimateMode);
             ConfigParser.LoadGuiElement(dedupThresh, "%");
             ConfigParser.LoadComboxIndex(timingMode);
             ConfigParser.LoadGuiElement(enableLoop);
@@ -136,6 +138,12 @@ namespace Flowframes.Forms
         {
             if (initialized && cmdDebugMode.SelectedIndex == 2)
                 MessageBox.Show("If you enable this, you need to close the CMD window manually after the process has finished, otherwise processing will be paused!", "Notice");
+        }
+
+        private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            magickDedupePanel.Visible = dedupMode.SelectedIndex == 1;
+            mpDedupePanel.Visible = dedupMode.SelectedIndex == 2;
         }
     }
 }

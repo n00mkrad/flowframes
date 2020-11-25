@@ -62,9 +62,7 @@ namespace Flowframes
             if (cancelled) return;
             sw.Restart();
             await Task.Delay(10);
-            if (Config.GetBool("vfrDedupe"))
-                VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor);
-            await MagickDedupe.Run(framesPath);
+            await PostProcessFrames();
             if (cancelled) return;
             string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
             string outPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
@@ -96,11 +94,11 @@ namespace Flowframes
                 float factor = (float)maxHeight / resolution.Height;
                 int width = (resolution.Width * factor).RoundToInt();
                 Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
-                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetBool("vfrDedupe"), false, new Size(width, maxHeight));
+                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, new Size(width, maxHeight));
             }
             else
             {
-                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetBool("vfrDedupe"), false);
+                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false);
             }
             /*
             if (AvProcess.lastOutputFfmpeg.ToLower().Contains("invalid"))
@@ -115,15 +113,35 @@ namespace Flowframes
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
-            if (!cancelled && Config.GetBool("enableLoop"))
+            if (!cancelled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
             {
                 string lastFrame = IOUtils.GetHighestFrameNumPath(outPath);
                 int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
                 string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(8, '0') + ".png");
-                string firstFrame = Path.Combine(lastFrame.GetParentDir(), 1.ToString().PadLeft(8, '0') + ".png");
+                string firstFrame = new DirectoryInfo(outPath).GetFiles("*.png")[0].FullName;
                 File.Copy(firstFrame, newFilename);
                 Logger.Log("Copied loop frame.");
             }
+        }
+
+
+        public static bool firstFrameFix;
+        static async Task PostProcessFrames ()
+        {
+            if (Config.GetInt("dedupMode") == 1)
+                await MagickDedupe.Run(framesPath);
+
+            //await Task.Delay(10000);
+
+            if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
+                await VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor, firstFrameFix);
+
+            if (cancelled) return;
+            MagickDedupe.RenameCounterDir(framesPath, "png");
+            MagickDedupe.ZeroPadDir(framesPath, "png", 8);
+
+            if (firstFrameFix)
+                IOUtils.TryCopy(new DirectoryInfo(framesPath).GetFiles("*.png")[0].FullName, Path.Combine(framesPath, "00000000.png"), true);
         }
 
         static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)

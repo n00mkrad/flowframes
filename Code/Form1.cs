@@ -128,7 +128,7 @@ namespace Flowframes
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;
-            string fpsStr = "Not Found.";
+            string fpsStr = "Not Found";
             float fps = IOUtils.GetFpsFolderOrVideo(path);
             if(fps > 0)
             {

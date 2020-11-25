@@ -20,9 +20,10 @@ namespace Flowframes
         public static Process currentAiProcess;
         public static Stopwatch processTime = new Stopwatch();
 
-        static void Init (Process proc, string ext = "png")
+        static void Init (Process proc, string defaultExt = "png", bool needsFirstFrameFix = false)
         {
-            InterpolateUtils.lastExt = ext;
+            Interpolate.firstFrameFix = needsFirstFrameFix;
+            InterpolateUtils.lastExt = defaultExt;
             if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
             processTime.Restart();
             currentAiProcess = proc;
@@ -35,6 +36,7 @@ namespace Flowframes
 
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            Init(dain);
             dain.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt}";
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
@@ -43,7 +45,6 @@ namespace Flowframes
                 dain.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "dain-ncnn-log.txt"); };
                 dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log.txt"); };
             }
-            Init(dain);
             dain.Start();
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -96,6 +97,7 @@ namespace Flowframes
             string cainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.cainNcnn.fileName));
             string cainExe = "cain-ncnn-vulkan.exe";
             Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            Init(cain);
             cain.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt}";
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -103,7 +105,6 @@ namespace Flowframes
                 cain.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "cain-ncnn-log.txt"); };
                 cain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "cain-ncnn-log.txt"); };
             }
-            Init(cain);
             cain.Start();
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -117,11 +118,12 @@ namespace Flowframes
         public static async Task RunRifeCuda(string framesPath, int interpFactor)
         {
             string script = "interp-parallel.py";
-            if(Config.GetInt("rifeMode") == 0 || IOUtils.GetAmountOfFiles(framesPath, false) < 30)
+            if(Config.GetInt("rifeMode") == 0 || IOUtils.GetAmountOfFiles(framesPath, false) < 10)
                 script = "interp-basic.py";
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            Init(rifePy, "png", true);
             string args = $" --input {framesPath.Wrap()} --times {(int)Math.Log(interpFactor, 2)}";
             rifePy.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {rifeDir.Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt}";
@@ -132,7 +134,6 @@ namespace Flowframes
                 rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "rife-cuda-log.txt"); };
                 rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log.txt"); };
             }
-            Init(rifePy);
             rifePy.Start();
             if (!OSUtils.ShowHiddenCmd())
             {
