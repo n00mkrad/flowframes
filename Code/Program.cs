@@ -12,7 +12,7 @@ namespace Flowframes
 {
     static class Program
     {
-        public const int version = 15;
+        public const int version = 16;
 
         public static Form1 mainForm;
 

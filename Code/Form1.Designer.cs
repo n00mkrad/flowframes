@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.titleLabel = new System.Windows.Forms.Label();
             this.tilesize = new System.Windows.Forms.ComboBox();
-            this.tileSizeInfoLabel = new System.Windows.Forms.Label();
             this.aiCombox = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.outModeCombox = new System.Windows.Forms.ComboBox();
@@ -95,6 +94,15 @@
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
             this.cancelBtn = new System.Windows.Forms.Button();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
+            this.welcomeTab = new System.Windows.Forms.TabPage();
+            this.label22 = new System.Windows.Forms.Label();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.patronsLabel = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.newsLabel = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
             this.tilesizeNotAvailLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -115,6 +123,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             this.mainTabControl.SuspendLayout();
+            this.welcomeTab.SuspendLayout();
+            this.panel8.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.interpOptsTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.videoUtilsTab.SuspendLayout();
@@ -155,18 +166,6 @@
             this.tilesize.Size = new System.Drawing.Size(125, 23);
             this.tilesize.TabIndex = 25;
             this.tilesize.SelectedIndexChanged += new System.EventHandler(this.tilesize_SelectedIndexChanged);
-            // 
-            // tileSizeInfoLabel
-            // 
-            this.tileSizeInfoLabel.AutoSize = true;
-            this.tileSizeInfoLabel.ForeColor = System.Drawing.Color.Silver;
-            this.tileSizeInfoLabel.Location = new System.Drawing.Point(532, 135);
-            this.tileSizeInfoLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.tileSizeInfoLabel.Name = "tileSizeInfoLabel";
-            this.tileSizeInfoLabel.Size = new System.Drawing.Size(327, 15);
-            this.tileSizeInfoLabel.TabIndex = 24;
-            this.tileSizeInfoLabel.Text = "Note: You can use much higher values with CAIN than DAIN.";
-            this.tileSizeInfoLabel.Visible = false;
             // 
             // aiCombox
             // 
@@ -637,6 +636,7 @@
             // logBox
             // 
             this.logBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.logBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.logBox.ForeColor = System.Drawing.Color.White;
             this.logBox.Location = new System.Drawing.Point(221, 357);
             this.logBox.MinimumSize = new System.Drawing.Size(4, 21);
@@ -928,6 +928,7 @@
             this.mainTabControl.AllowDrop = true;
             this.mainTabControl.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.mainTabControl.BorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
+            this.mainTabControl.Controls.Add(this.welcomeTab);
             this.mainTabControl.Controls.Add(this.interpOptsTab);
             this.mainTabControl.Controls.Add(this.videoUtilsTab);
             this.mainTabControl.Controls.Add(this.previewTab);
@@ -936,7 +937,7 @@
             this.mainTabControl.DisableDragging = true;
             this.mainTabControl.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.mainTabControl.HoverTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(176)))), ((int)(((byte)(239)))));
-            this.mainTabControl.HoverTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
+            this.mainTabControl.HoverTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.HoverUnselectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
             this.mainTabControl.Location = new System.Drawing.Point(13, 62);
             this.mainTabControl.Name = "mainTabControl";
@@ -952,33 +953,133 @@
             this.mainTabControl.UnselectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.UpDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.UpDownTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(112)))));
+            this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.mainTabControl_SelectedIndexChanged);
             this.mainTabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.mainTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // welcomeTab
+            // 
+            this.welcomeTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.welcomeTab.Controls.Add(this.label22);
+            this.welcomeTab.Controls.Add(this.panel8);
+            this.welcomeTab.Controls.Add(this.panel6);
+            this.welcomeTab.Controls.Add(this.label11);
+            this.welcomeTab.Location = new System.Drawing.Point(4, 27);
+            this.welcomeTab.Name = "welcomeTab";
+            this.welcomeTab.Padding = new System.Windows.Forms.Padding(3);
+            this.welcomeTab.Size = new System.Drawing.Size(901, 258);
+            this.welcomeTab.TabIndex = 4;
+            this.welcomeTab.Text = "Welcome";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.ForeColor = System.Drawing.Color.Gray;
+            this.label22.Location = new System.Drawing.Point(142, 3);
+            this.label22.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(478, 40);
+            this.label22.TabIndex = 5;
+            this.label22.Text = "Click The Interpolation Tab To Begin.";
+            // 
+            // panel8
+            // 
+            this.panel8.AutoScroll = true;
+            this.panel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.panel8.Controls.Add(this.patronsLabel);
+            this.panel8.Controls.Add(this.label21);
+            this.panel8.Location = new System.Drawing.Point(593, 57);
+            this.panel8.Margin = new System.Windows.Forms.Padding(5);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(300, 193);
+            this.panel8.TabIndex = 4;
+            // 
+            // patronsLabel
+            // 
+            this.patronsLabel.AutoSize = true;
+            this.patronsLabel.ForeColor = System.Drawing.Color.White;
+            this.patronsLabel.Location = new System.Drawing.Point(8, 31);
+            this.patronsLabel.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
+            this.patronsLabel.Name = "patronsLabel";
+            this.patronsLabel.Size = new System.Drawing.Size(0, 15);
+            this.patronsLabel.TabIndex = 9;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.ForeColor = System.Drawing.Color.White;
+            this.label21.Location = new System.Drawing.Point(8, 8);
+            this.label21.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(119, 15);
+            this.label21.TabIndex = 8;
+            this.label21.Text = "Patreon Supporters:";
+            // 
+            // panel6
+            // 
+            this.panel6.AutoScroll = true;
+            this.panel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.panel6.Controls.Add(this.newsLabel);
+            this.panel6.Controls.Add(this.label15);
+            this.panel6.Location = new System.Drawing.Point(8, 57);
+            this.panel6.Margin = new System.Windows.Forms.Padding(5);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(575, 193);
+            this.panel6.TabIndex = 3;
+            // 
+            // newsLabel
+            // 
+            this.newsLabel.AutoSize = true;
+            this.newsLabel.ForeColor = System.Drawing.Color.White;
+            this.newsLabel.Location = new System.Drawing.Point(8, 31);
+            this.newsLabel.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
+            this.newsLabel.Name = "newsLabel";
+            this.newsLabel.Size = new System.Drawing.Size(0, 15);
+            this.newsLabel.TabIndex = 8;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(8, 8);
+            this.label15.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(41, 15);
+            this.label15.TabIndex = 7;
+            this.label15.Text = "News:";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.White;
+            this.label11.Location = new System.Drawing.Point(6, 3);
+            this.label11.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(143, 40);
+            this.label11.TabIndex = 1;
+            this.label11.Text = "Welcome!";
             // 
             // interpOptsTab
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.interpOptsTab.Controls.Add(this.tilesizeNotAvailLabel);
-            this.interpOptsTab.Controls.Add(this.panel7);
             this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
             this.interpOptsTab.Controls.Add(this.browseInputFileBtn);
             this.interpOptsTab.Controls.Add(this.browseInputBtn);
             this.interpOptsTab.Controls.Add(this.label4);
-            this.interpOptsTab.Controls.Add(this.pictureBox4);
             this.interpOptsTab.Controls.Add(this.label2);
-            this.interpOptsTab.Controls.Add(this.pictureBox3);
             this.interpOptsTab.Controls.Add(this.label3);
-            this.interpOptsTab.Controls.Add(this.pictureBox2);
             this.interpOptsTab.Controls.Add(this.inputTbox);
-            this.interpOptsTab.Controls.Add(this.pictureBox1);
             this.interpOptsTab.Controls.Add(this.outputTbox);
-            this.interpOptsTab.Controls.Add(this.info1);
             this.interpOptsTab.Controls.Add(this.interpFactorCombox);
             this.interpOptsTab.Controls.Add(this.tilesize);
             this.interpOptsTab.Controls.Add(this.fpsInTbox);
-            this.interpOptsTab.Controls.Add(this.tileSizeInfoLabel);
             this.interpOptsTab.Controls.Add(this.fpsOutTbox);
             this.interpOptsTab.Controls.Add(this.label5);
             this.interpOptsTab.Controls.Add(this.aiCombox);
@@ -988,6 +1089,12 @@
             this.interpOptsTab.Controls.Add(this.label8);
             this.interpOptsTab.Controls.Add(this.label9);
             this.interpOptsTab.Controls.Add(this.outModeCombox);
+            this.interpOptsTab.Controls.Add(this.panel7);
+            this.interpOptsTab.Controls.Add(this.pictureBox4);
+            this.interpOptsTab.Controls.Add(this.pictureBox3);
+            this.interpOptsTab.Controls.Add(this.pictureBox2);
+            this.interpOptsTab.Controls.Add(this.pictureBox1);
+            this.interpOptsTab.Controls.Add(this.info1);
             this.interpOptsTab.Location = new System.Drawing.Point(4, 27);
             this.interpOptsTab.Name = "interpOptsTab";
             this.interpOptsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -1217,6 +1324,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             this.mainTabControl.ResumeLayout(false);
+            this.welcomeTab.ResumeLayout(false);
+            this.welcomeTab.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.interpOptsTab.ResumeLayout(false);
             this.interpOptsTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -1258,7 +1371,6 @@
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.ComboBox aiCombox;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label tileSizeInfoLabel;
         private System.Windows.Forms.ComboBox tilesize;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button debugExtractFramesBtn;
@@ -1311,6 +1423,15 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private HTAlt.WinForms.HTButton updateBtn;
+        private System.Windows.Forms.TabPage welcomeTab;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Label patronsLabel;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label newsLabel;
+        private System.Windows.Forms.Label label22;
     }
 }
 

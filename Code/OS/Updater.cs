@@ -82,7 +82,7 @@ namespace Flowframes.OS
             int latest = latestVer.GetInt();
             int installed = GetInstalledVer();
 
-            if (installed != latest)
+            if (installed < latest)
                 Logger.Log("An update for Flowframes is available! Download it using the Updater.");
             else
                 Logger.Log("Flowframes is up to date.");

@@ -19,7 +19,7 @@ namespace Flowframes.Main
         public static async void Start()
         {
             stopped = false;
-            Program.mainForm.GetMainTabControl().SelectedIndex = 2;
+            Program.mainForm.SetTab("preview");
             int initTaskCount = Program.batchQueue.Count;
 
             for (int i = 0; i < initTaskCount; i++)
@@ -35,7 +35,7 @@ namespace Flowframes.Main
             }
             Logger.Log("[Queue] Finished queue processing.");
             SetBusy(false);
-            Program.mainForm.GetMainTabControl().SelectedIndex = 0;
+            Program.mainForm.SetTab("interpolation");
         }
 
         public static void Stop()

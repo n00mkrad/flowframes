@@ -32,8 +32,16 @@ namespace Flowframes.Forms
             }
             else
             {
-                updateBtn.Text = "Update To Latest Version!";
-                statusLabel.Text = "Update Available!";
+                if(installed < latest)
+                {
+                    updateBtn.Text = "Update To Latest Version!";
+                    statusLabel.Text = "Update Available!";
+                }
+                else
+                {
+                    updateBtn.Text = "Rollback To Public Version";
+                    statusLabel.Text = "Using Newer Version Than Latest Public Release.";
+                }
             }
 
             updateBtn.Enabled = true;

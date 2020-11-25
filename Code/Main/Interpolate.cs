@@ -20,7 +20,7 @@ namespace Flowframes
 {
     public class Interpolate
     {
-        public enum OutMode { VidMp4, VidGif, ImgPng, ImgJpg }
+        public enum OutMode { VidMp4, VidGif, ImgPng }
 
         public static string currentTempDir;
         static string framesPath;
@@ -29,6 +29,7 @@ namespace Flowframes
         public static float currentOutFps;
 
         public static string lastInputPath;
+        public static AI lastAi;
 
         public static bool canceled = false;
 
@@ -52,6 +53,7 @@ namespace Flowframes
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if(!Utils.CheckPathValid(inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(inPath, outDir);
+            lastAi = ai;
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
             await Task.Delay(10);
@@ -131,8 +133,6 @@ namespace Flowframes
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(framesPath);
 
-            //await Task.Delay(10000);
-
             if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
                 await VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor, firstFrameFix);
 
@@ -140,8 +140,11 @@ namespace Flowframes
             MagickDedupe.RenameCounterDir(framesPath, "png");
             MagickDedupe.ZeroPadDir(framesPath, "png", 8);
 
-            if (firstFrameFix)
-                IOUtils.TryCopy(new DirectoryInfo(framesPath).GetFiles("*.png")[0].FullName, Path.Combine(framesPath, "00000000.png"), true);
+            if (lastAi.aiName == Networks.rifeCuda.aiName)
+            {
+                bool s = IOUtils.TryCopy(new DirectoryInfo(framesPath).GetFiles("*.png")[0].FullName, Path.Combine(framesPath, "00000000.png"), true);
+                Logger.Log("FirstFrameFix TryCopy Success:" + s, true);
+            }
         }
 
         static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
@@ -170,7 +173,7 @@ namespace Flowframes
                 if (AiProcess.processTime.IsRunning && Directory.Exists(outdir))
                 {
                     if (firstProgUpd && Program.mainForm.IsInFocus())
-                        Program.mainForm.GetMainTabControl().SelectedIndex = 2;
+                        Program.mainForm.SetTab("preview");
                     firstProgUpd = false;
                     string[] frames = Directory.GetFiles(outdir, $"*.{Utils.lastExt}");
                     if (frames.Length > 1)
@@ -197,7 +200,7 @@ namespace Flowframes
             if(!Config.GetBool("keepTempFolder"))
                 IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
-            Program.mainForm.mainTabControl.SelectedIndex = 0;
+            Program.mainForm.SetTab("interpolation");
             Logger.Log("Canceled interpolation.");
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 Utils.ShowMessage($"Canceled:\n\n{reason}");

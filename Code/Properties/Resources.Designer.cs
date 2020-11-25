@@ -173,6 +173,16 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap flowframesIcoNew_512px {
+            get {
+                object obj = ResourceManager.GetObject("flowframesIcoNew_512px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap patreon256px {
             get {
                 object obj = ResourceManager.GetObject("patreon256px", resourceCulture);

@@ -22,10 +22,9 @@ namespace Flowframes
 
         public static int lastStartupTimeMs = 1000;
 
-        static void Init (Process proc, int startupTimeMs, string defaultExt = "png", bool needsFirstFrameFix = false)
+        static void Init (Process proc, int startupTimeMs, string defaultExt = "png")
         {
             lastStartupTimeMs = startupTimeMs;
-            Interpolate.firstFrameFix = needsFirstFrameFix;
             InterpolateUtils.lastExt = defaultExt;
             if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
             processTime.Restart();
@@ -134,8 +133,7 @@ namespace Flowframes
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            Logger.Log("HIDDEN: " + !OSUtils.ShowHiddenCmd());
-            Init(rifePy, 3000, "png", true);
+            Init(rifePy, 3000, "png");
             string args = $" --input {framesPath.Wrap()} --times {(int)Math.Log(interpFactor, 2)}";
             rifePy.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {rifeDir.Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt}";

@@ -53,12 +53,25 @@ namespace Flowframes
             Setup.Init();
             Initialized();
 
+            GetWebInfo.LoadNews(newsLabel);
+            GetWebInfo.LoadPatronList(patronsLabel);
             Updater.AsyncUpdateCheck();
         }
 
         public HTTabControl GetMainTabControl() { return mainTabControl; }
 
         public bool IsInFocus() { return (ActiveForm == this); }
+
+        public void SetTab (string tabName)
+        {
+            foreach(TabPage tab in mainTabControl.TabPages)
+            {
+                if (tab.Text.ToLower() == tabName.ToLower())
+                    mainTabControl.SelectedTab = tab;
+            }
+            mainTabControl.Refresh();
+            mainTabControl.Update();
+        }
 
         public BatchEntry GetBatchEntry()
         {
@@ -158,7 +171,7 @@ namespace Flowframes
         public void runBtn_Click(object sender, EventArgs e)
         {
             if (!BatchProcessing.busy)
-                mainTabControl.SelectedIndex = 0;
+                SetTab("interpolation");
             if (fpsInTbox.Visible)
                 Interpolate.SetFps(fpsInTbox.GetFloat());
             if (interpFactorCombox.Visible)
@@ -245,7 +258,6 @@ namespace Flowframes
         private void aiCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             tilesize.Visible = GetAi().supportsTiling;
-            tileSizeInfoLabel.Visible = tilesize.Visible;
             tilesizeNotAvailLabel.Visible = !tilesize.Visible;
             interpFactorCombox_SelectedIndexChanged(null, null);
             if(GetAi().supportsTiling)
@@ -282,7 +294,7 @@ namespace Flowframes
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
             if (Program.busy) return;
-            mainTabControl.SelectedIndex = 0;    // Select main tab
+            SetTab("interpolation");
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             inputTbox.Text = files[0];
             Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
@@ -311,7 +323,7 @@ namespace Flowframes
 
         private void cancelBtn_Click(object sender, EventArgs e)
         {
-            mainTabControl.SelectedIndex = 0;
+            SetTab("interpolation");
             Interpolate.Cancel();
         }
 
@@ -367,6 +379,11 @@ namespace Flowframes
         {
             if (!initialized || !GetAi().supportsTiling) return;
             Config.Set($"tilesize_{GetAi().aiName}", tilesize.GetInt().ToString());
+        }
+
+        private void mainTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mainTabControl.Refresh();
         }
     }
 }
