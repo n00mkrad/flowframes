@@ -102,6 +102,7 @@ namespace Flowframes.IO
             if (key == "ncnnThreads") return WriteDefault("ncnnThreads", "2");
             // Debug / Other / Experimental
             if (key == "ffprobeCountFrames") return WriteDefault("ffprobeCountFrames", "False");
+            if (key == "ffEncPreset") return WriteDefault("ffEncPreset", "medium");
             // Tile Sizes
             if (key == "tilesize_RIFE_NCNN") return WriteDefault("tilesize_RIFE_NCNN", "2048");
             if (key == "tilesize_DAIN_NCNN") return WriteDefault("tilesize_DAIN_NCNN", "512");

@@ -38,12 +38,12 @@ namespace Flowframes.Forms
             h264Crf.Text = h264Crf.GetInt().Clamp(0, 40).ToString();
             h265Crf.Text = h265Crf.GetInt().Clamp(0, 40).ToString();
             gifskiQ.Text = gifskiQ.GetInt().Clamp(0, 100).ToString();
+            ncnnThreads.Text = ncnnThreads.GetInt().Clamp(1, 8).ToString();
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
             // Force numbers...
             ffEncThreads.Text = ffEncThreads.GetInt().ToString();
-            ncnnThreads.Text = ncnnThreads.GetInt().ToString();
 
             // General
             ConfigParser.SaveGuiElement(maxVidHeight);
@@ -75,6 +75,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveGuiElement(autoDedupFrames);
             ConfigParser.SaveGuiElement(ffEncThreads);
+            ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffprobeCountFrames);
         }
 
@@ -113,6 +114,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadGuiElement(autoDedupFrames);
             ConfigParser.LoadGuiElement(ffEncThreads);
+            ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffprobeCountFrames);
         }
 

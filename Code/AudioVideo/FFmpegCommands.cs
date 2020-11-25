@@ -9,6 +9,8 @@ namespace Flowframes
 {
     class FFmpegCommands
     {
+        static string hdrFilter = @"-vf select=gte(n\,%frNum%),zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
+
         static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
         static string divisionFilter = "\"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
         static string pngComprArg = "-compression_level 3";
@@ -42,7 +44,7 @@ namespace Flowframes
         public static async void ExtractSingleFrame(string inputFile, int frameNum, bool hdr, bool delSrc)
         {
             string hdrStr = "";
-            if (hdr) hdrStr = FFmpegStrings.hdrFilter;
+            if (hdr) hdrStr = hdrFilter;
             string args = "-i \"" + inputFile + "\" " + hdrStr
                 + " -vf \"select=eq(n\\," + frameNum + ")\" -vframes 1  \"" + inputFile + "-frame" + frameNum + ".png\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
@@ -55,9 +57,9 @@ namespace Flowframes
             Logger.Log($"Encoding MP4 video with CRF {crf}...");
             int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, $"*.{imgFormat}")[0], prefix);
             string enc = useH265 ? "libx265" : "libx264";
-            string loopStr = "";
-            if (looptimes > 0) loopStr = $"-stream_loop {looptimes}";
-            string args = $" {loopStr} -framerate {fps.ToString().Replace(",",".")} -i \"{inputDir}\\{prefix}%0{nums}d.{imgFormat}\" -c:v {enc} -crf {crf} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
+            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
+            string args = $" {loopStr} -framerate {fps.ToString().Replace(",",".")} -i \"{inputDir}\\{prefix}%0{nums}d.{imgFormat}\" -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputDir);
@@ -67,18 +69,18 @@ namespace Flowframes
         {
             Logger.Log($"Encoding MP4 video with CRF {crf}...");
             string enc = useH265 ? "libx265" : "libx264";
-            string loopStr = "";
-            if (looptimes > 0) loopStr = $"-stream_loop {looptimes}";
-            string args = $" {loopStr} -vsync 1 -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
+            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
+            string args = $" {loopStr} -vsync 1 -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
         }
 
         public static async Task ConvertFramerate (string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)
         {
             Logger.Log($"Changing video frame rate...");
-            string enc = "libx264";
-            if (useH265) enc = "libx265";
-            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string enc = useH265 ? "libx265" : "libx264";
+            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
+            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputPath);
