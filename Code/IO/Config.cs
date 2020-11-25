@@ -76,34 +76,36 @@ namespace Flowframes.IO
             return float.Parse(Get(key));
         }
 
-        private static string WriteDefaultValIfExists(string key)
+        private static string WriteDefaultValIfExists(string key)   // DEFAULTS TO 0, which means key that use 0 as default are not listed here
         {
-            if (key == "dedupMode") return WriteDefault("dedupMode", "2");
-            if (key == "dedupThresh") return WriteDefault("dedupThresh", "2");
-            if (key == "keepFrames") return WriteDefault("keepFrames", "False");
-            if (key == "enableAudio") return WriteDefault("enableAudio", "True");
-            if (key == "logProcessOutput") return WriteDefault("logProcessOutput", "False");
-            if (key == "cmdDebugMode") return WriteDefault("cmdDebugMode", "0");
-            if (key == "enableLoop") return WriteDefault("enableLoop", "False");
-            if (key == "ncnnGpus") return WriteDefault("ncnnGpus", "0");
-            if (key == "torchGpus") return WriteDefault("torchGpus", "0");
+            if (key == "maxVidHeight") return WriteDefault("maxVidHeight", "2160");
             if (key == "keepTempFolder") return WriteDefault("keepTempFolder", "False");
             if (key == "deleteLogsOnStartup") return WriteDefault("deleteLogsOnStartup", "True");
+            if (key == "keepFrames") return WriteDefault("keepFrames", "False");
+            if (key == "tempDirCustom") return WriteDefault("tempDirCustom", "C:/");
+            // Interpolation
+            if (key == "dedupMode") return WriteDefault("dedupMode", "2");
+            if (key == "dedupThresh") return WriteDefault("dedupThresh", "2");
+            if (key == "enableAudio") return WriteDefault("enableAudio", "True");
+            if (key == "enableLoop") return WriteDefault("enableLoop", "False");
             if (key == "autoDedupFrames") return WriteDefault("autoDedupFrames", "15");
-            if (key == "minOutVidLength") return WriteDefault("minOutVidLength", "2");
-            if (key == "mp4Enc") return WriteDefault("mp4Enc", "0");
+            if (key == "vfrDedupe") return WriteDefault("vfrDedupe", "True");
+            if (key == "jpegInterps") return WriteDefault("jpegInterps", "False");
+            if (key == "timingMode") return WriteDefault("timingMode", "1");
+            // Video Export
             if (key == "h264Crf") return WriteDefault("h264Crf", "20");
             if (key == "h265Crf") return WriteDefault("h265Crf", "22");
             if (key == "gifskiQ") return WriteDefault("gifskiQ", "95");
-            if (key == "maxFps") return WriteDefault("maxFps", "0");
-            if (key == "maxFpsMode") return WriteDefault("maxFpsMode", "0");
-            if (key == "jpegInterps") return WriteDefault("jpegInterps", "False");
+            if (key == "minOutVidLength") return WriteDefault("minOutVidLength", "2");
+            // AI
             if (key == "rifeMode") return WriteDefault("rifeMode", ((NvApi.GetVramGb() > 5f) ? 1 : 0).ToString()); // Enable by default if GPU has >5gb VRAM
-            if (key == "maxVidHeight") return WriteDefault("maxVidHeight", "2160");
-            if (key == "timingMode") return WriteDefault("timingMode", "1");
-            if (key == "tempDirCustom") return WriteDefault("tempDirCustom", "C:/");
+            if (key == "ncnnThreads") return WriteDefault("ncnnThreads", "2");
+            // Debug / Other / Experimental
             if (key == "ffprobeCountFrames") return WriteDefault("ffprobeCountFrames", "False");
-            if (key == "vfrDedupe") return WriteDefault("vfrDedupe", "True");
+            // Tile Sizes
+            if (key == "tilesize_RIFE_NCNN") return WriteDefault("tilesize_RIFE_NCNN", "2048");
+            if (key == "tilesize_DAIN_NCNN") return WriteDefault("tilesize_DAIN_NCNN", "512");
+            if (key == "tilesize_CAIN_NCNN") return WriteDefault("tilesize_CAIN_NCNN", "2048");
             return WriteDefault(key, "0");
         }
 

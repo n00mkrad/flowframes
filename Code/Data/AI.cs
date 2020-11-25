@@ -15,8 +15,9 @@ namespace Flowframes.Data
         public string description;
         public FlowPackage pkg;
         public int minPkgVer;
+        public bool supportsTiling;
 
-        public AI(string aiNameArg, string friendlyNameArg, string descArg, FlowPackage pkgArg, int minPkgVerForThisBuild)
+        public AI(string aiNameArg, string friendlyNameArg, string descArg, FlowPackage pkgArg, int minPkgVerForThisBuild, bool supportsTilingArg)
         {
             aiName = aiNameArg;
             aiNameShort = aiNameArg.Split(' ')[0];
@@ -25,6 +26,7 @@ namespace Flowframes.Data
             description = descArg;
             pkg = pkgArg;
             minPkgVer = minPkgVerForThisBuild;
+            supportsTiling = supportsTilingArg;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Flowframes
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                dain.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "dain-ncnn-log.txt"); };
+                dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "dain-ncnn-log.txt"); };
                 dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log.txt"); };
             }
             dain.Start();
@@ -56,6 +56,9 @@ namespace Flowframes
             }
             while (!dain.HasExited)
                 await Task.Delay(1);
+
+            if (Interpolate.canceled) return;
+            Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
             Logger.Log($"Done running DAIN - Interpolation took " + FormatUtils.Time(processTime.Elapsed));
             processTime.Stop();
         }
@@ -69,6 +72,7 @@ namespace Flowframes
 
             if(times == 4 || times == 8)    // #2
             {
+                if (Interpolate.canceled) return;
                 Logger.Log("Re-Running CAIN for 4x interpolation...", false);
                 string run1ResultsPath = outPath + "-run1";
                 IOUtils.TryDeleteIfExists(run1ResultsPath);
@@ -81,6 +85,7 @@ namespace Flowframes
 
             if (times == 8)    // #3
             {
+                if (Interpolate.canceled) return;
                 Logger.Log("Re-Running CAIN for 8x interpolation...", false);
                 string run2ResultsPath = outPath + "-run2";
                 IOUtils.TryDeleteIfExists(run2ResultsPath);
@@ -90,6 +95,9 @@ namespace Flowframes
                 await RunCainPartial(args);
                 Directory.Delete(run2ResultsPath, true);
             }
+
+            if (Interpolate.canceled) return;
+            Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
 
             Logger.Log($"Done running CAIN - Interpolation took " + FormatUtils.Time(processTime.Elapsed));
             processTime.Stop();
@@ -105,7 +113,7 @@ namespace Flowframes
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                cain.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "cain-ncnn-log.txt"); };
+                cain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "cain-ncnn-log.txt"); };
                 cain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "cain-ncnn-log.txt"); };
             }
             cain.Start();
@@ -126,6 +134,7 @@ namespace Flowframes
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            Logger.Log("HIDDEN: " + !OSUtils.ShowHiddenCmd());
             Init(rifePy, 3000, "png", true);
             string args = $" --input {framesPath.Wrap()} --times {(int)Math.Log(interpFactor, 2)}";
             rifePy.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {rifeDir.Wrap()} & " +
@@ -134,7 +143,7 @@ namespace Flowframes
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "rife-cuda-log.txt"); };
+                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-cuda-log.txt"); };
                 rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log.txt"); };
             }
             rifePy.Start();
@@ -151,17 +160,17 @@ namespace Flowframes
 
         public static async Task RunRifeNcnn (string framesPath, string outPath, int interpFactor, int tilesize)
         {
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
+            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
 
             string dir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeNcnn.fileName));
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             Init(rifeNcnn, 750);
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {dir.Wrap()} & rife-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt}";
+            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetHiddenCmdArg()} cd /D {dir.Wrap()} & rife-ncnn-vulkan.exe {args}";
             Logger.Log("Running RIFE...", false);
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "rife-ncnn-log.txt"); };
+                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log.txt"); };
                 rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log.txt"); };
             }
             rifeNcnn.Start();
@@ -173,6 +182,7 @@ namespace Flowframes
             while (!rifeNcnn.HasExited)
                 await Task.Delay(1);
 
+            if (Interpolate.canceled) return;
             Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
             Logger.Log($"Done running RIFE - Interpolation took " + FormatUtils.Time(processTime.Elapsed));
             processTime.Stop();
@@ -180,10 +190,13 @@ namespace Flowframes
 
         static void LogOutput (string line, string logFilename)
         {
-            if (line == null)
+            if (string.IsNullOrWhiteSpace(line))
                 return;
 
             Logger.LogToFile(line, false, logFilename);
+
+            if (line.Contains("ff:nocuda-cpu"))
+                Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
             if (!hasShownError && line.ToLower().Contains("out of memory"))
             {
@@ -196,9 +209,6 @@ namespace Flowframes
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A python module is missing. Check {logFilename} for details.\n\n{line}", "Error");
             }
-
-            if (!hasShownError && line.ToLower().Contains("ff:nocuda-cpu"))
-                Logger.Log($"WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
             {

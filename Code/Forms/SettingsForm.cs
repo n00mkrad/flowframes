@@ -34,14 +34,16 @@ namespace Flowframes.Forms
 
         void SaveSettings ()
         {
+            // Clamp...
             h264Crf.Text = h264Crf.GetInt().Clamp(0, 40).ToString();
             h265Crf.Text = h265Crf.GetInt().Clamp(0, 40).ToString();
             gifskiQ.Text = gifskiQ.GetInt().Clamp(0, 100).ToString();
-
+            // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
-
+            // Force numbers...
             ffEncThreads.Text = ffEncThreads.GetInt().ToString();
+            ncnnThreads.Text = ncnnThreads.GetInt().ToString();
 
             // General
             ConfigParser.SaveGuiElement(maxVidHeight);
@@ -60,6 +62,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(rifeMode);
             ConfigParser.SaveGuiElement(torchGpus);
             ConfigParser.SaveGuiElement(ncnnGpus);
+            ConfigParser.SaveGuiElement(ncnnThreads);
             // Video Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(mp4Enc);
@@ -97,6 +100,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(rifeMode);
             ConfigParser.LoadGuiElement(torchGpus);
             ConfigParser.LoadGuiElement(ncnnGpus);
+            ConfigParser.LoadGuiElement(ncnnThreads);
             // Video Export
             ConfigParser.LoadGuiElement(minOutVidLength);
             ConfigParser.LoadComboxIndex(mp4Enc);

@@ -31,13 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.titleLabel = new System.Windows.Forms.Label();
-            this.tilesizeComboxCain = new System.Windows.Forms.ComboBox();
+            this.tilesize = new System.Windows.Forms.ComboBox();
             this.tileSizeInfoLabel = new System.Windows.Forms.Label();
             this.aiCombox = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.outModeCombox = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.tilesizeComboxDain = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -78,6 +77,21 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.statusLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.updateBtn = new HTAlt.WinForms.HTButton();
+            this.queueBtn = new HTAlt.WinForms.HTButton();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.info1 = new System.Windows.Forms.PictureBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.settingsBtn = new HTAlt.WinForms.HTButton();
+            this.patreonBtn = new HTAlt.WinForms.HTButton();
+            this.paypalBtn = new HTAlt.WinForms.HTButton();
+            this.discordBtn = new HTAlt.WinForms.HTButton();
+            this.installerBtn = new HTAlt.WinForms.HTButton();
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
             this.cancelBtn = new System.Windows.Forms.Button();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
@@ -87,41 +101,26 @@
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
             this.browseInputFileBtn = new HTAlt.WinForms.HTButton();
             this.browseInputBtn = new HTAlt.WinForms.HTButton();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.videoUtilsTab = new System.Windows.Forms.TabPage();
             this.label10 = new System.Windows.Forms.Label();
             this.utilsExtractAudioCbox = new System.Windows.Forms.CheckBox();
             this.previewTab = new System.Windows.Forms.TabPage();
-            this.abtTab = new System.Windows.Forms.TabPage();
-            this.updateBtn = new HTAlt.WinForms.HTButton();
-            this.htButton1 = new HTAlt.WinForms.HTButton();
-            this.queueBtn = new HTAlt.WinForms.HTButton();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.info1 = new System.Windows.Forms.PictureBox();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.previewPicturebox = new System.Windows.Forms.PictureBox();
-            this.settingsBtn = new HTAlt.WinForms.HTButton();
-            this.patreonBtn = new HTAlt.WinForms.HTButton();
-            this.paypalBtn = new HTAlt.WinForms.HTButton();
-            this.discordBtn = new HTAlt.WinForms.HTButton();
-            this.installerBtn = new HTAlt.WinForms.HTButton();
+            this.abtTab = new System.Windows.Forms.TabPage();
+            this.htButton1 = new HTAlt.WinForms.HTButton();
             this.panel1.SuspendLayout();
-            this.mainTabControl.SuspendLayout();
-            this.interpOptsTab.SuspendLayout();
-            this.videoUtilsTab.SuspendLayout();
-            this.previewTab.SuspendLayout();
-            this.abtTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
+            this.mainTabControl.SuspendLayout();
+            this.interpOptsTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.videoUtilsTab.SuspendLayout();
+            this.previewTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).BeginInit();
+            this.abtTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -136,22 +135,26 @@
             this.titleLabel.TabIndex = 0;
             this.titleLabel.Text = "Flowframes Video Interpolator";
             // 
-            // tilesizeComboxCain
+            // tilesize
             // 
-            this.tilesizeComboxCain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.tilesizeComboxCain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tilesizeComboxCain.ForeColor = System.Drawing.Color.White;
-            this.tilesizeComboxCain.FormattingEnabled = true;
-            this.tilesizeComboxCain.Items.AddRange(new object[] {
+            this.tilesize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tilesize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.tilesize.ForeColor = System.Drawing.Color.White;
+            this.tilesize.FormattingEnabled = true;
+            this.tilesize.Items.AddRange(new object[] {
+            "384",
+            "512",
+            "768",
             "1024",
-            "1280",
             "1536",
-            "1792",
-            "2048"});
-            this.tilesizeComboxCain.Location = new System.Drawing.Point(281, 127);
-            this.tilesizeComboxCain.Name = "tilesizeComboxCain";
-            this.tilesizeComboxCain.Size = new System.Drawing.Size(125, 23);
-            this.tilesizeComboxCain.TabIndex = 25;
+            "2048",
+            "3072",
+            "4096"});
+            this.tilesize.Location = new System.Drawing.Point(281, 127);
+            this.tilesize.Name = "tilesize";
+            this.tilesize.Size = new System.Drawing.Size(125, 23);
+            this.tilesize.TabIndex = 25;
+            this.tilesize.SelectedIndexChanged += new System.EventHandler(this.tilesize_SelectedIndexChanged);
             // 
             // tileSizeInfoLabel
             // 
@@ -217,28 +220,6 @@
             this.label9.Size = new System.Drawing.Size(69, 13);
             this.label9.TabIndex = 15;
             this.label9.Text = "Output Mode";
-            // 
-            // tilesizeComboxDain
-            // 
-            this.tilesizeComboxDain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.tilesizeComboxDain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tilesizeComboxDain.ForeColor = System.Drawing.Color.White;
-            this.tilesizeComboxDain.FormattingEnabled = true;
-            this.tilesizeComboxDain.Items.AddRange(new object[] {
-            "256",
-            "384",
-            "448",
-            "512",
-            "640",
-            "768",
-            "832",
-            "960",
-            "1024",
-            "1280"});
-            this.tilesizeComboxDain.Location = new System.Drawing.Point(281, 127);
-            this.tilesizeComboxDain.Name = "tilesizeComboxDain";
-            this.tilesizeComboxDain.Size = new System.Drawing.Size(125, 23);
-            this.tilesizeComboxDain.TabIndex = 14;
             // 
             // label8
             // 
@@ -661,6 +642,7 @@
             this.logBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.logBox.Multiline = true;
             this.logBox.Name = "logBox";
+            this.logBox.ReadOnly = true;
             this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.logBox.Size = new System.Drawing.Size(701, 111);
             this.logBox.TabIndex = 5;
@@ -705,245 +687,6 @@
             this.statusLabel.TabIndex = 7;
             this.statusLabel.Text = "Ready";
             // 
-            // longProgBar
-            // 
-            this.longProgBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.longProgBar.BorderThickness = 0;
-            this.longProgBar.Location = new System.Drawing.Point(221, 474);
-            this.longProgBar.Name = "longProgBar";
-            this.longProgBar.Size = new System.Drawing.Size(700, 15);
-            this.longProgBar.TabIndex = 33;
-            // 
-            // cancelBtn
-            // 
-            this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelBtn.ForeColor = System.Drawing.Color.LightCoral;
-            this.cancelBtn.Location = new System.Drawing.Point(12, 418);
-            this.cancelBtn.Name = "cancelBtn";
-            this.cancelBtn.Size = new System.Drawing.Size(203, 71);
-            this.cancelBtn.TabIndex = 34;
-            this.cancelBtn.Text = "Cancel";
-            this.cancelBtn.UseVisualStyleBackColor = false;
-            this.cancelBtn.Visible = false;
-            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
-            // 
-            // mainTabControl
-            // 
-            this.mainTabControl.AllowDrop = true;
-            this.mainTabControl.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
-            this.mainTabControl.BorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
-            this.mainTabControl.Controls.Add(this.interpOptsTab);
-            this.mainTabControl.Controls.Add(this.videoUtilsTab);
-            this.mainTabControl.Controls.Add(this.previewTab);
-            this.mainTabControl.Controls.Add(this.abtTab);
-            this.mainTabControl.DisableClose = true;
-            this.mainTabControl.DisableDragging = true;
-            this.mainTabControl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.mainTabControl.HoverTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(176)))), ((int)(((byte)(239)))));
-            this.mainTabControl.HoverTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
-            this.mainTabControl.HoverUnselectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
-            this.mainTabControl.Location = new System.Drawing.Point(13, 62);
-            this.mainTabControl.Name = "mainTabControl";
-            this.mainTabControl.Padding = new System.Drawing.Point(14, 4);
-            this.mainTabControl.SelectedIndex = 0;
-            this.mainTabControl.SelectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
-            this.mainTabControl.SelectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
-            this.mainTabControl.Size = new System.Drawing.Size(909, 289);
-            this.mainTabControl.TabIndex = 4;
-            this.mainTabControl.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.mainTabControl.UnderBorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(70)))));
-            this.mainTabControl.UnselectedBorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
-            this.mainTabControl.UnselectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
-            this.mainTabControl.UpDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
-            this.mainTabControl.UpDownTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(112)))));
-            this.mainTabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
-            this.mainTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            // 
-            // interpOptsTab
-            // 
-            this.interpOptsTab.AllowDrop = true;
-            this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.interpOptsTab.Controls.Add(this.tilesizeNotAvailLabel);
-            this.interpOptsTab.Controls.Add(this.panel7);
-            this.interpOptsTab.Controls.Add(this.label1);
-            this.interpOptsTab.Controls.Add(this.browseOutBtn);
-            this.interpOptsTab.Controls.Add(this.browseInputFileBtn);
-            this.interpOptsTab.Controls.Add(this.browseInputBtn);
-            this.interpOptsTab.Controls.Add(this.label4);
-            this.interpOptsTab.Controls.Add(this.pictureBox4);
-            this.interpOptsTab.Controls.Add(this.tilesizeComboxDain);
-            this.interpOptsTab.Controls.Add(this.label2);
-            this.interpOptsTab.Controls.Add(this.pictureBox3);
-            this.interpOptsTab.Controls.Add(this.label3);
-            this.interpOptsTab.Controls.Add(this.pictureBox2);
-            this.interpOptsTab.Controls.Add(this.inputTbox);
-            this.interpOptsTab.Controls.Add(this.pictureBox1);
-            this.interpOptsTab.Controls.Add(this.outputTbox);
-            this.interpOptsTab.Controls.Add(this.info1);
-            this.interpOptsTab.Controls.Add(this.interpFactorCombox);
-            this.interpOptsTab.Controls.Add(this.tilesizeComboxCain);
-            this.interpOptsTab.Controls.Add(this.fpsInTbox);
-            this.interpOptsTab.Controls.Add(this.tileSizeInfoLabel);
-            this.interpOptsTab.Controls.Add(this.fpsOutTbox);
-            this.interpOptsTab.Controls.Add(this.label5);
-            this.interpOptsTab.Controls.Add(this.aiCombox);
-            this.interpOptsTab.Controls.Add(this.label6);
-            this.interpOptsTab.Controls.Add(this.label13);
-            this.interpOptsTab.Controls.Add(this.label7);
-            this.interpOptsTab.Controls.Add(this.label8);
-            this.interpOptsTab.Controls.Add(this.label9);
-            this.interpOptsTab.Controls.Add(this.outModeCombox);
-            this.interpOptsTab.Location = new System.Drawing.Point(4, 27);
-            this.interpOptsTab.Name = "interpOptsTab";
-            this.interpOptsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpOptsTab.Size = new System.Drawing.Size(901, 258);
-            this.interpOptsTab.TabIndex = 0;
-            this.interpOptsTab.Text = "Interpolation";
-            this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
-            this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            // 
-            // tilesizeNotAvailLabel
-            // 
-            this.tilesizeNotAvailLabel.ForeColor = System.Drawing.Color.Silver;
-            this.tilesizeNotAvailLabel.Location = new System.Drawing.Point(278, 131);
-            this.tilesizeNotAvailLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.tilesizeNotAvailLabel.Name = "tilesizeNotAvailLabel";
-            this.tilesizeNotAvailLabel.Size = new System.Drawing.Size(203, 24);
-            this.tilesizeNotAvailLabel.TabIndex = 37;
-            this.tilesizeNotAvailLabel.Text = "Not available for the selected AI.";
-            this.tilesizeNotAvailLabel.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.Silver;
-            this.label1.Location = new System.Drawing.Point(492, 162);
-            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(360, 15);
-            this.label1.TabIndex = 36;
-            this.label1.Text = "Export encoder and quality options can be changed in the Settings.";
-            // 
-            // browseOutBtn
-            // 
-            this.browseOutBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.browseOutBtn.FlatAppearance.BorderSize = 0;
-            this.browseOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.browseOutBtn.ForeColor = System.Drawing.Color.White;
-            this.browseOutBtn.Location = new System.Drawing.Point(689, 68);
-            this.browseOutBtn.Name = "browseOutBtn";
-            this.browseOutBtn.Size = new System.Drawing.Size(206, 23);
-            this.browseOutBtn.TabIndex = 35;
-            this.browseOutBtn.Text = "Browse (Folder)";
-            this.browseOutBtn.UseVisualStyleBackColor = false;
-            this.browseOutBtn.Click += new System.EventHandler(this.browseOutBtn_Click);
-            // 
-            // browseInputFileBtn
-            // 
-            this.browseInputFileBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.browseInputFileBtn.FlatAppearance.BorderSize = 0;
-            this.browseInputFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.browseInputFileBtn.ForeColor = System.Drawing.Color.White;
-            this.browseInputFileBtn.Location = new System.Drawing.Point(795, 39);
-            this.browseInputFileBtn.Name = "browseInputFileBtn";
-            this.browseInputFileBtn.Size = new System.Drawing.Size(100, 23);
-            this.browseInputFileBtn.TabIndex = 34;
-            this.browseInputFileBtn.Text = "Browse (Video)";
-            this.browseInputFileBtn.UseVisualStyleBackColor = false;
-            this.browseInputFileBtn.Click += new System.EventHandler(this.browseInputFileBtn_Click);
-            // 
-            // browseInputBtn
-            // 
-            this.browseInputBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.browseInputBtn.FlatAppearance.BorderSize = 0;
-            this.browseInputBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.browseInputBtn.ForeColor = System.Drawing.Color.White;
-            this.browseInputBtn.Location = new System.Drawing.Point(689, 39);
-            this.browseInputBtn.Name = "browseInputBtn";
-            this.browseInputBtn.Size = new System.Drawing.Size(100, 23);
-            this.browseInputBtn.TabIndex = 33;
-            this.browseInputBtn.Text = "Browse (Folder)";
-            this.browseInputBtn.UseVisualStyleBackColor = false;
-            this.browseInputBtn.Click += new System.EventHandler(this.browseInputBtn_Click);
-            // 
-            // videoUtilsTab
-            // 
-            this.videoUtilsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.videoUtilsTab.Controls.Add(this.panel4);
-            this.videoUtilsTab.Controls.Add(this.panel2);
-            this.videoUtilsTab.Controls.Add(this.panel3);
-            this.videoUtilsTab.Controls.Add(this.label10);
-            this.videoUtilsTab.Controls.Add(this.utilsExtractAudioCbox);
-            this.videoUtilsTab.Controls.Add(this.utilsDedupTestBtn);
-            this.videoUtilsTab.Controls.Add(this.label16);
-            this.videoUtilsTab.Controls.Add(this.utilsDedupBtn);
-            this.videoUtilsTab.Controls.Add(this.debugExtractFramesBtn);
-            this.videoUtilsTab.Controls.Add(this.label26);
-            this.videoUtilsTab.Controls.Add(this.label17);
-            this.videoUtilsTab.Controls.Add(this.utilsLoopVidBtn);
-            this.videoUtilsTab.Controls.Add(this.label24);
-            this.videoUtilsTab.Controls.Add(this.label18);
-            this.videoUtilsTab.Controls.Add(this.utilsConvCrf);
-            this.videoUtilsTab.Controls.Add(this.utilsLoopTimesCombox);
-            this.videoUtilsTab.Controls.Add(this.utilsConvertMp4Btn);
-            this.videoUtilsTab.Controls.Add(this.label19);
-            this.videoUtilsTab.Controls.Add(this.label23);
-            this.videoUtilsTab.Controls.Add(this.label20);
-            this.videoUtilsTab.Controls.Add(this.utilsChangeSpeedBtn);
-            this.videoUtilsTab.Controls.Add(this.utilsSpeedCombox);
-            this.videoUtilsTab.Location = new System.Drawing.Point(4, 27);
-            this.videoUtilsTab.Name = "videoUtilsTab";
-            this.videoUtilsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.videoUtilsTab.Size = new System.Drawing.Size(901, 258);
-            this.videoUtilsTab.TabIndex = 1;
-            this.videoUtilsTab.Text = "Video Utilities";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.ForeColor = System.Drawing.Color.White;
-            this.label10.Location = new System.Drawing.Point(441, 11);
-            this.label10.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(107, 15);
-            this.label10.TabIndex = 35;
-            this.label10.Text = "Also Extract Audio:";
-            // 
-            // utilsExtractAudioCbox
-            // 
-            this.utilsExtractAudioCbox.AutoSize = true;
-            this.utilsExtractAudioCbox.Checked = true;
-            this.utilsExtractAudioCbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.utilsExtractAudioCbox.Location = new System.Drawing.Point(575, 11);
-            this.utilsExtractAudioCbox.Name = "utilsExtractAudioCbox";
-            this.utilsExtractAudioCbox.Size = new System.Drawing.Size(15, 14);
-            this.utilsExtractAudioCbox.TabIndex = 34;
-            this.utilsExtractAudioCbox.UseVisualStyleBackColor = true;
-            // 
-            // previewTab
-            // 
-            this.previewTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.previewTab.Controls.Add(this.previewPicturebox);
-            this.previewTab.Location = new System.Drawing.Point(4, 27);
-            this.previewTab.Margin = new System.Windows.Forms.Padding(0);
-            this.previewTab.Name = "previewTab";
-            this.previewTab.Size = new System.Drawing.Size(901, 258);
-            this.previewTab.TabIndex = 3;
-            this.previewTab.Text = "Preview";
-            // 
-            // abtTab
-            // 
-            this.abtTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.abtTab.Controls.Add(this.label14);
-            this.abtTab.Location = new System.Drawing.Point(4, 27);
-            this.abtTab.Name = "abtTab";
-            this.abtTab.Padding = new System.Windows.Forms.Padding(3);
-            this.abtTab.Size = new System.Drawing.Size(901, 258);
-            this.abtTab.TabIndex = 2;
-            this.abtTab.Text = "About";
-            // 
             // updateBtn
             // 
             this.updateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
@@ -961,23 +704,6 @@
             this.toolTip1.SetToolTip(this.updateBtn, "Update");
             this.updateBtn.UseVisualStyleBackColor = false;
             this.updateBtn.Click += new System.EventHandler(this.updateBtn_Click);
-            // 
-            // htButton1
-            // 
-            this.htButton1.BackColor = System.Drawing.Color.Transparent;
-            this.htButton1.ButtonImage = global::Flowframes.Properties.Resources.separatorTest1;
-            this.htButton1.DrawImage = true;
-            this.htButton1.Enabled = false;
-            this.htButton1.FlatAppearance.BorderSize = 0;
-            this.htButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.htButton1.ForeColor = System.Drawing.Color.White;
-            this.htButton1.ImageIndex = 0;
-            this.htButton1.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.htButton1.Location = new System.Drawing.Point(698, 12);
-            this.htButton1.Name = "htButton1";
-            this.htButton1.Size = new System.Drawing.Size(40, 40);
-            this.htButton1.TabIndex = 40;
-            this.htButton1.UseVisualStyleBackColor = false;
             // 
             // queueBtn
             // 
@@ -1028,16 +754,6 @@
             this.pictureBox3.TabIndex = 30;
             this.pictureBox3.TabStop = false;
             this.toolTip1.SetToolTip(this.pictureBox3, "Supports drag-n-drop.\r\nGets auto-assigned whenever you set an input file.");
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox2.Location = new System.Drawing.Point(86, 158);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox2.TabIndex = 29;
-            this.pictureBox2.TabStop = false;
             // 
             // pictureBox1
             // 
@@ -1092,19 +808,6 @@
             this.panel3.Size = new System.Drawing.Size(21, 21);
             this.panel3.TabIndex = 58;
             this.toolTip1.SetToolTip(this.panel3, "Allows custom input.");
-            // 
-            // previewPicturebox
-            // 
-            this.previewPicturebox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.previewPicturebox.Image = global::Flowframes.Properties.Resources.baseline_image_white_48dp_4x_25pcAlpha;
-            this.previewPicturebox.Location = new System.Drawing.Point(0, 0);
-            this.previewPicturebox.Margin = new System.Windows.Forms.Padding(0);
-            this.previewPicturebox.Name = "previewPicturebox";
-            this.previewPicturebox.Size = new System.Drawing.Size(901, 258);
-            this.previewPicturebox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.previewPicturebox.TabIndex = 0;
-            this.previewPicturebox.TabStop = false;
-            this.previewPicturebox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.previewPicturebox_MouseClick);
             // 
             // settingsBtn
             // 
@@ -1196,6 +899,284 @@
             this.installerBtn.UseVisualStyleBackColor = false;
             this.installerBtn.Click += new System.EventHandler(this.installerBtn_Click);
             // 
+            // longProgBar
+            // 
+            this.longProgBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.longProgBar.BorderThickness = 0;
+            this.longProgBar.Location = new System.Drawing.Point(221, 474);
+            this.longProgBar.Name = "longProgBar";
+            this.longProgBar.Size = new System.Drawing.Size(700, 15);
+            this.longProgBar.TabIndex = 33;
+            // 
+            // cancelBtn
+            // 
+            this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cancelBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cancelBtn.ForeColor = System.Drawing.Color.LightCoral;
+            this.cancelBtn.Location = new System.Drawing.Point(12, 418);
+            this.cancelBtn.Name = "cancelBtn";
+            this.cancelBtn.Size = new System.Drawing.Size(203, 71);
+            this.cancelBtn.TabIndex = 34;
+            this.cancelBtn.Text = "Cancel";
+            this.cancelBtn.UseVisualStyleBackColor = false;
+            this.cancelBtn.Visible = false;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
+            // 
+            // mainTabControl
+            // 
+            this.mainTabControl.AllowDrop = true;
+            this.mainTabControl.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
+            this.mainTabControl.BorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
+            this.mainTabControl.Controls.Add(this.interpOptsTab);
+            this.mainTabControl.Controls.Add(this.videoUtilsTab);
+            this.mainTabControl.Controls.Add(this.previewTab);
+            this.mainTabControl.Controls.Add(this.abtTab);
+            this.mainTabControl.DisableClose = true;
+            this.mainTabControl.DisableDragging = true;
+            this.mainTabControl.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.mainTabControl.HoverTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(176)))), ((int)(((byte)(239)))));
+            this.mainTabControl.HoverTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
+            this.mainTabControl.HoverUnselectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
+            this.mainTabControl.Location = new System.Drawing.Point(13, 62);
+            this.mainTabControl.Name = "mainTabControl";
+            this.mainTabControl.Padding = new System.Drawing.Point(14, 4);
+            this.mainTabControl.SelectedIndex = 0;
+            this.mainTabControl.SelectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
+            this.mainTabControl.SelectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
+            this.mainTabControl.Size = new System.Drawing.Size(909, 289);
+            this.mainTabControl.TabIndex = 4;
+            this.mainTabControl.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.mainTabControl.UnderBorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(70)))));
+            this.mainTabControl.UnselectedBorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
+            this.mainTabControl.UnselectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
+            this.mainTabControl.UpDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
+            this.mainTabControl.UpDownTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(112)))));
+            this.mainTabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.mainTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // interpOptsTab
+            // 
+            this.interpOptsTab.AllowDrop = true;
+            this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.tilesizeNotAvailLabel);
+            this.interpOptsTab.Controls.Add(this.panel7);
+            this.interpOptsTab.Controls.Add(this.label1);
+            this.interpOptsTab.Controls.Add(this.browseOutBtn);
+            this.interpOptsTab.Controls.Add(this.browseInputFileBtn);
+            this.interpOptsTab.Controls.Add(this.browseInputBtn);
+            this.interpOptsTab.Controls.Add(this.label4);
+            this.interpOptsTab.Controls.Add(this.pictureBox4);
+            this.interpOptsTab.Controls.Add(this.label2);
+            this.interpOptsTab.Controls.Add(this.pictureBox3);
+            this.interpOptsTab.Controls.Add(this.label3);
+            this.interpOptsTab.Controls.Add(this.pictureBox2);
+            this.interpOptsTab.Controls.Add(this.inputTbox);
+            this.interpOptsTab.Controls.Add(this.pictureBox1);
+            this.interpOptsTab.Controls.Add(this.outputTbox);
+            this.interpOptsTab.Controls.Add(this.info1);
+            this.interpOptsTab.Controls.Add(this.interpFactorCombox);
+            this.interpOptsTab.Controls.Add(this.tilesize);
+            this.interpOptsTab.Controls.Add(this.fpsInTbox);
+            this.interpOptsTab.Controls.Add(this.tileSizeInfoLabel);
+            this.interpOptsTab.Controls.Add(this.fpsOutTbox);
+            this.interpOptsTab.Controls.Add(this.label5);
+            this.interpOptsTab.Controls.Add(this.aiCombox);
+            this.interpOptsTab.Controls.Add(this.label6);
+            this.interpOptsTab.Controls.Add(this.label13);
+            this.interpOptsTab.Controls.Add(this.label7);
+            this.interpOptsTab.Controls.Add(this.label8);
+            this.interpOptsTab.Controls.Add(this.label9);
+            this.interpOptsTab.Controls.Add(this.outModeCombox);
+            this.interpOptsTab.Location = new System.Drawing.Point(4, 27);
+            this.interpOptsTab.Name = "interpOptsTab";
+            this.interpOptsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.interpOptsTab.Size = new System.Drawing.Size(901, 258);
+            this.interpOptsTab.TabIndex = 0;
+            this.interpOptsTab.Text = "Interpolation";
+            this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // tilesizeNotAvailLabel
+            // 
+            this.tilesizeNotAvailLabel.ForeColor = System.Drawing.Color.Silver;
+            this.tilesizeNotAvailLabel.Location = new System.Drawing.Point(278, 131);
+            this.tilesizeNotAvailLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.tilesizeNotAvailLabel.Name = "tilesizeNotAvailLabel";
+            this.tilesizeNotAvailLabel.Size = new System.Drawing.Size(203, 24);
+            this.tilesizeNotAvailLabel.TabIndex = 37;
+            this.tilesizeNotAvailLabel.Text = "Not available for the selected AI.";
+            this.tilesizeNotAvailLabel.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.Silver;
+            this.label1.Location = new System.Drawing.Point(492, 162);
+            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(360, 15);
+            this.label1.TabIndex = 36;
+            this.label1.Text = "Export encoder and quality options can be changed in the Settings.";
+            // 
+            // browseOutBtn
+            // 
+            this.browseOutBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.browseOutBtn.FlatAppearance.BorderSize = 0;
+            this.browseOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.browseOutBtn.ForeColor = System.Drawing.Color.White;
+            this.browseOutBtn.Location = new System.Drawing.Point(689, 68);
+            this.browseOutBtn.Name = "browseOutBtn";
+            this.browseOutBtn.Size = new System.Drawing.Size(206, 23);
+            this.browseOutBtn.TabIndex = 35;
+            this.browseOutBtn.Text = "Browse (Folder)";
+            this.browseOutBtn.UseVisualStyleBackColor = false;
+            this.browseOutBtn.Click += new System.EventHandler(this.browseOutBtn_Click);
+            // 
+            // browseInputFileBtn
+            // 
+            this.browseInputFileBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.browseInputFileBtn.FlatAppearance.BorderSize = 0;
+            this.browseInputFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.browseInputFileBtn.ForeColor = System.Drawing.Color.White;
+            this.browseInputFileBtn.Location = new System.Drawing.Point(795, 39);
+            this.browseInputFileBtn.Name = "browseInputFileBtn";
+            this.browseInputFileBtn.Size = new System.Drawing.Size(100, 23);
+            this.browseInputFileBtn.TabIndex = 34;
+            this.browseInputFileBtn.Text = "Browse (Video)";
+            this.browseInputFileBtn.UseVisualStyleBackColor = false;
+            this.browseInputFileBtn.Click += new System.EventHandler(this.browseInputFileBtn_Click);
+            // 
+            // browseInputBtn
+            // 
+            this.browseInputBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.browseInputBtn.FlatAppearance.BorderSize = 0;
+            this.browseInputBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.browseInputBtn.ForeColor = System.Drawing.Color.White;
+            this.browseInputBtn.Location = new System.Drawing.Point(689, 39);
+            this.browseInputBtn.Name = "browseInputBtn";
+            this.browseInputBtn.Size = new System.Drawing.Size(100, 23);
+            this.browseInputBtn.TabIndex = 33;
+            this.browseInputBtn.Text = "Browse (Folder)";
+            this.browseInputBtn.UseVisualStyleBackColor = false;
+            this.browseInputBtn.Click += new System.EventHandler(this.browseInputBtn_Click);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(86, 158);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox2.TabIndex = 29;
+            this.pictureBox2.TabStop = false;
+            // 
+            // videoUtilsTab
+            // 
+            this.videoUtilsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.videoUtilsTab.Controls.Add(this.panel4);
+            this.videoUtilsTab.Controls.Add(this.panel2);
+            this.videoUtilsTab.Controls.Add(this.panel3);
+            this.videoUtilsTab.Controls.Add(this.label10);
+            this.videoUtilsTab.Controls.Add(this.utilsExtractAudioCbox);
+            this.videoUtilsTab.Controls.Add(this.utilsDedupTestBtn);
+            this.videoUtilsTab.Controls.Add(this.label16);
+            this.videoUtilsTab.Controls.Add(this.utilsDedupBtn);
+            this.videoUtilsTab.Controls.Add(this.debugExtractFramesBtn);
+            this.videoUtilsTab.Controls.Add(this.label26);
+            this.videoUtilsTab.Controls.Add(this.label17);
+            this.videoUtilsTab.Controls.Add(this.utilsLoopVidBtn);
+            this.videoUtilsTab.Controls.Add(this.label24);
+            this.videoUtilsTab.Controls.Add(this.label18);
+            this.videoUtilsTab.Controls.Add(this.utilsConvCrf);
+            this.videoUtilsTab.Controls.Add(this.utilsLoopTimesCombox);
+            this.videoUtilsTab.Controls.Add(this.utilsConvertMp4Btn);
+            this.videoUtilsTab.Controls.Add(this.label19);
+            this.videoUtilsTab.Controls.Add(this.label23);
+            this.videoUtilsTab.Controls.Add(this.label20);
+            this.videoUtilsTab.Controls.Add(this.utilsChangeSpeedBtn);
+            this.videoUtilsTab.Controls.Add(this.utilsSpeedCombox);
+            this.videoUtilsTab.Location = new System.Drawing.Point(4, 27);
+            this.videoUtilsTab.Name = "videoUtilsTab";
+            this.videoUtilsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.videoUtilsTab.Size = new System.Drawing.Size(901, 258);
+            this.videoUtilsTab.TabIndex = 1;
+            this.videoUtilsTab.Text = "Video Utilities";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.ForeColor = System.Drawing.Color.White;
+            this.label10.Location = new System.Drawing.Point(441, 11);
+            this.label10.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(107, 15);
+            this.label10.TabIndex = 35;
+            this.label10.Text = "Also Extract Audio:";
+            // 
+            // utilsExtractAudioCbox
+            // 
+            this.utilsExtractAudioCbox.AutoSize = true;
+            this.utilsExtractAudioCbox.Checked = true;
+            this.utilsExtractAudioCbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.utilsExtractAudioCbox.Location = new System.Drawing.Point(575, 11);
+            this.utilsExtractAudioCbox.Name = "utilsExtractAudioCbox";
+            this.utilsExtractAudioCbox.Size = new System.Drawing.Size(15, 14);
+            this.utilsExtractAudioCbox.TabIndex = 34;
+            this.utilsExtractAudioCbox.UseVisualStyleBackColor = true;
+            // 
+            // previewTab
+            // 
+            this.previewTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.previewTab.Controls.Add(this.previewPicturebox);
+            this.previewTab.Location = new System.Drawing.Point(4, 27);
+            this.previewTab.Margin = new System.Windows.Forms.Padding(0);
+            this.previewTab.Name = "previewTab";
+            this.previewTab.Size = new System.Drawing.Size(901, 258);
+            this.previewTab.TabIndex = 3;
+            this.previewTab.Text = "Preview";
+            // 
+            // previewPicturebox
+            // 
+            this.previewPicturebox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.previewPicturebox.Image = global::Flowframes.Properties.Resources.baseline_image_white_48dp_4x_25pcAlpha;
+            this.previewPicturebox.Location = new System.Drawing.Point(0, 0);
+            this.previewPicturebox.Margin = new System.Windows.Forms.Padding(0);
+            this.previewPicturebox.Name = "previewPicturebox";
+            this.previewPicturebox.Size = new System.Drawing.Size(901, 258);
+            this.previewPicturebox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.previewPicturebox.TabIndex = 0;
+            this.previewPicturebox.TabStop = false;
+            this.previewPicturebox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.previewPicturebox_MouseClick);
+            // 
+            // abtTab
+            // 
+            this.abtTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.abtTab.Controls.Add(this.label14);
+            this.abtTab.Location = new System.Drawing.Point(4, 27);
+            this.abtTab.Name = "abtTab";
+            this.abtTab.Padding = new System.Windows.Forms.Padding(3);
+            this.abtTab.Size = new System.Drawing.Size(901, 258);
+            this.abtTab.TabIndex = 2;
+            this.abtTab.Text = "About";
+            // 
+            // htButton1
+            // 
+            this.htButton1.BackColor = System.Drawing.Color.Transparent;
+            this.htButton1.ButtonImage = global::Flowframes.Properties.Resources.separatorTest1;
+            this.htButton1.DrawImage = true;
+            this.htButton1.Enabled = false;
+            this.htButton1.FlatAppearance.BorderSize = 0;
+            this.htButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.htButton1.ForeColor = System.Drawing.Color.White;
+            this.htButton1.ImageIndex = 0;
+            this.htButton1.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
+            this.htButton1.Location = new System.Drawing.Point(698, 12);
+            this.htButton1.Name = "htButton1";
+            this.htButton1.Size = new System.Drawing.Size(40, 40);
+            this.htButton1.TabIndex = 40;
+            this.htButton1.UseVisualStyleBackColor = false;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1231,19 +1212,19 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             this.mainTabControl.ResumeLayout(false);
             this.interpOptsTab.ResumeLayout(false);
             this.interpOptsTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.videoUtilsTab.ResumeLayout(false);
             this.videoUtilsTab.PerformLayout();
             this.previewTab.ResumeLayout(false);
-            this.abtTab.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).EndInit();
+            this.abtTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1264,7 +1245,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox fpsOutTbox;
         private System.Windows.Forms.TextBox fpsInTbox;
-        private System.Windows.Forms.ComboBox tilesizeComboxDain;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox outModeCombox;
         private System.Windows.Forms.Label label9;
@@ -1279,7 +1259,7 @@
         private System.Windows.Forms.ComboBox aiCombox;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label tileSizeInfoLabel;
-        private System.Windows.Forms.ComboBox tilesizeComboxCain;
+        private System.Windows.Forms.ComboBox tilesize;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button debugExtractFramesBtn;
         private System.Windows.Forms.Label label16;

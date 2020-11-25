@@ -122,6 +122,10 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label43 = new System.Windows.Forms.Label();
+            this.ncnnThreads = new System.Windows.Forms.ComboBox();
+            this.label44 = new System.Windows.Forms.Label();
+            this.panel12 = new System.Windows.Forms.Panel();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -600,6 +604,10 @@
             // aiOptsPage
             // 
             this.aiOptsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.aiOptsPage.Controls.Add(this.panel12);
+            this.aiOptsPage.Controls.Add(this.label44);
+            this.aiOptsPage.Controls.Add(this.ncnnThreads);
+            this.aiOptsPage.Controls.Add(this.label43);
             this.aiOptsPage.Controls.Add(this.panel2);
             this.aiOptsPage.Controls.Add(this.panel1);
             this.aiOptsPage.Controls.Add(this.torchGpus);
@@ -1255,6 +1263,53 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(10, 190);
+            this.label43.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(135, 13);
+            this.label43.TabIndex = 58;
+            this.label43.Text = "NCNN Processing Threads";
+            // 
+            // ncnnThreads
+            // 
+            this.ncnnThreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.ncnnThreads.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ncnnThreads.ForeColor = System.Drawing.Color.White;
+            this.ncnnThreads.FormattingEnabled = true;
+            this.ncnnThreads.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4"});
+            this.ncnnThreads.Location = new System.Drawing.Point(280, 187);
+            this.ncnnThreads.Name = "ncnnThreads";
+            this.ncnnThreads.Size = new System.Drawing.Size(50, 21);
+            this.ncnnThreads.TabIndex = 59;
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.ForeColor = System.Drawing.Color.Silver;
+            this.label44.Location = new System.Drawing.Point(370, 191);
+            this.label44.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(358, 13);
+            this.label44.TabIndex = 60;
+            this.label44.Text = "Use 1 for small videos, 2 for >1080p, higher values might cause slowdown!";
+            // 
+            // panel12
+            // 
+            this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel12.Location = new System.Drawing.Point(336, 187);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(21, 21);
+            this.panel12.TabIndex = 58;
+            this.toolTip1.SetToolTip(this.panel12, "Allows custom input.");
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1384,5 +1439,9 @@
         private System.Windows.Forms.ComboBox mpdecimateMode;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.Panel magickDedupePanel;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.ComboBox ncnnThreads;
+        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.Panel panel12;
     }
 }
