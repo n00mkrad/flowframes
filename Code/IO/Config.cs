@@ -49,8 +49,10 @@ namespace Flowframes.IO
                 for (int i = 0; i < cachedLines.Length; i++)
                 {
                     string[] keyValuePair = cachedLines[i].Split('|');
-                    if (keyValuePair[0] == key)
+                    if (keyValuePair[0] == key && !string.IsNullOrWhiteSpace(keyValuePair[1]))
+                    {
                         return keyValuePair[1];
+                    }
                 }
                 return WriteDefaultValIfExists(key);
             }
@@ -102,6 +104,7 @@ namespace Flowframes.IO
             if (key == "ncnnThreads") return WriteDefault("ncnnThreads", "2");
             // Debug / Other / Experimental
             if (key == "ffprobeCountFrames") return WriteDefault("ffprobeCountFrames", "False");
+            if (key == "ffEncPreset") return WriteDefault("ffEncPreset", "medium");
             if (key == "ffEncPreset") return WriteDefault("ffEncPreset", "medium");
             // Tile Sizes
             if (key == "tilesize_RIFE_NCNN") return WriteDefault("tilesize_RIFE_NCNN", "2048");

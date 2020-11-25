@@ -81,7 +81,7 @@ namespace Flowframes.OS
             }
         }
 
-        public static string GetHiddenCmdArg()
+        public static string GetCmdArg()
         {
             bool stayOpen = Config.GetInt("cmdDebugMode") == 2;
             if (stayOpen)

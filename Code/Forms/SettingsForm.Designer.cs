@@ -130,6 +130,8 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label48 = new System.Windows.Forms.Label();
+            this.vfrMode = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -204,12 +206,14 @@
             // tempDirBrowseBtn
             // 
             this.tempDirBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tempDirBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.tempDirBrowseBtn.ForeColor = System.Drawing.Color.White;
             this.tempDirBrowseBtn.Location = new System.Drawing.Point(709, 66);
             this.tempDirBrowseBtn.Name = "tempDirBrowseBtn";
             this.tempDirBrowseBtn.Size = new System.Drawing.Size(50, 23);
             this.tempDirBrowseBtn.TabIndex = 70;
             this.tempDirBrowseBtn.Text = "Browse";
+            this.tempDirBrowseBtn.UseVisualStyleBackColor = false;
             this.tempDirBrowseBtn.Click += new System.EventHandler(this.tempDirBrowseBtn_Click);
             // 
             // tempDirCustom
@@ -1146,6 +1150,8 @@
             // debugTab
             // 
             this.debugTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.debugTab.Controls.Add(this.vfrMode);
+            this.debugTab.Controls.Add(this.label48);
             this.debugTab.Controls.Add(this.ffEncPreset);
             this.debugTab.Controls.Add(this.label47);
             this.debugTab.Controls.Add(this.label46);
@@ -1222,7 +1228,7 @@
             // 
             this.label41.AutoSize = true;
             this.label41.ForeColor = System.Drawing.Color.Silver;
-            this.label41.Location = new System.Drawing.Point(308, 250);
+            this.label41.Location = new System.Drawing.Point(308, 280);
             this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(423, 13);
@@ -1233,7 +1239,7 @@
             // ffprobeCountFrames
             // 
             this.ffprobeCountFrames.AutoSize = true;
-            this.ffprobeCountFrames.Location = new System.Drawing.Point(280, 250);
+            this.ffprobeCountFrames.Location = new System.Drawing.Point(280, 280);
             this.ffprobeCountFrames.Name = "ffprobeCountFrames";
             this.ffprobeCountFrames.Size = new System.Drawing.Size(15, 14);
             this.ffprobeCountFrames.TabIndex = 73;
@@ -1242,7 +1248,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(10, 250);
+            this.label40.Location = new System.Drawing.Point(10, 280);
             this.label40.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(162, 13);
@@ -1277,7 +1283,7 @@
             this.ffEncThreads.Location = new System.Drawing.Point(280, 190);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
@@ -1366,6 +1372,31 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(10, 250);
+            this.label48.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(88, 13);
+            this.label48.TabIndex = 79;
+            this.label48.Text = "Timestamp Mode";
+            // 
+            // vfrMode
+            // 
+            this.vfrMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.vfrMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.vfrMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vfrMode.ForeColor = System.Drawing.Color.White;
+            this.vfrMode.FormattingEnabled = true;
+            this.vfrMode.Items.AddRange(new object[] {
+            "CFR (Reduplicate Or Drop Frames)",
+            "VFR (Extend Or Drop Frames)"});
+            this.vfrMode.Location = new System.Drawing.Point(280, 247);
+            this.vfrMode.Name = "vfrMode";
+            this.vfrMode.Size = new System.Drawing.Size(250, 21);
+            this.vfrMode.TabIndex = 80;
             // 
             // SettingsForm
             // 
@@ -1504,5 +1535,7 @@
         private System.Windows.Forms.Label label47;
         private System.Windows.Forms.Label label46;
         private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.ComboBox vfrMode;
+        private System.Windows.Forms.Label label48;
     }
 }

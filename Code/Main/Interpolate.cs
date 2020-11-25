@@ -133,6 +133,8 @@ namespace Flowframes
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(framesPath);
 
+            if (canceled) return;
+
             if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
                 await VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor, firstFrameFix);
 
@@ -161,7 +163,7 @@ namespace Flowframes
                 await AiProcess.RunRifeCuda(framesPath, interpFactor);
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                await AiProcess.RunRifeNcnn(framesPath, outpath, interpFactor, tilesize);
+                await AiProcess.RunRifeNcnnMulti(framesPath, outpath, tilesize, interpFactor);
         }
 
         public static async void GetProgressByFrameAmount(string outdir, int target)

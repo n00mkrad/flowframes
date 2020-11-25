@@ -239,8 +239,8 @@ namespace Flowframes
         {
             if (initialized && GetAi().aiName == Networks.rifeNcnn.aiName && interpFactorCombox.SelectedIndex != 0)
             {
-                MessageBox.Show("RIFE-NCNN currently only supports x2 interpolation.");
-                interpFactorCombox.SelectedIndex = 0; // TODO: Add RIFE 4x/8x workaround & improve CAIN workaround
+                //MessageBox.Show("RIFE-NCNN currently only supports x2 interpolation.");
+                //interpFactorCombox.SelectedIndex = 0; // TODO: Add RIFE 4x/8x workaround & improve CAIN workaround
             }
             UpdateOutputFPS();
         }
