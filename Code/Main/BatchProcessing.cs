@@ -96,7 +96,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (!PkgInstaller.IsAiAvailable(entry.ai))
+            if (!PkgUtils.IsAiAvailable(entry.ai))
             {
                 Logger.Log("[Queue] Can't process queue entry: Selected AI is not available.");
                 return false;

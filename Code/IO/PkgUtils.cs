@@ -18,6 +18,7 @@ namespace Flowframes.IO
                 if (pkg.friendlyName == friendlyNameOrFilename)
                     return pkg;
             }
+            Logger.Log("Failed to find a package with name " + friendlyNameOrFilename); 
             return new FlowPackage();
         }
 
@@ -40,6 +41,8 @@ namespace Flowframes.IO
         public static int GetVersion (FlowPackage pkg)
         {
             string versionFilePath = Path.Combine(GetPkgFolder(pkg), "ver.ini");
+            if (!File.Exists(versionFilePath))
+                return 0;
             return IOUtils.ReadLines(versionFilePath)[0].Split('#')[0].GetInt();
         }
 

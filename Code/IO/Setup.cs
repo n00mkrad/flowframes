@@ -38,7 +38,7 @@ namespace Flowframes
 			foreach(FlowPackage pkg in PkgInstaller.packages)
             {
 				// if pkg is required and not installed, return false
-				if (pkg.friendlyName.ToLower().Contains("required") && !PkgInstaller.IsInstalled(pkg.fileName))
+				if (pkg.friendlyName.ToLower().Contains("required") && !PkgUtils.IsInstalled(pkg))
 					return false;
             }
 

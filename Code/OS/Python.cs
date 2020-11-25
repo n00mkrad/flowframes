@@ -14,7 +14,7 @@ namespace Flowframes.OS
 
         public static string GetPyCmd ()
         {
-            if (PkgInstaller.IsInstalled(Packages.python))
+            if (PkgUtils.IsInstalled(Packages.python))
             {
                 Logger.Log("Using embedded Python runtime.");
                 string pyPkgDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.python.fileName));

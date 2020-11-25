@@ -23,11 +23,12 @@ namespace Flowframes.IO
         public static void Init()
         {
             packages.Clear();
+            packages.Add(Packages.rifeCuda);
+            packages.Add(Packages.rifeNcnn);
             packages.Add(Packages.dainNcnn);
             packages.Add(Packages.cainNcnn);
-            packages.Add(Packages.rifeCuda);
-            packages.Add(Packages.audioVideo);
             packages.Add(Packages.python);
+            packages.Add(Packages.audioVideo);
             packages.Add(Packages.licenses);
         }
 

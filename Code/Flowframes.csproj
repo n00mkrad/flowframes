@@ -188,6 +188,7 @@
     <Compile Include="Data\FlowPackage.cs" />
     <Compile Include="IO\PkgInstaller.cs" />
     <Compile Include="Data\Packages.cs" />
+    <Compile Include="IO\PkgUtils.cs" />
     <Compile Include="Main\BatchProcessing.cs" />
     <Compile Include="Main\CreateVideo.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />

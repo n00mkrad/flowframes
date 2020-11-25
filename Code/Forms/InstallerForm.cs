@@ -48,8 +48,8 @@ namespace Flowframes.Forms
 
         private async void redownloadPkgsBtn_Click(object sender, EventArgs e)
         {
-            FlowPackage pkg = PkgInstaller.GetPkg(pkgList.SelectedItem.ToString());
-            if (PkgInstaller.IsInstalled(pkg.fileName))     // Uninstall first if force = true, to ensure a clean reinstall
+            FlowPackage pkg = PkgUtils.GetPkg(pkgList.SelectedItem.ToString());
+            if (PkgUtils.IsInstalled(pkg))     // Uninstall first if force = true, to ensure a clean reinstall
                 PkgInstaller.Uninstall(pkg.fileName);
             await Task.Delay(10);
             await PkgInstaller.DownloadAndInstall(pkg.fileName);
@@ -61,17 +61,17 @@ namespace Flowframes.Forms
             EnableRequired();
             for (int i = 0; i < pkgList.Items.Count; i++)
             {
-                FlowPackage pkg = PkgInstaller.GetPkg(pkgList.Items[i].ToString());
+                FlowPackage pkg = PkgUtils.GetPkg(pkgList.Items[i].ToString());
 
-                if(force && PkgInstaller.IsInstalled(pkg.fileName))     // Uninstall first if force = true, to ensure a clean reinstall
+                if(force && PkgUtils.IsInstalled(pkg))     // Uninstall first if force = true, to ensure a clean reinstall
                     PkgInstaller.Uninstall(pkg.fileName);
 
                 bool install = pkgList.GetItemChecked(i);
 
-                if(install && !PkgInstaller.IsInstalled(pkg.fileName))   // Install if not installed
+                if(install && !PkgUtils.IsInstalled(pkg))   // Install if not installed
                     await PkgInstaller.DownloadAndInstall(pkg.fileName);
 
-                if (!install && PkgInstaller.IsInstalled(pkg.fileName))   // Uninstall if installed
+                if (!install && PkgUtils.IsInstalled(pkg))   // Uninstall if installed
                     PkgInstaller.Uninstall(pkg.fileName);
             }
             Print("All tasks completed.");
@@ -82,7 +82,7 @@ namespace Flowframes.Forms
         {
             pkgList.Items.Clear();
             foreach (FlowPackage pkg in PkgInstaller.packages)
-                pkgList.Items.Add(pkg.friendlyName, PkgInstaller.IsInstalled(pkg.fileName));
+                pkgList.Items.Add(pkg.friendlyName, PkgUtils.IsInstalled(pkg));
         }
 
         void EnableRequired ()
@@ -126,7 +126,7 @@ namespace Flowframes.Forms
                 if (pkgList.Items[i].ToString().ToLower().Contains("required"))
                 {
                     string frName = pkgList.Items[i].ToString();
-                    if (!PkgInstaller.IsInstalled(PkgInstaller.GetPkg(frName).fileName))
+                    if (!PkgUtils.IsInstalled(PkgUtils.GetPkg(frName)))
                     {
                         if(!silent)
                             Print($"The package {pkgList.Items[i].ToString().Wrap()} is required but not installed!");
@@ -148,7 +148,7 @@ namespace Flowframes.Forms
 
         private void pkgList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FlowPackage pkg = PkgInstaller.GetPkg(pkgList.SelectedItem.ToString());
+            FlowPackage pkg = PkgUtils.GetPkg(PkgUtils.GetPkg(pkgList.SelectedItem.ToString()).friendlyName);
             GetPkgInfo(pkg);
         }
 

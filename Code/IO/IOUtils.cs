@@ -299,12 +299,14 @@ namespace Flowframes.IO
 		{
             try
             {
+				if (path == null)
+					return false;
 				DeleteIfExists(path);
 				return true;
 			}
 			catch (Exception e)
             {
-				Logger.Log($"Error trying to delete {path}: {e.Message}");
+				Logger.Log($"Error trying to delete {path}: {e.Message}", true);
 				return false;
             }
 		}

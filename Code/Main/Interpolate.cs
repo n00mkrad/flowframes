@@ -30,7 +30,7 @@ namespace Flowframes
 
         public static string lastInputPath;
 
-        public static bool cancelled = false;
+        public static bool canceled = false;
 
         static Stopwatch sw = new Stopwatch();
 
@@ -43,7 +43,7 @@ namespace Flowframes
 
         public static async void Start(string inPath, string outDir, int tilesize, OutMode outMode, AI ai)
         {
-            cancelled = false;
+            canceled = false;
             if (!Utils.InputIsValid(inPath, outDir, currentOutFps, interpFactor, tilesize)) return;     // General input checks
             if (!Utils.CheckAiAvailable(ai)) return;            // Check if selected AI pkg is installed
             lastInputPath = inPath;
@@ -59,20 +59,20 @@ namespace Flowframes
                 await ExtractFrames(inPath, framesPath);
             else
                 IOUtils.Copy(inPath, framesPath);
-            if (cancelled) return;
+            if (canceled) return;
             sw.Restart();
             await Task.Delay(10);
             await PostProcessFrames();
-            if (cancelled) return;
+            if (canceled) return;
             string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
             string outPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
             int frames = IOUtils.GetAmountOfFiles(framesPath, false, "*.png");
             int targetFrameCount = frames * interpFactor;
             GetProgressByFrameAmount(interpFramesDir, targetFrameCount);
-            if (cancelled) return;
+            if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(interpFramesDir, targetFrameCount, tilesize, ai);
-            if (cancelled) return;
+            if (canceled) return;
             Program.mainForm.SetProgress(100);
             await CreateVideo.FramesToVideo(interpFramesDir, outPath, outMode);
             Cleanup(interpFramesDir);
@@ -113,7 +113,7 @@ namespace Flowframes
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
-            if (!cancelled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
+            if (!canceled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
             {
                 string lastFrame = IOUtils.GetHighestFrameNumPath(outPath);
                 int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
@@ -136,7 +136,7 @@ namespace Flowframes
             if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
                 await VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor, firstFrameFix);
 
-            if (cancelled) return;
+            if (canceled) return;
             MagickDedupe.RenameCounterDir(framesPath, "png");
             MagickDedupe.ZeroPadDir(framesPath, "png", 8);
 
@@ -156,6 +156,9 @@ namespace Flowframes
 
             if (ai.aiName == Networks.rifeCuda.aiName)
                 await AiProcess.RunRifeCuda(framesPath, interpFactor);
+
+            if (ai.aiName == Networks.rifeNcnn.aiName)
+                await AiProcess.RunRifeNcnn(framesPath, outpath, interpFactor, tilesize);
         }
 
         public static async void GetProgressByFrameAmount(string outdir, int target)
@@ -188,16 +191,16 @@ namespace Flowframes
                 OSUtils.KillProcessTree(AiProcess.currentAiProcess.Id);
             if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited)
                 OSUtils.KillProcessTree(AvProcess.lastProcess.Id);
-            cancelled = true;
-            Program.mainForm.SetStatus("Cancelled.");
+            canceled = true;
+            Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
             if(!Config.GetBool("keepTempFolder"))
                 IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
             Program.mainForm.mainTabControl.SelectedIndex = 0;
-            Logger.Log("Cancelled interpolation.");
+            Logger.Log("Canceled interpolation.");
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
-                Utils.ShowMessage($"Cancelled:\n\n{reason}");
+                Utils.ShowMessage($"Canceled:\n\n{reason}");
         }
 
         static void Cleanup(string interpFramesDir)

@@ -14,8 +14,9 @@ namespace Flowframes.Data
         public string friendlyName;
         public string description;
         public FlowPackage pkg;
+        public int minPkgVer;
 
-        public AI(string aiNameArg, string friendlyNameArg, string descArg, FlowPackage pkgArg)
+        public AI(string aiNameArg, string friendlyNameArg, string descArg, FlowPackage pkgArg, int minPkgVerForThisBuild)
         {
             aiName = aiNameArg;
             aiNameShort = aiNameArg.Split(' ')[0];
@@ -23,6 +24,7 @@ namespace Flowframes.Data
             friendlyName = friendlyNameArg;
             description = descArg;
             pkg = pkgArg;
+            minPkgVer = minPkgVerForThisBuild;
         }
     }
 }

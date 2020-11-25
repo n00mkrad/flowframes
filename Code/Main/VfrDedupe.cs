@@ -28,7 +28,7 @@ namespace Flowframes.Main
             int totalFileCount = 1;
             for (int i = 0; i < (frameFiles.Length - 1); i++)
             {
-                if (Interpolate.cancelled) return;
+                if (Interpolate.canceled) return;
 
                 string filename1 = frameFiles[i].Name;
                 string filename2 = frameFiles[i + 1].Name;

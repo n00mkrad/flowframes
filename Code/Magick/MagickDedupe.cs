@@ -143,7 +143,7 @@ namespace Flowframes.Magick
 
                 Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
                 await Task.Delay(10);
-                if (Interpolate.cancelled) return;
+                if (Interpolate.canceled) return;
 
                 if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && i >= skipAfterNoDupesFrames)
                 {
@@ -155,7 +155,7 @@ namespace Flowframes.Magick
             string testStr = "";
             if (testRun) testStr = " [TestRun]";
 
-            if (Interpolate.cancelled) return;
+            if (Interpolate.canceled) return;
             if (skipped)
             {
                 Logger.Log($"[FrameDedup] First {skipAfterNoDupesFrames} frames did not have any duplicates - Skipping the rest!");

@@ -26,7 +26,7 @@ namespace Flowframes.Main
             int percent = (int)Math.Round(((float)frames / target) * 100f);
             Program.mainForm.SetProgress(percent);
 
-            float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - 2000) / 1000f);
+            float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
             float fps = (float)frames / generousTime;
             string fpsIn = (fps / Interpolate.interpFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");
@@ -160,10 +160,16 @@ namespace Flowframes.Main
 
         public static bool CheckAiAvailable (AI ai)
         {
-            if (!PkgInstaller.IsAiAvailable(ai))
+            if (!PkgUtils.IsAiAvailable(ai))
             {
-                ShowMessage("The selected AI is not installed!\nYou can download it from the package installer.", "Error");
-                i.Cancel("Selected AI not available.");
+                ShowMessage("The selected AI is not installed!\nYou can download it from the Package Installer.", "Error");
+                i.Cancel("Selected AI not available.", true);
+                return false;
+            }
+            if(!PkgUtils.IsUpToDate(ai.pkg, ai.minPkgVer))
+            {
+                ShowMessage("The selected AI is installed, but not up to date!\nYou can update it in the Package Installer.", "Error");
+                i.Cancel("Selected AI is outdated.", true);
                 return false;
             }
             return true;
