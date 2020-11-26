@@ -117,7 +117,7 @@ namespace Flowframes.Main
                         audioFileBasePath = Path.Combine(i.currentTempDir.GetParentDir(), "audio");
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
                     await FFmpegCommands.ExtractAudio(sourceVideo, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
-                if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
+                if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
                     Logger.Log("No compatible audio stream found.");
                     return;

@@ -1,6 +1,7 @@
 ﻿using Flowframes.OS;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -75,7 +76,7 @@ namespace Flowframes.IO
 
         public static float GetFloat(string key)
         {
-            return float.Parse(Get(key));
+            return float.Parse(Get(key), CultureInfo.InvariantCulture);
         }
 
         private static string WriteDefaultValIfExists(string key)   // DEFAULTS TO 0, which means key that use 0 as default are not listed here
@@ -94,6 +95,8 @@ namespace Flowframes.IO
             if (key == "vfrDedupe") return WriteDefault("vfrDedupe", "True");
             if (key == "jpegInterps") return WriteDefault("jpegInterps", "False");
             if (key == "timingMode") return WriteDefault("timingMode", "1");
+            if (key == "scnDetect") return WriteDefault("scnDetect", "False");
+            if (key == "scnDetectValue") return WriteDefault("scnDetectValue", "0.2");
             // Video Export
             if (key == "h264Crf") return WriteDefault("h264Crf", "20");
             if (key == "h265Crf") return WriteDefault("h265Crf", "22");

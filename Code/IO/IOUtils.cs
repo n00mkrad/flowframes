@@ -1,5 +1,6 @@
 ﻿
 using Flowframes.Data;
+using Flowframes.Main;
 using Microsoft.WindowsAPICodePack.Shell;
 using System;
 using System.Collections.Generic;
@@ -398,5 +399,24 @@ namespace Flowframes.IO
             }
 			return 0;
 		}
+
+		public enum ErrorMode { HiddenLog, VisibleLog, Messagebox }
+		public static bool CanWriteToDir (string dir, ErrorMode errMode)
+        {
+			string tempFile = Path.Combine(dir, "flowframes-testfile.tmp");
+            try
+            {
+				File.Create(tempFile);
+				File.Delete(tempFile);
+				return true;
+			}
+			catch (Exception e)
+            {
+				Logger.Log($"Can't write to {dir}!", errMode == ErrorMode.HiddenLog);
+				if (errMode == ErrorMode.Messagebox && !BatchProcessing.busy)
+					MessageBox.Show($"Can't write to {dir}!", "Error");
+				return false;
+            }
+        }
 	}
 }

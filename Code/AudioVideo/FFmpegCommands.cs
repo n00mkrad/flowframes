@@ -18,22 +18,28 @@ namespace Flowframes
         static string mpDecDef = "\"mpdecimate\"";
         static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
 
+        public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath)
+        {
+            await VideoToFrames(inputFile, frameFolderPath, (Config.GetInt("dedupMode") == 2), false, new Size(320, 180), true, true);
+        }
+
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, bool timecodes = true)
         {
             await VideoToFrames(inputFile, frameFolderPath, deDupe, delSrc, new Size(), timecodes);
         }
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true)
+        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true, bool sceneDetect = false)
         {
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             if (!Directory.Exists(frameFolderPath))
                 Directory.CreateDirectory(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
-            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.Get("scnDetectValue")})'\"," : "";
+            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
             if (deDupe)
             {
                 string mpStr = (Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr;
-                args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+                args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
             }
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             await Task.Delay(1);
@@ -174,6 +180,7 @@ namespace Flowframes
             switch (GetAudioCodec(videoFile))
             {
                 case "vorbis": return "ogg";
+                case "opus": return "ogg";
                 case "mp2": return "mp2";
                 case "aac": return "m4a";
                 default: return "wav";

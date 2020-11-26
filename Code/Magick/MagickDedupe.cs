@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Flowframes.IO;
 using Flowframes.Main;
+using Flowframes.UI;
+using Microsoft.VisualBasic.Devices;
 using ImageMagick;
+using Flowframes.OS;
 
 namespace Flowframes.Magick
 {
@@ -42,9 +46,29 @@ namespace Flowframes.Magick
             }
         }
 
+        public static Dictionary<string, MagickImage> imageCache = new Dictionary<string, MagickImage>();
+        static MagickImage GetImage(string path)
+        {
+            bool allowCaching = true;
+
+            if (!allowCaching)
+                return new MagickImage(path);
+
+            if (!imageCache.ContainsKey(path))
+                imageCache.Add(path, new MagickImage(path));
+
+            return imageCache[path];
+        }
+
+        public static void ClearCache ()
+        {
+            imageCache.Clear();
+        }
 
         public static async Task RemoveDupeFrames(string path, float threshold, string ext, bool testRun = false, bool debugLog = false, bool skipIfNoDupes = false)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
             Logger.Log("Removing duplicate frames - Threshold: " + threshold.ToString("0.00"));
             //Logger.Log("Analyzing frames...");
             DirectoryInfo dirInfo = new DirectoryInfo(path);
@@ -103,8 +127,13 @@ namespace Flowframes.Magick
                 frame2 = framePaths[i].FullName;
                 if (oldIndex >= 0)
                     i = oldIndex;
-                MagickImage img1 = new MagickImage(frame1);
-                MagickImage img2 = new MagickImage(frame2);
+
+                //long msBeforeLoad = sw.ElapsedMilliseconds;
+                MagickImage img2 = GetImage(frame2);
+                MagickImage img1 = GetImage(frame1);
+
+                //MagickImage img1 = new MagickImage(frame1);
+                //MagickImage img2 = new MagickImage(frame2);
                 double err = img1.Compare(img2, ErrorMetric.Fuzz);
                 float errPercent = (float)err * 100f;
 
@@ -136,13 +165,17 @@ namespace Flowframes.Magick
                     currentDupeCount = 0;
                 }
 
-                Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(img1.FileName)} to {Path.GetFileName(img2.FileName)}: {errPercent.ToString("0.00")}% - {delStr}. Total: {statsFramesKept} kept / {statsFramesDeleted} deleted.", false, true);
+                if(i % 15 == 0)
+                {
+                    Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(img1.FileName)} to {Path.GetFileName(img2.FileName)}: {errPercent.ToString("0.00")}% - {delStr}. Total: {statsFramesKept} kept / {statsFramesDeleted} deleted.", false, true);
+                    Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
+                    if (OSUtils.GetFreeRamMb() < 2500 && imageCache.Count > 25)
+                        ClearCache();
+                }
 
-                img1.Dispose();
-                img2.Dispose();
+                if(i % 5 == 0)
+                    await Task.Delay(1);
 
-                Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
-                await Task.Delay(10);
                 if (Interpolate.canceled) return;
 
                 if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && i >= skipAfterNoDupesFrames)
@@ -169,6 +202,8 @@ namespace Flowframes.Magick
 
             if (statsFramesKept <= 0)
                 Interpolate.Cancel("No frames were left after de-duplication.");
+
+            Logger.Log($"Finished in {FormatUtils.Time(sw.Elapsed)} - {framePaths.Length / (sw.ElapsedMilliseconds / 1000f)} Imgs/Sec");
 
             //RenameCounterDir(path, "png");
             //ZeroPadDir(path, ext, 8);

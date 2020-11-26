@@ -112,6 +112,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.minOutVidLength = new System.Windows.Forms.ComboBox();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.vfrMode = new System.Windows.Forms.ComboBox();
+            this.label48 = new System.Windows.Forms.Label();
             this.ffEncPreset = new System.Windows.Forms.ComboBox();
             this.label47 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
@@ -130,8 +132,12 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label48 = new System.Windows.Forms.Label();
-            this.vfrMode = new System.Windows.Forms.ComboBox();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label50 = new System.Windows.Forms.Label();
+            this.scnDetect = new System.Windows.Forms.CheckBox();
+            this.scnDetectValue = new System.Windows.Forms.ComboBox();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label52 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -346,6 +352,12 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.label52);
+            this.tabListPage2.Controls.Add(this.scnDetectValue);
+            this.tabListPage2.Controls.Add(this.label51);
+            this.tabListPage2.Controls.Add(this.scnDetect);
+            this.tabListPage2.Controls.Add(this.label50);
+            this.tabListPage2.Controls.Add(this.label49);
             this.tabListPage2.Controls.Add(this.mpDedupePanel);
             this.tabListPage2.Controls.Add(this.magickDedupePanel);
             this.tabListPage2.Controls.Add(this.timingMode);
@@ -492,7 +504,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.Color.Silver;
-            this.label27.Location = new System.Drawing.Point(308, 221);
+            this.label27.Location = new System.Drawing.Point(308, 314);
             this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(449, 13);
@@ -503,7 +515,7 @@
             // jpegInterps
             // 
             this.jpegInterps.AutoSize = true;
-            this.jpegInterps.Location = new System.Drawing.Point(280, 220);
+            this.jpegInterps.Location = new System.Drawing.Point(280, 313);
             this.jpegInterps.Name = "jpegInterps";
             this.jpegInterps.Size = new System.Drawing.Size(15, 14);
             this.jpegInterps.TabIndex = 48;
@@ -512,7 +524,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(10, 220);
+            this.label25.Location = new System.Drawing.Point(10, 313);
             this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(149, 13);
@@ -523,7 +535,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 190);
+            this.label26.Location = new System.Drawing.Point(10, 283);
             this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(76, 16);
@@ -632,7 +644,7 @@
             // 
             this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel12.Location = new System.Drawing.Point(336, 187);
+            this.panel12.Location = new System.Drawing.Point(336, 177);
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(21, 21);
             this.panel12.TabIndex = 58;
@@ -642,7 +654,7 @@
             // 
             this.label44.AutoSize = true;
             this.label44.ForeColor = System.Drawing.Color.Silver;
-            this.label44.Location = new System.Drawing.Point(370, 191);
+            this.label44.Location = new System.Drawing.Point(370, 181);
             this.label44.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(358, 13);
@@ -660,7 +672,7 @@
             "2",
             "3",
             "4"});
-            this.ncnnThreads.Location = new System.Drawing.Point(280, 187);
+            this.ncnnThreads.Location = new System.Drawing.Point(280, 177);
             this.ncnnThreads.Name = "ncnnThreads";
             this.ncnnThreads.Size = new System.Drawing.Size(50, 21);
             this.ncnnThreads.TabIndex = 59;
@@ -668,7 +680,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(10, 190);
+            this.label43.Location = new System.Drawing.Point(10, 180);
             this.label43.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(135, 13);
@@ -679,7 +691,7 @@
             // 
             this.panel2.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel2.Location = new System.Drawing.Point(536, 157);
+            this.panel2.Location = new System.Drawing.Point(536, 147);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(21, 21);
             this.panel2.TabIndex = 57;
@@ -689,7 +701,7 @@
             // 
             this.panel1.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel1.Location = new System.Drawing.Point(536, 127);
+            this.panel1.Location = new System.Drawing.Point(536, 117);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(21, 21);
             this.panel1.TabIndex = 56;
@@ -705,7 +717,7 @@
             "0",
             "1",
             "0,1"});
-            this.torchGpus.Location = new System.Drawing.Point(280, 127);
+            this.torchGpus.Location = new System.Drawing.Point(280, 117);
             this.torchGpus.Name = "torchGpus";
             this.torchGpus.Size = new System.Drawing.Size(250, 21);
             this.torchGpus.TabIndex = 55;
@@ -713,7 +725,7 @@
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(10, 130);
+            this.label33.Location = new System.Drawing.Point(10, 120);
             this.label33.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(205, 13);
@@ -730,7 +742,7 @@
             "0",
             "1",
             "0,1"});
-            this.ncnnGpus.Location = new System.Drawing.Point(280, 157);
+            this.ncnnGpus.Location = new System.Drawing.Point(280, 147);
             this.ncnnGpus.Name = "ncnnGpus";
             this.ncnnGpus.Size = new System.Drawing.Size(250, 21);
             this.ncnnGpus.TabIndex = 53;
@@ -738,7 +750,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 160);
+            this.label5.Location = new System.Drawing.Point(10, 150);
             this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(200, 13);
@@ -749,7 +761,7 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label32.Location = new System.Drawing.Point(10, 100);
+            this.label32.Location = new System.Drawing.Point(10, 90);
             this.label32.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(162, 16);
@@ -840,7 +852,7 @@
             // 
             this.panel8.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel8.Location = new System.Drawing.Point(386, 247);
+            this.panel8.Location = new System.Drawing.Point(386, 237);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(21, 21);
             this.panel8.TabIndex = 60;
@@ -850,7 +862,7 @@
             // 
             this.panel7.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel7.Location = new System.Drawing.Point(386, 217);
+            this.panel7.Location = new System.Drawing.Point(386, 207);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(21, 21);
             this.panel7.TabIndex = 59;
@@ -889,7 +901,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(10, 280);
+            this.label23.Location = new System.Drawing.Point(10, 270);
             this.label23.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(187, 13);
@@ -906,7 +918,7 @@
             this.maxFpsMode.Items.AddRange(new object[] {
             "Encode With Limited FPS",
             "Encode With Full FPS And Create Second Video With Limited FPS"});
-            this.maxFpsMode.Location = new System.Drawing.Point(280, 277);
+            this.maxFpsMode.Location = new System.Drawing.Point(280, 267);
             this.maxFpsMode.Name = "maxFpsMode";
             this.maxFpsMode.Size = new System.Drawing.Size(400, 21);
             this.maxFpsMode.TabIndex = 49;
@@ -915,7 +927,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.Color.Silver;
-            this.label22.Location = new System.Drawing.Point(420, 251);
+            this.label22.Location = new System.Drawing.Point(420, 241);
             this.label22.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(325, 13);
@@ -933,7 +945,7 @@
             "30",
             "60",
             "120"});
-            this.maxFps.Location = new System.Drawing.Point(280, 247);
+            this.maxFps.Location = new System.Drawing.Point(280, 237);
             this.maxFps.Name = "maxFps";
             this.maxFps.Size = new System.Drawing.Size(100, 21);
             this.maxFps.TabIndex = 47;
@@ -941,7 +953,7 @@
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(10, 250);
+            this.label20.Location = new System.Drawing.Point(10, 240);
             this.label20.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(144, 13);
@@ -952,7 +964,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(10, 190);
+            this.label21.Location = new System.Drawing.Point(10, 180);
             this.label21.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(227, 16);
@@ -1114,7 +1126,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.ForeColor = System.Drawing.Color.Silver;
-            this.label9.Location = new System.Drawing.Point(420, 221);
+            this.label9.Location = new System.Drawing.Point(420, 211);
             this.label9.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(328, 13);
@@ -1124,7 +1136,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(10, 220);
+            this.label8.Location = new System.Drawing.Point(10, 210);
             this.label8.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(193, 13);
@@ -1142,7 +1154,7 @@
             "5",
             "10",
             "20"});
-            this.minOutVidLength.Location = new System.Drawing.Point(280, 217);
+            this.minOutVidLength.Location = new System.Drawing.Point(280, 207);
             this.minOutVidLength.Name = "minOutVidLength";
             this.minOutVidLength.Size = new System.Drawing.Size(100, 21);
             this.minOutVidLength.TabIndex = 29;
@@ -1171,6 +1183,31 @@
             this.debugTab.Name = "debugTab";
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Debugging / Experimental";
+            // 
+            // vfrMode
+            // 
+            this.vfrMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.vfrMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.vfrMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vfrMode.ForeColor = System.Drawing.Color.White;
+            this.vfrMode.FormattingEnabled = true;
+            this.vfrMode.Items.AddRange(new object[] {
+            "CFR (Reduplicate Or Drop Frames)",
+            "VFR (Extend Or Drop Frames)"});
+            this.vfrMode.Location = new System.Drawing.Point(280, 247);
+            this.vfrMode.Name = "vfrMode";
+            this.vfrMode.Size = new System.Drawing.Size(250, 21);
+            this.vfrMode.TabIndex = 80;
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(10, 250);
+            this.label48.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(88, 13);
+            this.label48.TabIndex = 79;
+            this.label48.Text = "Timestamp Mode";
             // 
             // ffEncPreset
             // 
@@ -1373,30 +1410,76 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label48
+            // label49
             // 
-            this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(10, 250);
-            this.label48.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(88, 13);
-            this.label48.TabIndex = 79;
-            this.label48.Text = "Timestamp Mode";
+            this.label49.AutoSize = true;
+            this.label49.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label49.Location = new System.Drawing.Point(10, 180);
+            this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(122, 16);
+            this.label49.TabIndex = 62;
+            this.label49.Text = "Scene Detection";
             // 
-            // vfrMode
+            // label50
             // 
-            this.vfrMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.vfrMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.vfrMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.vfrMode.ForeColor = System.Drawing.Color.White;
-            this.vfrMode.FormattingEnabled = true;
-            this.vfrMode.Items.AddRange(new object[] {
-            "CFR (Reduplicate Or Drop Frames)",
-            "VFR (Extend Or Drop Frames)"});
-            this.vfrMode.Location = new System.Drawing.Point(280, 247);
-            this.vfrMode.Name = "vfrMode";
-            this.vfrMode.Size = new System.Drawing.Size(250, 21);
-            this.vfrMode.TabIndex = 80;
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(10, 213);
+            this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(194, 13);
+            this.label50.TabIndex = 63;
+            this.label50.Text = "Don\'t Interpolate Scene Changes (Cuts)";
+            // 
+            // scnDetect
+            // 
+            this.scnDetect.AutoSize = true;
+            this.scnDetect.Location = new System.Drawing.Point(280, 213);
+            this.scnDetect.Name = "scnDetect";
+            this.scnDetect.Size = new System.Drawing.Size(15, 14);
+            this.scnDetect.TabIndex = 64;
+            this.scnDetect.UseVisualStyleBackColor = true;
+            // 
+            // scnDetectValue
+            // 
+            this.scnDetectValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scnDetectValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.scnDetectValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scnDetectValue.ForeColor = System.Drawing.Color.White;
+            this.scnDetectValue.FormattingEnabled = true;
+            this.scnDetectValue.Items.AddRange(new object[] {
+            "0.4",
+            "0.3",
+            "0.25",
+            "0.2",
+            "0.15",
+            "0.1"});
+            this.scnDetectValue.Location = new System.Drawing.Point(364, 210);
+            this.scnDetectValue.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.scnDetectValue.Name = "scnDetectValue";
+            this.scnDetectValue.Size = new System.Drawing.Size(100, 21);
+            this.scnDetectValue.TabIndex = 65;
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(301, 214);
+            this.label51.Margin = new System.Windows.Forms.Padding(3);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(57, 13);
+            this.label51.TabIndex = 66;
+            this.label51.Text = "Sensitivity:";
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.ForeColor = System.Drawing.Color.Silver;
+            this.label52.Location = new System.Drawing.Point(482, 214);
+            this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(225, 13);
+            this.label52.TabIndex = 67;
+            this.label52.Text = "Lower values will detect more scene changes.";
             // 
             // SettingsForm
             // 
@@ -1537,5 +1620,11 @@
         private System.Windows.Forms.Label label45;
         private System.Windows.Forms.ComboBox vfrMode;
         private System.Windows.Forms.Label label48;
+        private System.Windows.Forms.ComboBox scnDetectValue;
+        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.CheckBox scnDetect;
+        private System.Windows.Forms.Label label50;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.Label label52;
     }
 }

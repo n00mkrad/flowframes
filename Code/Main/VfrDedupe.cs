@@ -14,15 +14,18 @@ namespace Flowframes.Main
     {
         public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix)
         {
+            bool sceneDetection = true;
             Logger.Log("Generating timecodes...");
 
             FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles("*.png");
             string vfrFile = Path.Combine(framesPath.GetParentDir(), "vfr.ini");
             string fileContent = "";
 
+            string scnFramesPath = Path.Combine(framesPath.GetParentDir(), "scenes");
             string interpPath = framesPath.Replace(@"\", "/") + "-interpolated";
 
             int lastFrameDuration = 1;
+            bool discardNext = false;
 
             // Calculate time duration between frames
             int totalFileCount = 1;
@@ -33,25 +36,44 @@ namespace Flowframes.Main
                 string filename1 = frameFiles[i].Name;
                 string filename2 = frameFiles[i + 1].Name;
 
+
                 int durationTotal = Path.GetFileNameWithoutExtension(filename2).GetInt() - Path.GetFileNameWithoutExtension(filename1).GetInt();
                 lastFrameDuration = durationTotal;
                 float durationPerInterpFrame = (float)durationTotal / interpFactor;
 
-                int interpolatedFrameCount = interpFactor;
+                int interpFramesAmount = interpFactor;
+
+
+                bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && File.Exists(Path.Combine(scnFramesPath, frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+                //if (discardThisFrame) Logger.Log("Will discard " + totalFileCount);
 
                 // If loop is enabled, account for the extra frame added to the end for loop continuity
                 if (loopEnabled && i == (frameFiles.Length - 2))
-                    interpolatedFrameCount = interpolatedFrameCount * 2;
+                    interpFramesAmount = interpFramesAmount * 2;
 
                 // Generate frames file lines
-                for (int frm = 0; frm < interpolatedFrameCount; frm++)
+                for (int frm = 0; frm < interpFramesAmount; frm++)
                 {
                     string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000").Replace(",", ".");
+
+                    if (discardThisFrame)
+                    {
+                        int lastNum = totalFileCount - 1;
+                        for(int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
+                        {
+                            //Logger.Log($"-> Writing #{frm + 1}: {lastNum}");
+                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
+                            totalFileCount++;
+                        }
+                        frm = interpFramesAmount - 1;
+                    }
+
+                    //Logger.Log($"-> Writing #{frm+1}: {totalFileCount}");
                     fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
-                    totalFileCount++;
+                    totalFileCount++;   // Don't increment, so we dupe the last frame and ignore the interp frame
                 }
 
-                if((i+1) % 50 == 0)
+                if ((i+1) % 50 == 0)
                 {
                     Logger.Log($"Generating timecodes... {i + 1}/{frameFiles.Length}", false, true);
                     await Task.Delay(1);

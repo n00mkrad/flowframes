@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HTAlt.WinForms;
 using Flowframes.Data;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace Flowframes
 {
@@ -52,7 +53,11 @@ namespace Flowframes
 
             Setup.Init();
             Initialized();
+            Checks();
+        }
 
+        void Checks ()
+        {
             GetWebInfo.LoadNews(newsLabel);
             GetWebInfo.LoadPatronList(patronsLabel);
             Updater.AsyncUpdateCheck();
@@ -156,6 +161,7 @@ namespace Flowframes
                 Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {IOUtils.GetAmountOfFiles(path, false)}");
             else
                 Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {FFmpegCommands.GetFrameCount(path)}");
+            MagickDedupe.ClearCache();
         }
 
 

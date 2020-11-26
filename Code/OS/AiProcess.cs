@@ -269,7 +269,7 @@ namespace Flowframes
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage("Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
+                InterpolateUtils.ShowMessage($"Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
             }
 
             if (!hasShownError && line.Contains("RuntimeError"))
@@ -277,6 +277,15 @@ namespace Flowframes
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"An error occured during interpolation!\n\n{line}", "Error");
             }
+
+            if (!hasShownError && line.Contains("vkQueueSubmit failed"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}", "Error");
+            }
+
+            if (hasShownError)
+                Interpolate.Cancel();
         }
     }
 }

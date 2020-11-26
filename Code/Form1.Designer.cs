@@ -1107,10 +1107,10 @@
             // tilesizeNotAvailLabel
             // 
             this.tilesizeNotAvailLabel.ForeColor = System.Drawing.Color.Silver;
-            this.tilesizeNotAvailLabel.Location = new System.Drawing.Point(278, 127);
+            this.tilesizeNotAvailLabel.Location = new System.Drawing.Point(278, 124);
             this.tilesizeNotAvailLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.tilesizeNotAvailLabel.Name = "tilesizeNotAvailLabel";
-            this.tilesizeNotAvailLabel.Size = new System.Drawing.Size(203, 25);
+            this.tilesizeNotAvailLabel.Size = new System.Drawing.Size(203, 31);
             this.tilesizeNotAvailLabel.TabIndex = 37;
             this.tilesizeNotAvailLabel.Text = "Not available for the selected AI.";
             this.tilesizeNotAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

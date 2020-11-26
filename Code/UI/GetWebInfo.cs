@@ -12,7 +12,7 @@ namespace Flowframes.UI
     {
         public static async Task LoadNews (Label newsLabel)
         {
-            string url = $"https://dl.nmkd.de/flowframes/changelog.txt";
+            string url = $"http://dl.nmkd.de/flowframes/changelog.txt";
             var client = new WebClient();
             var str = await client.DownloadStringTaskAsync(new Uri(url));
             newsLabel.Text = str;
@@ -20,7 +20,7 @@ namespace Flowframes.UI
 
         public static async Task LoadPatronList(Label patronsLabel)
         {
-            string url = $"https://dl.nmkd.de/flowframes/patreon.txt";
+            string url = $"http://dl.nmkd.de/flowframes/patreon.txt";
             var client = new WebClient();
             var str = await client.DownloadStringTaskAsync(new Uri(url));
             patronsLabel.Text = str;

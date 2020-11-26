@@ -88,6 +88,12 @@ namespace Flowframes
         {
             Logger.Log("Extracting frames using FFmpeg...");
             await Task.Delay(10);
+            if (Config.GetBool("scnDetect"))
+            {
+                Program.mainForm.SetStatus("Extracting scenes from video...");
+                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(currentTempDir, "scenes"));
+                await Task.Delay(10);
+            }
             Program.mainForm.SetStatus("Extracting frames from video...");
             Size resolution = IOUtils.GetVideoRes(inPath);
             int maxHeight = Config.GetInt("maxVidHeight");
@@ -130,8 +136,15 @@ namespace Flowframes
         public static bool firstFrameFix;
         static async Task PostProcessFrames ()
         {
+            if(!Directory.Exists(framesPath) || IOUtils.GetAmountOfFiles(framesPath, false, "*.png") <= 0)
+            {
+                Cancel("Failed to extract frames from input video!");
+            }
+
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(framesPath);
+            else
+                MagickDedupe.ClearCache();
 
             if (canceled) return;
 

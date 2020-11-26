@@ -16,7 +16,6 @@ namespace Flowframes
 
         public static string lastOutputFfmpeg;
         public static string lastOutputGifski;
-        static bool replaceLastLine = false;
 
         public enum LogMode { Visible, OnlyLastLine, Hidden }
         static LogMode currentLogMode;
@@ -47,11 +46,19 @@ namespace Flowframes
 
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
-            lastOutputFfmpeg = lastOutputFfmpeg + outLine.Data + "\n";
+            if (outLine == null || outLine.Data == null)
+                return;
+            string line = outLine.Data;
+            lastOutputFfmpeg = lastOutputFfmpeg + line + "\n";
             bool hidden = currentLogMode == LogMode.Hidden;
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
-            string trimmedLine = outLine.Data.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
+            string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
             Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg.txt");
+
+            if(line.Contains("Could not open file"))
+            {
+                Interpolate.Cancel("Failed to write frames - Make sure the input folder is not restricted!");
+            }
         }
 
         public static string GetFfmpegOutput (string args)
@@ -101,6 +108,8 @@ namespace Flowframes
 
         static void OutputHandlerGifski(object sendingProcess, DataReceivedEventArgs outLine)
         {
+            if (outLine == null || outLine.Data == null)
+                return;
             lastOutputGifski = lastOutputGifski + outLine.Data + "\n";
             bool hidden = currentLogMode == LogMode.Hidden;
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;

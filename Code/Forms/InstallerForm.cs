@@ -26,7 +26,7 @@ namespace Flowframes.Forms
         {
             PkgInstaller.installerForm = this;
             Print($"Welcome to the package manager.{Environment.NewLine}Here you can install packages by ticking or uninstall by unticking them.");
-            Refresh();
+            RefreshGui();
             EnableRequired();
             if (pkgList.SelectedIndex < 0)
                 pkgList.SelectedIndex = 0;
@@ -78,7 +78,7 @@ namespace Flowframes.Forms
             SetBusy(false);
         }
 
-        void Refresh ()
+        void RefreshGui ()
         {
             pkgList.Items.Clear();
             foreach (FlowPackage pkg in PkgInstaller.packages)

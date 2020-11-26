@@ -31,7 +31,7 @@ namespace Flowframes
         {
 			if (!Directory.Exists(Paths.GetPkgPath()))
             {
-				Logger.Log("Install invalid - Reason: " + Paths.GetPkgPath() + " does not exist.");
+				Logger.Log("Install invalid - Reason: " + Paths.GetPkgPath() + " does not exist.", true);
 				return false;
 			}
 

@@ -7,6 +7,7 @@ using System.Management;
 using Flowframes.IO;
 using DiskDetector;
 using DiskDetector.Models;
+using Microsoft.VisualBasic.Devices;
 
 namespace Flowframes.OS
 {
@@ -113,6 +114,11 @@ namespace Flowframes.OS
         public static bool HasNonAsciiChars(string str)
         {
             return (Encoding.UTF8.GetByteCount(str) != str.Length);
+        }
+
+        public static int GetFreeRamMb ()
+        {
+            return (int)(new ComputerInfo().AvailablePhysicalMemory / 1048576);
         }
     }
 }

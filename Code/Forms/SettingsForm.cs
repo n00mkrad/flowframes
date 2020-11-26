@@ -58,6 +58,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(timingMode);
             ConfigParser.SaveGuiElement(enableLoop);
             ConfigParser.SaveGuiElement(jpegInterps);
+            ConfigParser.SaveGuiElement(scnDetect);
+            ConfigParser.SaveGuiElement(scnDetectValue);
             // AI
             ConfigParser.SaveComboxIndex(rifeMode);
             ConfigParser.SaveGuiElement(torchGpus);
@@ -98,6 +100,8 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(timingMode);
             ConfigParser.LoadGuiElement(enableLoop);
             ConfigParser.LoadGuiElement(jpegInterps);
+            ConfigParser.LoadGuiElement(scnDetect);
+            ConfigParser.LoadGuiElement(scnDetectValue);
             // AI
             ConfigParser.LoadComboxIndex(rifeMode);
             ConfigParser.LoadGuiElement(torchGpus);
