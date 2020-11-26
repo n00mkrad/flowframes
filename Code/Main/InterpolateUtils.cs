@@ -135,11 +135,16 @@ namespace Flowframes.Main
 
         public static void PathAsciiCheck (string inpath, string outpath)
         {
+            bool shownMsg = false;
+            
             if (OSUtils.HasNonAsciiChars(inpath))
-                Logger.Log("Warning: Input path includes non-ASCII characters. This might cause problems.");
+            {
+                ShowMessage("Warning: Input path includes non-ASCII characters. This might cause problems.");
+                shownMsg = true;
+            }
 
-            if (OSUtils.HasNonAsciiChars(outpath))
-                Logger.Log("Warning: Output path includes non-ASCII characters. This might cause problems.");
+            if (!shownMsg && OSUtils.HasNonAsciiChars(outpath))
+                ShowMessage("Warning: Output path includes non-ASCII characters. This might cause problems.");
         }
 
         public static void GifCompatCheck (Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)

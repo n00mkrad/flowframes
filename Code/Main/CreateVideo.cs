@@ -80,10 +80,11 @@ namespace Flowframes.Main
                 else
                 {
                     await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, ext);   // Create video
-                    await MergeAudio(i.lastInputPath, outPath);
-                    if (looptimes > 0)
-                        await Loop(outPath, looptimes);
                 }
+
+                if (looptimes > 0)
+                    await Loop(outPath, looptimes);
+                await MergeAudio(i.lastInputPath, outPath);
 
                 if (changeFps > 0)
                 {

@@ -263,7 +263,7 @@ namespace Flowframes
             if (!hasShownError && line.ToLower().Contains("modulenotfounderror"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A python module is missing. Check {logFilename} for details.\n\n{line}", "Error");
+                InterpolateUtils.ShowMessage($"A python module is missing. Check {logFilename} for details.\n\n{line}\n\nIf you don't want to install it yourself, use the Python package from the Package Installer.", "Error");
             }
 
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
