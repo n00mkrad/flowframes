@@ -132,7 +132,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label49 = new System.Windows.Forms.Label();
             this.label50 = new System.Windows.Forms.Label();
             this.scnDetect = new System.Windows.Forms.CheckBox();
             this.scnDetectValue = new System.Windows.Forms.ComboBox();
@@ -361,7 +360,6 @@
             this.tabListPage2.Controls.Add(this.label51);
             this.tabListPage2.Controls.Add(this.scnDetect);
             this.tabListPage2.Controls.Add(this.label50);
-            this.tabListPage2.Controls.Add(this.label49);
             this.tabListPage2.Controls.Add(this.mpDedupePanel);
             this.tabListPage2.Controls.Add(this.magickDedupePanel);
             this.tabListPage2.Controls.Add(this.timingMode);
@@ -508,7 +506,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.Color.Silver;
-            this.label27.Location = new System.Drawing.Point(308, 314);
+            this.label27.Location = new System.Drawing.Point(308, 251);
             this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(449, 13);
@@ -519,7 +517,7 @@
             // jpegInterps
             // 
             this.jpegInterps.AutoSize = true;
-            this.jpegInterps.Location = new System.Drawing.Point(280, 313);
+            this.jpegInterps.Location = new System.Drawing.Point(280, 250);
             this.jpegInterps.Name = "jpegInterps";
             this.jpegInterps.Size = new System.Drawing.Size(15, 14);
             this.jpegInterps.TabIndex = 48;
@@ -528,7 +526,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(10, 313);
+            this.label25.Location = new System.Drawing.Point(10, 250);
             this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(149, 13);
@@ -539,7 +537,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 283);
+            this.label26.Location = new System.Drawing.Point(10, 220);
             this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(76, 16);
@@ -1419,21 +1417,10 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label49.Location = new System.Drawing.Point(10, 180);
-            this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(122, 16);
-            this.label49.TabIndex = 62;
-            this.label49.Text = "Scene Detection";
-            // 
             // label50
             // 
             this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(10, 213);
+            this.label50.Location = new System.Drawing.Point(10, 160);
             this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(194, 13);
@@ -1443,7 +1430,7 @@
             // scnDetect
             // 
             this.scnDetect.AutoSize = true;
-            this.scnDetect.Location = new System.Drawing.Point(280, 213);
+            this.scnDetect.Location = new System.Drawing.Point(280, 160);
             this.scnDetect.Name = "scnDetect";
             this.scnDetect.Size = new System.Drawing.Size(15, 14);
             this.scnDetect.TabIndex = 64;
@@ -1463,7 +1450,7 @@
             "0.2",
             "0.15",
             "0.1"});
-            this.scnDetectValue.Location = new System.Drawing.Point(364, 210);
+            this.scnDetectValue.Location = new System.Drawing.Point(364, 157);
             this.scnDetectValue.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
             this.scnDetectValue.Name = "scnDetectValue";
             this.scnDetectValue.Size = new System.Drawing.Size(100, 21);
@@ -1472,7 +1459,7 @@
             // label51
             // 
             this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(301, 214);
+            this.label51.Location = new System.Drawing.Point(301, 161);
             this.label51.Margin = new System.Windows.Forms.Padding(3);
             this.label51.Name = "label51";
             this.label51.Size = new System.Drawing.Size(57, 13);
@@ -1483,7 +1470,7 @@
             // 
             this.label52.AutoSize = true;
             this.label52.ForeColor = System.Drawing.Color.Silver;
-            this.label52.Location = new System.Drawing.Point(482, 214);
+            this.label52.Location = new System.Drawing.Point(482, 161);
             this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(225, 13);
@@ -1680,7 +1667,6 @@
         private System.Windows.Forms.Label label51;
         private System.Windows.Forms.CheckBox scnDetect;
         private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.Label label49;
         private System.Windows.Forms.Label label52;
         private System.Windows.Forms.Label label53;
         private System.Windows.Forms.Label label54;

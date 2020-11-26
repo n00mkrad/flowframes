@@ -953,7 +953,6 @@
             this.mainTabControl.UnselectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.UpDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.UpDownTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(112)))));
-            this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.mainTabControl_SelectedIndexChanged);
             this.mainTabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.mainTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 

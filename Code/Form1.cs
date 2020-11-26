@@ -386,10 +386,5 @@ namespace Flowframes
             if (!initialized || !GetAi().supportsTiling) return;
             Config.Set($"tilesize_{GetAi().aiName}", tilesize.GetInt().ToString());
         }
-
-        private void mainTabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            mainTabControl.Refresh();
-        }
     }
 }
