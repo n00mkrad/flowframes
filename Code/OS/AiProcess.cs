@@ -40,7 +40,7 @@ namespace Flowframes
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             Init(dain, 1500);
-            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt}";
+            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -81,7 +81,7 @@ namespace Flowframes
                 Directory.CreateDirectory(outPath);
                 args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
                 await RunCainPartial(args);
-                Directory.Delete(run1ResultsPath, true);
+                IOUtils.TryDeleteIfExists(run1ResultsPath);
             }
 
             if (times == 8)    // #3
@@ -94,7 +94,7 @@ namespace Flowframes
                 Directory.CreateDirectory(outPath);
                 args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
                 await RunCainPartial(args);
-                Directory.Delete(run2ResultsPath, true);
+                IOUtils.TryDeleteIfExists(run2ResultsPath);
             }
 
             if (Interpolate.canceled) return;
@@ -110,7 +110,7 @@ namespace Flowframes
             string cainExe = "cain-ncnn-vulkan.exe";
             Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             Init(cain, 1500);
-            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt}";
+            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -201,7 +201,7 @@ namespace Flowframes
                 Directory.CreateDirectory(outPath);
                 args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
                 await RunRifePartial(args);
-                Directory.Delete(run1ResultsPath, true);
+                IOUtils.TryDeleteIfExists(run1ResultsPath);
             }
 
             if (times == 8)    // #3
@@ -214,7 +214,7 @@ namespace Flowframes
                 Directory.CreateDirectory(outPath);
                 args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
                 await RunRifePartial(args);
-                Directory.Delete(run2ResultsPath, true);
+                IOUtils.TryDeleteIfExists(run2ResultsPath);
             }
 
             if (Interpolate.canceled) return;

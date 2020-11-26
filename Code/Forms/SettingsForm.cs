@@ -79,7 +79,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(ffEncThreads);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffprobeCountFrames);
-            ConfigParser.SaveGuiElement(vfrMode);
+            ConfigParser.SaveComboxIndex(vfrMode);
         }
 
         void LoadSettings()
@@ -121,7 +121,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffprobeCountFrames);
-            ConfigParser.LoadGuiElement(vfrMode);
+            ConfigParser.LoadComboxIndex(vfrMode);
         }
 
         private void dedupThresh_Leave(object sender, EventArgs e)
