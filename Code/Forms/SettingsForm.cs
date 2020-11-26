@@ -73,6 +73,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(gifskiQ);
             ConfigParser.SaveGuiElement(maxFps);
             ConfigParser.SaveComboxIndex(maxFpsMode);
+            ConfigParser.SaveComboxIndex(loopMode);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveGuiElement(autoDedupFrames);
@@ -115,6 +116,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(gifskiQ);
             ConfigParser.LoadGuiElement(maxFps);
             ConfigParser.LoadComboxIndex(maxFpsMode);
+            ConfigParser.LoadComboxIndex(loopMode);
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadGuiElement(autoDedupFrames);

@@ -121,7 +121,7 @@ namespace Flowframes
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
-            string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy \"{pathNoExt}-{times}xLoop{ext}\"";
+            string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy \"{pathNoExt}-Loop{times}{ext}\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputFile);

@@ -69,8 +69,6 @@ namespace Flowframes.Main
                 string ext = InterpolateUtils.lastExt;
                 int looptimes = GetLoopTimes(framesPath);
 
-                if (looptimes > 0) Logger.Log($"Looping {looptimes} times to reach target length");
-
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
@@ -81,9 +79,11 @@ namespace Flowframes.Main
                 }
                 else
                 {
-                    await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, looptimes, ext);
+                    await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, ext);   // Create video
+                    await MergeAudio(i.lastInputPath, outPath);
+                    if (looptimes > 0)
+                        await Loop(outPath, looptimes);
                 }
-                await MergeAudio(i.lastInputPath, outPath);
 
                 if (changeFps > 0)
                 {
@@ -91,19 +91,30 @@ namespace Flowframes.Main
                     Program.mainForm.SetStatus("Creating video with desired frame rate...");
                     await FFmpegCommands.ConvertFramerate(outPath, newOutPath, h265, crf, changeFps, !keepOriginalFpsVid);
                     await MergeAudio(i.lastInputPath, newOutPath);
+                    if (looptimes > 0)
+                        await Loop(newOutPath, looptimes);
                 }
             }
+        }
+
+        static async Task Loop (string outPath, int looptimes)
+        {
+            Logger.Log($"Looping {looptimes} times to reach target length");
+            await FFmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }
 
 
         static int GetLoopTimes(string framesOutPath)
         {
+            int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
             int minFrameCount = (minLength * i.currentOutFps).RoundToInt();
             int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
             if (outFrames / i.currentOutFps < minLength)
-                return (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
-            return -1;
+                times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
+            times--;    // Account for this calculation not counting the 1st play (0 loops)
+            if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing
+            return times;
         }
 
         public static async Task MergeAudio(string sourceVideo, string outVideo, int looptimes = -1)
