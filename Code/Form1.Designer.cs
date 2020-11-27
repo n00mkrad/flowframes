@@ -95,7 +95,7 @@
             this.cancelBtn = new System.Windows.Forms.Button();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
             this.welcomeTab = new System.Windows.Forms.TabPage();
-            this.label22 = new System.Windows.Forms.Label();
+            this.welcomeLabel2 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.patronsLabel = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
@@ -959,7 +959,7 @@
             // welcomeTab
             // 
             this.welcomeTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.welcomeTab.Controls.Add(this.label22);
+            this.welcomeTab.Controls.Add(this.welcomeLabel2);
             this.welcomeTab.Controls.Add(this.panel8);
             this.welcomeTab.Controls.Add(this.panel6);
             this.welcomeTab.Controls.Add(this.label11);
@@ -970,17 +970,18 @@
             this.welcomeTab.TabIndex = 4;
             this.welcomeTab.Text = "Welcome";
             // 
-            // label22
+            // welcomeLabel2
             // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.ForeColor = System.Drawing.Color.Gray;
-            this.label22.Location = new System.Drawing.Point(142, 3);
-            this.label22.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(478, 40);
-            this.label22.TabIndex = 5;
-            this.label22.Text = "Click The Interpolation Tab To Begin.";
+            this.welcomeLabel2.AutoSize = true;
+            this.welcomeLabel2.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.welcomeLabel2.ForeColor = System.Drawing.Color.Gray;
+            this.welcomeLabel2.Location = new System.Drawing.Point(142, 3);
+            this.welcomeLabel2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.welcomeLabel2.Name = "welcomeLabel2";
+            this.welcomeLabel2.Size = new System.Drawing.Size(478, 40);
+            this.welcomeLabel2.TabIndex = 5;
+            this.welcomeLabel2.Text = "Click The Interpolation Tab To Begin.";
+            this.welcomeLabel2.Click += new System.EventHandler(this.welcomeLabel2_Click);
             // 
             // panel8
             // 
@@ -1431,7 +1432,7 @@
         private System.Windows.Forms.Label patronsLabel;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label newsLabel;
-        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label welcomeLabel2;
     }
 }
 

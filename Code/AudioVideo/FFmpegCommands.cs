@@ -47,12 +47,16 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async void ExtractSingleFrame(string inputFile, int frameNum, bool hdr, bool delSrc)
+        public static async Task ExtractSingleFrame(string inputFile, int frameNum, bool hdr, bool delSrc)
         {
-            string hdrStr = "";
-            if (hdr) hdrStr = hdrFilter;
-            string args = "-i \"" + inputFile + "\" " + hdrStr
-                + " -vf \"select=eq(n\\," + frameNum + ")\" -vframes 1  \"" + inputFile + "-frame" + frameNum + ".png\"";
+            string outPath = $"{inputFile}-frame{frameNum}.png";
+            await ExtractSingleFrame(inputFile, outPath, frameNum, hdr, delSrc);
+        }
+
+        public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum, bool hdr, bool delSrc)
+        {
+            string hdrStr = hdr ? hdrFilter : "";
+            string args = $"-i {inputFile.Wrap()} {hdrStr }-vf \"select=eq(n\\,{frameNum})\" -vframes 1  {outputPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (delSrc)
                 DeleteSource(inputFile);

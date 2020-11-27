@@ -234,6 +234,7 @@
     <Compile Include="IO\Setup.cs" />
     <Compile Include="UI\FormatUtils.cs" />
     <Compile Include="UI\GetWebInfo.cs" />
+    <Compile Include="UI\MainUiFunctions.cs" />
     <Compile Include="UI\UIUtils.cs" />
     <Compile Include="UI\UtilsTab.cs" />
     <EmbeddedResource Include="Form1.resx">

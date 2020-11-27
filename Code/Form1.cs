@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using HTAlt.WinForms;
 using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using System.Threading.Tasks;
 
 namespace Flowframes
 {
@@ -125,7 +126,7 @@ namespace Flowframes
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 inputTbox.Text = dialog.FileName;
-                InitInput();
+                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
             }
         }
 
@@ -137,33 +138,9 @@ namespace Flowframes
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 inputTbox.Text = dialog.FileName;
-                InitInput();
+                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
             }
         }
-
-        void InitInput()
-        {
-            outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
-            string path = inputTbox.Text.Trim();
-            Program.lastInputPath = path;
-            string fpsStr = "Not Found";
-            float fps = IOUtils.GetFpsFolderOrVideo(path);
-            if(fps > 0)
-            {
-                fpsStr = fps.ToString();
-                fpsInTbox.Text = fpsStr;
-            }
-            Interpolate.SetFps(fps);
-            Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
-            if (!Program.lastInputPathIsSsd)
-                Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
-            if (IOUtils.IsPathDirectory(path))
-                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {IOUtils.GetAmountOfFiles(path, false)}");
-            else
-                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {FFmpegCommands.GetFrameCount(path)}");
-            MagickDedupe.ClearCache();
-        }
-
 
         private void browseOutBtn_Click(object sender, EventArgs e)
         {
@@ -214,8 +191,7 @@ namespace Flowframes
             if (Program.busy) return;
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             inputTbox.Text = files[0];
-            InitInput();
-            //FFmpegCommands.GetFramerate(inputTbox.Text);
+            MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
         }
 
         void outputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -304,7 +280,7 @@ namespace Flowframes
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             inputTbox.Text = files[0];
             Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
-            InitInput();
+            MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
         }
 
         private async void utilsConvertMp4Btn_Click(object sender, EventArgs e)
@@ -385,6 +361,11 @@ namespace Flowframes
         {
             if (!initialized || !GetAi().supportsTiling) return;
             Config.Set($"tilesize_{GetAi().aiName}", tilesize.GetInt().ToString());
+        }
+
+        private void welcomeLabel2_Click(object sender, EventArgs e)
+        {
+            SetTab("interpolation");
         }
     }
 }

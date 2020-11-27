@@ -45,12 +45,19 @@ namespace Flowframes.Main
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     Image img = IOUtils.GetImage(latestFramePath);
-                    preview.Image = img;
-                    if (bigPreviewForm != null)
-                        bigPreviewForm.SetImage(img);
+                    SetPreviewImg(img);
                 }
             }
             catch { }
+        }
+
+        public static void SetPreviewImg (Image img)
+        {
+            if (img == null)
+                return;
+            preview.Image = img;
+            if (bigPreviewForm != null)
+                bigPreviewForm.SetImage(img);
         }
 
         public static int GetProgressWaitTime(int numFrames)
