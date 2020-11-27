@@ -43,7 +43,7 @@ namespace Flowframes.IO
             cachedLines = list.ToArray();
         }
 
-        public static string Get(string key)
+        public static string Get(string key, Type type = Type.String)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Flowframes.IO
                         return keyValuePair[1];
                     }
                 }
-                return WriteDefaultValIfExists(key);
+                return WriteDefaultValIfExists(key, type);
             }
             catch (Exception e)
             {
@@ -66,53 +66,51 @@ namespace Flowframes.IO
 
         public static bool GetBool(string key)
         {
-            return bool.Parse(Get(key));
+            return bool.Parse(Get(key, Type.Bool));
         }
 
         public static int GetInt(string key)
         {
-            return int.Parse(Get(key));
+            return int.Parse(Get(key, Type.Int));
         }
 
         public static float GetFloat(string key)
         {
-            return float.Parse(Get(key), CultureInfo.InvariantCulture);
+            return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
         }
 
-        private static string WriteDefaultValIfExists(string key)   // DEFAULTS TO 0, which means key that use 0 as default are not listed here
+
+        public enum Type { String, Int, Float, Bool }
+        private static string WriteDefaultValIfExists(string key, Type type)   // DEFAULTS TO 0, which means key that use 0 as default are not listed here
         {
-            if (key == "maxVidHeight") return WriteDefault("maxVidHeight", "2160");
-            if (key == "keepTempFolder") return WriteDefault("keepTempFolder", "False");
-            if (key == "deleteLogsOnStartup") return WriteDefault("deleteLogsOnStartup", "True");
-            if (key == "keepFrames") return WriteDefault("keepFrames", "False");
-            if (key == "tempDirCustom") return WriteDefault("tempDirCustom", "C:/");
+            if (key == "maxVidHeight")      return WriteDefault(key, "2160");
+            if (key == "delLogsOnStartup")  return WriteDefault(key, "True");
+            if (key == "tempDirCustom")     return WriteDefault(key, "C:/");
             // Interpolation
-            if (key == "dedupMode") return WriteDefault("dedupMode", "2");
-            if (key == "dedupThresh") return WriteDefault("dedupThresh", "2");
-            if (key == "enableAudio") return WriteDefault("enableAudio", "True");
-            if (key == "enableLoop") return WriteDefault("enableLoop", "False");
-            if (key == "autoDedupFrames") return WriteDefault("autoDedupFrames", "15");
-            if (key == "vfrDedupe") return WriteDefault("vfrDedupe", "True");
-            if (key == "jpegInterps") return WriteDefault("jpegInterps", "False");
-            if (key == "timingMode") return WriteDefault("timingMode", "1");
-            if (key == "scnDetect") return WriteDefault("scnDetect", "False");
-            if (key == "scnDetectValue") return WriteDefault("scnDetectValue", "0.2");
+            if (key == "dedupMode")         return WriteDefault(key, "2");
+            if (key == "dedupThresh")       return WriteDefault(key, "2");
+            if (key == "enableAudio")       return WriteDefault(key, "True");
+            if (key == "autoDedupFrames")   return WriteDefault(key, "15");
+            if (key == "vfrDedupe")         return WriteDefault(key, "True");
+            if (key == "timingMode")        return WriteDefault(key, "1");
+            if (key == "scnDetectValue")    return WriteDefault(key, "0.2");
             // Video Export
-            if (key == "h264Crf") return WriteDefault("h264Crf", "20");
-            if (key == "h265Crf") return WriteDefault("h265Crf", "22");
-            if (key == "gifskiQ") return WriteDefault("gifskiQ", "95");
-            if (key == "minOutVidLength") return WriteDefault("minOutVidLength", "2");
+            if (key == "h264Crf")       return WriteDefault(key, "20");
+            if (key == "h265Crf")       return WriteDefault(key, "22");
+            if (key == "gifskiQ")       return WriteDefault(key, "95");
+            if (key == "minVidLength")  return WriteDefault(key, "2");
             // AI
-            if (key == "rifeMode") return WriteDefault("rifeMode", ((NvApi.GetVramGb() > 5f) ? 1 : 0).ToString()); // Enable by default if GPU has >5gb VRAM
-            if (key == "ncnnThreads") return WriteDefault("ncnnThreads", "2");
+            if (key == "rifeMode")      return WriteDefault(key, ((NvApi.GetVramGb() > 7f) ? 1 : 0).ToString()); // Enable by default if GPU has >7gb VRAM
+            if (key == "ncnnThreads")   return WriteDefault(key, "1");
             // Debug / Other / Experimental
-            if (key == "ffprobeCountFrames") return WriteDefault("ffprobeCountFrames", "False");
-            if (key == "ffEncPreset") return WriteDefault("ffEncPreset", "medium");
-            if (key == "ffEncPreset") return WriteDefault("ffEncPreset", "medium");
+            if (key == "ffEncPreset")           return WriteDefault(key, "medium");
             // Tile Sizes
-            if (key == "tilesize_RIFE_NCNN") return WriteDefault("tilesize_RIFE_NCNN", "2048");
-            if (key == "tilesize_DAIN_NCNN") return WriteDefault("tilesize_DAIN_NCNN", "512");
-            if (key == "tilesize_CAIN_NCNN") return WriteDefault("tilesize_CAIN_NCNN", "2048");
+            if (key == "tilesize_RIFE_NCNN")    return WriteDefault(key, "2048");
+            if (key == "tilesize_DAIN_NCNN")    return WriteDefault(key, "512");
+            if (key == "tilesize_CAIN_NCNN")    return WriteDefault(key, "2048");
+
+            if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
+            if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)
             return WriteDefault(key, "0");
         }
 

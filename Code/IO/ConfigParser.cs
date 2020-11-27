@@ -54,7 +54,7 @@ namespace Flowframes.IO
 
 		public static void LoadGuiElement(CheckBox checkbox)
 		{
-			checkbox.Checked = bool.Parse(Config.Get(checkbox.Name));
+			checkbox.Checked = Config.GetBool(checkbox.Name);
 		}
 
 		public static void LoadComboxIndex(ComboBox comboBox)

@@ -108,7 +108,7 @@ namespace Flowframes.Main
         static int GetLoopTimes(string framesOutPath)
         {
             int times = -1;
-            int minLength = Config.GetInt("minOutVidLength");
+            int minLength = Config.GetInt("minVidLength");
             int minFrameCount = (minLength * i.currentOutFps).RoundToInt();
             int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
             if (outFrames / i.currentOutFps < minLength)

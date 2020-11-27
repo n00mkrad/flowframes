@@ -42,10 +42,10 @@ namespace Flowframes.UI
             if (span.TotalMinutes >= 1f)
                 return span.ToString(@"mm\:ss");
 
-            if (span.TotalSeconds >= 3f)
+            if (span.TotalSeconds >= 2f)
                 return span.ToString(@"ss") + "s";
 
-            return span.Milliseconds.ToString() + "ms";
+            return span.Milliseconds + "ms";
         }
 
         public static string TimeSw(Stopwatch sw)

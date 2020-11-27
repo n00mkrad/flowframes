@@ -29,7 +29,7 @@ namespace Flowframes
             Paths.Init();
             Config.Init();
 
-            if (Config.GetBool("deleteLogsOnStartup"))
+            if (Config.GetBool("delLogsOnStartup"))
                 IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs not from this session
 
             string oldExePath = IOUtils.GetExe() + ".old";

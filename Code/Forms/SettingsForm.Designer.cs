@@ -337,7 +337,7 @@
             // 
             this.deleteLogsOnStartup.AutoSize = true;
             this.deleteLogsOnStartup.Location = new System.Drawing.Point(280, 130);
-            this.deleteLogsOnStartup.Name = "deleteLogsOnStartup";
+            this.deleteLogsOnStartup.Name = "delLogsOnStartup";
             this.deleteLogsOnStartup.Size = new System.Drawing.Size(15, 14);
             this.deleteLogsOnStartup.TabIndex = 23;
             this.deleteLogsOnStartup.UseVisualStyleBackColor = true;
@@ -1160,7 +1160,7 @@
             "10",
             "20"});
             this.minOutVidLength.Location = new System.Drawing.Point(280, 207);
-            this.minOutVidLength.Name = "minOutVidLength";
+            this.minOutVidLength.Name = "minVidLength";
             this.minOutVidLength.Size = new System.Drawing.Size(100, 21);
             this.minOutVidLength.TabIndex = 29;
             // 
