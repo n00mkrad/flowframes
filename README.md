@@ -61,7 +61,7 @@ Here is an explanation of some of the more important settings.
 
 ### Video Export
 
-* Encoding Options: Set options for video/GIF encoding. Refer to the **FFmpeg** and Gifski documentations.
+* Encoding Options: Set options for video/GIF encoding. Refer to the **FFmpeg** and **Gifski** documentations.
 * Minimum Video Length: Make sure the output is as long as this value by looping it.
 * Maximum Output Frame Rate: Limit frame rate, for example, if you want a 60 FPS output from a 24 FPS video.
 
