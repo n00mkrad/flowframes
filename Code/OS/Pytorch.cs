@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Flowframes.OS
 {
-    class Python
+    class Pytorch
     {
         static bool hasCheckedSysPy = false;
         static bool sysPyInstalled = false;
@@ -33,6 +33,36 @@ namespace Flowframes.OS
                 }
             }
             return "";
+        }
+
+        public static bool IsPytorchReady ()
+        {
+            string torchVer = GetPytorchVer();
+            if (!string.IsNullOrWhiteSpace(torchVer) && torchVer.Length <= 35)
+                return true;
+            else
+                return false;
+        }
+
+        static string GetPytorchVer()
+        {
+            try
+            {
+                Process py = OSUtils.NewProcess(true);
+                py.StartInfo.Arguments = "\"/C\" " + GetPyCmd() + " -c \"import torch; print(torch.__version__)\"";
+                Logger.Log("[DepCheck] CMD: " + py.StartInfo.Arguments);
+                py.Start();
+                py.WaitForExit();
+                string output = py.StandardOutput.ReadToEnd();
+                string err = py.StandardError.ReadToEnd();
+                if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
+                Logger.Log("[DepCheck] Pytorch Check Output: " + output.Trim());
+                return output;
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         public static bool IsSysPyInstalled ()

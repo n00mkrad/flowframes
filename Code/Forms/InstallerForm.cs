@@ -1,4 +1,5 @@
 ﻿using Flowframes.IO;
+using Flowframes.OS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -91,7 +92,15 @@ namespace Flowframes.Forms
             {
                 if(pkgList.Items[i].ToString().ToLower().Contains("required"))
                     pkgList.SetItemChecked(i, true);
+
+                if (pkgList.Items[i].ToString() == "Python" && IsFirstRun())
+                    pkgList.SetItemChecked(i, !Pytorch.IsPytorchReady());   // Enable if system pytorch was not detected
             }
+        }
+
+        bool IsFirstRun()
+        {
+            return !PkgUtils.IsInstalled(Packages.audioVideo);
         }
 
         public void Print(string s, bool replaceLastLine = false)
