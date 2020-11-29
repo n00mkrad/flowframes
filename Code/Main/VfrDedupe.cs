@@ -12,20 +12,32 @@ namespace Flowframes.Main
 {
     class VfrDedupe
     {
+
+        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, bool firstFrameFix)
+        {
+            Logger.Log("Generating timecodes...");
+            await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix);
+            await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix);
+            await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix);
+            frameFiles = null;
+            Logger.Log($"Generating timecodes... Done.", false, true);
+        }
+
+        static FileInfo[] frameFiles;
+
         public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix)
         {
             bool sceneDetection = true;
-            Logger.Log("Generating timecodes...");
 
-            FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles("*.png");
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), "vfr.ini");
+            if(frameFiles == null || frameFiles.Length < 1)
+                frameFiles = new DirectoryInfo(framesPath).GetFiles("*.png");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{interpFactor}.ini");
             string fileContent = "";
 
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), "scenes");
             string interpPath = framesPath.Replace(@"\", "/") + "-interpolated";
 
             int lastFrameDuration = 1;
-            bool discardNext = false;
 
             // Calculate time duration between frames
             int totalFileCount = 1;
@@ -59,7 +71,7 @@ namespace Flowframes.Main
                     if (discardThisFrame)
                     {
                         int lastNum = totalFileCount - 1;
-                        for(int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
+                        for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
                             //Logger.Log($"-> Writing #{frm + 1}: {lastNum}");
                             fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
@@ -73,15 +85,17 @@ namespace Flowframes.Main
                     totalFileCount++;   // Don't increment, so we dupe the last frame and ignore the interp frame
                 }
 
-                if ((i+1) % 50 == 0)
+                if ((i + 1) % 100 == 0)
                 {
-                    Logger.Log($"Generating timecodes... {i + 1}/{frameFiles.Length}", false, true);
+                    Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
                     await Task.Delay(1);
                 }
             }
 
             File.WriteAllText(vfrFile, fileContent);
-            Logger.Log($"Generating timecodes... Done.", false, true);
+
+            if (interpFactor > 2)       // Skip all steps that only need to be done once
+                return;
 
             if (firstFrameFix)
             {
@@ -95,7 +109,11 @@ namespace Flowframes.Main
             {
                 int lastFileNumber = frameFiles.Last().Name.GetInt();
                 lastFileNumber += lastFrameDuration;
-                File.Copy(frameFiles.First().FullName, Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber + ".png"));
+                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber + ".png");
+                if (File.Exists(loopFrameTargetPath))
+                    return;
+                File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
+                //Logger.Log("Copied loop frame to " + loopFrameTargetPath);
             }
         }
     }

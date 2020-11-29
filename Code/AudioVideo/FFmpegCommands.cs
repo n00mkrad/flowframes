@@ -20,6 +20,7 @@ namespace Flowframes
 
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath)
         {
+            Logger.Log("Extracting scene changes using FFmpeg...");
             await VideoToFrames(inputFile, frameFolderPath, (Config.GetInt("dedupMode") == 2), false, new Size(320, 180), true, true);
         }
 
@@ -30,6 +31,7 @@ namespace Flowframes
 
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true, bool sceneDetect = false)
         {
+            if(!sceneDetect) Logger.Log("Extracting video frames using FFmpeg...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             if (!Directory.Exists(frameFolderPath))
                 Directory.CreateDirectory(frameFolderPath);

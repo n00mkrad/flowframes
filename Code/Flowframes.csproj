@@ -204,6 +204,7 @@
     <Compile Include="IO\PkgUtils.cs" />
     <Compile Include="Main\BatchProcessing.cs" />
     <Compile Include="Main\CreateVideo.cs" />
+    <Compile Include="Main\InterpolateSteps.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
     <Compile Include="Main\VfrDedupe.cs" />
     <Compile Include="OS\AiProcess.cs" />
@@ -227,7 +228,7 @@
     <Compile Include="Magick\MagickDedupe.cs" />
     <Compile Include="OS\NvApi.cs" />
     <Compile Include="OS\OSUtils.cs" />
-    <Compile Include="OS\Python.cs" />
+    <Compile Include="OS\Pytorch.cs" />
     <Compile Include="OS\Updater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="UI\UtilsTab.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BatchForm.resx">
       <DependentUpon>BatchForm.cs</DependentUpon>

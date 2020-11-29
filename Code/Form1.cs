@@ -35,14 +35,11 @@ namespace Flowframes
             // Main Tab
             UIUtils.InitCombox(interpFactorCombox, 0);
             UIUtils.InitCombox(outModeCombox, 0);
-            //ConfigParser.LoadGuiElement(tilesize);
             UIUtils.InitCombox(tilesize, 4);
             // Video Utils
             UIUtils.InitCombox(utilsLoopTimesCombox, 0);
             UIUtils.InitCombox(utilsSpeedCombox, 0);
             UIUtils.InitCombox(utilsConvCrf, 0);
-
-            //aiCombox_SelectedIndexChanged(null, null);
 
             Program.mainForm = this;
             Logger.textbox = logBox;
@@ -53,6 +50,8 @@ namespace Flowframes
             ConfigParser.LoadComboxIndex(aiCombox);
 
             Setup.Init();
+            UpdateStepByStepControls();
+
             Initialized();
             Checks();
         }
@@ -366,6 +365,30 @@ namespace Flowframes
         private void welcomeLabel2_Click(object sender, EventArgs e)
         {
             SetTab("interpolation");
+        }
+
+        public void UpdateStepByStepControls ()
+        {
+            stepSelector.Items.Clear();
+            if(Config.GetBool("scnDetect"))
+                stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Extract Video Frames", "3) Run Interpolation", "4) Create Output Video", "5) Cleanup & Reset" });
+            else
+                stepSelector.Items.AddRange(new string[] { "1) Extract Video Frames", "2) Run Interpolation", "3) Create Output Video", "4) Cleanup & Reset" });
+            stepSelector.SelectedIndex = 0;
+            bool stepByStep = Config.GetInt("processingMode") == 1;
+            stepSelector.Visible = stepByStep;
+            runStepBtn.Visible = stepByStep;
+        }
+
+        private async void runStepBtn_Click(object sender, EventArgs e)
+        {
+            await InterpolateSteps.Run(stepSelector.Text);
+        }
+
+        private void mainTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!initialized) return;
+            aiCombox_SelectedIndexChanged(null, null);
         }
     }
 }

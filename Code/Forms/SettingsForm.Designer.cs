@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
-            this.procedureMode = new System.Windows.Forms.ComboBox();
+            this.processingMode = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
             this.tempDirBrowseBtn = new HTAlt.WinForms.HTButton();
             this.tempDirCustom = new System.Windows.Forms.TextBox();
@@ -47,6 +47,11 @@
             this.deleteLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.label52 = new System.Windows.Forms.Label();
+            this.scnDetectValue = new System.Windows.Forms.ComboBox();
+            this.label51 = new System.Windows.Forms.Label();
+            this.scnDetect = new System.Windows.Forms.CheckBox();
+            this.label50 = new System.Windows.Forms.Label();
             this.mpDedupePanel = new System.Windows.Forms.Panel();
             this.panel13 = new System.Windows.Forms.Panel();
             this.mpdecimateMode = new System.Windows.Forms.ComboBox();
@@ -85,6 +90,8 @@
             this.label28 = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
+            this.loopMode = new System.Windows.Forms.ComboBox();
+            this.label55 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -112,6 +119,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.minOutVidLength = new System.Windows.Forms.ComboBox();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.label54 = new System.Windows.Forms.Label();
+            this.label53 = new System.Windows.Forms.Label();
             this.vfrMode = new System.Windows.Forms.ComboBox();
             this.label48 = new System.Windows.Forms.Label();
             this.ffEncPreset = new System.Windows.Forms.ComboBox();
@@ -132,15 +141,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label50 = new System.Windows.Forms.Label();
-            this.scnDetect = new System.Windows.Forms.CheckBox();
-            this.scnDetectValue = new System.Windows.Forms.ComboBox();
-            this.label51 = new System.Windows.Forms.Label();
-            this.label52 = new System.Windows.Forms.Label();
-            this.label53 = new System.Windows.Forms.Label();
-            this.label54 = new System.Windows.Forms.Label();
-            this.label55 = new System.Windows.Forms.Label();
-            this.loopMode = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -168,7 +168,7 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.generalTab.Controls.Add(this.procedureMode);
+            this.generalTab.Controls.Add(this.processingMode);
             this.generalTab.Controls.Add(this.label39);
             this.generalTab.Controls.Add(this.tempDirBrowseBtn);
             this.generalTab.Controls.Add(this.tempDirCustom);
@@ -186,21 +186,20 @@
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "General";
             // 
-            // procedureMode
+            // processingMode
             // 
-            this.procedureMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.procedureMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.procedureMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.procedureMode.ForeColor = System.Drawing.Color.White;
-            this.procedureMode.FormattingEnabled = true;
-            this.procedureMode.Items.AddRange(new object[] {
-            "COMING SOON - NOT FUNCTIONAL YET",
+            this.processingMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.processingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.processingMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.processingMode.ForeColor = System.Drawing.Color.White;
+            this.processingMode.FormattingEnabled = true;
+            this.processingMode.Items.AddRange(new object[] {
             "Do All Steps At Once (Extract, Interpolate, Encode)",
             "Run Each Step Separately (For Manually Editing Frames)"});
-            this.procedureMode.Location = new System.Drawing.Point(280, 7);
-            this.procedureMode.Name = "procedureMode";
-            this.procedureMode.Size = new System.Drawing.Size(300, 21);
-            this.procedureMode.TabIndex = 72;
+            this.processingMode.Location = new System.Drawing.Point(280, 7);
+            this.processingMode.Name = "processingMode";
+            this.processingMode.Size = new System.Drawing.Size(300, 21);
+            this.processingMode.TabIndex = 72;
             // 
             // label39
             // 
@@ -337,7 +336,7 @@
             // 
             this.deleteLogsOnStartup.AutoSize = true;
             this.deleteLogsOnStartup.Location = new System.Drawing.Point(280, 130);
-            this.deleteLogsOnStartup.Name = "delLogsOnStartup";
+            this.deleteLogsOnStartup.Name = "deleteLogsOnStartup";
             this.deleteLogsOnStartup.Size = new System.Drawing.Size(15, 14);
             this.deleteLogsOnStartup.TabIndex = 23;
             this.deleteLogsOnStartup.UseVisualStyleBackColor = true;
@@ -378,6 +377,66 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.ForeColor = System.Drawing.Color.Silver;
+            this.label52.Location = new System.Drawing.Point(482, 161);
+            this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(225, 13);
+            this.label52.TabIndex = 67;
+            this.label52.Text = "Lower values will detect more scene changes.";
+            // 
+            // scnDetectValue
+            // 
+            this.scnDetectValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scnDetectValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.scnDetectValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scnDetectValue.ForeColor = System.Drawing.Color.White;
+            this.scnDetectValue.FormattingEnabled = true;
+            this.scnDetectValue.Items.AddRange(new object[] {
+            "0.4",
+            "0.3",
+            "0.25",
+            "0.2",
+            "0.15",
+            "0.1"});
+            this.scnDetectValue.Location = new System.Drawing.Point(364, 157);
+            this.scnDetectValue.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.scnDetectValue.Name = "scnDetectValue";
+            this.scnDetectValue.Size = new System.Drawing.Size(100, 21);
+            this.scnDetectValue.TabIndex = 65;
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(301, 161);
+            this.label51.Margin = new System.Windows.Forms.Padding(3);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(57, 13);
+            this.label51.TabIndex = 66;
+            this.label51.Text = "Sensitivity:";
+            // 
+            // scnDetect
+            // 
+            this.scnDetect.AutoSize = true;
+            this.scnDetect.Location = new System.Drawing.Point(280, 160);
+            this.scnDetect.Name = "scnDetect";
+            this.scnDetect.Size = new System.Drawing.Size(15, 14);
+            this.scnDetect.TabIndex = 64;
+            this.scnDetect.UseVisualStyleBackColor = true;
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(10, 160);
+            this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(194, 13);
+            this.label50.TabIndex = 63;
+            this.label50.Text = "Don\'t Interpolate Scene Changes (Cuts)";
             // 
             // mpDedupePanel
             // 
@@ -852,6 +911,31 @@
             this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Video Export";
             // 
+            // loopMode
+            // 
+            this.loopMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.loopMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.loopMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.loopMode.ForeColor = System.Drawing.Color.White;
+            this.loopMode.FormattingEnabled = true;
+            this.loopMode.Items.AddRange(new object[] {
+            "Only Save Looped Video",
+            "Save Both Original And Looped Video"});
+            this.loopMode.Location = new System.Drawing.Point(280, 237);
+            this.loopMode.Name = "loopMode";
+            this.loopMode.Size = new System.Drawing.Size(400, 21);
+            this.loopMode.TabIndex = 62;
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(10, 240);
+            this.label55.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(162, 13);
+            this.label55.TabIndex = 61;
+            this.label55.Text = "Minimum Length Encoding Mode";
+            // 
             // panel8
             // 
             this.panel8.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
@@ -1160,7 +1244,7 @@
             "10",
             "20"});
             this.minOutVidLength.Location = new System.Drawing.Point(280, 207);
-            this.minOutVidLength.Name = "minVidLength";
+            this.minOutVidLength.Name = "minOutVidLength";
             this.minOutVidLength.Size = new System.Drawing.Size(100, 21);
             this.minOutVidLength.TabIndex = 29;
             // 
@@ -1190,6 +1274,28 @@
             this.debugTab.Name = "debugTab";
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Debugging / Experimental";
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.ForeColor = System.Drawing.Color.Silver;
+            this.label54.Location = new System.Drawing.Point(543, 184);
+            this.label54.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(118, 13);
+            this.label54.TabIndex = 82;
+            this.label54.Text = "Slower is more efficient.\r\n";
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.ForeColor = System.Drawing.Color.Silver;
+            this.label53.Location = new System.Drawing.Point(543, 214);
+            this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(186, 13);
+            this.label53.TabIndex = 81;
+            this.label53.Text = "CFR is recommended for compatibility.";
             // 
             // vfrMode
             // 
@@ -1327,7 +1433,7 @@
             this.ffEncThreads.Location = new System.Drawing.Point(280, 153);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
@@ -1417,113 +1523,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(10, 160);
-            this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(194, 13);
-            this.label50.TabIndex = 63;
-            this.label50.Text = "Don\'t Interpolate Scene Changes (Cuts)";
-            // 
-            // scnDetect
-            // 
-            this.scnDetect.AutoSize = true;
-            this.scnDetect.Location = new System.Drawing.Point(280, 160);
-            this.scnDetect.Name = "scnDetect";
-            this.scnDetect.Size = new System.Drawing.Size(15, 14);
-            this.scnDetect.TabIndex = 64;
-            this.scnDetect.UseVisualStyleBackColor = true;
-            // 
-            // scnDetectValue
-            // 
-            this.scnDetectValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scnDetectValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.scnDetectValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.scnDetectValue.ForeColor = System.Drawing.Color.White;
-            this.scnDetectValue.FormattingEnabled = true;
-            this.scnDetectValue.Items.AddRange(new object[] {
-            "0.4",
-            "0.3",
-            "0.25",
-            "0.2",
-            "0.15",
-            "0.1"});
-            this.scnDetectValue.Location = new System.Drawing.Point(364, 157);
-            this.scnDetectValue.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
-            this.scnDetectValue.Name = "scnDetectValue";
-            this.scnDetectValue.Size = new System.Drawing.Size(100, 21);
-            this.scnDetectValue.TabIndex = 65;
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(301, 161);
-            this.label51.Margin = new System.Windows.Forms.Padding(3);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(57, 13);
-            this.label51.TabIndex = 66;
-            this.label51.Text = "Sensitivity:";
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.ForeColor = System.Drawing.Color.Silver;
-            this.label52.Location = new System.Drawing.Point(482, 161);
-            this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(225, 13);
-            this.label52.TabIndex = 67;
-            this.label52.Text = "Lower values will detect more scene changes.";
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.ForeColor = System.Drawing.Color.Silver;
-            this.label53.Location = new System.Drawing.Point(543, 214);
-            this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(186, 13);
-            this.label53.TabIndex = 81;
-            this.label53.Text = "CFR is recommended for compatibility.";
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.ForeColor = System.Drawing.Color.Silver;
-            this.label54.Location = new System.Drawing.Point(543, 184);
-            this.label54.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(118, 13);
-            this.label54.TabIndex = 82;
-            this.label54.Text = "Slower is more efficient.\r\n";
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(10, 240);
-            this.label55.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(162, 13);
-            this.label55.TabIndex = 61;
-            this.label55.Text = "Minimum Length Encoding Mode";
-            // 
-            // loopMode
-            // 
-            this.loopMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.loopMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.loopMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.loopMode.ForeColor = System.Drawing.Color.White;
-            this.loopMode.FormattingEnabled = true;
-            this.loopMode.Items.AddRange(new object[] {
-            "Only Save Looped Video",
-            "Save Both Original And Looped Video"});
-            this.loopMode.Location = new System.Drawing.Point(280, 237);
-            this.loopMode.Name = "loopMode";
-            this.loopMode.Size = new System.Drawing.Size(400, 21);
-            this.loopMode.TabIndex = 62;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1534,6 +1533,7 @@
             this.Controls.Add(this.settingsTabList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Flowframes Settings ";
@@ -1643,7 +1643,7 @@
         private System.Windows.Forms.Label label38;
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.TextBox ffEncThreads;
-        private System.Windows.Forms.ComboBox procedureMode;
+        private System.Windows.Forms.ComboBox processingMode;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.CheckBox ffprobeCountFrames;

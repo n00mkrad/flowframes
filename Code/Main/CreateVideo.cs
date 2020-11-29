@@ -74,17 +74,18 @@ namespace Flowframes.Main
 
                 if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
                 {
-                    string vfrFile = Path.Combine(framesPath.GetParentDir(), "vfr.ini");
-                    await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, looptimes);
+                    string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
+                    await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, -1);
                 }
                 else
                 {
                     await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, ext);   // Create video
                 }
 
+                await MergeAudio(i.lastInputPath, outPath);
+
                 if (looptimes > 0)
                     await Loop(outPath, looptimes);
-                await MergeAudio(i.lastInputPath, outPath);
 
                 if (changeFps > 0)
                 {
@@ -108,7 +109,7 @@ namespace Flowframes.Main
         static int GetLoopTimes(string framesOutPath)
         {
             int times = -1;
-            int minLength = Config.GetInt("minVidLength");
+            int minLength = Config.GetInt("minOutVidLength");
             int minFrameCount = (minLength * i.currentOutFps).RoundToInt();
             int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
             if (outFrames / i.currentOutFps < minLength)
@@ -136,9 +137,10 @@ namespace Flowframes.Main
                 }
                 await FFmpegCommands.MergeAudio(outVideo, IOUtils.GetAudioFile(audioFileBasePath));        // Merge from audioFile into outVideo
             }
-            catch
+            catch (Exception e)
             {
                 Logger.Log("Failed to copy audio!");
+                Logger.Log("MergeAudio() Exception: " + e.Message, true);
             }
         }
     }

@@ -117,6 +117,8 @@
             this.previewPicturebox = new System.Windows.Forms.PictureBox();
             this.abtTab = new System.Windows.Forms.TabPage();
             this.htButton1 = new HTAlt.WinForms.HTButton();
+            this.runStepBtn = new System.Windows.Forms.Button();
+            this.stepSelector = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -953,6 +955,7 @@
             this.mainTabControl.UnselectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.UpDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.UpDownTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(112)))));
+            this.mainTabControl.SelectedIndexChanged += new System.EventHandler(this.mainTabControl_SelectedIndexChanged);
             this.mainTabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.mainTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
@@ -1285,6 +1288,43 @@
             this.htButton1.TabIndex = 40;
             this.htButton1.UseVisualStyleBackColor = false;
             // 
+            // runStepBtn
+            // 
+            this.runStepBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.runStepBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.runStepBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.runStepBtn.ForeColor = System.Drawing.Color.White;
+            this.runStepBtn.Location = new System.Drawing.Point(12, 442);
+            this.runStepBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.runStepBtn.Name = "runStepBtn";
+            this.runStepBtn.Size = new System.Drawing.Size(203, 47);
+            this.runStepBtn.TabIndex = 42;
+            this.runStepBtn.Text = "Run This Step";
+            this.runStepBtn.UseVisualStyleBackColor = false;
+            this.runStepBtn.Visible = false;
+            this.runStepBtn.Click += new System.EventHandler(this.runStepBtn_Click);
+            // 
+            // stepSelector
+            // 
+            this.stepSelector.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.stepSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.stepSelector.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.stepSelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.stepSelector.ForeColor = System.Drawing.Color.White;
+            this.stepSelector.FormattingEnabled = true;
+            this.stepSelector.Items.AddRange(new object[] {
+            "1) Extract Scene Changes",
+            "2) Extract Video Frames",
+            "3) Run Interpolation",
+            "4) Create Output Video",
+            "5) Reset/Cleanup"});
+            this.stepSelector.Location = new System.Drawing.Point(12, 418);
+            this.stepSelector.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.stepSelector.Name = "stepSelector";
+            this.stepSelector.Size = new System.Drawing.Size(203, 24);
+            this.stepSelector.TabIndex = 73;
+            this.stepSelector.Visible = false;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1292,6 +1332,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(934, 501);
+            this.Controls.Add(this.stepSelector);
+            this.Controls.Add(this.runStepBtn);
             this.Controls.Add(this.updateBtn);
             this.Controls.Add(this.htButton1);
             this.Controls.Add(this.queueBtn);
@@ -1433,6 +1475,8 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label newsLabel;
         private System.Windows.Forms.Label welcomeLabel2;
+        private System.Windows.Forms.Button runStepBtn;
+        private System.Windows.Forms.ComboBox stepSelector;
     }
 }
 

@@ -98,15 +98,23 @@ namespace Flowframes.OS
 
         public static bool DriveIsSSD(string path)
         {
-            var detectedDrives = Detector.DetectFixedDrives(QueryType.SeekPenalty);
-            if (detectedDrives.Count != 0)
+            try
             {
-                char pathDriveLetter = (path[0].ToString().ToUpper())[0];
-                foreach (var detectedDrive in detectedDrives)
+                var detectedDrives = Detector.DetectFixedDrives(QueryType.SeekPenalty);
+                if (detectedDrives.Count != 0)
                 {
-                    if (detectedDrive.DriveLetter == pathDriveLetter && detectedDrive.HardwareType.ToString().ToLower().Trim() == "ssd")
-                        return true;
+                    char pathDriveLetter = (path[0].ToString().ToUpper())[0];
+                    foreach (var detectedDrive in detectedDrives)
+                    {
+                        if (detectedDrive.DriveLetter == pathDriveLetter && detectedDrive.HardwareType.ToString().ToLower().Trim() == "ssd")
+                            return true;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Failed to detect drive type: " + e.Message);
+                return true;    // Default to SSD on fail
             }
             return false;
         }
@@ -118,7 +126,14 @@ namespace Flowframes.OS
 
         public static int GetFreeRamMb ()
         {
-            return (int)(new ComputerInfo().AvailablePhysicalMemory / 1048576);
+            try
+            {
+                return (int)(new ComputerInfo().AvailablePhysicalMemory / 1048576);
+            }
+            catch
+            {
+                return 1000;
+            }
         }
     }
 }

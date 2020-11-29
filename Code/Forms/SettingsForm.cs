@@ -30,6 +30,7 @@ namespace Flowframes.Forms
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+            Program.mainForm.UpdateStepByStepControls();
         }
 
         void SaveSettings ()
@@ -46,6 +47,7 @@ namespace Flowframes.Forms
             ffEncThreads.Text = ffEncThreads.GetInt().ToString();
 
             // General
+            ConfigParser.SaveComboxIndex(processingMode);
             ConfigParser.SaveGuiElement(maxVidHeight);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
@@ -86,9 +88,10 @@ namespace Flowframes.Forms
         void LoadSettings()
         {
             // REMOVE ME ONCE FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            procedureMode.SelectedIndex = 0;
+            //processingMode.SelectedIndex = 0;
 
             // General
+            ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
             ConfigParser.LoadGuiElement(deleteLogsOnStartup);

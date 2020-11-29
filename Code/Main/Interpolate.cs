@@ -23,11 +23,12 @@ namespace Flowframes
         public enum OutMode { VidMp4, VidGif, ImgPng }
 
         public static string currentTempDir;
-        static string framesPath;
+        public static string currentFramesPath;
         public static int interpFactor;
         public static float currentInFps;
         public static float currentOutFps;
 
+        public static int lastInterpFactor;
         public static string lastInputPath;
         public static AI lastAi;
 
@@ -47,9 +48,10 @@ namespace Flowframes
             canceled = false;
             if (!Utils.InputIsValid(inPath, outDir, currentOutFps, interpFactor, tilesize)) return;     // General input checks
             if (!Utils.CheckAiAvailable(ai)) return;            // Check if selected AI pkg is installed
+            lastInterpFactor = interpFactor;
             lastInputPath = inPath;
             currentTempDir = Utils.GetTempFolderLoc(inPath, outDir);
-            framesPath = Path.Combine(currentTempDir, "frames");
+            currentFramesPath = Path.Combine(currentTempDir, "frames");
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if(!Utils.CheckPathValid(inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(inPath, outDir);
@@ -58,9 +60,9 @@ namespace Flowframes
             Program.mainForm.SetWorking(true);
             await Task.Delay(10);
             if (!IOUtils.IsPathDirectory(inPath))        // Input is video - extract frames first
-                await ExtractFrames(inPath, framesPath);
+                await ExtractFrames(inPath, currentFramesPath);
             else
-                IOUtils.Copy(inPath, framesPath);
+                IOUtils.Copy(inPath, currentFramesPath);
             if (canceled) return;
             sw.Restart();
             await Task.Delay(10);
@@ -68,7 +70,7 @@ namespace Flowframes
             if (canceled) return;
             string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
             string outPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
-            int frames = IOUtils.GetAmountOfFiles(framesPath, false, "*.png");
+            int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int targetFrameCount = frames * interpFactor;
             GetProgressByFrameAmount(interpFramesDir, targetFrameCount);
             if (canceled) return;
@@ -86,7 +88,6 @@ namespace Flowframes
 
         public static async Task ExtractFrames(string inPath, string outPath, bool extractAudio = true)
         {
-            Logger.Log("Extracting frames using FFmpeg...");
             await Task.Delay(10);
             if (Config.GetBool("scnDetect"))
             {
@@ -132,51 +133,56 @@ namespace Flowframes
             }
         }
 
-
-        public static bool firstFrameFix;
-        static async Task PostProcessFrames ()
+        public static async Task PostProcessFrames ()
         {
-            if(!Directory.Exists(framesPath) || IOUtils.GetAmountOfFiles(framesPath, false, "*.png") <= 0)
+            bool firstFrameFix = lastAi.aiName == Networks.rifeCuda.aiName;
+
+            if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
             {
                 Cancel("Failed to extract frames from input video!");
             }
 
+            string hasPreprocessedFile = Path.Combine(currentTempDir, ".preprocessed");
+            if (File.Exists(hasPreprocessedFile)) return;
+
             if (Config.GetInt("dedupMode") == 1)
-                await MagickDedupe.Run(framesPath);
+                await MagickDedupe.Run(currentFramesPath);
             else
                 MagickDedupe.ClearCache();
 
             if (canceled) return;
 
-            if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
-                await VfrDedupe.CreateTimecodeFile(framesPath, Config.GetBool("enableLoop"), interpFactor, firstFrameFix);
+            if (Config.GetInt("timingMode") == 1)
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix);
 
             if (canceled) return;
-            MagickDedupe.RenameCounterDir(framesPath, "png");
-            MagickDedupe.ZeroPadDir(framesPath, "png", 8);
+            MagickDedupe.RenameCounterDir(currentFramesPath, "png");
+            MagickDedupe.ZeroPadDir(currentFramesPath, "png", 8);
 
-            if (lastAi.aiName == Networks.rifeCuda.aiName)
+            if (firstFrameFix)
             {
-                bool s = IOUtils.TryCopy(new DirectoryInfo(framesPath).GetFiles("*.png")[0].FullName, Path.Combine(framesPath, "00000000.png"), true);
+                bool s = IOUtils.TryCopy(new DirectoryInfo(currentFramesPath).GetFiles("*.png")[0].FullName, Path.Combine(currentFramesPath, "00000000.png"), true);
                 Logger.Log("FirstFrameFix TryCopy Success:" + s, true);
             }
+
+            File.Create(hasPreprocessedFile);
         }
 
-        static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
+        public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
             Directory.CreateDirectory(outpath);
 
             if (ai.aiName == Networks.dainNcnn.aiName)
-                await AiProcess.RunDainNcnn(framesPath, outpath, targetFrames, tilesize);
+                await AiProcess.RunDainNcnn(currentFramesPath, outpath, targetFrames, tilesize);
 
             if (ai.aiName == Networks.cainNcnn.aiName)
-                await AiProcess.RunCainNcnnMulti(framesPath, outpath, tilesize, interpFactor);
+                await AiProcess.RunCainNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor);
 
             if (ai.aiName == Networks.rifeCuda.aiName)
-                await AiProcess.RunRifeCuda(framesPath, interpFactor);
+                await AiProcess.RunRifeCuda(currentFramesPath, interpFactor);
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                await AiProcess.RunRifeNcnnMulti(framesPath, outpath, tilesize, interpFactor);
+                await AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor);
         }
 
         public static async void GetProgressByFrameAmount(string outdir, int target)
@@ -221,7 +227,7 @@ namespace Flowframes
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
         }
 
-        static void Cleanup(string interpFramesDir)
+        public static void Cleanup(string interpFramesDir)
         {
             if (Config.GetBool("keepTempFolder")) return;
             Logger.Log("Deleting temporary files...");
