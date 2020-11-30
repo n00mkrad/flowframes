@@ -27,9 +27,11 @@ namespace Flowframes
         public static int interpFactor;
         public static float currentInFps;
         public static float currentOutFps;
+        public static OutMode currentOutMode;
 
         public static int lastInterpFactor;
         public static string lastInputPath;
+        public static string nextOutPath;
         public static AI lastAi;
 
         public static bool canceled = false;
@@ -52,6 +54,7 @@ namespace Flowframes
             lastInputPath = inPath;
             currentTempDir = Utils.GetTempFolderLoc(inPath, outDir);
             currentFramesPath = Path.Combine(currentTempDir, "frames");
+            currentOutMode = outMode;
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if(!Utils.CheckPathValid(inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(inPath, outDir);
@@ -69,7 +72,7 @@ namespace Flowframes
             await PostProcessFrames();
             if (canceled) return;
             string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
-            string outPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
+            nextOutPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
             int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int targetFrameCount = frames * interpFactor;
             GetProgressByFrameAmount(interpFramesDir, targetFrameCount);
@@ -78,7 +81,7 @@ namespace Flowframes
             await RunAi(interpFramesDir, targetFrameCount, tilesize, ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
-            await CreateVideo.FramesToVideo(interpFramesDir, outPath, outMode);
+            //await CreateVideo.FramesToVideo(interpFramesDir, nextOutPath, outMode); // TODO: DISABLE NORMAL ENCODING IF PARALLEL ENC WAS USED
             Cleanup(interpFramesDir);
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
@@ -172,17 +175,22 @@ namespace Flowframes
         {
             Directory.CreateDirectory(outpath);
 
+            List<Task> tasks = new List<Task>();
+
             if (ai.aiName == Networks.dainNcnn.aiName)
-                await AiProcess.RunDainNcnn(currentFramesPath, outpath, targetFrames, tilesize);
+                tasks.Add(AiProcess.RunDainNcnn(currentFramesPath, outpath, targetFrames, tilesize));
 
             if (ai.aiName == Networks.cainNcnn.aiName)
-                await AiProcess.RunCainNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor);
+                tasks.Add(AiProcess.RunCainNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
 
             if (ai.aiName == Networks.rifeCuda.aiName)
-                await AiProcess.RunRifeCuda(currentFramesPath, interpFactor);
+                tasks.Add(AiProcess.RunRifeCuda(currentFramesPath, interpFactor));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                await AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor);
+                tasks.Add(AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
+
+            tasks.Add(AutoEncode.MainLoop(outpath));
+            await Task.WhenAll(tasks);
         }
 
         public static async void GetProgressByFrameAmount(string outdir, int target)

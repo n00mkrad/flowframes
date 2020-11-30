@@ -28,7 +28,7 @@ namespace Flowframes.Main
 
             float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
             float fps = (float)frames / generousTime;
-            string fpsIn = (fps / Interpolate.interpFactor).ToString("0.00");
+            string fpsIn = (fps / i.interpFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");
 
             float secondsPerFrame = generousTime / (float)frames;
@@ -37,11 +37,15 @@ namespace Flowframes.Main
             string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()));
 
             bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
-            Logger.Log($"Interpolated {frames}/{target} frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}", false, replaceLine);
+
+            string logStr = $"Interpolated {frames}/{target} frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
+            logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
+            if (AutoEncode.busy) logStr += " - Encoding...";
+            Logger.Log(logStr, false, replaceLine);
 
             try
             {
-                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > Interpolate.interpFactor)
+                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > i.interpFactor)
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     Image img = IOUtils.GetImage(latestFramePath);

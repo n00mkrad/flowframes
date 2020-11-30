@@ -356,12 +356,6 @@ namespace Flowframes
             new UpdaterForm().ShowDialog();
         }
 
-        private void tilesize_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!initialized || !GetAi().supportsTiling) return;
-            Config.Set($"tilesize_{GetAi().aiName}", tilesize.GetInt().ToString());
-        }
-
         private void welcomeLabel2_Click(object sender, EventArgs e)
         {
             SetTab("interpolation");
@@ -389,6 +383,12 @@ namespace Flowframes
         {
             if (!initialized) return;
             aiCombox_SelectedIndexChanged(null, null);
+        }
+
+        private void tilesize_TextChanged(object sender, EventArgs e)
+        {
+            if (!initialized || !GetAi().supportsTiling) return;
+            Config.Set($"tilesize_{GetAi().aiName}", tilesize.GetInt().Clamp(32, 4096).ToString());
         }
     }
 }

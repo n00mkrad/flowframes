@@ -83,7 +83,7 @@
             this.downloadPackagesBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.downloadPackagesBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.downloadPackagesBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.downloadPackagesBtn.ForeColor = System.Drawing.Color.White;
+            this.downloadPackagesBtn.ForeColor = System.Drawing.Color.LightGreen;
             this.downloadPackagesBtn.Location = new System.Drawing.Point(416, 62);
             this.downloadPackagesBtn.Name = "downloadPackagesBtn";
             this.downloadPackagesBtn.Size = new System.Drawing.Size(200, 60);

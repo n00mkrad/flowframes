@@ -412,9 +412,26 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
             {
-				Logger.Log($"Can't write to {dir}!", errMode == ErrorMode.HiddenLog);
+				Logger.Log($"Can't write to {dir}! {e.Message}", errMode == ErrorMode.HiddenLog);
 				if (errMode == ErrorMode.Messagebox && !BatchProcessing.busy)
-					MessageBox.Show($"Can't write to {dir}!", "Error");
+					MessageBox.Show($"Can't write to {dir}!\n\n{e.Message}", "Error");
+				return false;
+            }
+        }
+
+		public static bool CopyTo (string file, string targetFolder, bool overwrite = true)
+        {
+			string targetPath = Path.Combine(targetFolder, Path.GetFileName(file));
+            try
+            {
+				if (!Directory.Exists(targetFolder))
+					Directory.CreateDirectory(targetFolder);
+				File.Copy(file, targetPath, overwrite);
+				return true;
+            }
+			catch (Exception e)
+            {
+				Logger.Log($"Failed to copy {file} to {targetFolder}: {e.Message}");
 				return false;
             }
         }

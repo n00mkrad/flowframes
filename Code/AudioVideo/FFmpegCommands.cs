@@ -83,11 +83,28 @@ namespace Flowframes
             string enc = useH265 ? "libx265" : "libx264";
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            //Logger.Log("#1");
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
-            //Logger.Log("#2");
             string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
+        }
+
+        public static async Task FramesToMp4VfrChunk(string framesFile, string outPath, bool useH265, int crf, float fps)
+        {
+            //Logger.Log($"Encoding MP4 chunk with CRF {crf}...");
+            string enc = useH265 ? "libx265" : "libx264";
+            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
+            string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
+            string args = $" {vsyncStr} -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+        }
+
+        public static async Task ConcatVideos (string concatFile, string outPath, float fps, int looptimes = -1)
+        {
+            Logger.Log($"Merging videos...");
+            string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
+            string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
+            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {concatFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
         }
 
         public static async Task ConvertFramerate (string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)
@@ -334,7 +351,7 @@ namespace Flowframes
 
         static void DeleteSource (string path)
         {
-            Logger.Log("Deleting input file/dir: " + path);
+            Logger.Log("[FFCmds] Deleting input file/dir: " + path, true);
 
             if (IOUtils.IsPathDirectory(path) && Directory.Exists(path))
                 Directory.Delete(path, true);

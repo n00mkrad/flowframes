@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using i = Flowframes.Interpolate;
@@ -27,8 +28,6 @@ namespace Flowframes.Main
                 return;
             }
             await Task.Delay(10);
-            //if(Config.GetInt("timingMode") == 1)
-            //    await MagickDedupe.Reduplicate(path);
             Program.mainForm.SetStatus("Creating output video from frames...");
             try
             {
@@ -36,14 +35,9 @@ namespace Flowframes.Main
                 if (maxFps == 0) maxFps = 500;
 
                 if (mode == i.OutMode.VidMp4 && i.currentOutFps > maxFps)
-                {
-                    bool createSecondVid = (Config.GetInt("maxFpsMode") == 1);
-                    await Encode(mode, path, outPath, i.currentOutFps, maxFps, createSecondVid);
-                }
+                    await Encode(mode, path, outPath, i.currentOutFps, maxFps, (Config.GetInt("maxFpsMode") == 1));
                 else
-                {
                     await Encode(mode, path, outPath, i.currentOutFps);
-                }
             }
             catch (Exception e)
             {
@@ -66,9 +60,7 @@ namespace Flowframes.Main
 
             if (mode == i.OutMode.VidMp4)
             {
-                string ext = InterpolateUtils.lastExt;
                 int looptimes = GetLoopTimes(framesPath);
-
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
@@ -79,7 +71,7 @@ namespace Flowframes.Main
                 }
                 else
                 {
-                    await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, ext);   // Create video
+                    await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, InterpolateUtils.lastExt);   // Create video
                 }
 
                 await MergeAudio(i.lastInputPath, outPath);
@@ -99,12 +91,76 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Loop (string outPath, int looptimes)
+        public static async Task ChunksToVideo(string chunksPath, string vfrFile, string outPath)
+        {
+            if (IOUtils.GetAmountOfFiles(chunksPath, false, "*.mp4") < 1)
+            {
+                i.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
+                return;
+            }
+            await Task.Delay(10);
+            Program.mainForm.SetStatus("Merging video chunks...");
+            try
+            {
+                int maxFps = Config.GetInt("maxFps");
+                if (maxFps == 0) maxFps = 500;
+
+                if (i.currentOutFps > maxFps)
+                    await MergeChunks(chunksPath, vfrFile, outPath, i.currentOutFps, maxFps, (Config.GetInt("maxFpsMode") == 1));
+                else
+                    await MergeChunks(chunksPath, vfrFile, outPath, i.currentOutFps);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("ChunksToVideo Error: " + e.Message, false);
+                MessageBox.Show("An error occured while trying to merge the video chunks.\nCheck the log for details.");
+            }
+        }
+
+        static async Task MergeChunks(string chunksPath, string vfrFile, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
+        {
+            int looptimes = GetLoopTimes(Path.Combine(chunksPath.GetParentDir(), "frames-interpolated"));
+
+            bool h265 = Config.GetInt("mp4Enc") == 1;
+            int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
+
+            //string vfrFile = Path.Combine(chunksPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
+            await FFmpegCommands.ConcatVideos(vfrFile, outPath, fps, -1);
+
+            await MergeAudio(i.lastInputPath, outPath);
+
+            if (looptimes > 0)
+                await Loop(outPath, looptimes);
+
+            if (changeFps > 0)
+            {
+                string newOutPath = IOUtils.FilenameSuffix(outPath, $"-{changeFps.ToString("0")}fps");
+                Program.mainForm.SetStatus("Creating video with desired frame rate...");
+                await FFmpegCommands.ConvertFramerate(outPath, newOutPath, h265, crf, changeFps, !keepOriginalFpsVid);
+                await MergeAudio(i.lastInputPath, newOutPath);
+                if (looptimes > 0)
+                    await Loop(newOutPath, looptimes);
+            }
+        }
+
+        public static async Task EncodeChunk(string outPath, int firstFrameNum, int framesAmount)
+        {
+            bool h265 = Config.GetInt("mp4Enc") == 1;
+            int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
+
+            string vfrFileOriginal = Path.Combine(i.currentTempDir, $"vfr-x{i.lastInterpFactor}.ini");
+            string vfrFile = Path.Combine(i.currentTempDir, $"vfr-chunk-temp.ini");
+            File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
+
+            await FFmpegCommands.FramesToMp4VfrChunk(vfrFile, outPath, h265, crf, i.currentOutFps);
+            IOUtils.TryDeleteIfExists(vfrFile);
+        }
+
+        static async Task Loop(string outPath, int looptimes)
         {
             Logger.Log($"Looping {looptimes} times to reach target length");
             await FFmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }
-
 
         static int GetLoopTimes(string framesOutPath)
         {
@@ -119,17 +175,17 @@ namespace Flowframes.Main
             return times;
         }
 
-        public static async Task MergeAudio(string sourceVideo, string outVideo, int looptimes = -1)
+        public static async Task MergeAudio(string inputPath, string outVideo, int looptimes = -1)
         {
             if (!Config.GetBool("enableAudio")) return;
             try
             {
                 Logger.Log("Adding input audio to output video...");
                 string audioFileBasePath = Path.Combine(i.currentTempDir, "audio");
-                if(IOUtils.IsPathDirectory(sourceVideo) && !File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))   // Try loading out of same folder as input if input is a folder
-                        audioFileBasePath = Path.Combine(i.currentTempDir.GetParentDir(), "audio");
+                if (IOUtils.IsPathDirectory(inputPath) && !File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))   // Try loading out of same folder as input if input is a folder
+                    audioFileBasePath = Path.Combine(i.currentTempDir.GetParentDir(), "audio");
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
-                    await FFmpegCommands.ExtractAudio(sourceVideo, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
+                    await FFmpegCommands.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
                     Logger.Log("No compatible audio stream found.");

@@ -119,6 +119,7 @@
             this.htButton1 = new HTAlt.WinForms.HTButton();
             this.runStepBtn = new System.Windows.Forms.Button();
             this.stepSelector = new System.Windows.Forms.ComboBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -167,7 +168,7 @@
             this.tilesize.Name = "tilesize";
             this.tilesize.Size = new System.Drawing.Size(125, 23);
             this.tilesize.TabIndex = 25;
-            this.tilesize.SelectedIndexChanged += new System.EventHandler(this.tilesize_SelectedIndexChanged);
+            this.tilesize.TextChanged += new System.EventHandler(this.tilesize_TextChanged);
             // 
             // aiCombox
             // 
@@ -1239,6 +1240,7 @@
             // previewTab
             // 
             this.previewTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.previewTab.Controls.Add(this.label22);
             this.previewTab.Controls.Add(this.previewPicturebox);
             this.previewTab.Location = new System.Drawing.Point(4, 27);
             this.previewTab.Margin = new System.Windows.Forms.Padding(0);
@@ -1325,6 +1327,20 @@
             this.stepSelector.TabIndex = 73;
             this.stepSelector.Visible = false;
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.ForeColor = System.Drawing.Color.Silver;
+            this.label22.Location = new System.Drawing.Point(3, 225);
+            this.label22.Margin = new System.Windows.Forms.Padding(3);
+            this.label22.MaximumSize = new System.Drawing.Size(160, 0);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(158, 30);
+            this.label22.TabIndex = 38;
+            this.label22.Text = "Click on the preview to open it in a separate window.";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label22.Visible = false;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1379,6 +1395,7 @@
             this.videoUtilsTab.ResumeLayout(false);
             this.videoUtilsTab.PerformLayout();
             this.previewTab.ResumeLayout(false);
+            this.previewTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).EndInit();
             this.abtTab.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1477,6 +1494,7 @@
         private System.Windows.Forms.Label welcomeLabel2;
         private System.Windows.Forms.Button runStepBtn;
         private System.Windows.Forms.ComboBox stepSelector;
+        private System.Windows.Forms.Label label22;
     }
 }
 
