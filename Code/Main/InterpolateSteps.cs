@@ -59,19 +59,19 @@ namespace Flowframes.Main
                 currentTempDir = InterpolateUtils.GetTempFolderLoc(currentInPath, currentOutPath);
 
             if (string.IsNullOrWhiteSpace(currentFramesPath))
-                currentFramesPath = Path.Combine(currentTempDir, "frames");
+                currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
         }
 
         public static async Task ExtractSceneChanges ()
         {
             Program.mainForm.SetStatus("Extracting scenes from video...");
-            await FFmpegCommands.ExtractSceneChanges(currentInPath, Path.Combine(currentTempDir, "scenes"));
+            await FFmpegCommands.ExtractSceneChanges(currentInPath, Path.Combine(currentTempDir, Paths.scenesDir));
             await Task.Delay(10);
         }
 
         public static async Task ExtractVideoFrames ()
         {
-            currentFramesPath = Path.Combine(currentTempDir, "frames");
+            currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
             bool extractAudio = true;
             Program.mainForm.SetStatus("Extracting frames from video...");
             Size resolution = IOUtils.GetVideoRes(currentInPath);
@@ -108,7 +108,7 @@ namespace Flowframes.Main
         {
             await PostProcessFrames();
 
-            string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
+            string interpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
             if (!IOUtils.TryDeleteIfExists(interpFramesDir))
             {
                 InterpolateUtils.ShowMessage("Failed to delete old \"interpolated-frames folder\" - Make sure none of the files are opened in another program!", "Error");
@@ -127,7 +127,7 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid ()
         {
-            currentInterpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
+            currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
             string outPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(currentInPath) + IOUtils.GetAiSuffix(currentAi, lastInterpFactor) + InterpolateUtils.GetExt(currentOutMode));
             await CreateVideo.FramesToVideo(currentInterpFramesDir, outPath, currentOutMode);
         }

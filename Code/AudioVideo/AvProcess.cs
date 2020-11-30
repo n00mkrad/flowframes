@@ -22,6 +22,11 @@ namespace Flowframes
 
         public static async Task RunFfmpeg(string args, LogMode logMode)
         {
+            await RunFfmpeg(args, "", logMode);
+        }
+
+        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode)
+        {
             lastOutputFfmpeg = "";
             currentLogMode = logMode;
             Process ffmpeg = new Process();
@@ -31,8 +36,11 @@ namespace Flowframes
             ffmpeg.StartInfo.RedirectStandardError = true;
             ffmpeg.StartInfo.CreateNoWindow = true;
             ffmpeg.StartInfo.FileName = "cmd.exe";
-            ffmpeg.StartInfo.Arguments = "/C cd /D \"" + GetAvDir() + "\" & ffmpeg.exe -hide_banner -loglevel warning -y -stats " + args;
-            if(logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
+            if(!string.IsNullOrWhiteSpace(workingDir))
+                ffmpeg.StartInfo.Arguments = $"/C cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
+            else
+                ffmpeg.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel warning -y -stats {args}";
+            if (logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
             Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg.txt");
             ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
             ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);

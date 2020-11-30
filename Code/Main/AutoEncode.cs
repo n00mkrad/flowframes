@@ -23,12 +23,12 @@ namespace Flowframes.Main
         public static async Task MainLoop(string interpFramesPath)
         {
             interpFramesFolder = interpFramesPath;
-            videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), "video-chunks");
+            videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
 
             encodedFrames.Clear();
             unencodedFrames.Clear();
 
-            int interpFramesAmount = GetInterpFramesAmount();
+            int interpFramesAmount;
             chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.currentFramesPath, false, "*.png") * Interpolate.lastInterpFactor);
 
             int videoIndex = 1;
@@ -36,7 +36,7 @@ namespace Flowframes.Main
             while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
                 await Task.Delay(100);
 
-            while ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrames.Count < interpFramesAmount)    // Loop while proc is running and not all frames have been encoded
+            while (HasWorkToDo())    // Loop while proc is running and not all frames have been encoded
             {
                 if (Interpolate.canceled) return;
 
@@ -53,13 +53,13 @@ namespace Flowframes.Main
                     busy = true;
                     Logger.Log("Encoding Chunk #" + videoIndex, true, false, "ffmpeg.txt");
 
-
                     List<string> framesToEncode = aiRunning ? unencodedFrames.Take(chunkSize).ToList() : unencodedFrames;     // Take all remaining frames if process is done
 
                     string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.currentOutMode)}");
                     int firstFrameNum = Path.GetFileNameWithoutExtension(framesToEncode[0]).GetInt();
                     await CreateVideo.EncodeChunk(outpath, firstFrameNum, framesToEncode.Count);
-                    videoIndex++;
+
+                    if(Interpolate.canceled) return;
 
                     foreach (string frame in framesToEncode)
                         File.WriteAllText(frame, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save disk space without breaking progress counter
@@ -67,6 +67,7 @@ namespace Flowframes.Main
                     encodedFrames.AddRange(framesToEncode);
 
                     Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg.txt");
+                    videoIndex++;
                     busy = false;
                 }
                 await Task.Delay(50);
@@ -77,10 +78,15 @@ namespace Flowframes.Main
             string concatFile = Path.Combine(interpFramesPath.GetParentDir(), "chunks-concat.ini");
             string concatFileContent = "";
             foreach (string vid in Directory.GetFiles(videoChunksFolder))
-                concatFileContent += $"file '{vid.Replace("\\", "/")}'\n";
+                concatFileContent += $"file '{Paths.chunksDir}/{Path.GetFileName(vid)}'\n";
             File.WriteAllText(concatFile, concatFileContent);
 
             await CreateVideo.ChunksToVideo(videoChunksFolder, concatFile, Interpolate.nextOutPath);
+        }
+
+        public static bool HasWorkToDo ()
+        {
+            return ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrames.Count < GetInterpFramesAmount());
         }
 
         static int GetChunkSize(int targetFramesAmount)

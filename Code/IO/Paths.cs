@@ -9,7 +9,10 @@ namespace Flowframes.IO
 {
     class Paths
     {
-
+		public const string framesDir = "frames";
+		public const string interpDir = "interp";
+		public const string chunksDir = "vchunks";
+		public const string scenesDir = "scenes";
 
 		public static void Init()
 		{

@@ -53,7 +53,7 @@ namespace Flowframes
             lastInterpFactor = interpFactor;
             lastInputPath = inPath;
             currentTempDir = Utils.GetTempFolderLoc(inPath, outDir);
-            currentFramesPath = Path.Combine(currentTempDir, "frames");
+            currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
             currentOutMode = outMode;
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if(!Utils.CheckPathValid(inPath)) return;           // Check if input path/file is valid
@@ -71,7 +71,7 @@ namespace Flowframes
             await Task.Delay(10);
             await PostProcessFrames();
             if (canceled) return;
-            string interpFramesDir = Path.Combine(currentTempDir, "frames-interpolated");
+            string interpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
             nextOutPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
             int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int targetFrameCount = frames * interpFactor;
@@ -95,7 +95,7 @@ namespace Flowframes
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(currentTempDir, "scenes"));
+                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(currentTempDir, Paths.scenesDir));
                 await Task.Delay(10);
             }
             Program.mainForm.SetStatus("Extracting frames from video...");

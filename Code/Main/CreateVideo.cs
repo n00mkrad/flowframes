@@ -119,14 +119,12 @@ namespace Flowframes.Main
 
         static async Task MergeChunks(string chunksPath, string vfrFile, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
         {
-            int looptimes = GetLoopTimes(Path.Combine(chunksPath.GetParentDir(), "frames-interpolated"));
+            int looptimes = GetLoopTimes(Path.Combine(chunksPath.GetParentDir(), Paths.interpDir));
 
             bool h265 = Config.GetInt("mp4Enc") == 1;
             int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-            //string vfrFile = Path.Combine(chunksPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
             await FFmpegCommands.ConcatVideos(vfrFile, outPath, fps, -1);
-
             await MergeAudio(i.lastInputPath, outPath);
 
             if (looptimes > 0)
@@ -164,12 +162,17 @@ namespace Flowframes.Main
 
         static int GetLoopTimes(string framesOutPath)
         {
+            //Logger.Log("Getting loop times for path " + framesOutPath);
             int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
+            //Logger.Log("minLength: " + minLength);
             int minFrameCount = (minLength * i.currentOutFps).RoundToInt();
+            //Logger.Log("minFrameCount: " + minFrameCount);
             int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
+            //Logger.Log("outFrames: " + outFrames);
             if (outFrames / i.currentOutFps < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
+            //Logger.Log("times: " + times);
             times--;    // Account for this calculation not counting the 1st play (0 loops)
             if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing
             return times;

@@ -3,6 +3,7 @@ using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,9 @@ namespace Flowframes.Main
 
         public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix)
         {
+            if (Interpolate.canceled) return;
+            Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
+
             bool sceneDetection = true;
 
             if(frameFiles == null || frameFiles.Length < 1)
@@ -34,8 +38,10 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{interpFactor}.ini");
             string fileContent = "";
 
-            string scnFramesPath = Path.Combine(framesPath.GetParentDir(), "scenes");
-            string interpPath = framesPath.Replace(@"\", "/") + "-interpolated";
+            string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
+            string interpPath = Paths.interpDir; // framesPath.Replace(@"\", "/") + "-interpolated";
+
+            List<string> sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileName(file)).ToList();
 
             int lastFrameDuration = 1;
 
@@ -55,9 +61,8 @@ namespace Flowframes.Main
 
                 int interpFramesAmount = interpFactor;
 
+                bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(frameFiles[i + 1].Name));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
-                bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && File.Exists(Path.Combine(scnFramesPath, frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
-                //if (discardThisFrame) Logger.Log("Will discard " + totalFileCount);
 
                 // If loop is enabled, account for the extra frame added to the end for loop continuity
                 if (loopEnabled && i == (frameFiles.Length - 2))
@@ -66,30 +71,25 @@ namespace Flowframes.Main
                 // Generate frames file lines
                 for (int frm = 0; frm < interpFramesAmount; frm++)
                 {
-                    string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000").Replace(",", ".");
+                    string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
 
                     if (discardThisFrame)
                     {
                         int lastNum = totalFileCount - 1;
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
-                            //Logger.Log($"-> Writing #{frm + 1}: {lastNum}");
                             fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
                             totalFileCount++;
                         }
                         frm = interpFramesAmount - 1;
                     }
 
-                    //Logger.Log($"-> Writing #{frm+1}: {totalFileCount}");
                     fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
-                    totalFileCount++;   // Don't increment, so we dupe the last frame and ignore the interp frame
+                    totalFileCount++;
                 }
 
                 if ((i + 1) % 100 == 0)
-                {
-                    Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
                     await Task.Delay(1);
-                }
             }
 
             File.WriteAllText(vfrFile, fileContent);

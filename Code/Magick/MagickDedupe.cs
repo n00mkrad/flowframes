@@ -203,7 +203,7 @@ namespace Flowframes.Magick
             if (statsFramesKept <= 0)
                 Interpolate.Cancel("No frames were left after de-duplication.");
 
-            Logger.Log($"Finished in {FormatUtils.Time(sw.Elapsed)} - {framePaths.Length / (sw.ElapsedMilliseconds / 1000f)} Imgs/Sec");
+            //Logger.Log($"Finished in {FormatUtils.Time(sw.Elapsed)} - {framePaths.Length / (sw.ElapsedMilliseconds / 1000f)} Imgs/Sec");
 
             //RenameCounterDir(path, "png");
             //ZeroPadDir(path, ext, 8);

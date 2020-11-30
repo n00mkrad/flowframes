@@ -84,8 +84,9 @@ namespace Flowframes
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
-            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
+            string vfrFilename = Path.GetFileName(framesFile);
+            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
         }
 
         public static async Task FramesToMp4VfrChunk(string framesFile, string outPath, bool useH265, int crf, float fps)
@@ -94,8 +95,9 @@ namespace Flowframes
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
-            string args = $" {vsyncStr} -f concat -safe 0 -i {framesFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+            string vfrFilename = Path.GetFileName(framesFile);
+            string args = $" {vsyncStr} -f concat -safe 0 -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
         public static async Task ConcatVideos (string concatFile, string outPath, float fps, int looptimes = -1)
@@ -103,8 +105,9 @@ namespace Flowframes
             Logger.Log($"Merging videos...");
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
-            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {concatFile.Wrap()} -r {fps.ToString().Replace(",", ".")} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+            string vfrFilename = Path.GetFileName(concatFile);
+            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
         public static async Task ConvertFramerate (string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)

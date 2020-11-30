@@ -23,7 +23,7 @@ namespace Flowframes
 
         public static int lastStartupTimeMs = 1000;
 
-        static void Init (Process proc, int startupTimeMs, string defaultExt = "png")
+        static void AiStarted (Process proc, int startupTimeMs, string defaultExt = "png")
         {
             lastStartupTimeMs = startupTimeMs;
             InterpolateUtils.lastExt = defaultExt;
@@ -33,13 +33,23 @@ namespace Flowframes
             hasShownError = false;
         }
 
+        static void AiFinished (string aiName)
+        {
+            Program.mainForm.SetProgress(100);
+            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
+            if (AutoEncode.HasWorkToDo())
+                logStr += " - Waiting for encoding to finish...";
+            Logger.Log(logStr);
+            processTime.Stop();
+        }
+
         public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)
         {
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -t {tilesize} -g {Config.Get("ncnnGpus")}";
 
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            Init(dain, 1500);
+            AiStarted(dain, 1500);
             dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
@@ -59,8 +69,7 @@ namespace Flowframes
 
             if (Interpolate.canceled) return;
             Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
-            Logger.Log($"Done running DAIN - Interpolation took " + FormatUtils.Time(processTime.Elapsed));
-            processTime.Stop();
+            AiFinished("DAIN");
         }
 
         public static async Task RunCainNcnnMulti (string framesPath, string outPath, int tilesize, int times)
@@ -100,8 +109,7 @@ namespace Flowframes
             if (Interpolate.canceled) return;
             Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
 
-            Logger.Log($"Done running CAIN - Interpolation took " + FormatUtils.Time(processTimeMulti.Elapsed));
-            processTime.Stop();
+            AiFinished("CAIN");
         }
 
         static async Task RunCainPartial (string args)
@@ -109,7 +117,7 @@ namespace Flowframes
             string cainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.cainNcnn.fileName));
             string cainExe = "cain-ncnn-vulkan.exe";
             Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            Init(cain, 1500);
+            AiStarted(cain, 1500);
             cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -134,10 +142,10 @@ namespace Flowframes
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            Init(rifePy, 3000, "png");
+            AiStarted(rifePy, 3000, "png");
             string args = $" --input {framesPath.Wrap()} --times {(int)Math.Log(interpFactor, 2)}";
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt} --output {Paths.interpDir}";
             Logger.Log($"Running RIFE ({script})...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -152,15 +160,14 @@ namespace Flowframes
                 rifePy.BeginErrorReadLine();
             }
             while (!rifePy.HasExited) await Task.Delay(1);
-            Logger.Log($"Done running RIFE - Interpolation took " + FormatUtils.Time(processTime.Elapsed));
-            processTime.Stop();
+            AiFinished("RIFE");
         }
 
         public static async Task RunRifeNcnn (string framesPath, string outPath, int interpFactor, int tilesize)
         {
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            Init(rifeNcnn, 750);
+            AiStarted(rifeNcnn, 750);
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args}";
             Logger.Log("Running RIFE...", false);
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
@@ -179,8 +186,8 @@ namespace Flowframes
 
             if (Interpolate.canceled) return;
             Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
-            Logger.Log($"Done running RIFE - Interpolation took " + FormatUtils.Time(processTime.Elapsed));
-            processTime.Stop();
+
+            AiFinished("RIFE");
         }
 
         public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int tilesize, int times)
@@ -220,14 +227,13 @@ namespace Flowframes
             if (Interpolate.canceled) return;
             Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
 
-            Logger.Log($"Done running RIFE - Interpolation took " + FormatUtils.Time(processTimeMulti.Elapsed));
-            processTime.Stop();
+            AiFinished("RIFE");
         }
 
         static async Task RunRifePartial(string args)
         {
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            Init(rifeNcnn, 1500);
+            AiStarted(rifeNcnn, 1500);
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
