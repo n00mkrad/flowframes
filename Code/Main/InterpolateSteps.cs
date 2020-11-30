@@ -106,7 +106,7 @@ namespace Flowframes.Main
 
         public static async Task DoInterpolate ()
         {
-            await PostProcessFrames();
+            await PostProcessFrames(true);
 
             string interpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
             if (!IOUtils.TryDeleteIfExists(interpFramesDir))

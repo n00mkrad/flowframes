@@ -136,7 +136,7 @@ namespace Flowframes
             }
         }
 
-        public static async Task PostProcessFrames ()
+        public static async Task PostProcessFrames (bool sbsMode = false)
         {
             bool firstFrameFix = lastAi.aiName == Networks.rifeCuda.aiName;
 
@@ -155,8 +155,10 @@ namespace Flowframes
 
             if (canceled) return;
 
-            if (Config.GetInt("timingMode") == 1)
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix);
+            if(sbsMode)
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1);
+            else
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor);
 
             if (canceled) return;
             MagickDedupe.RenameCounterDir(currentFramesPath, "png");

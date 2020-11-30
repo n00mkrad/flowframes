@@ -13,13 +13,19 @@ namespace Flowframes.Main
 {
     class VfrDedupe
     {
-
-        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, bool firstFrameFix)
+        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, bool firstFrameFix, int times)
         {
             Logger.Log("Generating timecodes...");
-            await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix);
-            await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix);
-            await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix);
+            if(times <= 0)
+            {
+                await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix);
+                await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix);
+                await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix);
+            }
+            else
+            {
+                await CreateTimecodeFile(framesPath, loopEnabled, times, firstFrameFix);
+            }
             frameFiles = null;
             Logger.Log($"Generating timecodes... Done.", false, true);
         }
