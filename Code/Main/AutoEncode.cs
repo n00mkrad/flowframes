@@ -86,6 +86,7 @@ namespace Flowframes.Main
 
         public static bool HasWorkToDo ()
         {
+            if (Interpolate.canceled) return false;
             return ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrames.Count < GetInterpFramesAmount());
         }
 
