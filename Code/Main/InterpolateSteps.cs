@@ -66,14 +66,25 @@ namespace Flowframes.Main
 
         public static async Task ExtractSceneChanges ()
         {
+            string scenesPath = Path.Combine(currentTempDir, Paths.scenesDir);
+            if (!IOUtils.TryDeleteIfExists(scenesPath))
+            {
+                InterpolateUtils.ShowMessage("Failed to delete existing scenes folder - Make sure no file is opened in another program!", "Error");
+                return;
+            }
             Program.mainForm.SetStatus("Extracting scenes from video...");
-            await FFmpegCommands.ExtractSceneChanges(currentInPath, Path.Combine(currentTempDir, Paths.scenesDir));
+            await FFmpegCommands.ExtractSceneChanges(currentInPath, scenesPath);
             await Task.Delay(10);
         }
 
         public static async Task ExtractVideoFrames ()
         {
             currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
+            if (!IOUtils.TryDeleteIfExists(currentFramesPath))
+            {
+                InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
+                return;
+            }
             bool extractAudio = true;
             Program.mainForm.SetStatus("Extracting frames from video...");
             Size resolution = IOUtils.GetVideoRes(currentInPath);
@@ -108,26 +119,32 @@ namespace Flowframes.Main
 
         public static async Task DoInterpolate ()
         {
-            IOUtils.TryDeleteIfExists(currentInterpFramesDir);
+            currentFramesPath = Path.Combine(currentInterpFramesDir, Paths.framesDir);
+            if (!Directory.Exists(currentFramesPath))
+            {
+                InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
+                return;
+            }
+            if (!IOUtils.TryDeleteIfExists(currentInterpFramesDir))
+            {
+                InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
+                return;
+            }
+
             foreach (string ini in Directory.GetFiles(currentTempDir, "*.ini", SearchOption.TopDirectoryOnly))
                 IOUtils.TryDeleteIfExists(ini);
 
+            IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
             await PostProcessFrames(true);
 
-            string interpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
-            // if (!IOUtils.TryDeleteIfExists(interpFramesDir))
-            // {
-            //     InterpolateUtils.ShowMessage("Failed to delete old \"interpolated-frames folder\" - Make sure none of the files are opened in another program!", "Error");
-            //     return;
-            // }
             lastInterpFactor = interpFactor;
             int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int targetFrameCount = frames * lastInterpFactor;
-            GetProgressByFrameAmount(interpFramesDir, targetFrameCount);
+            GetProgressByFrameAmount(currentInterpFramesDir, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             int tilesize = currentAi.supportsTiling ? Config.GetInt($"tilesize_{currentAi.aiName}") : 512;
-            await RunAi(interpFramesDir, targetFrameCount, tilesize, currentAi);
+            await RunAi(currentInterpFramesDir, targetFrameCount, tilesize, currentAi);
             Program.mainForm.SetProgress(0);
         }
 
@@ -139,7 +156,7 @@ namespace Flowframes.Main
 
         public static async Task Reset ()
         {
-            Cleanup(currentInterpFramesDir);
+            Cleanup(currentInterpFramesDir, true);
         }
     }
 }

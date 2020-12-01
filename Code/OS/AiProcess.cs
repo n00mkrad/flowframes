@@ -23,9 +23,10 @@ namespace Flowframes
 
         public static int lastStartupTimeMs = 1000;
 
+        public static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
+
         static void AiStarted (Process proc, int startupTimeMs, string defaultExt = "png")
         {
-            SwapFilenames(false);
             lastStartupTimeMs = startupTimeMs;
             InterpolateUtils.lastExt = defaultExt;
             if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
@@ -42,26 +43,6 @@ namespace Flowframes
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
             processTime.Stop();
-        }
-
-        static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
-        public static void SwapFilenames (bool restore)    // Renames files with a counter or restores original timecode names via MD5/filename mapping
-        {
-            Stopwatch filenameSwapSw = new Stopwatch();
-            if (!restore)   // Rename with counter and store original names
-            {
-                filenameSwapSw.Start();
-                filenameMap.Clear();
-                foreach (string file in Directory.GetFiles(Path.Combine(Interpolate.currentFramesPath)))
-                    filenameMap.Add(Path.GetFileName(file), IOUtils.GetFileMd5(file));
-                Logger.Log($"Stored file/md5 pairs in {filenameSwapSw.ElapsedMilliseconds}ms");
-            }
-            else
-            {
-                filenameSwapSw.Start();
-                // add restore code!
-                Logger.Log($"Restored original file/md5 pairs in {filenameSwapSw.ElapsedMilliseconds}ms");
-            }
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)

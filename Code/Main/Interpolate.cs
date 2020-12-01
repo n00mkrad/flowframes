@@ -85,6 +85,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.FramesToVideo(interpFramesDir, nextOutPath, outMode);
+            IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
             Cleanup(interpFramesDir);
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
@@ -141,15 +142,12 @@ namespace Flowframes
 
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
-            bool firstFrameFix = lastAi.aiName == Networks.rifeCuda.aiName;
+            bool firstFrameFix = (!sbsMode && lastAi.aiName == Networks.rifeCuda.aiName) || (sbsMode && InterpolateSteps.currentAi.aiName == Networks.rifeCuda.aiName);
 
             if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
             {
                 Cancel("Failed to extract frames from input video!");
             }
-
-            string hasPreprocessedFile = Path.Combine(currentTempDir, ".preprocessed");     // TODO: DUMP THIS WHOLE IDEA
-            if (File.Exists(hasPreprocessedFile)) return;
 
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(currentFramesPath);
@@ -164,16 +162,19 @@ namespace Flowframes
                 await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor);
 
             if (canceled) return;
-            MagickDedupe.RenameCounterDir(currentFramesPath, "png");
-            MagickDedupe.ZeroPadDir(currentFramesPath, "png", 8);
+
+            AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(currentFramesPath, "png", 1, 8);
+
+            //string hasPreprocessedFile = Path.Combine(currentTempDir, ".preprocessed");
+            //if (File.Exists(hasPreprocessedFile)) return;
 
             if (firstFrameFix)
             {
                 bool s = IOUtils.TryCopy(new DirectoryInfo(currentFramesPath).GetFiles("*.png")[0].FullName, Path.Combine(currentFramesPath, "00000000.png"), true);
-                Logger.Log("FirstFrameFix TryCopy Success:" + s, true);
+                Logger.Log("FirstFrameFix TryCopy Success: " + s, true);
             }
 
-            File.Create(hasPreprocessedFile);
+            //File.Create(hasPreprocessedFile);
         }
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
@@ -242,9 +243,9 @@ namespace Flowframes
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
         }
 
-        public static void Cleanup(string interpFramesDir)
+        public static void Cleanup(string interpFramesDir, bool ignoreKeepSetting = false)
         {
-            if (Config.GetBool("keepTempFolder")) return;
+            if (!ignoreKeepSetting && Config.GetBool("keepTempFolder")) return;
             Logger.Log("Deleting temporary files...");
             try
             {

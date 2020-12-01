@@ -19,8 +19,8 @@ namespace Flowframes.Main
             if(times <= 0)
             {
                 await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix);
-                await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix);
-                await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix);
+                await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix, true);
+                await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix, true);
             }
             else
             {
@@ -32,7 +32,7 @@ namespace Flowframes.Main
 
         static FileInfo[] frameFiles;
 
-        public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix)
+        public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix, bool notFirstRun = false)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
@@ -48,10 +48,8 @@ namespace Flowframes.Main
             string interpPath = Paths.interpDir; // framesPath.Replace(@"\", "/") + "-interpolated";
 
             List<string> sceneFrames = new List<string>();
-            Logger.Log($"Scn path {scnFramesPath} exists: {Directory.Exists(scnFramesPath)}");
             if (Directory.Exists(scnFramesPath))
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileName(file)).ToList();
-            Logger.Log($"Found {sceneFrames.Count} scn frames");
 
             int lastFrameDuration = 1;
 
@@ -104,8 +102,7 @@ namespace Flowframes.Main
 
             File.WriteAllText(vfrFile, fileContent);
 
-            if (interpFactor > 2)       // Skip all steps that only need to be done once
-                return;
+            if (notFirstRun) return;    // Skip all steps that only need to be done once
 
             if (firstFrameFix)
             {
@@ -119,11 +116,10 @@ namespace Flowframes.Main
             {
                 int lastFileNumber = frameFiles.Last().Name.GetInt();
                 lastFileNumber += lastFrameDuration;
-                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber + ".png");
+                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(8, '0') + ".png");
                 if (File.Exists(loopFrameTargetPath))
                     return;
                 File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
-                //Logger.Log("Copied loop frame to " + loopFrameTargetPath);
             }
         }
     }

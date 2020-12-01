@@ -1,6 +1,7 @@
 ﻿
 using Flowframes.Data;
 using Flowframes.Main;
+using Force.Crc32;
 using Microsoft.WindowsAPICodePack.Shell;
 using System;
 using System.Collections.Generic;
@@ -41,9 +42,7 @@ namespace Flowframes.IO
 			{
 				string line;
 				while ((line = sr.ReadLine()) != null)
-				{
 					lines.Add(line);
-				}
 			}
 			return lines.ToArray();
 		}
@@ -169,7 +168,7 @@ namespace Flowframes.IO
 			File.Move(path, targetPath);
 		}
 
-		public static bool TryCopy(string source, string dest, bool overwrite)      // Copy with error handling. Returns false if failed
+		public static bool TryCopy(string source, string dest, bool overwrite = true)      // Copy with error handling. Returns false if failed
 		{
 			try
 			{
@@ -177,7 +176,7 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show("Copy from \"" + source + "\" to \"" + dest + " (Overwrite: " + overwrite + " failed: \n\n" + e.Message);
+				MessageBox.Show("Copy from \"" + source + "\" to \"" + dest + " (Overwrite: " + overwrite + ") failed: \n\n" + e.Message);
 				return false;
 			}
 			return true;
@@ -203,6 +202,34 @@ namespace Flowframes.IO
 			return files.Length;
 		}
 
+		static bool TryCopy(string source, string target)
+		{
+			try
+			{
+				File.Copy(source, target);
+			}
+			catch
+			{
+				return false;
+			}
+			return true;
+		}
+
+		static bool TryMove(string source, string target, bool deleteIfExists = true)
+		{
+			try
+			{
+				if (deleteIfExists && File.Exists(target))
+					File.Delete(target);
+				File.Move(source, target);
+			}
+			catch
+			{
+				return false;
+			}
+			return true;
+		}
+
 		public static void RenameCounterDir(string path, bool inverse = false)
 		{
 			int counter = 1;
@@ -219,6 +246,40 @@ namespace Flowframes.IO
 				counter++;
 				//if (counter % 100 == 0) Program.Print("Renamed " + counter + " files...");
 			}
+		}
+
+		public static Dictionary<string, string> RenameCounterDirReversible(string path, string ext, int startAt, int padding = 0)
+		{
+			Dictionary<string, string> oldNewNamesMap = new Dictionary<string, string>();
+
+			int counter = startAt;
+			FileInfo[] files = new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly);
+			var filesSorted = files.OrderBy(n => n);
+
+			foreach (FileInfo file in files)
+			{
+				string dir = new DirectoryInfo(file.FullName).Parent.FullName;
+				int filesDigits = (int)Math.Floor(Math.Log10((double)files.Length) + 1);
+				string outpath = "";
+				if (padding > 0)
+					outpath = Path.Combine(dir, counter.ToString().PadLeft(padding, '0') + Path.GetExtension(file.FullName));
+				else
+					outpath = Path.Combine(dir, counter.ToString() + Path.GetExtension(file.FullName));
+				File.Move(file.FullName, outpath);
+				oldNewNamesMap.Add(file.FullName, outpath);
+				counter++;
+			}
+
+			return oldNewNamesMap;
+		}
+
+		public static void ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)
+		{
+			if (oldNewMap == null || oldNewMap.Count < 1) return;
+			foreach (KeyValuePair<string, string> pair in oldNewMap)
+				TryMove(pair.Value, pair.Key);
+			if (clearDict)
+				oldNewMap.Clear();
 		}
 
 		public static float GetVideoFramerate (string path)
@@ -437,16 +498,22 @@ namespace Flowframes.IO
             }
         }
 
-		public static string GetFileMd5 (string filename)
+		public enum Hash { MD5, CRC32 }
+		public static string GetHash (string filename, Hash hashType)
 		{
-			using (var md5 = MD5.Create())
-			{
-				using (var stream = File.OpenRead(filename))
-				{
-					var hash = md5.ComputeHash(stream);
-					return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-				}
+			if (hashType == Hash.MD5)
+            {
+				MD5 md5 = MD5.Create();
+				var hash = md5.ComputeHash(File.OpenRead(filename));
+				return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 			}
+			if (hashType == Hash.CRC32)
+			{
+				var crc = new Crc32Algorithm();
+				var crc32bytes = crc.ComputeHash(File.OpenRead(filename));
+				return BitConverter.ToUInt32(crc32bytes, 0).ToString();
+			}
+			return null;
 		}
 	}
 }

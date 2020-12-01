@@ -257,7 +257,7 @@ namespace Flowframes.Magick
                 paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
                 sourceFramePath = Path.Combine(path, paddedFilename);
                 if(debugLog) Logger.Log("[Source] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                if (!TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
+                if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
                     break;
                 outFrameNum++;
 
@@ -267,7 +267,7 @@ namespace Flowframes.Magick
                     paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
                     sourceFramePath = Path.Combine(path, paddedFilename);
                     if (debugLog) Logger.Log("[Source Dupes] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                    if (!TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
+                    if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
                         break;
                     outFrameNum++;
                 }
@@ -283,7 +283,7 @@ namespace Flowframes.Magick
                     paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
                     sourceFramePath = Path.Combine(path, paddedFilename);
                     if (debugLog) Logger.Log("[Interp] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                    if (!TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
+                    if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
                         break;
                     outFrameNum++;
 
@@ -293,7 +293,7 @@ namespace Flowframes.Magick
                         paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
                         sourceFramePath = Path.Combine(path, paddedFilename);
                         if (debugLog) if (debugLog) Logger.Log("[Interp Dupes] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                        if (!TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
+                        if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
                             break;
                         outFrameNum++;
                     }
@@ -308,34 +308,6 @@ namespace Flowframes.Magick
                 file.MoveTo(Path.Combine(path, file.Name));
         }
 
-        static bool TryCopy(string source, string target)
-        {
-            try
-            {
-                File.Copy(source, target);
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
-        }
-
-        static bool TryMove(string source, string target)
-        {
-            try
-            {
-                if (File.Exists(target))
-                    File.Delete(target);
-                File.Move(source, target);
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
-        }
-
         public static void RenameCounterDir(string path, string ext, int sortMode = 0)
         {
             int counter = 1;
@@ -348,7 +320,6 @@ namespace Flowframes.Magick
             foreach (FileInfo file in files)
             {
                 string dir = new DirectoryInfo(file.FullName).Parent.FullName;
-                int filesDigits = (int)Math.Floor(Math.Log10((double)files.Length) + 1);
                 File.Move(file.FullName, Path.Combine(dir, counter.ToString()/*.PadLeft(filesDigits, '8')*/ + Path.GetExtension(file.FullName)));
                 counter++;
             }

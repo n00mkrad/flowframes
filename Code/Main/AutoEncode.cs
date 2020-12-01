@@ -81,6 +81,8 @@ namespace Flowframes.Main
                 concatFileContent += $"file '{Paths.chunksDir}/{Path.GetFileName(vid)}'\n";
             File.WriteAllText(concatFile, concatFileContent);
 
+            IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+
             await CreateVideo.ChunksToVideo(videoChunksFolder, concatFile, Interpolate.nextOutPath);
         }
 
