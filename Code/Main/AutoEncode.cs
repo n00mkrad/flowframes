@@ -12,8 +12,8 @@ namespace Flowframes.Main
     {
         static string interpFramesFolder;
         static string videoChunksFolder;
-        static int chunkSize = 125;    // Encode every n frames
-        static int safetyBufferFrames = 25;
+        public static int chunkSize = 125;    // Encode every n frames
+        public static int safetyBufferFrames = 25;
         public static List<string> encodedFrames = new List<string>();
         public static List<string> unencodedFrames = new List<string>();
 
@@ -86,7 +86,7 @@ namespace Flowframes.Main
 
         public static bool HasWorkToDo ()
         {
-            if (Interpolate.canceled) return false;
+            if (Interpolate.canceled || interpFramesFolder == null) return false;
             return ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrames.Count < GetInterpFramesAmount());
         }
 

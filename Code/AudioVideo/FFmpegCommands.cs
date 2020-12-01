@@ -58,7 +58,7 @@ namespace Flowframes
         public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum, bool hdr, bool delSrc)
         {
             string hdrStr = hdr ? hdrFilter : "";
-            string args = $"-i {inputFile.Wrap()} {hdrStr }-vf \"select=eq(n\\,{frameNum})\" -vframes 1  {outputPath.Wrap()}";
+            string args = $"-i {inputFile.Wrap()} {pngComprArg} {hdrStr }-vf \"select=eq(n\\,{frameNum})\" -vframes 1  {outputPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (delSrc)
                 DeleteSource(inputFile);

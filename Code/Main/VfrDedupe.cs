@@ -47,7 +47,11 @@ namespace Flowframes.Main
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
             string interpPath = Paths.interpDir; // framesPath.Replace(@"\", "/") + "-interpolated";
 
-            List<string> sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileName(file)).ToList();
+            List<string> sceneFrames = new List<string>();
+            Logger.Log($"Scn path {scnFramesPath} exists: {Directory.Exists(scnFramesPath)}");
+            if (Directory.Exists(scnFramesPath))
+                sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileName(file)).ToList();
+            Logger.Log($"Found {sceneFrames.Count} scn frames");
 
             int lastFrameDuration = 1;
 

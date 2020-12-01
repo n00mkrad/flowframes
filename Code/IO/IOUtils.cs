@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -435,5 +436,17 @@ namespace Flowframes.IO
 				return false;
             }
         }
+
+		public static string GetFileMd5 (string filename)
+		{
+			using (var md5 = MD5.Create())
+			{
+				using (var stream = File.OpenRead(filename))
+				{
+					var hash = md5.ComputeHash(stream);
+					return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+				}
+			}
+		}
 	}
 }

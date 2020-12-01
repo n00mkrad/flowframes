@@ -25,6 +25,7 @@ namespace Flowframes
 
         static void AiStarted (Process proc, int startupTimeMs, string defaultExt = "png")
         {
+            SwapFilenames(false);
             lastStartupTimeMs = startupTimeMs;
             InterpolateUtils.lastExt = defaultExt;
             if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
@@ -37,10 +38,30 @@ namespace Flowframes
         {
             Program.mainForm.SetProgress(100);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
-            if (AutoEncode.HasWorkToDo())
+            if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
             processTime.Stop();
+        }
+
+        static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
+        public static void SwapFilenames (bool restore)    // Renames files with a counter or restores original timecode names via MD5/filename mapping
+        {
+            Stopwatch filenameSwapSw = new Stopwatch();
+            if (!restore)   // Rename with counter and store original names
+            {
+                filenameSwapSw.Start();
+                filenameMap.Clear();
+                foreach (string file in Directory.GetFiles(Path.Combine(Interpolate.currentFramesPath)))
+                    filenameMap.Add(Path.GetFileName(file), IOUtils.GetFileMd5(file));
+                Logger.Log($"Stored file/md5 pairs in {filenameSwapSw.ElapsedMilliseconds}ms");
+            }
+            else
+            {
+                filenameSwapSw.Start();
+                // add restore code!
+                Logger.Log($"Restored original file/md5 pairs in {filenameSwapSw.ElapsedMilliseconds}ms");
+            }
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)
@@ -137,7 +158,7 @@ namespace Flowframes
         public static async Task RunRifeCuda(string framesPath, int interpFactor)
         {
             string script = "interp-parallel.py";
-            if(Config.GetInt("rifeMode") == 0 || IOUtils.GetAmountOfFiles(framesPath, false) < 10)
+            if(Config.GetInt("rifeMode") == 0 || IOUtils.GetAmountOfFiles(framesPath, false) < 6)
                 script = "interp-basic.py";
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
@@ -160,33 +181,6 @@ namespace Flowframes
                 rifePy.BeginErrorReadLine();
             }
             while (!rifePy.HasExited) await Task.Delay(1);
-            AiFinished("RIFE");
-        }
-
-        public static async Task RunRifeNcnn (string framesPath, string outPath, int interpFactor, int tilesize)
-        {
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
-            Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(rifeNcnn, 750);
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args}";
-            Logger.Log("Running RIFE...", false);
-            Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
-            if (!OSUtils.ShowHiddenCmd())
-            {
-                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log.txt"); };
-                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log.txt"); };
-            }
-            rifeNcnn.Start();
-            if (!OSUtils.ShowHiddenCmd())
-            {
-                rifeNcnn.BeginOutputReadLine();
-                rifeNcnn.BeginErrorReadLine();
-            }
-            while (!rifeNcnn.HasExited) await Task.Delay(1);
-
-            if (Interpolate.canceled) return;
-            Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
-
             AiFinished("RIFE");
         }
 

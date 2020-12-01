@@ -36,20 +36,42 @@ namespace Flowframes.UI
             else
                 Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {FFmpegCommands.GetFrameCount(path)}");
             await Task.Delay(10);
-            Size res = FFmpegCommands.GetSize(path);
-            Logger.Log($"Video Resolution: {res.Width}x{res.Height}");
+            await PrintResolution(path);
             MagickDedupe.ClearCache();
             await Task.Delay(10);
             InterpolateUtils.SetPreviewImg(await GetThumbnail(path));
         }
 
-        static async Task<Image> GetThumbnail (string videoPath)
+        static async Task PrintResolution (string path)
+        {
+            Size res = new Size();
+            if (!IOUtils.IsPathDirectory(path))     // If path is video
+            {
+                res = FFmpegCommands.GetSize(path);
+            }
+            else     // Path is frame folder
+            {
+                Image thumb = await GetThumbnail(path);
+                res = new Size(thumb.Width, thumb.Height);
+            }
+            if (res.Width > 1 && res.Height > 1)
+                Logger.Log($"Input Resolution: {res.Width}x{res.Height}");
+        }
+
+        static async Task<Image> GetThumbnail (string path)
         {
             string imgOnDisk = Path.Combine(Paths.GetDataPath(), "thumb-temp.png");
             try
             {
-                await FFmpegCommands.ExtractSingleFrame(videoPath, imgOnDisk, 1, false, false);
-                return IOUtils.GetImage(imgOnDisk);
+                if (!IOUtils.IsPathDirectory(path))     // If path is video - Extract first frame
+                {
+                    await FFmpegCommands.ExtractSingleFrame(path, imgOnDisk, 1, false, false);
+                    return IOUtils.GetImage(imgOnDisk);
+                }
+                else     // Path is frame folder - Get first frame
+                {
+                    return IOUtils.GetImage(Directory.GetFiles(path)[0]);
+                }
             }
             catch (Exception e)
             {

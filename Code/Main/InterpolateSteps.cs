@@ -60,6 +60,8 @@ namespace Flowframes.Main
 
             if (string.IsNullOrWhiteSpace(currentFramesPath))
                 currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
+
+            currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
         }
 
         public static async Task ExtractSceneChanges ()
@@ -106,14 +108,18 @@ namespace Flowframes.Main
 
         public static async Task DoInterpolate ()
         {
+            IOUtils.TryDeleteIfExists(currentInterpFramesDir);
+            foreach (string ini in Directory.GetFiles(currentTempDir, "*.ini", SearchOption.TopDirectoryOnly))
+                IOUtils.TryDeleteIfExists(ini);
+
             await PostProcessFrames(true);
 
             string interpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
-            if (!IOUtils.TryDeleteIfExists(interpFramesDir))
-            {
-                InterpolateUtils.ShowMessage("Failed to delete old \"interpolated-frames folder\" - Make sure none of the files are opened in another program!", "Error");
-                return;
-            }
+            // if (!IOUtils.TryDeleteIfExists(interpFramesDir))
+            // {
+            //     InterpolateUtils.ShowMessage("Failed to delete old \"interpolated-frames folder\" - Make sure none of the files are opened in another program!", "Error");
+            //     return;
+            // }
             lastInterpFactor = interpFactor;
             int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int targetFrameCount = frames * lastInterpFactor;
@@ -127,7 +133,6 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid ()
         {
-            currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
             string outPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(currentInPath) + IOUtils.GetAiSuffix(currentAi, lastInterpFactor) + InterpolateUtils.GetExt(currentOutMode));
             await CreateVideo.FramesToVideo(currentInterpFramesDir, outPath, currentOutMode);
         }

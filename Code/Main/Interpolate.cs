@@ -28,7 +28,8 @@ namespace Flowframes
         public static float currentInFps;
         public static float currentOutFps;
         public static OutMode currentOutMode;
-
+        public static bool currentInputIsFrames;
+        public static bool currentlyUsingAutoEnc;
         public static int lastInterpFactor;
         public static string lastInputPath;
         public static string nextOutPath;
@@ -59,10 +60,11 @@ namespace Flowframes
             if(!Utils.CheckPathValid(inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(inPath, outDir);
             lastAi = ai;
+            currentInputIsFrames = IOUtils.IsPathDirectory(inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
             await Task.Delay(10);
-            if (!IOUtils.IsPathDirectory(inPath))        // Input is video - extract frames first
+            if (!currentInputIsFrames)        // Input is video - extract frames first
                 await ExtractFrames(inPath, currentFramesPath);
             else
                 IOUtils.Copy(inPath, currentFramesPath);
@@ -81,7 +83,8 @@ namespace Flowframes
             await RunAi(interpFramesDir, targetFrameCount, tilesize, ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
-            //await CreateVideo.FramesToVideo(interpFramesDir, nextOutPath, outMode); // TODO: DISABLE NORMAL ENCODING IF PARALLEL ENC WAS USED
+            if(!currentlyUsingAutoEnc)
+                await CreateVideo.FramesToVideo(interpFramesDir, nextOutPath, outMode);
             Cleanup(interpFramesDir);
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
@@ -145,7 +148,7 @@ namespace Flowframes
                 Cancel("Failed to extract frames from input video!");
             }
 
-            string hasPreprocessedFile = Path.Combine(currentTempDir, ".preprocessed");
+            string hasPreprocessedFile = Path.Combine(currentTempDir, ".preprocessed");     // TODO: DUMP THIS WHOLE IDEA
             if (File.Exists(hasPreprocessedFile)) return;
 
             if (Config.GetInt("dedupMode") == 1)
@@ -175,6 +178,7 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
+            currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
             Directory.CreateDirectory(outpath);
 
             List<Task> tasks = new List<Task>();
@@ -191,7 +195,8 @@ namespace Flowframes
             if (ai.aiName == Networks.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
 
-            tasks.Add(AutoEncode.MainLoop(outpath));
+            if(currentlyUsingAutoEnc)
+                tasks.Add(AutoEncode.MainLoop(outpath));
             await Task.WhenAll(tasks);
         }
 
