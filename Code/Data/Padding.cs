@@ -9,6 +9,6 @@ namespace Flowframes.Data
     class Padding
     {
         public const int inputFrames = 9;
-        public const int interpFrames = 8;
+        public const int interpFrames = 8;  // TODO: Maybe modify NCNN to accept padding as arg?
     }
 }

@@ -39,6 +39,7 @@ RIFE_model.device()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', required=True)
+parser.add_argument('--output', required=False, default='frames-interpolated')
 parser.add_argument('--times', default=2, type=int)
 parser.add_argument('--imgformat', default="png")
 args = parser.parse_args()
@@ -49,7 +50,7 @@ path = args.input
 name = os.path.basename(path)
 length = len(glob(path + '/*.png'))
 #interp_output_path = path.replace(name, name+'-interpolated')
-interp_output_path = (name+'-interpolated').join(path.rsplit(name, 1))
+interp_output_path = (args.output).join(path.rsplit(name, 1))
 os.makedirs(interp_output_path, exist_ok = True)
 #output_path = path.replace('tmp', 'output')
 

@@ -6,7 +6,7 @@ namespace Flowframes.Data
 {
     class Networks
     {
-        public static AI rifeCuda = new AI("RIFE_CUDA", "RIFE", "CUDA/Pytorch Implementation of RIFE", Packages.rifeCuda, 1, false);
+        public static AI rifeCuda = new AI("RIFE_CUDA", "RIFE", "CUDA/Pytorch Implementation of RIFE", Packages.rifeCuda, 2, false);
         public static AI rifeNcnn = new AI("RIFE_NCNN", "RIFE (NCNN)", "Vulkan/NCNN Implementation of RIFE", Packages.rifeNcnn, 1, true);
         public static AI dainNcnn = new AI("DAIN_NCNN", "DAIN (NCNN)", "Vulkan/NCNN Implementation of DAIN", Packages.dainNcnn, 0, true);
         public static AI cainNcnn = new AI("CAIN_NCNN", "CAIN (NCNN)", "Vulkan/NCNN Implementation of CAIN", Packages.cainNcnn, 0, true);

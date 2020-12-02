@@ -30,8 +30,10 @@ else:
 
 parser = argparse.ArgumentParser(description='Interpolation for a pair of images')
 parser.add_argument('--input', required=True)
+parser.add_argument('--output', required=False, default='frames-interpolated')
 parser.add_argument('--imgformat', default="png")
 parser.add_argument('--skip', dest='skip', action='store_true', help='whether to remove static frames before processing')
+#parser.add_argument('--scn', dest='scn', default=False, help='enable scene detection')
 #parser.add_argument('--fps', dest='fps', type=int, default=None)
 parser.add_argument('--png', dest='png', default=True, help='whether to output png format outputs')
 #parser.add_argument('--ext', dest='ext', type=str, default='mp4', help='output video extension')
@@ -54,7 +56,9 @@ h, w, _ = frame.shape
 
 path = args.input
 name = os.path.basename(path)
-interp_output_path = (name+'-interpolated').join(path.rsplit(name, 1))
+print('name: ' + name)
+interp_output_path = (args.output).join(path.rsplit(name, 1))
+print('interp_output_path: ' + interp_output_path)
 
 #if args.fps is None:
 #    args.fps = fps * args.exptimes
@@ -77,9 +81,10 @@ def write_frame(i0, infs, i1, p, user_args):
         l = len(infs)
         # A video transition occurs.
         #if p[i] > 0.2:
+        #    print('Transition! Duplicting frame instead of interpolating.')
         #    for j in range(len(infs)):
         #        infs[j][i] = i0[i]
-        #
+        
         # Result was too similar to previous frame, skip if given.
         #if p[i] < 5e-3 and user_args.skip:
         #    if skip_frame % 100 == 0:
@@ -100,7 +105,7 @@ def clear_buffer(user_args):
         if item is None:
             break
         if user_args.png:
-            print('Writing {}/{:0>8d}.png'.format(interp_output_path, cnt))
+            print('=> {:0>8d}.png'.format(cnt))
             cv2.imwrite('{}/{:0>8d}.png'.format(interp_output_path, cnt), item[:, :, ::1])
             cnt += 1
         else:
@@ -147,6 +152,7 @@ buffer.put(img_list[0])
 import time
 while(not buffer.empty()):
     time.sleep(0.1)
+time.sleep(0.5)
 #pbar.close()
 #if not vid_out is None:
 #    vid_out.release()
