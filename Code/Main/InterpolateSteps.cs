@@ -29,13 +29,27 @@ namespace Flowframes.Main
             InitState();
 
             if (step.Contains("Extract Scene Changes"))
-                await ExtractSceneChanges();
+            {
+                if (!currentInputIsFrames)        // Input is video - extract frames first
+                    await ExtractSceneChanges();
+                else
+                    InterpolateUtils.ShowMessage("Scene changes can only be extracted from videos, not frames!", "Error");
+            }
+
             if (step.Contains("Extract Video Frames"))
-                await ExtractVideoFrames();
+            {
+                if (!currentInputIsFrames)        // Input is video - extract frames first
+                    await ExtractVideoFrames();
+                else
+                    await FFmpegCommands.ImportImages(currentInPath, currentFramesPath);
+            }
+
             if (step.Contains("Run Interpolation"))
                 await DoInterpolate();
+
             if (step.Contains("Create Output Video"))
                 await CreateOutputVid();
+
             if (step.Contains("Cleanup"))
                 await Reset();
 
@@ -62,6 +76,8 @@ namespace Flowframes.Main
                 currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
 
             currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
+
+            currentInputIsFrames = IOUtils.IsPathDirectory(currentInPath);
         }
 
         public static async Task ExtractSceneChanges ()

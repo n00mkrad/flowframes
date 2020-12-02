@@ -365,9 +365,9 @@ namespace Flowframes
         {
             stepSelector.Items.Clear();
             if(Config.GetBool("scnDetect"))
-                stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Extract Video Frames", "3) Run Interpolation", "4) Create Output Video", "5) Cleanup & Reset" });
+                stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Import/Extract Video Frames", "3) Run Interpolation", "4) Create Output Video", "5) Cleanup & Reset" });
             else
-                stepSelector.Items.AddRange(new string[] { "1) Extract Video Frames", "2) Run Interpolation", "3) Create Output Video", "4) Cleanup & Reset" });
+                stepSelector.Items.AddRange(new string[] { "1) Import/Extract Video Frames", "2) Run Interpolation", "3) Create Output Video", "4) Cleanup & Reset" });
             stepSelector.SelectedIndex = 0;
             bool stepByStep = Config.GetInt("processingMode") == 1;
             stepSelector.Visible = stepByStep;
