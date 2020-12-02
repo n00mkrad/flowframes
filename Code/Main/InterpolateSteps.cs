@@ -28,6 +28,8 @@ namespace Flowframes.Main
             Program.mainForm.SetWorking(true);
             InitState();
 
+            if (!InterpolateUtils.InputIsValid(currentInPath, currentOutPath, currentOutFps, interpFactor, Program.mainForm.GetTilesize())) return;     // General input checks
+
             if (step.Contains("Extract Scene Changes"))
             {
                 if (!currentInputIsFrames)        // Input is video - extract frames first
@@ -57,30 +59,30 @@ namespace Flowframes.Main
             Logger.Log("Done running this step.");
         }
 
-        static void InitState ()
+        static void InitState()
         {
             BatchEntry e = Program.mainForm.GetBatchEntry();
             interpFactor = e.interpFactor;
             currentAi = e.ai;
 
-            if (string.IsNullOrWhiteSpace(currentInPath))
+            try
+            {
                 currentInPath = e.inPath;
-
-            if (string.IsNullOrWhiteSpace(currentOutPath))
                 currentOutPath = e.outPath;
-
-            if (string.IsNullOrWhiteSpace(currentTempDir))
                 currentTempDir = InterpolateUtils.GetTempFolderLoc(currentInPath, currentOutPath);
-
-            if (string.IsNullOrWhiteSpace(currentFramesPath))
                 currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
 
-            currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
+                currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
 
-            currentInputIsFrames = IOUtils.IsPathDirectory(currentInPath);
+                currentInputIsFrames = IOUtils.IsPathDirectory(currentInPath);
+            }
+            catch
+            {
+                // Handled later basically
+            }
         }
 
-        public static async Task ExtractSceneChanges ()
+        public static async Task ExtractSceneChanges()
         {
             string scenesPath = Path.Combine(currentTempDir, Paths.scenesDir);
             if (!IOUtils.TryDeleteIfExists(scenesPath))
@@ -93,7 +95,7 @@ namespace Flowframes.Main
             await Task.Delay(10);
         }
 
-        public static async Task ExtractVideoFrames ()
+        public static async Task ExtractVideoFrames()
         {
             currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
             if (!IOUtils.TryDeleteIfExists(currentFramesPath))
@@ -133,7 +135,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static async Task DoInterpolate ()
+        public static async Task DoInterpolate()
         {
             currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
             if (!Directory.Exists(currentFramesPath))
@@ -164,14 +166,14 @@ namespace Flowframes.Main
             Program.mainForm.SetProgress(0);
         }
 
-        public static async Task CreateOutputVid ()
+        public static async Task CreateOutputVid()
         {
             currentOutMode = Program.mainForm.GetBatchEntry().outMode;
             string outPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(currentInPath) + IOUtils.GetAiSuffix(currentAi, lastInterpFactor) + InterpolateUtils.GetExt(currentOutMode));
             await CreateVideo.Export(currentInterpFramesDir, outPath, currentOutMode);
         }
 
-        public static async Task Reset ()
+        public static async Task Reset()
         {
             Cleanup(currentInterpFramesDir, true);
         }

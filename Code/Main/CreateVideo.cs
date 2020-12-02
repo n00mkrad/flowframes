@@ -79,6 +79,10 @@ namespace Flowframes.Main
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
+                string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
+                await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, -1);
+
+                /*      DELETE THIS AS SOON AS I'M SURE I CAN USE VFR WITH TIMING DISABLED
                 if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
                 {
                     string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
@@ -88,6 +92,7 @@ namespace Flowframes.Main
                 {
                     await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, InterpolateUtils.lastExt);   // Create video
                 }
+                */
 
                 await MergeAudio(i.lastInputPath, outPath);
 
@@ -198,12 +203,14 @@ namespace Flowframes.Main
             if (!Config.GetBool("enableAudio")) return;
             try
             {
-                Logger.Log("Adding input audio to output video...");
                 string audioFileBasePath = Path.Combine(i.currentTempDir, "audio");
-                if (IOUtils.IsPathDirectory(inputPath) && !File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))   // Try loading out of same folder as input if input is a folder
+
+                if (inputPath != null && IOUtils.IsPathDirectory(inputPath) && !File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))   // Try loading out of same folder as input if input is a folder
                     audioFileBasePath = Path.Combine(i.currentTempDir.GetParentDir(), "audio");
+
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
                     await FFmpegCommands.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
+                
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
                     Logger.Log("No compatible audio stream found.");

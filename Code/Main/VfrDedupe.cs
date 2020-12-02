@@ -90,13 +90,13 @@ namespace Flowframes.Main
                         int lastNum = totalFileCount - 1;
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
-                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.inputFrames, '0')}.png'\nduration {durationStr}\n";
+                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
                             totalFileCount++;
                         }
                         frm = interpFramesAmount - 1;
                     }
 
-                    fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.inputFrames, '0')}.png'\nduration {durationStr}\n";
+                    fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
                     totalFileCount++;
                 }
 
@@ -111,7 +111,7 @@ namespace Flowframes.Main
             if (firstFrameFix)
             {
                 string[] lines = IOUtils.ReadLines(vfrFile);
-                File.WriteAllText(vfrFile, lines[0].Replace($"{"1".PadLeft(Padding.inputFrames, '0')}.png", $"{"0".PadLeft(Padding.inputFrames, '0')}.png"));
+                File.WriteAllText(vfrFile, lines[0].Replace($"{"1".PadLeft(Padding.interpFrames, '0')}.png", $"{"0".PadLeft(Padding.interpFrames, '0')}.png"));
                 File.AppendAllText(vfrFile, "\n" + lines[1] + "\n");
                 File.AppendAllLines(vfrFile, lines);
             }

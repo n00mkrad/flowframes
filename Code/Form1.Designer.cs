@@ -114,12 +114,12 @@
             this.label10 = new System.Windows.Forms.Label();
             this.utilsExtractAudioCbox = new System.Windows.Forms.CheckBox();
             this.previewTab = new System.Windows.Forms.TabPage();
+            this.label22 = new System.Windows.Forms.Label();
             this.previewPicturebox = new System.Windows.Forms.PictureBox();
             this.abtTab = new System.Windows.Forms.TabPage();
             this.htButton1 = new HTAlt.WinForms.HTButton();
             this.runStepBtn = new System.Windows.Forms.Button();
             this.stepSelector = new System.Windows.Forms.ComboBox();
-            this.label22 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -1249,6 +1249,20 @@
             this.previewTab.TabIndex = 3;
             this.previewTab.Text = "Preview";
             // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.ForeColor = System.Drawing.Color.Silver;
+            this.label22.Location = new System.Drawing.Point(3, 225);
+            this.label22.Margin = new System.Windows.Forms.Padding(3);
+            this.label22.MaximumSize = new System.Drawing.Size(160, 0);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(158, 30);
+            this.label22.TabIndex = 38;
+            this.label22.Text = "Click on the preview to open it in a separate window.";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label22.Visible = false;
+            // 
             // previewPicturebox
             // 
             this.previewPicturebox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1326,20 +1340,6 @@
             this.stepSelector.Size = new System.Drawing.Size(203, 24);
             this.stepSelector.TabIndex = 73;
             this.stepSelector.Visible = false;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.ForeColor = System.Drawing.Color.Silver;
-            this.label22.Location = new System.Drawing.Point(3, 225);
-            this.label22.Margin = new System.Windows.Forms.Padding(3);
-            this.label22.MaximumSize = new System.Drawing.Size(160, 0);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(158, 30);
-            this.label22.TabIndex = 38;
-            this.label22.Text = "Click on the preview to open it in a separate window.";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label22.Visible = false;
             // 
             // Form1
             // 

@@ -157,7 +157,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Disable timestamps if input frames are sequential, not timestamped
+            bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
 
             if(sbsMode)
                 await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1, useTimestamps);
@@ -182,7 +182,8 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
-            currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
+            //currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f; TODO: Enable me for v18!!
+            currentlyUsingAutoEnc = false;
             Directory.CreateDirectory(outpath);
 
             List<Task> tasks = new List<Task>();
@@ -237,7 +238,7 @@ namespace Flowframes
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
-            if(!Config.GetBool("keepTempFolder"))
+            if (Config.GetInt("processingMode") == 1 && !Config.GetBool("keepTempFolder"))
                 IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");

@@ -160,7 +160,15 @@ namespace Flowframes
             Interpolate.interpFactor = interpFactorCombox.GetInt();
             string inPath = inputTbox.Text.Trim();
             string outPath = outputTbox.Text.Trim();
-            Interpolate.Start(inPath, outPath, tilesize.GetInt(), GetOutMode(), GetAi());
+            Interpolate.Start(inPath, outPath, GetTilesize(), GetOutMode(), GetAi());
+        }
+
+        public int GetTilesize ()
+        {
+            if (GetAi().supportsTiling)
+                return tilesize.GetInt();
+            else
+                return 512;
         }
 
         Interpolate.OutMode GetOutMode()
@@ -228,12 +236,15 @@ namespace Flowframes
 
         public void SetWorking(bool state)
         {
-            Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, settingsBtn, installerBtn };
-            Program.busy = state;
+            Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn, installerBtn };
+            Control[] controlsToHide = new Control[] { runBtn, runStepBtn, stepSelector };
+            progressCircle.Visible = state;
+            cancelBtn.Visible = state;
             foreach (Control c in controlsToDisable)
                 c.Enabled = !state;
-            cancelBtn.Visible = state;
-            progressCircle.Visible = state;
+            foreach (Control c in controlsToHide)
+                c.Visible = !state;
+            Program.busy = state;
         }
 
         private void aiCombox_SelectedIndexChanged(object sender, EventArgs e)
