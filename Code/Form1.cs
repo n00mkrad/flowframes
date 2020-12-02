@@ -226,11 +226,6 @@ namespace Flowframes
 
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (initialized && GetAi().aiName == Networks.rifeNcnn.aiName && interpFactorCombox.SelectedIndex != 0)
-            {
-                //MessageBox.Show("RIFE-NCNN currently only supports x2 interpolation.");
-                //interpFactorCombox.SelectedIndex = 0; // TODO: Add RIFE 4x/8x workaround & improve CAIN workaround
-            }
             UpdateOutputFPS();
         }
 
@@ -376,9 +371,9 @@ namespace Flowframes
         {
             stepSelector.Items.Clear();
             if(Config.GetBool("scnDetect"))
-                stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Import/Extract Video Frames", "3) Run Interpolation", "4) Create Output Video", "5) Cleanup & Reset" });
+                stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Import/Extract Frames", "3) Run Interpolation", "4) Export", "5) Cleanup & Reset" });
             else
-                stepSelector.Items.AddRange(new string[] { "1) Import/Extract Video Frames", "2) Run Interpolation", "3) Create Output Video", "4) Cleanup & Reset" });
+                stepSelector.Items.AddRange(new string[] { "1) Import/Extract Frames", "2) Run Interpolation", "3) Export", "4) Cleanup & Reset" });
             stepSelector.SelectedIndex = 0;
             bool stepByStep = Config.GetInt("processingMode") == 1;
             stepSelector.Visible = stepByStep;

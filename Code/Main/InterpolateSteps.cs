@@ -38,7 +38,7 @@ namespace Flowframes.Main
                     InterpolateUtils.ShowMessage("Scene changes can only be extracted from videos, not frames!", "Error");
             }
 
-            if (step.Contains("Extract Video Frames"))
+            if (step.Contains("Extract Frames"))
             {
                 if (!currentInputIsFrames)        // Input is video - extract frames first
                     await ExtractVideoFrames();
@@ -49,7 +49,7 @@ namespace Flowframes.Main
             if (step.Contains("Run Interpolation"))
                 await DoInterpolate();
 
-            if (step.Contains("Create Output Video"))
+            if (step.Contains("Export"))
                 await CreateOutputVid();
 
             if (step.Contains("Cleanup"))
