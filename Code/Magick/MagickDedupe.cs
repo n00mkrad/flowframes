@@ -11,6 +11,7 @@ using Flowframes.UI;
 using Microsoft.VisualBasic.Devices;
 using ImageMagick;
 using Flowframes.OS;
+using Flowframes.Data;
 
 namespace Flowframes.Magick
 {
@@ -254,7 +255,7 @@ namespace Flowframes.Magick
                 int currentDupesAmount = kvp[1].GetInt();
 
                 // Copy Source Frame
-                paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
+                paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
                 sourceFramePath = Path.Combine(path, paddedFilename);
                 if(debugLog) Logger.Log("[Source] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
                 if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
@@ -264,7 +265,7 @@ namespace Flowframes.Magick
                 // Insert dupes for source frame
                 for (int copyTimes = 0; copyTimes < currentDupesAmount; copyTimes++)
                 {
-                    paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
+                    paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
                     sourceFramePath = Path.Combine(path, paddedFilename);
                     if (debugLog) Logger.Log("[Source Dupes] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
                     if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
@@ -280,7 +281,7 @@ namespace Flowframes.Magick
                     sourceFrameNum++;
 
                     // Copy Interp Frame
-                    paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
+                    paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
                     sourceFramePath = Path.Combine(path, paddedFilename);
                     if (debugLog) Logger.Log("[Interp] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
                     if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
@@ -290,7 +291,7 @@ namespace Flowframes.Magick
                     // Insert dupes for interp frame
                     for (int copyTimes = 0; copyTimes < currentDupesAmount; copyTimes++)
                     {
-                        paddedFilename = sourceFrameNum.ToString().PadLeft(8, '0') + $".{ext}";
+                        paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
                         sourceFramePath = Path.Combine(path, paddedFilename);
                         if (debugLog) if (debugLog) Logger.Log("[Interp Dupes] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
                         if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))

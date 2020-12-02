@@ -124,10 +124,10 @@ namespace Flowframes.Main
             }
             if (!canceled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
             {
-                string lastFrame = IOUtils.GetHighestFrameNumPath(currentOutPath);
+                string lastFrame = IOUtils.GetHighestFrameNumPath(currentFramesPath);
                 int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
-                string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(8, '0') + ".png");
-                string firstFrame = new DirectoryInfo(currentOutPath).GetFiles("*.png")[0].FullName;
+                string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
+                string firstFrame = new DirectoryInfo(currentFramesPath).GetFiles("*.png")[0].FullName;
                 File.Copy(firstFrame, newFilename);
                 Logger.Log("Copied loop frame.");
             }

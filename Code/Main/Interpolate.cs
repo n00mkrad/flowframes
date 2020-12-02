@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Padding = Flowframes.Data.Padding;
 using Utils = Flowframes.Main.InterpolateUtils;
 
 namespace Flowframes
@@ -133,7 +134,7 @@ namespace Flowframes
             {
                 string lastFrame = IOUtils.GetHighestFrameNumPath(outPath);
                 int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
-                string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(8, '0') + ".png");
+                string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
                 string firstFrame = new DirectoryInfo(outPath).GetFiles("*.png")[0].FullName;
                 File.Copy(firstFrame, newFilename);
                 Logger.Log("Copied loop frame.");

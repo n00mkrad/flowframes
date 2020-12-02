@@ -37,11 +37,12 @@ namespace Flowframes
             IOUtils.CreateDir(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.Get("scnDetectValue")})'\"," : "";
-            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+            string pad = Padding.inputFrames.ToString();
+            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{divisionFilter} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             if (deDupe)
             {
                 string mpStr = (Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr;
-                args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
+                args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             }
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             await Task.Delay(1);

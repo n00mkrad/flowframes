@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using Flowframes.UI;
 using System;
 using System.Collections.Generic;
@@ -89,13 +90,13 @@ namespace Flowframes.Main
                         int lastNum = totalFileCount - 1;
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
-                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
+                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.inputFrames, '0')}.png'\nduration {durationStr}\n";
                             totalFileCount++;
                         }
                         frm = interpFramesAmount - 1;
                     }
 
-                    fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(8, '0')}.png'\nduration {durationStr}\n";
+                    fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.inputFrames, '0')}.png'\nduration {durationStr}\n";
                     totalFileCount++;
                 }
 
@@ -110,7 +111,7 @@ namespace Flowframes.Main
             if (firstFrameFix)
             {
                 string[] lines = IOUtils.ReadLines(vfrFile);
-                File.WriteAllText(vfrFile, lines[0].Replace("00000001.png", "00000000.png"));
+                File.WriteAllText(vfrFile, lines[0].Replace($"{"1".PadLeft(Padding.inputFrames, '0')}.png", $"{"0".PadLeft(Padding.inputFrames, '0')}.png"));
                 File.AppendAllText(vfrFile, "\n" + lines[1] + "\n");
                 File.AppendAllLines(vfrFile, lines);
             }
@@ -119,7 +120,7 @@ namespace Flowframes.Main
             {
                 int lastFileNumber = frameFiles.Last().Name.GetInt();
                 lastFileNumber += lastFrameDuration;
-                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(8, '0') + ".png");
+                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
                 if (File.Exists(loopFrameTargetPath))
                     return;
                 File.Copy(frameFiles.First().FullName, loopFrameTargetPath);

@@ -8,7 +8,6 @@ namespace Flowframes.Data
 {
     class Padding
     {
-        public const int inputFrames = 10;
-        public const int timestampFrames = 10;
+        public const int inputFrames = 9;
     }
 }
