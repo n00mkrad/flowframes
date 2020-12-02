@@ -119,7 +119,7 @@ namespace Flowframes.Main
 
         public static async Task DoInterpolate ()
         {
-            currentFramesPath = Path.Combine(currentInterpFramesDir, Paths.framesDir);
+            currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
             if (!Directory.Exists(currentFramesPath))
             {
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");

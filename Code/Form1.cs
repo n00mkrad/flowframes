@@ -80,6 +80,7 @@ namespace Flowframes
 
         public BatchEntry GetBatchEntry()
         {
+            SetTab("interpolate");
             return new BatchEntry(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), fpsInTbox.GetFloat(), interpFactorCombox.GetInt(), GetOutMode());
         }
 
@@ -152,12 +153,11 @@ namespace Flowframes
 
         public void runBtn_Click(object sender, EventArgs e)
         {
+            SetTab("interpolate");
             if (!BatchProcessing.busy)
                 SetTab("interpolation");
-            if (fpsInTbox.Visible)
-                Interpolate.SetFps(fpsInTbox.GetFloat());
-            if (interpFactorCombox.Visible)
-                Interpolate.interpFactor = interpFactorCombox.GetInt();
+            Interpolate.SetFps(fpsInTbox.GetFloat());
+            Interpolate.interpFactor = interpFactorCombox.GetInt();
             string inPath = inputTbox.Text.Trim();
             string outPath = outputTbox.Text.Trim();
             Interpolate.Start(inPath, outPath, tilesize.GetInt(), GetOutMode(), GetAi());
@@ -228,7 +228,7 @@ namespace Flowframes
 
         public void SetWorking(bool state)
         {
-            Control[] controlsToDisable = new Control[] { runBtn, settingsBtn, installerBtn };
+            Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, settingsBtn, installerBtn };
             Program.busy = state;
             foreach (Control c in controlsToDisable)
                 c.Enabled = !state;
@@ -372,10 +372,13 @@ namespace Flowframes
             bool stepByStep = Config.GetInt("processingMode") == 1;
             stepSelector.Visible = stepByStep;
             runStepBtn.Visible = stepByStep;
+            runBtn.Visible = !stepByStep;
         }
 
         private async void runStepBtn_Click(object sender, EventArgs e)
         {
+            SetTab("interpolate");
+            Interpolate.SetFps(fpsInTbox.GetFloat());
             await InterpolateSteps.Run(stepSelector.Text);
         }
 

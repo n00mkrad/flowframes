@@ -1348,6 +1348,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(934, 501);
+            this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.stepSelector);
             this.Controls.Add(this.runStepBtn);
             this.Controls.Add(this.updateBtn);
@@ -1358,7 +1359,6 @@
             this.Controls.Add(this.patreonBtn);
             this.Controls.Add(this.paypalBtn);
             this.Controls.Add(this.discordBtn);
-            this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.longProgBar);
             this.Controls.Add(this.installerBtn);
             this.Controls.Add(this.panel1);

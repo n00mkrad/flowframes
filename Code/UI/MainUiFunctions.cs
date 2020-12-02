@@ -17,6 +17,7 @@ namespace Flowframes.UI
     {
         public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
         {
+            Program.mainForm.SetTab("interpolate");
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;

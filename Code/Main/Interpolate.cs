@@ -146,7 +146,7 @@ namespace Flowframes
 
             if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
             {
-                Cancel("Failed to extract frames from input video!");
+                Cancel("Input frames folder is empty!");
             }
 
             if (Config.GetInt("dedupMode") == 1)
