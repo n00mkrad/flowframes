@@ -13,18 +13,18 @@ namespace Flowframes.Main
 {
     class VfrDedupe
     {
-        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, bool firstFrameFix, int times)
+        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, bool firstFrameFix, int times, bool noTimestamps)
         {
             Logger.Log("Generating timecodes...");
             if(times <= 0)
             {
-                await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix);
-                await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix, true);
-                await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix, true);
+                await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix, false, noTimestamps);
+                await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix, true, noTimestamps);
+                await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix, true, noTimestamps);
             }
             else
             {
-                await CreateTimecodeFile(framesPath, loopEnabled, times, firstFrameFix);
+                await CreateTimecodeFile(framesPath, loopEnabled, times, firstFrameFix, false, noTimestamps);
             }
             frameFiles = null;
             Logger.Log($"Generating timecodes... Done.", false, true);
@@ -32,7 +32,7 @@ namespace Flowframes.Main
 
         static FileInfo[] frameFiles;
 
-        public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix, bool notFirstRun = false)
+        public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix, bool notFirstRun, bool noTimestamps)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
@@ -45,7 +45,7 @@ namespace Flowframes.Main
             string fileContent = "";
 
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
-            string interpPath = Paths.interpDir; // framesPath.Replace(@"\", "/") + "-interpolated";
+            string interpPath = Paths.interpDir;
 
             List<string> sceneFrames = new List<string>();
             if (Directory.Exists(scnFramesPath))
@@ -59,18 +59,21 @@ namespace Flowframes.Main
             {
                 if (Interpolate.canceled) return;
 
-                string filename1 = frameFiles[i].Name;
-                string filename2 = frameFiles[i + 1].Name;
+                int durationTotal = 100;   // Default for no timestamps in input filenames (divided by output fps later)
 
+                if (!noTimestamps)  // Get timings from frame filenames
+                {
+                    string filename1 = frameFiles[i].Name;
+                    string filename2 = frameFiles[i + 1].Name;
+                    durationTotal = Path.GetFileNameWithoutExtension(filename2).GetInt() - Path.GetFileNameWithoutExtension(filename1).GetInt();
+                }
 
-                int durationTotal = Path.GetFileNameWithoutExtension(filename2).GetInt() - Path.GetFileNameWithoutExtension(filename1).GetInt();
                 lastFrameDuration = durationTotal;
                 float durationPerInterpFrame = (float)durationTotal / interpFactor;
 
                 int interpFramesAmount = interpFactor;
 
                 bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(frameFiles[i + 1].Name));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
-
 
                 // If loop is enabled, account for the extra frame added to the end for loop continuity
                 if (loopEnabled && i == (frameFiles.Length - 2))

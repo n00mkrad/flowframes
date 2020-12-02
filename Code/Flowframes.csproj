@@ -170,6 +170,7 @@
     <Compile Include="Data\AI.cs" />
     <Compile Include="Data\BatchEntry.cs" />
     <Compile Include="Data\Networks.cs" />
+    <Compile Include="Data\Padding.cs" />
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
     </Compile>

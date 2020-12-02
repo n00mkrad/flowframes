@@ -216,9 +216,9 @@
             this.tempDirBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.tempDirBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.tempDirBrowseBtn.ForeColor = System.Drawing.Color.White;
-            this.tempDirBrowseBtn.Location = new System.Drawing.Point(709, 66);
+            this.tempDirBrowseBtn.Location = new System.Drawing.Point(704, 65);
             this.tempDirBrowseBtn.Name = "tempDirBrowseBtn";
-            this.tempDirBrowseBtn.Size = new System.Drawing.Size(50, 23);
+            this.tempDirBrowseBtn.Size = new System.Drawing.Size(55, 23);
             this.tempDirBrowseBtn.TabIndex = 70;
             this.tempDirBrowseBtn.Text = "Browse";
             this.tempDirBrowseBtn.UseVisualStyleBackColor = false;
@@ -231,7 +231,7 @@
             this.tempDirCustom.Location = new System.Drawing.Point(486, 67);
             this.tempDirCustom.MinimumSize = new System.Drawing.Size(4, 21);
             this.tempDirCustom.Name = "tempDirCustom";
-            this.tempDirCustom.Size = new System.Drawing.Size(217, 20);
+            this.tempDirCustom.Size = new System.Drawing.Size(212, 20);
             this.tempDirCustom.TabIndex = 69;
             // 
             // keepTempFolder
@@ -544,7 +544,7 @@
             this.timingMode.ForeColor = System.Drawing.Color.White;
             this.timingMode.FormattingEnabled = true;
             this.timingMode.Items.AddRange(new object[] {
-            "Disabled",
+            "Disabled (Static)",
             "Use Timecodes From Source Video"});
             this.timingMode.Location = new System.Drawing.Point(280, 97);
             this.timingMode.Name = "timingMode";
@@ -557,9 +557,9 @@
             this.label35.Location = new System.Drawing.Point(10, 100);
             this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(197, 13);
+            this.label35.Size = new System.Drawing.Size(117, 13);
             this.label35.TabIndex = 58;
-            this.label35.Text = "Frame Handling Mode For Deduplication";
+            this.label35.Text = "Dynamic Frame Timing ";
             // 
             // label27
             // 

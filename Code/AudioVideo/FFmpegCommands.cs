@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -33,8 +34,7 @@ namespace Flowframes
         {
             if(!sceneDetect) Logger.Log("Extracting video frames using FFmpeg...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            if (!Directory.Exists(frameFolderPath))
-                Directory.CreateDirectory(frameFolderPath);
+            IOUtils.CreateDir(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.Get("scnDetectValue")})'\"," : "";
             string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{divisionFilter} {sizeStr} \"{frameFolderPath}/%08d.png\"";
@@ -47,6 +47,23 @@ namespace Flowframes
             await Task.Delay(1);
             if (delSrc)
                 DeleteSource(inputFile);
+        }
+
+        public static async Task ImportImages (string inpath, string outpath, bool delSrc = false, bool showLog = true)
+        {
+            if (showLog) Logger.Log("Importing images...");
+            IOUtils.CreateDir(outpath);
+            string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
+            string concatFileContent = "";
+            foreach (string img in Directory.GetFiles(inpath))
+                concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
+            File.WriteAllText(concatFile, concatFileContent);
+
+            string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} -pix_fmt rgb24 -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
+            AvProcess.LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
+            await AvProcess.RunFfmpeg(args, logMode);
+            if (delSrc)
+                DeleteSource(inpath);
         }
 
         public static async Task ExtractSingleFrame(string inputFile, int frameNum, bool hdr, bool delSrc)

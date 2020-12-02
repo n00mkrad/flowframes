@@ -515,5 +515,15 @@ namespace Flowframes.IO
 			}
 			return null;
 		}
+
+		public static bool CreateDir (string path)		// Returns whether the dir already existed
+        {
+			if (!Directory.Exists(path))
+            {
+				Directory.CreateDirectory(path);
+				return false;
+			}
+			return true;
+        }
 	}
 }

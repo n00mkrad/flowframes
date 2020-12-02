@@ -67,7 +67,7 @@ namespace Flowframes
             if (!currentInputIsFrames)        // Input is video - extract frames first
                 await ExtractFrames(inPath, currentFramesPath);
             else
-                IOUtils.Copy(inPath, currentFramesPath);
+                await FFmpegCommands.ImportImages(inPath, currentFramesPath);
             if (canceled) return;
             sw.Restart();
             await Task.Delay(10);
@@ -156,10 +156,12 @@ namespace Flowframes
 
             if (canceled) return;
 
+            bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Disable timestamps if input frames are sequential, not timestamped
+
             if(sbsMode)
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1);
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1, useTimestamps);
             else
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor);
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor, useTimestamps);
 
             if (canceled) return;
 
