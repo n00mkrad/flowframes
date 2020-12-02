@@ -245,6 +245,7 @@ namespace Flowframes
             Logger.Log("Canceled interpolation.");
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
+            Program.mainForm.UpdateStepByStepControls();    // This is needed, idk why
         }
 
         public static void Cleanup(string interpFramesDir, bool ignoreKeepSetting = false)
