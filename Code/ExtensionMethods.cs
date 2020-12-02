@@ -97,9 +97,12 @@ namespace Flowframes
             return Regex.Split(str, "\r\n|\r|\n");
         }
 
-        public static string Trunc(this string value, int maxChars)
+        public static string Trunc(this string value, int maxChars, bool addEllipsis = true)
         {
-            return value.Length <= maxChars ? value : value.Substring(0, maxChars) + "…";
+            string str = value.Length <= maxChars ? value : value.Substring(0, maxChars);
+            if(addEllipsis)
+                str += "…";
+            return str;
         }
 
         public static string StripBadChars(this string str)
@@ -141,6 +144,16 @@ namespace Flowframes
                 newString.Append(str[i]);
             }
             return newString.ToString();
+        }
+
+        public static string ReplaceLast (this string str, string stringToReplace, string replaceWith)
+        {
+            int place = str.LastIndexOf(stringToReplace);
+
+            if (place == -1)
+                return str;
+
+            return str.Remove(place, stringToReplace.Length).Insert(place, replaceWith);
         }
     }
 }

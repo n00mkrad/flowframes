@@ -18,10 +18,25 @@ namespace Flowframes.Main
 {
     class CreateVideo
     {
-        public static async Task FramesToVideo(string path, string outPath, i.OutMode mode)
+        public static async Task Export(string path, string outPath, i.OutMode mode)
         {
-            if (!mode.ToString().ToLower().Contains("vid"))     // Skip output mode is not a video (e.g. image sequence)
+            if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
+            {
+                try
+                {
+                    Logger.Log("Moving interpolated frames out of temp folder...");
+                    string copyPath = Path.Combine(i.currentTempDir.ReplaceLast("-temp", "-interpolated"));
+                    Logger.Log($"{path} -> {copyPath}");
+                    IOUtils.CreateDir(copyPath);
+                    IOUtils.Copy(path, copyPath, true);
+                }
+                catch(Exception e)
+                {
+                    Logger.Log("Failed to move interp frames folder: " + e.Message);
+                }
                 return;
+            }
+
             if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.lastExt}") <= 1)
             {
                 i.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);

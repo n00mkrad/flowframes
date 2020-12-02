@@ -114,13 +114,9 @@ namespace Flowframes.IO
 			foreach (FileInfo fileInfo in files)
 			{
 				if (move)
-				{
 					fileInfo.MoveTo(Path.Combine(target.FullName, fileInfo.Name));
-				}
 				else
-				{
 					fileInfo.CopyTo(Path.Combine(target.FullName, fileInfo.Name), overwrite: true);
-				}
 			}
 		}
 

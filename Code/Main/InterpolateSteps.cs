@@ -166,8 +166,9 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid ()
         {
+            currentOutMode = Program.mainForm.GetBatchEntry().outMode;
             string outPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(currentInPath) + IOUtils.GetAiSuffix(currentAi, lastInterpFactor) + InterpolateUtils.GetExt(currentOutMode));
-            await CreateVideo.FramesToVideo(currentInterpFramesDir, outPath, currentOutMode);
+            await CreateVideo.Export(currentInterpFramesDir, outPath, currentOutMode);
         }
 
         public static async Task Reset ()

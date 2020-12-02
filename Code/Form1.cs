@@ -167,7 +167,7 @@ namespace Flowframes
         {
             Interpolate.OutMode outMode = Interpolate.OutMode.VidMp4;
             if (outModeCombox.Text.ToLower().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
-            if (outModeCombox.Text.ToLower().Contains("png")) outMode = Interpolate.OutMode.ImgPng;
+            if (outModeCombox.Text.ToLower().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
             return outMode;
         }
 
