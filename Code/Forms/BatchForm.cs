@@ -111,7 +111,12 @@ namespace Flowframes.Forms
         private async void taskList_DragDrop(object sender, DragEventArgs e)
         {
             string[] droppedPaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-            foreach(string path in droppedPaths)
+            await LoadDroppedPaths(droppedPaths);
+        }
+
+        public async Task LoadDroppedPaths (string[] droppedPaths)
+        {
+            foreach (string path in droppedPaths)
             {
                 string frame1 = Path.Combine(path, "00000001.png");
                 if (IOUtils.IsPathDirectory(path) && !File.Exists(frame1))

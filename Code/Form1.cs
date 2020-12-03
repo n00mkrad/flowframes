@@ -196,10 +196,7 @@ namespace Flowframes
 
         private void inputTbox_DragDrop(object sender, DragEventArgs e)
         {
-            if (Program.busy) return;
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            inputTbox.Text = files[0];
-            MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
+            DragDropHandler((string[])e.Data.GetData(DataFormats.FileDrop));
         }
 
         void outputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -282,12 +279,26 @@ namespace Flowframes
 
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
+            DragDropHandler((string[])e.Data.GetData(DataFormats.FileDrop));
+        }
+
+        public void DragDropHandler(string[] files)
+        {
             if (Program.busy) return;
-            SetTab("interpolation");
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            inputTbox.Text = files[0];
-            Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
-            MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
+
+            if (files.Length > 1)
+            {
+                queueBtn_Click(null, null);
+                if (BatchProcessing.currentBatchForm != null)
+                    BatchProcessing.currentBatchForm.LoadDroppedPaths(files);
+            }
+            else
+            {
+                SetTab("interpolation");
+                Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
+                inputTbox.Text = files[0];
+                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
+            }
         }
 
         private async void utilsConvertMp4Btn_Click(object sender, EventArgs e)
