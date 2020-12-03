@@ -144,6 +144,7 @@ namespace Flowframes
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
             bool firstFrameFix = (!sbsMode && lastAi.aiName == Networks.rifeCuda.aiName) || (sbsMode && InterpolateSteps.currentAi.aiName == Networks.rifeCuda.aiName);
+            //firstFrameFix = false; // TODO: Remove firstframefix if new rife code works
 
             if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
             {
@@ -182,8 +183,10 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
-            currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
-            
+            currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
+            //Logger.Log("Using autoenc if there's more than " + (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f + " input frames, got " + IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor);
+            currentlyUsingAutoEnc = false;
+
             Directory.CreateDirectory(outpath);
 
             List<Task> tasks = new List<Task>();
@@ -200,8 +203,8 @@ namespace Flowframes
             if (ai.aiName == Networks.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
 
-            //if(currentlyUsingAutoEnc)
-            //    tasks.Add(AutoEncode.MainLoop(outpath));
+            if(currentlyUsingAutoEnc)
+                tasks.Add(AutoEncode.MainLoop(outpath));
             await Task.WhenAll(tasks);
         }
 
