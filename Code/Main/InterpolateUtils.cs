@@ -132,13 +132,11 @@ namespace Flowframes.Main
                 ShowMessage("Invalid target frame rate - Must be 1-500.");
                 passes = false;
             }
-
             if (tilesize % 32 != 0 || tilesize < 128)
             {
                 ShowMessage("Tile size is not valid - Must be a multiple of 32 and at least 128!");
                 passes = false;
             }
-
             if (!passes)
                 i.Cancel("Invalid settings detected.");
             return passes;

@@ -56,7 +56,7 @@ namespace Flowframes
             Checks();
         }
 
-        void Checks ()
+        void Checks()
         {
             GetWebInfo.LoadNews(newsLabel);
             GetWebInfo.LoadPatronList(patronsLabel);
@@ -67,9 +67,9 @@ namespace Flowframes
 
         public bool IsInFocus() { return (ActiveForm == this); }
 
-        public void SetTab (string tabName)
+        public void SetTab(string tabName)
         {
-            foreach(TabPage tab in mainTabControl.TabPages)
+            foreach (TabPage tab in mainTabControl.TabPages)
             {
                 if (tab.Text.ToLower() == tabName.ToLower())
                     mainTabControl.SelectedTab = tab;
@@ -153,17 +153,18 @@ namespace Flowframes
 
         public void runBtn_Click(object sender, EventArgs e)
         {
-            SetTab("interpolate");
-            if (!BatchProcessing.busy)
+            if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
+            {
                 SetTab("interpolation");
-            Interpolate.SetFps(fpsInTbox.GetFloat());
-            Interpolate.interpFactor = interpFactorCombox.GetInt();
+                Interpolate.SetFps(fpsInTbox.GetFloat());
+                Interpolate.interpFactor = interpFactorCombox.GetInt();
+            }
             string inPath = inputTbox.Text.Trim();
             string outPath = outputTbox.Text.Trim();
             Interpolate.Start(inPath, outPath, GetTilesize(), GetOutMode(), GetAi());
         }
 
-        public int GetTilesize ()
+        public int GetTilesize()
         {
             if (GetAi().supportsTiling)
                 return tilesize.GetInt();
@@ -248,7 +249,7 @@ namespace Flowframes
             tilesize.Visible = GetAi().supportsTiling;
             tilesizeNotAvailLabel.Visible = !tilesize.Visible;
             interpFactorCombox_SelectedIndexChanged(null, null);
-            if(GetAi().supportsTiling)
+            if (GetAi().supportsTiling)
                 tilesize.Text = Config.GetInt($"tilesize_{GetAi().aiName}").ToString();
         }
 
@@ -368,7 +369,7 @@ namespace Flowframes
             SetTab("interpolation");
         }
 
-        public void UpdateStepByStepControls (bool settingsMayHaveChanged)
+        public void UpdateStepByStepControls(bool settingsMayHaveChanged)
         {
             if (settingsMayHaveChanged)
             {
