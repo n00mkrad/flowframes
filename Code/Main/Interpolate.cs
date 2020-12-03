@@ -144,7 +144,7 @@ namespace Flowframes
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
             bool firstFrameFix = (!sbsMode && lastAi.aiName == Networks.rifeCuda.aiName) || (sbsMode && InterpolateSteps.currentAi.aiName == Networks.rifeCuda.aiName);
-            //firstFrameFix = false; // TODO: Remove firstframefix if new rife code works
+            firstFrameFix = false; // TODO: Remove firstframefix if new rife code works
 
             if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
             {
@@ -185,7 +185,7 @@ namespace Flowframes
         {
             currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
             //Logger.Log("Using autoenc if there's more than " + (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f + " input frames, got " + IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor);
-            currentlyUsingAutoEnc = false;
+            //currentlyUsingAutoEnc = false;
 
             Directory.CreateDirectory(outpath);
 
@@ -241,7 +241,7 @@ namespace Flowframes
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
-            if (Config.GetInt("processingMode") == 1 && !Config.GetBool("keepTempFolder"))
+            if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
                 IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");

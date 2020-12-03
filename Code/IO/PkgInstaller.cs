@@ -36,15 +36,16 @@ namespace Flowframes.IO
         public static async Task DownloadAndInstall(string filename, bool showDialog = true)
         {
             string savePath = Path.Combine(Paths.GetPkgPath(), filename);
-            string url = $"https://dl.nmkd.de/flowframes/pkgs/{filename}";
+            string url = $"http://dl.nmkd.de/flowframes/pkgs/{filename}";
             Logger.Log($"[PkgInstaller] Downloading {url}", true);
             var client = new WebClient();
-            //client.Proxy = WebRequest.DefaultWebProxy;
+            client.Proxy = WebRequest.DefaultWebProxy;
+
             Print($"Downloading {filename}...");
             sw.Restart();
             client.DownloadProgressChanged += (sender, args) =>
             {
-                if (sw.ElapsedMilliseconds > 200)
+                if (sw.ElapsedMilliseconds > 250)
                 {
                     sw.Restart();
                     Print($"Downloading {filename}... {args.ProgressPercentage}%", true);
@@ -52,9 +53,13 @@ namespace Flowframes.IO
             };
             client.DownloadFileCompleted += (sender, args) =>
             {
+                if (args.Error != null)
+                    Print("Download failed: " + args.Error.Message);
                 Print($"Downloading {filename}... 100%", true);
             };
+
             await client.DownloadFileTaskAsync(new Uri(url), savePath);
+
             try
             {
                 if (Path.GetExtension(filename).ToLower() == ".7z")     // Only run extractor if it's a 7z archive

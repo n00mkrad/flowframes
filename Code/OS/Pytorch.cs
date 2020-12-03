@@ -76,7 +76,10 @@ namespace Flowframes.OS
             string sysPyVer = GetSysPyVersion();
 
             if (!string.IsNullOrWhiteSpace(sysPyVer) && !sysPyVer.ToLower().Contains("not found") && sysPyVer.Length <= 35)
+            {
                 isInstalled = true;
+                Logger.Log("Using Python installation: " + sysPyVer, false, true);
+            }
 
             hasCheckedSysPy = true;
             sysPyInstalled = isInstalled;
