@@ -78,8 +78,8 @@ with torch.no_grad():
         frame0 = cv2.imread(frame_0_path)
         frame1 = cv2.imread(frame_1_path)
         
-        img0 = (torch.tensor(frame0.transpose(2, 0, 1)).to(device) / 255.).unsqueeze(0)
-        img1 = (torch.tensor(frame1.transpose(2, 0, 1)).to(device) / 255.).unsqueeze(0)
+        img0 = (torch.tensor(frame0.transpose(2, 0, 1)).to(device, non_blocking=True) / 255.).unsqueeze(0)
+        img1 = (torch.tensor(frame1.transpose(2, 0, 1)).to(device, non_blocking=True) / 255.).unsqueeze(0)
         n, c, h, w = img0.shape
         ph = ((h - 1) // 32 + 1) * 32
         pw = ((w - 1) // 32 + 1) * 32
@@ -101,7 +101,7 @@ with torch.no_grad():
         for i in range(len(img_list)):
             if i == 0:
                 continue
-            cv2.imwrite('{:s}/{:08d}.{}'.format(interp_output_path, output_frame_number, ext), img_list[i][0].cpu().numpy().transpose(1, 2, 0)[:h, :w] * 255)
+            cv2.imwrite('{:s}/{:08d}.{}'.format(interp_output_path, output_frame_number, ext), (img_list[i][0] * 255).byte().cpu().numpy().transpose(1, 2, 0)[:h, :w])
             #print("Writing image from array")
             #print("Out Frame Num: {0}".format(output_frame_number))
             output_frame_number += 1
