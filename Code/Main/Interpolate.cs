@@ -160,9 +160,9 @@ namespace Flowframes
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
 
             if(sbsMode)
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1, useTimestamps);
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1, !useTimestamps);
             else
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor, useTimestamps);
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor, !useTimestamps);
 
             if (canceled) return;
 
@@ -182,8 +182,8 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
-            //currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f; TODO: Enable me for v18!!
-            currentlyUsingAutoEnc = false;
+            currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
+            
             Directory.CreateDirectory(outpath);
 
             List<Task> tasks = new List<Task>();
@@ -200,8 +200,8 @@ namespace Flowframes
             if (ai.aiName == Networks.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
 
-            if(currentlyUsingAutoEnc)
-                tasks.Add(AutoEncode.MainLoop(outpath));
+            //if(currentlyUsingAutoEnc)
+            //    tasks.Add(AutoEncode.MainLoop(outpath));
             await Task.WhenAll(tasks);
         }
 
@@ -245,7 +245,6 @@ namespace Flowframes
             Logger.Log("Canceled interpolation.");
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
-            Program.mainForm.UpdateStepByStepControls();    // This is needed, idk why
         }
 
         public static void Cleanup(string interpFramesDir, bool ignoreKeepSetting = false)

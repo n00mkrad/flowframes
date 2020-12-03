@@ -50,7 +50,7 @@ namespace Flowframes
             ConfigParser.LoadComboxIndex(aiCombox);
 
             Setup.Init();
-            UpdateStepByStepControls();
+            UpdateStepByStepControls(true);
 
             Initialized();
             Checks();
@@ -240,6 +240,7 @@ namespace Flowframes
             foreach (Control c in controlsToHide)
                 c.Visible = !state;
             Program.busy = state;
+            Program.mainForm.UpdateStepByStepControls(false);
         }
 
         private void aiCombox_SelectedIndexChanged(object sender, EventArgs e)
@@ -367,18 +368,21 @@ namespace Flowframes
             SetTab("interpolation");
         }
 
-        public void UpdateStepByStepControls ()
+        public void UpdateStepByStepControls (bool settingsMayHaveChanged)
         {
-            stepSelector.Items.Clear();
-            if(Config.GetBool("scnDetect"))
-                stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Import/Extract Frames", "3) Run Interpolation", "4) Export", "5) Cleanup & Reset" });
-            else
-                stepSelector.Items.AddRange(new string[] { "1) Import/Extract Frames", "2) Run Interpolation", "3) Export", "4) Cleanup & Reset" });
-            stepSelector.SelectedIndex = 0;
+            if (settingsMayHaveChanged)
+            {
+                stepSelector.Items.Clear();
+                if (Config.GetBool("scnDetect"))
+                    stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Import/Extract Frames", "3) Run Interpolation", "4) Export", "5) Cleanup & Reset" });
+                else
+                    stepSelector.Items.AddRange(new string[] { "1) Import/Extract Frames", "2) Run Interpolation", "3) Export", "4) Cleanup & Reset" });
+                stepSelector.SelectedIndex = 0;
+            }
             bool stepByStep = Config.GetInt("processingMode") == 1;
-            stepSelector.Visible = stepByStep;
-            runStepBtn.Visible = stepByStep;
-            runBtn.Visible = !stepByStep;
+            //stepSelector.Visible = stepByStep && !Program.busy;
+            //runStepBtn.Visible = stepByStep && !Program.busy;
+            runBtn.Visible = !stepByStep && !Program.busy;
         }
 
         private async void runStepBtn_Click(object sender, EventArgs e)

@@ -30,7 +30,7 @@ namespace Flowframes.Forms
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-            Program.mainForm.UpdateStepByStepControls();
+            Program.mainForm.UpdateStepByStepControls(true);
         }
 
         void SaveSettings ()

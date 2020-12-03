@@ -1317,7 +1317,6 @@
             this.runStepBtn.TabIndex = 42;
             this.runStepBtn.Text = "Run This Step";
             this.runStepBtn.UseVisualStyleBackColor = false;
-            this.runStepBtn.Visible = false;
             this.runStepBtn.Click += new System.EventHandler(this.runStepBtn_Click);
             // 
             // stepSelector
@@ -1339,7 +1338,6 @@
             this.stepSelector.Name = "stepSelector";
             this.stepSelector.Size = new System.Drawing.Size(203, 24);
             this.stepSelector.TabIndex = 73;
-            this.stepSelector.Visible = false;
             // 
             // Form1
             // 
@@ -1349,6 +1347,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(934, 501);
             this.Controls.Add(this.cancelBtn);
+            this.Controls.Add(this.runBtn);
             this.Controls.Add(this.stepSelector);
             this.Controls.Add(this.runStepBtn);
             this.Controls.Add(this.updateBtn);
@@ -1364,7 +1363,6 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.progressCircle);
-            this.Controls.Add(this.runBtn);
             this.Controls.Add(this.titleLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

@@ -38,6 +38,9 @@ namespace Flowframes.Main
             if (Interpolate.canceled) return;
             Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
 
+            if(noTimestamps)
+                Logger.Log("Timestamps are disabled, using static frame rate.");
+
             bool sceneDetection = true;
 
             if(frameFiles == null || frameFiles.Length < 1)
