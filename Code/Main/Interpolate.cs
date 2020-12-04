@@ -143,13 +143,11 @@ namespace Flowframes
 
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
-            bool firstFrameFix = (!sbsMode && lastAi.aiName == Networks.rifeCuda.aiName) || (sbsMode && InterpolateSteps.currentAi.aiName == Networks.rifeCuda.aiName);
-            firstFrameFix = false; // TODO: Remove firstframefix if new rife code works
+            //bool firstFrameFix = (!sbsMode && lastAi.aiName == Networks.rifeCuda.aiName) || (sbsMode && InterpolateSteps.currentAi.aiName == Networks.rifeCuda.aiName);
+            //firstFrameFix = false; // TODO: Remove firstframefix if new rife code works
 
             if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
-            {
                 Cancel("Input frames folder is empty!");
-            }
 
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(currentFramesPath);
@@ -161,24 +159,13 @@ namespace Flowframes
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
 
             if(sbsMode)
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, -1, !useTimestamps);
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), -1, !useTimestamps);
             else
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), firstFrameFix, lastInterpFactor, !useTimestamps);
+                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), lastInterpFactor, !useTimestamps);
 
             if (canceled) return;
 
             AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(currentFramesPath, "png", 1, 8);
-
-            //string hasPreprocessedFile = Path.Combine(currentTempDir, ".preprocessed");
-            //if (File.Exists(hasPreprocessedFile)) return;
-
-            if (firstFrameFix)
-            {
-                bool s = IOUtils.TryCopy(new DirectoryInfo(currentFramesPath).GetFiles("*.png")[0].FullName, Path.Combine(currentFramesPath, "00000000.png"), true);
-                Logger.Log("FirstFrameFix TryCopy Success: " + s, true);
-            }
-
-            //File.Create(hasPreprocessedFile);
         }
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)

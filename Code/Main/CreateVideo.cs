@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Padding = Flowframes.Data.Padding;
 using i = Flowframes.Interpolate;
 
 namespace Flowframes.Main
@@ -36,6 +36,9 @@ namespace Flowframes.Main
                 }
                 return;
             }
+
+            //Logger.Log("zero-padding " + path);
+            //IOUtils.ZeroPadDir(path, $"*.{InterpolateUtils.lastExt}", Padding.interpFrames);
 
             if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.lastExt}") <= 1)
             {

@@ -231,7 +231,7 @@ namespace Flowframes.Magick
 
             Logger.Log("Re-Duplicating frames to fix timing...");
             RenameCounterDir(path, ext);
-            ZeroPadDir(path, ext, 8);
+            IOUtils.ZeroPadDir(path, ext, 8);
 
             string[] dupeFrameLines = IOUtils.ReadLines(dupeInfoFile);
             string tempSubFolder = Path.Combine(path, "temp");
@@ -300,7 +300,7 @@ namespace Flowframes.Magick
                     }
                 }
             }
-            ZeroPadDir(tempSubFolder, ext, 8);
+            IOUtils.ZeroPadDir(tempSubFolder, ext, 8);
 
             foreach (FileInfo file in new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly))
                 file.Delete();
@@ -323,22 +323,6 @@ namespace Flowframes.Magick
                 string dir = new DirectoryInfo(file.FullName).Parent.FullName;
                 File.Move(file.FullName, Path.Combine(dir, counter.ToString()/*.PadLeft(filesDigits, '8')*/ + Path.GetExtension(file.FullName)));
                 counter++;
-            }
-        }
-
-        public static void ZeroPadDir(string path, string ext, int targetLength, bool recursive = false)
-        {
-            FileInfo[] files;
-            if (recursive)
-                files = new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.AllDirectories);
-            else
-                files = new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly);
-
-            foreach (FileInfo file in files)
-            {
-                string fnameNoExt = Path.GetFileNameWithoutExtension(file.Name);
-                string ext2 = Path.GetExtension(file.Name); ;
-                File.Move(file.FullName, Path.Combine(Path.GetDirectoryName(file.FullName), fnameNoExt.PadLeft(targetLength, '0') + ext2));
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,8 @@ namespace Flowframes.Main
 
         public static bool busy;
 
+        public static bool paused;
+
 
         public static async Task MainLoop(string interpFramesPath)
         {
@@ -28,20 +31,25 @@ namespace Flowframes.Main
             encodedFrames.Clear();
             unencodedFrames.Clear();
 
-            int interpFramesAmount;
             chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.currentFramesPath, false, "*.png") * Interpolate.lastInterpFactor);
 
             int videoIndex = 1;
 
             while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
-                await Task.Delay(100);
+                await Task.Delay(1000);
 
             while (HasWorkToDo())    // Loop while proc is running and not all frames have been encoded
             {
                 if (Interpolate.canceled) return;
 
+                if (paused)
+                {
+                    await Task.Delay(100);
+                    continue;
+                }
+
+                IOUtils.ZeroPadDir(Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.lastExt}").ToList(), Padding.interpFrames, encodedFrames);
                 string[] interpFrames = Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.lastExt}");
-                interpFramesAmount = interpFrames.Length;
                 unencodedFrames = interpFrames.ToList().Except(encodedFrames).ToList();
 
                 Directory.CreateDirectory(videoChunksFolder);
@@ -54,6 +62,7 @@ namespace Flowframes.Main
                     Logger.Log("Encoding Chunk #" + videoIndex, true, false, "ffmpeg.txt");
 
                     List<string> framesToEncode = aiRunning ? unencodedFrames.Take(chunkSize).ToList() : unencodedFrames;     // Take all remaining frames if process is done
+                    IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file
 
                     string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.currentOutMode)}");
                     int firstFrameNum = Path.GetFileNameWithoutExtension(framesToEncode[0]).GetInt();

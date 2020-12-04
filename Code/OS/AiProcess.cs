@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Flowframes.OS;
 using Flowframes.UI;
 using Flowframes.Main;
+using Flowframes.Data;
 
 namespace Flowframes
 {
@@ -70,7 +71,10 @@ namespace Flowframes
                 await Task.Delay(1);
 
             if (Interpolate.canceled) return;
-            Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
+
+            if (!Interpolate.currentlyUsingAutoEnc)
+                IOUtils.ZeroPadDir(outPath, InterpolateUtils.lastExt, Padding.interpFrames);
+
             AiFinished("DAIN");
         }
 
@@ -109,7 +113,9 @@ namespace Flowframes
             }
 
             if (Interpolate.canceled) return;
-            Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
+
+            if (!Interpolate.currentlyUsingAutoEnc)
+                IOUtils.ZeroPadDir(outPath, InterpolateUtils.lastExt, Padding.interpFrames);
 
             AiFinished("CAIN");
         }
@@ -178,7 +184,11 @@ namespace Flowframes
             processTimeMulti.Restart();
             Logger.Log("Running RIFE...", false);
 
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+            bool useAutoEnc = Interpolate.currentlyUsingAutoEnc;
+            if(times > 2)
+                AutoEncode.paused = true;  // Disable autoenc until the last iteration
+
+            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()}";
             await RunRifePartial(args);
 
             if (times == 4 || times == 8)    // #2
@@ -189,7 +199,9 @@ namespace Flowframes
                 IOUtils.TryDeleteIfExists(run1ResultsPath);
                 Directory.Move(outPath, run1ResultsPath);
                 Directory.CreateDirectory(outPath);
-                args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+                if (useAutoEnc && times == 4)
+                    AutoEncode.paused = false;
+                args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()}";
                 await RunRifePartial(args);
                 IOUtils.TryDeleteIfExists(run1ResultsPath);
             }
@@ -202,13 +214,20 @@ namespace Flowframes
                 IOUtils.TryDeleteIfExists(run2ResultsPath);
                 Directory.Move(outPath, run2ResultsPath);
                 Directory.CreateDirectory(outPath);
-                args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+                if (useAutoEnc && times == 8)
+                    AutoEncode.paused = false;                    
+                args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()}";
                 await RunRifePartial(args);
                 IOUtils.TryDeleteIfExists(run2ResultsPath);
             }
 
             if (Interpolate.canceled) return;
-            Magick.MagickDedupe.ZeroPadDir(outPath, InterpolateUtils.lastExt, 8);
+
+            if (!Interpolate.currentlyUsingAutoEnc)
+            {
+                Logger.Log($"zero padding {outPath} with ext \"{InterpolateUtils.lastExt}\" to length {Padding.interpFrames}");
+                IOUtils.ZeroPadDir(outPath, InterpolateUtils.lastExt, Padding.interpFrames);
+            }
 
             AiFinished("RIFE");
         }
@@ -217,7 +236,7 @@ namespace Flowframes
         {
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500);
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {

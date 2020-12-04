@@ -103,12 +103,12 @@ namespace Flowframes.Main
                     basePath = custPath;
             }
 
-            return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Trunc(30, false) + "-temp");
+            return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
         public static bool InputIsValid(string inDir, string outDir, float fpsOut, int interp, int tilesize)
         {
-            bool passes = true;   
+            bool passes = true;
 
             bool isFile = !IOUtils.IsPathDirectory(inDir);
 

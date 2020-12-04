@@ -14,18 +14,18 @@ namespace Flowframes.Main
 {
     class VfrDedupe
     {
-        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, bool firstFrameFix, int times, bool noTimestamps)
+        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, int times, bool noTimestamps)
         {
             Logger.Log("Generating timecodes...");
             if(times <= 0)
             {
-                await CreateTimecodeFile(framesPath, loopEnabled, 2, firstFrameFix, false, noTimestamps);
-                await CreateTimecodeFile(framesPath, loopEnabled, 4, firstFrameFix, true, noTimestamps);
-                await CreateTimecodeFile(framesPath, loopEnabled, 8, firstFrameFix, true, noTimestamps);
+                await CreateTimecodeFile(framesPath, loopEnabled, 2, false, noTimestamps);
+                await CreateTimecodeFile(framesPath, loopEnabled, 4, true, noTimestamps);
+                await CreateTimecodeFile(framesPath, loopEnabled, 8, true, noTimestamps);
             }
             else
             {
-                await CreateTimecodeFile(framesPath, loopEnabled, times, firstFrameFix, false, noTimestamps);
+                await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
             }
             frameFiles = null;
             Logger.Log($"Generating timecodes... Done.", false, true);
@@ -33,7 +33,7 @@ namespace Flowframes.Main
 
         static FileInfo[] frameFiles;
 
-        public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool firstFrameFix, bool notFirstRun, bool noTimestamps)
+        public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun, bool noTimestamps)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
@@ -88,7 +88,7 @@ namespace Flowframes.Main
                 {
                     string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
 
-                    if (discardThisFrame)
+                    if (discardThisFrame && totalFileCount > 1)     // Never discard 1st frame
                     {
                         int lastNum = totalFileCount - 1;
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
@@ -110,14 +110,6 @@ namespace Flowframes.Main
             File.WriteAllText(vfrFile, fileContent);
 
             if (notFirstRun) return;    // Skip all steps that only need to be done once
-
-            if (firstFrameFix)
-            {
-                string[] lines = IOUtils.ReadLines(vfrFile);
-                File.WriteAllText(vfrFile, lines[0].Replace($"{"1".PadLeft(Padding.interpFrames, '0')}.png", $"{"0".PadLeft(Padding.interpFrames, '0')}.png"));
-                File.AppendAllText(vfrFile, "\n" + lines[1] + "\n");
-                File.AppendAllLines(vfrFile, lines);
-            }
 
             if (Config.GetBool("enableLoop"))
             {
