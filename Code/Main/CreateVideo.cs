@@ -216,7 +216,7 @@ namespace Flowframes.Main
                 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
-                    Logger.Log("No compatible audio stream found.");
+                    Logger.Log("No compatible audio stream found.", true);
                     return;
                 }
                 await FFmpegCommands.MergeAudio(outVideo, IOUtils.GetAudioFile(audioFileBasePath));        // Merge from audioFile into outVideo
