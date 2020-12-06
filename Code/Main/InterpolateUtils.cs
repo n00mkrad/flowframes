@@ -138,7 +138,7 @@ namespace Flowframes.Main
                 passes = false;
             }
             if (!passes)
-                i.Cancel("Invalid settings detected.");
+                i.Cancel("Invalid settings detected.", true);
             return passes;
         }
 

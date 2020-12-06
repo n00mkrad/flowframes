@@ -170,8 +170,10 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
-            if(Config.GetInt("autoEncMode") > 0)
+            if (Config.GetInt("autoEncMode") > 0)
                 currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
+            else
+                currentlyUsingAutoEnc = false;
 
             Directory.CreateDirectory(outpath);
 

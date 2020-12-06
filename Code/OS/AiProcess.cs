@@ -159,7 +159,7 @@ namespace Flowframes
             }
 
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(rifePy, 3250, "png");
+            AiStarted(rifePy, 3500, "png");
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt} --output {Paths.interpDir}";
             Logger.Log($"Running RIFE ({script})...", false);

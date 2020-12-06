@@ -103,7 +103,7 @@ namespace Flowframes
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
             string vfrFilename = Path.GetFileName(framesFile);
-            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string args = $" {loopStr} {vsyncStr} -f concat -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
         }
 
@@ -114,7 +114,7 @@ namespace Flowframes
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
             string vfrFilename = Path.GetFileName(framesFile);
-            string args = $" {vsyncStr} -f concat -safe 0 -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string args = $" {vsyncStr} -f concat -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
@@ -124,7 +124,7 @@ namespace Flowframes
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
             string vfrFilename = Path.GetFileName(concatFile);
-            string args = $" {loopStr} {vsyncStr} -f concat -safe 0 -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string args = $" {loopStr} {vsyncStr} -f concat  -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
