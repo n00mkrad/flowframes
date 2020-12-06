@@ -20,6 +20,7 @@ namespace Flowframes.Main
     {
         public static async Task Export(string path, string outPath, i.OutMode mode)
         {
+            Logger.Log("Auto-Encode is off, exporting video...");
             if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
@@ -191,7 +192,8 @@ namespace Flowframes.Main
             //Logger.Log("minLength: " + minLength);
             int minFrameCount = (minLength * i.currentOutFps).RoundToInt();
             //Logger.Log("minFrameCount: " + minFrameCount);
-            int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
+            //int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
+            int outFrames = i.currentInputFrameCount * i.lastInterpFactor;
             //Logger.Log("outFrames: " + outFrames);
             if (outFrames / i.currentOutFps < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);

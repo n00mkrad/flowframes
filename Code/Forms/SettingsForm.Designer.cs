@@ -141,6 +141,9 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.panel14 = new System.Windows.Forms.Panel();
+            this.label49 = new System.Windows.Forms.Label();
+            this.autoEncMode = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -354,6 +357,9 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.autoEncMode);
+            this.tabListPage2.Controls.Add(this.label49);
+            this.tabListPage2.Controls.Add(this.panel14);
             this.tabListPage2.Controls.Add(this.label52);
             this.tabListPage2.Controls.Add(this.scnDetectValue);
             this.tabListPage2.Controls.Add(this.label51);
@@ -382,7 +388,7 @@
             // 
             this.label52.AutoSize = true;
             this.label52.ForeColor = System.Drawing.Color.Silver;
-            this.label52.Location = new System.Drawing.Point(482, 161);
+            this.label52.Location = new System.Drawing.Point(509, 162);
             this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(225, 13);
@@ -392,7 +398,6 @@
             // scnDetectValue
             // 
             this.scnDetectValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scnDetectValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.scnDetectValue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.scnDetectValue.ForeColor = System.Drawing.Color.White;
             this.scnDetectValue.FormattingEnabled = true;
@@ -565,7 +570,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.Color.Silver;
-            this.label27.Location = new System.Drawing.Point(308, 251);
+            this.label27.Location = new System.Drawing.Point(308, 271);
             this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(449, 13);
@@ -576,7 +581,7 @@
             // jpegInterps
             // 
             this.jpegInterps.AutoSize = true;
-            this.jpegInterps.Location = new System.Drawing.Point(280, 250);
+            this.jpegInterps.Location = new System.Drawing.Point(280, 270);
             this.jpegInterps.Name = "jpegInterps";
             this.jpegInterps.Size = new System.Drawing.Size(15, 14);
             this.jpegInterps.TabIndex = 48;
@@ -585,7 +590,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(10, 250);
+            this.label25.Location = new System.Drawing.Point(10, 270);
             this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(149, 13);
@@ -596,7 +601,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 220);
+            this.label26.Location = new System.Drawing.Point(10, 240);
             this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(76, 16);
@@ -1523,6 +1528,42 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // panel14
+            // 
+            this.panel14.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel14.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel14.Location = new System.Drawing.Point(475, 157);
+            this.panel14.Name = "panel14";
+            this.panel14.Size = new System.Drawing.Size(21, 21);
+            this.panel14.TabIndex = 68;
+            this.toolTip1.SetToolTip(this.panel14, "Allows custom input.");
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(10, 190);
+            this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(206, 13);
+            this.label49.TabIndex = 69;
+            this.label49.Text = "Auto-Encode (Encode While Interpolating)";
+            // 
+            // autoEncMode
+            // 
+            this.autoEncMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.autoEncMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.autoEncMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.autoEncMode.ForeColor = System.Drawing.Color.White;
+            this.autoEncMode.FormattingEnabled = true;
+            this.autoEncMode.Items.AddRange(new object[] {
+            "Disabled",
+            "Enabled (Keep Interpolated Frames)",
+            "Enabled (Delete Frames Once Encoded)"});
+            this.autoEncMode.Location = new System.Drawing.Point(280, 187);
+            this.autoEncMode.Name = "autoEncMode";
+            this.autoEncMode.Size = new System.Drawing.Size(250, 21);
+            this.autoEncMode.TabIndex = 70;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1672,5 +1713,8 @@
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.ComboBox loopMode;
         private System.Windows.Forms.Label label55;
+        private System.Windows.Forms.Panel panel14;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.ComboBox autoEncMode;
     }
 }

@@ -112,27 +112,27 @@ namespace Flowframes.Main
 
             bool isFile = !IOUtils.IsPathDirectory(inDir);
 
-            if ((isFile && !IOUtils.IsFileValid(inDir)) || (!isFile && !IOUtils.IsDirValid(inDir)))
+            if ((passes && isFile && !IOUtils.IsFileValid(inDir)) || (!isFile && !IOUtils.IsDirValid(inDir)))
             {
                 ShowMessage("Input path is not valid!");
                 passes = false;
             }
-            if (!IOUtils.IsDirValid(outDir))
+            if (passes && !IOUtils.IsDirValid(outDir))
             {
                 ShowMessage("Output path is not valid!");
                 passes = false;
             }
-            if (interp != 2 && interp != 4 && interp != 8)
+            if (passes && interp != 2 && interp != 4 && interp != 8)
             {
                 ShowMessage("Interpolation factor is not valid!");
                 passes = false;
             }
-            if (fpsOut < 1 || fpsOut > 500)
+            if (passes && fpsOut < 1 || fpsOut > 500)
             {
                 ShowMessage("Invalid target frame rate - Must be 1-500.");
                 passes = false;
             }
-            if (tilesize % 32 != 0 || tilesize < 128)
+            if (passes && tilesize % 32 != 0 || tilesize < 128)
             {
                 ShowMessage("Tile size is not valid - Must be a multiple of 32 and at least 128!");
                 passes = false;

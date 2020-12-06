@@ -83,7 +83,7 @@ namespace Flowframes
             processTimeMulti.Restart();
             Logger.Log("Running CAIN...", false);
 
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
+            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")}";
             await RunCainPartial(args);
 
             if(times == 4 || times == 8)    // #2
@@ -94,7 +94,7 @@ namespace Flowframes
                 IOUtils.TryDeleteIfExists(run1ResultsPath);
                 Directory.Move(outPath, run1ResultsPath);
                 Directory.CreateDirectory(outPath);
-                args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
+                args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")}";
                 await RunCainPartial(args);
                 IOUtils.TryDeleteIfExists(run1ResultsPath);
             }
@@ -107,7 +107,7 @@ namespace Flowframes
                 IOUtils.TryDeleteIfExists(run2ResultsPath);
                 Directory.Move(outPath, run2ResultsPath);
                 Directory.CreateDirectory(outPath);
-                args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()} -t {tilesize} -g {Config.Get("ncnnGpus")}";
+                args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")}";
                 await RunCainPartial(args);
                 IOUtils.TryDeleteIfExists(run2ResultsPath);
             }
@@ -159,7 +159,7 @@ namespace Flowframes
             }
 
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(rifePy, 3000, "png");
+            AiStarted(rifePy, 3250, "png");
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt} --output {Paths.interpDir}";
             Logger.Log($"Running RIFE ({script})...", false);

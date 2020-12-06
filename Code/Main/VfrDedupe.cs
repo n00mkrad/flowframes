@@ -83,24 +83,38 @@ namespace Flowframes.Main
                 if (loopEnabled && i == (frameFiles.Length - 2))
                     interpFramesAmount = interpFramesAmount * 2;
 
+                // Logger.Log("Writing out frames for in frame " + i);
                 // Generate frames file lines
                 for (int frm = 0; frm < interpFramesAmount; frm++)
                 {
+                    // Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
+
                     string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
 
                     if (discardThisFrame && totalFileCount > 1)     // Never discard 1st frame
                     {
-                        int lastNum = totalFileCount - 1;
+                        int lastNum = totalFileCount;
+
+                        // Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
+                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
+                        totalFileCount++;
+
+                        // Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
+                            // Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
                             fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
                             totalFileCount++;
                         }
-                        frm = interpFramesAmount - 1;
-                    }
 
-                    fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
-                    totalFileCount++;
+                        frm = interpFramesAmount;
+                    }
+                    else
+                    {
+                        // Logger.Log($"Writing frame {totalFileCount}", true, false);
+                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
+                        totalFileCount++;
+                    }
                 }
 
                 if ((i + 1) % 100 == 0)

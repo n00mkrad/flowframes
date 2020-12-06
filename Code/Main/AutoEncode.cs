@@ -70,8 +70,11 @@ namespace Flowframes.Main
 
                     if(Interpolate.canceled) return;
 
-                    foreach (string frame in framesToEncode)
-                        File.WriteAllText(frame, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save disk space without breaking progress counter
+                    if (Config.GetInt("autoEncMode") == 2)
+                    {
+                        foreach (string frame in framesToEncode)
+                            File.WriteAllText(frame, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
+                    }
 
                     encodedFrames.AddRange(framesToEncode);
 

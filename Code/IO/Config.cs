@@ -79,9 +79,13 @@ namespace Flowframes.IO
             return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
         }
 
+        public static string GetFloatString (string key)
+        {
+            return Get(key, Type.Float).Replace(",", ".");
+        }
 
         public enum Type { String, Int, Float, Bool }
-        private static string WriteDefaultValIfExists(string key, Type type)   // DEFAULTS TO 0, which means key that use 0 as default are not listed here
+        private static string WriteDefaultValIfExists(string key, Type type)
         {
             if (key == "maxVidHeight")      return WriteDefault(key, "2160");
             if (key == "delLogsOnStartup")  return WriteDefault(key, "True");
@@ -94,6 +98,7 @@ namespace Flowframes.IO
             if (key == "vfrDedupe")         return WriteDefault(key, "True");
             if (key == "timingMode")        return WriteDefault(key, "1");
             if (key == "scnDetectValue")    return WriteDefault(key, "0.2");
+            if (key == "autoEncMode")       return WriteDefault(key, "2");
             // Video Export
             if (key == "h264Crf")       return WriteDefault(key, "20");
             if (key == "h265Crf")       return WriteDefault(key, "22");

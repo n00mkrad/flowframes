@@ -36,7 +36,7 @@ namespace Flowframes
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
-            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.Get("scnDetectValue")})'\"," : "";
+            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"," : "";
             string pad = Padding.inputFrames.ToString();
             string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{divisionFilter} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             if (deDupe)

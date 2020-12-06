@@ -28,6 +28,7 @@ namespace Flowframes
         public static int interpFactor;
         public static float currentInFps;
         public static float currentOutFps;
+        public static int currentInputFrameCount;
         public static OutMode currentOutMode;
         public static bool currentInputIsFrames;
         public static bool currentlyUsingAutoEnc;
@@ -143,10 +144,9 @@ namespace Flowframes
 
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
-            //bool firstFrameFix = (!sbsMode && lastAi.aiName == Networks.rifeCuda.aiName) || (sbsMode && InterpolateSteps.currentAi.aiName == Networks.rifeCuda.aiName);
-            //firstFrameFix = false; // TODO: Remove firstframefix if new rife code works
+            currentInputFrameCount = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
 
-            if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") <= 0)
+            if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0)
                 Cancel("Input frames folder is empty!");
 
             if (Config.GetInt("dedupMode") == 1)
@@ -170,9 +170,8 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
         {
-            currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f;
-            //Logger.Log("Using autoenc if there's more than " + (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f + " input frames, got " + IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor);
-            //currentlyUsingAutoEnc = false;
+            if(Config.GetInt("autoEncMode") > 0)
+                currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
 
             Directory.CreateDirectory(outpath);
 
@@ -190,8 +189,11 @@ namespace Flowframes
             if (ai.aiName == Networks.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
 
-            if(currentlyUsingAutoEnc)
+            if (currentlyUsingAutoEnc)
+            {
+                Logger.Log("Using Auto-Encode.");
                 tasks.Add(AutoEncode.MainLoop(outpath));
+            }
             await Task.WhenAll(tasks);
         }
 
