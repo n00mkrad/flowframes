@@ -84,7 +84,7 @@ namespace Flowframes.Main
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
                 string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
-                await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, -1);
+                await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, i.constantFrameRate);
 
                 /*      DELETE THIS AS SOON AS I'M SURE I CAN USE VFR WITH TIMING DISABLED
                 if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
@@ -174,7 +174,7 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(i.currentTempDir, $"vfr-chunk-temp.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
-            await FFmpegCommands.FramesToMp4VfrChunk(vfrFile, outPath, h265, crf, i.currentOutFps);
+            await FFmpegCommands.FramesToMp4VfrChunk(vfrFile, outPath, h265, crf, i.currentOutFps, i.constantFrameRate);
             IOUtils.TryDeleteIfExists(vfrFile);
         }
 

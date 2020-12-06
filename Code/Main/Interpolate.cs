@@ -29,6 +29,7 @@ namespace Flowframes
         public static float currentInFps;
         public static float currentOutFps;
         public static int currentInputFrameCount;
+        public static bool constantFrameRate;
         public static OutMode currentOutMode;
         public static bool currentInputIsFrames;
         public static bool currentlyUsingAutoEnc;
@@ -63,6 +64,7 @@ namespace Flowframes
             Utils.PathAsciiCheck(inPath, outDir);
             lastAi = ai;
             currentInputIsFrames = IOUtils.IsPathDirectory(inPath);
+            currentInputFrameCount = Utils.GetInputFrameCount(inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
             await Task.Delay(10);
@@ -144,16 +146,19 @@ namespace Flowframes
 
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
-            currentInputFrameCount = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
-
-            if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0)
-                Cancel("Input frames folder is empty!");
+            if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0 || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") < 2)
+                Cancel("Extracted frames folder is empty!");
 
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(currentFramesPath);
             else
                 MagickDedupe.ClearCache();
 
+            int frameCountAfterDedupe = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
+            int dupesPercent = 100 - (((float)frameCountAfterDedupe / currentInputFrameCount) * 100f).RoundToInt();
+            constantFrameRate = dupesPercent < 5f;  // Ignore VFR timings for CFR input. TODO: Figure out how to avoid dupes when using VFR timings
+            Logger.Log($"{dupesPercent}% of frames are dupes, so constantFrameRate = {constantFrameRate}");
+            
             if (canceled) return;
 
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped

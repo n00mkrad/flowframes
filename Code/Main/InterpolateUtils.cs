@@ -64,6 +64,14 @@ namespace Flowframes.Main
                 bigPreviewForm.SetImage(img);
         }
 
+        public static int GetInputFrameCount(string path)
+        {
+            if (IOUtils.IsPathDirectory(path))
+                return IOUtils.GetAmountOfFiles(path, false);
+            else
+                return FFmpegCommands.GetFrameCount(path);
+        }
+
         public static int GetProgressWaitTime(int numFrames)
         {
             float hddMultiplier = 2f;

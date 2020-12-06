@@ -33,9 +33,9 @@ namespace Flowframes.UI
             if (!Program.lastInputPathIsSsd)
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
             if (IOUtils.IsPathDirectory(path))
-                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {IOUtils.GetAmountOfFiles(path, false)}");
+                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {InterpolateUtils.GetInputFrameCount(path)}");
             else
-                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {FFmpegCommands.GetFrameCount(path)}");
+                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {InterpolateUtils.GetInputFrameCount(path)}");
             await Task.Delay(10);
             await PrintResolution(path);
             MagickDedupe.ClearCache();

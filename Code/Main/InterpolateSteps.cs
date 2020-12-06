@@ -71,9 +71,7 @@ namespace Flowframes.Main
                 currentOutPath = e.outPath;
                 currentTempDir = InterpolateUtils.GetTempFolderLoc(currentInPath, currentOutPath);
                 currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
-
                 currentInterpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
-
                 currentInputIsFrames = IOUtils.IsPathDirectory(currentInPath);
             }
             catch
@@ -103,6 +101,7 @@ namespace Flowframes.Main
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
                 return;
             }
+            AiProcess.filenameMap.Clear();
             bool extractAudio = true;
             Program.mainForm.SetStatus("Extracting frames from video...");
             Size resolution = IOUtils.GetVideoRes(currentInPath);
@@ -138,7 +137,7 @@ namespace Flowframes.Main
         public static async Task DoInterpolate()
         {
             currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
-            if (!Directory.Exists(currentFramesPath))
+            if (!Directory.Exists(currentFramesPath) || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") < 2)
             {
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
                 return;
@@ -149,10 +148,13 @@ namespace Flowframes.Main
                 return;
             }
 
+            currentInputFrameCount = InterpolateUtils.GetInputFrameCount(currentInPath);
+
             foreach (string ini in Directory.GetFiles(currentTempDir, "*.ini", SearchOption.TopDirectoryOnly))
                 IOUtils.TryDeleteIfExists(ini);
 
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+
             await PostProcessFrames(true);
 
             lastInterpFactor = interpFactor;
