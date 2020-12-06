@@ -5,7 +5,7 @@ Flowframes Windows GUI for video interpolation - Supports RIFE, RIFE-NCNN, DAIN-
 
 ## Installation
 
-* Download the latest version on [itch](https://nmkd.itch.io/flowframes) or, for the most recent beta versions, on [Patreon](https://www.patreon.com/n00mkrad). This repo does not provide downloads.
+* Download on [itch](https://nmkd.itch.io/flowframes) or, for the most recent beta versions, on [Patreon](https://www.patreon.com/n00mkrad). This repo does not provide builds.
 * Run Flowframes.exe
 * Select the components you want to install (certain packages are required, cannot be unticked)
 
@@ -25,11 +25,11 @@ The requirements to run these are the following:
 
 
 
-#### Running A Pytorch AI on Nvidia Ampere (RTX 3000) GPUs
+## Running A Pytorch AI on Nvidia Ampere (RTX 3000) GPUs
 
 I do not have an Ampere card yet, so I can't fully test Flowframes on an RTX 3000 series GPU.
 
-However, users have reported that you can run it by installing a recent **nightly build of Pytorch**. NCNN-based AIs should work out of the box.
+However, users have reported that you can run RIFE on Ampere cards by installing a recent **Pytorch 1.7 build**. CUDA 11 is also required, but you should already have it if you use up-to-date GPU drivers. NCNN-based AIs should work out of the box.
 
 
 
