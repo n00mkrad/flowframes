@@ -79,11 +79,11 @@ namespace Flowframes.Main
 
             if (mode == i.OutMode.VidMp4)
             {
-                int looptimes = GetLoopTimes(framesPath);
+                int looptimes = GetLoopTimes();
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-                string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
+                string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.lastInterpFactor}x.ini");
                 await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, i.constantFrameRate);
 
                 /*      DELETE THIS AS SOON AS I'M SURE I CAN USE VFR WITH TIMING DISABLED
@@ -143,7 +143,7 @@ namespace Flowframes.Main
 
         static async Task MergeChunks(string chunksPath, string vfrFile, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
         {
-            int looptimes = GetLoopTimes(Path.Combine(chunksPath.GetParentDir(), Paths.interpDir));
+            int looptimes = GetLoopTimes();
 
             bool h265 = Config.GetInt("mp4Enc") == 1;
             int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
@@ -170,7 +170,7 @@ namespace Flowframes.Main
             bool h265 = Config.GetInt("mp4Enc") == 1;
             int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-            string vfrFileOriginal = Path.Combine(i.currentTempDir, $"vfr-x{i.lastInterpFactor}.ini");
+            string vfrFileOriginal = Path.Combine(i.currentTempDir, $"vfr-{i.lastInterpFactor}x.ini");
             string vfrFile = Path.Combine(i.currentTempDir, $"vfr-chunk-temp.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
@@ -180,11 +180,11 @@ namespace Flowframes.Main
 
         static async Task Loop(string outPath, int looptimes)
         {
-            Logger.Log($"Looping {looptimes} times to reach target length");
+            Logger.Log($"Looping {looptimes} times to reach target length...");
             await FFmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }
 
-        static int GetLoopTimes(string framesOutPath)
+        static int GetLoopTimes()
         {
             //Logger.Log("Getting loop times for path " + framesOutPath);
             int times = -1;

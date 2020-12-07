@@ -157,25 +157,21 @@ namespace Flowframes
             int frameCountAfterDedupe = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int dupesPercent = 100 - (((float)frameCountAfterDedupe / currentInputFrameCount) * 100f).RoundToInt();
             constantFrameRate = dupesPercent < 5f;  // Ignore VFR timings for CFR input. TODO: Figure out how to avoid dupes when using VFR timings
-            Logger.Log($"{dupesPercent}% of frames are dupes, so constantFrameRate = {constantFrameRate}");
+            Logger.Log($"{dupesPercent}% of frames are dupes, so constantFrameRate = {constantFrameRate}", true);
             
             if (canceled) return;
 
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
-
-            if(sbsMode)
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), -1, !useTimestamps);
-            else
-                await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), lastInterpFactor, !useTimestamps);
+            await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), lastInterpFactor, !useTimestamps);
 
             if (canceled) return;
 
             AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(currentFramesPath, "png", 1, 8);
         }
 
-        public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai)
+        public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai, bool stepByStep = false)
         {
-            if (Config.GetInt("autoEncMode") > 0)
+            if (!stepByStep && Config.GetInt("autoEncMode") > 0)
                 currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
             else
                 currentlyUsingAutoEnc = false;

@@ -53,10 +53,10 @@ namespace Flowframes.UI
                 return;
             int crf = crfBox.GetInt();
             Logger.Log("Creating MP4 with CRF " + crf + "...", true);
-            if(Formats.noEncodeSupport.Contains(Path.GetExtension(inputFile)))
-                await FFmpegCommands.Encode(inputFile, "libx264", "aac", crf, 112, false);      // Use AAC if there is no audio enc for this format
+            if(Path.GetExtension(inputFile).ToUpper() != ".MP4")
+                await FFmpegCommands.Encode(inputFile, "libx264", "aac", crf, 128);
             else
-                await FFmpegCommands.Encode(inputFile, "libx264", "copy", crf, 0, false);      // Copy audio if compatible
+                await FFmpegCommands.Encode(inputFile, "libx264", "copy", crf);      // Copy audio if input is MP4
             Logger.Log("Done", true);
         }
 

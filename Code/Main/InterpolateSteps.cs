@@ -63,6 +63,7 @@ namespace Flowframes.Main
         {
             BatchEntry e = Program.mainForm.GetBatchEntry();
             interpFactor = e.interpFactor;
+            Logger.Log("interpFactor from gui batchentry: " + interpFactor);
             currentAi = e.ai;
 
             try
@@ -154,17 +155,17 @@ namespace Flowframes.Main
                 IOUtils.TryDeleteIfExists(ini);
 
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+            lastInterpFactor = interpFactor;
 
             await PostProcessFrames(true);
 
-            lastInterpFactor = interpFactor;
             int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
             int targetFrameCount = frames * lastInterpFactor;
             GetProgressByFrameAmount(currentInterpFramesDir, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             int tilesize = currentAi.supportsTiling ? Config.GetInt($"tilesize_{currentAi.aiName}") : 512;
-            await RunAi(currentInterpFramesDir, targetFrameCount, tilesize, currentAi);
+            await RunAi(currentInterpFramesDir, targetFrameCount, tilesize, currentAi, true);
             Program.mainForm.SetProgress(0);
         }
 

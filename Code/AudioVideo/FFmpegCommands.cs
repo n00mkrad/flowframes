@@ -207,7 +207,7 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task Encode (string inputFile, string vcodec, string acodec, int crf, int audioKbps, bool delSrc)
+        public static async Task Encode (string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)
         {
             string outPath = Path.ChangeExtension(inputFile, null) + "-convert.mp4";
             string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k {outPath.Wrap()}";

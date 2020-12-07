@@ -17,21 +17,9 @@ namespace Flowframes.Main
         public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, int times, bool noTimestamps)
         {
             Logger.Log("Generating timecodes...");
-            if(times <= 0)
-            {
-                await CreateTimecodeFile(framesPath, loopEnabled, 2, false, noTimestamps);
-                await CreateTimecodeFile(framesPath, loopEnabled, 4, true, noTimestamps);
-                await CreateTimecodeFile(framesPath, loopEnabled, 8, true, noTimestamps);
-            }
-            else
-            {
-                await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
-            }
-            frameFiles = null;
+            await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
             Logger.Log($"Generating timecodes... Done.", false, true);
         }
-
-        static FileInfo[] frameFiles;
 
         public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun, bool noTimestamps)
         {
@@ -43,9 +31,8 @@ namespace Flowframes.Main
 
             bool sceneDetection = true;
 
-            if(frameFiles == null || frameFiles.Length < 1)
-                frameFiles = new DirectoryInfo(framesPath).GetFiles("*.png");
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{interpFactor}.ini");
+            FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles("*.png");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor}x.ini");
             string fileContent = "";
 
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
