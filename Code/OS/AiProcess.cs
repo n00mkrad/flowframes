@@ -271,7 +271,7 @@ namespace Flowframes
             if (!hasShownError && line.ToLower().Contains("modulenotfounderror"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A python module is missing. Check {logFilename} for details.\n\n{line}\n\nIf you don't want to install it yourself, use the Python package from the Package Installer.", "Error");
+                InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}\n\nIf you don't want to install it yourself, use the Python package from the Package Installer.", "Error");
             }
 
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
@@ -280,10 +280,10 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
             }
 
-            if (!hasShownError && line.Contains("RuntimeError"))
+            if (!hasShownError && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"An error occured during interpolation!\n\n{line}", "Error");
+                InterpolateUtils.ShowMessage($"A python error occured during interpolation!\nCheck {logFilename} for details.\n\n{line}", "Error");
             }
 
             if (!hasShownError && line.Contains("vkQueueSubmit failed"))

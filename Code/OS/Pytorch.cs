@@ -14,10 +14,14 @@ namespace Flowframes.OS
 
         public static string GetPyCmd ()
         {
-            if (PkgUtils.IsInstalled(Packages.python))
+            if (Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-tu")) || Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-ampt")))
             {
                 Logger.Log("Using embedded Python runtime.");
-                string pyPkgDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.python.fileName));
+                string pyPkgDir = Path.Combine(Paths.GetPkgPath(), "py-amp");
+                if (!Directory.Exists(pyPkgDir))
+                    pyPkgDir = Path.Combine(Paths.GetPkgPath(), "py-tu");
+                if (!Directory.Exists(pyPkgDir))
+                    return "";
                 return Path.Combine(pyPkgDir, "python.exe").Wrap();
             }
             else

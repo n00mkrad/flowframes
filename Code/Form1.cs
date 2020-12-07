@@ -58,9 +58,17 @@ namespace Flowframes
 
         void Checks()
         {
-            GetWebInfo.LoadNews(newsLabel);
-            GetWebInfo.LoadPatronList(patronsLabel);
-            Updater.AsyncUpdateCheck();
+            try
+            {
+                GetWebInfo.LoadNews(newsLabel);
+                GetWebInfo.LoadPatronListCsv(patronsLabel);
+                Updater.AsyncUpdateCheck();
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Non-critical error while performing online checks. See logs for details.");
+                Logger.Log(e.Message + "\n" + e.StackTrace, true);
+            }
         }
 
         public HTTabControl GetMainTabControl() { return mainTabControl; }

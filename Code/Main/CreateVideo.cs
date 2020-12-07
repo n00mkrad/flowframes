@@ -20,7 +20,6 @@ namespace Flowframes.Main
     {
         public static async Task Export(string path, string outPath, i.OutMode mode)
         {
-            Logger.Log("Auto-Encode is off, exporting video...");
             if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
