@@ -146,6 +146,8 @@ namespace Flowframes
 
         public static async Task PostProcessFrames (bool sbsMode = false)
         {
+            if (canceled) return;
+
             if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0 || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") < 2)
                 Cancel("Extracted frames folder is empty!");
 
@@ -237,7 +239,8 @@ namespace Flowframes
                 IOUtils.TryDeleteIfExists(currentTempDir);
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");
-            Logger.Log("Canceled interpolation.");
+            if(!Logger.GetLastLine().Contains("Canceled interpolation."))
+                Logger.Log("Canceled interpolation.");
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
         }
