@@ -210,7 +210,7 @@ namespace Flowframes
         public static async Task Encode (string inputFile, string vcodec, string acodec, int crf, int audioKbps, bool delSrc)
         {
             string outPath = Path.ChangeExtension(inputFile, null) + "-convert.mp4";
-            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps} {outPath.Wrap()}";
+            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k {outPath.Wrap()}";
             if (string.IsNullOrWhiteSpace(acodec))
                 args = args.Replace("-c:a", "-an");
             if(audioKbps < 0)
