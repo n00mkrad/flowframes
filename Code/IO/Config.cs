@@ -94,7 +94,7 @@ namespace Flowframes.IO
             if (key == "dedupMode")         return WriteDefault(key, "2");
             if (key == "dedupThresh")       return WriteDefault(key, "2");
             if (key == "enableAudio")       return WriteDefault(key, "True");
-            if (key == "autoDedupFrames")   return WriteDefault(key, "15");
+            if (key == "autoDedupFrames")   return WriteDefault(key, "100");
             if (key == "vfrDedupe")         return WriteDefault(key, "True");
             if (key == "timingMode")        return WriteDefault(key, "1");
             if (key == "scnDetectValue")    return WriteDefault(key, "0.2");

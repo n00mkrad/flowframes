@@ -553,5 +553,20 @@ namespace Flowframes.IO
 				}
 			}
 		}
+
+		public static bool CheckImageValid (string path)
+        {
+            try
+            {
+				Image img = GetImage(path);
+				if (img.Width > 1 && img.Height > 1)
+					return true;
+				return false;
+            }
+			catch
+            {
+				return false;
+            }
+        }
 	}
 }

@@ -171,12 +171,12 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai, bool stepByStep = false)
         {
-            if (!stepByStep && Config.GetInt("autoEncMode") > 0)
+            if ((stepByStep && Config.GetBool("sbsAllowAutoEnc")) || (!stepByStep && Config.GetInt("autoEncMode") > 0))
                 currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
             else
                 currentlyUsingAutoEnc = false;
 
-            Directory.CreateDirectory(outpath);
+            IOUtils.CreateDir(outpath);
 
             List<Task> tasks = new List<Task>();
 
@@ -194,7 +194,7 @@ namespace Flowframes
 
             if (currentlyUsingAutoEnc)
             {
-                Logger.Log("Using Auto-Encode.");
+                Logger.Log($"{Logger.GetLastLine()} (Using Auto-Encode)", true);
                 tasks.Add(AutoEncode.MainLoop(outpath));
             }
             await Task.WhenAll(tasks);

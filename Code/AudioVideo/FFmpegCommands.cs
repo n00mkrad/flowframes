@@ -1,5 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -21,8 +22,10 @@ namespace Flowframes
 
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath)
         {
-            Logger.Log("Extracting scene changes using FFmpeg...");
+            Logger.Log("Extracting scene changes...");
             await VideoToFrames(inputFile, frameFolderPath, (Config.GetInt("dedupMode") == 2), false, new Size(320, 180), true, true);
+            bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
+            Logger.Log($"Detected {IOUtils.GetAmountOfFiles(frameFolderPath, false)} scene changes.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, bool timecodes = true)
@@ -32,7 +35,7 @@ namespace Flowframes
 
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true, bool sceneDetect = false)
         {
-            if(!sceneDetect) Logger.Log("Extracting video frames using FFmpeg...");
+            if(!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
@@ -44,7 +47,8 @@ namespace Flowframes
                 string mpStr = (Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr;
                 args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             }
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
+            AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
+            await AvProcess.RunFfmpeg(args, logMode);
             await Task.Delay(1);
             if (delSrc)
                 DeleteSource(inputFile);
@@ -259,8 +263,10 @@ namespace Flowframes
                 Logger.Log("Failed to merge audio!");
                 return;
             }
+            string movePath = Path.ChangeExtension(inputFile, Path.GetExtension(tempPath));
+            File.Delete(movePath);
             File.Delete(inputFile);
-            File.Move(tempPath, inputFile);
+            File.Move(tempPath, movePath);
         }
 
         public static float GetFramerate (string inputFile)
@@ -323,7 +329,7 @@ namespace Flowframes
             string[] entries = info.SplitIntoLines();
             try
             {
-                Logger.Log("[FFCmds] ReadFrameCountFfprobe - ffprobe output: " + info, true);
+                Logger.Log("[FFCmds] ReadFrameCountFfprobe - ffprobe output: " + info.Remove(Environment.NewLine), true);
                 if (readFramesSlow)
                     return info.GetInt();
                 foreach (string entry in entries)

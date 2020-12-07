@@ -63,6 +63,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(scnDetect);
             ConfigParser.SaveGuiElement(scnDetectValue, ConfigParser.StringMode.Float);
             ConfigParser.SaveComboxIndex(autoEncMode);
+            ConfigParser.SaveGuiElement(sbsAllowAutoEnc);
             // AI
             ConfigParser.SaveComboxIndex(rifeMode);
             ConfigParser.SaveGuiElement(torchGpus);
@@ -83,14 +84,10 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(ffEncThreads);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffprobeCountFrames);
-            ConfigParser.SaveComboxIndex(vfrMode);
         }
 
         void LoadSettings()
         {
-            // REMOVE ME ONCE FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //processingMode.SelectedIndex = 0;
-
             // General
             ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
@@ -108,6 +105,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(scnDetect);
             ConfigParser.LoadGuiElement(scnDetectValue);
             ConfigParser.LoadComboxIndex(autoEncMode);
+            ConfigParser.LoadGuiElement(sbsAllowAutoEnc);
             // AI
             ConfigParser.LoadComboxIndex(rifeMode);
             ConfigParser.LoadGuiElement(torchGpus);
@@ -128,7 +126,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffprobeCountFrames);
-            ConfigParser.LoadComboxIndex(vfrMode);
         }
 
         private void dedupThresh_Leave(object sender, EventArgs e)

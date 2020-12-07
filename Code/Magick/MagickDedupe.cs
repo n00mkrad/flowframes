@@ -23,28 +23,15 @@ namespace Flowframes.Magick
 
         public static async Task Run(string path, bool testRun = false, bool setStatus = true)
         {
-            UpdateCurrentMode();
-
-            if (currentMode == Mode.None)
-                return;
+            currentMode = Mode.Auto;
 
             Program.mainForm.SetStatus("Running frame de-duplication");
 
             currentThreshold = Config.GetFloat("dedupThresh");
-            Logger.Log("Running frame de-duplication with mode " + currentMode.ToString().Wrap());
+            Logger.Log("Running accurate frame de-duplication...");
 
             if (currentMode == Mode.Enabled || currentMode == Mode.Auto)
                 await RemoveDupeFrames(path, currentThreshold, "png", testRun, false, (currentMode == Mode.Auto));
-        }
-
-        static void UpdateCurrentMode ()
-        {
-            switch (Config.GetInt("dedupMode"))
-            {
-                case 0: currentMode = Mode.None; break;
-                case 1: currentMode = Mode.Enabled; break;
-                case 2: currentMode = Mode.Auto; break;
-            }
         }
 
         public static Dictionary<string, MagickImage> imageCache = new Dictionary<string, MagickImage>();
@@ -179,7 +166,7 @@ namespace Flowframes.Magick
 
                 if (Interpolate.canceled) return;
 
-                if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && i >= skipAfterNoDupesFrames)
+                if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && skipAfterNoDupesFrames > 0 && i >= skipAfterNoDupesFrames)
                 {
                     skipped = true;
                     break;
@@ -192,7 +179,7 @@ namespace Flowframes.Magick
             if (Interpolate.canceled) return;
             if (skipped)
             {
-                Logger.Log($"[FrameDedup] First {skipAfterNoDupesFrames} frames did not have any duplicates - Skipping the rest!");
+                Logger.Log($"[FrameDedup] First {skipAfterNoDupesFrames} frames did not have any duplicates - Skipping the rest!", false, true);
             }
             else
             {

@@ -49,7 +49,7 @@ namespace Flowframes
             ffmpeg.BeginErrorReadLine();
             while (!ffmpeg.HasExited)
                 await Task.Delay(100);
-            Logger.Log("Done running ffmpeg.", true);
+            //Logger.Log("Done running ffmpeg.", true);
         }
 
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)

@@ -58,5 +58,16 @@ namespace Flowframes
                 // this if fine, i forgot why
             }
         }
+
+        public static void Clear ()
+        {
+            textbox.Text = "";
+        }
+
+        public static string GetLastLine ()
+        {
+            string[] lines = textbox.Text.SplitIntoLines();
+            return lines.Last();
+        }
     }
 }

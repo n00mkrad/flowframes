@@ -63,7 +63,6 @@ namespace Flowframes.Main
         {
             BatchEntry e = Program.mainForm.GetBatchEntry();
             interpFactor = e.interpFactor;
-            Logger.Log("interpFactor from gui batchentry: " + interpFactor);
             currentAi = e.ai;
 
             try
@@ -157,6 +156,9 @@ namespace Flowframes.Main
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
             lastInterpFactor = interpFactor;
 
+            if (Config.GetBool("sbsAllowAutoEnc"))
+                nextOutPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(currentInPath) + IOUtils.GetAiSuffix(currentAi, lastInterpFactor) + InterpolateUtils.GetExt(currentOutMode));
+
             await PostProcessFrames(true);
 
             int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
@@ -171,6 +173,14 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid()
         {
+            string[] outFrames = Directory.GetFiles(currentInterpFramesDir, $"*.{InterpolateUtils.lastExt}");
+            if (outFrames.Length > 0 && !IOUtils.CheckImageValid(outFrames[0]))
+            {
+                InterpolateUtils.ShowMessage("Invalid frame files detected!\n\nIf you used Auto-Encode, this is normal, and you don't need to run " +
+                    "this step as the video was already created in the \"Interpolate\" step.", "Error");
+                return;
+            }
+
             currentOutMode = Program.mainForm.GetBatchEntry().outMode;
             string outPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(currentInPath) + IOUtils.GetAiSuffix(currentAi, lastInterpFactor) + InterpolateUtils.GetExt(currentOutMode));
             await CreateVideo.Export(currentInterpFramesDir, outPath, currentOutMode);
