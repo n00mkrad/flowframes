@@ -30,7 +30,7 @@ namespace Flowframes
         private void Form1_Load(object sender, EventArgs e)
         {
             CheckForIllegalCrossThreadCalls = false;
-            Text = $"Flowframes v{Program.version}";
+            Text = $"Flowframes {Updater.GetInstalledVer()}";
 
             // Main Tab
             UIUtils.InitCombox(interpFactorCombox, 0);
@@ -228,7 +228,7 @@ namespace Flowframes
         {
             UpdateOutputFPS();
             if (Interpolate.interpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0)
-                Logger.Log($"Warning: This AI will run multiple times for {Interpolate.interpFactor}x. Auto-Encode will only work on the last run.");
+                Logger.Log($"Warning: {GetAi().aiName.Replace("_", "-")} doesn't natively support 4x/8x and will run multiple times for {Interpolate.interpFactor}x. Auto-Encode will only work on the last run.");
         }
 
         public void SetWorking(bool state)

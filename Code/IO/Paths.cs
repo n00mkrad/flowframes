@@ -19,6 +19,11 @@ namespace Flowframes.IO
 			
 		}
 
+		public static string GetVerPath()
+		{
+			return Path.Combine(GetDataPath(), "ver.ini");
+		}
+
 		public static string GetDataPath ()
 		{
 			string path = Path.Combine(IOUtils.GetExeDir(), "FlowframesData");

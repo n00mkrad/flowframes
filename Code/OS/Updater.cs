@@ -1,4 +1,5 @@
-﻿using Flowframes.Forms;
+﻿using Flowframes.Data;
+using Flowframes.Forms;
 using Flowframes.IO;
 using System;
 using System.Collections.Generic;
@@ -13,22 +14,76 @@ namespace Flowframes.OS
 {
     class Updater
     {
-        public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/latest.txt";
+        public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/latest.ini";
 
-        public static int GetInstalledVer()
+        public static SemVer GetInstalledVer()
         {
-            return Program.version;
+            try
+            {
+                string verStr = IOUtils.ReadLines(Paths.GetVerPath())[0];
+                return new SemVer(verStr);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error getting installed version: " + e.Message);
+                return new SemVer(0, 0, 0);
+            }
         }
 
-        public static int GetLatestVer ()
+        public static bool IsVersionNewer (SemVer currentVer, SemVer newVer)
+        {
+            if (newVer.major > currentVer.major)
+            {
+                return true;
+            }
+            else
+            {
+                if(newVer.minor > currentVer.minor)
+                {
+                    return true;
+                }
+                else
+                {
+                    if (newVer.patch > currentVer.patch)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public static bool VersionMatches (SemVer v1, SemVer v2)
+        {
+            return v1.major == v2.major && v1.minor == v2.minor && v1.patch == v2.patch;
+        }
+
+        public static SemVer GetLatestVer ()
         {
             var client = new WebClient();
-            return client.DownloadString(latestVerUrl).GetInt();
+            return new SemVer(client.DownloadString(latestVerUrl).SplitIntoLines()[0]);
+        }
+
+        public static string GetLatestVerLink()
+        {
+            var client = new WebClient();
+            try
+            {
+                return client.DownloadString(latestVerUrl).SplitIntoLines()[1].Trim();
+            }
+            catch
+            {
+                Logger.Log("Failed to get latest version link from latest.ini!", true);
+                return "";
+            }
         }
 
         public static async Task UpdateTo (int version, UpdaterForm form = null)
         {
-            Logger.Log("Updating to v" + version, true);
+            Logger.Log("Updating to " + version, true);
             string savePath = Path.Combine(IOUtils.GetExeDir(), $"FlowframesV{version}");
             try
             {
@@ -77,15 +132,13 @@ namespace Flowframes.OS
 
         public static async Task AsyncUpdateCheck ()
         {
-            var client = new WebClient();
-            var latestVer = await client.DownloadStringTaskAsync(latestVerUrl);
-            int latest = latestVer.GetInt();
-            int installed = GetInstalledVer();
+            SemVer latest = GetLatestVer();
+            SemVer installed = GetInstalledVer();
 
-            if (installed < latest)
-                Logger.Log("An update for Flowframes is available! Download it using the Updater.");
+            if (IsVersionNewer(installed, latest))
+                Logger.Log($"An update for Flowframes ({latest}) is available! Download it from the Updater.");
             else
-                Logger.Log("Flowframes is up to date.");
+                Logger.Log($"Flowframes is up to date ({installed}).");
         }
     }
 }

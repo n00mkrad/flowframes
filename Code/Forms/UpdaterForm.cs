@@ -1,6 +1,8 @@
-﻿using Flowframes.OS;
+﻿using Flowframes.Data;
+using Flowframes.OS;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -8,8 +10,8 @@ namespace Flowframes.Forms
 {
     public partial class UpdaterForm : Form
     {
-        int installed;
-        int latest;
+        SemVer installed;
+        SemVer latest;
 
         public UpdaterForm()
         {
@@ -32,7 +34,7 @@ namespace Flowframes.Forms
             }
             else
             {
-                if(installed < latest)
+                if(Updater.IsVersionNewer(installed, latest))
                 {
                     updateBtn.Text = "Update To Latest Version!";
                     statusLabel.Text = "Update Available!";
@@ -57,12 +59,9 @@ namespace Flowframes.Forms
 
         private async void updateBtn_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => DoUpdate());
-        }
-
-        async void DoUpdate ()
-        {
-            await Updater.UpdateTo(latest, this);
+            string link = Updater.GetLatestVerLink();
+            if(!string.IsNullOrWhiteSpace(link))
+                Process.Start(link);
         }
     }
 }
