@@ -74,15 +74,15 @@ class ContextNet(nn.Module):
         f1 = warp(x, flow)
         x = self.conv2(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear",
-                             align_corners=False, recompute_scale_factor=False) * 0.5
+                             align_corners=False) * 0.5
         f2 = warp(x, flow)
         x = self.conv3(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear",
-                             align_corners=False, recompute_scale_factor=False) * 0.5
+                             align_corners=False) * 0.5
         f3 = warp(x, flow)
         x = self.conv4(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear",
-                             align_corners=False, recompute_scale_factor=False) * 0.5
+                             align_corners=False) * 0.5
         f4 = warp(x, flow)
         return [f1, f2, f3, f4]
 
@@ -158,14 +158,17 @@ class Model:
         self.contextnet.to(device)
         self.fusionnet.to(device)
 
-    def load_model(self, path, rank=0):
+    def load_model(self, path, rank):
         def convert(param):
-            return {
-                k.replace("module.", ""): v
-                for k, v in param.items()
-                if "module." in k
-            }
-        if rank == 0:
+            if rank == -1:
+                return {
+                    k.replace("module.", ""): v
+                    for k, v in param.items()
+                    if "module." in k
+                }
+            else:
+                return param
+        if rank <= 0:
             self.flownet.load_state_dict(
                 convert(torch.load('{}/flownet.pkl'.format(path), map_location=device)))
             self.contextnet.load_state_dict(
@@ -173,12 +176,10 @@ class Model:
             self.fusionnet.load_state_dict(
                 convert(torch.load('{}/unet.pkl'.format(path), map_location=device)))
 
-    def save_model(self, path, rank=0):
+    def save_model(self, path, rank):
         if rank == 0:
-            torch.save(self.flownet.state_dict(),
-                       '{}/flownet.pkl'.format(path))
-            torch.save(self.contextnet.state_dict(),
-                       '{}/contextnet.pkl'.format(path))
+            torch.save(self.flownet.state_dict(), '{}/flownet.pkl'.format(path))
+            torch.save(self.contextnet.state_dict(), '{}/contextnet.pkl'.format(path))
             torch.save(self.fusionnet.state_dict(), '{}/unet.pkl'.format(path))
 
     def predict(self, imgs, flow, training=True, flow_gt=None):
@@ -187,7 +188,7 @@ class Model:
         c0 = self.contextnet(img0, flow)
         c1 = self.contextnet(img1, -flow)
         flow = F.interpolate(flow, scale_factor=2.0, mode="bilinear",
-                             align_corners=False, recompute_scale_factor=False) * 2.0
+                             align_corners=False) * 2.0
         refine_output, warped_img0, warped_img1, warped_img0_gt, warped_img1_gt = self.fusionnet(
             img0, img1, flow, c0, c1, flow_gt)
         res = torch.sigmoid(refine_output[:, :3]) * 2 - 1
@@ -201,9 +202,8 @@ class Model:
             return pred
 
     def inference(self, img0, img1):
-        with torch.no_grad():
-            imgs = torch.cat((img0, img1), 1)
-            flow, _ = self.flownet(imgs)
+        imgs = torch.cat((img0, img1), 1)
+        flow, _ = self.flownet(imgs)
         return self.predict(imgs, flow, training=False).detach()
 
     def update(self, imgs, gt, learning_rate=0, mul=1, training=True, flow_gt=None):
@@ -223,9 +223,9 @@ class Model:
                 loss_mask = torch.abs(
                     merged_img - gt).sum(1, True).float().detach()
                 loss_mask = F.interpolate(loss_mask, scale_factor=0.5, mode="bilinear",
-                                          align_corners=False, recompute_scale_factor=False).detach()
+                                          align_corners=False).detach()
                 flow_gt = (F.interpolate(flow_gt, scale_factor=0.5, mode="bilinear",
-                                         align_corners=False, recompute_scale_factor=False) * 0.5).detach()
+                                         align_corners=False) * 0.5).detach()
             loss_cons = 0
             for i in range(3):
                 loss_cons += self.epe(flow_list[i], flow_gt[:, :2], 1)

@@ -155,7 +155,7 @@ namespace Flowframes
                 DeleteSource(inputPath);
         }
 
-        public static async void FramesToApng (string inputDir, bool opti, int fps, string prefix, bool delSrc)
+        public static async void FramesToApng (string inputDir, bool opti, int fps, string prefix, bool delSrc = false)
         {
             int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, "*.png")[0], prefix);
             string filter = "";
@@ -166,18 +166,26 @@ namespace Flowframes
                 DeleteSource(inputDir);
         }
 
-        public static async void FramesToGif (string inputDir, bool opti, int fps, string prefix, bool delSrc)
+        public static async void FramesToGif (string inputDir, bool palette, int fps, string prefix, bool delSrc = false)
         {
             int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, "*.png")[0], prefix);
-            string filter = "";
-            if (opti) filter = "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"";
+            string filter = palette ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
             string args = "-framerate " + fps + " -i \"" + inputDir + "\\" + prefix + "%0" + nums + "d.png\" -f gif " + filter + " \"" + inputDir + ".gif\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputDir);
         }
 
-        public static async Task LoopVideo (string inputFile, int times, bool delSrc)
+        public static async Task FramesToGifVfr(string framesFile, string outPath, bool palette)
+        {
+            Logger.Log($"Encoding GIF...");
+            string vfrFilename = Path.GetFileName(framesFile);
+            string filter = palette ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
+            string args = $"-f concat -i {vfrFilename.Wrap()} -f gif {filter} {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
+        }
+
+        public static async Task LoopVideo (string inputFile, int times, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
@@ -187,7 +195,7 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task LoopVideoEnc (string inputFile, int times, bool useH265, int crf, bool delSrc)
+        public static async Task LoopVideoEnc (string inputFile, int times, bool useH265, int crf, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
@@ -199,7 +207,7 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task ChangeSpeed (string inputFile, float newSpeedPercent, bool delSrc)
+        public static async Task ChangeSpeed (string inputFile, float newSpeedPercent, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);

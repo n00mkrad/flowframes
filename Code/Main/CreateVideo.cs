@@ -66,14 +66,18 @@ namespace Flowframes.Main
 
         static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
         {
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.lastInterpFactor}x.ini");
+
             if (mode == i.OutMode.VidGif)
             {
-                if (new DirectoryInfo(framesPath).GetFiles()[0].Extension != ".png")
-                {
-                    Logger.Log("Converting output frames to PNG to encode with Gifski...");
-                    await Converter.Convert(framesPath, ImageMagick.MagickFormat.Png00, 20, "png", false);
-                }
-                await GifskiCommands.CreateGifFromFrames(i.currentOutFps.RoundToInt(), Config.GetInt("gifskiQ"), framesPath, outPath);
+                await FFmpegCommands.FramesToGifVfr(vfrFile, outPath, true);
+                // TODO: Remove old code once new code works well
+                // if (new DirectoryInfo(framesPath).GetFiles()[0].Extension != ".png")
+                // {
+                //     Logger.Log("Converting output frames to PNG to encode with Gifski...");
+                //     await Converter.Convert(framesPath, ImageMagick.MagickFormat.Png00, 20, "png", false);
+                // }
+                // await GifskiCommands.CreateGifFromFrames(i.currentOutFps.RoundToInt(), Config.GetInt("gifskiQ"), framesPath, outPath);
             }
 
             if (mode == i.OutMode.VidMp4)
@@ -82,7 +86,6 @@ namespace Flowframes.Main
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-                string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.lastInterpFactor}x.ini");
                 await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, i.constantFrameRate);
 
                 /*      DELETE THIS AS SOON AS I'M SURE I CAN USE VFR WITH TIMING DISABLED

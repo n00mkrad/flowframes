@@ -700,7 +700,7 @@
             this.updateBtn.ForeColor = System.Drawing.Color.White;
             this.updateBtn.ImageIndex = 0;
             this.updateBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.updateBtn.Location = new System.Drawing.Point(744, 12);
+            this.updateBtn.Location = new System.Drawing.Point(790, 12);
             this.updateBtn.Name = "updateBtn";
             this.updateBtn.Size = new System.Drawing.Size(40, 40);
             this.updateBtn.TabIndex = 41;
@@ -718,7 +718,7 @@
             this.queueBtn.ForeColor = System.Drawing.Color.White;
             this.queueBtn.ImageIndex = 0;
             this.queueBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.queueBtn.Location = new System.Drawing.Point(790, 12);
+            this.queueBtn.Location = new System.Drawing.Point(836, 12);
             this.queueBtn.Name = "queueBtn";
             this.queueBtn.Size = new System.Drawing.Size(40, 40);
             this.queueBtn.TabIndex = 39;
@@ -840,7 +840,7 @@
             this.patreonBtn.ForeColor = System.Drawing.Color.White;
             this.patreonBtn.ImageIndex = 0;
             this.patreonBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.patreonBtn.Location = new System.Drawing.Point(606, 12);
+            this.patreonBtn.Location = new System.Drawing.Point(652, 12);
             this.patreonBtn.Name = "patreonBtn";
             this.patreonBtn.Size = new System.Drawing.Size(40, 40);
             this.patreonBtn.TabIndex = 37;
@@ -858,7 +858,7 @@
             this.paypalBtn.ForeColor = System.Drawing.Color.White;
             this.paypalBtn.ImageIndex = 0;
             this.paypalBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.paypalBtn.Location = new System.Drawing.Point(559, 12);
+            this.paypalBtn.Location = new System.Drawing.Point(605, 12);
             this.paypalBtn.Name = "paypalBtn";
             this.paypalBtn.Size = new System.Drawing.Size(40, 40);
             this.paypalBtn.TabIndex = 36;
@@ -876,7 +876,7 @@
             this.discordBtn.ForeColor = System.Drawing.Color.White;
             this.discordBtn.ImageIndex = 0;
             this.discordBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.discordBtn.Location = new System.Drawing.Point(652, 12);
+            this.discordBtn.Location = new System.Drawing.Point(698, 12);
             this.discordBtn.Name = "discordBtn";
             this.discordBtn.Size = new System.Drawing.Size(40, 40);
             this.discordBtn.TabIndex = 35;
@@ -894,12 +894,13 @@
             this.installerBtn.ForeColor = System.Drawing.Color.White;
             this.installerBtn.ImageIndex = 0;
             this.installerBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.installerBtn.Location = new System.Drawing.Point(836, 12);
+            this.installerBtn.Location = new System.Drawing.Point(468, 12);
             this.installerBtn.Name = "installerBtn";
             this.installerBtn.Size = new System.Drawing.Size(40, 40);
             this.installerBtn.TabIndex = 9;
             this.toolTip1.SetToolTip(this.installerBtn, "Open Package Installer");
             this.installerBtn.UseVisualStyleBackColor = false;
+            this.installerBtn.Visible = false;
             this.installerBtn.Click += new System.EventHandler(this.installerBtn_Click);
             // 
             // longProgBar
@@ -1298,7 +1299,7 @@
             this.htButton1.ForeColor = System.Drawing.Color.White;
             this.htButton1.ImageIndex = 0;
             this.htButton1.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.htButton1.Location = new System.Drawing.Point(698, 12);
+            this.htButton1.Location = new System.Drawing.Point(744, 12);
             this.htButton1.Name = "htButton1";
             this.htButton1.Size = new System.Drawing.Size(40, 40);
             this.htButton1.TabIndex = 40;
