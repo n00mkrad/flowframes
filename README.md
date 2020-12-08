@@ -27,6 +27,8 @@ The requirements to run these are the following:
 * A **Python** installation including Pytorch (1.5 or later) as well as the packages `opencv-python` and `imageio`.
   * You can install a portable version of all those requirements from the Flowframes Installer. This does not support RTX 3000 cards yet.
 
+[More Details On Python Dependencies](PythonDependencies.md)
+
 
 
 ## Running A Pytorch AI on Nvidia Ampere (RTX 3000) GPUs
