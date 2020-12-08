@@ -30,9 +30,11 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+Flowframes*.7z
 
 # NMKD Python Redist Pkg
 [Pp]y*/
+
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

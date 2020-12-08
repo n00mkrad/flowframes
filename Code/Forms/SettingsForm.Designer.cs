@@ -44,7 +44,7 @@
             this.panel10 = new System.Windows.Forms.Panel();
             this.maxVidHeight = new System.Windows.Forms.ComboBox();
             this.label31 = new System.Windows.Forms.Label();
-            this.deleteLogsOnStartup = new System.Windows.Forms.CheckBox();
+            this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
             this.sbsAllowAutoEnc = new System.Windows.Forms.CheckBox();
@@ -90,10 +90,6 @@
             this.ncnnGpus = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
-            this.rifeMode = new System.Windows.Forms.ComboBox();
-            this.label28 = new System.Windows.Forms.Label();
-            this.label29 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
             this.loopMode = new System.Windows.Forms.ComboBox();
             this.label55 = new System.Windows.Forms.Label();
@@ -182,7 +178,7 @@
             this.generalTab.Controls.Add(this.panel10);
             this.generalTab.Controls.Add(this.maxVidHeight);
             this.generalTab.Controls.Add(this.label31);
-            this.generalTab.Controls.Add(this.deleteLogsOnStartup);
+            this.generalTab.Controls.Add(this.delLogsOnStartup);
             this.generalTab.Controls.Add(this.label11);
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
@@ -334,14 +330,14 @@
             this.label31.TabIndex = 62;
             this.label31.Text = "Maximum Video Input Size (Height)";
             // 
-            // deleteLogsOnStartup
+            // delLogsOnStartup
             // 
-            this.deleteLogsOnStartup.AutoSize = true;
-            this.deleteLogsOnStartup.Location = new System.Drawing.Point(280, 130);
-            this.deleteLogsOnStartup.Name = "deleteLogsOnStartup";
-            this.deleteLogsOnStartup.Size = new System.Drawing.Size(15, 14);
-            this.deleteLogsOnStartup.TabIndex = 23;
-            this.deleteLogsOnStartup.UseVisualStyleBackColor = true;
+            this.delLogsOnStartup.AutoSize = true;
+            this.delLogsOnStartup.Location = new System.Drawing.Point(280, 130);
+            this.delLogsOnStartup.Name = "delLogsOnStartup";
+            this.delLogsOnStartup.Size = new System.Drawing.Size(15, 14);
+            this.delLogsOnStartup.TabIndex = 23;
+            this.delLogsOnStartup.UseVisualStyleBackColor = true;
             // 
             // label11
             // 
@@ -754,10 +750,6 @@
             this.aiOptsPage.Controls.Add(this.ncnnGpus);
             this.aiOptsPage.Controls.Add(this.label5);
             this.aiOptsPage.Controls.Add(this.label32);
-            this.aiOptsPage.Controls.Add(this.label30);
-            this.aiOptsPage.Controls.Add(this.rifeMode);
-            this.aiOptsPage.Controls.Add(this.label28);
-            this.aiOptsPage.Controls.Add(this.label29);
             this.aiOptsPage.Name = "aiOptsPage";
             this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Settings";
@@ -766,7 +758,7 @@
             // 
             this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel12.Location = new System.Drawing.Point(336, 177);
+            this.panel12.Location = new System.Drawing.Point(336, 97);
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(21, 21);
             this.panel12.TabIndex = 58;
@@ -776,7 +768,7 @@
             // 
             this.label44.AutoSize = true;
             this.label44.ForeColor = System.Drawing.Color.Silver;
-            this.label44.Location = new System.Drawing.Point(370, 181);
+            this.label44.Location = new System.Drawing.Point(370, 101);
             this.label44.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(358, 13);
@@ -794,7 +786,7 @@
             "2",
             "3",
             "4"});
-            this.ncnnThreads.Location = new System.Drawing.Point(280, 177);
+            this.ncnnThreads.Location = new System.Drawing.Point(280, 97);
             this.ncnnThreads.Name = "ncnnThreads";
             this.ncnnThreads.Size = new System.Drawing.Size(50, 21);
             this.ncnnThreads.TabIndex = 59;
@@ -802,7 +794,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(10, 180);
+            this.label43.Location = new System.Drawing.Point(10, 100);
             this.label43.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(135, 13);
@@ -813,7 +805,7 @@
             // 
             this.panel2.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel2.Location = new System.Drawing.Point(536, 147);
+            this.panel2.Location = new System.Drawing.Point(536, 67);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(21, 21);
             this.panel2.TabIndex = 57;
@@ -823,7 +815,7 @@
             // 
             this.panel1.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel1.Location = new System.Drawing.Point(536, 117);
+            this.panel1.Location = new System.Drawing.Point(536, 37);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(21, 21);
             this.panel1.TabIndex = 56;
@@ -839,7 +831,7 @@
             "0",
             "1",
             "0,1"});
-            this.torchGpus.Location = new System.Drawing.Point(280, 117);
+            this.torchGpus.Location = new System.Drawing.Point(280, 37);
             this.torchGpus.Name = "torchGpus";
             this.torchGpus.Size = new System.Drawing.Size(250, 21);
             this.torchGpus.TabIndex = 55;
@@ -847,7 +839,7 @@
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(10, 120);
+            this.label33.Location = new System.Drawing.Point(10, 40);
             this.label33.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(205, 13);
@@ -864,7 +856,7 @@
             "0",
             "1",
             "0,1"});
-            this.ncnnGpus.Location = new System.Drawing.Point(280, 147);
+            this.ncnnGpus.Location = new System.Drawing.Point(280, 67);
             this.ncnnGpus.Name = "ncnnGpus";
             this.ncnnGpus.Size = new System.Drawing.Size(250, 21);
             this.ncnnGpus.TabIndex = 53;
@@ -872,7 +864,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 150);
+            this.label5.Location = new System.Drawing.Point(10, 70);
             this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(200, 13);
@@ -883,59 +875,12 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label32.Location = new System.Drawing.Point(10, 90);
+            this.label32.Location = new System.Drawing.Point(10, 10);
             this.label32.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(162, 16);
             this.label32.TabIndex = 51;
             this.label32.Text = "AI Framework Settings";
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.ForeColor = System.Drawing.Color.Silver;
-            this.label30.Location = new System.Drawing.Point(543, 41);
-            this.label30.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(190, 13);
-            this.label30.TabIndex = 49;
-            this.label30.Text = "An 8 GB GPU is recommended for this.";
-            // 
-            // rifeMode
-            // 
-            this.rifeMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.rifeMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.rifeMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rifeMode.ForeColor = System.Drawing.Color.White;
-            this.rifeMode.FormattingEnabled = true;
-            this.rifeMode.Items.AddRange(new object[] {
-            "Disabled - Slower, but needs less VRAM",
-            "Enabled - Up to 2x as fast, needs more VRAM"});
-            this.rifeMode.Location = new System.Drawing.Point(280, 37);
-            this.rifeMode.Name = "rifeMode";
-            this.rifeMode.Size = new System.Drawing.Size(250, 21);
-            this.rifeMode.TabIndex = 48;
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label28.Location = new System.Drawing.Point(10, 10);
-            this.label28.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(42, 16);
-            this.label28.TabIndex = 47;
-            this.label28.Text = "RIFE";
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(10, 40);
-            this.label29.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(116, 13);
-            this.label29.TabIndex = 45;
-            this.label29.Text = "Use Fast Parallel Mode";
             // 
             // vidExportTab
             // 
@@ -1588,7 +1533,7 @@
         private Cyotek.Windows.Forms.TabListPage tabListPage2;
         private Cyotek.Windows.Forms.TabListPage debugTab;
         private System.Windows.Forms.Label titleLabel;
-        private System.Windows.Forms.CheckBox deleteLogsOnStartup;
+        private System.Windows.Forms.CheckBox delLogsOnStartup;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox enableAudio;
@@ -1630,10 +1575,6 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label24;
         private Cyotek.Windows.Forms.TabListPage aiOptsPage;
-        private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.ComboBox rifeMode;
-        private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ComboBox torchGpus;
         private System.Windows.Forms.Label label33;

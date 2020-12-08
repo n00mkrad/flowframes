@@ -50,7 +50,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(maxVidHeight);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
-            ConfigParser.SaveGuiElement(deleteLogsOnStartup);
+            ConfigParser.SaveGuiElement(delLogsOnStartup);
             // Interpolation
             ConfigParser.SaveGuiElement(enableAudio);
             ConfigParser.SaveComboxIndex(dedupMode);
@@ -64,7 +64,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(autoEncMode);
             ConfigParser.SaveGuiElement(sbsAllowAutoEnc);
             // AI
-            ConfigParser.SaveComboxIndex(rifeMode);
             ConfigParser.SaveGuiElement(torchGpus);
             ConfigParser.SaveGuiElement(ncnnGpus);
             ConfigParser.SaveGuiElement(ncnnThreads);
@@ -91,7 +90,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
-            ConfigParser.LoadGuiElement(deleteLogsOnStartup);
+            ConfigParser.LoadGuiElement(delLogsOnStartup);
             ConfigParser.LoadGuiElement(keepTempFolder);
             // Interpolation
             ConfigParser.LoadGuiElement(enableAudio);
@@ -106,7 +105,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(autoEncMode);
             ConfigParser.LoadGuiElement(sbsAllowAutoEnc);
             // AI
-            ConfigParser.LoadComboxIndex(rifeMode);
             ConfigParser.LoadGuiElement(torchGpus);
             ConfigParser.LoadGuiElement(ncnnGpus);
             ConfigParser.LoadGuiElement(ncnnThreads);

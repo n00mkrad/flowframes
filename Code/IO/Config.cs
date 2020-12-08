@@ -105,7 +105,7 @@ namespace Flowframes.IO
             if (key == "gifColors")     return WriteDefault(key, "128 (High)");
             if (key == "minVidLength")  return WriteDefault(key, "2");
             // AI
-            if (key == "rifeMode")      return WriteDefault(key, ((NvApi.GetVramGb() > 7f) ? 1 : 0).ToString()); // Enable by default if GPU has >7gb VRAM
+            //if (key == "rifeMode")      return WriteDefault(key, ((NvApi.GetVramGb() > 7f) ? 1 : 0).ToString()); // Enable by default if GPU has >7gb VRAM
             if (key == "ncnnThreads")   return WriteDefault(key, "1");
             // Debug / Other / Experimental
             if (key == "ffEncPreset")           return WriteDefault(key, "medium");
