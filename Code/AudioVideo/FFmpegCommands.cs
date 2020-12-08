@@ -176,11 +176,11 @@ namespace Flowframes
                 DeleteSource(inputDir);
         }
 
-        public static async Task FramesToGifVfr(string framesFile, string outPath, bool palette)
+        public static async Task FramesToGifVfr(string framesFile, string outPath, bool palette, int colors = 64)
         {
             Logger.Log($"Encoding GIF...");
             string vfrFilename = Path.GetFileName(framesFile);
-            string filter = palette ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
+            string filter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither=floyd_steinberg:diff_mode=rectangle\"" : "";
             string args = $"-f concat -i {vfrFilename.Wrap()} -f gif {filter} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
         }

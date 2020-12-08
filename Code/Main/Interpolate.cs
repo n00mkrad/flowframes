@@ -174,7 +174,7 @@ namespace Flowframes
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai, bool stepByStep = false)
         {
             if ((stepByStep && Config.GetBool("sbsAllowAutoEnc")) || (!stepByStep && Config.GetInt("autoEncMode") > 0))
-                currentlyUsingAutoEnc = IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
+                currentlyUsingAutoEnc = currentOutMode == OutMode.VidMp4 && IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
             else
                 currentlyUsingAutoEnc = false;
 

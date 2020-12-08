@@ -70,7 +70,7 @@ namespace Flowframes.Main
 
             if (mode == i.OutMode.VidGif)
             {
-                await FFmpegCommands.FramesToGifVfr(vfrFile, outPath, true);
+                await FFmpegCommands.FramesToGifVfr(vfrFile, outPath, true, Config.GetInt("gifColors"));
                 // TODO: Remove old code once new code works well
                 // if (new DirectoryInfo(framesPath).GetFiles()[0].Extension != ".png")
                 // {
@@ -87,19 +87,6 @@ namespace Flowframes.Main
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
                 await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, i.constantFrameRate);
-
-                /*      DELETE THIS AS SOON AS I'M SURE I CAN USE VFR WITH TIMING DISABLED
-                if (Config.GetInt("timingMode") == 1 && Config.GetInt("dedupMode") != 0)
-                {
-                    string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-x{i.lastInterpFactor}.ini");
-                    await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, -1);
-                }
-                else
-                {
-                    await FFmpegCommands.FramesToMp4(framesPath, outPath, h265, crf, fps, "", false, -1, InterpolateUtils.lastExt);   // Create video
-                }
-                */
-
                 await MergeAudio(i.lastInputPath, outPath);
 
                 if (looptimes > 0)

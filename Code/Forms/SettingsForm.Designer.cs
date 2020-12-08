@@ -47,6 +47,8 @@
             this.deleteLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.sbsAllowAutoEnc = new System.Windows.Forms.CheckBox();
+            this.label53 = new System.Windows.Forms.Label();
             this.autoEncMode = new System.Windows.Forms.ComboBox();
             this.label49 = new System.Windows.Forms.Label();
             this.panel14 = new System.Windows.Forms.Panel();
@@ -97,7 +99,6 @@
             this.label55 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.panel6 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label23 = new System.Windows.Forms.Label();
@@ -108,7 +109,7 @@
             this.label21 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
-            this.gifskiQ = new System.Windows.Forms.ComboBox();
+            this.gifColors = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -122,6 +123,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.minOutVidLength = new System.Windows.Forms.ComboBox();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.label48 = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
             this.ffEncPreset = new System.Windows.Forms.ComboBox();
             this.label47 = new System.Windows.Forms.Label();
@@ -141,9 +143,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label48 = new System.Windows.Forms.Label();
-            this.label53 = new System.Windows.Forms.Label();
-            this.sbsAllowAutoEnc = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -385,6 +384,25 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // sbsAllowAutoEnc
+            // 
+            this.sbsAllowAutoEnc.AutoSize = true;
+            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 220);
+            this.sbsAllowAutoEnc.Name = "sbsAllowAutoEnc";
+            this.sbsAllowAutoEnc.Size = new System.Drawing.Size(15, 14);
+            this.sbsAllowAutoEnc.TabIndex = 72;
+            this.sbsAllowAutoEnc.UseVisualStyleBackColor = true;
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(10, 220);
+            this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(203, 13);
+            this.label53.TabIndex = 71;
+            this.label53.Text = "Allow Auto-Encode in Step-By-Step Mode";
             // 
             // autoEncMode
             // 
@@ -926,7 +944,6 @@
             this.vidExportTab.Controls.Add(this.label55);
             this.vidExportTab.Controls.Add(this.panel8);
             this.vidExportTab.Controls.Add(this.panel7);
-            this.vidExportTab.Controls.Add(this.panel6);
             this.vidExportTab.Controls.Add(this.panel5);
             this.vidExportTab.Controls.Add(this.panel4);
             this.vidExportTab.Controls.Add(this.label23);
@@ -937,7 +954,7 @@
             this.vidExportTab.Controls.Add(this.label21);
             this.vidExportTab.Controls.Add(this.label19);
             this.vidExportTab.Controls.Add(this.label18);
-            this.vidExportTab.Controls.Add(this.gifskiQ);
+            this.vidExportTab.Controls.Add(this.gifColors);
             this.vidExportTab.Controls.Add(this.label17);
             this.vidExportTab.Controls.Add(this.label16);
             this.vidExportTab.Controls.Add(this.label14);
@@ -998,16 +1015,6 @@
             this.panel7.Size = new System.Drawing.Size(21, 21);
             this.panel7.TabIndex = 59;
             this.toolTip1.SetToolTip(this.panel7, "Allows custom input.");
-            // 
-            // panel6
-            // 
-            this.panel6.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel6.Location = new System.Drawing.Point(386, 127);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(21, 21);
-            this.panel6.TabIndex = 57;
-            this.toolTip1.SetToolTip(this.panel6, "Allows custom input.");
             // 
             // panel5
             // 
@@ -1117,30 +1124,29 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.Color.Silver;
-            this.label18.Location = new System.Drawing.Point(420, 131);
+            this.label18.Location = new System.Drawing.Point(393, 131);
             this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(257, 13);
+            this.label18.Size = new System.Drawing.Size(208, 13);
             this.label18.TabIndex = 42;
-            this.label18.Text = "Higher is better. Values are passed to Gifski encoder.";
+            this.label18.Text = "More colors increase the file size noticably.";
             // 
-            // gifskiQ
+            // gifColors
             // 
-            this.gifskiQ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.gifskiQ.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.gifskiQ.ForeColor = System.Drawing.Color.White;
-            this.gifskiQ.FormattingEnabled = true;
-            this.gifskiQ.Items.AddRange(new object[] {
-            "100",
-            "95",
-            "90",
-            "75",
-            "50",
-            "25"});
-            this.gifskiQ.Location = new System.Drawing.Point(280, 127);
-            this.gifskiQ.Name = "gifskiQ";
-            this.gifskiQ.Size = new System.Drawing.Size(100, 21);
-            this.gifskiQ.TabIndex = 41;
+            this.gifColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.gifColors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gifColors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gifColors.ForeColor = System.Drawing.Color.White;
+            this.gifColors.FormattingEnabled = true;
+            this.gifColors.Items.AddRange(new object[] {
+            "128 (High)",
+            "64 (Medium)",
+            "32 (Low)",
+            "16 (Very Low)"});
+            this.gifColors.Location = new System.Drawing.Point(280, 127);
+            this.gifColors.Name = "gifColors";
+            this.gifColors.Size = new System.Drawing.Size(100, 21);
+            this.gifColors.TabIndex = 41;
             // 
             // label17
             // 
@@ -1148,9 +1154,9 @@
             this.label17.Location = new System.Drawing.Point(10, 130);
             this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(91, 13);
+            this.label17.Size = new System.Drawing.Size(154, 13);
             this.label17.TabIndex = 40;
-            this.label17.Text = "GIF: Quality Level";
+            this.label17.Text = "GIF: Color Quality (Palette Size)";
             // 
             // label16
             // 
@@ -1315,6 +1321,17 @@
             this.debugTab.Name = "debugTab";
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Debugging / Experimental";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.ForeColor = System.Drawing.Color.Silver;
+            this.label48.Location = new System.Drawing.Point(570, 71);
+            this.label48.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(169, 13);
+            this.label48.TabIndex = 83;
+            this.label48.Text = "Use 0 to disable (check all frames)";
             // 
             // label54
             // 
@@ -1528,36 +1545,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label48
-            // 
-            this.label48.AutoSize = true;
-            this.label48.ForeColor = System.Drawing.Color.Silver;
-            this.label48.Location = new System.Drawing.Point(570, 71);
-            this.label48.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(169, 13);
-            this.label48.TabIndex = 83;
-            this.label48.Text = "Use 0 to disable (check all frames)";
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(10, 220);
-            this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(203, 13);
-            this.label53.TabIndex = 71;
-            this.label53.Text = "Allow Auto-Encode in Step-By-Step Mode";
-            // 
-            // sbsAllowAutoEnc
-            // 
-            this.sbsAllowAutoEnc.AutoSize = true;
-            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 220);
-            this.sbsAllowAutoEnc.Name = "sbsAllowAutoEnc";
-            this.sbsAllowAutoEnc.Size = new System.Drawing.Size(15, 14);
-            this.sbsAllowAutoEnc.TabIndex = 72;
-            this.sbsAllowAutoEnc.UseVisualStyleBackColor = true;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1622,7 +1609,7 @@
         private System.Windows.Forms.ComboBox mp4Enc;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.ComboBox gifskiQ;
+        private System.Windows.Forms.ComboBox gifColors;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label14;
@@ -1658,7 +1645,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Panel panel7;
-        private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel9;

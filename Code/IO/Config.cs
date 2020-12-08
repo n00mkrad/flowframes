@@ -71,7 +71,7 @@ namespace Flowframes.IO
 
         public static int GetInt(string key)
         {
-            return int.Parse(Get(key, Type.Int));
+            return Get(key, Type.Int).GetInt();
         }
 
         public static float GetFloat(string key)
@@ -102,7 +102,7 @@ namespace Flowframes.IO
             // Video Export
             if (key == "h264Crf")       return WriteDefault(key, "20");
             if (key == "h265Crf")       return WriteDefault(key, "22");
-            if (key == "gifskiQ")       return WriteDefault(key, "95");
+            if (key == "gifColors")     return WriteDefault(key, "128 (High)");
             if (key == "minVidLength")  return WriteDefault(key, "2");
             // AI
             if (key == "rifeMode")      return WriteDefault(key, ((NvApi.GetVramGb() > 7f) ? 1 : 0).ToString()); // Enable by default if GPU has >7gb VRAM

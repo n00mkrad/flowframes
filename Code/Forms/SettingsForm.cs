@@ -38,7 +38,6 @@ namespace Flowframes.Forms
             // Clamp...
             h264Crf.Text = h264Crf.GetInt().Clamp(0, 40).ToString();
             h265Crf.Text = h265Crf.GetInt().Clamp(0, 40).ToString();
-            gifskiQ.Text = gifskiQ.GetInt().Clamp(0, 100).ToString();
             ncnnThreads.Text = ncnnThreads.GetInt().Clamp(1, 8).ToString();
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
@@ -74,7 +73,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(mp4Enc);
             ConfigParser.SaveGuiElement(h264Crf);
             ConfigParser.SaveGuiElement(h265Crf);
-            ConfigParser.SaveGuiElement(gifskiQ);
+            ConfigParser.SaveGuiElement(gifColors);
             ConfigParser.SaveGuiElement(maxFps);
             ConfigParser.SaveComboxIndex(maxFpsMode);
             ConfigParser.SaveComboxIndex(loopMode);
@@ -116,7 +115,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(mp4Enc);
             ConfigParser.LoadGuiElement(h264Crf);
             ConfigParser.LoadGuiElement(h265Crf);
-            ConfigParser.LoadGuiElement(gifskiQ);
+            ConfigParser.LoadGuiElement(gifColors);
             ConfigParser.LoadGuiElement(maxFps);
             ConfigParser.LoadComboxIndex(maxFpsMode);
             ConfigParser.LoadComboxIndex(loopMode);
