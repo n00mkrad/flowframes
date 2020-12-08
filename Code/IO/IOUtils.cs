@@ -189,13 +189,20 @@ namespace Flowframes.IO
 
 		public static int GetAmountOfFiles (string path, bool recursive, string wildcard = "*")
         {
-			DirectoryInfo d = new DirectoryInfo(path);
-			FileInfo[] files = null;
-			if (recursive)
-				files = d.GetFiles(wildcard, SearchOption.AllDirectories);
-			else
-				files = d.GetFiles(wildcard, SearchOption.TopDirectoryOnly);
-			return files.Length;
+            try
+            {
+				DirectoryInfo d = new DirectoryInfo(path);
+				FileInfo[] files = null;
+				if (recursive)
+					files = d.GetFiles(wildcard, SearchOption.AllDirectories);
+				else
+					files = d.GetFiles(wildcard, SearchOption.TopDirectoryOnly);
+				return files.Length;
+			}
+			catch
+            {
+				return 0;
+            }
 		}
 
 		static bool TryCopy(string source, string target)

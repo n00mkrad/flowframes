@@ -36,11 +36,39 @@ namespace Flowframes.UI
                 Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {InterpolateUtils.GetInputFrameCount(path)}");
             else
                 Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {InterpolateUtils.GetInputFrameCount(path)}");
+            CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);
             await PrintResolution(path);
             MagickDedupe.ClearCache();
             await Task.Delay(10);
             InterpolateUtils.SetPreviewImg(await GetThumbnail(path));
+        }
+
+        static void CheckExistingFolder (string inpath, string outpath)
+        {
+            if (Config.GetInt("processingMode") == 0) return;
+            string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
+            if (Directory.Exists(tmpFolder))
+            {
+                int scnFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.scenesDir), false, "*.png");
+                string scnFrames = scnFrmAmount > 0 ? $"{scnFrmAmount} scene frames" : "no scene frames";
+                int srcFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.framesDir), false, "*.png");
+                string srcFrames = srcFrmAmount > 1 ? $"{srcFrmAmount} source frames" : "no source frames";
+                int interpFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.interpDir), false);
+                string interpFrames = interpFrmAmount > 2 ? $"{interpFrmAmount} interpolated frames" : "no interpolated frames";
+                string msg = $"A temporary folder for this video already exists. It contains {scnFrames}, {srcFrames}, {interpFrames}.";
+
+                DialogResult dialogResult = MessageBox.Show($"{msg}\n\nClick \"Yes\" to use the existing files or \"No\" to delete them.", "Use files from existing temp folder?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    return;
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    IOUtils.TryDeleteIfExists(tmpFolder);
+                    Logger.Log("Deleted old temp folder.");
+                }
+            }
         }
 
         static async Task PrintResolution (string path)

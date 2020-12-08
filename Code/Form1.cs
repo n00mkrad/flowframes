@@ -132,10 +132,7 @@ namespace Flowframes
             dialog.InitialDirectory = inputTbox.Text.Trim();
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                inputTbox.Text = dialog.FileName;
-                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
-            }
+                DragDropHandler(new string[] { dialog.FileName });
         }
 
         private void browseInputFileBtn_Click(object sender, EventArgs e)
@@ -144,10 +141,7 @@ namespace Flowframes
             dialog.InitialDirectory = inputTbox.Text.Trim();
             dialog.IsFolderPicker = false;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                inputTbox.Text = dialog.FileName;
-                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
-            }
+                DragDropHandler(new string[] { dialog.FileName });
         }
 
         private void browseOutBtn_Click(object sender, EventArgs e)
@@ -233,6 +227,8 @@ namespace Flowframes
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateOutputFPS();
+            if (Interpolate.interpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0)
+                Logger.Log($"Warning: This AI will run multiple times for {Interpolate.interpFactor}x. Auto-Encode will only work on the last run.");
         }
 
         public void SetWorking(bool state)
