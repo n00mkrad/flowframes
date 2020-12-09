@@ -308,6 +308,7 @@
             this.maxVidHeight.ForeColor = System.Drawing.Color.White;
             this.maxVidHeight.FormattingEnabled = true;
             this.maxVidHeight.Items.AddRange(new object[] {
+            "4320",
             "2160",
             "1440",
             "1080",
