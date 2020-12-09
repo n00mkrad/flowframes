@@ -157,7 +157,7 @@ namespace Flowframes.Magick
                 {
                     Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(img1.FileName)} to {Path.GetFileName(img2.FileName)}: {errPercent.ToString("0.00")}% - {delStr}. Total: {statsFramesKept} kept / {statsFramesDeleted} deleted.", false, true);
                     Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
-                    if (imageCache.Count > 1000 || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
+                    if (imageCache.Count > 750 || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
                         ClearCache();
                 }
 

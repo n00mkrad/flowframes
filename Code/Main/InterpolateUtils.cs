@@ -234,7 +234,7 @@ namespace Flowframes.Main
         {
             if (videoPath == null || !IOUtils.IsFileValid(videoPath))
                 return false;
-            string ext = Path.GetExtension(videoPath);
+            string ext = Path.GetExtension(videoPath).ToLower();
             if (Formats.supported.Contains(ext))
                 return true;
             return false;
