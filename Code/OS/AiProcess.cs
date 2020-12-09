@@ -254,7 +254,7 @@ namespace Flowframes
 
         static void LogOutput (string line, string logFilename)
         {
-            if (string.IsNullOrWhiteSpace(line))
+            if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
 
             Logger.LogToFile(line, false, logFilename);

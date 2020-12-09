@@ -70,11 +70,11 @@ namespace Flowframes.Main
                 if (loopEnabled && i == (frameFiles.Length - 2))
                     interpFramesAmount = interpFramesAmount * 2;
 
-                // Logger.Log("Writing out frames for in frame " + i);
+                //Logger.Log("Writing out frames for in frame " + i, true);
                 // Generate frames file lines
                 for (int frm = 0; frm < interpFramesAmount; frm++)
                 {
-                    // Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
+                    //Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
 
                     string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
 
@@ -98,7 +98,7 @@ namespace Flowframes.Main
                     }
                     else
                     {
-                        // Logger.Log($"Writing frame {totalFileCount}", true, false);
+                        //Logger.Log($"Writing frame {totalFileCount}", true, false);
                         fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
                         totalFileCount++;
                     }
@@ -107,6 +107,11 @@ namespace Flowframes.Main
                 if ((i + 1) % 100 == 0)
                     await Task.Delay(1);
             }
+
+            //Logger.Log($"Writing last frame: {totalFileCount}", true, false);
+            string durationStrLast = ((100f / interpFactor / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
+            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStrLast}\n";
+            totalFileCount++;
 
             File.WriteAllText(vfrFile, fileContent);
 

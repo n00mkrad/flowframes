@@ -28,7 +28,7 @@ namespace Flowframes.IO
 			{
 				case StringMode.Any: Config.Set(comboBox.Name, comboBox.Text); break;
 				case StringMode.Int: Config.Set(comboBox.Name, comboBox.Text.GetInt().ToString()); break;
-				case StringMode.Float: Config.Set(comboBox.Name, comboBox.Text.GetFloat().ToString()); break;
+				case StringMode.Float: Config.Set(comboBox.Name, comboBox.Text.GetFloat().ToString().Replace(",", ".")); break;
 			}
 		}
 

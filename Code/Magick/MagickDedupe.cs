@@ -157,7 +157,7 @@ namespace Flowframes.Magick
                 {
                     Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(img1.FileName)} to {Path.GetFileName(img2.FileName)}: {errPercent.ToString("0.00")}% - {delStr}. Total: {statsFramesKept} kept / {statsFramesDeleted} deleted.", false, true);
                     Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
-                    if (OSUtils.GetFreeRamMb() < 2500 && imageCache.Count > 25)
+                    if (imageCache.Count > 1000 || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
                         ClearCache();
                 }
 
@@ -184,7 +184,7 @@ namespace Flowframes.Magick
             else
             {
                 if(!testRun)
-                    File.WriteAllLines(dupeInfoFile, framesDupesDict.Select(x => "frm" + x.Key + ":dup" + x.Value).ToArray());
+                    File.WriteAllLines(dupeInfoFile, framesDupesDict.Select(x => "frm" + x.Key + ":" + x.Value).ToArray());
                 Logger.Log($"[FrameDedup]{testStr} Done. Kept {statsFramesKept} frames, deleted {statsFramesDeleted} frames.", false, true);
             }
 
