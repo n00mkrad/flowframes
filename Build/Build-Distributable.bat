@@ -25,6 +25,7 @@ xcopy Flowframes.exe "FlowframesApp%ver%"
 
 cd ../../../../Build
 
+rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\logs
 7za.exe a FlowframesApp%ver%-Full.7z -m0=flzma2 -mx7 "..\Code\bin\x64\Release\FlowframesApp%ver%"
 rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py
 rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-tu
