@@ -164,7 +164,7 @@ namespace Flowframes
             if (canceled) return;
 
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
-            await VfrDedupe.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), lastInterpFactor, !useTimestamps);
+            await FrameTiming.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), lastInterpFactor, !useTimestamps);
 
             if (canceled) return;
 

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Flowframes.Main
 {
-    class VfrDedupe
+    class FrameTiming
     {
         public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, int times, bool noTimestamps)
         {
