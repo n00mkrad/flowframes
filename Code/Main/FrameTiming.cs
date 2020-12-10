@@ -122,9 +122,12 @@ namespace Flowframes.Main
             {
                 int lastFileNumber = frameFiles.Last().Name.GetInt();
                 lastFileNumber += lastFrameDuration;
-                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + ".{ext}");
+                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + $".png");
                 if (File.Exists(loopFrameTargetPath))
+                {
+                    Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
                     return;
+                }
                 File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
             }
         }
