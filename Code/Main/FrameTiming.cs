@@ -30,8 +30,9 @@ namespace Flowframes.Main
                 Logger.Log("Timestamps are disabled, using static frame rate.");
 
             bool sceneDetection = true;
+            string ext = InterpolateUtils.GetExt();
 
-            FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles("*.png");
+            FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor}x.ini");
             string fileContent = "";
 
@@ -83,14 +84,14 @@ namespace Flowframes.Main
                         int lastNum = totalFileCount;
 
                         // Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
-                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
+                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStr}\n";
                         totalFileCount++;
 
                         // Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
                             // Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
-                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
+                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStr}\n";
                             totalFileCount++;
                         }
 
@@ -99,7 +100,7 @@ namespace Flowframes.Main
                     else
                     {
                         //Logger.Log($"Writing frame {totalFileCount}", true, false);
-                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStr}\n";
+                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStr}\n";
                         totalFileCount++;
                     }
                 }
@@ -110,7 +111,7 @@ namespace Flowframes.Main
 
             //Logger.Log($"Writing last frame: {totalFileCount}", true, false);
             string durationStrLast = ((100f / interpFactor / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
-            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.png'\nduration {durationStrLast}\n";
+            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStrLast}\n";
             totalFileCount++;
 
             File.WriteAllText(vfrFile, fileContent);
@@ -121,7 +122,7 @@ namespace Flowframes.Main
             {
                 int lastFileNumber = frameFiles.Last().Name.GetInt();
                 lastFileNumber += lastFrameDuration;
-                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
+                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + ".{ext}");
                 if (File.Exists(loopFrameTargetPath))
                     return;
                 File.Copy(frameFiles.First().FullName, loopFrameTargetPath);

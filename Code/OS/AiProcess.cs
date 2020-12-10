@@ -26,11 +26,9 @@ namespace Flowframes
 
         public static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
 
-        static void AiStarted (Process proc, int startupTimeMs, string defaultExt = "png")
+        static void AiStarted (Process proc, int startupTimeMs)
         {
             lastStartupTimeMs = startupTimeMs;
-            InterpolateUtils.lastExt = defaultExt;
-            if (Config.GetBool("jpegInterps")) InterpolateUtils.lastExt = "jpg";
             processTime.Restart();
             currentAiProcess = proc;
             hasShownError = false;
@@ -53,7 +51,7 @@ namespace Flowframes
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
-            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j {GetNcnnThreads()}";
+            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.GetExt()} -j {GetNcnnThreads()}";
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -73,7 +71,7 @@ namespace Flowframes
             if (Interpolate.canceled) return;
 
             if (!Interpolate.currentlyUsingAutoEnc)
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.lastExt, Padding.interpFrames);
+                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetExt(), Padding.interpFrames);
 
             AiFinished("DAIN");
         }
@@ -115,7 +113,7 @@ namespace Flowframes
             if (Interpolate.canceled) return;
 
             if (!Interpolate.currentlyUsingAutoEnc)
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.lastExt, Padding.interpFrames);
+                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetExt(), Padding.interpFrames);
 
             AiFinished("CAIN");
         }
@@ -126,7 +124,7 @@ namespace Flowframes
             string cainExe = "cain-ncnn-vulkan.exe";
             Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(cain, 1500);
-            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt} -j {GetNcnnThreads()}";
+            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.GetExt()} -j {GetNcnnThreads()}";
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -159,9 +157,9 @@ namespace Flowframes
             }
 
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(rifePy, 3500, "png");
+            AiStarted(rifePy, 3500);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.lastExt} --output {Paths.interpDir}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.GetExt()} --output {Paths.interpDir}";
             Logger.Log($"Running RIFE ({script})...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -225,8 +223,8 @@ namespace Flowframes
 
             if (!Interpolate.currentlyUsingAutoEnc)
             {
-                Logger.Log($"zero padding {outPath} with ext \"{InterpolateUtils.lastExt}\" to length {Padding.interpFrames}");
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.lastExt, Padding.interpFrames);
+                Logger.Log($"zero padding {outPath} with ext \"{InterpolateUtils.GetExt()}\" to length {Padding.interpFrames}");
+                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetExt(), Padding.interpFrames);
             }
 
             AiFinished("RIFE");
@@ -236,7 +234,7 @@ namespace Flowframes
         {
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500);
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j {GetNcnnThreads()}";
+            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetExt()} -j {GetNcnnThreads()}";
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {

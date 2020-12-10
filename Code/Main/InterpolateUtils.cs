@@ -19,7 +19,12 @@ namespace Flowframes.Main
         public static PictureBox preview;
         public static BigPreviewForm bigPreviewForm;
 
-        public static string lastExt = "png";
+        public static string GetExt ()
+        {
+            if (Config.GetBool("jpegInterps"))
+                return "jpg";
+            return "png";
+        }
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {

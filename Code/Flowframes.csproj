@@ -234,7 +234,7 @@
     <Compile Include="Main\CreateVideo.cs" />
     <Compile Include="Main\InterpolateSteps.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
-    <Compile Include="Main\VfrDedupe.cs" />
+    <Compile Include="Main\FrameTiming.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="AudioVideo\AvProcess.cs" />

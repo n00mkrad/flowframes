@@ -38,9 +38,9 @@ namespace Flowframes.Main
             }
 
             //Logger.Log("zero-padding " + path);
-            //IOUtils.ZeroPadDir(path, $"*.{InterpolateUtils.lastExt}", Padding.interpFrames);
+            //IOUtils.ZeroPadDir(path, $"*.{InterpolateUtils.GetExt()}", Padding.interpFrames);
 
-            if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.lastExt}") <= 1)
+            if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.GetExt()}") <= 1)
             {
                 i.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
@@ -181,7 +181,7 @@ namespace Flowframes.Main
             //Logger.Log("minLength: " + minLength);
             int minFrameCount = (minLength * i.currentOutFps).RoundToInt();
             //Logger.Log("minFrameCount: " + minFrameCount);
-            //int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.lastExt}", SearchOption.TopDirectoryOnly).Length;
+            //int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.GetExt()}", SearchOption.TopDirectoryOnly).Length;
             int outFrames = i.currentInputFrameCount * i.lastInterpFactor;
             //Logger.Log("outFrames: " + outFrames);
             if (outFrames / i.currentOutFps < minLength)

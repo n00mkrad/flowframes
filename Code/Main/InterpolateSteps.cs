@@ -173,7 +173,7 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid()
         {
-            string[] outFrames = Directory.GetFiles(currentInterpFramesDir, $"*.{InterpolateUtils.lastExt}");
+            string[] outFrames = Directory.GetFiles(currentInterpFramesDir, $"*.{InterpolateUtils.GetExt()}");
             if (outFrames.Length > 0 && !IOUtils.CheckImageValid(outFrames[0]))
             {
                 InterpolateUtils.ShowMessage("Invalid frame files detected!\n\nIf you used Auto-Encode, this is normal, and you don't need to run " +
