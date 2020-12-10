@@ -96,8 +96,8 @@ def clear_write_buffer(user_args, write_buffer):
         if item is None:
             break
         if user_args.png:
-            print('=> {:0>8d}.png'.format(cnt))
-            cv2.imwrite('{}/{:0>8d}.png'.format(interp_output_path, cnt), item[:, :, ::-1])
+            print('=> {:0>8d}.{}'.format(cnt, args.imgformat))
+            cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, cnt, args.imgformat), item[:, :, ::-1])
             #cv2.imwrite('vid_out/{:0>7d}.png'.format(cnt), item[:, :, ::-1])
             cnt += 1
         else:
@@ -132,8 +132,8 @@ skip_frame = 1
 if args.montage:
     lastframe = lastframe[:, left: left + w]
 
-write_buffer = Queue(maxsize=500)
-read_buffer = Queue(maxsize=500)
+write_buffer = Queue(maxsize=200)
+read_buffer = Queue(maxsize=200)
 _thread.start_new_thread(build_read_buffer, (args, read_buffer, videogen))
 _thread.start_new_thread(clear_write_buffer, (args, write_buffer))
 
