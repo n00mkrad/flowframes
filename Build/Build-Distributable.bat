@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 
 echo ===============================
 echo == NMKD'S FLOWFRAMES BUILDER ==
@@ -13,15 +13,15 @@ set /p ver="Enter the version number: "
 cd ..\Code\bin\x64\Release
 
 rmdir /s/q FlowframesApp%ver%
-mkdir FlowframesApp%ver%
-mkdir FlowframesApp%ver%/FlowframesData
-mkdir FlowframesApp%ver%/FlowframesData/pkgs
+mkdir "FlowframesApp%ver%"
+mkdir "FlowframesApp%ver%/FlowframesData"
+mkdir "FlowframesApp%ver%/FlowframesData/pkgs"
 
 xcopy "../../../../pkgs" "FlowframesApp%ver%/FlowframesData\pkgs\" /E
 
 echo %ver% >> "FlowframesApp%ver%/FlowframesData/ver.ini"
 
-xcopy Flowframes.exe FlowframesApp%ver%
+xcopy Flowframes.exe "FlowframesApp%ver%"
 
 cd ../../../../Build
 
