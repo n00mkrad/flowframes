@@ -284,10 +284,16 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"A python error occured during interpolation!\nCheck {logFilename} for details.\n\n{line}", "Error");
             }
 
-            if (!hasShownError && line.Contains("vkQueueSubmit failed"))
+            if (!hasShownError && (line.Contains("vkQueueSubmit failed") || line.Contains("vkAllocateMemory failed")))
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}", "Error");
+            }
+
+            if (!hasShownError && line.Contains("invalid gpu device"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?", "Error");
             }
 
             if (hasShownError)
