@@ -23,10 +23,6 @@ namespace Flowframes
 				Application.Exit();
 				//new InstallerForm().ShowDialog();
 			}
-            else
-            {
-				
-			}
 		}
 
 
@@ -43,7 +39,7 @@ namespace Flowframes
 				// if pkg is required and not installed, return false
 				if (pkg.friendlyName.ToLower().Contains("required") && !PkgUtils.IsInstalled(pkg))
                 {
-					Logger.Log($"Required packages \"{pkg.friendlyName}\" was not found!", true);
+					Logger.Log($"Required package \"{pkg.friendlyName}\" was not found!", true);
 					return false;
 				}
             }

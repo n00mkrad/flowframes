@@ -38,21 +38,21 @@ namespace Flowframes
             LogToFile(s, false, filename);
         }
 
-        public static void LogToFile(string s, bool noLineBreak, string filename)
+        public static void LogToFile(string logStr, bool noLineBreak, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
                 filename = defaultLogName;
             
             file = Path.Combine(Paths.GetLogPath(), filename);
-
+            logStr = logStr.Replace(Environment.NewLine, " | ");
             string time = DT.Now.Month + "-" + DT.Now.Day + "-" + DT.Now.Year + " " + DT.Now.Hour + ":" + DT.Now.Minute + ":" + DT.Now.Second;
 
             try
             {
                 if (!noLineBreak)
-                    File.AppendAllText(file, Environment.NewLine + time + ": " + s);
+                    File.AppendAllText(file, Environment.NewLine + time + ": " + logStr);
                 else
-                    File.AppendAllText(file, " " + s);
+                    File.AppendAllText(file, " " + logStr);
             }
             catch
             {

@@ -251,7 +251,7 @@
     <Compile Include="IO\Formats.cs" />
     <Compile Include="IO\IOUtils.cs" />
     <Compile Include="IO\Paths.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="IO\Logger.cs" />
     <Compile Include="Magick\Converter.cs" />
     <Compile Include="Magick\MagickDedupe.cs" />
     <Compile Include="OS\NvApi.cs" />
