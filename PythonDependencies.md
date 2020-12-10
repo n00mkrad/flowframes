@@ -8,3 +8,9 @@
 
 
 This should be sufficient to run RIFE and other Pytorch-based networks on any modern GPU, including the RTX 3000 (Ampere) series.
+
+## Troubleshooting
+
+If you are getting some kind of numpy error, try downgrading it to 1.19.3:
+
+`pip install numpy==1.19.3`

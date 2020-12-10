@@ -14,7 +14,7 @@ namespace Flowframes.OS
 
         public static string GetPyCmd ()
         {
-            if (Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-tu")) || Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-ampt")))
+            if (HasEmbeddedPyFolder())
             {
                 Logger.Log("Using embedded Python runtime.");
                 string pyPkgDir = Path.Combine(Paths.GetPkgPath(), "py-amp");
@@ -37,6 +37,11 @@ namespace Flowframes.OS
                 }
             }
             return "";
+        }
+
+        public static bool HasEmbeddedPyFolder ()
+        {
+            return Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-tu")) || Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-ampt"));
         }
 
         public static bool IsPytorchReady ()

@@ -270,6 +270,8 @@ namespace Flowframes
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}\n\nIf you don't want to install it yourself, use the Python package from the Package Installer.", "Error");
+                if(!Pytorch.HasEmbeddedPyFolder())
+                    Process.Start("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md");
             }
 
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
