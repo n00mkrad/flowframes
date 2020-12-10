@@ -22,7 +22,6 @@ namespace Flowframes.Main
 
         public static async Task Export(string path, string outPath, i.OutMode mode)
         {
-            currentOutFile = null;
             if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
@@ -66,6 +65,7 @@ namespace Flowframes.Main
 
         static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
         {
+            currentOutFile = outPath;
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.lastInterpFactor}x.ini");
 
             if (mode == i.OutMode.VidGif)
