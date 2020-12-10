@@ -1349,10 +1349,10 @@
             this.label41.Location = new System.Drawing.Point(308, 213);
             this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(423, 13);
+            this.label41.Size = new System.Drawing.Size(395, 13);
             this.label41.TabIndex = 74;
-            this.label41.Text = "Use alternative method to get the amount of total frames. Slower, but better comp" +
-    "atibility.";
+            this.label41.Text = "Use alternative method to get the amount of total frames. Slower, but more reliab" +
+    "le.";
             // 
             // ffprobeCountFrames
             // 

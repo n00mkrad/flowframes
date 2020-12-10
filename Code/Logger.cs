@@ -14,6 +14,7 @@ namespace Flowframes
     {
         public static TextBox textbox;
         static string file;
+        public const string defaultLogName = "sessionlog.txt";
 
         public static void Log(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
@@ -40,7 +41,7 @@ namespace Flowframes
         public static void LogToFile(string s, bool noLineBreak, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
-                filename = "sessionlog.txt";
+                filename = defaultLogName;
             
             file = Path.Combine(Paths.GetLogPath(), filename);
 

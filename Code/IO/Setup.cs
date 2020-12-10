@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Flowframes.Forms;
+using Flowframes.Main;
 
 namespace Flowframes
 {
@@ -18,7 +19,9 @@ namespace Flowframes
 			if (!InstallIsValid())
 			{
 				Logger.Log("No valid installation detected");
-				new InstallerForm().ShowDialog();
+				InterpolateUtils.ShowMessage($"Some packages are missing!\n\nCheck the log ({Path.GetFileName(Paths.GetDataPath())}/{Path.GetFileName(Paths.GetLogPath())}/{Logger.defaultLogName}).", "Error");
+				Application.Exit();
+				//new InstallerForm().ShowDialog();
 			}
             else
             {
@@ -39,7 +42,10 @@ namespace Flowframes
             {
 				// if pkg is required and not installed, return false
 				if (pkg.friendlyName.ToLower().Contains("required") && !PkgUtils.IsInstalled(pkg))
+                {
+					Logger.Log($"Required packages \"{pkg.friendlyName}\" was not found!", true);
 					return false;
+				}
             }
 
 			return true;

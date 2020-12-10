@@ -372,14 +372,13 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
             {
-				Logger.Log($"Error trying to delete {path}: {e.Message}", true);
+				Logger.Log($"TryDeleteIfExists: Error trying to delete {path}: {e.Message}", true);
 				return false;
             }
 		}
 
 		public static bool DeleteIfExists (string path)		// Returns true if the file/dir exists
         {
-			Logger.Log("DeleteIfExists: " + path, true);
             if (!IsPathDirectory(path) && File.Exists(path))
             {
 				File.Delete(path);

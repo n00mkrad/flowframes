@@ -650,8 +650,7 @@
             this.logBox.Size = new System.Drawing.Size(701, 111);
             this.logBox.TabIndex = 5;
             this.logBox.TabStop = false;
-            this.logBox.Text = "Welcome to Flowframes!\r\nThis is the console output box. Status messages will appe" +
-    "ar here.";
+            this.logBox.Text = "Welcome to Flowframes!";
             // 
             // inFileDialog
             // 
