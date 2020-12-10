@@ -18,8 +18,11 @@ namespace Flowframes.Main
 {
     class CreateVideo
     {
+        static string currentOutFile;   // Keeps track of the out file, in case it gets renamed (FPS limiting, looping, etc) before finishing export
+
         public static async Task Export(string path, string outPath, i.OutMode mode)
         {
+            currentOutFile = null;
             if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
@@ -36,9 +39,6 @@ namespace Flowframes.Main
                 }
                 return;
             }
-
-            //Logger.Log("zero-padding " + path);
-            //IOUtils.ZeroPadDir(path, $"*.{InterpolateUtils.GetExt()}", Padding.interpFrames);
 
             if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.GetExt()}") <= 1)
             {
@@ -89,18 +89,19 @@ namespace Flowframes.Main
                 await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, i.constantFrameRate);
                 await MergeAudio(i.lastInputPath, outPath);
 
-                if (looptimes > 0)
-                    await Loop(outPath, looptimes);
-
                 if (changeFps > 0)
                 {
-                    string newOutPath = IOUtils.FilenameSuffix(outPath, $"-{changeFps.ToString("0")}fps");
+                    currentOutFile = IOUtils.FilenameSuffix(outPath, $"-{changeFps.ToString("0")}fps");
                     Program.mainForm.SetStatus("Creating video with desired frame rate...");
-                    await FFmpegCommands.ConvertFramerate(outPath, newOutPath, h265, crf, changeFps, !keepOriginalFpsVid);
-                    await MergeAudio(i.lastInputPath, newOutPath);
-                    if (looptimes > 0)
-                        await Loop(newOutPath, looptimes);
+                    await FFmpegCommands.ConvertFramerate(outPath, currentOutFile, h265, crf, changeFps, !keepOriginalFpsVid);
+                    await MergeAudio(i.lastInputPath, currentOutFile);
+                    //if (looptimes > 0)
+                    //    await Loop(newOutPath, looptimes);
                 }
+
+                if (looptimes > 0)
+                    await Loop(currentOutFile, looptimes);
+
             }
         }
 
