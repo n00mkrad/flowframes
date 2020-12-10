@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 
 echo ===============================
 echo == NMKD'S FLOWFRAMES BUILDER ==
@@ -35,4 +35,4 @@ rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-amp
 rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%
 
 
-pause
+rem pause
