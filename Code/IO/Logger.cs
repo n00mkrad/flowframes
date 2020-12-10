@@ -44,7 +44,7 @@ namespace Flowframes
                 filename = defaultLogName;
             
             file = Path.Combine(Paths.GetLogPath(), filename);
-            logStr = logStr.Replace(Environment.NewLine, " | ");
+            logStr = logStr.Replace(Environment.NewLine, " ").TrimWhitespaces();
             string time = DT.Now.Month + "-" + DT.Now.Day + "-" + DT.Now.Year + " " + DT.Now.Hour + ":" + DT.Now.Minute + ":" + DT.Now.Second;
 
             try

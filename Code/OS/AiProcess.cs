@@ -48,12 +48,12 @@ namespace Flowframes
 
         public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)
         {
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -t {tilesize} -g {Config.Get("ncnnGpus")}";
+            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")}";
 
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
-            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.lastExt} -j {GetNcnnThreads()}";
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -126,7 +126,7 @@ namespace Flowframes
             string cainExe = "cain-ncnn-vulkan.exe";
             Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(cain, 1500);
-            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.lastExt} -j {GetNcnnThreads()}";
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -236,7 +236,7 @@ namespace Flowframes
         {
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500);
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j 4:{Config.Get("ncnnThreads")}:4";
+            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe {args} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.lastExt} -j {GetNcnnThreads()}";
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -294,6 +294,29 @@ namespace Flowframes
 
             if (hasShownError)
                 Interpolate.Cancel();
+        }
+
+        static string GetNcnnTilesize(int tilesize)
+        {
+            int gpusAmount = Config.Get("ncnnGpus").Split(',').Length;
+            string tilesizeStr = $"{tilesize}";
+
+            for (int i = 1; i < gpusAmount; i++)
+                tilesizeStr += $",{tilesize}";
+
+            return tilesizeStr;
+        }
+
+        static string GetNcnnThreads ()
+        {
+            int gpusAmount = Config.Get("ncnnGpus").Split(',').Length;
+            int procThreads = Config.GetInt("ncnnThreads");
+            string progThreadsStr = $"{procThreads}";
+
+            for (int i = 1; i < gpusAmount; i++)
+                progThreadsStr += $",{procThreads}";
+
+            return $"4:{progThreadsStr}:4"; ;
         }
     }
 }

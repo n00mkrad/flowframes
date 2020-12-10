@@ -123,7 +123,7 @@ namespace Flowframes
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
             Logger.Log(outLine.Data, hidden, replaceLastLine);
         }
-
+        
         static string GetAvDir ()
         {
             return Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.audioVideo.fileName));
