@@ -156,6 +156,12 @@ namespace Flowframes
                 args = $" --img {framesPath.Wrap()} --exp {(int)Math.Log(interpFactor, 2)}";
             }
 
+            if (!File.Exists(Path.Combine(rifeDir, script)))
+            {
+                Interpolate.Cancel("RIFE script not found! Make sure you didn't modify any files.");
+                return;
+            }
+
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
