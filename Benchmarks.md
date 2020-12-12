@@ -2,6 +2,8 @@
 
 Here you can find Flowframes benchmarks (mostly RIFE) that you can use as a performance reference.
 
+To avoid clutter, only benchmarks at 1080p/720p and 2x interpolation factor are listed.
+
 In "Resolution/Factor", enter your input resolution and the interpolation factor. For "Drive", enter the storage type where your temp folder is stored (temp folder location can be set in the Settings, is in the same directory as your output by default). An SSD is recommended for benchmarking as HDDs can slow things down.
 
 Sample size means how many frames have been interpolated at the time you measured the speed. The higher, the more accurate. In the last column, enter your FPS (Out).
