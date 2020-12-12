@@ -23,3 +23,5 @@ Sample size means how many frames have been interpolated at the time you measure
 | Ryzen 4800U (Vega 8) 25W | 1280x720p - 2x    | NVME SSD | \>100       | 1.9 FPS         |
 | RX 5700 XT 8 GB          | 1920x1080 - 2x    | NVME SSD | \>2000      | 8 FPS           |
 | RX 5700 XT 8 GB          | 1280x720p - 2x    | NVME SSD | \>2000      | 15 FPS          |
+| RTX 2070 SUPER 8 GB      | 1920x1080 - 2x    | NVME SSD | \>1000      | 5.4 FPS         |
+| RTX 2070 SUPER 8 GB      | 1280x720p - 2x    | NVME SSD | \>1000      | 12 FPS          |
