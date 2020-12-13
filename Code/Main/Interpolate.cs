@@ -148,8 +148,15 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0 || IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png") < 2)
-                Cancel("Extracted frames folder is empty!");
+            int extractedFrames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
+            if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0 || extractedFrames < 2)
+            {
+                if(extractedFrames == 1)
+                    Cancel("Only a single frame was extracted from your input file!\n\nPossibly your input is an image, not a video?");
+                else
+                    Cancel("Frame extraction failed!\n\nYour input file might be incompatible.");
+            }
+                
 
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(currentFramesPath);

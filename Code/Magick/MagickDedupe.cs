@@ -23,9 +23,13 @@ namespace Flowframes.Magick
 
         public static async Task Run(string path, bool testRun = false, bool setStatus = true)
         {
+            if (path == null || !Directory.Exists(path) || Interpolate.canceled)
+                return;
+
             currentMode = Mode.Auto;
 
-            Program.mainForm.SetStatus("Running frame de-duplication");
+            if(setStatus)
+                Program.mainForm.SetStatus("Running frame de-duplication");
 
             currentThreshold = Config.GetFloat("dedupThresh");
             Logger.Log("Running accurate frame de-duplication...");
