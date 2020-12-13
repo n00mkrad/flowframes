@@ -1,3 +1,5 @@
+
+
 # Flowframes Benchmarks
 
 Here you can find Flowframes benchmarks (mostly RIFE) that you can use as a performance reference.
@@ -19,13 +21,22 @@ Sample size means how many frames have been interpolated at the time you measure
 
 ## RIFE-NCNN
 
+AMD:
+
 | GPU                      | Size/Factor    | Drive    | Sample Size | Speed (FPS Out) |
 | ------------------------ | -------------- | -------- | ----------- | --------------- |
 | Ryzen 4800U (Vega 8) 25W | 1920x1080 - 2x | NVME SSD | \>75        | 0.85 FPS        |
 | Ryzen 4800U (Vega 8) 25W | 1280x720p - 2x | NVME SSD | \>100       | 1.9 FPS         |
 | RX 5700 XT 8 GB          | 1920x1080 - 2x | NVME SSD | \>2000      | 8 FPS           |
 | RX 5700 XT 8 GB          | 1280x720p - 2x | NVME SSD | \>2000      | 15 FPS          |
-| RTX 2070 SUPER 8 GB      | 1920x1080 - 2x | NVME SSD | \>1000      | 5.4 FPS         |
-| RTX 2070 SUPER 8 GB      | 1280x720p - 2x | NVME SSD | \>1000      | 12 FPS          |
 | RX 6900 XT 16 GB         | 1920x1080 - 2x | NVME SSD | >1400       | 10.5 FPS        |
 | RX 6900 XT 16 GB         | 1280x720p - 2x | NVME SSD | >1400       | 21.4 FPS        |
+
+Nvidia:
+
+| GPU                 | Size/Factor    | Drive    | Sample Size | Speed (FPS Out) |
+| ------------------- | -------------- | -------- | ----------- | --------------- |
+| RTX 2070 SUPER 8 GB | 1920x1080 - 2x | NVME SSD | \>1000      | 5.4 FPS         |
+| RTX 2070 SUPER 8 GB | 1280x720p - 2x | NVME SSD | \>1000      | 12 FPS          |
+| RTX 3070 8 GB       | 1920x1080 - 2x | NVME SSD | >1400       | 6.4 FPS         |
+| RTX 3070 8 GB       | 1280x720p - 2x | NVME SSD | >1400       | 14 FPS          |
