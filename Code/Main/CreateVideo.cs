@@ -69,16 +69,7 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.lastInterpFactor}x.ini");
 
             if (mode == i.OutMode.VidGif)
-            {
                 await FFmpegCommands.FramesToGifVfr(vfrFile, outPath, true, Config.GetInt("gifColors"));
-                // TODO: Remove old code once new code works well
-                // if (new DirectoryInfo(framesPath).GetFiles()[0].Extension != ".png")
-                // {
-                //     Logger.Log("Converting output frames to PNG to encode with Gifski...");
-                //     await Converter.Convert(framesPath, ImageMagick.MagickFormat.Png00, 20, "png", false);
-                // }
-                // await GifskiCommands.CreateGifFromFrames(i.currentOutFps.RoundToInt(), Config.GetInt("gifskiQ"), framesPath, outPath);
-            }
 
             if (mode == i.OutMode.VidMp4)
             {
@@ -86,7 +77,7 @@ namespace Flowframes.Main
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-                await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps, i.constantFrameRate);
+                await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps);
                 await MergeAudio(i.lastInputPath, outPath);
 
                 if (changeFps > 0)
@@ -95,8 +86,6 @@ namespace Flowframes.Main
                     Program.mainForm.SetStatus("Creating video with desired frame rate...");
                     await FFmpegCommands.ConvertFramerate(outPath, currentOutFile, h265, crf, changeFps, !keepOriginalFpsVid);
                     await MergeAudio(i.lastInputPath, currentOutFile);
-                    //if (looptimes > 0)
-                    //    await Loop(newOutPath, looptimes);
                 }
 
                 if (looptimes > 0)
@@ -164,7 +153,7 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(i.currentTempDir, $"vfr-chunk-temp.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
-            await FFmpegCommands.FramesToMp4VfrChunk(vfrFile, outPath, h265, crf, i.currentOutFps, i.constantFrameRate);
+            await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, i.currentOutFps, AvProcess.LogMode.Hidden);
             IOUtils.TryDeleteIfExists(vfrFile);
         }
 

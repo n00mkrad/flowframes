@@ -260,5 +260,30 @@ namespace Flowframes.Main
                 MessageBox.Show(msg, title);
             Logger.Log("Message: " + msg, true);
         }
+
+        public static Size GetOutputResolution (string inputPath)
+        {
+            Size resolution = IOUtils.GetVideoRes(inputPath);
+            int maxHeight = RoundDiv2(Config.GetInt("maxVidHeight"));
+            if (resolution.Height > maxHeight)
+            {
+                float factor = (float)maxHeight / resolution.Height;
+                Logger.Log($"Un-rounded downscaled size: {(resolution.Width * factor).ToString("0.00")}x{Config.GetInt("maxVidHeight")}", true);
+                int width = RoundDiv2((resolution.Width * factor).RoundToInt());
+                Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
+                return new Size(width, maxHeight);
+            }
+            else
+            {
+                return resolution;
+            }
+        }
+
+        public static int RoundDiv2(int n)     // Round to a number that's divisible by 2 (for h264)
+        {
+            int a = (n / 2) * 2;    // Smaller multiple
+            int b = a + 2;   // Larger multiple
+            return (n - a > b - n) ? b : a; // Return of closest of two
+        }
     }
 }

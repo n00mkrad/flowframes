@@ -13,7 +13,7 @@ namespace Flowframes
     {
         static string hdrFilter = @"-vf select=gte(n\,%frNum%),zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
 
-        static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart -vf \"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
+        static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart";
         static string divisionFilter = "\"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
         static string pngComprArg = "-compression_level 3";
 
@@ -35,18 +35,15 @@ namespace Flowframes
 
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true, bool sceneDetect = false)
         {
-            if(!sceneDetect) Logger.Log("Extracting video frames from input video...");
+            if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
-            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"," : "";
+            string scnDetect = sceneDetect ? $"-vf \"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
+            string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
+            string vf = (scnDetect.Length > 2 || mpStr.Length > 2) ? $"-vf {scnDetect},{mpStr}".ListCommaFix() : "";
             string pad = Padding.inputFrames.ToString();
-            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{divisionFilter} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
-            if (deDupe)
-            {
-                string mpStr = (Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr;
-                args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} -vf {scnDetect}{mpStr},{divisionFilter} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
-            }
+            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode);
             await Task.Delay(1);
@@ -54,7 +51,7 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task ImportImages (string inpath, string outpath, bool delSrc = false, bool showLog = true)
+        public static async Task ImportImages(string inpath, string outpath, bool delSrc = false, bool showLog = true)
         {
             if (showLog) Logger.Log("Importing images...");
             IOUtils.CreateDir(outpath);
@@ -93,48 +90,24 @@ namespace Flowframes
             string enc = useH265 ? "libx265" : "libx264";
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string args = $" {loopStr} -framerate {fps.ToString().Replace(",",".")} -i \"{inputDir}\\{prefix}%0{nums}d.{imgFormat}\" -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string args = $" {loopStr} -framerate {fps.ToString().Replace(",", ".")} -i \"{inputDir}\\{prefix}%0{nums}d.{imgFormat}\" -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputDir);
         }
 
-        public static async Task FramesToMp4Vfr(string framesFile, string outPath, bool useH265, int crf, float fps, bool inRate)
+        public static async Task FramesToMp4Vfr(string framesFile, string outPath, bool useH265, int crf, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
         {
-            Logger.Log($"Encoding MP4 video with CRF {crf}...");
+            if(logMode != AvProcess.LogMode.Hidden)
+                Logger.Log($"Encoding MP4 video with CRF {crf}...");
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
             string vfrFilename = Path.GetFileName(framesFile);
-
-            string args = $" {vsyncStr} -f concat ";
-            if (inRate)
-                args += $"-r {fps.ToString().Replace(",", ".")} -i {vfrFilename} ";
-            else
-                args += $"-i {vfrFilename} -r {fps.ToString().Replace(",", ".")} ";
-
-            args += $"-c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
+            string args = $"-vsync 2 -f concat -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
 
-        public static async Task FramesToMp4VfrChunk(string framesFile, string outPath, bool useH265, int crf, float fps, bool inRate)
-        {
-            string enc = useH265 ? "libx265" : "libx264";
-            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
-            string vfrFilename = Path.GetFileName(framesFile);
-
-            string args = $" {vsyncStr} -f concat ";
-            if (inRate)
-                args += $"-r {fps.ToString().Replace(",", ".")} -i {vfrFilename} ";
-            else
-                args += $"-i {vfrFilename} -r {fps.ToString().Replace(",", ".")} ";
-
-            args += $"-c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.Hidden);
-        }
-
-        public static async Task ConcatVideos (string concatFile, string outPath, float fps, int looptimes = -1)
+        public static async Task ConcatVideos(string concatFile, string outPath, float fps, int looptimes = -1)
         {
             Logger.Log($"Merging videos...");
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
@@ -144,7 +117,7 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
-        public static async Task ConvertFramerate (string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)
+        public static async Task ConvertFramerate(string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)
         {
             Logger.Log($"Changing video frame rate...");
             string enc = useH265 ? "libx265" : "libx264";
@@ -155,18 +128,17 @@ namespace Flowframes
                 DeleteSource(inputPath);
         }
 
-        public static async void FramesToApng (string inputDir, bool opti, int fps, string prefix, bool delSrc = false)
+        public static async void FramesToApng(string inputDir, bool opti, int fps, string prefix, bool delSrc = false)
         {
             int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, "*.png")[0], prefix);
-            string filter = "";
-            if(opti) filter = "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"";
+            string filter = opti ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
             string args = "-framerate " + fps + " -i \"" + inputDir + "\\" + prefix + "%0" + nums + "d.png\" -f apng -plays 0 " + filter + " \"" + inputDir + "-anim.png\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputDir);
         }
 
-        public static async void FramesToGif (string inputDir, bool palette, int fps, string prefix, bool delSrc = false)
+        public static async void FramesToGif(string inputDir, bool palette, int fps, string prefix, bool delSrc = false)
         {
             int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, "*.png")[0], prefix);
             string filter = palette ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
@@ -185,7 +157,7 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
         }
 
-        public static async Task LoopVideo (string inputFile, int times, bool delSrc = false)
+        public static async Task LoopVideo(string inputFile, int times, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
@@ -195,19 +167,19 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task LoopVideoEnc (string inputFile, int times, bool useH265, int crf, bool delSrc = false)
+        public static async Task LoopVideoEnc(string inputFile, int times, bool useH265, int crf, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
             string enc = "libx264";
             if (useH265) enc = "libx265";
-            string args = " -stream_loop " + times + " -i \"" + inputFile +  "\"  -c:v " + enc + " -crf " + crf + " -c:a copy \"" + pathNoExt + "-" + times + "xLoop" + ext + "\"";
+            string args = " -stream_loop " + times + " -i \"" + inputFile + "\"  -c:v " + enc + " -crf " + crf + " -c:a copy \"" + pathNoExt + "-" + times + "xLoop" + ext + "\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputFile);
         }
 
-        public static async Task ChangeSpeed (string inputFile, float newSpeedPercent, bool delSrc = false)
+        public static async Task ChangeSpeed(string inputFile, float newSpeedPercent, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
@@ -219,20 +191,20 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task Encode (string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)
+        public static async Task Encode(string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)
         {
             string outPath = Path.ChangeExtension(inputFile, null) + "-convert.mp4";
             string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k {outPath.Wrap()}";
             if (string.IsNullOrWhiteSpace(acodec))
                 args = args.Replace("-c:a", "-an");
-            if(audioKbps < 0)
+            if (audioKbps < 0)
                 args = args.Replace($" -b:a {audioKbps}", "");
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputFile);
         }
 
-        public static async Task ExtractAudio (string inputFile, string outFile)    // https://stackoverflow.com/a/27413824/14274419
+        public static async Task ExtractAudio(string inputFile, string outFile)    // https://stackoverflow.com/a/27413824/14274419
         {
             Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
             string ext = GetAudioExt(inputFile);
@@ -243,7 +215,7 @@ namespace Flowframes
                 File.Delete(outFile);
         }
 
-        static string GetAudioExt (string videoFile)
+        static string GetAudioExt(string videoFile)
         {
             switch (GetAudioCodec(videoFile))
             {
@@ -266,7 +238,7 @@ namespace Flowframes
             }
             string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c copy {tempPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
-            if(AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
+            if (AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
             {
                 Logger.Log("Failed to merge audio!");
                 return;
@@ -277,12 +249,12 @@ namespace Flowframes
             File.Move(tempPath, movePath);
         }
 
-        public static float GetFramerate (string inputFile)
+        public static float GetFramerate(string inputFile)
         {
             string args = $" -i {inputFile.Wrap()}";
             string output = AvProcess.GetFfmpegOutput(args);
             string[] entries = output.Split(',');
-            foreach(string entry in entries)
+            foreach (string entry in entries)
             {
                 if (entry.Contains(" fps") && !entry.Contains("Input "))    // Avoid reading FPS from the filename, in case filename contains "fps"
                 {
@@ -296,7 +268,7 @@ namespace Flowframes
             return 0f;
         }
 
-        public static Size GetSize (string inputFile)
+        public static Size GetSize(string inputFile)
         {
             string args = $" -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
             string output = AvProcess.GetFfprobeOutput(args);
@@ -325,7 +297,7 @@ namespace Flowframes
             return 0;
         }
 
-        static int ReadFrameCountFfprobe (string inputFile, bool readFramesSlow)
+        static int ReadFrameCountFfprobe(string inputFile, bool readFramesSlow)
         {
             string args = $" -v panic -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {inputFile.Wrap()}";
             if (readFramesSlow)
@@ -370,7 +342,7 @@ namespace Flowframes
             return -1;
         }
 
-        static string GetAudioCodec (string path)
+        static string GetAudioCodec(string path)
         {
             string args = $" -v panic -show_streams -select_streams a -show_entries stream=codec_name {path.Wrap()}";
             string info = AvProcess.GetFfprobeOutput(args);
@@ -386,7 +358,7 @@ namespace Flowframes
             return "";
         }
 
-        static string GetFirstStreamInfo (string ffmpegOutput)
+        static string GetFirstStreamInfo(string ffmpegOutput)
         {
             foreach (string line in Regex.Split(ffmpegOutput, "\r\n|\r|\n"))
             {
@@ -396,7 +368,7 @@ namespace Flowframes
             return "";
         }
 
-        static void DeleteSource (string path)
+        static void DeleteSource(string path)
         {
             Logger.Log("[FFCmds] Deleting input file/dir: " + path, true);
 

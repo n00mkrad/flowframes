@@ -106,27 +106,10 @@ namespace Flowframes
                 await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(currentTempDir, Paths.scenesDir));
                 await Task.Delay(10);
             }
+
             Program.mainForm.SetStatus("Extracting frames from video...");
-            Size resolution = IOUtils.GetVideoRes(inPath);
-            int maxHeight = Config.GetInt("maxVidHeight");
-            if (resolution.Height > maxHeight)
-            {
-                float factor = (float)maxHeight / resolution.Height;
-                int width = (resolution.Width * factor).RoundToInt();
-                Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
-                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, new Size(width, maxHeight));
-            }
-            else
-            {
-                await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false);
-            }
-            /*
-            if (AvProcess.lastOutputFfmpeg.ToLower().Contains("invalid"))
-            {
-                Cancel("Failed to read input video.");
-                return;
-            }
-            */
+            await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath));
+
             if (extractAudio)
             {
                 string audioFile = Path.Combine(currentTempDir, "audio.m4a");
@@ -162,11 +145,6 @@ namespace Flowframes
                 await MagickDedupe.Run(currentFramesPath);
             else
                 MagickDedupe.ClearCache();
-
-            int frameCountAfterDedupe = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
-            int dupesPercent = 100 - (((float)frameCountAfterDedupe / currentInputFrameCount) * 100f).RoundToInt();
-            constantFrameRate = dupesPercent < 5f;  // Ignore VFR timings for CFR input. TODO: Figure out how to avoid dupes when using VFR timings
-            Logger.Log($"{dupesPercent}% of frames are dupes, so constantFrameRate = {constantFrameRate}", true);
             
             if (canceled) return;
 

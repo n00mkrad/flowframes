@@ -177,8 +177,7 @@ namespace Flowframes.Magick
                 }
             }
 
-            string testStr = "";
-            if (testRun) testStr = " [TestRun]";
+            string testStr = testRun ? " [TestRun]" : "";
 
             if (Interpolate.canceled) return;
             if (skipped)
@@ -238,16 +237,13 @@ namespace Flowframes.Magick
                 string line = dupeFrameLines[i];
                 sourceFrameNum++;
 
-                string paddedFilename = "";
-                string sourceFramePath = "";
-
                 string[] kvp = line.Split(':');
                 int currentInFrame = kvp[0].GetInt();
                 int currentDupesAmount = kvp[1].GetInt();
 
                 // Copy Source Frame
-                paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
-                sourceFramePath = Path.Combine(path, paddedFilename);
+                string paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
+                string sourceFramePath = Path.Combine(path, paddedFilename);
                 if(debugLog) Logger.Log("[Source] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
                 if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
                     break;

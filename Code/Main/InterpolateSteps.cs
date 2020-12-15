@@ -101,22 +101,12 @@ namespace Flowframes.Main
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
                 return;
             }
+
             AiProcess.filenameMap.Clear();
             bool extractAudio = true;
             Program.mainForm.SetStatus("Extracting frames from video...");
-            Size resolution = IOUtils.GetVideoRes(currentInPath);
-            int maxHeight = Config.GetInt("maxVidHeight");
-            if (resolution.Height > maxHeight)
-            {
-                float factor = (float)maxHeight / resolution.Height;
-                int width = (resolution.Width * factor).RoundToInt();
-                Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
-                await FFmpegCommands.VideoToFrames(currentInPath, currentFramesPath, Config.GetInt("dedupMode") == 2, false, new Size(width, maxHeight));
-            }
-            else
-            {
-                await FFmpegCommands.VideoToFrames(currentInPath, currentFramesPath, Config.GetInt("dedupMode") == 2, false);
-            }
+            await FFmpegCommands.VideoToFrames(currentInPath, currentFramesPath, Config.GetInt("dedupMode") == 2, false, InterpolateUtils.GetOutputResolution(currentInPath));
+
             if (extractAudio)
             {
                 string audioFile = Path.Combine(currentTempDir, "audio.m4a");
