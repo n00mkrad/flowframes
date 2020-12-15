@@ -138,8 +138,7 @@ namespace Flowframes
                     Cancel("Only a single frame was extracted from your input file!\n\nPossibly your input is an image, not a video?");
                 else
                     Cancel("Frame extraction failed!\n\nYour input file might be incompatible.");
-            }
-                
+            }  
 
             if (Config.GetInt("dedupMode") == 1)
                 await MagickDedupe.Run(currentFramesPath);

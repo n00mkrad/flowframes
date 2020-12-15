@@ -103,7 +103,7 @@ namespace Flowframes
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
             string vfrFilename = Path.GetFileName(framesFile);
-            string args = $"-vsync 2 -f concat -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string args = $"-vsync 1 -f concat -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
 
@@ -111,9 +111,8 @@ namespace Flowframes
         {
             Logger.Log($"Merging videos...");
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
-            string vsyncStr = Config.GetInt("vfrMode") == 0 ? "-vsync 1" : "-vsync 2";
             string vfrFilename = Path.GetFileName(concatFile);
-            string args = $" {loopStr} {vsyncStr} -f concat  -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string args = $" {loopStr} -vsync 1 -f concat  -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 

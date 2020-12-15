@@ -61,14 +61,15 @@ namespace Flowframes.Main
                 if (unencodedFrames.Count >= (chunkSize + safetyBufferFrames) || !aiRunning)     // Encode every n frames, or after process has exited
                 {
                     busy = true;
-                    Logger.Log("Encoding Chunk #" + videoIndex, true, false, "ffmpeg.txt");
 
                     List<string> framesToEncode = aiRunning ? unencodedFrames.Take(chunkSize).ToList() : unencodedFrames;     // Take all remaining frames if process is done
+                    Logger.Log($"Encoding Chunk #{videoIndex} using {Path.GetFileName(framesToEncode.First())} through {Path.GetFileName(framesToEncode.Last())}", true, false, "ffmpeg.txt");
+
                     IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file
 
                     string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.currentOutMode)}");
                     int firstFrameNum = Path.GetFileNameWithoutExtension(framesToEncode[0]).GetInt();
-                    await CreateVideo.EncodeChunk(outpath, firstFrameNum, framesToEncode.Count);
+                    await CreateVideo.EncodeChunk(outpath, firstFrameNum - 1, framesToEncode.Count);
 
                     if(Interpolate.canceled) return;
 

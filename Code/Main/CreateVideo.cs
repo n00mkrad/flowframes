@@ -150,11 +150,10 @@ namespace Flowframes.Main
             int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
             string vfrFileOriginal = Path.Combine(i.currentTempDir, $"vfr-{i.lastInterpFactor}x.ini");
-            string vfrFile = Path.Combine(i.currentTempDir, $"vfr-chunk-temp.ini");
+            string vfrFile = Path.Combine(i.currentTempDir, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
             await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, i.currentOutFps, AvProcess.LogMode.Hidden);
-            IOUtils.TryDeleteIfExists(vfrFile);
         }
 
         static async Task Loop(string outPath, int looptimes)
