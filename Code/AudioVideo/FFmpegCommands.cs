@@ -103,7 +103,8 @@ namespace Flowframes
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
             string vfrFilename = Path.GetFileName(framesFile);
-            string args = $"-vsync 1 -f concat -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string vsync = (Interpolate.lastInterpFactor == 2) ? "-vsync 1" : "-vsync 2";
+            string args = $"{vsync} -f concat -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
 
