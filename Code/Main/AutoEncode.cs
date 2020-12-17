@@ -31,8 +31,8 @@ namespace Flowframes.Main
             encodedFrames.Clear();
             unencodedFrames.Clear();
 
-            chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.currentFramesPath, false, "*.png") * Interpolate.lastInterpFactor);
-            safetyBufferFrames = Interpolate.lastAi.aiName.ToUpper().Contains("NCNN") ? 60 : 30;    // Use bigger safety buffer for NCNN
+            chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor);
+            safetyBufferFrames = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN") ? 60 : 30;    // Use bigger safety buffer for NCNN
             Logger.Log($"Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
 
             int videoIndex = 1;
@@ -67,7 +67,7 @@ namespace Flowframes.Main
 
                     IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file
 
-                    string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.currentOutMode)}");
+                    string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.current.outMode)}");
                     int firstFrameNum = Path.GetFileNameWithoutExtension(framesToEncode[0]).GetInt();
                     await CreateVideo.EncodeChunk(outpath, firstFrameNum - 1, framesToEncode.Count);
 
@@ -98,7 +98,7 @@ namespace Flowframes.Main
 
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
 
-            await CreateVideo.ChunksToVideo(videoChunksFolder, concatFile, Interpolate.nextOutPath);
+            await CreateVideo.ChunksToVideo(videoChunksFolder, concatFile, Interpolate.current.outFilename);
         }
 
         public static bool HasWorkToDo ()

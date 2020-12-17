@@ -322,7 +322,7 @@ namespace Flowframes.IO
 				fps = float.Parse(ReadLines(fpsFile)[0]);
 				Logger.Log($"Got {fps} FPS from file: " + fpsFile);
 
-				float guiFps = Program.mainForm.GetBatchEntry().inFps;
+				float guiFps = Program.mainForm.GetCurrentSettings().inFps;
 
 				DialogResult dialogResult = MessageBox.Show("A frame rate file has been found in the parent directory.\n\n" +
 					$"Click \"Yes\" to use frame rate from the file ({fps}) or \"No\" to use current FPS set in GUI ({guiFps})", "Load Frame Rate From fps.ini?", MessageBoxButtons.YesNo);

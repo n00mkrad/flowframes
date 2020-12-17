@@ -20,7 +20,7 @@ namespace Flowframes.Forms
 
         private void addToQueue_Click(object sender, EventArgs e)
         {
-            Program.batchQueue.Enqueue(Program.mainForm.GetBatchEntry());
+            Program.batchQueue.Enqueue(Program.mainForm.GetCurrentSettings());
             RefreshGui();
         }
 
@@ -30,7 +30,7 @@ namespace Flowframes.Forms
             string nl = Environment.NewLine;
             for (int i = 0; i < Program.batchQueue.Count; i++)
             {
-                BatchEntry entry = Program.batchQueue.ElementAt(i);
+                InterpSettings entry = Program.batchQueue.ElementAt(i);
                 string niceOutMode = entry.outMode.ToString().ToUpper().Replace("VID", "").Replace("IMG", "");
                 string str = $"#{i}: {Path.GetFileName(entry.inPath).Trunc(45)} - {entry.inFps} FPS => {entry.interpFactor}x{nl} {entry.ai.aiNameShort} => {niceOutMode}";
                 taskList.Items.Add(str);
@@ -88,7 +88,7 @@ namespace Flowframes.Forms
         {
             if (taskList.SelectedItem == null) return;
 
-            Queue<BatchEntry> temp = new Queue<BatchEntry>();
+            Queue<InterpSettings> temp = new Queue<InterpSettings>();
 
             for(int i = 0; i < Program.batchQueue.Count; i++)
             {
@@ -125,7 +125,7 @@ namespace Flowframes.Forms
                     continue;
                 }
 
-                BatchEntry dragDropEntry = Program.mainForm.GetBatchEntry();
+                InterpSettings dragDropEntry = Program.mainForm.GetCurrentSettings();
                 dragDropEntry.inPath = path;
                 dragDropEntry.outPath = path.GetParentDir();
                 dragDropEntry.inFps = GetFramerate(path);
@@ -137,7 +137,7 @@ namespace Flowframes.Forms
 
         float GetFramerate (string path)
         {
-            float fps = Interpolate.currentInFps;
+            float fps = Interpolate.current.inFps;
             float fpsFromFile = IOUtils.GetFpsFolderOrVideo(path);
             if (fpsFromFile > 0)
                 return fpsFromFile;

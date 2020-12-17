@@ -33,7 +33,7 @@ namespace Flowframes.Main
 
             float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
             float fps = (float)frames / generousTime;
-            string fpsIn = (fps / i.interpFactor).ToString("0.00");
+            string fpsIn = (fps / i.current.interpFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");
 
             float secondsPerFrame = generousTime / (float)frames;
@@ -50,7 +50,7 @@ namespace Flowframes.Main
 
             try
             {
-                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > i.interpFactor)
+                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > i.current.interpFactor)
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     Image img = IOUtils.GetImage(latestFramePath);
@@ -204,7 +204,7 @@ namespace Flowframes.Main
 
         public static bool CheckDeleteOldTempFolder ()
         {
-            if (!IOUtils.TryDeleteIfExists(i.currentTempDir))
+            if (!IOUtils.TryDeleteIfExists(i.current.tempFolder))
             {
                 ShowMessage("Failed to remove an existing temp folder of this video!\nMake sure you didn't open any frames in an editor.", "Error");
                 i.Cancel();

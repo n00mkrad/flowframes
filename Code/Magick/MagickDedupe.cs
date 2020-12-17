@@ -216,7 +216,7 @@ namespace Flowframes.Magick
 
             string ext = InterpolateUtils.GetExt();
 
-            string dupeInfoFile = Path.Combine(Interpolate.currentTempDir, "dupes.ini");
+            string dupeInfoFile = Path.Combine(Interpolate.current.tempFolder, "dupes.ini");
             if (!File.Exists(dupeInfoFile)) return;
 
             Logger.Log("Re-Duplicating frames to fix timing...");
@@ -227,7 +227,7 @@ namespace Flowframes.Magick
             string tempSubFolder = Path.Combine(path, "temp");
             Directory.CreateDirectory(tempSubFolder);
 
-            int interpFramesPerRealFrame = Interpolate.interpFactor - 1;
+            int interpFramesPerRealFrame = Interpolate.current.interpFactor - 1;
 
             int sourceFrameNum = 0;
             int outFrameNum = 1;

@@ -43,7 +43,7 @@ namespace Flowframes.Main
             stopped = true;
         }
 
-        static async Task RunEntry(BatchEntry entry)
+        static async Task RunEntry(InterpSettings entry)
         {
             if (!EntryIsValid(entry))
             {
@@ -58,8 +58,9 @@ namespace Flowframes.Main
 
             SetBusy(true);
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
-            Interpolate.interpFactor = entry.interpFactor;
-            Interpolate.SetFps(entry.inFps);
+            Interpolate.current = entry;
+            // Interpolate.interpFactor = entry.interpFactor;
+            // Interpolate.SetFps(entry.inFps);
             Program.mainForm.runBtn_Click(null, null);
 
             await Task.Delay(2000);
@@ -81,7 +82,7 @@ namespace Flowframes.Main
             Program.mainForm.GetMainTabControl().Enabled = !state;   // Lock GUI
         }
 
-        static bool EntryIsValid(BatchEntry entry)
+        static bool EntryIsValid(InterpSettings entry)
         {
 
             if (entry.inPath == null || (IOUtils.IsPathDirectory(entry.inPath) && !Directory.Exists(entry.inPath)) || (!IOUtils.IsPathDirectory(entry.inPath) && !File.Exists(entry.inPath)))

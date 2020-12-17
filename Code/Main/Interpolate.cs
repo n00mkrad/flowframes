@@ -23,20 +23,10 @@ namespace Flowframes
     {
         public enum OutMode { VidMp4, VidGif, ImgPng }
 
-        public static string currentTempDir;
-        public static string currentFramesPath;
-        public static int interpFactor;
-        public static float currentInFps;
-        public static float currentOutFps;
         public static int currentInputFrameCount;
-        public static bool constantFrameRate;
-        public static OutMode currentOutMode;
-        public static bool currentInputIsFrames;
         public static bool currentlyUsingAutoEnc;
-        public static int lastInterpFactor;
-        public static string lastInputPath;
-        public static string nextOutPath;
-        public static AI lastAi;
+
+        public static InterpSettings current;
 
         public static bool canceled = false;
 
@@ -45,50 +35,42 @@ namespace Flowframes
 
         public static void SetFps(float inFps)
         {
-            currentInFps = inFps;
-            currentOutFps = inFps * interpFactor;
+            // TODO: Can't I remove this?
+            current.SetFps(inFps);
         }
 
-        public static async void Start(string inPath, string outDir, int tilesize, OutMode outMode, AI ai)
+        public static async void Start()
         {
             canceled = false;
-            if (!Utils.InputIsValid(inPath, outDir, currentOutFps, interpFactor, tilesize)) return;     // General input checks
-            if (!Utils.CheckAiAvailable(ai)) return;            // Check if selected AI pkg is installed
-            lastInterpFactor = interpFactor;
-            lastInputPath = inPath;
-            currentTempDir = Utils.GetTempFolderLoc(inPath, outDir);
-            currentFramesPath = Path.Combine(currentTempDir, Paths.framesDir);
-            currentOutMode = outMode;
+            if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.tilesize)) return;     // General input checks
+            if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
-            if(!Utils.CheckPathValid(inPath)) return;           // Check if input path/file is valid
-            Utils.PathAsciiCheck(inPath, outDir);
-            lastAi = ai;
-            currentInputIsFrames = IOUtils.IsPathDirectory(inPath);
-            currentInputFrameCount = Utils.GetInputFrameCount(inPath);
+            if(!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
+            Utils.PathAsciiCheck(current.inPath, current.outPath);
+            currentInputFrameCount = Utils.GetInputFrameCount(current.inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
             await Task.Delay(10);
-            if (!currentInputIsFrames)        // Input is video - extract frames first
-                await ExtractFrames(inPath, currentFramesPath);
+            if (!current.inputIsFrames)        // Input is video - extract frames first
+                await ExtractFrames(current.inPath, current.framesFolder);
             else
-                await FFmpegCommands.ImportImages(inPath, currentFramesPath);
+                await FFmpegCommands.ImportImages(current.inPath, current.framesFolder);
             if (canceled) return;
             sw.Restart();
             await Task.Delay(10);
             await PostProcessFrames();
             if (canceled) return;
-            string interpFramesDir = Path.Combine(currentTempDir, Paths.interpDir);
-            nextOutPath = Path.Combine(outDir, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + Utils.GetExt(outMode));
-            int frames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
-            int targetFrameCount = frames * interpFactor;
+            string interpFramesDir = Path.Combine(current.tempFolder, Paths.interpDir);
+            int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
+            int targetFrameCount = frames * current.interpFactor;
             GetProgressByFrameAmount(interpFramesDir, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(interpFramesDir, targetFrameCount, tilesize, ai);
+            await RunAi(interpFramesDir, targetFrameCount, current.tilesize, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
-                await CreateVideo.Export(interpFramesDir, nextOutPath, outMode);
+                await CreateVideo.Export(interpFramesDir, current.outFilename, current.outMode);
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
             Cleanup(interpFramesDir);
             Program.mainForm.SetWorking(false);
@@ -103,7 +85,7 @@ namespace Flowframes
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(currentTempDir, Paths.scenesDir));
+                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(current.tempFolder, Paths.scenesDir));
                 await Task.Delay(10);
             }
 
@@ -112,7 +94,7 @@ namespace Flowframes
 
             if (extractAudio)
             {
-                string audioFile = Path.Combine(currentTempDir, "audio.m4a");
+                string audioFile = Path.Combine(current.tempFolder, "audio.m4a");
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
@@ -131,8 +113,8 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            int extractedFrames = IOUtils.GetAmountOfFiles(currentFramesPath, false, "*.png");
-            if (!Directory.Exists(currentFramesPath) || currentInputFrameCount <= 0 || extractedFrames < 2)
+            int extractedFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
+            if (!Directory.Exists(current.framesFolder) || currentInputFrameCount <= 0 || extractedFrames < 2)
             {
                 if(extractedFrames == 1)
                     Cancel("Only a single frame was extracted from your input file!\n\nPossibly your input is an image, not a video?");
@@ -141,24 +123,24 @@ namespace Flowframes
             }  
 
             if (Config.GetInt("dedupMode") == 1)
-                await MagickDedupe.Run(currentFramesPath);
+                await MagickDedupe.Run(current.framesFolder);
             else
                 MagickDedupe.ClearCache();
             
             if (canceled) return;
 
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
-            await FrameTiming.CreateTimecodeFiles(currentFramesPath, Config.GetBool("enableLoop"), lastInterpFactor, !useTimestamps);
+            await FrameTiming.CreateTimecodeFiles(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor, !useTimestamps);
 
             if (canceled) return;
 
-            AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(currentFramesPath, "png", 1, 8);
+            AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, 8);
         }
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai, bool stepByStep = false)
         {
             if ((stepByStep && Config.GetBool("sbsAllowAutoEnc")) || (!stepByStep && Config.GetInt("autoEncMode") > 0))
-                currentlyUsingAutoEnc = currentOutMode == OutMode.VidMp4 && IOUtils.GetAmountOfFiles(currentFramesPath, false) * lastInterpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
+                currentlyUsingAutoEnc = current.outMode == OutMode.VidMp4 && IOUtils.GetAmountOfFiles(current.framesFolder, false) * current.interpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
             else
                 currentlyUsingAutoEnc = false;
 
@@ -167,16 +149,16 @@ namespace Flowframes
             List<Task> tasks = new List<Task>();
 
             if (ai.aiName == Networks.dainNcnn.aiName)
-                tasks.Add(AiProcess.RunDainNcnn(currentFramesPath, outpath, targetFrames, tilesize));
+                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, targetFrames, tilesize));
 
             if (ai.aiName == Networks.cainNcnn.aiName)
-                tasks.Add(AiProcess.RunCainNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
+                tasks.Add(AiProcess.RunCainNcnnMulti(current.framesFolder, outpath, tilesize, current.interpFactor));
 
             if (ai.aiName == Networks.rifeCuda.aiName)
-                tasks.Add(AiProcess.RunRifeCuda(currentFramesPath, interpFactor));
+                tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnnMulti(currentFramesPath, outpath, tilesize, interpFactor));
+                tasks.Add(AiProcess.RunRifeNcnnMulti(current.framesFolder, outpath, tilesize, current.interpFactor));
 
             if (currentlyUsingAutoEnc)
             {
@@ -220,7 +202,7 @@ namespace Flowframes
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
             if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
-                IOUtils.TryDeleteIfExists(currentTempDir);
+                IOUtils.TryDeleteIfExists(current.tempFolder);
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");
             if(!Logger.GetLastLine().Contains("Canceled interpolation."))
@@ -236,8 +218,8 @@ namespace Flowframes
             try
             {
                 if (Config.GetBool("keepFrames"))
-                    IOUtils.Copy(interpFramesDir, Path.Combine(currentTempDir.GetParentDir(), Path.GetFileName(currentTempDir).Replace("-temp", "-interpframes")));
-                Directory.Delete(currentTempDir, true);
+                    IOUtils.Copy(interpFramesDir, Path.Combine(current.tempFolder.GetParentDir(), Path.GetFileName(current.tempFolder).Replace("-temp", "-interpframes")));
+                Directory.Delete(current.tempFolder, true);
             }
             catch (Exception e)
             {

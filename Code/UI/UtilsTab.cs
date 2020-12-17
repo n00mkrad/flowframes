@@ -20,7 +20,7 @@ namespace Flowframes.UI
             string outPath = Path.ChangeExtension(videoPath, null) + "-extracted";
             Program.mainForm.SetWorking(true);
             await FFmpegCommands.VideoToFrames(videoPath, Path.Combine(outPath, Paths.framesDir), false, false, false);
-            File.WriteAllText(Path.Combine(outPath, "fps.ini"), Interpolate.currentInFps.ToString());
+            File.WriteAllText(Path.Combine(outPath, "fps.ini"), Interpolate.current.inFps.ToString());
             if (withAudio)
                 await FFmpegCommands.ExtractAudio(videoPath, Path.Combine(outPath, "audio"));
             Program.mainForm.SetWorking(false);

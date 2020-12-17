@@ -28,7 +28,7 @@ namespace Flowframes.UI
                 fpsStr = fps.ToString();
                 fpsInTbox.Text = fpsStr;
             }
-            Interpolate.SetFps(fps);
+            //Interpolate.SetFps(fps);
             Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
             if (!Program.lastInputPathIsSsd)
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");

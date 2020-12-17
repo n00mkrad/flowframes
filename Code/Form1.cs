@@ -86,13 +86,13 @@ namespace Flowframes
             mainTabControl.Update();
         }
 
-        public BatchEntry GetBatchEntry()
+        public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new BatchEntry(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), fpsInTbox.GetFloat(), interpFactorCombox.GetInt(), GetOutMode());
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), fpsInTbox.GetFloat(), interpFactorCombox.GetInt(), GetOutMode(), GetTilesize());
         }
 
-        public void LoadBatchEntry(BatchEntry entry)
+        public void LoadBatchEntry(InterpSettings entry)
         {
             inputTbox.Text = entry.inPath;
             outputTbox.Text = entry.outPath;
@@ -157,13 +157,9 @@ namespace Flowframes
         {
             if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
             {
-                SetTab("interpolation");
-                Interpolate.SetFps(fpsInTbox.GetFloat());
-                Interpolate.interpFactor = interpFactorCombox.GetInt();
+                Interpolate.current = GetCurrentSettings();
             }
-            string inPath = inputTbox.Text.Trim();
-            string outPath = outputTbox.Text.Trim();
-            Interpolate.Start(inPath, outPath, GetTilesize(), GetOutMode(), GetAi());
+            Interpolate.Start();
         }
 
         public int GetTilesize()
@@ -213,7 +209,7 @@ namespace Flowframes
         private void fpsInTbox_TextChanged(object sender, EventArgs e)
         {
             fpsInTbox.Text = fpsInTbox.Text.TrimNumbers(true);
-            Interpolate.SetFps(fpsInTbox.GetFloat());
+            //Interpolate.SetFps(fpsInTbox.GetFloat());
             UpdateOutputFPS();
         }
 
@@ -221,14 +217,15 @@ namespace Flowframes
         {
             float fpsOut = fpsInTbox.GetFloat() * interpFactorCombox.GetFloat();
             fpsOutTbox.Text = fpsOut.ToString();
-            Interpolate.interpFactor = interpFactorCombox.GetInt();
+            //Interpolate.interpFactor = interpFactorCombox.GetInt();
         }
 
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateOutputFPS();
-            if (Interpolate.interpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0)
-                Logger.Log($"Warning: {GetAi().aiName.Replace("_", "-")} doesn't natively support 4x/8x and will run multiple times for {Interpolate.interpFactor}x. Auto-Encode will only work on the last run.");
+            int guiInterpFactor = interpFactorCombox.GetInt();
+            if (guiInterpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0)
+                Logger.Log($"Warning: {GetAi().aiName.Replace("_", "-")} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
         }
 
         public void SetWorking(bool state)
@@ -404,7 +401,7 @@ namespace Flowframes
         private async void runStepBtn_Click(object sender, EventArgs e)
         {
             SetTab("interpolate");
-            Interpolate.SetFps(fpsInTbox.GetFloat());
+            //Interpolate.SetFps(fpsInTbox.GetFloat());
             await InterpolateSteps.Run(stepSelector.Text);
         }
 

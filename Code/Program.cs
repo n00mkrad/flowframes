@@ -19,7 +19,7 @@ namespace Flowframes
         public static string lastInputPath;
         public static bool lastInputPathIsSsd;
 
-        public static Queue<BatchEntry> batchQueue = new Queue<BatchEntry>();
+        public static Queue<InterpSettings> batchQueue = new Queue<InterpSettings>();
 
         [STAThread]
         static void Main()
