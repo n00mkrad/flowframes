@@ -54,6 +54,7 @@ namespace Flowframes
         public static async Task ImportImages(string inpath, string outpath, bool delSrc = false, bool showLog = true)
         {
             if (showLog) Logger.Log("Importing images...");
+            Logger.Log($"Importing images from {inpath} to {outpath}.");
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
             string concatFileContent = "";

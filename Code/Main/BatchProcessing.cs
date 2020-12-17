@@ -59,8 +59,6 @@ namespace Flowframes.Main
             SetBusy(true);
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
             Interpolate.current = entry;
-            // Interpolate.interpFactor = entry.interpFactor;
-            // Interpolate.SetFps(entry.inFps);
             Program.mainForm.runBtn_Click(null, null);
 
             await Task.Delay(2000);

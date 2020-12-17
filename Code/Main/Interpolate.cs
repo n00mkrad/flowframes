@@ -32,13 +32,6 @@ namespace Flowframes
 
         static Stopwatch sw = new Stopwatch();
 
-
-        public static void SetFps(float inFps)
-        {
-            // TODO: Can't I remove this?
-            current.SetFps(inFps);
-        }
-
         public static async void Start()
         {
             canceled = false;

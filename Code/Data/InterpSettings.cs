@@ -35,10 +35,32 @@ namespace Flowframes
             outMode = outModeArg;
             tilesize = tilesizeArg;
 
+            try
+            {
+                tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);
+                framesFolder = Path.Combine(tempFolder, Paths.framesDir);
+                interpFolder = Path.Combine(tempFolder, Paths.interpDir);
+                inputIsFrames = IOUtils.IsPathDirectory(inPath);
+                outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + InterpolateUtils.GetExt(outMode));
+            }
+            catch
+            {
+                Logger.Log("Tried to create InterpSettings struct without an inpath. Can't set tempFolder, framesFolder and interpFolder.", true);
+                tempFolder = "";
+                framesFolder = "";
+                interpFolder = "";
+                inputIsFrames = false;
+                outFilename = "";
+            }
+        }
+
+        public void UpdatePaths (string inPathArg, string outPathArg)
+        {
+            inPath = inPathArg;
+            outPath = outPathArg;
             tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);
             framesFolder = Path.Combine(tempFolder, Paths.framesDir);
             interpFolder = Path.Combine(tempFolder, Paths.interpDir);
-
             inputIsFrames = IOUtils.IsPathDirectory(inPath);
             outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + InterpolateUtils.GetExt(outMode));
         }

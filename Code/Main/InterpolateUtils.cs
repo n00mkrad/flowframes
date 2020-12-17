@@ -269,7 +269,7 @@ namespace Flowframes.Main
             }
             else
             {
-                return resolution;
+                return new Size(RoundDiv2(resolution.Width), RoundDiv2(resolution.Height));
             }
         }
 

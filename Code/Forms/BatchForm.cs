@@ -115,9 +115,10 @@ namespace Flowframes.Forms
         }
 
         public async Task LoadDroppedPaths (string[] droppedPaths)
-        {
+        {                
             foreach (string path in droppedPaths)
             {
+                Logger.Log($"Dropped file: '{path}'", true);
                 string frame1 = Path.Combine(path, "00000001.png");
                 if (IOUtils.IsPathDirectory(path) && !File.Exists(frame1))
                 {
@@ -125,11 +126,11 @@ namespace Flowframes.Forms
                     continue;
                 }
 
-                InterpSettings dragDropEntry = Program.mainForm.GetCurrentSettings();
-                dragDropEntry.inPath = path;
-                dragDropEntry.outPath = path.GetParentDir();
-                dragDropEntry.inFps = GetFramerate(path);
-                Program.batchQueue.Enqueue(dragDropEntry);
+                InterpSettings current = Program.mainForm.GetCurrentSettings();
+                current.UpdatePaths(path, path.GetParentDir());
+                current.inFps = GetFramerate(path);
+                current.outFps = current.inFps * current.interpFactor;
+                Program.batchQueue.Enqueue(current);
                 RefreshGui();
                 await Task.Delay(100);
             }
