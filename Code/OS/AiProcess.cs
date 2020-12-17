@@ -142,19 +142,11 @@ namespace Flowframes
 
         public static async Task RunRifeCuda(string framesPath, int interpFactor)
         {
-            string script = "interp-parallel.py";
-            //if(Config.GetInt("rifeMode") == 0 || IOUtils.GetAmountOfFiles(framesPath, false) < 6)
-            //    script = "interp-basic.py";
-
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
-
-            string args = $" --input {framesPath.Wrap()} --times {(int)Math.Log(interpFactor, 2)}";
-
-            if (File.Exists(Path.Combine(rifeDir, "inference_video.py")))   // Use updated script
-            {
-                script = "inference_video.py";
-                args = $" --img {framesPath.Wrap()} --exp {(int)Math.Log(interpFactor, 2)}";
-            }
+            string script = "inference_video.py";
+            bool uhd = IOUtils.GetVideoRes(Interpolate.current.inPath).Height >= Config.GetInt("uhdThresh");
+            string uhdStr = uhd ? "--UHD" : "";
+            string args = $" --img {framesPath.Wrap()} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetExt()} --output {Paths.interpDir}";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
             {
@@ -165,8 +157,8 @@ namespace Flowframes
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args} --imgformat {InterpolateUtils.GetExt()} --output {Paths.interpDir}";
-            Logger.Log($"Running RIFE ({script})...", false);
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args}";
+            Logger.Log($"Running RIFE {(uhd ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {

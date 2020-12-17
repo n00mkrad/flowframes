@@ -139,6 +139,11 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label28 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.uhdThresh = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -740,6 +745,11 @@
             // aiOptsPage
             // 
             this.aiOptsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.aiOptsPage.Controls.Add(this.label30);
+            this.aiOptsPage.Controls.Add(this.panel6);
+            this.aiOptsPage.Controls.Add(this.uhdThresh);
+            this.aiOptsPage.Controls.Add(this.label29);
+            this.aiOptsPage.Controls.Add(this.label28);
             this.aiOptsPage.Controls.Add(this.panel12);
             this.aiOptsPage.Controls.Add(this.label44);
             this.aiOptsPage.Controls.Add(this.ncnnThreads);
@@ -1491,6 +1501,66 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label28.Location = new System.Drawing.Point(10, 150);
+            this.label28.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(158, 16);
+            this.label28.TabIndex = 61;
+            this.label28.Text = "RIFE (CUDA) Settings";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(10, 180);
+            this.label29.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(151, 13);
+            this.label29.TabIndex = 62;
+            this.label29.Text = "UHD Mode Threshold (Height)";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.ForeColor = System.Drawing.Color.Silver;
+            this.label30.Location = new System.Drawing.Point(412, 181);
+            this.label30.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(347, 13);
+            this.label30.TabIndex = 67;
+            this.label30.Text = "Minimum height to enable UHD mode which helps high-res interpolations";
+            // 
+            // panel6
+            // 
+            this.panel6.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel6.Location = new System.Drawing.Point(378, 177);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(21, 21);
+            this.panel6.TabIndex = 65;
+            this.toolTip1.SetToolTip(this.panel6, "Allows custom input.");
+            // 
+            // uhdThresh
+            // 
+            this.uhdThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.uhdThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.uhdThresh.ForeColor = System.Drawing.Color.White;
+            this.uhdThresh.FormattingEnabled = true;
+            this.uhdThresh.Items.AddRange(new object[] {
+            "4320",
+            "2160",
+            "1440",
+            "1080",
+            "720"});
+            this.uhdThresh.Location = new System.Drawing.Point(280, 177);
+            this.uhdThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.uhdThresh.Name = "uhdThresh";
+            this.uhdThresh.Size = new System.Drawing.Size(87, 21);
+            this.uhdThresh.TabIndex = 66;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1638,5 +1708,10 @@
         private System.Windows.Forms.Label label48;
         private System.Windows.Forms.CheckBox sbsAllowAutoEnc;
         private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.ComboBox uhdThresh;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label28;
     }
 }

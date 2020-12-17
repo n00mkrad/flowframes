@@ -193,12 +193,6 @@ namespace Flowframes.Main
                 i.Cancel("Selected AI not available.", true);
                 return false;
             }
-            if(!PkgUtils.IsUpToDate(ai.pkg, ai.minPkgVer))
-            {
-                ShowMessage("The selected AI is installed, but not up to date!\nYou can update it in the Package Installer.", "Error");
-                i.Cancel("Selected AI is outdated.", true);
-                return false;
-            }
             return true;
         }
 

@@ -18,7 +18,7 @@ abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 print("Changing working dir to {0}".format(dname))
 os.chdir(os.path.dirname(dname))
-print("Added {0} to PATH".format(dname))
+print("Added {0} to temporary PATH".format(dname))
 sys.path.append(dname)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -28,6 +28,13 @@ if torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
 else:
     print("WARNING: CUDA is not available, RIFE is running on CPU! [ff:nocuda-cpu]")
+    
+try:
+    print("\nSystem Info:")
+    print("Python: {} - Pytorch: {} - cuDNN: {}".format(sys.version, torch.__version__, torch.backends.cudnn.version()))
+    print("Hardware Acceleration: Using {} device(s), first is {}".format( torch.cuda.device_count(), torch.cuda.get_device_name(0)))
+except:
+    print("Failed to get hardware info!")
 
 parser = argparse.ArgumentParser(description='Interpolation for a pair of images')
 parser.add_argument('--video', dest='video', type=str, default=None)
@@ -35,6 +42,7 @@ parser.add_argument('--img', dest='img', type=str, default=None)
 parser.add_argument('--output', required=False, default='frames-interpolated')
 parser.add_argument('--imgformat', default="png")
 parser.add_argument('--montage', default=False, dest='montage', action='store_true', help='montage origin video')
+parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
 parser.add_argument('--skip', dest='skip', default=False, action='store_true', help='whether to remove static frames before processing')
 parser.add_argument('--fps', dest='fps', type=int, default=None)
 parser.add_argument('--png', dest='png', default=True, action='store_true', help='whether to vid_out png format vid_outs')
@@ -53,9 +61,8 @@ model.device()
 
 path = args.img
 name = os.path.basename(path)
-print('name: ' + name)
 interp_output_path = (args.output).join(path.rsplit(name, 1))
-print('interp_output_path: ' + interp_output_path)
+print("\ninterp_output_path: " + interp_output_path)
 
 if not args.video is None:
     videoCapture = cv2.VideoCapture(args.video)
@@ -114,7 +121,7 @@ def build_read_buffer(user_args, read_buffer, videogen):
 
 def make_inference(I0, I1, exp):
     global model
-    middle = model.inference(I0, I1)
+    middle = model.inference(I0, I1, args.UHD)
     if exp == 1:
         return [middle]
     first_half = make_inference(I0, middle, exp=exp - 1)
@@ -124,8 +131,13 @@ def make_inference(I0, I1, exp):
 if args.montage:
     left = w // 4
     w = w // 2
-ph = ((h - 1) // 32 + 1) * 32
-pw = ((w - 1) // 32 + 1) * 32
+if args.UHD:
+    print("UHD mode enabled.")
+    ph = ((h - 1) // 64 + 1) * 64
+    pw = ((w - 1) // 64 + 1) * 64
+else:
+    ph = ((h - 1) // 32 + 1) * 32
+    pw = ((w - 1) // 32 + 1) * 32
 padding = (0, pw - w, 0, ph - h)
 #pbar = tqdm(total=tot_frame)
 skip_frame = 1

@@ -39,9 +39,9 @@ namespace Flowframes
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
             string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
-            string scnDetect = sceneDetect ? $"-vf \"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
+            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string vf = (scnDetect.Length > 2 || mpStr.Length > 2) ? $"-vf {scnDetect},{mpStr}".ListCommaFix() : "";
+            string vf = (scnDetect.Length > 2 || mpStr.Length > 2) ? $"-vf {scnDetect},{mpStr} ".ListCommaFix() : "";
             string pad = Padding.inputFrames.ToString();
             string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;

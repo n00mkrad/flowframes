@@ -67,6 +67,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(torchGpus);
             ConfigParser.SaveGuiElement(ncnnGpus);
             ConfigParser.SaveGuiElement(ncnnThreads);
+            ConfigParser.SaveGuiElement(uhdThresh);
             // Video Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(mp4Enc);
@@ -108,6 +109,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(torchGpus);
             ConfigParser.LoadGuiElement(ncnnGpus);
             ConfigParser.LoadGuiElement(ncnnThreads);
+            ConfigParser.LoadGuiElement(uhdThresh);
             // Video Export
             ConfigParser.LoadGuiElement(minOutVidLength);
             ConfigParser.LoadComboxIndex(mp4Enc);
