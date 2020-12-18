@@ -35,9 +35,9 @@ The requirements to run these are the following:
 
 ## Running A Pytorch Implementation on Nvidia Ampere GPUs
 
-I do not have an Ampere card yet, so I can't fully test Flowframes on an RTX 3000 series GPU.
+Ampere support is currently (Dec 2020) limited. The embedded Python runtime is not compatible with RTX 3000 cards. To enable compatiblity, [install Pytorch 1.7.1](https://pytorch.org/get-started/locally/) or newer on Python 3.8.x.
 
-However, users have reported that you can run RIFE on Ampere cards by installing a recent **Pytorch 1.7 build**. CUDA 11 is also required, but you should already have it if you use up-to-date GPU drivers. NCNN-based AIs should work out of the box.
+Important: Ampere GPUs perform worse than they should on cuDNN 8.04 and older. If your cuDNN version is not >=8.05, you can manually update it by downloading it from Nvidia and replacing the DLLs in the torch folder. If you don't want to do that, you can wait until 8.05 is included in Pytorch.
 
 
 
