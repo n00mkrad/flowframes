@@ -1,5 +1,5 @@
 # Flowframes - Windows GUI for Video Interpolation
-Flowframes Windows GUI for video interpolation - Supports RIFE, RIFE-NCNN, DAIN-NCNN, CAIN-NCNN networks.
+Flowframes Windows GUI for video interpolation - Supports RIFE, RIFE-NCNN, DAIN-NCNN networks.
 
 Flowframes is **open-source donationware**. Builds are released for free on itch after an early-access period on Patreon. This repo's code is complete and does not "paywall" experienced users who want to compile the program themselves.
 
@@ -11,11 +11,13 @@ However, **I do not provide support for self-built versions** as I can't guarant
 
 * Download on [itch](https://nmkd.itch.io/flowframes) or, for the most recent beta versions, on [Patreon](https://www.patreon.com/n00mkrad). This repo does not provide builds.
 * Run Flowframes.exe
-* Select the components you want to install (certain packages are required, cannot be unticked)
+* Pre-1.18: Select the components you want to install (certain packages are required, cannot be unticked)
+
+Starting with 1.18, the installer has been removed, and Flowframes is instead distributed as an all-in-one archive. Download the "Full" file if you are using a Maxwell/Pascal/Turing GPU and want to use embedded Pytorch. Use "NoPython" if you run an AMD GPU or want to use your system Python/Pytorch installation.
 
 
 
-## Using A Pytorch AI
+## Using A Pytorch Implementation
 
 Some of the AI networks run on Tencent's NCNN framework, which allows them to run on any modern (Vulkan-capable) GPU.
 
@@ -31,7 +33,7 @@ The requirements to run these are the following:
 
 
 
-## Running A Pytorch AI on Nvidia Ampere (RTX 3000) GPUs
+## Running A Pytorch Implementation on Nvidia Ampere GPUs
 
 I do not have an Ampere card yet, so I can't fully test Flowframes on an RTX 3000 series GPU.
 
@@ -57,11 +59,12 @@ Here is an explanation of some of the more important settings.
   * You can disable this completely if you only use content without duplicates (e.g. camera footage, CG renders).
 * Animation Loop: This will make looped animations interpolate to a perfect loop by copying the first frame to the end of the frames.
 * Don't Interpolate Scene Changes: This avoids interpolating scene changes (cuts) as this would produce weird a morphing effect.
+* Auto-Encode: Encode video while interpolating. Optionally delete the already encoded frames to minimize disk space usage.
 * Save Output Frames As JPEG: Save interpolated frames as JPEG before encoding. Not recommended unless you have little disk space.
 
 ### AI Specific Settings
 
-* RIFE - Use Fast Parallel Mode - Speeds up RIFE interpolation a lot if you have lots of VRAM. Not recommended with <8GB GPUs.
+* RIFE - UHD Mode - This mode changes some scaling parameters and should improve results on high-resolution video.
 * GPU IDs: `0` is the default for setups with one dedicated GPU. Four dedicated GPUs would mean `0,1,2,3` for example.
 * NCNN Processing Threads: Increasing this number to 2, 3 or 4 can improve GPU utilization, but also slow things down.
 
