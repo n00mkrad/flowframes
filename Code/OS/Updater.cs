@@ -14,7 +14,7 @@ namespace Flowframes.OS
 {
     class Updater
     {
-        public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/latest.ini";
+        public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/ver.ini";
 
         public static SemVer GetInstalledVer()
         {
@@ -61,22 +61,24 @@ namespace Flowframes.OS
             return v1.major == v2.major && v1.minor == v2.minor && v1.patch == v2.patch;
         }
 
-        public static SemVer GetLatestVer ()
+        public static SemVer GetLatestVer (bool patreon)
         {
             var client = new WebClient();
-            return new SemVer(client.DownloadString(latestVerUrl).SplitIntoLines()[0]);
+            int line = patreon ? 0 : 2;
+            return new SemVer(client.DownloadString(latestVerUrl).SplitIntoLines()[line]);
         }
 
-        public static string GetLatestVerLink()
+        public static string GetLatestVerLink(bool patreon)
         {
+            int line = patreon ? 1 : 3;
             var client = new WebClient();
             try
             {
-                return client.DownloadString(latestVerUrl).SplitIntoLines()[1].Trim();
+                return client.DownloadString(latestVerUrl).SplitIntoLines()[line].Trim();
             }
             catch
             {
-                Logger.Log("Failed to get latest version link from latest.ini!", true);
+                Logger.Log("Failed to get latest version link from ver.ini!", true);
                 return "";
             }
         }
@@ -132,13 +134,16 @@ namespace Flowframes.OS
 
         public static async Task AsyncUpdateCheck ()
         {
-            SemVer latest = GetLatestVer();
             SemVer installed = GetInstalledVer();
+            SemVer latestPat = GetLatestVer(true);
+            SemVer latestFree = GetLatestVer(false);
 
-            if (IsVersionNewer(installed, latest))
-                Logger.Log($"An update for Flowframes ({latest}) is available! Download it from the Updater.");
-            else
-                Logger.Log($"Flowframes is up to date ({installed}).");
+            Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
+
+            // if (IsVersionNewer(installed, latest))
+            //     Logger.Log($"An update for Flowframes ({latest}) is available! Download it from the Updater.");
+            // else
+            //     Logger.Log($"Flowframes is up to date ({installed}).");
         }
     }
 }

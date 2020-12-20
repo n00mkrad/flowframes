@@ -11,7 +11,8 @@ namespace Flowframes.Forms
     public partial class UpdaterForm : Form
     {
         SemVer installed;
-        SemVer latest;
+        SemVer latestPat;
+        SemVer latestFree;
 
         public UpdaterForm()
         {
@@ -21,32 +22,38 @@ namespace Flowframes.Forms
         private async void UpdaterForm_Load(object sender, EventArgs e)
         {
             installed = Updater.GetInstalledVer();
-            latest = Updater.GetLatestVer();
+            latestPat = Updater.GetLatestVer(true);
+            latestFree = Updater.GetLatestVer(false);
 
-            installedLabel.Text = "v" + installed;
+            installedLabel.Text = installed.ToString();
             await Task.Delay(100);
-            latestLabel.Text = "v" + latest;
+            latestLabel.Text = $"{latestPat} (Patreon/Beta) - {latestFree} (Free/Stable)";
 
-            if (installedLabel.Text == latestLabel.Text)
+            if (Updater.VersionMatches(installed, latestFree))
             {
-                updateBtn.Text = "Redownload Latest Version";
-                statusLabel.Text = "Latest Version Is Installed.";
-            }
-            else
-            {
-                if(Updater.IsVersionNewer(installed, latest))
-                {
-                    updateBtn.Text = "Update To Latest Version!";
-                    statusLabel.Text = "Update Available!";
-                }
-                else
-                {
-                    updateBtn.Text = "Rollback To Public Version";
-                    statusLabel.Text = "Using Newer Version Than Latest Public Release.";
-                }
+                statusLabel.Text = "Latest Free Version Is Installed.";
+
+                if (Updater.IsVersionNewer(installed, latestPat))
+                    statusLabel.Text += "\nBeta Update Available On Patreon.";
+
+                return;
             }
 
-            updateBtn.Enabled = true;
+            if (Updater.VersionMatches(installed, latestPat))
+            {
+                statusLabel.Text = "Latest Patreon/Beta Version Is Installed.";
+                return;
+            }
+
+            if (Updater.IsVersionNewer(installed, latestPat))
+            {
+                statusLabel.Text = "Update available on Patreon!";
+
+                if (Updater.IsVersionNewer(installed, latestFree))
+                    statusLabel.Text += " - Beta Updates Available On Patreon and Itch.io.";
+
+                return;
+            }
         }
 
         float lastProg = -1f;
@@ -57,10 +64,17 @@ namespace Flowframes.Forms
             downloadingLabel.Text = str;
         }
 
-        private async void updateBtn_Click(object sender, EventArgs e)
+        private void updatePatreonBtn_Click(object sender, EventArgs e)
         {
-            string link = Updater.GetLatestVerLink();
+            string link = Updater.GetLatestVerLink(true);
             if(!string.IsNullOrWhiteSpace(link))
+                Process.Start(link);
+        }
+
+        private void updateFreeBtn_Click(object sender, EventArgs e)
+        {
+            string link = Updater.GetLatestVerLink(false);
+            if (!string.IsNullOrWhiteSpace(link))
                 Process.Start(link);
         }
     }

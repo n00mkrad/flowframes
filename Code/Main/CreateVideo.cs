@@ -94,8 +94,6 @@ namespace Flowframes.Main
                     await Task.Delay(1);
                 }
             }
-
-            //IOUtils.ZeroPadDir(copyPath, "*", Padding.interpFrames);
         }
 
         static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
