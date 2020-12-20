@@ -131,7 +131,7 @@ namespace Flowframes.Main
 
             int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
             int targetFrameCount = frames * current.interpFactor;
-            GetProgressByFrameAmount(current.interpFolder, targetFrameCount);
+            InterpolateUtils.GetProgressByFrameAmount(current.interpFolder, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             int tilesize = current.ai.supportsTiling ? Config.GetInt($"tilesize_{current.ai.aiName}") : 512;
@@ -141,7 +141,7 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid()
         {
-            string[] outFrames = Directory.GetFiles(current.interpFolder, $"*.{InterpolateUtils.GetExt()}");
+            string[] outFrames = Directory.GetFiles(current.interpFolder, $"*.{InterpolateUtils.GetOutExt()}");
             if (outFrames.Length > 0 && !IOUtils.CheckImageValid(outFrames[0]))
             {
                 InterpolateUtils.ShowMessage("Invalid frame files detected!\n\nIf you used Auto-Encode, this is normal, and you don't need to run " +

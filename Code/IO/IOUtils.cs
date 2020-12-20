@@ -500,6 +500,25 @@ namespace Flowframes.IO
             }
         }
 
+		public static bool MoveTo(string file, string targetFolder, bool overwrite = true)
+		{
+			string targetPath = Path.Combine(targetFolder, Path.GetFileName(file));
+			try
+			{
+				if (!Directory.Exists(targetFolder))
+					Directory.CreateDirectory(targetFolder);
+				if (overwrite)
+					DeleteIfExists(targetPath);
+				File.Move(file, targetPath);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Logger.Log($"Failed to move {file} to {targetFolder}: {e.Message}");
+				return false;
+			}
+		}
+
 		public enum Hash { MD5, CRC32 }
 		public static string GetHash (string filename, Hash hashType)
 		{
@@ -539,7 +558,7 @@ namespace Flowframes.IO
 			ZeroPadDir(files.Select(x => x.FullName).ToList(), targetLength);
 		}
 
-		public static void ZeroPadDir(List<string> files, int targetLength, List<string> exclude = null)
+		public static void ZeroPadDir(List<string> files, int targetLength, List<string> exclude = null, bool noLog = true)
 		{
 			if(exclude != null)
 				files = files.Except(exclude).ToList();
@@ -555,7 +574,8 @@ namespace Flowframes.IO
 				}
 				catch (Exception e)
 				{
-					Logger.Log($"Failed to zero-pad {file} => {targetFilename}: {e.Message}", true);
+					if(!noLog)
+						Logger.Log($"Failed to zero-pad {file} => {targetFilename}: {e.Message}", true);
 				}
 			}
 		}

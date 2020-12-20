@@ -50,8 +50,8 @@ namespace Flowframes.Main
                     continue;
                 }
 
-                IOUtils.ZeroPadDir(Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetExt()}").ToList(), Padding.interpFrames, encodedFrames);
-                string[] interpFrames = Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetExt()}");
+                IOUtils.ZeroPadDir(Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}").ToList(), Padding.interpFrames, encodedFrames);
+                string[] interpFrames = Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}");
                 unencodedFrames = interpFrames.ToList().Except(encodedFrames).ToList();
 
                 Directory.CreateDirectory(videoChunksFolder);
@@ -117,7 +117,7 @@ namespace Flowframes.Main
 
         static int GetInterpFramesAmount()
         {
-            return IOUtils.GetAmountOfFiles(interpFramesFolder, false, $"*.{InterpolateUtils.GetExt()}");
+            return IOUtils.GetAmountOfFiles(interpFramesFolder, false, $"*.{InterpolateUtils.GetOutExt()}");
         }
     }
 }

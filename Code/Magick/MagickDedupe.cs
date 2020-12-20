@@ -214,7 +214,7 @@ namespace Flowframes.Magick
             if (currentMode == Mode.None)
                 return;
 
-            string ext = InterpolateUtils.GetExt();
+            string ext = InterpolateUtils.GetOutExt();
 
             string dupeInfoFile = Path.Combine(Interpolate.current.tempFolder, "dupes.ini");
             if (!File.Exists(dupeInfoFile)) return;

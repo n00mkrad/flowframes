@@ -53,19 +53,18 @@ namespace Flowframes
             await Task.Delay(10);
             await PostProcessFrames();
             if (canceled) return;
-            string interpFramesDir = Path.Combine(current.tempFolder, Paths.interpDir);
             int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
             int targetFrameCount = frames * current.interpFactor;
-            GetProgressByFrameAmount(interpFramesDir, targetFrameCount);
+            Utils.GetProgressByFrameAmount(current.interpFolder, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(interpFramesDir, targetFrameCount, current.tilesize, current.ai);
+            await RunAi(current.interpFolder, targetFrameCount, current.tilesize, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
-                await CreateVideo.Export(interpFramesDir, current.outFilename, current.outMode);
+                await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode);
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
-            Cleanup(interpFramesDir);
+            Cleanup(current.interpFolder);
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
@@ -161,30 +160,6 @@ namespace Flowframes
             await Task.WhenAll(tasks);
         }
 
-        public static async void GetProgressByFrameAmount(string outdir, int target)
-        {
-            bool firstProgUpd = true;
-            Program.mainForm.SetProgress(0);
-            while (Program.busy)
-            {
-                if (AiProcess.processTime.IsRunning && Directory.Exists(outdir))
-                {
-                    if (firstProgUpd && Program.mainForm.IsInFocus())
-                        Program.mainForm.SetTab("preview");
-                    firstProgUpd = false;
-                    string[] frames = Directory.GetFiles(outdir, $"*.{Utils.GetExt()}");
-                    if (frames.Length > 1)
-                        Utils.UpdateInterpProgress(frames.Length, target, frames[frames.Length - 1]);
-                    await Task.Delay(Utils.GetProgressWaitTime(frames.Length));
-                }
-                else
-                {
-                    await Task.Delay(200);
-                }
-            }
-            Program.mainForm.SetProgress(-1);
-        }
-
         public static void Cancel(string reason = "", bool noMsgBox = false)
         {
             if (AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)
@@ -196,6 +171,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(0);
             if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
                 IOUtils.TryDeleteIfExists(current.tempFolder);
+            AutoEncode.busy = false;
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");
             if(!Logger.GetLastLine().Contains("Canceled interpolation."))

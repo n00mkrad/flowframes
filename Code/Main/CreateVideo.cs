@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using i = Flowframes.Interpolate;
+using System.Diagnostics;
 
 namespace Flowframes.Main
 {
@@ -26,11 +27,7 @@ namespace Flowframes.Main
             {
                 try
                 {
-                    Logger.Log("Moving interpolated frames out of temp folder...");
-                    string copyPath = Path.Combine(i.current.tempFolder.ReplaceLast("-temp", "-interpolated"));
-                    Logger.Log($"{path} -> {copyPath}");
-                    IOUtils.CreateDir(copyPath);
-                    IOUtils.Copy(path, copyPath, true);
+                    await CopyOutputFrames(path, Path.GetFileNameWithoutExtension(outPath));
                 }
                 catch(Exception e)
                 {
@@ -39,7 +36,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.GetExt()}") <= 1)
+            if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.GetOutExt()}") <= 1)
             {
                 i.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
@@ -61,6 +58,44 @@ namespace Flowframes.Main
                 Logger.Log("FramesToVideo Error: " + e.Message, false);
                 MessageBox.Show("An error occured while trying to convert the interpolated frames to a video.\nCheck the log for details.");
             }
+        }
+
+        static async Task CopyOutputFrames (string framesPath, string folderName)
+        {
+            Program.mainForm.SetStatus("Copying output frames...");
+            string copyPath = Path.Combine(i.current.outPath, folderName);
+            Logger.Log($"Copying interpolated frames to '{copyPath}'");
+            IOUtils.TryDeleteIfExists(copyPath);
+            IOUtils.CreateDir(copyPath);
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.current.interpFactor}x.ini");
+            string[] vfrLines = IOUtils.ReadLines(vfrFile);
+            string currentInterpExt = $".{InterpolateUtils.GetOutExt()}";
+            vfrLines = vfrLines.Where(x => x.Contains(currentInterpExt)).ToArray();  // Remove duration lines, leaving only filename lines
+
+            for (int idx = 1; idx <= vfrLines.Length; idx++)
+            {
+                string line = vfrLines[idx-1];
+                string inFilename = line.Split('/').Last().Remove("'");
+                string framePath = Path.Combine(framesPath, inFilename);
+                string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + InterpolateUtils.GetOutExt(true);
+
+                if ((idx < vfrLines.Length) && vfrLines[idx].Contains(inFilename))   // If file is re-used in the next line, copy instead of move
+                    File.Copy(framePath, outFilename);
+                else
+                    File.Move(framePath, outFilename);
+
+                if (sw.ElapsedMilliseconds >= 1000 || idx == vfrLines.Length)
+                {
+                    sw.Restart();
+                    Logger.Log($"Copying interpolated frames to '{Path.GetFileName(copyPath)}' - {idx}/{vfrLines.Length}", false, true);
+                    await Task.Delay(1);
+                }
+            }
+
+            //IOUtils.ZeroPadDir(copyPath, "*", Padding.interpFrames);
         }
 
         static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)

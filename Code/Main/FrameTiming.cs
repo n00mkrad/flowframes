@@ -30,7 +30,7 @@ namespace Flowframes.Main
                 Logger.Log("Timestamps are disabled, using static frame rate.");
 
             bool sceneDetection = true;
-            string ext = InterpolateUtils.GetExt();
+            string ext = InterpolateUtils.GetOutExt();
 
             FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor}x.ini");

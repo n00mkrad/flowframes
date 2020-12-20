@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using i = Flowframes.Interpolate;
 
@@ -19,27 +20,56 @@ namespace Flowframes.Main
         public static PictureBox preview;
         public static BigPreviewForm bigPreviewForm;
 
-        public static string GetExt ()
+        public static string GetOutExt (bool withDot = false)
         {
+            string dotStr = withDot ? "." : "";
             if (Config.GetBool("jpegInterps"))
-                return "jpg";
-            return "png";
+                return dotStr + "jpg";
+            return dotStr + "png";
+        }
+
+        public static int targetFrames;
+        public static int currentFactor;
+        public static async void GetProgressByFrameAmount(string outdir, int target)
+        {
+            bool firstProgUpd = true;
+            Program.mainForm.SetProgress(0);
+            targetFrames = target;
+            while (Program.busy)
+            {
+                if (AiProcess.processTime.IsRunning && Directory.Exists(outdir))
+                {
+                    if (firstProgUpd && Program.mainForm.IsInFocus())
+                        Program.mainForm.SetTab("preview");
+                    firstProgUpd = false;
+                    string[] frames = Directory.GetFiles(outdir, $"*.{GetOutExt()}");
+                    if (frames.Length > 1)
+                        UpdateInterpProgress(frames.Length, targetFrames, frames[frames.Length - 1]);
+                    await Task.Delay(GetProgressWaitTime(frames.Length));
+                }
+                else
+                {
+                    await Task.Delay(200);
+                }
+            }
+            Program.mainForm.SetProgress(-1);
         }
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
+            frames = frames.Clamp(0, target);
             int percent = (int)Math.Round(((float)frames / target) * 100f);
             Program.mainForm.SetProgress(percent);
 
             float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
             float fps = (float)frames / generousTime;
-            string fpsIn = (fps / i.current.interpFactor).ToString("0.00");
+            string fpsIn = (fps / currentFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");
 
             float secondsPerFrame = generousTime / (float)frames;
             int framesLeft = target - frames;
             float eta = framesLeft * secondsPerFrame;
-            string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()));
+            string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()), false);
 
             bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
 
@@ -50,7 +80,7 @@ namespace Flowframes.Main
 
             try
             {
-                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > i.current.interpFactor)
+                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > currentFactor)
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     Image img = IOUtils.GetImage(latestFramePath);
