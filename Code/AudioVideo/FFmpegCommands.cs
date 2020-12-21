@@ -46,6 +46,7 @@ namespace Flowframes
             string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode);
+            if (!sceneDetect) Logger.Log($"Extracted {IOUtils.GetAmountOfFiles(frameFolderPath, false, "*.png")} frames from input.", false, true);
             await Task.Delay(1);
             if (delSrc)
                 DeleteSource(inputFile);
