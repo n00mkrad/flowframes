@@ -3,6 +3,7 @@ using Flowframes.IO;
 using Flowframes.Main;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 namespace Flowframes
@@ -23,6 +24,8 @@ namespace Flowframes
         public string interpFolder;
         public bool inputIsFrames;
         public string outFilename;
+        public Size inputResolution;
+        public Size scaledResolution;
 
         public InterpSettings(string inPathArg, string outPathArg, AI aiArg, float inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, int tilesizeArg = 512)
         {
@@ -52,6 +55,9 @@ namespace Flowframes
                 inputIsFrames = false;
                 outFilename = "";
             }
+
+            inputResolution = new Size(0, 0);
+            scaledResolution = new Size(0, 0);
         }
 
         public void UpdatePaths (string inPathArg, string outPathArg)
@@ -65,10 +71,25 @@ namespace Flowframes
             outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + InterpolateUtils.GetExt(outMode));
         }
 
-        public void SetFps(float inFpsArg)
+        public Size GetInputRes ()
         {
-            inFps = inFpsArg;
-            outFps = inFps * interpFactor;
+            RefreshResolutions();
+            return inputResolution;
+        }
+
+        public Size GetScaledRes()
+        {
+            RefreshResolutions();
+            return scaledResolution;
+        }
+
+        void RefreshResolutions ()
+        {
+            if (inputResolution.IsEmpty || scaledResolution.IsEmpty)
+            {
+                inputResolution = IOUtils.GetVideoRes(inPath);
+                scaledResolution = InterpolateUtils.GetOutputResolution(inputResolution, false);
+            }
         }
     }
 }

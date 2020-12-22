@@ -285,22 +285,27 @@ namespace Flowframes.Main
             Logger.Log("Message: " + msg, true);
         }
 
-        public static Size GetOutputResolution (string inputPath, bool print = true)
+        public static Size GetOutputResolution (string inputPath, bool print)
         {
             Size resolution = IOUtils.GetVideoRes(inputPath);
+            return GetOutputResolution(resolution, print);
+        }
+
+        public static Size GetOutputResolution(Size inputRes, bool print = false)
+        {
             int maxHeight = RoundDiv2(Config.GetInt("maxVidHeight"));
-            if (resolution.Height > maxHeight)
+            if (inputRes.Height > maxHeight)
             {
-                float factor = (float)maxHeight / resolution.Height;
-                Logger.Log($"Un-rounded downscaled size: {(resolution.Width * factor).ToString("0.00")}x{Config.GetInt("maxVidHeight")}", true);
-                int width = RoundDiv2((resolution.Width * factor).RoundToInt());
-                if(print)
+                float factor = (float)maxHeight / inputRes.Height;
+                Logger.Log($"Un-rounded downscaled size: {(inputRes.Width * factor).ToString("0.00")}x{Config.GetInt("maxVidHeight")}", true);
+                int width = RoundDiv2((inputRes.Width * factor).RoundToInt());
+                if (print)
                     Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
                 return new Size(width, maxHeight);
             }
             else
             {
-                return new Size(RoundDiv2(resolution.Width), RoundDiv2(resolution.Height));
+                return new Size(RoundDiv2(inputRes.Width), RoundDiv2(inputRes.Height));
             }
         }
 

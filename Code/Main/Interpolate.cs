@@ -82,7 +82,7 @@ namespace Flowframes
             }
 
             Program.mainForm.SetStatus("Extracting frames from video...");
-            await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath));
+            await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath, true));
 
             if (extractAudio)
             {
