@@ -1,4 +1,5 @@
 ﻿using Flowframes;
+using Flowframes.IO;
 using Flowframes.UI;
 using ImageMagick;
 using System;
@@ -16,7 +17,7 @@ namespace Flowframes.Magick
     {
         public static async Task Convert (string dir, MagickFormat format, int quality, string ext = "", bool print = true, bool setProgress = true)
         {
-            var files = Directory.GetFiles(dir);
+            var files = IOUtils.GetFilesSorted(dir);
             if(print) Logger.Log($"Converting {files.Length} files in {dir}");
             int counter = 0;
             foreach (string file in files)
@@ -37,7 +38,7 @@ namespace Flowframes.Magick
 
         public static async Task Preprocess (string dir, bool setProgress = true)
         {
-            var files = Directory.GetFiles(dir);
+            var files = IOUtils.GetFilesSorted(dir);
             Logger.Log($"Preprocessing {files} files in {dir}");
             int counter = 0;
             foreach (string file in files)

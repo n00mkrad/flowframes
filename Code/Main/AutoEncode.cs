@@ -51,7 +51,7 @@ namespace Flowframes.Main
                 }
 
                 IOUtils.ZeroPadDir(Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}").ToList(), Padding.interpFrames, encodedFrames);
-                string[] interpFrames = Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}");
+                string[] interpFrames = IOUtils.GetFilesSorted(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}");
                 unencodedFrames = interpFrames.ToList().Except(encodedFrames).ToList();
 
                 Directory.CreateDirectory(videoChunksFolder);
@@ -92,7 +92,7 @@ namespace Flowframes.Main
 
             string concatFile = Path.Combine(interpFramesPath.GetParentDir(), "chunks-concat.ini");
             string concatFileContent = "";
-            foreach (string vid in Directory.GetFiles(videoChunksFolder))
+            foreach (string vid in IOUtils.GetFilesSorted(videoChunksFolder))
                 concatFileContent += $"file '{Paths.chunksDir}/{Path.GetFileName(vid)}'\n";
             File.WriteAllText(concatFile, concatFileContent);
 

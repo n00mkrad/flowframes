@@ -35,7 +35,7 @@ namespace Flowframes.Magick
             Logger.Log("Running accurate frame de-duplication...");
 
             if (currentMode == Mode.Enabled || currentMode == Mode.Auto)
-                await RemoveDupeFrames(path, currentThreshold, "png", testRun, false, (currentMode == Mode.Auto));
+                await RemoveDupeFrames(path, currentThreshold, "png", testRun, true, (currentMode == Mode.Auto));
         }
 
         public static Dictionary<string, MagickImage> imageCache = new Dictionary<string, MagickImage>();
@@ -62,113 +62,120 @@ namespace Flowframes.Magick
             Stopwatch sw = new Stopwatch();
             sw.Restart();
             Logger.Log("Removing duplicate frames - Threshold: " + threshold.ToString("0.00"));
-            //Logger.Log("Analyzing frames...");
-            DirectoryInfo dirInfo = new DirectoryInfo(path);
-            FileInfo[] framePaths = dirInfo.GetFiles("*." + ext, SearchOption.TopDirectoryOnly);
 
-            Dictionary<int, int> framesDupesDict = new Dictionary<int, int>();
+            FileInfo[] framePaths = IOUtils.GetFileInfosSorted(path, false, "*." + ext);
+            List<string> framesToDelete = new List<string>();
 
             int currentOutFrame = 1;
             int currentDupeCount = 0;
-            string dupeInfoFile = Path.Combine(path, "..", "dupes.ini");
-            int lastFrameNum = 0;
 
             int statsFramesKept = 0;
             int statsFramesDeleted = 0;
-
-            IOUtils.TryDeleteIfExists(dupeInfoFile);
-
-            bool loopMode = Config.GetBool("enableLoop");
 
             int skipAfterNoDupesFrames = Config.GetInt("autoDedupFrames");
             bool hasEncounteredAnyDupes = false;
             bool skipped = false;
 
-            int i = 0;
-            while (i < framePaths.Length)
+            bool hasReachedEnd = false;
+
+            for (int i = 0; i < framePaths.Length; i++)     // Loop through frames
             {
+                if (hasReachedEnd)
+                    break;
+
+                Logger.Log("Base Frame:  #" + i);
+                //int thisFrameDupeCount = 0;
+
                 string frame1 = framePaths[i].FullName;
-                if (!File.Exists(framePaths[i].FullName))   // Skip if file doesn't exist (used to be a duped frame)
-                {
-                    i++;
-                    continue;
-                }
+                //if (!File.Exists(framePaths[i].FullName))   // Skip if file doesn't exist (already deleted / used to be a duped frame)
+                //    continue;
 
-                i++;
-                string frame2;
+                int compareWithIndex = i + 1;
 
-                int oldIndex = -1;
-                if (i >= framePaths.Length)    // If this is the last frame, compare with 1st to avoid OutOfRange error
+                while (true)   // Loop dupes
                 {
-                    if (loopMode)
+                    //compareWithIndex++;
+                    if (compareWithIndex >= framePaths.Length)
                     {
-                        framesDupesDict = UpdateDupeDict(framesDupesDict, currentOutFrame, 0);
+                        hasReachedEnd = true;
                         break;
                     }
-                    oldIndex = i;
-                    i = 0;
-                }
 
-                while (!File.Exists(framePaths[i].FullName))   // If frame2 doesn't exist, keep stepping thru the array
-                {
-                    if (i >= framePaths.Length)
-                        break;
-                    i++;
-                }
-
-                frame2 = framePaths[i].FullName;
-                if (oldIndex >= 0)
-                    i = oldIndex;
-
-                //long msBeforeLoad = sw.ElapsedMilliseconds;
-                MagickImage img2 = GetImage(frame2);
-                MagickImage img1 = GetImage(frame1);
-
-                //MagickImage img1 = new MagickImage(frame1);
-                //MagickImage img2 = new MagickImage(frame2);
-                double err = img1.Compare(img2, ErrorMetric.Fuzz);
-                float errPercent = (float)err * 100f;
-
-                if (debugLog) Logger.Log("[dedup] current in frame: " + i);
-                if (debugLog) Logger.Log("[dedup] current out frame: " + currentOutFrame);
-
-                framesDupesDict = UpdateDupeDict(framesDupesDict, currentOutFrame, currentDupeCount);
-
-                lastFrameNum = currentOutFrame;
-
-                string delStr = "Keeping";
-                if (errPercent < threshold)     // Is a duped frame.
-                {
-                    if (!testRun)
+                    if (framesToDelete.Contains(framePaths[compareWithIndex].FullName) || !File.Exists(framePaths[compareWithIndex].FullName))
                     {
-                        delStr = "Deleting";
-                        File.Delete(frame1);
-                        if(debugLog) Logger.Log("[FrameDedup] Deleted " + Path.GetFileName(frame1));
-                        hasEncounteredAnyDupes = true;
-                        i--;    // Turn the index back so we compare the same frame again, this time to the next one after the deleted frame
+                        Logger.Log($"Frame {compareWithIndex} was already deleted - skipping");
+                        compareWithIndex++;
                     }
-                    statsFramesDeleted++;
-                    currentDupeCount++;
-                }
-                else
-                {
-                    statsFramesKept++;
-                    currentOutFrame++;
-                    currentDupeCount = 0;
+                    else
+                    {
+                        //if (compareWithIndex >= framePaths.Length)
+                        //    hasReachedEnd = true;
+
+                        Logger.Log("Compare With:  #" + compareWithIndex);
+
+                        string frame2 = framePaths[compareWithIndex].FullName;
+                        // if (oldIndex >= 0)
+                        //     i = oldIndex;
+
+                        float diff = GetDifference(frame1, frame2);
+                        Logger.Log("Diff: " + diff);
+
+                        string delStr = "Keeping";
+                        if (diff < threshold)     // Is a duped frame.
+                        {
+                            if (!testRun)
+                            {
+                                delStr = "Deleting";
+                                //File.Delete(frame2);
+                                framesToDelete.Add(frame2);
+                                if (debugLog) Logger.Log("[FrameDedup] Deleted " + Path.GetFileName(frame2));
+                                hasEncounteredAnyDupes = true;
+                            }
+                            statsFramesDeleted++;
+                            currentDupeCount++;
+                            Logger.Log($"Frame {i} has {currentDupeCount} dupes");
+                        }
+                        else
+                        {
+                            statsFramesKept++;
+                            currentOutFrame++;
+                            currentDupeCount = 0;
+                            break;
+                        }
+
+                        if (i % 15 == 0 || true)
+                        {
+                            Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(frame1)} to {Path.GetFileName(frame2)}: {diff.ToString("0.00")}% - {delStr}. Total: {statsFramesKept} kept / {statsFramesDeleted} deleted.", false, true);
+                            Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
+                            if (imageCache.Count > 750 || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
+                                ClearCache();
+                        }
+                    }
                 }
 
-                if(i % 15 == 0)
-                {
-                    Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(img1.FileName)} to {Path.GetFileName(img2.FileName)}: {errPercent.ToString("0.00")}% - {delStr}. Total: {statsFramesKept} kept / {statsFramesDeleted} deleted.", false, true);
-                    Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
-                    if (imageCache.Count > 750 || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
-                        ClearCache();
-                }
+                // int oldIndex = -1;
+                // if (i >= framePaths.Length)    // If this is the last frame, compare with 1st to avoid OutOfRange error
+                // {
+                //     oldIndex = i;
+                //     i = 0;
+                // }
+
+                // while (!File.Exists(framePaths[i+1].FullName))   // If frame2 doesn't exist, keep stepping thru the array
+                // {
+                //     if (i >= framePaths.Length)
+                //         break;
+                //     i++;
+                // }
+
+                
 
                 if(i % 5 == 0)
                     await Task.Delay(1);
 
                 if (Interpolate.canceled) return;
+
+                foreach (string frame in framesToDelete)
+                    IOUtils.TryDeleteIfExists(frame);
 
                 if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && skipAfterNoDupesFrames > 0 && i >= skipAfterNoDupesFrames)
                 {
@@ -186,131 +193,21 @@ namespace Flowframes.Magick
             }
             else
             {
-                if(!testRun)
-                    File.WriteAllLines(dupeInfoFile, framesDupesDict.Select(x => "frm" + x.Key + ":" + x.Value).ToArray());
                 Logger.Log($"[FrameDedup]{testStr} Done. Kept {statsFramesKept} frames, deleted {statsFramesDeleted} frames.", false, true);
             }
 
             if (statsFramesKept <= 0)
                 Interpolate.Cancel("No frames were left after de-duplication.");
-
-            //Logger.Log($"Finished in {FormatUtils.Time(sw.Elapsed)} - {framePaths.Length / (sw.ElapsedMilliseconds / 1000f)} Imgs/Sec");
-
-            //RenameCounterDir(path, "png");
-            //ZeroPadDir(path, ext, 8);
         }
 
-        static Dictionary<int, int> UpdateDupeDict(Dictionary<int, int> dict, int frame, int amount)
+        static float GetDifference (string img1Path, string img2Path)
         {
-            if (dict.ContainsKey(frame))
-                dict[frame] = amount;
-            else
-                dict.Add(frame, amount);
-            return dict;
-        }
+            MagickImage img2 = GetImage(img2Path);
+            MagickImage img1 = GetImage(img1Path);
 
-        public static async Task Reduplicate(string path, bool debugLog = false)
-        {
-            if (currentMode == Mode.None)
-                return;
-
-            string ext = InterpolateUtils.GetOutExt();
-
-            string dupeInfoFile = Path.Combine(Interpolate.current.tempFolder, "dupes.ini");
-            if (!File.Exists(dupeInfoFile)) return;
-
-            Logger.Log("Re-Duplicating frames to fix timing...");
-            RenameCounterDir(path, ext);
-            IOUtils.ZeroPadDir(path, ext, 8);
-
-            string[] dupeFrameLines = IOUtils.ReadLines(dupeInfoFile);
-            string tempSubFolder = Path.Combine(path, "temp");
-            Directory.CreateDirectory(tempSubFolder);
-
-            int interpFramesPerRealFrame = Interpolate.current.interpFactor - 1;
-
-            int sourceFrameNum = 0;
-            int outFrameNum = 1;
-
-            for (int i = 0; i < dupeFrameLines.Length; i++)
-            {
-                string line = dupeFrameLines[i];
-                sourceFrameNum++;
-
-                string[] kvp = line.Split(':');
-                int currentInFrame = kvp[0].GetInt();
-                int currentDupesAmount = kvp[1].GetInt();
-
-                // Copy Source Frame
-                string paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
-                string sourceFramePath = Path.Combine(path, paddedFilename);
-                if(debugLog) Logger.Log("[Source] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
-                    break;
-                outFrameNum++;
-
-                // Insert dupes for source frame
-                for (int copyTimes = 0; copyTimes < currentDupesAmount; copyTimes++)
-                {
-                    paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
-                    sourceFramePath = Path.Combine(path, paddedFilename);
-                    if (debugLog) Logger.Log("[Source Dupes] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                    if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
-                        break;
-                    outFrameNum++;
-                }
-
-                if (i == dupeFrameLines.Length - 1)         // Break loop if this is the last input frame (as it has no interps)
-                    break;
-
-                for(int interpFrames = 0; interpFrames < interpFramesPerRealFrame; interpFrames++)
-                {
-                    sourceFrameNum++;
-
-                    // Copy Interp Frame
-                    paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
-                    sourceFramePath = Path.Combine(path, paddedFilename);
-                    if (debugLog) Logger.Log("[Interp] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                    if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
-                        break;
-                    outFrameNum++;
-
-                    // Insert dupes for interp frame
-                    for (int copyTimes = 0; copyTimes < currentDupesAmount; copyTimes++)
-                    {
-                        paddedFilename = sourceFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + $".{ext}";
-                        sourceFramePath = Path.Combine(path, paddedFilename);
-                        if (debugLog) if (debugLog) Logger.Log("[Interp Dupes] Moving " + Path.GetFileName(sourceFramePath) + " => " + outFrameNum + $".{ext}");
-                        if (!IOUtils.TryCopy(sourceFramePath, Path.Combine(tempSubFolder, outFrameNum + $".{ext}")))
-                            break;
-                        outFrameNum++;
-                    }
-                }
-            }
-            IOUtils.ZeroPadDir(tempSubFolder, ext, 8);
-
-            foreach (FileInfo file in new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly))
-                file.Delete();
-
-            foreach (FileInfo file in new DirectoryInfo(tempSubFolder).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly))
-                file.MoveTo(Path.Combine(path, file.Name));
-        }
-
-        public static void RenameCounterDir(string path, string ext, int sortMode = 0)
-        {
-            int counter = 1;
-            FileInfo[] files = new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly);
-            var filesSorted = files.OrderBy(n => n);
-
-            if (sortMode == 1)
-                filesSorted.Reverse();
-
-            foreach (FileInfo file in files)
-            {
-                string dir = new DirectoryInfo(file.FullName).Parent.FullName;
-                File.Move(file.FullName, Path.Combine(dir, counter.ToString()/*.PadLeft(filesDigits, '8')*/ + Path.GetExtension(file.FullName)));
-                counter++;
-            }
+            double err = img1.Compare(img2, ErrorMetric.Fuzz);
+            float errPercent = (float)err * 100f;
+            return errPercent;
         }
     }
 }

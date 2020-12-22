@@ -99,7 +99,7 @@ namespace Flowframes.UI
                 }
                 else     // Path is frame folder - Get first frame
                 {
-                    return IOUtils.GetImage(Directory.GetFiles(path)[0]);
+                    return IOUtils.GetImage(IOUtils.GetFilesSorted(path)[0]);
                 }
             }
             catch (Exception e)

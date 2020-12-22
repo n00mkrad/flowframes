@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace Flowframes
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath)
         {
             Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, (Config.GetInt("dedupMode") == 2), false, new Size(320, 180), true, true);
+            await VideoToFrames(inputFile, frameFolderPath, false, false, new Size(320, 180), true, true);
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
             Logger.Log($"Detected {IOUtils.GetAmountOfFiles(frameFolderPath, false)} scene changes.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
@@ -59,7 +60,7 @@ namespace Flowframes
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
             string concatFileContent = "";
-            foreach (string img in Directory.GetFiles(inpath))
+            foreach (string img in IOUtils.GetFilesSorted(inpath))
                 concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
             File.WriteAllText(concatFile, concatFileContent);
 
@@ -83,19 +84,6 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (delSrc)
                 DeleteSource(inputFile);
-        }
-
-        public static async Task FramesToMp4(string inputDir, string outPath, bool useH265, int crf, float fps, string prefix, bool delSrc, int looptimes = -1, string imgFormat = "png")
-        {
-            Logger.Log($"Encoding MP4 video with CRF {crf}...");
-            int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, $"*.{imgFormat}")[0], prefix);
-            string enc = useH265 ? "libx265" : "libx264";
-            string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
-            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string args = $" {loopStr} -framerate {fps.ToString().Replace(",", ".")} -i \"{inputDir}\\{prefix}%0{nums}d.{imgFormat}\" -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
-            if (delSrc)
-                DeleteSource(inputDir);
         }
 
         public static async Task FramesToMp4Vfr(string framesFile, string outPath, bool useH265, int crf, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
@@ -130,19 +118,9 @@ namespace Flowframes
                 DeleteSource(inputPath);
         }
 
-        public static async void FramesToApng(string inputDir, bool opti, int fps, string prefix, bool delSrc = false)
-        {
-            int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, "*.png")[0], prefix);
-            string filter = opti ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
-            string args = "-framerate " + fps + " -i \"" + inputDir + "\\" + prefix + "%0" + nums + "d.png\" -f apng -plays 0 " + filter + " \"" + inputDir + "-anim.png\"";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
-            if (delSrc)
-                DeleteSource(inputDir);
-        }
-
         public static async void FramesToGif(string inputDir, bool palette, int fps, string prefix, bool delSrc = false)
         {
-            int nums = IOUtils.GetFilenameCounterLength(Directory.GetFiles(inputDir, "*.png")[0], prefix);
+            int nums = IOUtils.GetFilenameCounterLength(IOUtils.GetFilesSorted(inputDir, false, "*.png")[0], prefix);
             string filter = palette ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
             string args = "-framerate " + fps + " -i \"" + inputDir + "\\" + prefix + "%0" + nums + "d.png\" -f gif " + filter + " \"" + inputDir + ".gif\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);

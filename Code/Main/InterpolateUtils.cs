@@ -42,7 +42,7 @@ namespace Flowframes.Main
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
                     firstProgUpd = false;
-                    string[] frames = Directory.GetFiles(outdir, $"*.{GetOutExt()}");
+                    string[] frames = IOUtils.GetFilesSorted(outdir, $"*.{GetOutExt()}");
                     if (frames.Length > 1)
                         UpdateInterpProgress(frames.Length, targetFrames, frames[frames.Length - 1]);
                     await Task.Delay(GetProgressWaitTime(frames.Length));
