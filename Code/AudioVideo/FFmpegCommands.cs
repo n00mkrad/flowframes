@@ -112,7 +112,7 @@ namespace Flowframes
             Logger.Log($"Changing video frame rate...");
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} -c:v copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputPath);
