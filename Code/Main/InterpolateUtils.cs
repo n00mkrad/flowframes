@@ -319,8 +319,6 @@ namespace Flowframes.Main
 
         public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
         {
-            Stopwatch sw = new Stopwatch();
-
             List<string> sceneFrames = IOUtils.GetFilesSorted(sceneFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
             List<string> sourceFrames = IOUtils.GetFilesSorted(sourceFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
             List<string> sceneFramesToDelete = new List<string>();
@@ -339,8 +337,6 @@ namespace Flowframes.Main
 
             foreach (string frame in sceneFramesToDelete)
                 IOUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + ".png"));
-
-            Logger.Log("Ran FixConsecutiveSceneFrames in " + FormatUtils.Time(sw.Elapsed));
         }
     }
 }

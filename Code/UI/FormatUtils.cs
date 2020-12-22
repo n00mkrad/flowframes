@@ -45,7 +45,7 @@ namespace Flowframes.UI
             if (span.TotalSeconds >= 1f || !allowMs)
                 return span.ToString(@"ss") + "s";
 
-            return span.ToString(@"fff") + "ms";
+            return span.ToString(@"fff").TrimStart('0').PadLeft(1, '0') + "ms";
         }
 
         public static string TimeSw(Stopwatch sw)
