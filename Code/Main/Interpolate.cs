@@ -83,6 +83,7 @@ namespace Flowframes
 
             Program.mainForm.SetStatus("Extracting frames from video...");
             await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath, true));
+            Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
             if (extractAudio)
             {
@@ -90,6 +91,7 @@ namespace Flowframes
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
+
             if (!canceled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
             {
                 string lastFrame = IOUtils.GetHighestFrameNumPath(outPath);

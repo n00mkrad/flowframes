@@ -5,6 +5,7 @@ using Flowframes.OS;
 using Flowframes.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -314,6 +315,32 @@ namespace Flowframes.Main
             int a = (n / 2) * 2;    // Smaller multiple
             int b = a + 2;   // Larger multiple
             return (n - a > b - n) ? b : a; // Return of closest of two
+        }
+
+        public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
+        {
+            Stopwatch sw = new Stopwatch();
+
+            List<string> sceneFrames = IOUtils.GetFilesSorted(sceneFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
+            List<string> sourceFrames = IOUtils.GetFilesSorted(sourceFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
+            List<string> sceneFramesToDelete = new List<string>();
+
+            foreach(string scnFrame in sceneFrames)
+            {
+                if (sceneFramesToDelete.Contains(scnFrame))
+                    continue;
+
+                int sourceIndexForScnFrame = sourceFrames.IndexOf(scnFrame);            // Get source index of scene frame
+                string followingFrame = sourceFrames[sourceIndexForScnFrame + 1];       // Get filename/timestamp of the next source frame
+
+                if (sceneFrames.Contains(followingFrame))                               // If next source frame is in scene folder, add to deletion list
+                    sceneFramesToDelete.Add(followingFrame);
+            }
+
+            foreach (string frame in sceneFramesToDelete)
+                IOUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + ".png"));
+
+            Logger.Log("Ran FixConsecutiveSceneFrames in " + FormatUtils.Time(sw.Elapsed));
         }
     }
 }
