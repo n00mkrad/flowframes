@@ -96,6 +96,12 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
+            this.proResProfile = new System.Windows.Forms.ComboBox();
+            this.label59 = new System.Windows.Forms.Label();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.label58 = new System.Windows.Forms.Label();
+            this.vp9Crf = new System.Windows.Forms.ComboBox();
+            this.label57 = new System.Windows.Forms.Label();
             this.loopMode = new System.Windows.Forms.ComboBox();
             this.label55 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
@@ -145,12 +151,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label57 = new System.Windows.Forms.Label();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.label58 = new System.Windows.Forms.Label();
-            this.vp9Crf = new System.Windows.Forms.ComboBox();
-            this.label59 = new System.Windows.Forms.Label();
-            this.proResProfile = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -172,7 +172,7 @@
             this.settingsTabList.ForeColor = System.Drawing.Color.White;
             this.settingsTabList.Location = new System.Drawing.Point(12, 62);
             this.settingsTabList.Name = "settingsTabList";
-            this.settingsTabList.Size = new System.Drawing.Size(920, 627);
+            this.settingsTabList.Size = new System.Drawing.Size(920, 427);
             this.settingsTabList.TabIndex = 0;
             // 
             // generalTab
@@ -769,7 +769,7 @@
             this.aiOptsPage.Controls.Add(this.label5);
             this.aiOptsPage.Controls.Add(this.label32);
             this.aiOptsPage.Name = "aiOptsPage";
-            this.aiOptsPage.Size = new System.Drawing.Size(762, 619);
+            this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Settings";
             // 
             // label30
@@ -997,8 +997,86 @@
             this.vidExportTab.Controls.Add(this.label8);
             this.vidExportTab.Controls.Add(this.minOutVidLength);
             this.vidExportTab.Name = "vidExportTab";
-            this.vidExportTab.Size = new System.Drawing.Size(762, 619);
+            this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Video Export";
+            // 
+            // proResProfile
+            // 
+            this.proResProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.proResProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.proResProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.proResProfile.ForeColor = System.Drawing.Color.White;
+            this.proResProfile.FormattingEnabled = true;
+            this.proResProfile.Items.AddRange(new object[] {
+            "0 (Proxy)",
+            "1 (LT)",
+            "2 (Standard)",
+            "3 (HQ)",
+            "4 (4444)",
+            "5 (4444xq)"});
+            this.proResProfile.Location = new System.Drawing.Point(280, 327);
+            this.proResProfile.Name = "proResProfile";
+            this.proResProfile.Size = new System.Drawing.Size(400, 21);
+            this.proResProfile.TabIndex = 68;
+            // 
+            // label59
+            // 
+            this.label59.AutoSize = true;
+            this.label59.Location = new System.Drawing.Point(10, 330);
+            this.label59.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(139, 13);
+            this.label59.TabIndex = 67;
+            this.label59.Text = "MOV: ProRes Quality Profile";
+            // 
+            // panel11
+            // 
+            this.panel11.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel11.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel11.Location = new System.Drawing.Point(386, 297);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(21, 21);
+            this.panel11.TabIndex = 66;
+            this.toolTip1.SetToolTip(this.panel11, "Allows custom input.");
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.ForeColor = System.Drawing.Color.Silver;
+            this.label58.Location = new System.Drawing.Point(420, 301);
+            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(82, 13);
+            this.label58.TabIndex = 65;
+            this.label58.Text = "Lower is better. ";
+            // 
+            // vp9Crf
+            // 
+            this.vp9Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.vp9Crf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vp9Crf.ForeColor = System.Drawing.Color.White;
+            this.vp9Crf.FormattingEnabled = true;
+            this.vp9Crf.Items.AddRange(new object[] {
+            "24",
+            "28",
+            "32",
+            "36",
+            "40",
+            "44"});
+            this.vp9Crf.Location = new System.Drawing.Point(280, 297);
+            this.vp9Crf.Name = "vp9Crf";
+            this.vp9Crf.Size = new System.Drawing.Size(100, 21);
+            this.vp9Crf.TabIndex = 64;
+            // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(10, 300);
+            this.label57.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(176, 13);
+            this.label57.TabIndex = 63;
+            this.label57.Text = "WEBM: Quality Level (CRF) for VP9";
             // 
             // loopMode
             // 
@@ -1584,84 +1662,6 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
-            // 
-            // label57
-            // 
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(10, 300);
-            this.label57.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(176, 13);
-            this.label57.TabIndex = 63;
-            this.label57.Text = "WEBM: Quality Level (CRF) for VP9";
-            // 
-            // panel11
-            // 
-            this.panel11.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel11.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel11.Location = new System.Drawing.Point(386, 297);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(21, 21);
-            this.panel11.TabIndex = 66;
-            this.toolTip1.SetToolTip(this.panel11, "Allows custom input.");
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.ForeColor = System.Drawing.Color.Silver;
-            this.label58.Location = new System.Drawing.Point(420, 301);
-            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(82, 13);
-            this.label58.TabIndex = 65;
-            this.label58.Text = "Lower is better. ";
-            // 
-            // vp9Crf
-            // 
-            this.vp9Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.vp9Crf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.vp9Crf.ForeColor = System.Drawing.Color.White;
-            this.vp9Crf.FormattingEnabled = true;
-            this.vp9Crf.Items.AddRange(new object[] {
-            "24",
-            "28",
-            "32",
-            "36",
-            "40",
-            "44"});
-            this.vp9Crf.Location = new System.Drawing.Point(280, 297);
-            this.vp9Crf.Name = "vp9Crf";
-            this.vp9Crf.Size = new System.Drawing.Size(100, 21);
-            this.vp9Crf.TabIndex = 64;
-            // 
-            // label59
-            // 
-            this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(10, 330);
-            this.label59.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(139, 13);
-            this.label59.TabIndex = 67;
-            this.label59.Text = "MOV: ProRes Quality Profile";
-            // 
-            // proResProfile
-            // 
-            this.proResProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.proResProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.proResProfile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.proResProfile.ForeColor = System.Drawing.Color.White;
-            this.proResProfile.FormattingEnabled = true;
-            this.proResProfile.Items.AddRange(new object[] {
-            "0 (Proxy)",
-            "1 (LT)",
-            "2 (Standard)",
-            "3 (HQ)",
-            "4 (4444)",
-            "5 (4444xq)"});
-            this.proResProfile.Location = new System.Drawing.Point(280, 327);
-            this.proResProfile.Name = "proResProfile";
-            this.proResProfile.Size = new System.Drawing.Size(400, 21);
-            this.proResProfile.TabIndex = 68;
             // 
             // SettingsForm
             // 

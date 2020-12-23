@@ -49,12 +49,26 @@ namespace Flowframes.AudioVideo
         {
             string args = $"-c:v { GetEnc(codec)} ";
 
-            switch (codec)
+            if(codec == Codec.H264)
             {
-                case Codec.H264: args += $"-crf {Config.GetInt("h264Crf")} -preset {Config.Get("ffEncPreset")}"; break;
-                case Codec.H265: args += $"-crf {Config.GetInt("h265Crf")} -preset {Config.Get("ffEncPreset")}"; break;
-                case Codec.VP9: args += $"-crf {Config.GetInt("vp9Crf")} -preset {Config.Get("ffEncPreset")}"; break;
-                case Codec.ProRes: args += $"-profile:v {Config.GetInt("proResProfile")}"; break;
+                args += $"-crf {Config.GetInt("h264Crf")} -preset {Config.Get("ffEncPreset")}";
+            }
+
+            if (codec == Codec.H265)
+            {
+                args += $"-crf {Config.GetInt("h265Crf")} -preset {Config.Get("ffEncPreset")}";
+            }
+
+            if (codec == Codec.VP9)
+            {
+                int crf = Config.GetInt("vp9Crf");
+                string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
+                args += $"{qualityStr}";
+            }
+
+            if(codec == Codec.ProRes)
+            {
+                args += $"-profile:v {Config.GetInt("proResProfile")}";
             }
 
             return args;

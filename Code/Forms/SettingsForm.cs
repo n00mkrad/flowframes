@@ -38,7 +38,7 @@ namespace Flowframes.Forms
             // Clamp...
             h264Crf.Text = h264Crf.GetInt().Clamp(0, 51).ToString();
             h265Crf.Text = h265Crf.GetInt().Clamp(0, 51).ToString();
-            vp9Crf.Text = h265Crf.GetInt().Clamp(0, 63).ToString();
+            vp9Crf.Text = vp9Crf.GetInt().Clamp(0, 63).ToString();
             ncnnThreads.Text = ncnnThreads.GetInt().Clamp(1, 8).ToString();
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
