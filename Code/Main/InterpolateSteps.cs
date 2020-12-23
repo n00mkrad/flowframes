@@ -1,4 +1,5 @@
-﻿using Flowframes.Data;
+﻿using Flowframes.AudioVideo;
+using Flowframes.Data;
 using Flowframes.IO;
 using System;
 using System.Collections.Generic;
@@ -149,7 +150,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            string outPath = Path.Combine(current.outPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetAiSuffix(current.ai, current.interpFactor) + InterpolateUtils.GetExt(current.outMode));
+            string outPath = Path.Combine(current.outPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetAiSuffix(current.ai, current.interpFactor) + FFmpegUtils.GetExt(current.outMode));
             await CreateVideo.Export(current.interpFolder, outPath, current.outMode);
         }
 

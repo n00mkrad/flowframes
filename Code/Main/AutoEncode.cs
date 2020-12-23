@@ -1,4 +1,5 @@
-﻿using Flowframes.Data;
+﻿using Flowframes.AudioVideo;
+using Flowframes.Data;
 using Flowframes.IO;
 using System;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace Flowframes.Main
 
                     IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file
 
-                    string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.current.outMode)}");
+                    string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{FFmpegUtils.GetExt(Interpolate.current.outMode)}");
                     int firstFrameNum = Path.GetFileNameWithoutExtension(framesToEncode[0]).GetInt();
                     await CreateVideo.EncodeChunk(outpath, Interpolate.current.outMode, firstFrameNum - 1, framesToEncode.Count);
 

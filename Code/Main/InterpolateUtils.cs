@@ -270,15 +270,6 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static string GetExt(i.OutMode format)
-        {
-            if (format == i.OutMode.VidMp4)
-                return ".mp4";
-            if (format == i.OutMode.VidGif)
-                return ".gif";
-            return ".mp4";
-        }
-
         public static void ShowMessage(string msg, string title = "Message")
         {
             if (!BatchProcessing.busy)

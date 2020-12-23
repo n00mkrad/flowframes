@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using i = Flowframes.Interpolate;
 using System.Diagnostics;
+using Flowframes.AudioVideo;
 
 namespace Flowframes.Main
 {
@@ -130,7 +131,7 @@ namespace Flowframes.Main
 
         public static async Task ChunksToVideo(string chunksPath, string vfrFile, string outPath)
         {
-            if (IOUtils.GetAmountOfFiles(chunksPath, false, "*.mp4") < 1)
+            if (IOUtils.GetAmountOfFiles(chunksPath, false, $"*{FFmpegUtils.GetExt(i.current.outMode)}") < 1)
             {
                 i.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
                 return;
@@ -180,9 +181,6 @@ namespace Flowframes.Main
 
         public static async Task EncodeChunk(string outPath, i.OutMode mode, int firstFrameNum, int framesAmount)
         {
-            bool h265 = Config.GetInt("mp4Enc") == 1;
-            int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
-
             string vfrFileOriginal = Path.Combine(i.current.tempFolder, $"vfr-{i.current.interpFactor}x.ini");
             string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
