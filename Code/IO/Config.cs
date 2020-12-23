@@ -101,8 +101,8 @@ namespace Flowframes.IO
             if (key == "autoEncMode")       return WriteDefault(key, "2");
             // Video Export
             if (key == "h264Crf")       return WriteDefault(key, "20");
-            if (key == "h265Crf")       return WriteDefault(key, "22");
-            if (key == "vp9Crf")        return WriteDefault(key, "24");
+            if (key == "h265Crf")       return WriteDefault(key, "24");
+            if (key == "vp9Crf")        return WriteDefault(key, "28");
             if (key == "proResProfile") return WriteDefault(key, "2");
             if (key == "gifColors")     return WriteDefault(key, "128 (High)");
             if (key == "minVidLength")  return WriteDefault(key, "2");
