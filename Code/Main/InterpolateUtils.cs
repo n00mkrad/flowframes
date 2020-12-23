@@ -319,6 +319,9 @@ namespace Flowframes.Main
 
         public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
         {
+            if (!Directory.Exists(sceneFramesPath) || IOUtils.GetAmountOfFiles(sceneFramesPath, false) < 1)
+                return;
+
             List<string> sceneFrames = IOUtils.GetFilesSorted(sceneFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
             List<string> sourceFrames = IOUtils.GetFilesSorted(sourceFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
             List<string> sceneFramesToDelete = new List<string>();
