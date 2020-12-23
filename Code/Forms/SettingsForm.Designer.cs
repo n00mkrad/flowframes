@@ -79,6 +79,11 @@
             this.enableAudio = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.aiOptsPage = new Cyotek.Windows.Forms.TabListPage();
+            this.label30 = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.uhdThresh = new System.Windows.Forms.ComboBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
             this.panel12 = new System.Windows.Forms.Panel();
             this.label44 = new System.Windows.Forms.Label();
             this.ncnnThreads = new System.Windows.Forms.ComboBox();
@@ -129,7 +134,6 @@
             this.ffprobeCountFrames = new System.Windows.Forms.CheckBox();
             this.label40 = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
-            this.panel11 = new System.Windows.Forms.Panel();
             this.ffEncThreads = new System.Windows.Forms.TextBox();
             this.label37 = new System.Windows.Forms.Label();
             this.panel9 = new System.Windows.Forms.Panel();
@@ -139,11 +143,8 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label28 = new System.Windows.Forms.Label();
-            this.label29 = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.uhdThresh = new System.Windows.Forms.ComboBox();
+            this.label56 = new System.Windows.Forms.Label();
+            this.ffEncArgs = new System.Windows.Forms.TextBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -765,6 +766,66 @@
             this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Settings";
             // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.ForeColor = System.Drawing.Color.Silver;
+            this.label30.Location = new System.Drawing.Point(412, 181);
+            this.label30.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(347, 13);
+            this.label30.TabIndex = 67;
+            this.label30.Text = "Minimum height to enable UHD mode which helps high-res interpolations";
+            // 
+            // panel6
+            // 
+            this.panel6.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel6.Location = new System.Drawing.Point(378, 177);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(21, 21);
+            this.panel6.TabIndex = 65;
+            this.toolTip1.SetToolTip(this.panel6, "Allows custom input.");
+            // 
+            // uhdThresh
+            // 
+            this.uhdThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.uhdThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.uhdThresh.ForeColor = System.Drawing.Color.White;
+            this.uhdThresh.FormattingEnabled = true;
+            this.uhdThresh.Items.AddRange(new object[] {
+            "4320",
+            "2160",
+            "1440",
+            "1080",
+            "720"});
+            this.uhdThresh.Location = new System.Drawing.Point(280, 177);
+            this.uhdThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.uhdThresh.Name = "uhdThresh";
+            this.uhdThresh.Size = new System.Drawing.Size(87, 21);
+            this.uhdThresh.TabIndex = 66;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(10, 180);
+            this.label29.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(151, 13);
+            this.label29.TabIndex = 62;
+            this.label29.Text = "UHD Mode Threshold (Height)";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label28.Location = new System.Drawing.Point(10, 150);
+            this.label28.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(158, 16);
+            this.label28.TabIndex = 61;
+            this.label28.Text = "RIFE (CUDA) Settings";
+            // 
             // panel12
             // 
             this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
@@ -1256,6 +1317,8 @@
             // debugTab
             // 
             this.debugTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.debugTab.Controls.Add(this.ffEncArgs);
+            this.debugTab.Controls.Add(this.label56);
             this.debugTab.Controls.Add(this.label48);
             this.debugTab.Controls.Add(this.label54);
             this.debugTab.Controls.Add(this.ffEncPreset);
@@ -1266,7 +1329,6 @@
             this.debugTab.Controls.Add(this.ffprobeCountFrames);
             this.debugTab.Controls.Add(this.label40);
             this.debugTab.Controls.Add(this.label38);
-            this.debugTab.Controls.Add(this.panel11);
             this.debugTab.Controls.Add(this.ffEncThreads);
             this.debugTab.Controls.Add(this.label37);
             this.debugTab.Controls.Add(this.panel9);
@@ -1326,9 +1388,9 @@
             this.label47.Location = new System.Drawing.Point(10, 183);
             this.label47.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(85, 13);
+            this.label47.Size = new System.Drawing.Size(145, 13);
             this.label47.TabIndex = 77;
-            this.label47.Text = "Encoding Preset";
+            this.label47.Text = "H264/H265 Encoding Preset";
             // 
             // label46
             // 
@@ -1356,7 +1418,7 @@
             // 
             this.label41.AutoSize = true;
             this.label41.ForeColor = System.Drawing.Color.Silver;
-            this.label41.Location = new System.Drawing.Point(308, 213);
+            this.label41.Location = new System.Drawing.Point(308, 243);
             this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(395, 13);
@@ -1367,7 +1429,7 @@
             // ffprobeCountFrames
             // 
             this.ffprobeCountFrames.AutoSize = true;
-            this.ffprobeCountFrames.Location = new System.Drawing.Point(280, 213);
+            this.ffprobeCountFrames.Location = new System.Drawing.Point(280, 243);
             this.ffprobeCountFrames.Name = "ffprobeCountFrames";
             this.ffprobeCountFrames.Size = new System.Drawing.Size(15, 14);
             this.ffprobeCountFrames.TabIndex = 73;
@@ -1376,7 +1438,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(10, 213);
+            this.label40.Location = new System.Drawing.Point(10, 243);
             this.label40.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(162, 13);
@@ -1387,22 +1449,12 @@
             // 
             this.label38.AutoSize = true;
             this.label38.ForeColor = System.Drawing.Color.Silver;
-            this.label38.Location = new System.Drawing.Point(570, 157);
+            this.label38.Location = new System.Drawing.Point(543, 156);
             this.label38.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(131, 13);
             this.label38.TabIndex = 71;
             this.label38.Text = "Use 0 for automatic mode.";
-            // 
-            // panel11
-            // 
-            this.panel11.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel11.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel11.Location = new System.Drawing.Point(536, 153);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(21, 21);
-            this.panel11.TabIndex = 61;
-            this.toolTip1.SetToolTip(this.panel11, "Allows custom input.");
             // 
             // ffEncThreads
             // 
@@ -1501,65 +1553,25 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label28
+            // label56
             // 
-            this.label28.AutoSize = true;
-            this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label28.Location = new System.Drawing.Point(10, 150);
-            this.label28.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(158, 16);
-            this.label28.TabIndex = 61;
-            this.label28.Text = "RIFE (CUDA) Settings";
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(10, 213);
+            this.label56.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(154, 13);
+            this.label56.TabIndex = 84;
+            this.label56.Text = "Additional Encoding Arguments";
             // 
-            // label29
+            // ffEncArgs
             // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(10, 180);
-            this.label29.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(151, 13);
-            this.label29.TabIndex = 62;
-            this.label29.Text = "UHD Mode Threshold (Height)";
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.ForeColor = System.Drawing.Color.Silver;
-            this.label30.Location = new System.Drawing.Point(412, 181);
-            this.label30.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(347, 13);
-            this.label30.TabIndex = 67;
-            this.label30.Text = "Minimum height to enable UHD mode which helps high-res interpolations";
-            // 
-            // panel6
-            // 
-            this.panel6.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel6.Location = new System.Drawing.Point(378, 177);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(21, 21);
-            this.panel6.TabIndex = 65;
-            this.toolTip1.SetToolTip(this.panel6, "Allows custom input.");
-            // 
-            // uhdThresh
-            // 
-            this.uhdThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.uhdThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.uhdThresh.ForeColor = System.Drawing.Color.White;
-            this.uhdThresh.FormattingEnabled = true;
-            this.uhdThresh.Items.AddRange(new object[] {
-            "4320",
-            "2160",
-            "1440",
-            "1080",
-            "720"});
-            this.uhdThresh.Location = new System.Drawing.Point(280, 177);
-            this.uhdThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
-            this.uhdThresh.Name = "uhdThresh";
-            this.uhdThresh.Size = new System.Drawing.Size(87, 21);
-            this.uhdThresh.TabIndex = 66;
+            this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.ffEncArgs.ForeColor = System.Drawing.Color.White;
+            this.ffEncArgs.Location = new System.Drawing.Point(280, 210);
+            this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
+            this.ffEncArgs.Name = "ffEncArgs";
+            this.ffEncArgs.Size = new System.Drawing.Size(250, 21);
+            this.ffEncArgs.TabIndex = 85;
             // 
             // SettingsForm
             // 
@@ -1674,7 +1686,6 @@
         private HTAlt.WinForms.HTButton tempDirBrowseBtn;
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.TextBox ffEncThreads;
         private System.Windows.Forms.ComboBox processingMode;
         private System.Windows.Forms.Label label39;
@@ -1713,5 +1724,7 @@
         private System.Windows.Forms.ComboBox uhdThresh;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.TextBox ffEncArgs;
+        private System.Windows.Forms.Label label56;
     }
 }

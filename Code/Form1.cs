@@ -173,6 +173,9 @@ namespace Flowframes
         Interpolate.OutMode GetOutMode()
         {
             Interpolate.OutMode outMode = Interpolate.OutMode.VidMp4;
+            if (outModeCombox.Text.ToLower().Contains("webm")) outMode = Interpolate.OutMode.VidWebm;
+            if (outModeCombox.Text.ToLower().Contains("prores")) outMode = Interpolate.OutMode.VidProRes;
+            if (outModeCombox.Text.ToLower().Contains("avi")) outMode = Interpolate.OutMode.VidAviRaw;
             if (outModeCombox.Text.ToLower().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
             if (outModeCombox.Text.ToLower().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
             return outMode;
@@ -393,15 +396,12 @@ namespace Flowframes
                 stepSelector.SelectedIndex = 0;
             }
             bool stepByStep = Config.GetInt("processingMode") == 1;
-            //stepSelector.Visible = stepByStep && !Program.busy;
-            //runStepBtn.Visible = stepByStep && !Program.busy;
             runBtn.Visible = !stepByStep && !Program.busy;
         }
 
         private async void runStepBtn_Click(object sender, EventArgs e)
         {
             SetTab("interpolate");
-            //Interpolate.SetFps(fpsInTbox.GetFloat());
             await InterpolateSteps.Run(stepSelector.Text);
         }
 

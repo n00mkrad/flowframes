@@ -82,6 +82,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(autoDedupFrames);
             ConfigParser.SaveGuiElement(ffEncThreads);
             ConfigParser.SaveGuiElement(ffEncPreset);
+            ConfigParser.SaveGuiElement(ffEncArgs);
             ConfigParser.SaveGuiElement(ffprobeCountFrames);
         }
 
@@ -124,6 +125,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(autoDedupFrames);
             ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
+            ConfigParser.LoadGuiElement(ffEncArgs);
             ConfigParser.LoadGuiElement(ffprobeCountFrames);
         }
 

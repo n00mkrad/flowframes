@@ -188,6 +188,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioVideo\FFmpegUtils.cs" />
     <Compile Include="AudioVideo\GifskiCommands.cs" />
     <Compile Include="Data\AI.cs" />
     <Compile Include="Data\InterpSettings.cs" />

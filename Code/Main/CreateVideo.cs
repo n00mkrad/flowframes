@@ -48,7 +48,7 @@ namespace Flowframes.Main
                 int maxFps = Config.GetInt("maxFps");
                 if (maxFps == 0) maxFps = 500;
 
-                if (mode == i.OutMode.VidMp4 && i.current.outFps > maxFps)
+                if (i.current.outFps > maxFps)
                     await Encode(mode, path, outPath, i.current.outFps, maxFps, (Config.GetInt("maxFpsMode") == 1));
                 else
                     await Encode(mode, path, outPath, i.current.outFps);
@@ -102,15 +102,16 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.current.interpFactor}x.ini");
 
             if (mode == i.OutMode.VidGif)
+            {
                 await FFmpegCommands.FramesToGifVfr(vfrFile, outPath, true, Config.GetInt("gifColors"));
-
-            if (mode == i.OutMode.VidMp4)
+            }
+            else
             {
                 int looptimes = GetLoopTimes();
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-                await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, fps);
+                await FFmpegCommands.FramesToVideoVfr(vfrFile, outPath, mode, fps);
                 await MergeAudio(i.current.inPath, outPath);
 
                 if (changeFps > 0)
@@ -177,7 +178,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static async Task EncodeChunk(string outPath, int firstFrameNum, int framesAmount)
+        public static async Task EncodeChunk(string outPath, i.OutMode mode, int firstFrameNum, int framesAmount)
         {
             bool h265 = Config.GetInt("mp4Enc") == 1;
             int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
@@ -186,7 +187,7 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
-            await FFmpegCommands.FramesToMp4Vfr(vfrFile, outPath, h265, crf, i.current.outFps, AvProcess.LogMode.Hidden);
+            await FFmpegCommands.FramesToVideoVfr(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden);
         }
 
         static async Task Loop(string outPath, int looptimes)

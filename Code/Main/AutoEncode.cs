@@ -69,7 +69,7 @@ namespace Flowframes.Main
 
                     string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{InterpolateUtils.GetExt(Interpolate.current.outMode)}");
                     int firstFrameNum = Path.GetFileNameWithoutExtension(framesToEncode[0]).GetInt();
-                    await CreateVideo.EncodeChunk(outpath, firstFrameNum - 1, framesToEncode.Count);
+                    await CreateVideo.EncodeChunk(outpath, Interpolate.current.outMode, firstFrameNum - 1, framesToEncode.Count);
 
                     if(Interpolate.canceled) return;
 

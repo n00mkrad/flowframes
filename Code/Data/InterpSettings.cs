@@ -1,4 +1,5 @@
-﻿using Flowframes.Data;
+﻿using Flowframes.AudioVideo;
+using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
 using System;
@@ -44,7 +45,7 @@ namespace Flowframes
                 framesFolder = Path.Combine(tempFolder, Paths.framesDir);
                 interpFolder = Path.Combine(tempFolder, Paths.interpDir);
                 inputIsFrames = IOUtils.IsPathDirectory(inPath);
-                outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + InterpolateUtils.GetExt(outMode));
+                outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + FFmpegUtils.GetExt(outMode));
             }
             catch
             {

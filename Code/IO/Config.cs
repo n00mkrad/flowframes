@@ -102,6 +102,8 @@ namespace Flowframes.IO
             // Video Export
             if (key == "h264Crf")       return WriteDefault(key, "20");
             if (key == "h265Crf")       return WriteDefault(key, "22");
+            if (key == "vp9Crf")        return WriteDefault(key, "24");
+            if (key == "proResProfile") return WriteDefault(key, "2");
             if (key == "gifColors")     return WriteDefault(key, "128 (High)");
             if (key == "minVidLength")  return WriteDefault(key, "2");
             // AI
@@ -109,6 +111,7 @@ namespace Flowframes.IO
             if (key == "ncnnThreads")   return WriteDefault(key, "1");
             // Debug / Other / Experimental
             if (key == "ffEncPreset")           return WriteDefault(key, "medium");
+            if (key == "ffEncArgs")             return WriteDefault(key, "");
             // Tile Sizes
             if (key == "tilesize_RIFE_NCNN")    return WriteDefault(key, "2048");
             if (key == "tilesize_DAIN_NCNN")    return WriteDefault(key, "512");

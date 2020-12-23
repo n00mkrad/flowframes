@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Utils = Flowframes.AudioVideo.FFmpegUtils;
 
 namespace Flowframes
 {
@@ -87,15 +88,30 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task FramesToMp4Vfr(string framesFile, string outPath, bool useH265, int crf, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
+        public static async Task FramesToMp4Vfr(string framesFile, string outPath, Utils.Codec codec, int crf, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
         {
             if(logMode != AvProcess.LogMode.Hidden)
                 Logger.Log($"Encoding MP4 video with CRF {crf}...");
-            string enc = useH265 ? "libx265" : "libx264";
-            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
+            string enc = Utils.GetEnc(codec);
+            string preset = $"-preset {Config.Get("ffEncPreset")}";
             string vfrFilename = Path.GetFileName(framesFile);
             string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
-            string args = $"{vsync} -f concat -i {vfrFilename} -r {fps.ToString().Replace(",", ".")} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string rate = fps.ToString().Replace(",", ".");
+            string extraArgs = Config.Get("ffEncArgs");
+            string args = $"{vsync} -f concat -i {vfrFilename} -r {rate} -c:v {enc} -crf {crf} {preset} {extraArgs} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
+        }
+
+        public static async Task FramesToVideoVfr(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
+        {
+            if (logMode != AvProcess.LogMode.Hidden)
+                Logger.Log($"Encoding video...");
+            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
+            string vfrFilename = Path.GetFileName(framesFile);
+            string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
+            string rate = fps.ToString().Replace(",", ".");
+            string extraArgs = Config.Get("ffEncArgs");
+            string args = $"{vsync} -f concat -i {vfrFilename} -r {rate} {encArgs} {extraArgs} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
 

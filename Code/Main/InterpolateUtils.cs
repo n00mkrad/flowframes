@@ -332,6 +332,8 @@ namespace Flowframes.Main
                     continue;
 
                 int sourceIndexForScnFrame = sourceFrames.IndexOf(scnFrame);            // Get source index of scene frame
+                if ((sourceIndexForScnFrame + 1) == sourceFrames.Count)
+                    continue;
                 string followingFrame = sourceFrames[sourceIndexForScnFrame + 1];       // Get filename/timestamp of the next source frame
 
                 if (sceneFrames.Contains(followingFrame))                               // If next source frame is in scene folder, add to deletion list

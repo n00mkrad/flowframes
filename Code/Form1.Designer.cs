@@ -203,7 +203,10 @@
             this.outModeCombox.ForeColor = System.Drawing.Color.White;
             this.outModeCombox.FormattingEnabled = true;
             this.outModeCombox.Items.AddRange(new object[] {
-            "MP4 Video",
+            "MP4 Video (h264/h265)",
+            "WEBM Video (VP9)",
+            "MOV Video (Apple ProRes)",
+            "AVI Video (Uncompressed)",
             "Animated GIF",
             "Image Sequence"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 158);
