@@ -87,7 +87,7 @@ namespace Flowframes
 
             if (extractAudio)
             {
-                string audioFile = Path.Combine(current.tempFolder, "audio.m4a");
+                string audioFile = Path.Combine(current.tempFolder, "audio");
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }

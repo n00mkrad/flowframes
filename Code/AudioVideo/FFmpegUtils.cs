@@ -60,6 +60,25 @@ namespace Flowframes.AudioVideo
             return args;
         }
 
+        public static string GetAudioEnc(Codec codec)
+        {
+            switch (codec)
+            {
+                case Codec.VP9: return "libopus";
+            }
+            return "aac";
+        }
+
+        public static int GetAudioBitrate (string codec)
+        {
+            if (codec.Trim().ToLower() == "aac")
+                return 128;
+            if (codec.Trim().ToLower().Contains("opus"))
+                return 112;
+
+            return 160;
+        }
+
         public static string GetExt(Interpolate.OutMode outMode, bool dot = true)
         {
             string ext = dot ? "." : "";

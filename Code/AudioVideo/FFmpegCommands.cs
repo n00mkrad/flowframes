@@ -1,4 +1,5 @@
-﻿using Flowframes.Data;
+﻿using Flowframes.AudioVideo;
+using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
 using System;
@@ -204,9 +205,9 @@ namespace Flowframes
         public static async Task ExtractAudio(string inputFile, string outFile)    // https://stackoverflow.com/a/27413824/14274419
         {
             Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
-            string ext = GetAudioExt(inputFile);
-            outFile = Path.ChangeExtension(outFile, ext);
-            string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -acodec copy {outFile.Wrap()}";
+            //string ext = GetAudioExt(inputFile);
+            outFile = Path.ChangeExtension(outFile, ".ogg");
+            string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -acodec libopus -b:a 320k {outFile.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (AvProcess.lastOutputFfmpeg.ToLower().Contains("error") && File.Exists(outFile))    // If broken file was written
                 File.Delete(outFile);
@@ -227,13 +228,15 @@ namespace Flowframes
         public static async Task MergeAudio(string inputFile, string audioPath, int looptimes = -1)    // https://superuser.com/a/277667
         {
             Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
-            string tempPath = inputFile + "-temp.mp4";
-            if (Path.GetExtension(audioPath) == ".wav")
-            {
-                Logger.Log("Using MKV instead of MP4 to enable support for raw audio.");
-                tempPath = Path.ChangeExtension(tempPath, "mkv");
-            }
-            string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c copy {tempPath.Wrap()}";
+            string tempPath = inputFile + "-temp" + Path.GetExtension(inputFile);
+            // if (Path.GetExtension(audioPath) == ".wav")
+            // {
+            //     Logger.Log("Using MKV instead of MP4 to enable support for raw audio.");
+            //     tempPath = Path.ChangeExtension(tempPath, "mkv");
+            // }
+            string aCodec = Utils.GetAudioEnc(Utils.GetCodec(Interpolate.current.outMode));
+            int aKbits = Utils.GetAudioBitrate(aCodec);
+            string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c:v copy -c:a {aCodec} -b:a {aKbits}k {tempPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
             {
