@@ -617,5 +617,22 @@ namespace Flowframes.IO
 			DirectoryInfo dir = new DirectoryInfo(path);
 			return dir.GetFiles(pattern, opt).OrderBy(x => x.Name).ToArray();
 		}
+
+		public static bool CreateFileIfNotExists (string path)
+        {
+			if (File.Exists(path))
+				return false;
+
+            try
+            {
+				File.Create(path).Close();
+				return true;
+            }
+			catch (Exception e)
+            {
+				Logger.Log($"Failed to create file at '{path}': {e.Message}");
+				return false;
+            }
+        }
 	}
 }

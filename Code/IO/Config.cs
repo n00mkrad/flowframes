@@ -17,16 +17,23 @@ namespace Flowframes.IO
         public static void Init()
         {
             configPath = Path.Combine(Paths.GetDataPath(), "config.ini");
-            if (!File.Exists(configPath))
-            {
-                File.Create(configPath).Close();
-            }
+            IOUtils.CreateFileIfNotExists(configPath);
             Reload();
         }
 
         public static void Set(string key, string value)
         {
-            string[] lines = File.ReadAllLines(configPath);
+            string[] lines = new string[1];
+            try
+            {
+                lines = File.ReadAllLines(configPath);
+            }
+            catch
+            {
+                MessageBox.Show("Failed to read config file!\nFlowframes will try to re-create the file if it does not exist.", "Error");
+                if(!File.Exists(configPath))
+                    Init();
+            }
             for (int i = 0; i < lines.Length; i++)
             {
                 if (lines[i].Split('|')[0] == key)
@@ -39,6 +46,7 @@ namespace Flowframes.IO
             }
             List<string> list = lines.ToList();
             list.Add(key + "|" + value);
+            list = list.OrderBy(p => p).ToList();
             File.WriteAllLines(configPath, list.ToArray());
             cachedLines = list.ToArray();
         }
