@@ -89,20 +89,6 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task FramesToMp4Vfr(string framesFile, string outPath, Utils.Codec codec, int crf, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
-        {
-            if(logMode != AvProcess.LogMode.Hidden)
-                Logger.Log($"Encoding MP4 video with CRF {crf}...");
-            string enc = Utils.GetEnc(codec);
-            string preset = $"-preset {Config.Get("ffEncPreset")}";
-            string vfrFilename = Path.GetFileName(framesFile);
-            string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
-            string rate = fps.ToString().Replace(",", ".");
-            string extraArgs = Config.Get("ffEncArgs");
-            string args = $"{vsync} -f concat -i {vfrFilename} -r {rate} -c:v {enc} -crf {crf} {preset} {extraArgs} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
-        }
-
         public static async Task FramesToVideoVfr(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
         {
             if (logMode != AvProcess.LogMode.Hidden)
@@ -211,18 +197,6 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (AvProcess.lastOutputFfmpeg.ToLower().Contains("error") && File.Exists(outFile))    // If broken file was written
                 File.Delete(outFile);
-        }
-
-        static string GetAudioExt(string videoFile)
-        {
-            switch (GetAudioCodec(videoFile))
-            {
-                case "vorbis": return "ogg";
-                case "opus": return "ogg";
-                case "mp2": return "mp2";
-                case "aac": return "m4a";
-                default: return "wav";
-            }
         }
 
         public static async Task MergeAudio(string inputFile, string audioPath, int looptimes = -1)    // https://superuser.com/a/277667
@@ -342,7 +316,7 @@ namespace Flowframes
             return -1;
         }
 
-        static string GetAudioCodec(string path)
+        public static string GetAudioCodec(string path)
         {
             string args = $" -v panic -show_streams -select_streams a -show_entries stream=codec_name {path.Wrap()}";
             string info = AvProcess.GetFfprobeOutput(args);

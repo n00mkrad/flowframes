@@ -109,5 +109,17 @@ namespace Flowframes.AudioVideo
 
             return ext;
         }
+
+        static string GetAudioExt(string videoFile)
+        {
+            switch (FFmpegCommands.GetAudioCodec(videoFile))
+            {
+                case "vorbis": return "ogg";
+                case "opus": return "ogg";
+                case "mp2": return "mp2";
+                case "aac": return "m4a";
+                default: return "wav";
+            }
+        }
     }
 }
