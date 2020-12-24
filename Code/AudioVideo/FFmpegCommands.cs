@@ -42,7 +42,7 @@ namespace Flowframes
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
-            string timecodeStr = timecodes ? "-copyts -r 1000 -frame_pts true" : "";
+            string timecodeStr = timecodes ? "-copyts -r 10000 -frame_pts true" : "";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
             string vf = (scnDetect.Length > 2 || mpStr.Length > 2) ? $"-vf {scnDetect},{mpStr} ".ListCommaFix() : "";
@@ -130,7 +130,7 @@ namespace Flowframes
             Logger.Log($"Changing video frame rate...");
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} -c:v copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputPath);

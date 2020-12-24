@@ -43,6 +43,8 @@ namespace Flowframes.Main
             if (Directory.Exists(scnFramesPath))
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
 
+            float totalDuration = 0f;
+            //int totalFrames = 0;
             int lastFrameDuration = 1;
 
             // Calculate time duration between frames
@@ -51,17 +53,17 @@ namespace Flowframes.Main
             {
                 if (Interpolate.canceled) return;
 
-                int durationTotal = 100;   // Default for no timestamps in input filenames (divided by output fps later)
+                int frameDuration = 100;   // Default for no timestamps in input filenames (divided by output fps later)
 
                 if (!noTimestamps)  // Get timings from frame filenames
                 {
                     string filename1 = frameFiles[i].Name;
                     string filename2 = frameFiles[i + 1].Name;
-                    durationTotal = Path.GetFileNameWithoutExtension(filename2).GetInt() - Path.GetFileNameWithoutExtension(filename1).GetInt();
+                    frameDuration = Path.GetFileNameWithoutExtension(filename2).GetInt() - Path.GetFileNameWithoutExtension(filename1).GetInt();
                 }
 
-                lastFrameDuration = durationTotal;
-                float durationPerInterpFrame = (float)durationTotal / interpFactor;
+                lastFrameDuration = frameDuration;
+                float durationPerInterpFrame = (float)frameDuration / interpFactor;
 
                 int interpFramesAmount = interpFactor;
 
@@ -77,7 +79,7 @@ namespace Flowframes.Main
                 {
                     //Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
 
-                    string durationStr = ((durationPerInterpFrame / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
+                    string durationStr = (durationPerInterpFrame / 10000f).ToString("0.00000", CultureInfo.InvariantCulture);
 
                     if (discardThisFrame && totalFileCount > 1)     // Never discard 1st frame
                     {
@@ -86,6 +88,7 @@ namespace Flowframes.Main
                         // Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
                         fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStr}\n";
                         totalFileCount++;
+                        totalDuration += durationPerInterpFrame;
 
                         // Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
@@ -93,6 +96,7 @@ namespace Flowframes.Main
                             // Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
                             fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStr}\n";
                             totalFileCount++;
+                            totalDuration += durationPerInterpFrame;
                         }
 
                         frm = interpFramesAmount;
@@ -102,6 +106,7 @@ namespace Flowframes.Main
                         //Logger.Log($"Writing frame {totalFileCount}", true, false);
                         fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStr}\n";
                         totalFileCount++;
+                        totalDuration += durationPerInterpFrame;
                     }
                 }
 
@@ -109,8 +114,8 @@ namespace Flowframes.Main
                     await Task.Delay(1);
             }
 
-            //Logger.Log($"Writing last frame: {totalFileCount}", true, false);
-            string durationStrLast = ((100f / interpFactor / 1000f) * 1).ToString("0.00000", CultureInfo.InvariantCulture);
+            // Use average frame duration for last frame - TODO: Use real duration??
+            string durationStrLast = ((totalDuration / totalFileCount) / 10000f).ToString("0.00000", CultureInfo.InvariantCulture);
             fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStrLast}\n";
             totalFileCount++;
 
