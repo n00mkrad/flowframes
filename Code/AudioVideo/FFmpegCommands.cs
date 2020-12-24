@@ -207,7 +207,7 @@ namespace Flowframes
             Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
             //string ext = GetAudioExt(inputFile);
             outFile = Path.ChangeExtension(outFile, ".ogg");
-            string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -acodec libopus -b:a 320k {outFile.Wrap()}";
+            string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -acodec libopus -b:a 256k {outFile.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (AvProcess.lastOutputFfmpeg.ToLower().Contains("error") && File.Exists(outFile))    // If broken file was written
                 File.Delete(outFile);
@@ -235,7 +235,7 @@ namespace Flowframes
             //     tempPath = Path.ChangeExtension(tempPath, "mkv");
             // }
             string aCodec = Utils.GetAudioEnc(Utils.GetCodec(Interpolate.current.outMode));
-            int aKbits = Utils.GetAudioBitrate(aCodec);
+            int aKbits = Utils.GetAudioKbits(aCodec);
             string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c:v copy -c:a {aCodec} -b:a {aKbits}k {tempPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
             if (AvProcess.lastOutputFfmpeg.Contains("Invalid data"))

@@ -83,14 +83,14 @@ namespace Flowframes.AudioVideo
             return "aac";
         }
 
-        public static int GetAudioBitrate (string codec)
+        public static int GetAudioKbits (string codec)
         {
             if (codec.Trim().ToLower() == "aac")
-                return 128;
+                return Config.GetInt("aacBitrate", 160);
             if (codec.Trim().ToLower().Contains("opus"))
-                return 112;
+                return Config.GetInt("opusBitrate", 128);
 
-            return 160;
+            return 192;
         }
 
         public static string GetExt(Interpolate.OutMode outMode, bool dot = true)

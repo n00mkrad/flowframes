@@ -74,6 +74,12 @@ namespace Flowframes.IO
             return Get(key, Type.Int).GetInt();
         }
 
+        public static int GetInt(string key, int defaultVal)
+        {
+            WriteIfDoesntExist(key, defaultVal.ToString());
+            return GetInt(key);
+        }
+
         public static float GetFloat(string key)
         {
             return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
@@ -82,6 +88,14 @@ namespace Flowframes.IO
         public static string GetFloatString (string key)
         {
             return Get(key, Type.Float).Replace(",", ".");
+        }
+
+        static void WriteIfDoesntExist (string key, string val)
+        {
+            foreach (string line in cachedLines)
+                if (line.Contains(key + "|"))
+                    return;
+            Set(key, val);
         }
 
         public enum Type { String, Int, Float, Bool }

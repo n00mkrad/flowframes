@@ -1046,9 +1046,9 @@
             this.label58.Location = new System.Drawing.Point(420, 301);
             this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(82, 13);
+            this.label58.Size = new System.Drawing.Size(255, 13);
             this.label58.TabIndex = 65;
-            this.label58.Text = "Lower is better. ";
+            this.label58.Text = "Lower is better. Use slightly higher values than h265!";
             // 
             // vp9Crf
             // 
@@ -1272,9 +1272,9 @@
             this.label16.Location = new System.Drawing.Point(420, 271);
             this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(82, 13);
+            this.label16.Size = new System.Drawing.Size(224, 13);
             this.label16.TabIndex = 39;
-            this.label16.Text = "Lower is better. ";
+            this.label16.Text = "Lower is better. Use higher values than h264! ";
             // 
             // label14
             // 
