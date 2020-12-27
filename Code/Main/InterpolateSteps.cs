@@ -117,7 +117,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            currentInputFrameCount = InterpolateUtils.GetInputFrameCount(current.inPath);
+            currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
             foreach (string ini in Directory.GetFiles(current.tempFolder, "*.ini", SearchOption.TopDirectoryOnly))
                 IOUtils.TryDeleteIfExists(ini);

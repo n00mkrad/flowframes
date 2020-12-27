@@ -5,23 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Flowframes.UI
+namespace Flowframes.MiscUtils
 {
     class FormatUtils
     {
         public static string Bytes(long sizeBytes)
         {
-            int sizeKb = (int)Math.Round(sizeBytes / 1024f);
-            int sizeMb = (int)Math.Round(sizeKb / 1024f);
-            if (sizeBytes <= 8192)
+            try
             {
-                return sizeBytes + " B";
+                string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+                if (sizeBytes == 0)
+                    return "0" + suf[0];
+                long bytes = Math.Abs(sizeBytes);
+                int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+                double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+                return ($"{Math.Sign(sizeBytes) * num} {suf[place]}");
             }
-            if (sizeKb <= 8192)
+            catch
             {
-                return sizeKb + " KB";
+                return "N/A B";
             }
-            return sizeMb + " MB"; ;
         }
 
         public static string Time(long milliseconds)

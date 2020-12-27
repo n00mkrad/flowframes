@@ -11,6 +11,7 @@ using Flowframes.OS;
 using Flowframes.UI;
 using Flowframes.Main;
 using Flowframes.Data;
+using Flowframes.MiscUtils;
 
 namespace Flowframes
 {
@@ -62,8 +63,8 @@ namespace Flowframes
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "dain-ncnn-log.txt"); };
-                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log.txt"); };
+                dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "dain-ncnn-log"); };
+                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log"); };
             }
             dain.Start();
             if (!OSUtils.ShowHiddenCmd())
@@ -134,8 +135,8 @@ namespace Flowframes
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                cain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "cain-ncnn-log.txt"); };
-                cain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "cain-ncnn-log.txt"); };
+                cain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "cain-ncnn-log"); };
+                cain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "cain-ncnn-log"); };
             }
             cain.Start();
             if (!OSUtils.ShowHiddenCmd())
@@ -168,8 +169,8 @@ namespace Flowframes
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-cuda-log.txt"); };
-                rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log.txt"); };
+                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-cuda-log"); };
+                rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log"); };
             }
             rifePy.Start();
             if (!OSUtils.ShowHiddenCmd())
@@ -237,8 +238,8 @@ namespace Flowframes
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
-                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log.txt"); };
-                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log.txt"); };
+                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log"); };
+                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log"); };
             }
             rifeNcnn.Start();
             if (!OSUtils.ShowHiddenCmd())

@@ -4,6 +4,7 @@ using Flowframes.FFmpeg;
 using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
+using Flowframes.MiscUtils;
 using Flowframes.OS;
 using Flowframes.UI;
 using System;
@@ -32,7 +33,7 @@ namespace Flowframes
 
         static Stopwatch sw = new Stopwatch();
 
-        public static async void Start()
+        public static async Task Start()
         {
             canceled = false;
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.tilesize)) return;     // General input checks
@@ -40,7 +41,7 @@ namespace Flowframes
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if(!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(current.inPath, current.outPath);
-            currentInputFrameCount = Utils.GetInputFrameCount(current.inPath);
+            currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
             await Task.Delay(10);
@@ -135,7 +136,7 @@ namespace Flowframes
         {
             bool vidMode = current.outMode.ToString().ToLower().Contains("vid");
             if ((stepByStep && Config.GetBool("sbsAllowAutoEnc")) || (!stepByStep && Config.GetInt("autoEncMode") > 0))
-                currentlyUsingAutoEnc = vidMode && IOUtils.GetAmountOfFiles(current.framesFolder, false) * current.interpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.1f;
+                currentlyUsingAutoEnc = vidMode && IOUtils.GetAmountOfFiles(current.framesFolder, false) * current.interpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 0.9f;
             else
                 currentlyUsingAutoEnc = false;
 

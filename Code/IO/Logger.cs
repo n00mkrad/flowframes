@@ -14,7 +14,7 @@ namespace Flowframes
     {
         public static TextBox textbox;
         static string file;
-        public const string defaultLogName = "sessionlog.txt";
+        public const string defaultLogName = "sessionlog";
 
         public static void Log(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
@@ -42,7 +42,9 @@ namespace Flowframes
         {
             if (string.IsNullOrWhiteSpace(filename))
                 filename = defaultLogName;
-            
+
+            if (Path.GetExtension(filename) != ".txt")
+                filename = Path.ChangeExtension(filename, "txt");
             file = Path.Combine(Paths.GetLogPath(), filename);
             logStr = logStr.Replace(Environment.NewLine, " ").TrimWhitespaces();
             string time = DT.Now.Month + "-" + DT.Now.Day + "-" + DT.Now.Year + " " + DT.Now.Hour + ":" + DT.Now.Minute + ":" + DT.Now.Second;

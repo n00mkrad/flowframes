@@ -89,16 +89,18 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task FramesToVideoVfr(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
+        public static async Task FramesToVideoVfr(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != AvProcess.LogMode.Hidden)
                 Logger.Log($"Encoding video...");
-            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
+            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode)) + " -pix_fmt yuv420p ";
+            if (!isChunk) encArgs += $"-movflags +faststart";
             string vfrFilename = Path.GetFileName(framesFile);
             string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
             string rate = fps.ToString().Replace(",", ".");
             string extraArgs = Config.Get("ffEncArgs");
-            string args = $"{vsync} -f concat -i {vfrFilename} -r {rate} {encArgs} {extraArgs} {videoEncArgs} -threads {Config.GetInt("ffEncThreads")} -c:a copy {outPath.Wrap()}";
+            string args = $"{vsync} -f concat -i {vfrFilename} -r {rate} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
+            //string args = $"-vsync 0 -f concat -i {vfrFilename} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
 
@@ -107,7 +109,7 @@ namespace Flowframes
             Logger.Log($"Merging videos...");
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
-            string args = $" {loopStr} -vsync 1 -f concat  -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string args = $" {loopStr} -vsync 1 -f concat -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c copy -pix_fmt yuv420p {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
@@ -116,7 +118,7 @@ namespace Flowframes
             Logger.Log($"Changing video frame rate...");
             string enc = useH265 ? "libx265" : "libx264";
             string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
+            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputPath);
@@ -225,6 +227,7 @@ namespace Flowframes
 
         public static float GetFramerate(string inputFile)
         {
+            Logger.Log("Reading FPS using ffmpeg.", true, false, "ffmpeg");
             string args = $" -i {inputFile.Wrap()}";
             string output = AvProcess.GetFfmpegOutput(args);
             string[] entries = output.Split(',');
@@ -259,11 +262,31 @@ namespace Flowframes
         {
             int frames = 0;
 
+            Logger.Log("Reading frame count using ffprobe.", true, false, "ffmpeg");
             frames = ReadFrameCountFfprobe(inputFile, Config.GetBool("ffprobeCountFrames"));      // Try reading frame count with ffprobe
             if (frames > 0)
                 return frames;
 
+            Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Reading frame count using ffmpeg.", true, false, "ffmpeg");
             frames = ReadFrameCountFfmpeg(inputFile);       // Try reading frame count with ffmpeg
+            if (frames > 0)
+                return frames;
+
+            Logger.Log("Failed to get total frame count of video.");
+            return 0;
+        }
+
+        public static async Task<int> GetFrameCountAsync(string inputFile)
+        {
+            int frames = 0;
+
+            Logger.Log("Reading frame count using ffprobe.", true, false, "ffmpeg");
+            frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool("ffprobeCountFrames"));      // Try reading frame count with ffprobe
+            if (frames > 0)
+                return frames;
+
+            Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Reading frame count using ffmpeg.", true, false, "ffmpeg");
+            frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
             if (frames > 0)
                 return frames;
 
@@ -283,16 +306,37 @@ namespace Flowframes
             string[] entries = info.SplitIntoLines();
             try
             {
-                Logger.Log("[FFCmds] ReadFrameCountFfprobe - ffprobe output: " + info.Remove(Environment.NewLine), true);
                 if (readFramesSlow)
                     return info.GetInt();
                 foreach (string entry in entries)
                 {
                     if (entry.Contains("nb_frames="))
-                    {
-                        Logger.Log("[FFCmds] Getting Int from " + entry, true);
                         return entry.GetInt();
-                    }
+                }
+            }
+            catch { }
+            return -1;
+        }
+
+        static async Task<int> ReadFrameCountFfprobeAsync(string inputFile, bool readFramesSlow)
+        {
+            string args = $" -v panic -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {inputFile.Wrap()}";
+            if (readFramesSlow)
+            {
+                Logger.Log("Counting total frames using FFprobe. This can take a moment...");
+                await Task.Delay(10);
+                args = $" -v panic -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
+            }
+            string info = AvProcess.GetFfprobeOutput(args);
+            string[] entries = info.SplitIntoLines();
+            try
+            {
+                if (readFramesSlow)
+                    return info.GetInt();
+                foreach (string entry in entries)
+                {
+                    if (entry.Contains("nb_frames="))
+                        return entry.GetInt();
                 }
             }
             catch { }
@@ -307,13 +351,25 @@ namespace Flowframes
             foreach (string entry in entries)
             {
                 if (entry.Contains("frame="))
-                {
-                    Logger.Log("[FFCmds] Getting Int from entry " + entry, true);
-                    Logger.Log("[FFCmds] Getting Int from " + entry.Substring(0, entry.IndexOf("fps")), true);
                     return entry.Substring(0, entry.IndexOf("fps")).GetInt();
-                }
             }
             return -1;
+        }
+
+        static async Task<int> ReadFrameCountFfmpegAsync (string inputFile)
+        {
+            string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
+            string info = await AvProcess.GetFfmpegOutputAsync(args, true);
+            try
+            {
+                string[] lines = info.SplitIntoLines();
+                string lastLine = lines.Last();
+                return lastLine.Substring(0, lastLine.IndexOf("fps")).GetInt();
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         public static string GetAudioCodec(string path)

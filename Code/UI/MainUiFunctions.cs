@@ -21,6 +21,14 @@ namespace Flowframes.UI
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;
+            
+            Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
+            if (!Program.lastInputPathIsSsd)
+                Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
+
+            Logger.Log("Loading metadata...");
+            int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
+
             string fpsStr = "Not Found";
             float fps = IOUtils.GetFpsFolderOrVideo(path);
             if (fps > 0)
@@ -28,14 +36,12 @@ namespace Flowframes.UI
                 fpsStr = fps.ToString();
                 fpsInTbox.Text = fpsStr;
             }
-            //Interpolate.SetFps(fps);
-            Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
-            if (!Program.lastInputPathIsSsd)
-                Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
+
             if (IOUtils.IsPathDirectory(path))
-                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {InterpolateUtils.GetInputFrameCount(path)}");
+                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
             else
-                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {InterpolateUtils.GetInputFrameCount(path)}");
+                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
+
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);
             await PrintResolution(path);

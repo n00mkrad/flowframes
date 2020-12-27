@@ -1,6 +1,7 @@
 ﻿using Flowframes.Data;
 using Flowframes.Forms;
 using Flowframes.IO;
+using Flowframes.MiscUtils;
 using Flowframes.OS;
 using Flowframes.UI;
 using System;
@@ -100,12 +101,32 @@ namespace Flowframes.Main
                 bigPreviewForm.SetImage(img);
         }
 
-        public static int GetInputFrameCount(string path)
+        public static Dictionary<string, int> frameCountCache = new Dictionary<string, int>();
+        public static async Task<int> GetInputFrameCountAsync (string path)
         {
-            if (IOUtils.IsPathDirectory(path))
-                return IOUtils.GetAmountOfFiles(path, false);
+            string hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
+            if (hash.Length > 1 && frameCountCache.ContainsKey(hash))
+            {
+                Logger.Log($"FrameCountCache contains this hash ({hash}), using cached frame count.", true);
+                return frameCountCache[hash];
+            }
             else
-                return FFmpegCommands.GetFrameCount(path);
+            {
+                Logger.Log($"Hash ({hash}) not cached, reading frame count.", true);
+            }
+
+            int frameCount = 0;
+            if (IOUtils.IsPathDirectory(path))
+                frameCount = IOUtils.GetAmountOfFiles(path, false);
+            else
+                frameCount = await FFmpegCommands.GetFrameCountAsync(path);
+
+            if (hash.Length > 1 && frameCount > 5000)     // Cache if >5k frames to avoid re-reading it every single time
+            {
+                Logger.Log($"Adding hash ({hash}) with frame count {frameCount} to cache.", true);
+                frameCountCache[hash] = frameCount;      // Use CRC32 instead of path to avoid using cached value if file was changed
+            }
+            return frameCount;
         }
 
         public static int GetProgressWaitTime(int numFrames)

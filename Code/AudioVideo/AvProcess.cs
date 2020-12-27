@@ -37,19 +37,18 @@ namespace Flowframes
             ffmpeg.StartInfo.CreateNoWindow = true;
             ffmpeg.StartInfo.FileName = "cmd.exe";
             if(!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"/C cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel warning -y -stats {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel warning -y -stats {args}";
             if (logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
-            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg.txt");
+            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
             ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
             ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
             ffmpeg.Start();
             ffmpeg.BeginOutputReadLine();
             ffmpeg.BeginErrorReadLine();
             while (!ffmpeg.HasExited)
-                await Task.Delay(100);
-            //Logger.Log("Done running ffmpeg.", true);
+                await Task.Delay(1);
         }
 
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
@@ -61,19 +60,32 @@ namespace Flowframes
             bool hidden = currentLogMode == LogMode.Hidden;
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
             string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
-            Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg.txt");
+            Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");
 
             if(line.Contains("Could not open file"))
             {
-                Interpolate.Cancel("Failed to write frames - Make sure the input folder is not restricted!");
+                Interpolate.Cancel("Failed to write frames - Make sure the folder is not restricted!");
             }
+        }
+
+        static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
+        {
+            if (outLine == null || outLine.Data == null || outLine.Data.Trim().Length < 2)
+                return;
+            string line = outLine.Data;
+
+            if (!string.IsNullOrWhiteSpace(lastOutputFfmpeg))
+                lastOutputFfmpeg += "\n";
+            lastOutputFfmpeg = lastOutputFfmpeg + line;
+            Logger.Log(line, true, false, "ffmpeg");
         }
 
         public static string GetFfmpegOutput (string args)
         {
             Process ffmpeg = OSUtils.NewProcess(true);
-            ffmpeg.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
-            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true);
+            lastProcess = ffmpeg;
+            ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
+            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
             ffmpeg.Start();
             ffmpeg.WaitForExit();
             string output = ffmpeg.StandardOutput.ReadToEnd();
@@ -82,13 +94,49 @@ namespace Flowframes
             return output;
         }
 
+        public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false)
+        {
+            lastOutputFfmpeg = "";
+            Process ffmpeg = OSUtils.NewProcess(true);
+            lastProcess = ffmpeg;
+            ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
+            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
+            if (setBusy)
+                Program.mainForm.SetWorking(true);
+            ffmpeg.Start();
+            ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandlerSilent);
+            ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandlerSilent);
+            ffmpeg.Start();
+            ffmpeg.BeginOutputReadLine();
+            ffmpeg.BeginErrorReadLine();
+            while (!ffmpeg.HasExited)
+                await Task.Delay(1);
+            if (setBusy)
+                Program.mainForm.SetWorking(false);
+            return lastOutputFfmpeg;
+        }
+
         public static string GetFfprobeOutput (string args)
         {
             Process ffprobe = OSUtils.NewProcess(true);
-            ffprobe.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
-            Logger.Log("cmd.exe " + ffprobe.StartInfo.Arguments, true, false, "ffmpeg.txt");
+            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
+            Logger.Log("cmd.exe " + ffprobe.StartInfo.Arguments, true, false, "ffmpeg");
             ffprobe.Start();
             ffprobe.WaitForExit();
+            string output = ffprobe.StandardOutput.ReadToEnd();
+            string err = ffprobe.StandardError.ReadToEnd();
+            if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
+            return output;
+        }
+
+        public static async Task<string> GetFfprobeOutputAsync(string args)
+        {
+            Process ffprobe = OSUtils.NewProcess(true);
+            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
+            Logger.Log("cmd.exe " + ffprobe.StartInfo.Arguments, true, false, "ffmpeg");
+            ffprobe.Start();
+            while (!ffprobe.HasExited)
+                await Task.Delay(1);
             string output = ffprobe.StandardOutput.ReadToEnd();
             string err = ffprobe.StandardError.ReadToEnd();
             if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
@@ -101,9 +149,9 @@ namespace Flowframes
             currentLogMode = logMode;
             Process gifski = OSUtils.NewProcess(true);
             lastProcess = gifski;
-            gifski.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & gifski.exe {args}";
+            gifski.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & gifski.exe {args}";
             Logger.Log("Running gifski...");
-            Logger.Log("cmd.exe " + gifski.StartInfo.Arguments, true, false, "ffmpeg.txt");
+            Logger.Log("cmd.exe " + gifski.StartInfo.Arguments, true, false, "ffmpeg");
             gifski.OutputDataReceived += new DataReceivedEventHandler(OutputHandlerGifski);
             gifski.ErrorDataReceived += new DataReceivedEventHandler(OutputHandlerGifski);
             gifski.Start();
@@ -127,6 +175,22 @@ namespace Flowframes
         static string GetAvDir ()
         {
             return Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.audioVideo.fileName));
+        }
+
+        static string GetCmdArg ()
+        {
+            return "/C";
+        }
+
+        public static async Task SetBusyWhileRunning ()
+        {
+            if (Program.busy) return;
+
+            Program.mainForm.SetWorking(true);
+            await Task.Delay(100);
+            while(!lastProcess.HasExited)
+                await Task.Delay(10);
+            Program.mainForm.SetWorking(false);
         }
     }
 }

@@ -1,10 +1,13 @@
 ﻿
 using Flowframes.Data;
 using Flowframes.Main;
+using Flowframes.MiscUtils;
 using Force.Crc32;
 using Microsoft.WindowsAPICodePack.Shell;
+using Standart.Hash.xxHash;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -519,22 +522,44 @@ namespace Flowframes.IO
 			}
 		}
 
-		public enum Hash { MD5, CRC32 }
-		public static string GetHash (string filename, Hash hashType)
+		public enum Hash { MD5, CRC32, xxHash }
+		public static string GetHash (string path, Hash hashType, bool log = true, bool quick = true)
 		{
-			if (hashType == Hash.MD5)
+			Benchmarker.Start();
+			string hashStr = "";
+            try
             {
-				MD5 md5 = MD5.Create();
-				var hash = md5.ComputeHash(File.OpenRead(filename));
-				return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+				if (hashType == Hash.MD5)
+				{
+					MD5 md5 = MD5.Create();
+					var hash = md5.ComputeHash(File.OpenRead(path));
+					hashStr = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+				}
+				if (hashType == Hash.CRC32)
+				{
+					var crc = new Crc32Algorithm();
+					var crc32bytes = crc.ComputeHash(File.OpenRead(path));
+					hashStr = BitConverter.ToUInt32(crc32bytes, 0).ToString();
+				}
+				if (hashType == Hash.xxHash)
+				{
+					ulong xxh64 = xxHash64.ComputeHash(File.OpenRead(path), 8192, (ulong)GetFilesize(path));
+					hashStr = xxh64.ToString();
+				}
 			}
-			if (hashType == Hash.CRC32)
-			{
-				var crc = new Crc32Algorithm();
-				var crc32bytes = crc.ComputeHash(File.OpenRead(filename));
-				return BitConverter.ToUInt32(crc32bytes, 0).ToString();
-			}
-			return null;
+			catch (Exception e)
+            {
+				Logger.Log($"Error getting file hash for {Path.GetFileName(path)}: {e.Message}", true);
+            }
+			if (log)
+				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}) in {Benchmarker.GetTimeStr(true)}: {hashStr}", true);
+			return hashStr;
+		}
+
+		public static async Task<string> GetHashAsync(string path, Hash hashType, bool log = true, bool quick = true)
+		{
+			await Task.Delay(1);
+			return GetHash(path, hashType, log, quick);
 		}
 
 		public static bool CreateDir (string path)		// Returns whether the dir already existed
@@ -634,5 +659,26 @@ namespace Flowframes.IO
 				return false;
             }
         }
+
+		public static long GetFilesize(string path)
+		{
+			return new FileInfo(path).Length;
+		}
+
+		public static string GetFilesizeStr (string path)
+        {
+			return FormatUtils.Bytes(GetFilesize(path));
+        }
+
+		public static byte[] GetLastBytes (string path, int startAt, int bytesAmount)
+        {
+			byte[] buffer = new byte[bytesAmount];
+			using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open)))
+			{
+				reader.BaseStream.Seek(startAt, SeekOrigin.Begin);
+				reader.Read(buffer, 0, bytesAmount);
+			}
+			return buffer;
+		}
 	}
 }

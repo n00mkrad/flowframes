@@ -64,7 +64,7 @@ namespace Flowframes.Main
                     busy = true;
 
                     List<string> framesToEncode = aiRunning ? unencodedFrames.Take(chunkSize).ToList() : unencodedFrames;     // Take all remaining frames if process is done
-                    Logger.Log($"Encoding Chunk #{videoIndex} using {Path.GetFileName(framesToEncode.First())} through {Path.GetFileName(framesToEncode.Last())}", true, false, "ffmpeg.txt");
+                    Logger.Log($"Encoding Chunk #{videoIndex} using {Path.GetFileName(framesToEncode.First())} through {Path.GetFileName(framesToEncode.Last())}", true, false, "ffmpeg");
 
                     IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file
 
@@ -82,7 +82,7 @@ namespace Flowframes.Main
 
                     encodedFrames.AddRange(framesToEncode);
 
-                    Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg.txt");
+                    Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg");
                     videoIndex++;
                     busy = false;
                 }

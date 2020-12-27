@@ -185,7 +185,7 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
-            await FFmpegCommands.FramesToVideoVfr(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden);
+            await FFmpegCommands.FramesToVideoVfr(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);
         }
 
         static async Task Loop(string outPath, int looptimes)
