@@ -155,10 +155,5 @@ namespace Flowframes
 
             return str.Remove(place, stringToReplace.Length).Insert(place, replaceWith);
         }
-
-        public static string ListCommaFix (this string str)
-        {
-            return str.Replace(" , ", " ").Replace(" ,", " ").Replace(", ", " ");
-        }
     }
 }

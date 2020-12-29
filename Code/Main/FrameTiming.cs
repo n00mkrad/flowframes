@@ -14,6 +14,8 @@ namespace Flowframes.Main
 {
     class FrameTiming
     {
+        public static int timebase = 10000;
+
         public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, int times, bool noTimestamps)
         {
             Logger.Log("Generating timecodes...");
@@ -79,7 +81,7 @@ namespace Flowframes.Main
                 {
                     //Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
 
-                    string durationStr = (durationPerInterpFrame / 10000f).ToString("0.00000", CultureInfo.InvariantCulture);
+                    string durationStr = (durationPerInterpFrame / timebase).ToString("0.0000000", CultureInfo.InvariantCulture);
 
                     if (discardThisFrame && totalFileCount > 1)     // Never discard 1st frame
                     {
@@ -115,7 +117,7 @@ namespace Flowframes.Main
             }
 
             // Use average frame duration for last frame - TODO: Use real duration??
-            string durationStrLast = ((totalDuration / totalFileCount) / 10000f).ToString("0.00000", CultureInfo.InvariantCulture);
+            string durationStrLast = ((totalDuration / (totalFileCount - 1)) / timebase).ToString("0.0000000", CultureInfo.InvariantCulture);
             fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\nduration {durationStrLast}\n";
             totalFileCount++;
 

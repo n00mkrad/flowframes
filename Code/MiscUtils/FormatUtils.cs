@@ -68,5 +68,23 @@ namespace Flowframes.MiscUtils
             double ratio = Math.Round(((float)numTo / (float)numFrom) * 100f);
             return ratio + "%";
         }
+
+        public static string ConcatStrings(string[] strings, char delimiter = ',', bool distinct = false)
+        {
+            string outStr = "";
+
+            strings = strings.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+            if(distinct)
+                strings = strings.Distinct().ToArray();
+
+            for (int i = 0; i < strings.Length; i++)
+            {
+                outStr += strings[i];
+                if (i + 1 != strings.Length)
+                    outStr += delimiter;
+            }
+
+            return outStr;
+        }
     }
 }

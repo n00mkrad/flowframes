@@ -2,6 +2,7 @@
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
+using Flowframes.MiscUtils;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -42,10 +43,12 @@ namespace Flowframes
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
-            string timecodeStr = timecodes ? "-copyts -r 10000 -frame_pts true" : "";
+            string timecodeStr = timecodes ? $"-copyts -r {FrameTiming.timebase} -frame_pts true" : "";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string vf = (scnDetect.Length > 2 || mpStr.Length > 2) ? $"-vf {scnDetect},{mpStr} ".ListCommaFix() : "";
+            string fpsFilter = $"\"fps=fps={Interpolate.current.inFps.ToString().Replace(",", ".")}\"";
+            string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr, fpsFilter } );
+            string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string pad = Padding.inputFrames.ToString();
             string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
