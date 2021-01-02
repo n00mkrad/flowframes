@@ -14,13 +14,24 @@ namespace Flowframes.Main
 {
     class FrameTiming
     {
+        public enum Mode { CFR, VFR }
         public static int timebase = 10000;
 
-        public static async Task CreateTimecodeFiles(string framesPath, bool loopEnabled, int times, bool noTimestamps)
+        public static async Task CreateTimecodeFiles(string framesPath, Mode mode, bool loopEnabled, int times, bool noTimestamps)
         {
             Logger.Log("Generating timecodes...");
-            await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
-            Logger.Log($"Generating timecodes... Done.", false, true);
+            try
+            {
+                if (mode == Mode.VFR)
+                    await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
+                if (mode == Mode.CFR)
+                    await CreateEncFile(framesPath, loopEnabled, times, false);
+                Logger.Log($"Generating timecodes... Done.", false, true);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error generating timecodes: {e.Message}");
+            }
         }
 
         public static async Task CreateTimecodeFile(string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun, bool noTimestamps)
@@ -136,6 +147,125 @@ namespace Flowframes.Main
                     return;
                 }
                 File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
+            }
+        }
+
+        static Dictionary<string, int> dupesDict = new Dictionary<string, int>();
+
+        static void LoadDupesFile (string path)
+        {
+            if (!File.Exists(path)) return;
+            dupesDict.Clear();
+            string[] dupesFileLines = IOUtils.ReadLines(path);
+            foreach(string line in dupesFileLines)
+            {
+                string[] values = line.Split(':');
+                dupesDict.Add(values[0], values[1].GetInt());
+            }
+        }
+
+        public static async Task CreateEncFile (string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun)
+        {
+            if (Interpolate.canceled) return;
+            Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
+
+            bool loop = Config.GetBool("enableLoop");
+            bool sceneDetection = true;
+            string ext = InterpolateUtils.GetOutExt();
+
+            FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor}x.ini");
+            string fileContent = "";
+            string dupesFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
+            LoadDupesFile(dupesFile);
+
+            string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
+            string interpPath = Paths.interpDir;
+
+            List<string> sceneFrames = new List<string>();
+            if (Directory.Exists(scnFramesPath))
+                sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
+
+            int totalFileCount = 1;
+            for (int i = 0; i < (frameFiles.Length - 1); i++)
+            {
+                if (Interpolate.canceled) return;
+
+                int interpFramesAmount = interpFactor;
+                string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFiles[i].Name);
+                int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
+                //Logger.Log($"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)} has {dupesAmount} dupes", true);
+
+                bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+
+                // TODO: Check if this is needed
+                // If loop is enabled, account for the extra frame added to the end for loop continuity
+                if (loopEnabled && i == (frameFiles.Length - 2))
+                    interpFramesAmount = interpFramesAmount * 2;
+
+                //Logger.Log($"Writing out frames for in frame {i} which has {dupesAmount} dupes", true);
+                // Generate frames file lines
+                for (int frm = 0; frm < interpFramesAmount; frm++)
+                {
+                    //Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
+
+
+                    if (discardThisFrame && totalFileCount > 1)     // If frame is scene cut frame
+                    {
+                        int lastNum = totalFileCount;
+
+                        //Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
+                        fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+                        totalFileCount++;
+
+                        //Logger.Log("Discarding interp frames with out num " + totalFileCount);
+                        for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
+                        {
+                            //Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
+                            fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+                            totalFileCount++;
+                        }
+
+                        frm = interpFramesAmount;
+                    }
+                    else
+                    {
+                        for(int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
+                        {
+                            //Logger.Log($"Writing frame {totalFileCount}", true, false);
+                            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+                        }
+                        totalFileCount++;
+                    }
+                }
+
+                if ((i + 1) % 100 == 0)
+                    await Task.Delay(1);
+            }
+
+            // Use average frame duration for last frame - TODO: Use real duration??
+            //string durationStrLast = ((totalDuration / (totalFileCount - 1)) / timebase).ToString("0.0000000", CultureInfo.InvariantCulture);
+            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+            totalFileCount++;
+
+            string finalFileContent = fileContent.Trim();
+            if(loop)
+                finalFileContent = finalFileContent.Remove(finalFileContent.LastIndexOf("\n"));
+            File.WriteAllText(vfrFile, finalFileContent);
+
+            if (notFirstRun) return;    // Skip all steps that only need to be done once
+
+            if (loop)
+            {
+                int lastFileNumber = frameFiles.Last().Name.GetInt() + 1;
+                string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + $".png");
+                if (File.Exists(loopFrameTargetPath))
+                {
+                    Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
+                    return;
+                }
+                File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
+                Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
             }
         }
     }

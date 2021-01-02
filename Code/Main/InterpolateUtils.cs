@@ -34,6 +34,7 @@ namespace Flowframes.Main
         public static int currentFactor;
         public static async void GetProgressByFrameAmount(string outdir, int target)
         {
+            Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{outdir}', target is {target} frames", true);
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
             targetFrames = target;

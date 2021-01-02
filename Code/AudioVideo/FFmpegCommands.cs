@@ -92,17 +92,17 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task FramesToVideoVfr(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine, bool isChunk = false)
+        public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != AvProcess.LogMode.Hidden)
                 Logger.Log($"Encoding video...");
             string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode)) + " -pix_fmt yuv420p ";
             if (!isChunk) encArgs += $"-movflags +faststart";
             string vfrFilename = Path.GetFileName(framesFile);
-            string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
+            //string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
             string rate = fps.ToString().Replace(",", ".");
             string extraArgs = Config.Get("ffEncArgs");
-            string args = $"{vsync} -f concat -i {vfrFilename} -r {rate} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
+            string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             //string args = $"-vsync 0 -f concat -i {vfrFilename} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
@@ -183,7 +183,7 @@ namespace Flowframes
         public static async Task Encode(string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)
         {
             string outPath = Path.ChangeExtension(inputFile, null) + "-convert.mp4";
-            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k {outPath.Wrap()}";
+            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k -vf {divisionFilter} {outPath.Wrap()}";
             if (string.IsNullOrWhiteSpace(acodec))
                 args = args.Replace("-c:a", "-an");
             if (audioKbps < 0)

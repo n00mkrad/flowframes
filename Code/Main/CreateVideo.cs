@@ -112,7 +112,7 @@ namespace Flowframes.Main
                 bool h265 = Config.GetInt("mp4Enc") == 1;
                 int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
 
-                await FFmpegCommands.FramesToVideoVfr(vfrFile, outPath, mode, fps);
+                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, fps);
                 await MergeAudio(i.current.inPath, outPath);
 
                 if (changeFps > 0)
@@ -185,7 +185,7 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
 
-            await FFmpegCommands.FramesToVideoVfr(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);
+            await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);
         }
 
         static async Task Loop(string outPath, int looptimes)
