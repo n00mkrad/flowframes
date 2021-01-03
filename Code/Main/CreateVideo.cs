@@ -73,8 +73,6 @@ namespace Flowframes.Main
 
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.current.interpFactor}x.ini");
             string[] vfrLines = IOUtils.ReadLines(vfrFile);
-            string currentInterpExt = $".{InterpolateUtils.GetOutExt()}";
-            vfrLines = vfrLines.Where(x => x.Contains(currentInterpExt)).ToArray();  // Remove duration lines, leaving only filename lines
 
             for (int idx = 1; idx <= vfrLines.Length; idx++)
             {
@@ -183,7 +181,7 @@ namespace Flowframes.Main
         {
             string vfrFileOriginal = Path.Combine(i.current.tempFolder, $"vfr-{i.current.interpFactor}x.ini");
             string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
-            File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum * 2).Take(framesAmount * 2));
+            File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum).Take(framesAmount));
 
             await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);
         }

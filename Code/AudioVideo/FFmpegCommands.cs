@@ -38,16 +38,17 @@ namespace Flowframes
             await VideoToFrames(inputFile, frameFolderPath, deDupe, delSrc, new Size(), timecodes);
         }
 
+        //public enum TimecodeMode { None, Consecutive, Realtime }
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true, bool sceneDetect = false)
         {
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
-            string timecodeStr = timecodes ? $"-copyts -r {FrameTiming.timebase} -frame_pts true" : "";
+            string timecodeStr = timecodes ? $"-copyts -r {FrameTiming.timebase} -frame_pts true" : "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
             string fpsFilter = $"\"fps=fps={Interpolate.current.inFps.ToString().Replace(",", ".")}\"";
-            string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr, fpsFilter } );
+            string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr/*, fpsFilter*/ } );
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string pad = Padding.inputFrames.ToString();
             string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
