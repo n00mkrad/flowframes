@@ -89,6 +89,9 @@ namespace Flowframes.Main
                     {
                         foreach (int frame in frameLinesToEncode)
                         {
+                            // TODO: Make sure frames are no longer needed (e.g. for dupes) before deleting!!
+                            continue;
+
                             string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
                             File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
                         }
