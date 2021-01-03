@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Flowframes.IO;
-using Flowframes.Main;
-using Flowframes.UI;
-using Microsoft.VisualBasic.Devices;
 using ImageMagick;
 using Flowframes.OS;
 using Flowframes.Data;
@@ -16,7 +12,7 @@ using System.Drawing;
 
 namespace Flowframes.Magick
 {
-    class MagickDedupe
+    class Dedupe
     {
         public enum Mode { None, Info, Enabled, Auto }
         public static Mode currentMode;
@@ -219,6 +215,28 @@ namespace Flowframes.Magick
             if (pixels >= 8294400) return 200;
             Logger.Log($"Using magick dedupe buffer size {bufferSize} for frame resolution {res.Width}x{res.Height}", true);
             return bufferSize;
+        }
+
+        public static async Task CreateDupesFileMpdecimate (string framesPath, int lastFrameNum)
+        {
+            string infoFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
+            string fileContent = "";
+
+            FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, "*.png");
+
+            for(int i = 0; i < frameFiles.Length; i++)
+            {
+                bool isLastItem = (i + 1) == frameFiles.Length;
+                int frameNum1 = frameFiles[i].Name.GetInt();
+                int frameNum2 = isLastItem ? lastFrameNum : frameFiles[i+1].Name.GetInt();
+
+                int diff = frameNum2 - frameNum1;
+                int dupes = diff - 1;
+
+                fileContent += $"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)}:{dupes}\n";
+            }
+
+            File.WriteAllText(infoFile, fileContent);
         }
     }
 }

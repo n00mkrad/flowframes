@@ -79,14 +79,14 @@ namespace Flowframes.Main
                 string line = vfrLines[idx-1];
                 string inFilename = line.Split('/').Last().Remove("'");
                 string framePath = Path.Combine(framesPath, inFilename);
-                string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + InterpolateUtils.GetOutExt(true);
+                string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
 
                 if ((idx < vfrLines.Length) && vfrLines[idx].Contains(inFilename))   // If file is re-used in the next line, copy instead of move
                     File.Copy(framePath, outFilename);
                 else
                     File.Move(framePath, outFilename);
 
-                if (sw.ElapsedMilliseconds >= 1000 || idx == vfrLines.Length)
+                if (sw.ElapsedMilliseconds >= 500 || idx == vfrLines.Length)
                 {
                     sw.Restart();
                     Logger.Log($"Copying interpolated frames to '{Path.GetFileName(copyPath)}' - {idx}/{vfrLines.Length}", false, true);

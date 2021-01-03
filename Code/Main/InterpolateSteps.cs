@@ -84,7 +84,7 @@ namespace Flowframes.Main
             AiProcess.filenameMap.Clear();
             bool extractAudio = true;
             Program.mainForm.SetStatus("Extracting frames from video...");
-            await FFmpegCommands.VideoToFrames(current.inPath, current.framesFolder, Config.GetInt("dedupMode") == 2, false, InterpolateUtils.GetOutputResolution(current.inPath, true));
+            await FFmpegCommands.VideoToFrames(current.inPath, current.framesFolder, Config.GetInt("dedupMode") == 2, false, InterpolateUtils.GetOutputResolution(current.inPath, true), false);
 
             if (extractAudio)
             {

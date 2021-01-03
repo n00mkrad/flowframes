@@ -28,7 +28,7 @@ namespace Flowframes
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath)
         {
             Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, false, false, new Size(320, 180), true, true);
+            await VideoToFrames(inputFile, frameFolderPath, false, false, new Size(320, 180), false, true);
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
             Logger.Log($"Detected {IOUtils.GetAmountOfFiles(frameFolderPath, false)} scene changes.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
@@ -39,7 +39,7 @@ namespace Flowframes
         }
 
         //public enum TimecodeMode { None, Consecutive, Realtime }
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes = true, bool sceneDetect = false)
+        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
         {
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";

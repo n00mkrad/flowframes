@@ -103,7 +103,7 @@ namespace Flowframes.UI
             Program.mainForm.SetWorking(true);
             Logger.Log("Running frame de-duplication", true);
             await Task.Delay(10);
-            await MagickDedupe.Run(framesPath, testRun);
+            await Magick.Dedupe.Run(framesPath, testRun);
             IOUtils.TryDeleteIfExists(framesPath);
             Program.mainForm.SetProgress(0);
             Program.mainForm.SetWorking(false);

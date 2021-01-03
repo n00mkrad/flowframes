@@ -83,7 +83,7 @@ namespace Flowframes
             }
 
             Program.mainForm.SetStatus("Extracting frames from video...");
-            await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath, true));
+            await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath, true), false);
             Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
             if (extractAudio)
@@ -118,11 +118,14 @@ namespace Flowframes
             }  
 
             if (Config.GetInt("dedupMode") == 1)
-                await MagickDedupe.Run(current.framesFolder);
+                await Dedupe.Run(current.framesFolder);
             else
-                MagickDedupe.ClearCache();
-            
-            if (canceled) return;
+                Dedupe.ClearCache();
+
+            if (Config.GetInt("dedupMode") == 2)
+                await Dedupe.CreateDupesFileMpdecimate(current.framesFolder, currentInputFrameCount);
+
+                if (canceled) return;
 
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
             await FrameTiming.CreateTimecodeFiles(current.framesFolder, FrameTiming.Mode.CFR, Config.GetBool("enableLoop"), current.interpFactor, !useTimestamps);

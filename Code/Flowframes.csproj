@@ -267,7 +267,7 @@
     <Compile Include="IO\Paths.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Magick\Converter.cs" />
-    <Compile Include="Magick\MagickDedupe.cs" />
+    <Compile Include="Magick\Dedupe.cs" />
     <Compile Include="OS\NvApi.cs" />
     <Compile Include="OS\OSUtils.cs" />
     <Compile Include="OS\Pytorch.cs" />
