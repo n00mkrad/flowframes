@@ -1,28 +1,73 @@
 ﻿using Flowframes.IO;
+using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Flowframes.OS
 {
-    class Pytorch
+    class Python
     {
         static bool hasCheckedSysPy = false;
         static bool sysPyInstalled = false;
+
+        public static string compactOutput;
+
+        public static async Task CheckCompression ()
+        {
+            if(HasEmbeddedPyFolder() && (Config.Get("compressedPyVersion") != Updater.GetInstalledVer().ToString()))
+            {
+                Program.mainForm.SetWorking(true, false);
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+                try
+                {
+                    bool shownPatienceMsg = false;
+                    Logger.Log("Compressing python runtime. This only needs to be done once.");
+                    compactOutput = "";
+                    Process compact = OSUtils.NewProcess(true);
+                    compact.StartInfo.Arguments = $"/C compact /C /S:{GetPyFolder().Wrap()} /EXE:LZX";
+                    compact.OutputDataReceived += new DataReceivedEventHandler(CompactOutputHandler);
+                    compact.ErrorDataReceived += new DataReceivedEventHandler(CompactOutputHandler);
+                    compact.Start();
+                    compact.BeginOutputReadLine();
+                    compact.BeginErrorReadLine();
+                    while (!compact.HasExited)
+                    {
+                        await Task.Delay(500);
+                        if(sw.ElapsedMilliseconds > 10000)
+                        {
+                            Logger.Log($"This can take up to a few minutes... (Elapsed: {FormatUtils.Time(sw.Elapsed)})", false, shownPatienceMsg);
+                            shownPatienceMsg = true;
+                            await Task.Delay(500);
+                        }
+                    }
+                    Config.Set("compressedPyVersion", Updater.GetInstalledVer().ToString());
+                    Logger.Log("Done compressing python runtime.");
+                    Logger.WriteToFile(compactOutput, true, "compact");
+                }
+                catch { }
+                Program.mainForm.SetWorking(false);
+            }
+        }
+
+        static void CompactOutputHandler (object sendingProcess, DataReceivedEventArgs outLine)
+        {
+            if (outLine == null || outLine.Data == null)
+                return;
+            string line = outLine.Data;
+            compactOutput = compactOutput + line + "\n";
+        }
 
         public static string GetPyCmd ()
         {
             if (HasEmbeddedPyFolder())
             {
                 Logger.Log("Using embedded Python runtime.");
-                string pyPkgDir = Path.Combine(Paths.GetPkgPath(), "py-amp");
-                if (!Directory.Exists(pyPkgDir))
-                    pyPkgDir = Path.Combine(Paths.GetPkgPath(), "py-tu");
-                if (!Directory.Exists(pyPkgDir))
-                    return "";
-                return Path.Combine(pyPkgDir, "python.exe").Wrap();
+                return Path.Combine(GetPyFolder(), "python.exe").Wrap();
             }
             else
             {
@@ -41,9 +86,20 @@ namespace Flowframes.OS
 
         public static bool HasEmbeddedPyFolder ()
         {
-            return Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-tu")) || Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-ampt"));
+            return Directory.Exists(GetPyFolder());
         }
 
+        public static string GetPyFolder ()
+        {
+            if (Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-amp")))
+                return Path.Combine(Paths.GetPkgPath(), "py-amp");
+
+            if (Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-tu")))
+                return Path.Combine(Paths.GetPkgPath(), "py-tu");
+
+            return "";
+        }
+        
         public static bool IsPytorchReady ()
         {
             string torchVer = GetPytorchVer();

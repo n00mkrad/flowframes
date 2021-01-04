@@ -94,7 +94,7 @@ namespace Flowframes.Forms
                     pkgList.SetItemChecked(i, true);
 
                 if (pkgList.Items[i].ToString() == "Python" && IsFirstRun())
-                    pkgList.SetItemChecked(i, !Pytorch.IsPytorchReady());   // Enable if system pytorch was not detected
+                    pkgList.SetItemChecked(i, !Python.IsPytorchReady());   // Enable if system pytorch was not detected
             }
         }
 

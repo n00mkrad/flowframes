@@ -29,13 +29,8 @@ namespace Flowframes
         {
             lastOutputFfmpeg = "";
             currentLogMode = logMode;
-            Process ffmpeg = new Process();
+            Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
-            ffmpeg.StartInfo.UseShellExecute = false;
-            ffmpeg.StartInfo.RedirectStandardOutput = true;
-            ffmpeg.StartInfo.RedirectStandardError = true;
-            ffmpeg.StartInfo.CreateNoWindow = true;
-            ffmpeg.StartInfo.FileName = "cmd.exe";
             if(!string.IsNullOrWhiteSpace(workingDir))
                 ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
             else

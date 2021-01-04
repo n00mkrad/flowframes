@@ -38,7 +38,6 @@ namespace Flowframes
             await VideoToFrames(inputFile, frameFolderPath, deDupe, delSrc, new Size(), timecodes);
         }
 
-        //public enum TimecodeMode { None, Consecutive, Realtime }
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
         {
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");

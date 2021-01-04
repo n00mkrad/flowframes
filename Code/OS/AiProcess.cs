@@ -164,7 +164,7 @@ namespace Flowframes
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500, Interpolate.current.interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Pytorch.GetPyCmd()} {script} {args}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE {(uhd ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -270,7 +270,7 @@ namespace Flowframes
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}\n\nIf you don't want to install it yourself, use the Python package from the Package Installer.", "Error");
-                if(!Pytorch.HasEmbeddedPyFolder())
+                if(!Python.HasEmbeddedPyFolder())
                     Process.Start("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md");
             }
 

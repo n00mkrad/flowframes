@@ -59,10 +59,12 @@ namespace Flowframes.Main
 
                 //unencodedFrameLines = interpFramesLines.Select(x => x.GetInt()).ToList().Except(encodedFrameLines).ToList();
 
+                Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {encodedFrameLines.Count} encoded frame lines", true, false, "ffmpeg");
+
                 unencodedFrameLines.Clear();
                 for(int vfrLine = 0; vfrLine < interpFramesLines.Length; vfrLine++)
                 {
-                    if (!encodedFrameLines.Contains(vfrLine))
+                    if (File.Exists(Path.Combine(interpFramesPath, interpFramesLines[vfrLine])) && !encodedFrameLines.Contains(vfrLine))
                         unencodedFrameLines.Add(vfrLine);
                 }
 
@@ -75,6 +77,7 @@ namespace Flowframes.Main
                     busy = true;
 
                     List<int> frameLinesToEncode = aiRunning ? unencodedFrameLines.Take(chunkSize).ToList() : unencodedFrameLines;     // Take all remaining frames if process is done
+                    Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {IOUtils.GetAmountOfFiles(interpFramesFolder, false)} frames in interp folder", true, false, "ffmpeg");
                     Logger.Log($"Encoding Chunk #{videoIndex} using {Path.GetFileName(interpFramesLines[frameLinesToEncode.First()])} through {Path.GetFileName(Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()]))}", true, false, "ffmpeg");
 
                     //IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file

@@ -660,6 +660,31 @@ namespace Flowframes.IO
             }
         }
 
+		public static long GetDirSize(string path, bool recursive, string[] includedExtensions = null)
+		{
+			long size = 0;
+			// Add file sizes.
+			string[] files;
+			StringComparison ignCase = StringComparison.OrdinalIgnoreCase;
+			if (includedExtensions == null)
+				files = Directory.GetFiles(path);
+			else
+				files = Directory.GetFiles(path).Where(file => includedExtensions.Any(x => file.EndsWith(x, ignCase))).ToArray();
+
+			foreach (string file in files)
+				size += new FileInfo(file).Length;
+
+			if (!recursive)
+				return size;
+
+			// Add subdirectory sizes.
+			DirectoryInfo[] dis = new DirectoryInfo(path).GetDirectories();
+			foreach (DirectoryInfo di in dis)
+				size += GetDirSize(di.FullName, true, includedExtensions);
+
+			return size;
+		}
+
 		public static long GetFilesize(string path)
 		{
 			return new FileInfo(path).Length;

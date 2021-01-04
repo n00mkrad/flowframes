@@ -63,6 +63,7 @@ namespace Flowframes
                 GetWebInfo.LoadNews(newsLabel);
                 GetWebInfo.LoadPatronListCsv(patronsLabel);
                 Updater.AsyncUpdateCheck();
+                Python.CheckCompression();
             }
             catch (Exception e)
             {
@@ -231,7 +232,7 @@ namespace Flowframes
                 Logger.Log($"Warning: {GetAi().aiName.Replace("_", "-")} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
         }
 
-        public void SetWorking(bool state)
+        public void SetWorking(bool state, bool allowCancel = true)
         {
             Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn, installerBtn };
             Control[] controlsToHide = new Control[] { runBtn, runStepBtn, stepSelector };
@@ -241,6 +242,8 @@ namespace Flowframes
                 c.Enabled = !state;
             foreach (Control c in controlsToHide)
                 c.Visible = !state;
+            if (!allowCancel)
+                cancelBtn.Enabled = false;
             Program.busy = state;
             Program.mainForm.UpdateStepByStepControls(false);
         }
