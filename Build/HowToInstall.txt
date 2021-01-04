@@ -1,6 +1,14 @@
-1) Download the 7z file with "-Full" if you want all dependencies (Python/Pytorch, etc) included, or the file with "-NoPython" if you already have a system pytorch installation, or if you have an AMD GPU that can't use pytorch anyway
+1) Download...
+   - FF-Slim if you have an AMD/Intel GPU, or if you have an Nvidia GPU and Pytorch already installed
+   - FF-Full if you have an Nvidia Turing (RTX 2000) or older GPU
+   - FF-Full-RTX3000 if you have an Nvidia Ampere (RTX 3000) GPU. Also compatible with older GPUs, but has bigger filesize.
+
 2) Extract the 7z file using 7zip or any other program that supports it
+
 3) Run Flowframes.exe
+
+
+
 
 If you updated from an older version, you can optionally copy "FlowframesData/config.ini" to your new installation if you want to keep your settings.
 You can delete your old installation after updating.
