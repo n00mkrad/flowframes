@@ -25,6 +25,7 @@ namespace Flowframes.Main
 
         public static async Task Run(string step)
         {
+            Logger.Log($"[SBS] Running step '{step}'", true);
             canceled = false;
             Program.mainForm.SetWorking(true);
             current = Program.mainForm.GetCurrentSettings();

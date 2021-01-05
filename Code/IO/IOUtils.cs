@@ -527,6 +527,11 @@ namespace Flowframes.IO
 		{
 			Benchmarker.Start();
 			string hashStr = "";
+            if (IsPathDirectory(path))
+            {
+				Logger.Log($"Path is directory! Returning empty hash for {Path.GetFileName(path)}", true);
+				return hashStr;
+            }
             try
             {
 				if (hashType == Hash.MD5)
@@ -550,6 +555,7 @@ namespace Flowframes.IO
 			catch (Exception e)
             {
 				Logger.Log($"Error getting file hash for {Path.GetFileName(path)}: {e.Message}", true);
+				return "";
             }
 			if (log)
 				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}) in {Benchmarker.GetTimeStr(true)}: {hashStr}", true);

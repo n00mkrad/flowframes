@@ -234,6 +234,7 @@ namespace Flowframes
 
         public void SetWorking(bool state, bool allowCancel = true)
         {
+            Logger.Log($"SetWorking({state})");
             Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn, installerBtn };
             Control[] controlsToHide = new Control[] { runBtn, runStepBtn, stepSelector };
             progressCircle.Visible = state;
@@ -242,8 +243,7 @@ namespace Flowframes
                 c.Enabled = !state;
             foreach (Control c in controlsToHide)
                 c.Visible = !state;
-            if (!allowCancel)
-                cancelBtn.Enabled = false;
+            cancelBtn.Enabled = allowCancel;
             Program.busy = state;
             Program.mainForm.UpdateStepByStepControls(false);
         }

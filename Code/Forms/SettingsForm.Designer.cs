@@ -828,9 +828,9 @@
             this.label28.Location = new System.Drawing.Point(10, 150);
             this.label28.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(158, 16);
+            this.label28.Size = new System.Drawing.Size(102, 16);
             this.label28.TabIndex = 61;
-            this.label28.Text = "RIFE (CUDA) Settings";
+            this.label28.Text = "RIFE Settings";
             // 
             // panel12
             // 

@@ -184,7 +184,7 @@ namespace Flowframes
         public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int tilesize, int times)
         {
             processTimeMulti.Restart();
-            Logger.Log($"Running RIFE{(InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")} ...", false);
+            Logger.Log($"Running RIFE{(InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
             bool useAutoEnc = Interpolate.currentlyUsingAutoEnc;
             if(times > 2)

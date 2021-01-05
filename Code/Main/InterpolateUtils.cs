@@ -38,6 +38,7 @@ namespace Flowframes.Main
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
             targetFrames = target;
+            Logger.Log("Skipping progress count because program is not busy!!", true);
             while (Program.busy)
             {
                 if (AiProcess.processTime.IsRunning && Directory.Exists(outdir))

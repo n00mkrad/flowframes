@@ -91,6 +91,8 @@ namespace Flowframes
 
         public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false)
         {
+            if (Program.busy)
+                setBusy = false;
             lastOutputFfmpeg = "";
             Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
@@ -181,11 +183,9 @@ namespace Flowframes
         {
             if (Program.busy) return;
 
-            Program.mainForm.SetWorking(true);
             await Task.Delay(100);
             while(!lastProcess.HasExited)
                 await Task.Delay(10);
-            Program.mainForm.SetWorking(false);
         }
     }
 }
