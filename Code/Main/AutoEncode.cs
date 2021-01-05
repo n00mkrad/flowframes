@@ -59,7 +59,7 @@ namespace Flowframes.Main
 
                 //unencodedFrameLines = interpFramesLines.Select(x => x.GetInt()).ToList().Except(encodedFrameLines).ToList();
 
-                Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {encodedFrameLines.Count} encoded frame lines", true, false, "ffmpeg");
+                //Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {encodedFrameLines.Count} encoded frame lines", true, false, "ffmpeg");
 
                 unencodedFrameLines.Clear();
                 for(int vfrLine = 0; vfrLine < interpFramesLines.Length; vfrLine++)
@@ -77,14 +77,14 @@ namespace Flowframes.Main
                     busy = true;
 
                     List<int> frameLinesToEncode = aiRunning ? unencodedFrameLines.Take(chunkSize).ToList() : unencodedFrameLines;     // Take all remaining frames if process is done
-                    Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {IOUtils.GetAmountOfFiles(interpFramesFolder, false)} frames in interp folder", true, false, "ffmpeg");
+                    //Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {IOUtils.GetAmountOfFiles(interpFramesFolder, false)} frames in interp folder", true, false, "ffmpeg");
                     Logger.Log($"Encoding Chunk #{videoIndex} using {Path.GetFileName(interpFramesLines[frameLinesToEncode.First()])} through {Path.GetFileName(Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()]))}", true, false, "ffmpeg");
 
                     //IOUtils.ZeroPadDir(framesToEncode, Padding.interpFrames);   // Zero-pad frames before encoding to make sure filenames match with VFR file
 
                     string outpath = Path.Combine(videoChunksFolder, $"{videoIndex.ToString().PadLeft(4, '0')}{FFmpegUtils.GetExt(Interpolate.current.outMode)}");
                     int firstFrameNum = frameLinesToEncode[0];
-                    await CreateVideo.EncodeChunk(outpath, Interpolate.current.outMode, firstFrameNum - 1, frameLinesToEncode.Count);
+                    await CreateVideo.EncodeChunk(outpath, Interpolate.current.outMode, firstFrameNum, frameLinesToEncode.Count);
 
                     if(Interpolate.canceled) return;
 
@@ -101,6 +101,7 @@ namespace Flowframes.Main
                     }
 
                     encodedFrameLines.AddRange(frameLinesToEncode);
+                    //Logger.Log($"Adding {frameLinesToEncode.Count} frameLinesToEncode to encodedFrameLines, new count is {encodedFrameLines.Count}");
 
                     Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg");
                     videoIndex++;
@@ -125,6 +126,7 @@ namespace Flowframes.Main
         public static bool HasWorkToDo ()
         {
             if (Interpolate.canceled || interpFramesFolder == null) return false;
+            //Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
             return ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrameLines.Count < interpFramesLines.Length);
         }
 

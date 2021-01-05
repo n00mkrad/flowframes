@@ -154,8 +154,8 @@ namespace Flowframes.Main
 
         static void LoadDupesFile (string path)
         {
-            if (!File.Exists(path)) return;
             dupesDict.Clear();
+            if (!File.Exists(path)) return;
             string[] dupesFileLines = IOUtils.ReadLines(path);
             foreach(string line in dupesFileLines)
             {
@@ -186,6 +186,8 @@ namespace Flowframes.Main
             if (Directory.Exists(scnFramesPath))
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
 
+            bool debug = false;
+
             int totalFileCount = 1;
             for (int i = 0; i < (frameFiles.Length - 1); i++)
             {
@@ -194,7 +196,8 @@ namespace Flowframes.Main
                 int interpFramesAmount = interpFactor;
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFiles[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
-                //Logger.Log($"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)} has {dupesAmount} dupes", true);
+                
+                if(debug) Logger.Log($"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)} has {dupesAmount} dupes", true);
 
                 bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
@@ -203,25 +206,24 @@ namespace Flowframes.Main
                 if (loopEnabled && i == (frameFiles.Length - 2))
                     interpFramesAmount = interpFramesAmount * 2;
 
-                //Logger.Log($"Writing out frames for in frame {i} which has {dupesAmount} dupes", true);
+                if (debug) Logger.Log($"Writing out frames for in frame {i} which has {dupesAmount} dupes", true);
                 // Generate frames file lines
                 for (int frm = 0; frm < interpFramesAmount; frm++)
                 {
-                    //Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
-
+                    if (debug) Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
 
                     if (discardThisFrame && totalFileCount > 1)     // If frame is scene cut frame
                     {
                         int lastNum = totalFileCount;
 
-                        //Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
+                        if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
                         fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
                         totalFileCount++;
 
-                        //Logger.Log("Discarding interp frames with out num " + totalFileCount);
+                        if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
-                            //Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
+                            if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
                             fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
                             totalFileCount++;
                         }
@@ -232,7 +234,7 @@ namespace Flowframes.Main
                     {
                         for(int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
                         {
-                            //Logger.Log($"Writing frame {totalFileCount}", true, false);
+                            if (debug) Logger.Log($"Writing frame {totalFileCount} (writtenDupes {writtenDupes})", true, false);
                             fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
                         }
                         totalFileCount++;
@@ -261,11 +263,11 @@ namespace Flowframes.Main
                 string loopFrameTargetPath = Path.Combine(frameFiles.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + $".png");
                 if (File.Exists(loopFrameTargetPath))
                 {
-                    Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
+                    if (debug) Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
                     return;
                 }
                 File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
-                Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
+                if (debug) Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
             }
         }
     }

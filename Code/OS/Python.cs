@@ -86,7 +86,7 @@ namespace Flowframes.OS
 
         public static bool HasEmbeddedPyFolder ()
         {
-            return Directory.Exists(GetPyFolder());
+            return (Directory.Exists(GetPyFolder()) && IOUtils.GetDirSize(GetPyFolder(), false) > 1024 * 1024 * 5);
         }
 
         public static string GetPyFolder ()

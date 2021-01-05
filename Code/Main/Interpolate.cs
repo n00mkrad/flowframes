@@ -122,7 +122,7 @@ namespace Flowframes
             else
                 Dedupe.ClearCache();
 
-            if (Config.GetInt("dedupMode") == 2)
+            if (Config.GetInt("dedupMode") == 2 || Config.GetInt("dedupMode") == 1)
                 await Dedupe.CreateDupesFileMpdecimate(current.framesFolder, currentInputFrameCount);
 
                 if (canceled) return;

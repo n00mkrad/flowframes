@@ -77,7 +77,7 @@ namespace Flowframes.Magick
 
             bool hasReachedEnd = false;
 
-            string infoFile = Path.Combine(path.GetParentDir(), $"dupes.ini");
+            string infoFile = Path.Combine(path.GetParentDir(), $"dupes-magick.ini");
             string fileContent = "";
 
             for (int i = 0; i < framePaths.Length; i++)     // Loop through frames
@@ -169,7 +169,7 @@ namespace Flowframes.Magick
                 }
             }
 
-            File.WriteAllText(infoFile, fileContent);
+            // File.WriteAllText(infoFile, fileContent);    // DISABLED FOR NOW as we use a single piece of code for mpdec and this code
 
             foreach (string frame in framesToDelete)
                 IOUtils.TryDeleteIfExists(frame);
