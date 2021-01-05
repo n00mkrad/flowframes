@@ -137,11 +137,7 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai, bool stepByStep = false)
         {
-            bool vidMode = current.outMode.ToString().ToLower().Contains("vid");
-            if ((stepByStep && Config.GetBool("sbsAllowAutoEnc")) || (!stepByStep && Config.GetInt("autoEncMode") > 0))
-                currentlyUsingAutoEnc = vidMode && IOUtils.GetAmountOfFiles(current.framesFolder, false) * current.interpFactor >= (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 0.9f;
-            else
-                currentlyUsingAutoEnc = false;
+            currentlyUsingAutoEnc = Utils.UseAutoEnc(stepByStep, current);
 
             IOUtils.CreateDir(outpath);
 

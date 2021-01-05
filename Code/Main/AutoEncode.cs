@@ -15,7 +15,7 @@ namespace Flowframes.Main
         static string interpFramesFolder;
         static string videoChunksFolder;
         public static int chunkSize = 125;    // Encode every n frames
-        public static int safetyBufferFrames = 50;      // Ignore latest n frames to avoid using images that haven't been fully encoded yet
+        public static int safetyBufferFrames = 90;      // Ignore latest n frames to avoid using images that haven't been fully encoded yet
         public static string[] interpFramesLines;
         public static List<int> encodedFrameLines = new List<int>();
         public static List<int> unencodedFrameLines = new List<int>();
@@ -24,9 +24,15 @@ namespace Flowframes.Main
 
         public static bool paused;
 
+        public static void UpdateSafetyBufferSize ()
+        {
+            safetyBufferFrames = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN") ? 60 : 30;    // Use bigger safety buffer for NCNN
+        }
 
         public static async Task MainLoop(string interpFramesPath)
         {
+            UpdateSafetyBufferSize();
+
             interpFramesFolder = interpFramesPath;
             videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
 
@@ -34,7 +40,6 @@ namespace Flowframes.Main
             unencodedFrameLines.Clear();
 
             chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor);
-            safetyBufferFrames = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN") ? 60 : 30;    // Use bigger safety buffer for NCNN
             Logger.Log($"Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
 
             int videoIndex = 1;

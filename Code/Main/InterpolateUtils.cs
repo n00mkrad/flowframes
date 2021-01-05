@@ -330,6 +330,43 @@ namespace Flowframes.Main
             return (n - a > b - n) ? b : a; // Return of closest of two
         }
 
+        public static bool UseAutoEnc (bool stepByStep, InterpSettings current)
+        {
+            AutoEncode.UpdateSafetyBufferSize();
+
+            if (!current.outMode.ToString().ToLower().Contains("vid"))
+            {
+                Logger.Log($"Not Using AutoEnc: Out Mode is not video ({current.outMode.ToString()})", true);
+                return false;
+            }
+
+            if(stepByStep && !Config.GetBool("sbsAllowAutoEnc"))
+            {
+                Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false.", true);
+                return false;
+            }
+
+            if (!stepByStep && Config.GetInt("autoEncMode") == 0)
+            {
+                Logger.Log($"Not Using AutoEnc: 'autoEncMode' is 0.", true);
+                return false;
+            }
+
+            int inFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false);
+            if (inFrames * current.interpFactor < (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f)
+            {
+                Logger.Log($"Not Using AutoEnc: Input frames ({inFrames}) * factor ({current.interpFactor}) is smaller (chunkSize ({AutoEncode.chunkSize}) + safetyBufferFrames ({AutoEncode.safetyBufferFrames}) * 1.2f", true);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool UseUHD ()
+        {
+            return GetOutputResolution(i.current.inPath, false).Height >= Config.GetInt("uhdThresh");
+        }
+
         public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
         {
             if (!Directory.Exists(sceneFramesPath) || IOUtils.GetAmountOfFiles(sceneFramesPath, false) < 1)

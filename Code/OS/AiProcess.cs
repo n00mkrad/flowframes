@@ -151,8 +151,7 @@ namespace Flowframes
         {
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "inference_video.py";
-            bool uhd = InterpolateUtils.GetOutputResolution(Interpolate.current.inPath, false).Height >= Config.GetInt("uhdThresh");
-            string uhdStr = uhd ? "--UHD" : "";
+            string uhdStr = InterpolateUtils.UseUHD() ? "--UHD" : "";
             string args = $" --img {framesPath.Wrap()} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {Paths.interpDir}";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
@@ -165,7 +164,7 @@ namespace Flowframes
             AiStarted(rifePy, 3500, Interpolate.current.interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
-            Logger.Log($"Running RIFE {(uhd ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
+            Logger.Log($"Running RIFE {(InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -185,7 +184,7 @@ namespace Flowframes
         public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int tilesize, int times)
         {
             processTimeMulti.Restart();
-            Logger.Log("Running RIFE...", false);
+            Logger.Log($"Running RIFE{(InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")} ...", false);
 
             bool useAutoEnc = Interpolate.currentlyUsingAutoEnc;
             if(times > 2)
@@ -233,20 +232,28 @@ namespace Flowframes
         {
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, 2, inPath);
+
+            string uhdStr = InterpolateUtils.UseUHD() ? "-u" : "";
+
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m rife1.7 -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m rife1.7 {uhdStr} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+            
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
+           
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log"); };
                 rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log"); };
             }
+
             rifeNcnn.Start();
+
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifeNcnn.BeginOutputReadLine();
                 rifeNcnn.BeginErrorReadLine();
             }
+
             while (!rifeNcnn.HasExited) await Task.Delay(1);
         }
 
