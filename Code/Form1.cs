@@ -234,7 +234,7 @@ namespace Flowframes
 
         public void SetWorking(bool state, bool allowCancel = true)
         {
-            Logger.Log($"SetWorking({state})");
+            Logger.Log($"SetWorking({state})", true);
             Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn, installerBtn };
             Control[] controlsToHide = new Control[] { runBtn, runStepBtn, stepSelector };
             progressCircle.Visible = state;
