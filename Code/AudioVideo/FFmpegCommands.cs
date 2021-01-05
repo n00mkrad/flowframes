@@ -127,22 +127,13 @@ namespace Flowframes
                 DeleteSource(inputPath);
         }
 
-        public static async void FramesToGif(string inputDir, bool palette, int fps, string prefix, bool delSrc = false)
-        {
-            int nums = IOUtils.GetFilenameCounterLength(IOUtils.GetFilesSorted(inputDir, false, "*.png")[0], prefix);
-            string filter = palette ? "-vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\"" : "";
-            string args = "-framerate " + fps + " -i \"" + inputDir + "\\" + prefix + "%0" + nums + "d.png\" -f gif " + filter + " \"" + inputDir + ".gif\"";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
-            if (delSrc)
-                DeleteSource(inputDir);
-        }
-
-        public static async Task FramesToGifVfr(string framesFile, string outPath, bool palette, int colors = 64)
+        public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64)
         {
             Logger.Log($"Encoding GIF...");
             string vfrFilename = Path.GetFileName(framesFile);
             string filter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither=floyd_steinberg:diff_mode=rectangle\"" : "";
-            string args = $"-f concat -i {vfrFilename.Wrap()} -f gif {filter} {outPath.Wrap()}";
+            string rate = fps.ToString().Replace(",", ".");
+            string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {filter} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
         }
 

@@ -234,7 +234,7 @@ namespace Flowframes
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, 2, inPath);
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m rife1.7 -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {

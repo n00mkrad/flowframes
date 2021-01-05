@@ -102,7 +102,7 @@ namespace Flowframes.Main
 
             if (mode == i.OutMode.VidGif)
             {
-                await FFmpegCommands.FramesToGifVfr(vfrFile, outPath, true, Config.GetInt("gifColors"));
+                await FFmpegCommands.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"));
             }
             else
             {
