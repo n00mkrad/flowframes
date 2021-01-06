@@ -94,8 +94,9 @@ namespace Flowframes.Main
                     {
                         foreach (int frame in frameLinesToEncode)
                         {
-                            // TODO: Make sure frames are no longer needed (e.g. for dupes) before deleting!!
-                            continue;
+                            // Make sure frames are no longer needed (e.g. for dupes) before deleting!
+                            if(FrameIsStillNeeded(interpFramesLines[frame], frame))
+                                continue;
 
                             string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
                             File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
@@ -117,6 +118,16 @@ namespace Flowframes.Main
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
 
             await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
+        }
+
+        static bool FrameIsStillNeeded (string frameName, int frameIndex)
+        {
+            for(int i = frameIndex + 1; i < interpFramesLines.Length; i++)
+            {
+                if (interpFramesLines[i].Contains(frameName))
+                    return true;
+            }
+            return false;
         }
 
         public static bool HasWorkToDo ()
