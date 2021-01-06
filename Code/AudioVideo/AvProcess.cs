@@ -13,6 +13,8 @@ namespace Flowframes
     class AvProcess
     {
         public static Process lastProcess;
+        public enum TaskType { ExtractFrames, Encode, GetInfo, Merge, Other };
+        public static TaskType lastTask = TaskType.Other;
 
         public static string lastOutputFfmpeg;
         public static string lastOutputGifski;
@@ -20,17 +22,18 @@ namespace Flowframes
         public enum LogMode { Visible, OnlyLastLine, Hidden }
         static LogMode currentLogMode;
 
-        public static async Task RunFfmpeg(string args, LogMode logMode)
+        public static async Task RunFfmpeg(string args, LogMode logMode, TaskType taskType = TaskType.Other)
         {
             await RunFfmpeg(args, "", logMode);
         }
 
-        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode)
+        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, TaskType taskType = TaskType.Other)
         {
             lastOutputFfmpeg = "";
             currentLogMode = logMode;
             Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
+            lastTask = taskType;
             if(!string.IsNullOrWhiteSpace(workingDir))
                 ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
             else

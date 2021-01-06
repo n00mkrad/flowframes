@@ -72,7 +72,7 @@ namespace Flowframes
 
             string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} -pix_fmt rgb24 -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
             AvProcess.LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
-            await AvProcess.RunFfmpeg(args, logMode);
+            await AvProcess.RunFfmpeg(args, logMode, AvProcess.TaskType.ExtractFrames);
             if (delSrc)
                 DeleteSource(inpath);
         }
@@ -87,7 +87,7 @@ namespace Flowframes
         {
             string hdrStr = hdr ? hdrFilter : "";
             string args = $"-i {inputFile.Wrap()} {pngComprArg} {hdrStr }-vf \"select=eq(n\\,{frameNum})\" -vframes 1  {outputPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden, AvProcess.TaskType.ExtractFrames);
             if (delSrc)
                 DeleteSource(inputFile);
         }
@@ -109,7 +109,7 @@ namespace Flowframes
             string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToString().Replace(",", ".")}";
             string extraArgs = Config.Get("ffEncArgs");
             string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode, AvProcess.TaskType.Encode);
         }
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
@@ -118,7 +118,7 @@ namespace Flowframes
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
             string args = $" {loopStr} -vsync 1 -f concat -i {vfrFilename} -c copy -movflags +faststart {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
+            await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden, AvProcess.TaskType.Merge);
         }
 
         public static async Task ConvertFramerate(string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)
@@ -142,7 +142,7 @@ namespace Flowframes
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
             string rate = fps.ToStringDot();
             string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
+            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine, AvProcess.TaskType.Encode);
         }
 
         public static async Task LoopVideo(string inputFile, int times, bool delSrc = false)
@@ -187,7 +187,7 @@ namespace Flowframes
                 args = args.Replace("-c:a", "-an");
             if (audioKbps < 0)
                 args = args.Replace($" -b:a {audioKbps}", "");
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine, AvProcess.TaskType.Encode);
             if (delSrc)
                 DeleteSource(inputFile);
         }

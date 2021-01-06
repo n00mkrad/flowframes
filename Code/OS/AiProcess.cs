@@ -49,10 +49,13 @@ namespace Flowframes
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
             processTime.Stop();
-            while (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited)
+            while (Program.busy)
             {
-                string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
-                Logger.Log(lastLine.Trim(), false, Logger.GetLastLine().Contains("frame"));
+                if(AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
+                {
+                    string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
+                    Logger.Log(lastLine.Trim(), false, Logger.GetLastLine().Contains("frame"));
+                }
                 await Task.Delay(1000);
             }
         }
