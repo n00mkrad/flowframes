@@ -49,6 +49,8 @@ namespace Flowframes.Main
                     string[] frames = IOUtils.GetFilesSorted(outdir, $"*.{GetOutExt()}");
                     if (frames.Length > 1)
                         UpdateInterpProgress(frames.Length, targetFrames, frames[frames.Length - 1]);
+                    if (frames.Length >= targetFrames)
+                        break;
                     await Task.Delay(GetProgressWaitTime(frames.Length));
                 }
                 else
@@ -56,7 +58,6 @@ namespace Flowframes.Main
                     await Task.Delay(200);
                 }
             }
-            Program.mainForm.SetProgress(-1);
         }
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")

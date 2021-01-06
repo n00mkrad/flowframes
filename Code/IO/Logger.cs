@@ -18,7 +18,7 @@ namespace Flowframes
 
         public static void Log(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
-            if (s == null)
+            if (string.IsNullOrWhiteSpace(s))
                 return;
 
             Console.WriteLine(s);
@@ -96,6 +96,11 @@ namespace Flowframes
         {
             string[] lines = textbox.Text.SplitIntoLines();
             return lines.Last();
+        }
+
+        public static void RemoveLastLine ()
+        {
+            textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine));
         }
     }
 }

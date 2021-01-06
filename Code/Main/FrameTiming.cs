@@ -201,7 +201,6 @@ namespace Flowframes.Main
 
                 bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
-                // TODO: Check if this is needed
                 // If loop is enabled, account for the extra frame added to the end for loop continuity
                 if (loopEnabled && i == (frameFiles.Length - 2))
                     interpFramesAmount = interpFramesAmount * 2;

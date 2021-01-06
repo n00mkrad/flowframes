@@ -124,7 +124,7 @@ namespace Flowframes.IO
             // Video Export
             if (key == "h264Crf")       return WriteDefault(key, "20");
             if (key == "h265Crf")       return WriteDefault(key, "24");
-            if (key == "vp9Crf")        return WriteDefault(key, "28");
+            if (key == "vp9Crf")        return WriteDefault(key, "32");
             if (key == "proResProfile") return WriteDefault(key, "2");
             if (key == "aviCodec")      return WriteDefault(key, "ffv1");
             if (key == "aviColors")     return WriteDefault(key, "yuv420p");

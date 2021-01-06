@@ -114,7 +114,7 @@ namespace Flowframes
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
         {
-            Logger.Log($"Merging videos...");
+            Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
             string args = $" {loopStr} -vsync 1 -f concat -i {vfrFilename} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";

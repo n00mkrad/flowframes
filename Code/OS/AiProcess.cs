@@ -40,7 +40,7 @@ namespace Flowframes
             hasShownError = false;
         }
 
-        static void AiFinished (string aiName)
+        static async Task AiFinished (string aiName)
         {
             Program.mainForm.SetProgress(100);
             InterpolateUtils.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*.png"), InterpolateUtils.targetFrames);
@@ -49,6 +49,12 @@ namespace Flowframes
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
             processTime.Stop();
+            while (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited)
+            {
+                string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
+                Logger.Log(lastLine.Trim(), false, Logger.GetLastLine().Contains("frame"));
+                await Task.Delay(1000);
+            }
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)

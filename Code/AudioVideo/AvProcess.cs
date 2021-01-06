@@ -51,16 +51,14 @@ namespace Flowframes
             if (outLine == null || outLine.Data == null)
                 return;
             string line = outLine.Data;
-            lastOutputFfmpeg = lastOutputFfmpeg + line + "\n";
+            lastOutputFfmpeg = lastOutputFfmpeg + "\n" + line;
             bool hidden = currentLogMode == LogMode.Hidden;
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
             string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
             Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");
 
             if(line.Contains("Could not open file"))
-            {
-                Interpolate.Cancel("Failed to write frames - Make sure the folder is not restricted!");
-            }
+                Interpolate.Cancel($"FFmpeg Error: {line}");
         }
 
         static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
