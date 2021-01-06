@@ -151,6 +151,9 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label60 = new System.Windows.Forms.Label();
+            this.aviCodec = new System.Windows.Forms.ComboBox();
+            this.aviColors = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -963,6 +966,9 @@
             // vidExportTab
             // 
             this.vidExportTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.vidExportTab.Controls.Add(this.aviColors);
+            this.vidExportTab.Controls.Add(this.aviCodec);
+            this.vidExportTab.Controls.Add(this.label60);
             this.vidExportTab.Controls.Add(this.proResProfile);
             this.vidExportTab.Controls.Add(this.label59);
             this.vidExportTab.Controls.Add(this.panel11);
@@ -1161,8 +1167,8 @@
             this.maxFpsMode.ForeColor = System.Drawing.Color.White;
             this.maxFpsMode.FormattingEnabled = true;
             this.maxFpsMode.Items.AddRange(new object[] {
-            "Save Video With Limited FPS",
-            "Save Both With Full FPS And Create Second Video With Limited FPS"});
+            "Only Create Video With Limited FPS",
+            "Create Videos With Full FPS And Limited FPS (2x Slower Encoding!)"});
             this.maxFpsMode.Location = new System.Drawing.Point(280, 127);
             this.maxFpsMode.Name = "maxFpsMode";
             this.maxFpsMode.Size = new System.Drawing.Size(400, 21);
@@ -1231,7 +1237,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.Color.Silver;
-            this.label18.Location = new System.Drawing.Point(393, 361);
+            this.label18.Location = new System.Drawing.Point(393, 391);
             this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(208, 13);
@@ -1250,7 +1256,7 @@
             "64 (Medium)",
             "32 (Low)",
             "16 (Very Low)"});
-            this.gifColors.Location = new System.Drawing.Point(280, 357);
+            this.gifColors.Location = new System.Drawing.Point(280, 387);
             this.gifColors.Name = "gifColors";
             this.gifColors.Size = new System.Drawing.Size(100, 21);
             this.gifColors.TabIndex = 41;
@@ -1258,7 +1264,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 360);
+            this.label17.Location = new System.Drawing.Point(10, 390);
             this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(154, 13);
@@ -1663,6 +1669,49 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(10, 360);
+            this.label60.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(130, 13);
+            this.label60.TabIndex = 69;
+            this.label60.Text = "AVI: Codec / Color Space";
+            // 
+            // aviCodec
+            // 
+            this.aviCodec.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aviCodec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.aviCodec.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.aviCodec.ForeColor = System.Drawing.Color.White;
+            this.aviCodec.FormattingEnabled = true;
+            this.aviCodec.Items.AddRange(new object[] {
+            "ffv1",
+            "huffyuv",
+            "rawvideo"});
+            this.aviCodec.Location = new System.Drawing.Point(280, 357);
+            this.aviCodec.Name = "aviCodec";
+            this.aviCodec.Size = new System.Drawing.Size(200, 21);
+            this.aviCodec.TabIndex = 70;
+            // 
+            // aviColors
+            // 
+            this.aviColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aviColors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.aviColors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.aviColors.ForeColor = System.Drawing.Color.White;
+            this.aviColors.FormattingEnabled = true;
+            this.aviColors.Items.AddRange(new object[] {
+            "yuv420p",
+            "yuv422p",
+            "yuv444p",
+            "rgb24"});
+            this.aviColors.Location = new System.Drawing.Point(486, 357);
+            this.aviColors.Name = "aviColors";
+            this.aviColors.Size = new System.Drawing.Size(194, 21);
+            this.aviColors.TabIndex = 71;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1822,5 +1871,8 @@
         private System.Windows.Forms.Label label57;
         private System.Windows.Forms.ComboBox proResProfile;
         private System.Windows.Forms.Label label59;
+        private System.Windows.Forms.ComboBox aviColors;
+        private System.Windows.Forms.ComboBox aviCodec;
+        private System.Windows.Forms.Label label60;
     }
 }

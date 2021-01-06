@@ -126,6 +126,8 @@ namespace Flowframes.IO
             if (key == "h265Crf")       return WriteDefault(key, "24");
             if (key == "vp9Crf")        return WriteDefault(key, "28");
             if (key == "proResProfile") return WriteDefault(key, "2");
+            if (key == "aviCodec")      return WriteDefault(key, "ffv1");
+            if (key == "aviColors")     return WriteDefault(key, "yuv420p");
             if (key == "gifColors")     return WriteDefault(key, "128 (High)");
             if (key == "minVidLength")  return WriteDefault(key, "2");
             // AI

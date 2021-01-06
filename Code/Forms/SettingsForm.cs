@@ -77,6 +77,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(vp9Crf);
             ConfigParser.SaveComboxIndex(proResProfile);
             ConfigParser.SaveGuiElement(gifColors);
+            ConfigParser.SaveGuiElement(aviCodec);
+            ConfigParser.SaveGuiElement(aviColors);
             ConfigParser.SaveGuiElement(maxFps);
             ConfigParser.SaveComboxIndex(maxFpsMode);
             ConfigParser.SaveComboxIndex(loopMode);
@@ -122,6 +124,8 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(vp9Crf);
             ConfigParser.LoadComboxIndex(proResProfile);
             ConfigParser.LoadGuiElement(gifColors);
+            ConfigParser.LoadGuiElement(aviCodec);
+            ConfigParser.LoadGuiElement(aviColors);
             ConfigParser.LoadGuiElement(maxFps);
             ConfigParser.LoadComboxIndex(maxFpsMode);
             ConfigParser.LoadComboxIndex(loopMode);

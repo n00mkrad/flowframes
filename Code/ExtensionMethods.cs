@@ -165,5 +165,20 @@ namespace Flowframes
         {
             return str.Split('#')[0].SplitBy("//")[0];
         }
+
+        public static string FilenameSuffix(this string path, string suffix)
+        {
+            string filename = Path.ChangeExtension(path, null);
+            string ext = Path.GetExtension(path);
+            return filename + suffix + ext;
+        }
+
+        public static string ToStringDot (this float f, string format = "")
+        {
+            if(string.IsNullOrWhiteSpace(format))
+                return f.ToString().Replace(",", ".");
+            else
+                return f.ToString(format).Replace(",", ".");
+        }
     }
 }

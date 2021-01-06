@@ -40,7 +40,7 @@ namespace Flowframes.AudioVideo
                 case Codec.H265: return "libx265";
                 case Codec.VP9: return "libvpx-vp9";
                 case Codec.ProRes: return "prores_ks";
-                case Codec.AviRaw: return "rawvideo";
+                case Codec.AviRaw: return Config.Get("aviCodec");
             }
             return "libx264";
         }
@@ -51,12 +51,12 @@ namespace Flowframes.AudioVideo
 
             if(codec == Codec.H264)
             {
-                args += $"-crf {Config.GetInt("h264Crf")} -preset {Config.Get("ffEncPreset")}";
+                args += $"-crf {Config.GetInt("h264Crf")} -preset {Config.Get("ffEncPreset")} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.H265)
             {
-                args += $"-crf {Config.GetInt("h265Crf")} -preset {Config.Get("ffEncPreset")}";
+                args += $"-crf {Config.GetInt("h265Crf")} -preset {Config.Get("ffEncPreset")} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
@@ -64,12 +64,17 @@ namespace Flowframes.AudioVideo
                 int crf = Config.GetInt("vp9Crf");
                 string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
                 string cpuUsed = Config.GetInt("vp9Speed", 3).ToString();
-                args += $"{qualityStr} -cpu-used {cpuUsed} -tile-columns 2 -tile-rows 2 -row-mt 1";
+                args += $"{qualityStr} -cpu-used {cpuUsed} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
             }
 
             if(codec == Codec.ProRes)
             {
-                args += $"-profile:v {Config.GetInt("proResProfile")}";
+                args += $"-profile:v {Config.GetInt("proResProfile")} -pix_fmt yuv420p";
+            }
+
+            if (codec == Codec.AviRaw)
+            {
+                args += $"-pix_fmt {Config.Get("aviColors")}";
             }
 
             return args;

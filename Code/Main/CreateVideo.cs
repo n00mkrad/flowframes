@@ -46,13 +46,16 @@ namespace Flowframes.Main
             Program.mainForm.SetStatus("Creating output video from frames...");
             try
             {
-                int maxFps = Config.GetInt("maxFps");
-                if (maxFps == 0) maxFps = 500;
+                float maxFps = Config.GetFloat("maxFps");
+                bool fpsLimit = maxFps != 0 && i.current.outFps > maxFps;
 
-                if (i.current.outFps > maxFps)
-                    await Encode(mode, path, outPath, i.current.outFps, maxFps, (Config.GetInt("maxFpsMode") == 1));
-                else
+                bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
+
+                if(!dontEncodeFullFpsVid)
                     await Encode(mode, path, outPath, i.current.outFps);
+
+                if (fpsLimit)
+                    await Encode(mode, path, outPath.FilenameSuffix($"-{maxFps.ToStringDot("0.00")}fps"), i.current.outFps, maxFps);
             }
             catch (Exception e)
             {
@@ -95,56 +98,51 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
+        static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float resampleFps = -1)
         {
             currentOutFile = outPath;
             string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.current.interpFactor}x.ini");
 
             if (mode == i.OutMode.VidGif)
             {
-                await FFmpegCommands.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"));
+                await FFmpegCommands.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
             }
             else
             {
-                int looptimes = GetLoopTimes();
-                bool h265 = Config.GetInt("mp4Enc") == 1;
-                int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
-
-                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, fps);
+                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
                 await MergeAudio(i.current.inPath, outPath);
 
-                if (changeFps > 0)
-                {
-                    currentOutFile = IOUtils.FilenameSuffix(outPath, $"-{changeFps.ToString("0")}fps");
-                    Program.mainForm.SetStatus("Creating video with desired frame rate...");
-                    await FFmpegCommands.ConvertFramerate(outPath, currentOutFile, h265, crf, changeFps, !keepOriginalFpsVid);
-                    await MergeAudio(i.current.inPath, currentOutFile);
-                }
-
+                int looptimes = GetLoopTimes();
                 if (looptimes > 0)
                     await Loop(currentOutFile, looptimes);
-
             }
         }
 
-        public static async Task ChunksToVideo(string chunksPath, string vfrFile, string outPath)
+        public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath)
         {
-            if (IOUtils.GetAmountOfFiles(chunksPath, false, $"*{FFmpegUtils.GetExt(i.current.outMode)}") < 1)
+            if (IOUtils.GetAmountOfFiles(chunksFolder, true, $"*{FFmpegUtils.GetExt(i.current.outMode)}") < 1)
             {
                 i.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
                 return;
             }
+
             await Task.Delay(10);
             Program.mainForm.SetStatus("Merging video chunks...");
             try
             {
-                int maxFps = Config.GetInt("maxFps");
-                if (maxFps == 0) maxFps = 500;
+                DirectoryInfo chunksDir = new DirectoryInfo(chunksFolder);
+                foreach(DirectoryInfo dir in chunksDir.GetDirectories())
+                {
+                    string suffix = dir.Name.Replace("chunks", "");
+                    string tempConcatFile = Path.Combine(tempFolder, $"chunks-concat{suffix}.ini");
+                    string concatFileContent = "";
+                    foreach (string vid in IOUtils.GetFilesSorted(dir.FullName))
+                        concatFileContent += $"file '{Paths.chunksDir}/{dir.Name}/{Path.GetFileName(vid)}'\n";
+                    File.WriteAllText(tempConcatFile, concatFileContent);
 
-                if (i.current.outFps > maxFps)
-                    await MergeChunks(chunksPath, vfrFile, outPath, i.current.outFps, maxFps, (Config.GetInt("maxFpsMode") == 1));
-                else
-                    await MergeChunks(chunksPath, vfrFile, outPath, i.current.outFps);
+                    Logger.Log($"CreateVideo: Running MergeChunks() for vfrFile '{Path.GetFileName(tempConcatFile)}'", true);
+                    await MergeChunks(tempConcatFile, baseOutPath.FilenameSuffix(suffix));
+                }
             }
             catch (Exception e)
             {
@@ -153,28 +151,14 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task MergeChunks(string chunksPath, string vfrFile, string outPath, float fps, float changeFps = -1, bool keepOriginalFpsVid = true)
+        static async Task MergeChunks(string vfrFile, string outPath)
         {
-            int looptimes = GetLoopTimes();
-
-            bool h265 = Config.GetInt("mp4Enc") == 1;
-            int crf = h265 ? Config.GetInt("h265Crf") : Config.GetInt("h264Crf");
-
-            await FFmpegCommands.ConcatVideos(vfrFile, outPath, fps, -1);
+            await FFmpegCommands.ConcatVideos(vfrFile, outPath, -1);
             await MergeAudio(i.current.inPath, outPath);
 
+            int looptimes = GetLoopTimes();
             if (looptimes > 0)
                 await Loop(outPath, looptimes);
-
-            if (changeFps > 0)
-            {
-                string newOutPath = IOUtils.FilenameSuffix(outPath, $"-{changeFps.ToString("0")}fps");
-                Program.mainForm.SetStatus("Creating video with desired frame rate...");
-                await FFmpegCommands.ConvertFramerate(outPath, newOutPath, h265, crf, changeFps, !keepOriginalFpsVid);
-                await MergeAudio(i.current.inPath, newOutPath);
-                if (looptimes > 0)
-                    await Loop(newOutPath, looptimes);
-            }
         }
 
         public static async Task EncodeChunk(string outPath, i.OutMode mode, int firstFrameNum, int framesAmount)
@@ -183,7 +167,21 @@ namespace Flowframes.Main
             string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum).Take(framesAmount));
 
-            await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);
+            float maxFps = Config.GetFloat("maxFps");
+            bool fpsLimit = maxFps != 0 && i.current.outFps > maxFps;
+
+            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
+
+            if(!dontEncodeFullFpsVid)
+                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
+
+            if (fpsLimit)
+            {
+                string filename = Path.GetFileName(outPath);
+                string newParentDir = outPath.GetParentDir() + "-" + maxFps.ToStringDot("0.00") + "fps";
+                outPath = Path.Combine(newParentDir, filename);
+                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+            }
         }
 
         static async Task Loop(string outPath, int looptimes)

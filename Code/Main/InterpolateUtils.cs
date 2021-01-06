@@ -333,7 +333,7 @@ namespace Flowframes.Main
 
         public static bool UseAutoEnc (bool stepByStep, InterpSettings current)
         {
-            AutoEncode.UpdateSafetyBufferSize();
+            AutoEncode.UpdateChunkAndBufferSizes();
 
             if (!current.outMode.ToString().ToLower().Contains("vid"))
             {
@@ -356,7 +356,7 @@ namespace Flowframes.Main
             int inFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false);
             if (inFrames * current.interpFactor < (AutoEncode.chunkSize + AutoEncode.safetyBufferFrames) * 1.2f)
             {
-                Logger.Log($"Not Using AutoEnc: Input frames ({inFrames}) * factor ({current.interpFactor}) is smaller (chunkSize ({AutoEncode.chunkSize}) + safetyBufferFrames ({AutoEncode.safetyBufferFrames}) * 1.2f", true);
+                Logger.Log($"Not Using AutoEnc: Input frames ({inFrames}) * factor ({current.interpFactor}) is smaller than (chunkSize ({AutoEncode.chunkSize}) + safetyBufferFrames ({AutoEncode.safetyBufferFrames}) * 1.2f)", true);
                 return false;
             }
 

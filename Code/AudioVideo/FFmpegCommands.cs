@@ -94,25 +94,30 @@ namespace Flowframes
 
         public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine, bool isChunk = false)
         {
+            await FramesToVideoConcat(framesFile, outPath, outMode, fps, 0, logMode, isChunk);
+        }
+
+        public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, float resampleFps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine, bool isChunk = false)
+        {
             if (logMode != AvProcess.LogMode.Hidden)
-                Logger.Log($"Encoding video...");
-            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode)) + " -pix_fmt yuv420p ";
-            if (!isChunk) encArgs += $"-movflags +faststart";
+                Logger.Log((resampleFps <= 0) ? $"Encoding video..." : $"Encoding video resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
+            Directory.CreateDirectory(outPath.GetParentDir());
+            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
+            if (!isChunk) encArgs += $" -movflags +faststart";
             string vfrFilename = Path.GetFileName(framesFile);
-            //string vsync = (Interpolate.current.interpFactor == 2) ? "-vsync 1" : "-vsync 2";
             string rate = fps.ToString().Replace(",", ".");
+            string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToString().Replace(",", ".")}";
             string extraArgs = Config.Get("ffEncArgs");
-            string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
-            //string args = $"-vsync 0 -f concat -i {vfrFilename} {encArgs} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
+            string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode);
         }
 
-        public static async Task ConcatVideos(string concatFile, string outPath, float fps, int looptimes = -1)
+        public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
         {
             Logger.Log($"Merging videos...");
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
-            string args = $" {loopStr} -vsync 1 -f concat -r {fps.ToString().Replace(",", ".")} -i {vfrFilename} -c copy -pix_fmt yuv420p {outPath.Wrap()}";
+            string args = $" {loopStr} -vsync 1 -f concat -i {vfrFilename} -c copy -pix_fmt yuv420p -movflags +faststart {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden);
         }
 
@@ -127,13 +132,16 @@ namespace Flowframes
                 DeleteSource(inputPath);
         }
 
-        public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64)
+        public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64, float resampleFps = -1, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
         {
-            Logger.Log($"Encoding GIF...");
+            if (logMode != AvProcess.LogMode.Hidden)
+                Logger.Log((resampleFps <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
             string vfrFilename = Path.GetFileName(framesFile);
-            string filter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither=floyd_steinberg:diff_mode=rectangle\"" : "";
-            string rate = fps.ToString().Replace(",", ".");
-            string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {filter} {outPath.Wrap()}";
+            string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither=floyd_steinberg:diff_mode=rectangle\"" : "";
+            string fpsFilter = (resampleFps <= 0) ? "" : $"fps=fps={resampleFps.ToStringDot()}";
+            string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
+            string rate = fps.ToStringDot();
+            string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine);
         }
 
