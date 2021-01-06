@@ -18,6 +18,9 @@ namespace Flowframes.Main
 
         public static async void Start()
         {
+            if (Config.GetBool("clearLogOnInput"))
+                Logger.ClearLogBox();
+
             stopped = false;
             Program.mainForm.SetTab("preview");
             int initTaskCount = Program.batchQueue.Count;

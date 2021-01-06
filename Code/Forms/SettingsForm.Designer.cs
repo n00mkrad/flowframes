@@ -96,6 +96,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
+            this.aviColors = new System.Windows.Forms.ComboBox();
+            this.aviCodec = new System.Windows.Forms.ComboBox();
+            this.label60 = new System.Windows.Forms.Label();
             this.proResProfile = new System.Windows.Forms.ComboBox();
             this.label59 = new System.Windows.Forms.Label();
             this.panel11 = new System.Windows.Forms.Panel();
@@ -151,9 +154,9 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label60 = new System.Windows.Forms.Label();
-            this.aviCodec = new System.Windows.Forms.ComboBox();
-            this.aviColors = new System.Windows.Forms.ComboBox();
+            this.label61 = new System.Windows.Forms.Label();
+            this.clearLogOnInput = new System.Windows.Forms.CheckBox();
+            this.label62 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -181,6 +184,9 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.label62);
+            this.generalTab.Controls.Add(this.clearLogOnInput);
+            this.generalTab.Controls.Add(this.label61);
             this.generalTab.Controls.Add(this.processingMode);
             this.generalTab.Controls.Add(this.label39);
             this.generalTab.Controls.Add(this.tempDirBrowseBtn);
@@ -1006,6 +1012,49 @@
             this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Video Export";
             // 
+            // aviColors
+            // 
+            this.aviColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aviColors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.aviColors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.aviColors.ForeColor = System.Drawing.Color.White;
+            this.aviColors.FormattingEnabled = true;
+            this.aviColors.Items.AddRange(new object[] {
+            "yuv420p",
+            "yuv422p",
+            "yuv444p",
+            "rgb24"});
+            this.aviColors.Location = new System.Drawing.Point(486, 357);
+            this.aviColors.Name = "aviColors";
+            this.aviColors.Size = new System.Drawing.Size(194, 21);
+            this.aviColors.TabIndex = 71;
+            // 
+            // aviCodec
+            // 
+            this.aviCodec.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aviCodec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.aviCodec.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.aviCodec.ForeColor = System.Drawing.Color.White;
+            this.aviCodec.FormattingEnabled = true;
+            this.aviCodec.Items.AddRange(new object[] {
+            "ffv1",
+            "huffyuv",
+            "rawvideo"});
+            this.aviCodec.Location = new System.Drawing.Point(280, 357);
+            this.aviCodec.Name = "aviCodec";
+            this.aviCodec.Size = new System.Drawing.Size(200, 21);
+            this.aviCodec.TabIndex = 70;
+            // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(10, 360);
+            this.label60.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(130, 13);
+            this.label60.TabIndex = 69;
+            this.label60.Text = "AVI: Codec / Color Space";
+            // 
             // proResProfile
             // 
             this.proResProfile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -1669,48 +1718,35 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label60
+            // label61
             // 
-            this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(10, 360);
-            this.label60.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(130, 13);
-            this.label60.TabIndex = 69;
-            this.label60.Text = "AVI: Codec / Color Space";
+            this.label61.AutoSize = true;
+            this.label61.Location = new System.Drawing.Point(10, 161);
+            this.label61.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(181, 13);
+            this.label61.TabIndex = 73;
+            this.label61.Text = "Clear Log Box When Switching Input";
             // 
-            // aviCodec
+            // clearLogOnInput
             // 
-            this.aviCodec.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.aviCodec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.aviCodec.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.aviCodec.ForeColor = System.Drawing.Color.White;
-            this.aviCodec.FormattingEnabled = true;
-            this.aviCodec.Items.AddRange(new object[] {
-            "ffv1",
-            "huffyuv",
-            "rawvideo"});
-            this.aviCodec.Location = new System.Drawing.Point(280, 357);
-            this.aviCodec.Name = "aviCodec";
-            this.aviCodec.Size = new System.Drawing.Size(200, 21);
-            this.aviCodec.TabIndex = 70;
+            this.clearLogOnInput.AutoSize = true;
+            this.clearLogOnInput.Location = new System.Drawing.Point(280, 161);
+            this.clearLogOnInput.Name = "clearLogOnInput";
+            this.clearLogOnInput.Size = new System.Drawing.Size(15, 14);
+            this.clearLogOnInput.TabIndex = 74;
+            this.clearLogOnInput.UseVisualStyleBackColor = true;
             // 
-            // aviColors
+            // label62
             // 
-            this.aviColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.aviColors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.aviColors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.aviColors.ForeColor = System.Drawing.Color.White;
-            this.aviColors.FormattingEnabled = true;
-            this.aviColors.Items.AddRange(new object[] {
-            "yuv420p",
-            "yuv422p",
-            "yuv444p",
-            "rgb24"});
-            this.aviColors.Location = new System.Drawing.Point(486, 357);
-            this.aviColors.Name = "aviColors";
-            this.aviColors.Size = new System.Drawing.Size(194, 21);
-            this.aviColors.TabIndex = 71;
+            this.label62.AutoSize = true;
+            this.label62.ForeColor = System.Drawing.Color.Silver;
+            this.label62.Location = new System.Drawing.Point(308, 161);
+            this.label62.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(249, 13);
+            this.label62.TabIndex = 75;
+            this.label62.Text = "Only affects the log box in the GUI, not the log files.";
             // 
             // SettingsForm
             // 
@@ -1874,5 +1910,8 @@
         private System.Windows.Forms.ComboBox aviColors;
         private System.Windows.Forms.ComboBox aviCodec;
         private System.Windows.Forms.Label label60;
+        private System.Windows.Forms.Label label62;
+        private System.Windows.Forms.CheckBox clearLogOnInput;
+        private System.Windows.Forms.Label label61;
     }
 }

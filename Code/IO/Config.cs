@@ -111,6 +111,7 @@ namespace Flowframes.IO
         {
             if (key == "maxVidHeight")      return WriteDefault(key, "2160");
             if (key == "delLogsOnStartup")  return WriteDefault(key, "True");
+            if (key == "clearLogOnInput")   return WriteDefault(key, "True");
             if (key == "tempDirCustom")     return WriteDefault(key, "C:/");
             // Interpolation
             if (key == "dedupMode")         return WriteDefault(key, "2");

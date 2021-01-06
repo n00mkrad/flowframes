@@ -18,6 +18,10 @@ namespace Flowframes.UI
         public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
         {
             Program.mainForm.SetTab("interpolate");
+
+            if (Config.GetBool("clearLogOnInput"))
+                Logger.ClearLogBox();
+
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;

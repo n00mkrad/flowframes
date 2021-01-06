@@ -33,7 +33,7 @@ namespace Flowframes
             s = s.Replace("\n", Environment.NewLine);
 
             if (!hidden && textbox != null)
-                textbox.AppendText(Environment.NewLine + s);
+                textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + s);
 
             LogToFile(s, false, filename);
         }
@@ -87,7 +87,7 @@ namespace Flowframes
             }
         }
 
-        public static void Clear ()
+        public static void ClearLogBox ()
         {
             textbox.Text = "";
         }
