@@ -77,13 +77,13 @@ namespace Flowframes
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(current.tempFolder, Paths.scenesDir));
+                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFps);
                 await Task.Delay(10);
             }
 
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
-            await FFmpegCommands.VideoToFrames(inPath, outPath, mpdecimate, false, Utils.GetOutputResolution(inPath, true), false);
+            await FFmpegCommands.VideoToFrames(inPath, outPath, current.inFps, mpdecimate, false, Utils.GetOutputResolution(inPath, true), false);
 
             if (mpdecimate)
             {

@@ -25,20 +25,20 @@ namespace Flowframes
         static string mpDecDef = "\"mpdecimate\"";
         static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
 
-        public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath)
+        public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath, float rate)
         {
             Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, false, false, new Size(320, 180), false, true);
+            await VideoToFrames(inputFile, frameFolderPath, rate, false, false, new Size(320, 180), false, true);
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
             Logger.Log($"Detected {IOUtils.GetAmountOfFiles(frameFolderPath, false)} scene changes.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, bool timecodes = true)
+        public static async Task VideoToFrames(string inputFile, string frameFolderPath, float rate, bool deDupe, bool delSrc, bool timecodes = true)
         {
-            await VideoToFrames(inputFile, frameFolderPath, deDupe, delSrc, new Size(), timecodes);
+            await VideoToFrames(inputFile, frameFolderPath, rate, deDupe, delSrc, new Size(), timecodes);
         }
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
+        public static async Task VideoToFrames(string inputFile, string frameFolderPath, float rate, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
         {
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
@@ -49,8 +49,9 @@ namespace Flowframes
             string fpsFilter = $"\"fps=fps={Interpolate.current.inFps.ToString().Replace(",", ".")}\"";
             string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr/*, fpsFilter*/ } );
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
+            string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pad = Padding.inputFrames.ToString();
-            string args = $"-i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
+            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode);
             if (!sceneDetect) Logger.Log($"Extracted {IOUtils.GetAmountOfFiles(frameFolderPath, false, "*.png")} frames from input.", false, true);
