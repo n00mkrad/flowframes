@@ -124,7 +124,7 @@ namespace Flowframes.Magick
                                 delStr = "Deleting";
                                 //File.Delete(frame2);
                                 framesToDelete.Add(frame2);
-                                if (debugLog) Logger.Log("[FrameDedup] Deleted " + Path.GetFileName(frame2));
+                                if (debugLog) Logger.Log("[Deduplication] Deleted " + Path.GetFileName(frame2));
                                 hasEncounteredAnyDupes = true;
                             }
                             statsFramesDeleted++;
@@ -142,7 +142,7 @@ namespace Flowframes.Magick
                         if (sw.ElapsedMilliseconds >= 1000 || (i+1) == framePaths.Length)   // Print every 1s (or when done)
                         {
                             sw.Restart();
-                            Logger.Log($"[FrameDedup] Difference from {Path.GetFileName(frame1)} to {Path.GetFileName(frame2)}: {diff.ToString("0.00")}% - {delStr}.", false, true);
+                            Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} duplicate frames so far...", false, true);
                             Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
                             if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
                                 ClearCache();
@@ -184,9 +184,9 @@ namespace Flowframes.Magick
             string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
 
             if (skipped)
-                Logger.Log($"[FrameDedup] First {skipAfterNoDupesFrames} frames did not have any duplicates - Skipping the rest!", false, true);
+                Logger.Log($"[Deduplication] First {skipAfterNoDupesFrames} frames did not have any duplicates - Skipping the rest!", false, true);
             else
-                Logger.Log($"[FrameDedup]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
+                Logger.Log($"[Deduplication]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
 
             if (statsFramesKept <= 0)
                 Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");

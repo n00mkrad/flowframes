@@ -82,26 +82,28 @@ namespace Flowframes.Main
                 return;
             }
 
+            currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
             AiProcess.filenameMap.Clear();
-            bool extractAudio = true;
-            Program.mainForm.SetStatus("Extracting frames from video...");
-            await FFmpegCommands.VideoToFrames(current.inPath, current.framesFolder, Config.GetInt("dedupMode") == 2, false, InterpolateUtils.GetOutputResolution(current.inPath, true), false);
 
-            if (extractAudio)
-            {
-                string audioFile = Path.Combine(current.tempFolder, "audio.m4a");
-                if (audioFile != null && !File.Exists(audioFile))
-                    await FFmpegCommands.ExtractAudio(current.inPath, audioFile);
-            }
-            if (!canceled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
-            {
-                string lastFrame = IOUtils.GetHighestFrameNumPath(current.framesFolder);
-                int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
-                string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
-                string firstFrame = new DirectoryInfo(current.framesFolder).GetFiles("*.png")[0].FullName;
-                File.Copy(firstFrame, newFilename);
-                Logger.Log("Copied loop frame.");
-            }
+            ExtractFrames(current.inPath, current.framesFolder, false, true);
+
+            // Program.mainForm.SetStatus("Extracting frames from video...");
+            // await FFmpegCommands.VideoToFrames(current.inPath, current.framesFolder, Config.GetInt("dedupMode") == 2, false, InterpolateUtils.GetOutputResolution(current.inPath, true), false);
+            // 
+            // if (extractAudio)
+            // {
+            //     string audioFile = Path.Combine(current.tempFolder, "audio.m4a");
+            //     if (audioFile != null && !File.Exists(audioFile))
+            //         await FFmpegCommands.ExtractAudio(current.inPath, audioFile);
+            // }
+            // if (!canceled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
+            // {
+            //     string lastFrame = IOUtils.GetHighestFrameNumPath(current.framesFolder);
+            //     int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
+            //     string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
+            //     string firstFrame = new DirectoryInfo(current.framesFolder).GetFiles("*.png")[0].FullName;
+            //     File.Copy(firstFrame, newFilename);
+            // }
         }
 
         public static async Task DoInterpolate()

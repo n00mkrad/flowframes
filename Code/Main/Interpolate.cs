@@ -72,9 +72,8 @@ namespace Flowframes
             Program.mainForm.SetStatus("Done interpolating!");
         }
 
-        public static async Task ExtractFrames(string inPath, string outPath, bool extractAudio = true)
+        public static async Task ExtractFrames(string inPath, string outPath, bool allowSceneDetect = true, bool extractAudio = true)
         {
-            await Task.Delay(10);
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
@@ -83,7 +82,18 @@ namespace Flowframes
             }
 
             Program.mainForm.SetStatus("Extracting frames from video...");
-            await FFmpegCommands.VideoToFrames(inPath, outPath, Config.GetInt("dedupMode") == 2, false, Utils.GetOutputResolution(inPath, true), false);
+            bool mpdecimate = Config.GetInt("dedupMode") == 2;
+            await FFmpegCommands.VideoToFrames(inPath, outPath, mpdecimate, false, Utils.GetOutputResolution(inPath, true), false);
+
+            if (mpdecimate)
+            {
+                int framesLeft = IOUtils.GetAmountOfFiles(outPath, false, $"*.png");
+                int framesDeleted = currentInputFrameCount - framesLeft;
+                float percentDeleted = ((float)framesDeleted / currentInputFrameCount) * 100f;
+                string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
+                Logger.Log($"[Deduplication] Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.");
+            }
+
             Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
             if (extractAudio)
@@ -100,7 +110,6 @@ namespace Flowframes
                 string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
                 string firstFrame = new DirectoryInfo(outPath).GetFiles("*.png")[0].FullName;
                 File.Copy(firstFrame, newFilename);
-                Logger.Log("Copied loop frame.");
             }
         }
 
