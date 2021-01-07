@@ -67,7 +67,7 @@ namespace Flowframes
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500, Interpolate.current.interpFactor);
-            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}".TrimWhitespacesSafe();
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -140,7 +140,7 @@ namespace Flowframes
             string cainExe = "cain-ncnn-vulkan.exe";
             Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(cain, 1500, 2);
-            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}".TrimWhitespacesSafe();
             Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -172,7 +172,7 @@ namespace Flowframes
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500, Interpolate.current.interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}".TrimWhitespacesSafe();
             Logger.Log($"Running RIFE {(InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
@@ -245,7 +245,7 @@ namespace Flowframes
             string uhdStr = InterpolateUtils.UseUHD() ? "-u" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m rife1.7 {uhdStr} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m rife1.7 {uhdStr} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}".TrimWhitespacesSafe();
             
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
            

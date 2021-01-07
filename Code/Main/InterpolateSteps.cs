@@ -30,7 +30,7 @@ namespace Flowframes.Main
             Program.mainForm.SetWorking(true);
             current = Program.mainForm.GetCurrentSettings();
 
-            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.tilesize)) return;     // General input checks
+            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.tilesize, current.outMode)) return;     // General input checks
 
             if (step.Contains("Extract Scene Changes"))
             {

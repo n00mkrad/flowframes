@@ -124,6 +124,17 @@ namespace Flowframes
             return str.Replace(stringToRemove, "");
         }
 
+        public static string TrimWhitespacesSafe (this string str)      // Trim whitespaces, unless they are "quoted" (to avoid trimming file paths)
+        {
+            var result = str.Split('"').Select((element, index) => index % 2 == 0  ? element.TrimWhitespaces() : element.Wrap());
+            string resultJoined = string.Join("", result);
+
+            result = resultJoined.Split('\'').Select((element, index) => index % 2 == 0  ? element.TrimWhitespaces() : "'" + element + "'");
+            resultJoined = string.Join("", result);
+
+            return resultJoined;
+        }
+
         public static string TrimWhitespaces(this string str)
         {
             if (str == null) return str;

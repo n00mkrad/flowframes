@@ -79,19 +79,19 @@ namespace Flowframes
                 DeleteSource(inpath);
         }
 
-        public static async Task ExtractSingleFrame(string inputFile, int frameNum, bool hdr, bool delSrc)
+        public static async Task ExtractSingleFrame(string inputFile, int frameNum)
         {
             string outPath = $"{inputFile}-frame{frameNum}.png";
-            await ExtractSingleFrame(inputFile, outPath, frameNum, hdr, delSrc);
+            await ExtractSingleFrame(inputFile, outPath, frameNum);
         }
 
-        public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum, bool hdr, bool delSrc)
+        public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum)
         {
-            string hdrStr = hdr ? hdrFilter : "";
-            string args = $"-i {inputFile.Wrap()} {pngComprArg} {hdrStr }-vf \"select=eq(n\\,{frameNum})\" -vframes 1  {outputPath.Wrap()}";
+            bool isPng = (Path.GetExtension(outputPath).ToLower() == ".png");
+            string comprArg = isPng ? pngComprArg : "";
+            string pixFmt = "-pix_fmt " + (isPng ? "rgb24" : "yuvj420p");
+            string args = $"-i {inputFile.Wrap()} {comprArg} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden, AvProcess.TaskType.ExtractFrames);
-            if (delSrc)
-                DeleteSource(inputFile);
         }
 
         public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine, bool isChunk = false)

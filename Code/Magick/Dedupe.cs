@@ -127,7 +127,7 @@ namespace Flowframes.Magick
                             break;
                         }
 
-                        if (sw.ElapsedMilliseconds >= 1000 || (i+1) == framePaths.Length)   // Print every 1s (or when done)
+                        if (sw.ElapsedMilliseconds >= 500 || (i+1) == framePaths.Length)   // Print every 0.5s (or when done)
                         {
                             sw.Restart();
                             Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
