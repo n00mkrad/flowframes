@@ -134,9 +134,7 @@ namespace Flowframes.Main
 
         public static int GetProgressWaitTime(int numFrames)
         {
-            float hddMultiplier = 2f;
-            if (Program.lastInputPathIsSsd)
-                hddMultiplier = 1f;
+            float hddMultiplier = !Program.lastInputPathIsSsd ? 2f : 1f;
 
             int waitMs = 200;
 
@@ -158,12 +156,16 @@ namespace Flowframes.Main
         public static string GetTempFolderLoc (string inPath, string outPath)
         {
             string basePath = inPath.GetParentDir();
+
             if(Config.GetInt("tempFolderLoc") == 1)
                 basePath = outPath.GetParentDir();
+
             if (Config.GetInt("tempFolderLoc") == 2)
                 basePath = outPath;
+
             if (Config.GetInt("tempFolderLoc") == 3)
                 basePath = IOUtils.GetExeDir();
+
             if (Config.GetInt("tempFolderLoc") == 4)
             {
                 string custPath = Config.Get("tempDirCustom");

@@ -186,25 +186,19 @@ namespace Flowframes.Main
 
         static async Task Loop(string outPath, int looptimes)
         {
-            Logger.Log($"Looping {looptimes} times to reach target length...");
+            Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt("minOutVidLength")}s...");
             await FFmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }
 
         static int GetLoopTimes()
         {
-            //Logger.Log("Getting loop times for path " + framesOutPath);
             int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
-            //Logger.Log("minLength: " + minLength);
             int minFrameCount = (minLength * i.current.outFps).RoundToInt();
-            //Logger.Log("minFrameCount: " + minFrameCount);
-            //int outFrames = new DirectoryInfo(framesOutPath).GetFiles($"*.{InterpolateUtils.GetExt()}", SearchOption.TopDirectoryOnly).Length;
             int outFrames = i.currentInputFrameCount * i.current.interpFactor;
-            //Logger.Log("outFrames: " + outFrames);
             if (outFrames / i.current.outFps < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
-            //Logger.Log("times: " + times);
-            times--;    // Account for this calculation not counting the 1st play (0 loops)
+            times--;    // Not counting the 1st play (0 loops)
             if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing
             return times;
         }
@@ -227,6 +221,7 @@ namespace Flowframes.Main
                     Logger.Log("No compatible audio stream found.", true);
                     return;
                 }
+
                 await FFmpegCommands.MergeAudio(outVideo, IOUtils.GetAudioFile(audioFileBasePath));        // Merge from audioFile into outVideo
             }
             catch (Exception e)

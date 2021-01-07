@@ -60,11 +60,6 @@ namespace Flowframes.Main
                     continue;
                 }
 
-                //IOUtils.ZeroPadDir(Directory.GetFiles(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}").ToList(), Padding.interpFrames, encodedFrames);
-                //string[] interpFrames = IOUtils.GetFilesSorted(interpFramesFolder, $"*.{InterpolateUtils.GetOutExt()}");
-
-                //unencodedFrameLines = interpFramesLines.Select(x => x.GetInt()).ToList().Except(encodedFrameLines).ToList();
-
                 //Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {encodedFrameLines.Count} encoded frame lines", true, false, "ffmpeg");
 
                 unencodedFrameLines.Clear();
@@ -94,12 +89,11 @@ namespace Flowframes.Main
                     {
                         foreach (int frame in frameLinesToEncode)
                         {
-                            // Make sure frames are no longer needed (e.g. for dupes) before deleting!
-                            if(FrameIsStillNeeded(interpFramesLines[frame], frame))
-                                continue;
-
-                            string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
-                            File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
+                            if(!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (e.g. for dupes) before deleting!
+                            {
+                                string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
+                                File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
+                            }
                         }
                     }
 
@@ -116,19 +110,12 @@ namespace Flowframes.Main
             if (Interpolate.canceled) return;
 
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
-
             await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
         }
 
         static bool FrameIsStillNeeded (string frameName, int frameIndex)
         {
-            // for(int i = frameIndex + 1; i < interpFramesLines.Length; i++)
-            // {
-            //     if (interpFramesLines[i].Contains(frameName))
-            //         return true;
-            // }
-
-            if (interpFramesLines[frameIndex+1].Contains(frameName))
+            if ((frameIndex + 1) < interpFramesLines.Length && interpFramesLines[frameIndex+1].Contains(frameName))
                 return true;
             return false;
         }

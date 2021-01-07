@@ -77,7 +77,6 @@ namespace Flowframes.Magick
 
             bool hasReachedEnd = false;
 
-            string infoFile = Path.Combine(path.GetParentDir(), $"dupes-magick.ini");
             string fileContent = "";
 
             for (int i = 0; i < framePaths.Length; i++)     // Loop through frames
@@ -86,8 +85,6 @@ namespace Flowframes.Magick
                     break;
 
                 string frame1 = framePaths[i].FullName;
-                //if (!File.Exists(framePaths[i].FullName))   // Skip if file doesn't exist (already deleted / used to be a duped frame)
-                //    continue;
 
                 int compareWithIndex = i + 1;
 
@@ -107,22 +104,13 @@ namespace Flowframes.Magick
                     }
                     else
                     {
-                        //if (compareWithIndex >= framePaths.Length)
-                        //    hasReachedEnd = true;
-
                         string frame2 = framePaths[compareWithIndex].FullName;
-                        // if (oldIndex >= 0)
-                        //     i = oldIndex;
-
                         float diff = GetDifference(frame1, frame2);
 
-                        string delStr = "Keeping";
                         if (diff < threshold)     // Is a duped frame.
                         {
                             if (!testRun)
                             {
-                                delStr = "Deleting";
-                                //File.Delete(frame2);
                                 framesToDelete.Add(frame2);
                                 if (debugLog) Logger.Log("[Deduplication] Deleted " + Path.GetFileName(frame2));
                                 hasEncounteredAnyDupes = true;
@@ -142,7 +130,7 @@ namespace Flowframes.Magick
                         if (sw.ElapsedMilliseconds >= 1000 || (i+1) == framePaths.Length)   // Print every 1s (or when done)
                         {
                             sw.Restart();
-                            Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} duplicate frames so far...", false, true);
+                            Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
                             Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
                             if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
                                 ClearCache();
@@ -157,7 +145,7 @@ namespace Flowframes.Magick
                 //     i = 0;
                 // }
 
-                if(i % 5 == 0)
+                if(i % 3 == 0)
                     await Task.Delay(1);
 
                 if (Interpolate.canceled) return;

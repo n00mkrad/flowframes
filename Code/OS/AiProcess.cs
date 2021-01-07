@@ -51,7 +51,7 @@ namespace Flowframes
             processTime.Stop();
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
-                if(AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
+                if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
                 {
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
                     Logger.Log(lastLine.Trim().TrimWhitespaces(), false, Logger.GetLastLine().Contains("frame"));

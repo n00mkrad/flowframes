@@ -30,7 +30,8 @@ namespace Flowframes
             Logger.Log("Extracting scene changes...");
             await VideoToFrames(inputFile, frameFolderPath, rate, false, false, new Size(320, 180), false, true);
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
-            Logger.Log($"Detected {IOUtils.GetAmountOfFiles(frameFolderPath, false)} scene changes.".Replace(" 0 ", " no "), false, !hiddenLog);
+            int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false);
+            Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
         public static async Task VideoToFrames(string inputFile, string frameFolderPath, float rate, bool deDupe, bool delSrc, bool timecodes = true)
@@ -46,15 +47,15 @@ namespace Flowframes
             string timecodeStr = timecodes ? $"-copyts -r {FrameTiming.timebase} -frame_pts true" : "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string fpsFilter = $"\"fps=fps={Interpolate.current.inFps.ToString().Replace(",", ".")}\"";
-            string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr/*, fpsFilter*/ } );
+            string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr } );
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pad = Padding.inputFrames.ToString();
             string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
-            await AvProcess.RunFfmpeg(args, logMode);
-            if (!sceneDetect) Logger.Log($"Extracted {IOUtils.GetAmountOfFiles(frameFolderPath, false, "*.png")} frames from input.", false, true);
+            await AvProcess.RunFfmpeg(args, logMode, AvProcess.TaskType.ExtractFrames);
+            int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false, "*.png");
+            if (!sceneDetect) Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
             await Task.Delay(1);
             if (delSrc)
                 DeleteSource(inputFile);
@@ -122,17 +123,6 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), AvProcess.LogMode.Hidden, AvProcess.TaskType.Merge);
         }
 
-        public static async Task ConvertFramerate(string inputPath, string outPath, bool useH265, int crf, float newFps, bool delSrc = false)
-        {
-            Logger.Log($"Changing video frame rate...");
-            string enc = useH265 ? "libx265" : "libx264";
-            string presetStr = $"-preset {Config.Get("ffEncPreset")}";
-            string args = $" -i {inputPath.Wrap()} -filter:v fps=fps={newFps} -c:v {enc} -crf {crf} {presetStr} {videoEncArgs} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
-            if (delSrc)
-                DeleteSource(inputPath);
-        }
-
         public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64, float resampleFps = -1, AvProcess.LogMode logMode = AvProcess.LogMode.OnlyLastLine)
         {
             if (logMode != AvProcess.LogMode.Hidden)
@@ -196,7 +186,6 @@ namespace Flowframes
         public static async Task ExtractAudio(string inputFile, string outFile)    // https://stackoverflow.com/a/27413824/14274419
         {
             Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
-            //string ext = GetAudioExt(inputFile);
             outFile = Path.ChangeExtension(outFile, ".ogg");
             string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -acodec libopus -b:a 256k {outFile.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
@@ -383,20 +372,7 @@ namespace Flowframes
             foreach (string entry in entries)
             {
                 if (entry.Contains("codec_name="))
-                {
-                    Logger.Log($"[FFCmds] Audio Codec Entry: {entry}", true);
                     return entry.Split('=')[1];
-                }
-            }
-            return "";
-        }
-
-        static string GetFirstStreamInfo(string ffmpegOutput)
-        {
-            foreach (string line in Regex.Split(ffmpegOutput, "\r\n|\r|\n"))
-            {
-                if (line.Contains("Stream #0"))
-                    return line;
             }
             return "";
         }
