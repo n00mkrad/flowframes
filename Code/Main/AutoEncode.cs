@@ -122,11 +122,14 @@ namespace Flowframes.Main
 
         static bool FrameIsStillNeeded (string frameName, int frameIndex)
         {
-            for(int i = frameIndex + 1; i < interpFramesLines.Length; i++)
-            {
-                if (interpFramesLines[i].Contains(frameName))
-                    return true;
-            }
+            // for(int i = frameIndex + 1; i < interpFramesLines.Length; i++)
+            // {
+            //     if (interpFramesLines[i].Contains(frameName))
+            //         return true;
+            // }
+
+            if (interpFramesLines[frameIndex+1].Contains(frameName))
+                return true;
             return false;
         }
 
