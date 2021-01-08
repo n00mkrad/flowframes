@@ -108,7 +108,7 @@ namespace Flowframes
             if (!isChunk) encArgs += $" -movflags +faststart";
             string vfrFilename = Path.GetFileName(framesFile);
             string rate = fps.ToString().Replace(",", ".");
-            string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToString().Replace(",", ".")}";
+            string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToStringDot()}";
             string extraArgs = Config.Get("ffEncArgs");
             string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode, AvProcess.TaskType.Encode);
@@ -239,7 +239,7 @@ namespace Flowframes
 
         public static Size GetSize(string inputFile)
         {
-            string args = $" -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
+            string args = $" -v panic -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
             string output = AvProcess.GetFfprobeOutput(args);
 
             if (output.Length > 4 && output.Contains("x"))
