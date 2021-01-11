@@ -55,7 +55,7 @@ namespace Flowframes
             await PostProcessFrames();
             if (canceled) return;
             int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
-            int targetFrameCount = frames * current.interpFactor;
+            int targetFrameCount = (frames * current.interpFactor) - (current.interpFactor - 1);
             Utils.GetProgressByFrameAmount(current.interpFolder, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
@@ -132,7 +132,7 @@ namespace Flowframes
                 Dedupe.ClearCache();
 
             if (Config.GetInt("dedupMode") == 2 || Config.GetInt("dedupMode") == 1)
-                await Dedupe.CreateDupesFileMpdecimate(current.framesFolder, currentInputFrameCount);
+                await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);
 
                 if (canceled) return;
 

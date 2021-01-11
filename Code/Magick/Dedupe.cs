@@ -9,6 +9,7 @@ using ImageMagick;
 using Flowframes.OS;
 using Flowframes.Data;
 using System.Drawing;
+using Paths = Flowframes.IO.Paths;
 
 namespace Flowframes.Magick
 {
@@ -205,7 +206,7 @@ namespace Flowframes.Magick
             return bufferSize;
         }
 
-        public static async Task CreateDupesFileMpdecimate (string framesPath, int lastFrameNum)
+        public static async Task CreateDupesFile (string framesPath, int lastFrameNum)
         {
             string infoFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
             string fileContent = "";
@@ -220,6 +221,9 @@ namespace Flowframes.Magick
 
                 int diff = frameNum2 - frameNum1;
                 int dupes = diff - 1;
+
+                //if (File.Exists(Path.Combine(framesPath.GetParentDir(), Paths.scenesDir, frameFiles[i].Name)))
+                //    dupes = 0;
 
                 fileContent += $"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)}:{dupes}\n";
             }

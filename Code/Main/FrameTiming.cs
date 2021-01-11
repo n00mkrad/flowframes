@@ -217,7 +217,7 @@ namespace Flowframes.Main
 
                         if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
                         //fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug);
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[i={i}] [{frameFiles[i].Name}] scn: discarding next [{frameFiles[i+1].Name}]");
                         totalFileCount++;
 
                         if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
@@ -225,7 +225,7 @@ namespace Flowframes.Main
                         {
                             if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
                             //fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
-                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug);
+                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[{inputFilenameNoExt}] scn: repeated last frame");
                             totalFileCount++;
                         }
 
@@ -233,7 +233,7 @@ namespace Flowframes.Main
                     }
                     else
                     {
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug);
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[{inputFilenameNoExt}]");
                         totalFileCount++;
                     }
                 }
@@ -242,10 +242,14 @@ namespace Flowframes.Main
                     await Task.Delay(1);
             }
 
-            // Use average frame duration for last frame - TODO: Use real duration??
-            //string durationStrLast = ((totalDuration / (totalFileCount - 1)) / timebase).ToString("0.0000000", CultureInfo.InvariantCulture);
-            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
-            totalFileCount++;
+            if(debug) Logger.Log("target: " + ((frameFiles.Length * interpFactor) - (interpFactor - 1)), true);
+            if(debug) Logger.Log("totalFileCount: " + totalFileCount, true);
+
+            if (totalFileCount < (frameFiles.Length * interpFactor) - (interpFactor - 1))
+            {
+                fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+                totalFileCount++;
+            }
 
             string finalFileContent = fileContent.Trim();
             if(loop)
@@ -268,12 +272,12 @@ namespace Flowframes.Main
             }
         }
 
-        static string WriteFrameWithDupes (int dupesAmount, string fileContent, int frameNum, string interpPath, string ext, bool debug)
+        static string WriteFrameWithDupes (int dupesAmount, string fileContent, int frameNum, string interpPath, string ext, bool debug, string note = "")
         {
             for (int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
             {
                 if (debug) Logger.Log($"Writing frame {frameNum} (writtenDupes {writtenDupes})", true, false);
-                fileContent += $"file '{interpPath}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+                fileContent += $"file '{interpPath}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($"# Dupe {writtenDupes+1} {note}") : "" )}\n";
             }
             return fileContent;
         }

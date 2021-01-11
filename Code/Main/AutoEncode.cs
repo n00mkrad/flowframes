@@ -32,85 +32,98 @@ namespace Flowframes.Main
 
         public static async Task MainLoop(string interpFramesPath)
         {
-            UpdateChunkAndBufferSizes();
-
-            interpFramesFolder = interpFramesPath;
-            videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
-            if (Interpolate.currentlyUsingAutoEnc)
-                Directory.CreateDirectory(videoChunksFolder);
-
-            encodedFrameLines.Clear();
-            unencodedFrameLines.Clear();
-
-            Logger.Log($"Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
-            int videoIndex = 1;
-            string encFile = Path.Combine(interpFramesPath.GetParentDir(), $"vfr-{Interpolate.current.interpFactor}x.ini");
-            interpFramesLines = IOUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'")).ToArray();     // Array with frame filenames
-
-            while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
-                await Task.Delay(1000);
-
-            while (HasWorkToDo())    // Loop while proc is running and not all frames have been encoded
+            try
             {
-                if (Interpolate.canceled) return;
+                UpdateChunkAndBufferSizes();
 
-                if (paused)
-                {
-                    await Task.Delay(100);
-                    continue;
-                }
+                interpFramesFolder = interpFramesPath;
+                videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
+                if (Interpolate.currentlyUsingAutoEnc)
+                    Directory.CreateDirectory(videoChunksFolder);
 
-                //Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {encodedFrameLines.Count} encoded frame lines", true, false, "ffmpeg");
-
+                encodedFrameLines.Clear();
                 unencodedFrameLines.Clear();
-                for(int vfrLine = 0; vfrLine < interpFramesLines.Length; vfrLine++)
+
+                Logger.Log($"Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
+                int videoIndex = 1;
+                string encFile = Path.Combine(interpFramesPath.GetParentDir(), $"vfr-{Interpolate.current.interpFactor}x.ini");
+                interpFramesLines = IOUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
+
+                while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
                 {
-                    if (File.Exists(Path.Combine(interpFramesPath, interpFramesLines[vfrLine])) && !encodedFrameLines.Contains(vfrLine))
-                        unencodedFrameLines.Add(vfrLine);
+                    // Logger.Log("autoenc waiting for 2s because GetInterpFramesAmount() < 2");
+                    await Task.Delay(2000);
                 }
 
-                bool aiRunning = !AiProcess.currentAiProcess.HasExited;
-
-                if (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning)     // Encode every n frames, or after process has exited
+                while (HasWorkToDo())    // Loop while proc is running and not all frames have been encoded
                 {
-                    busy = true;
+                    if (Interpolate.canceled) return;
 
-                    List<int> frameLinesToEncode = aiRunning ? unencodedFrameLines.Take(chunkSize).ToList() : unencodedFrameLines;     // Take all remaining frames if process is done
-                    //Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {IOUtils.GetAmountOfFiles(interpFramesFolder, false)} frames in interp folder", true, false, "ffmpeg");
-
-                    string outpath = Path.Combine(videoChunksFolder, "chunks", $"{videoIndex.ToString().PadLeft(4, '0')}{FFmpegUtils.GetExt(Interpolate.current.outMode)}");
-                    int firstFrameNum = frameLinesToEncode[0];
-                    Logger.Log($"Encoding Chunk #{videoIndex} to '{outpath}' using {Path.GetFileName(interpFramesLines[frameLinesToEncode.First()])} through {Path.GetFileName(Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()]))}", true, false, "ffmpeg");
-                    await CreateVideo.EncodeChunk(outpath, Interpolate.current.outMode, firstFrameNum, frameLinesToEncode.Count);
-
-                    if(Interpolate.canceled) return;
-
-                    if (Config.GetInt("autoEncMode") == 2)
+                    if (paused)
                     {
-                        foreach (int frame in frameLinesToEncode)
-                        {
-                            if(!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (e.g. for dupes) before deleting!
-                            {
-                                string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
-                                File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
-                            }
-                        }
+                        Logger.Log("autoenc paused");
+                        await Task.Delay(100);
+                        continue;
                     }
 
-                    encodedFrameLines.AddRange(frameLinesToEncode);
-                    //Logger.Log($"Adding {frameLinesToEncode.Count} frameLinesToEncode to encodedFrameLines, new count is {encodedFrameLines.Count}");
+                    unencodedFrameLines.Clear();
+                    for (int vfrLine = 0; vfrLine < interpFramesLines.Length; vfrLine++)
+                    {
+                        if (File.Exists(Path.Combine(interpFramesPath, interpFramesLines[vfrLine])) && !encodedFrameLines.Contains(vfrLine))
+                            unencodedFrameLines.Add(vfrLine);
+                    }
 
-                    Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg");
-                    videoIndex++;
-                    busy = false;
+                    // Logger.Log($"{unencodedFrameLines.Count} unencoded frame lines, {encodedFrameLines.Count} encoded frame lines", false, false, "ffmpeg");
+
+                    bool aiRunning = !AiProcess.currentAiProcess.HasExited;
+
+                    if (unencodedFrameLines.Count > 0 && (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning))     // Encode every n frames, or after process has exited
+                    {
+                        busy = true;
+
+                        Logger.Log("unencodedFrameLines: " + unencodedFrameLines.Count, true, false, "autoenc");
+                        List<int> frameLinesToEncode = aiRunning ? unencodedFrameLines.Take(chunkSize).ToList() : unencodedFrameLines;     // Take all remaining frames if process is done
+                        Logger.Log("frameLinesToEncode: " + frameLinesToEncode.Count, true, false, "autoenc");
+
+                        string outpath = Path.Combine(videoChunksFolder, "chunks", $"{videoIndex.ToString().PadLeft(4, '0')}{FFmpegUtils.GetExt(Interpolate.current.outMode)}");
+                        int firstFrameNum = frameLinesToEncode[0];
+                        Logger.Log($"Encoding Chunk #{videoIndex} to '{outpath}' using {Path.GetFileName(interpFramesLines[frameLinesToEncode.First()])} through {Path.GetFileName(Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()]))}", true, false, "ffmpeg");
+                        await CreateVideo.EncodeChunk(outpath, Interpolate.current.outMode, firstFrameNum, frameLinesToEncode.Count);
+
+                        if (Interpolate.canceled) return;
+
+                        if (Config.GetInt("autoEncMode") == 2)
+                        {
+                            foreach (int frame in frameLinesToEncode)
+                            {
+                                if (!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (e.g. for dupes) before deleting!
+                                {
+                                    string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
+                                    File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
+                                }
+                            }
+                        }
+
+                        encodedFrameLines.AddRange(frameLinesToEncode);
+                        //Logger.Log($"Adding {frameLinesToEncode.Count} frameLinesToEncode to encodedFrameLines, new count is {encodedFrameLines.Count}");
+
+                        Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg");
+                        videoIndex++;
+                        busy = false;
+                    }
+                    await Task.Delay(50);
                 }
-                await Task.Delay(50);
+
+                if (Interpolate.canceled) return;
+
+                IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+                await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
             }
-
-            if (Interpolate.canceled) return;
-
-            IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
-            await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
+            catch (Exception e)
+            {
+                Logger.Log($"AutoEnc Error: {e.Message}. Stack Trace:\n{e.StackTrace}");
+                Interpolate.Cancel("Auto-Encode encountered an error.");
+            }
         }
 
         static bool FrameIsStillNeeded (string frameName, int frameIndex)
@@ -123,7 +136,7 @@ namespace Flowframes.Main
         public static bool HasWorkToDo ()
         {
             if (Interpolate.canceled || interpFramesFolder == null) return false;
-            //Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
+            // Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
             return ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrameLines.Count < interpFramesLines.Length);
         }
 

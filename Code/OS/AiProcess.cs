@@ -49,14 +49,22 @@ namespace Flowframes
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
             processTime.Stop();
+
+            Stopwatch timeSinceFfmpegRan = new Stopwatch();
+            timeSinceFfmpegRan.Restart();
+
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
                 if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
                 {
+                    timeSinceFfmpegRan.Restart();
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
                     Logger.Log(lastLine.Trim().TrimWhitespaces(), false, Logger.GetLastLine().Contains("frame"));
                 }
-                await Task.Delay(1000);
+                if (timeSinceFfmpegRan.ElapsedMilliseconds > 3000)
+                    break;
+                // Logger.Log($"AiProcess loop - Program.busy = {Program.busy}");
+                await Task.Delay(500);
             }
         }
 
