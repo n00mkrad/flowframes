@@ -61,7 +61,7 @@ namespace Flowframes.Main
 
                     if (paused)
                     {
-                        Logger.Log("autoenc paused");
+                        //Logger.Log("autoenc paused");
                         await Task.Delay(100);
                         continue;
                     }

@@ -8,7 +8,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utils = Flowframes.AudioVideo.FFmpegUtils;
 
@@ -19,7 +18,7 @@ namespace Flowframes
         static string hdrFilter = @"-vf select=gte(n\,%frNum%),zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
 
         static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart";
-        static string divisionFilter = "\"crop = trunc(iw / 2) * 2:trunc(ih / 2) * 2\"";
+        static string divisionFilter = "\"crop=trunc(iw/2)*2:trunc(ih/2)*2\"";
         static string pngComprArg = "-compression_level 3";
 
         static string mpDecDef = "\"mpdecimate\"";
