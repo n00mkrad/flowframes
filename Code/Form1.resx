@@ -122,7 +122,6 @@
 
 Based on:
 - dain-ncnn-vulkan by nihui, originally based on DAIN (Depth-Aware Video Frame Interpolation) by baowenbo 
-- cain-ncnn-vulkan by nihui, originally based on and CAIN (Channel Attention Is All You Need for Video Frame Interpolation) by myungsub
 - RIFE by hzwer
 - rife-ncnn-vulkan by nihui</value>
   </data>
