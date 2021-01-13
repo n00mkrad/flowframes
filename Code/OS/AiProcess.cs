@@ -68,104 +68,10 @@ namespace Flowframes
             }
         }
 
-        public static async Task RunDainNcnn(string framesPath, string outPath, int targetFrames, int tilesize)
-        {
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")}";
-
-            string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
-            Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(dain, 1500, Interpolate.current.interpFactor);
-            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}".TrimWhitespacesSafe();
-            Logger.Log("Running DAIN...", false);
-            Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
-            if (!OSUtils.ShowHiddenCmd())
-            {
-                dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "dain-ncnn-log"); };
-                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log"); };
-            }
-            dain.Start();
-            if (!OSUtils.ShowHiddenCmd())
-            {
-                dain.BeginOutputReadLine();
-                dain.BeginErrorReadLine();
-            }
-            while (!dain.HasExited)
-                await Task.Delay(1);
-
-            if (Interpolate.canceled) return;
-
-            if (!Interpolate.currentlyUsingAutoEnc)
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
-
-            AiFinished("DAIN");
-        }
-
-        public static async Task RunCainNcnnMulti (string framesPath, string outPath, int tilesize, int times)
-        {
-            processTimeMulti.Restart();
-            Logger.Log("Running CAIN...", false);
-
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")}";
-            await RunCainPartial(args);
-
-            if(times == 4 || times == 8)    // #2
-            {
-                if (Interpolate.canceled) return;
-                Logger.Log("Re-Running CAIN for 4x interpolation...", false);
-                string run1ResultsPath = outPath + "-run1";
-                IOUtils.TryDeleteIfExists(run1ResultsPath);
-                Directory.Move(outPath, run1ResultsPath);
-                Directory.CreateDirectory(outPath);
-                args = $" -v -i {run1ResultsPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")}";
-                await RunCainPartial(args);
-                IOUtils.TryDeleteIfExists(run1ResultsPath);
-            }
-
-            if (times == 8)    // #3
-            {
-                if (Interpolate.canceled) return;
-                Logger.Log("Re-Running CAIN for 8x interpolation...", false);
-                string run2ResultsPath = outPath + "-run2";
-                IOUtils.TryDeleteIfExists(run2ResultsPath);
-                Directory.Move(outPath, run2ResultsPath);
-                Directory.CreateDirectory(outPath);
-                args = $" -v -i {run2ResultsPath.Wrap()} -o {outPath.Wrap()} -g {Config.Get("ncnnGpus")}";
-                await RunCainPartial(args);
-                IOUtils.TryDeleteIfExists(run2ResultsPath);
-            }
-
-            if (Interpolate.canceled) return;
-
-            if (!Interpolate.currentlyUsingAutoEnc)
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
-
-            AiFinished("CAIN");
-        }
-
-        static async Task RunCainPartial (string args)
-        {
-            string cainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.cainNcnn.fileName));
-            string cainExe = "cain-ncnn-vulkan.exe";
-            Process cain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(cain, 1500, 2);
-            cain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {cainDir.Wrap()} & {cainExe} {args} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}".TrimWhitespacesSafe();
-            Logger.Log("cmd.exe " + cain.StartInfo.Arguments, true);
-            if (!OSUtils.ShowHiddenCmd())
-            {
-                cain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "cain-ncnn-log"); };
-                cain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "cain-ncnn-log"); };
-            }
-            cain.Start();
-            if (!OSUtils.ShowHiddenCmd())
-            {
-                cain.BeginOutputReadLine();
-                cain.BeginErrorReadLine();
-            }
-            while (!cain.HasExited) await Task.Delay(1);
-        }
-
         public static async Task RunRifeCuda(string framesPath, int interpFactor)
         {
+            InterpolateUtils.GetProgressByFrameAmount(Interpolate.current.interpFolder, Interpolate.current.GetTargetFrameCount(framesPath, interpFactor));
+
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "inference_video.py";
             string uhdStr = InterpolateUtils.UseUHD() ? "--UHD" : "";
@@ -198,7 +104,7 @@ namespace Flowframes
             AiFinished("RIFE");
         }
 
-        public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int tilesize, int times)
+        public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int times)
         {
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
@@ -247,6 +153,8 @@ namespace Flowframes
 
         static async Task RunRifePartial(string inPath, string outPath)
         {
+            InterpolateUtils.GetProgressByFrameAmount(Interpolate.current.interpFolder, Interpolate.current.GetTargetFrameCount(inPath, 2));
+
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, 2, inPath);
 

@@ -117,11 +117,10 @@ namespace Flowframes.Main
 
             int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
             int targetFrameCount = frames * current.interpFactor;
-            InterpolateUtils.GetProgressByFrameAmount(current.interpFolder, targetFrameCount);
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             int tilesize = current.ai.supportsTiling ? Config.GetInt($"tilesize_{current.ai.aiName}") : 512;
-            await RunAi(current.interpFolder, targetFrameCount, tilesize, current.ai, true);
+            await RunAi(current.interpFolder, current.ai, true);
             Program.mainForm.SetProgress(0);
         }
 

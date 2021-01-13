@@ -54,12 +54,8 @@ namespace Flowframes
             await Task.Delay(10);
             await PostProcessFrames();
             if (canceled) return;
-            int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
-            int targetFrameCount = (frames * current.interpFactor) - (current.interpFactor - 1);
-            Utils.GetProgressByFrameAmount(current.interpFolder, targetFrameCount);
-            if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(current.interpFolder, targetFrameCount, current.tilesize, current.ai);
+            await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
@@ -144,7 +140,7 @@ namespace Flowframes
             AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, 8);
         }
 
-        public static async Task RunAi(string outpath, int targetFrames, int tilesize, AI ai, bool stepByStep = false)
+        public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
             currentlyUsingAutoEnc = Utils.UseAutoEnc(stepByStep, current);
 
@@ -152,23 +148,18 @@ namespace Flowframes
 
             List<Task> tasks = new List<Task>();
 
-            if (ai.aiName == Networks.dainNcnn.aiName)
-                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, targetFrames, tilesize));
-
-            if (ai.aiName == Networks.cainNcnn.aiName)
-                tasks.Add(AiProcess.RunCainNcnnMulti(current.framesFolder, outpath, tilesize, current.interpFactor));
-
             if (ai.aiName == Networks.rifeCuda.aiName)
                 tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnnMulti(current.framesFolder, outpath, tilesize, current.interpFactor));
+                tasks.Add(AiProcess.RunRifeNcnnMulti(current.framesFolder, outpath, current.interpFactor));
 
             if (currentlyUsingAutoEnc)
             {
                 Logger.Log($"{Logger.GetLastLine()} (Using Auto-Encode)", true);
                 tasks.Add(AutoEncode.MainLoop(outpath));
             }
+
             await Task.WhenAll(tasks);
         }
 

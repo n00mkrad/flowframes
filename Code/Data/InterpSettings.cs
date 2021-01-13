@@ -92,5 +92,17 @@ namespace Flowframes
                 scaledResolution = InterpolateUtils.GetOutputResolution(inputResolution, false);
             }
         }
+
+        public int GetTargetFrameCount(string overrideInputDir = "", int overrideFactor = -1)
+        {
+            if (framesFolder == null || !Directory.Exists(framesFolder))
+                return 0;
+
+            string framesDir = (!string.IsNullOrWhiteSpace(overrideInputDir)) ? overrideInputDir : framesFolder;
+            int frames = IOUtils.GetAmountOfFiles(framesDir, false, "*.png");
+            int factor = (overrideFactor > 0) ? overrideFactor : interpFactor;
+            int targetFrameCount = (frames * factor) - (interpFactor - 1);
+            return targetFrameCount;
+        }
     }
 }
