@@ -1,0 +1,6 @@
+contextnet.bin:96dfebb4b9a13b432ae3fa45e3aac22a
+contextnet.param:b57b84697999371b94557ea8b11a2395
+flownet.bin:eb11e2d6a79730dfa3f3dcfa0772c658
+flownet.param:1f5793b691ad4491ec64699275d8c780
+fusionnet.bin:4e74e1df6d76332eb96d038b29991377
+fusionnet.param:ab2ec30484ab9885347cfc3cafb774a3
