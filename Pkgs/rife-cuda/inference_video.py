@@ -37,6 +37,7 @@ except:
 parser = argparse.ArgumentParser(description='Interpolation for a pair of images')
 parser.add_argument('--input', dest='input', type=str, default=None)
 parser.add_argument('--output', required=False, default='frames-interpolated')
+parser.add_argument('--model', required=False, default='models')
 parser.add_argument('--imgformat', default="png")
 parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
 parser.add_argument('--exp', dest='exp', type=int, default=1)
@@ -45,7 +46,7 @@ assert (not args.input is None)
 
 from model.RIFE_HD import Model
 model = Model()
-model.load_model(os.path.join(dname, "models"), -1)
+model.load_model(os.path.join(dname, args.model), -1)
 model.eval()
 model.device()
 

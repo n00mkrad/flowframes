@@ -55,7 +55,7 @@ namespace Flowframes
             await PostProcessFrames();
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(current.interpFolder, current.ai);
+            await RunAi(current.interpFolder, current.ai, current.model);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
@@ -140,7 +140,7 @@ namespace Flowframes
             AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, 8);
         }
 
-        public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
+        public static async Task RunAi(string outpath, AI ai, string model, bool stepByStep = false)
         {
             currentlyUsingAutoEnc = Utils.UseAutoEnc(stepByStep, current);
 
@@ -149,10 +149,10 @@ namespace Flowframes
             List<Task> tasks = new List<Task>();
 
             if (ai.aiName == Networks.rifeCuda.aiName)
-                tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor));
+                tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnnMulti(current.framesFolder, outpath, current.interpFactor));
+                tasks.Add(AiProcess.RunRifeNcnnMulti(current.framesFolder, outpath, current.interpFactor, current.model));
 
             if (currentlyUsingAutoEnc)
             {
