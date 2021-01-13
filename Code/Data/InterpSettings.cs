@@ -45,7 +45,7 @@ namespace Flowframes
                 framesFolder = Path.Combine(tempFolder, Paths.framesDir);
                 interpFolder = Path.Combine(tempFolder, Paths.interpDir);
                 inputIsFrames = IOUtils.IsPathDirectory(inPath);
-                outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + FFmpegUtils.GetExt(outMode));
+                outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetExportSuffix(interpFactor, ai, model) + FFmpegUtils.GetExt(outMode));
             }
             catch
             {
@@ -69,7 +69,7 @@ namespace Flowframes
             framesFolder = Path.Combine(tempFolder, Paths.framesDir);
             interpFolder = Path.Combine(tempFolder, Paths.interpDir);
             inputIsFrames = IOUtils.IsPathDirectory(inPath);
-            outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetAiSuffix(ai, interpFactor) + FFmpegUtils.GetExt(outMode));
+            outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetExportSuffix(interpFactor, ai, model) + FFmpegUtils.GetExt(outMode));
         }
 
         public Size GetInputRes ()

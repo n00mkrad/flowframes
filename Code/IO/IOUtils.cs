@@ -395,9 +395,17 @@ namespace Flowframes.IO
 			return false;
         }
 
-		public static string GetAiSuffix (AI ai, int times)
+		public static string GetCurrentExportSuffix ()
         {
-			return $"-{times}x-{ai.aiNameShort.ToUpper()}";
+			return GetExportSuffix(Interpolate.current.interpFactor, Interpolate.current.ai, Interpolate.current.model);
+		}
+
+		public static string GetExportSuffix(int factor, AI ai, string mdl)
+		{
+			string suffix = $"-{factor}x-{ai.aiNameShort.ToUpper()}";
+			if (Config.GetBool("modelSuffix"))
+				suffix += $"-{mdl}";
+			return suffix;
 		}
 
 		public static string GetHighestFrameNumPath (string path)

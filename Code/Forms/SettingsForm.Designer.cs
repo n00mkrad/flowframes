@@ -32,6 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.label62 = new System.Windows.Forms.Label();
+            this.clearLogOnInput = new System.Windows.Forms.CheckBox();
+            this.label61 = new System.Windows.Forms.Label();
             this.processingMode = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
             this.tempDirBrowseBtn = new HTAlt.WinForms.HTButton();
@@ -154,9 +157,8 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label61 = new System.Windows.Forms.Label();
-            this.clearLogOnInput = new System.Windows.Forms.CheckBox();
-            this.label62 = new System.Windows.Forms.Label();
+            this.label63 = new System.Windows.Forms.Label();
+            this.modelSuffix = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -184,6 +186,8 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.modelSuffix);
+            this.generalTab.Controls.Add(this.label63);
             this.generalTab.Controls.Add(this.label62);
             this.generalTab.Controls.Add(this.clearLogOnInput);
             this.generalTab.Controls.Add(this.label61);
@@ -204,6 +208,36 @@
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "General";
+            // 
+            // label62
+            // 
+            this.label62.AutoSize = true;
+            this.label62.ForeColor = System.Drawing.Color.Silver;
+            this.label62.Location = new System.Drawing.Point(308, 161);
+            this.label62.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(249, 13);
+            this.label62.TabIndex = 75;
+            this.label62.Text = "Only affects the log box in the GUI, not the log files.";
+            // 
+            // clearLogOnInput
+            // 
+            this.clearLogOnInput.AutoSize = true;
+            this.clearLogOnInput.Location = new System.Drawing.Point(280, 161);
+            this.clearLogOnInput.Name = "clearLogOnInput";
+            this.clearLogOnInput.Size = new System.Drawing.Size(15, 14);
+            this.clearLogOnInput.TabIndex = 74;
+            this.clearLogOnInput.UseVisualStyleBackColor = true;
+            // 
+            // label61
+            // 
+            this.label61.AutoSize = true;
+            this.label61.Location = new System.Drawing.Point(10, 161);
+            this.label61.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(181, 13);
+            this.label61.TabIndex = 73;
+            this.label61.Text = "Clear Log Box When Switching Input";
             // 
             // processingMode
             // 
@@ -364,7 +398,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(8, 130);
+            this.label11.Location = new System.Drawing.Point(10, 130);
             this.label11.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(216, 13);
@@ -1718,35 +1752,24 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label61
+            // label63
             // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(10, 161);
-            this.label61.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(181, 13);
-            this.label61.TabIndex = 73;
-            this.label61.Text = "Clear Log Box When Switching Input";
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(10, 191);
+            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(210, 13);
+            this.label63.TabIndex = 76;
+            this.label63.Text = "Include AI Model Name In Output Filename";
             // 
-            // clearLogOnInput
+            // modelSuffix
             // 
-            this.clearLogOnInput.AutoSize = true;
-            this.clearLogOnInput.Location = new System.Drawing.Point(280, 161);
-            this.clearLogOnInput.Name = "clearLogOnInput";
-            this.clearLogOnInput.Size = new System.Drawing.Size(15, 14);
-            this.clearLogOnInput.TabIndex = 74;
-            this.clearLogOnInput.UseVisualStyleBackColor = true;
-            // 
-            // label62
-            // 
-            this.label62.AutoSize = true;
-            this.label62.ForeColor = System.Drawing.Color.Silver;
-            this.label62.Location = new System.Drawing.Point(308, 161);
-            this.label62.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(249, 13);
-            this.label62.TabIndex = 75;
-            this.label62.Text = "Only affects the log box in the GUI, not the log files.";
+            this.modelSuffix.AutoSize = true;
+            this.modelSuffix.Location = new System.Drawing.Point(280, 191);
+            this.modelSuffix.Name = "modelSuffix";
+            this.modelSuffix.Size = new System.Drawing.Size(15, 14);
+            this.modelSuffix.TabIndex = 77;
+            this.modelSuffix.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -1913,5 +1936,7 @@
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.CheckBox clearLogOnInput;
         private System.Windows.Forms.Label label61;
+        private System.Windows.Forms.CheckBox modelSuffix;
+        private System.Windows.Forms.Label label63;
     }
 }
