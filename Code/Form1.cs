@@ -248,8 +248,11 @@ namespace Flowframes
             Program.mainForm.UpdateStepByStepControls(false);
         }
 
+        string lastAiComboxStr = "";
         private void aiCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(aiCombox.Text) || aiCombox.Text == lastAiComboxStr) return;
+            lastAiComboxStr = aiCombox.Text;
             aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
             interpFactorCombox_SelectedIndexChanged(null, null);
         }
