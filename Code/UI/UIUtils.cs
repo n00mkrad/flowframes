@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +32,32 @@ namespace Flowframes.UI
 
 			box.SelectedIndex = index;
 			return true;
+		}
+
+		public static ComboBox FillAiModelsCombox (ComboBox combox, AI ai)
+        {
+			string pkgPath = PkgUtils.GetPkgFolder(ai.pkg);
+			string modelsFile = Path.Combine(pkgPath, "models.txt");
+			string[] modelsWithDec = IOUtils.ReadLines(modelsFile);
+			combox.Items.Clear();
+
+			for (int i = 0; i < modelsWithDec.Length; i++)
+            {
+				string model = modelsWithDec[i];
+
+				if (string.IsNullOrWhiteSpace(model))
+					continue;
+
+				combox.Items.Add(model);
+
+				if (model.Contains("Recommended") || model.Contains("Default"))
+					combox.SelectedIndex = i;
+            }
+
+			if(combox.SelectedIndex < 0)
+				combox.SelectedIndex = 0;
+
+			return combox;
 		}
 	}
 }

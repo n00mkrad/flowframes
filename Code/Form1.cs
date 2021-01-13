@@ -250,6 +250,7 @@ namespace Flowframes
 
         private void aiCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
             interpFactorCombox_SelectedIndexChanged(null, null);
         }
 
