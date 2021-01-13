@@ -228,8 +228,11 @@ namespace Flowframes
         {
             UpdateOutputFPS();
             int guiInterpFactor = interpFactorCombox.GetInt();
-            if (!Program.busy && guiInterpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0)
-                Logger.Log($"Warning: {GetAi().aiName.Replace("_", "-")} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
+            if (!initialized)
+                return;
+            string aiName = GetAi().aiName.Replace("_", "-");
+            if (!Program.busy && guiInterpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0 && !Logger.GetLastLine().Contains(aiName))
+                Logger.Log($"Warning: {aiName} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
         }
 
         public void SetWorking(bool state, bool allowCancel = true)

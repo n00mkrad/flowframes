@@ -95,6 +95,8 @@ namespace Flowframes
         public static string GetLastLine ()
         {
             string[] lines = textbox.Text.SplitIntoLines();
+            if (lines.Length < 1)
+                return "";
             return lines.Last();
         }
 

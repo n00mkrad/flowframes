@@ -169,7 +169,7 @@ namespace Flowframes
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "inference_video.py";
             string uhdStr = InterpolateUtils.UseUHD() ? "--UHD" : "";
-            string args = $" --img {framesPath.Wrap()} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {Paths.interpDir}";
+            string args = $" --input {framesPath.Wrap()} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {Paths.interpDir}";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
             {
