@@ -47,7 +47,13 @@ namespace Flowframes.IO
             List<string> list = lines.ToList();
             list.Add(key + "|" + value);
             list = list.OrderBy(p => p).ToList();
-            File.WriteAllLines(configPath, list.ToArray());
+
+            string newFileContent = "";
+            foreach(string line in list)
+                newFileContent += line + "\n";
+
+            File.WriteAllText(configPath, newFileContent.Trim());
+
             cachedLines = list.ToArray();
         }
 
@@ -155,7 +161,14 @@ namespace Flowframes.IO
 
         private static void Reload()
         {
-            cachedLines = File.ReadAllLines(configPath);
+            List<string> validLines = new List<string>();
+            string[] lines = File.ReadAllLines(configPath);
+            foreach (string line in lines)
+            {
+                if(line != null && !string.IsNullOrWhiteSpace(line) && line.Length > 3)
+                    validLines.Add(line);
+            }
+            cachedLines = validLines.ToArray();
         }
     }
 }
