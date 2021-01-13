@@ -18,7 +18,7 @@ namespace Flowframes
         public float outFps;
         public int interpFactor;
         public Interpolate.OutMode outMode;
-        public int tilesize;
+        public string model;
 
         public string tempFolder;
         public string framesFolder;
@@ -28,7 +28,7 @@ namespace Flowframes
         public Size inputResolution;
         public Size scaledResolution;
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, float inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, int tilesizeArg = 512)
+        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, float inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -37,7 +37,7 @@ namespace Flowframes
             interpFactor = interpFactorArg;
             outFps = inFpsArg * interpFactorArg;
             outMode = outModeArg;
-            tilesize = tilesizeArg;
+            model = modelArg;
 
             try
             {

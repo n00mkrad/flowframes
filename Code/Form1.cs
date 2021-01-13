@@ -35,7 +35,7 @@ namespace Flowframes
             // Main Tab
             UIUtils.InitCombox(interpFactorCombox, 0);
             UIUtils.InitCombox(outModeCombox, 0);
-            UIUtils.InitCombox(tilesize, 4);
+            UIUtils.InitCombox(aiModel, 2);
             // Video Utils
             UIUtils.InitCombox(utilsLoopTimesCombox, 0);
             UIUtils.InitCombox(utilsSpeedCombox, 0);
@@ -90,7 +90,7 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), fpsInTbox.GetFloat(), interpFactorCombox.GetInt(), GetOutMode(), GetTilesize());
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), fpsInTbox.GetFloat(), interpFactorCombox.GetInt(), GetOutMode(), GetModel());
         }
 
         public void LoadBatchEntry(InterpSettings entry)
@@ -157,18 +157,14 @@ namespace Flowframes
         public void runBtn_Click(object sender, EventArgs e)
         {
             if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
-            {
                 Interpolate.current = GetCurrentSettings();
-            }
+
             Interpolate.Start();
         }
 
-        public int GetTilesize()
+        public string GetModel()
         {
-            if (GetAi().supportsTiling)
-                return tilesize.GetInt();
-            else
-                return 512;
+            return aiModel.Text.Split('-')[0].Remove(" ").Remove(".");
         }
 
         Interpolate.OutMode GetOutMode()
@@ -254,11 +250,7 @@ namespace Flowframes
 
         private void aiCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tilesize.Visible = GetAi().supportsTiling;
-            tilesizeNotAvailLabel.Visible = !tilesize.Visible;
             interpFactorCombox_SelectedIndexChanged(null, null);
-            if (GetAi().supportsTiling)
-                tilesize.Text = Config.GetInt($"tilesize_{GetAi().aiName}").ToString();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -416,12 +408,6 @@ namespace Flowframes
         {
             if (!initialized) return;
             aiCombox_SelectedIndexChanged(null, null);
-        }
-
-        private void tilesize_TextChanged(object sender, EventArgs e)
-        {
-            if (!initialized || !GetAi().supportsTiling) return;
-            Config.Set($"tilesize_{GetAi().aiName}", tilesize.GetInt().Clamp(32, 4096).ToString());
         }
     }
 }

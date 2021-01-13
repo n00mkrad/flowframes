@@ -36,7 +36,7 @@ namespace Flowframes
         public static async Task Start()
         {
             canceled = false;
-            if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.tilesize, current.outMode)) return;     // General input checks
+            if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if(!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid

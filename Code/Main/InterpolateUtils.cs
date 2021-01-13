@@ -175,7 +175,7 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, float fpsOut, int interp, int tilesize, Interpolate.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, float fpsOut, int interp, Interpolate.OutMode outMode)
         {
             bool passes = true;
 
@@ -204,11 +204,6 @@ namespace Flowframes.Main
             if (passes && fpsOut < 1 || fpsOut > 500)
             {
                 ShowMessage("Invalid output frame rate - Must be 1-500.");
-                passes = false;
-            }
-            if (passes && tilesize % 32 != 0 || tilesize < 128)
-            {
-                ShowMessage("Tile size is not valid - Must be a multiple of 32 and at least 128!");
                 passes = false;
             }
             if (!passes)

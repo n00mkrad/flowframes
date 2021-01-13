@@ -30,7 +30,7 @@ namespace Flowframes.Main
             Program.mainForm.SetWorking(true);
             current = Program.mainForm.GetCurrentSettings();
 
-            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.tilesize, current.outMode)) return;     // General input checks
+            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
 
             if (step.Contains("Extract Scene Changes"))
             {
@@ -119,7 +119,6 @@ namespace Flowframes.Main
             int targetFrameCount = frames * current.interpFactor;
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            int tilesize = current.ai.supportsTiling ? Config.GetInt($"tilesize_{current.ai.aiName}") : 512;
             await RunAi(current.interpFolder, current.ai, true);
             Program.mainForm.SetProgress(0);
         }

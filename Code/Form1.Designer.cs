@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.titleLabel = new System.Windows.Forms.Label();
-            this.tilesize = new System.Windows.Forms.ComboBox();
+            this.aiModel = new System.Windows.Forms.ComboBox();
             this.aiCombox = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.outModeCombox = new System.Windows.Forms.ComboBox();
@@ -78,7 +78,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.updateBtn = new HTAlt.WinForms.HTButton();
             this.queueBtn = new HTAlt.WinForms.HTButton();
-            this.panel7 = new System.Windows.Forms.Panel();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -104,7 +103,6 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
-            this.tilesizeNotAvailLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
             this.browseInputFileBtn = new HTAlt.WinForms.HTButton();
@@ -149,26 +147,22 @@
             this.titleLabel.TabIndex = 0;
             this.titleLabel.Text = "Flowframes Video Interpolator";
             // 
-            // tilesize
+            // aiModel
             // 
-            this.tilesize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.tilesize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tilesize.ForeColor = System.Drawing.Color.White;
-            this.tilesize.FormattingEnabled = true;
-            this.tilesize.Items.AddRange(new object[] {
-            "384",
-            "512",
-            "768",
-            "1024",
-            "1536",
-            "2048",
-            "3072",
-            "4096"});
-            this.tilesize.Location = new System.Drawing.Point(281, 127);
-            this.tilesize.Name = "tilesize";
-            this.tilesize.Size = new System.Drawing.Size(125, 23);
-            this.tilesize.TabIndex = 25;
-            this.tilesize.TextChanged += new System.EventHandler(this.tilesize_TextChanged);
+            this.aiModel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aiModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.aiModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.aiModel.ForeColor = System.Drawing.Color.White;
+            this.aiModel.FormattingEnabled = true;
+            this.aiModel.Items.AddRange(new object[] {
+            "RIFE 1.5 - Optimized for general content",
+            "RIFE 1.6 - Optimized for general and UHD content",
+            "RIFE 1.7 - Optimized for 2D animation (Recommended)",
+            "RIFE 1.8 - Optimized for 2D animation and general content"});
+            this.aiModel.Location = new System.Drawing.Point(281, 127);
+            this.aiModel.Name = "aiModel";
+            this.aiModel.Size = new System.Drawing.Size(200, 23);
+            this.aiModel.TabIndex = 25;
             // 
             // aiCombox
             // 
@@ -234,9 +228,9 @@
             this.label8.Location = new System.Drawing.Point(11, 131);
             this.label8.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(177, 13);
+            this.label8.Size = new System.Drawing.Size(49, 13);
             this.label8.TabIndex = 13;
-            this.label8.Text = "Tile Size (Reduce if VRAM runs out)";
+            this.label8.Text = "AI Model";
             // 
             // label7
             // 
@@ -728,16 +722,6 @@
             this.queueBtn.UseVisualStyleBackColor = false;
             this.queueBtn.Click += new System.EventHandler(this.queueBtn_Click);
             // 
-            // panel7
-            // 
-            this.panel7.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel7.Location = new System.Drawing.Point(412, 128);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(21, 21);
-            this.panel7.TabIndex = 60;
-            this.toolTip1.SetToolTip(this.panel7, "Allows custom input.");
-            // 
             // pictureBox4
             // 
             this.pictureBox4.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
@@ -764,13 +748,11 @@
             // 
             this.pictureBox1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(194, 128);
+            this.pictureBox1.Location = new System.Drawing.Point(66, 128);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(29, 21);
             this.pictureBox1.TabIndex = 28;
             this.pictureBox1.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox1, "Splits frames into tiles during processing. Use lower values for DAIN and very hi" +
-        "gh values (2048 should work on GPUs with 4 GB VRAM or more) for CAIN.");
             // 
             // info1
             // 
@@ -1074,7 +1056,6 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.interpOptsTab.Controls.Add(this.tilesizeNotAvailLabel);
             this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
             this.interpOptsTab.Controls.Add(this.browseInputFileBtn);
@@ -1085,7 +1066,7 @@
             this.interpOptsTab.Controls.Add(this.inputTbox);
             this.interpOptsTab.Controls.Add(this.outputTbox);
             this.interpOptsTab.Controls.Add(this.interpFactorCombox);
-            this.interpOptsTab.Controls.Add(this.tilesize);
+            this.interpOptsTab.Controls.Add(this.aiModel);
             this.interpOptsTab.Controls.Add(this.fpsInTbox);
             this.interpOptsTab.Controls.Add(this.fpsOutTbox);
             this.interpOptsTab.Controls.Add(this.label5);
@@ -1096,7 +1077,6 @@
             this.interpOptsTab.Controls.Add(this.label8);
             this.interpOptsTab.Controls.Add(this.label9);
             this.interpOptsTab.Controls.Add(this.outModeCombox);
-            this.interpOptsTab.Controls.Add(this.panel7);
             this.interpOptsTab.Controls.Add(this.pictureBox4);
             this.interpOptsTab.Controls.Add(this.pictureBox3);
             this.interpOptsTab.Controls.Add(this.pictureBox2);
@@ -1110,18 +1090,6 @@
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            // 
-            // tilesizeNotAvailLabel
-            // 
-            this.tilesizeNotAvailLabel.ForeColor = System.Drawing.Color.Silver;
-            this.tilesizeNotAvailLabel.Location = new System.Drawing.Point(278, 124);
-            this.tilesizeNotAvailLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.tilesizeNotAvailLabel.Name = "tilesizeNotAvailLabel";
-            this.tilesizeNotAvailLabel.Size = new System.Drawing.Size(203, 31);
-            this.tilesizeNotAvailLabel.TabIndex = 37;
-            this.tilesizeNotAvailLabel.Text = "Not available for the selected AI.";
-            this.tilesizeNotAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.tilesizeNotAvailLabel.Visible = false;
             // 
             // label1
             // 
@@ -1432,7 +1400,7 @@
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.ComboBox aiCombox;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.ComboBox tilesize;
+        private System.Windows.Forms.ComboBox aiModel;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button debugExtractFramesBtn;
         private System.Windows.Forms.Label label16;
@@ -1473,13 +1441,11 @@
         private System.Windows.Forms.TabPage previewTab;
         private System.Windows.Forms.PictureBox previewPicturebox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label tilesizeNotAvailLabel;
         public HTAlt.WinForms.HTTabControl mainTabControl;
         private HTAlt.WinForms.HTButton queueBtn;
         private HTAlt.WinForms.HTButton htButton1;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox utilsExtractAudioCbox;
-        private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
