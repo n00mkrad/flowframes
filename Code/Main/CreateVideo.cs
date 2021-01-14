@@ -80,7 +80,7 @@ namespace Flowframes.Main
             for (int idx = 1; idx <= vfrLines.Length; idx++)
             {
                 string line = vfrLines[idx-1];
-                string inFilename = line.Split('/').Last().Remove("'");
+                string inFilename = line.Split('/').Last().Remove("'").RemoveComments();
                 string framePath = Path.Combine(framesPath, inFilename);
                 string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
 

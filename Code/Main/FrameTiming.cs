@@ -209,23 +209,21 @@ namespace Flowframes.Main
                 // Generate frames file lines
                 for (int frm = 0; frm < interpFramesAmount; frm++)
                 {
-                    if (debug) Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
+                    //if (debug) Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
 
-                    if (discardThisFrame && totalFileCount > 1)     // If frame is scene cut frame
+                    if (discardThisFrame)     // If frame is scene cut frame
                     {
                         int lastNum = totalFileCount;
 
-                        if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
-                        //fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[i={i}] [{frameFiles[i].Name}] scn: discarding next [{frameFiles[i+1].Name}]");
+                        //if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}] [DiscardNext]");
                         totalFileCount++;
 
-                        if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
+                        //if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
-                            if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}");
-                            //fileContent += $"file '{interpPath}/{lastNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
-                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[{inputFilenameNoExt}] scn: repeated last frame");
+                            if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}", true);
+                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
                             totalFileCount++;
                         }
 
@@ -233,7 +231,7 @@ namespace Flowframes.Main
                     }
                     else
                     {
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[{inputFilenameNoExt}]");
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]");
                         totalFileCount++;
                     }
                 }
@@ -277,7 +275,7 @@ namespace Flowframes.Main
             for (int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
             {
                 if (debug) Logger.Log($"Writing frame {frameNum} (writtenDupes {writtenDupes})", true, false);
-                fileContent += $"file '{interpPath}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($"# Dupe {writtenDupes+1} {note}") : "" )}\n";
+                fileContent += $"file '{interpPath}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($" # Dupe {(writtenDupes+1).ToString("000")} {note}").Replace("Dupe 000", "        ") : "" )}\n";
             }
             return fileContent;
         }
