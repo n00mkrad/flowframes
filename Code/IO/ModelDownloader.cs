@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Flowframes.Data;
+using Flowframes.MiscUtils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -100,14 +102,10 @@ namespace Flowframes.IO
                 Logger.Log($"Downloading '{model}' model files...");
                 Directory.CreateDirectory(mdlDir);
                 await DownloadTo(GetMdlFileUrl(ai, model, "md5.txt"), mdlDir);
-
                 Dictionary<string, string> fileList = await GetFilelist(ai, model);
 
                 foreach (KeyValuePair<string, string> modelFile in fileList)
-                {
-                    //Logger.Log($"Downloading '{model}' model files: '{modelFile.Key}'...", false, true);
                     await DownloadTo(GetMdlFileUrl(ai, model, modelFile.Key), mdlDir);
-                }
 
                 Logger.Log($"Downloaded \"{model}\" model files.", false, true);
             }
@@ -116,6 +114,38 @@ namespace Flowframes.IO
                 Logger.Log($"DownloadModelFiles Error: {e.Message}\nStack Trace:\n{e.StackTrace}");
                 Interpolate.Cancel($"Error downloading model files: {e.Message}");
             }
+        }
+
+        public static void DeleteAllModels ()
+        {
+            foreach(string modelFolder in GetAllModelFolders())
+            {
+                string size = FormatUtils.Bytes(IOUtils.GetDirSize(modelFolder, true));
+                if (IOUtils.TryDeleteIfExists(modelFolder))
+                    Logger.Log($"Deleted cached model '{Path.GetFileName(modelFolder.GetParentDir())}/{Path.GetFileName(modelFolder)}' ({size})");
+            }
+        }
+
+        public static List<string> GetAllModelFolders()
+        {
+            List<string> modelPaths = new List<string>();
+
+            foreach (AI ai in Networks.networks)
+            {
+                string aiPkgFolder = PkgUtils.GetPkgFolder(ai.pkg);
+                string modelsFile = Path.Combine(aiPkgFolder, "models.txt");
+                if (!File.Exists(modelsFile)) continue;
+
+                foreach (string mdl in IOUtils.ReadLines(modelsFile))
+                {
+                    string modelName = mdl.Split('-')[0].Remove(" ").Remove(".");
+                    string mdlFolder = Path.Combine(aiPkgFolder, modelName);
+                    if (!Directory.Exists(mdlFolder)) continue;
+                    modelPaths.Add(mdlFolder);
+                }
+            }
+
+            return modelPaths;
         }
 
         public static bool AreFilesValid (string ai, string model)

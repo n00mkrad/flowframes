@@ -1,4 +1,5 @@
 ﻿using Flowframes.IO;
+using Flowframes.MiscUtils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,20 @@ namespace Flowframes.Forms
         {
             LoadSettings();
             initialized = true;
+            LazyLoadingStuff();
+        }
+
+        public async Task LazyLoadingStuff ()
+        {
+            long modelFoldersBytes = 0;
+
+            foreach (string modelFolder in ModelDownloader.GetAllModelFolders())
+                modelFoldersBytes += IOUtils.GetDirSize(modelFolder, true);
+
+            if (modelFoldersBytes > 1024 * 1024)
+                clearModelCacheBtn.Text = $"Clear Model Cache ({FormatUtils.Bytes(modelFoldersBytes)})";
+            else
+                clearModelCacheBtn.Enabled = false;
         }
 
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -174,6 +189,12 @@ namespace Flowframes.Forms
         {
             magickDedupePanel.Visible = dedupMode.SelectedIndex == 1;
             mpDedupePanel.Visible = dedupMode.SelectedIndex == 2;
+        }
+
+        private void clearModelCacheBtn_Click(object sender, EventArgs e)
+        {
+            ModelDownloader.DeleteAllModels();
+            clearModelCacheBtn.Text = "Clear Model Cache";
         }
     }
 }

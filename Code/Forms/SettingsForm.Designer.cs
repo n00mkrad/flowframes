@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.modelSuffix = new System.Windows.Forms.CheckBox();
+            this.label63 = new System.Windows.Forms.Label();
             this.label62 = new System.Windows.Forms.Label();
             this.clearLogOnInput = new System.Windows.Forms.CheckBox();
             this.label61 = new System.Windows.Forms.Label();
@@ -157,8 +159,8 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label63 = new System.Windows.Forms.Label();
-            this.modelSuffix = new System.Windows.Forms.CheckBox();
+            this.label64 = new System.Windows.Forms.Label();
+            this.clearModelCacheBtn = new HTAlt.WinForms.HTButton();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -186,6 +188,8 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.clearModelCacheBtn);
+            this.generalTab.Controls.Add(this.label64);
             this.generalTab.Controls.Add(this.modelSuffix);
             this.generalTab.Controls.Add(this.label63);
             this.generalTab.Controls.Add(this.label62);
@@ -208,6 +212,25 @@
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "General";
+            // 
+            // modelSuffix
+            // 
+            this.modelSuffix.AutoSize = true;
+            this.modelSuffix.Location = new System.Drawing.Point(280, 191);
+            this.modelSuffix.Name = "modelSuffix";
+            this.modelSuffix.Size = new System.Drawing.Size(15, 14);
+            this.modelSuffix.TabIndex = 77;
+            this.modelSuffix.UseVisualStyleBackColor = true;
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(10, 191);
+            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(210, 13);
+            this.label63.TabIndex = 76;
+            this.label63.Text = "Include AI Model Name In Output Filename";
             // 
             // label62
             // 
@@ -1752,24 +1775,29 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label63
+            // label64
             // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(10, 191);
-            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(210, 13);
-            this.label63.TabIndex = 76;
-            this.label63.Text = "Include AI Model Name In Output Filename";
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(10, 221);
+            this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(157, 13);
+            this.label64.TabIndex = 78;
+            this.label64.Text = "Delete Downloaded Model Files";
             // 
-            // modelSuffix
+            // clearModelCacheBtn
             // 
-            this.modelSuffix.AutoSize = true;
-            this.modelSuffix.Location = new System.Drawing.Point(280, 191);
-            this.modelSuffix.Name = "modelSuffix";
-            this.modelSuffix.Size = new System.Drawing.Size(15, 14);
-            this.modelSuffix.TabIndex = 77;
-            this.modelSuffix.UseVisualStyleBackColor = true;
+            this.clearModelCacheBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
+            this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 216);
+            this.clearModelCacheBtn.Name = "clearModelCacheBtn";
+            this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
+            this.clearModelCacheBtn.TabIndex = 79;
+            this.clearModelCacheBtn.Text = "Clear Model Cache";
+            this.clearModelCacheBtn.UseVisualStyleBackColor = false;
+            this.clearModelCacheBtn.Click += new System.EventHandler(this.clearModelCacheBtn_Click);
             // 
             // SettingsForm
             // 
@@ -1938,5 +1966,7 @@
         private System.Windows.Forms.Label label61;
         private System.Windows.Forms.CheckBox modelSuffix;
         private System.Windows.Forms.Label label63;
+        private System.Windows.Forms.Label label64;
+        private HTAlt.WinForms.HTButton clearModelCacheBtn;
     }
 }
