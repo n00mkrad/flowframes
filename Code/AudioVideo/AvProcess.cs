@@ -62,6 +62,9 @@ namespace Flowframes
 
             if(line.Contains("Could not open file"))
                 Interpolate.Cancel($"FFmpeg Error: {line}");
+
+            if (line.Contains("No NVENC capable devices found"))
+                Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
         }
 
         static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
