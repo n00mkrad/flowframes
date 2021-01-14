@@ -12,25 +12,25 @@ using System.Threading.Tasks;
 
 namespace Flowframes.Main
 {
-    class FrameTiming
+    class FrameOrder
     {
         public enum Mode { CFR, VFR }
         public static int timebase = 10000;
 
         public static async Task CreateTimecodeFiles(string framesPath, Mode mode, bool loopEnabled, int times, bool noTimestamps)
         {
-            Logger.Log("Generating timecodes...");
+            Logger.Log("Generating frame order information...");
             try
             {
                 if (mode == Mode.VFR)
                     await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
                 if (mode == Mode.CFR)
                     await CreateEncFile(framesPath, loopEnabled, times, false);
-                Logger.Log($"Generating timecodes... Done.", false, true);
+                Logger.Log($"Generating frame order information... Done.", false, true);
             }
             catch (Exception e)
             {
-                Logger.Log($"Error generating timecodes: {e.Message}");
+                Logger.Log($"Error generating frame order information: {e.Message}");
             }
         }
 

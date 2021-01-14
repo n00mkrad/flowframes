@@ -43,7 +43,7 @@ namespace Flowframes
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(frameFolderPath);
-            string timecodeStr = timecodes ? $"-copyts -r {FrameTiming.timebase} -frame_pts true" : "-copyts -frame_pts true";
+            string timecodeStr = timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
             string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr } );
