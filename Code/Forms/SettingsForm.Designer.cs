@@ -1462,7 +1462,9 @@
             this.mp4Enc.FormattingEnabled = true;
             this.mp4Enc.Items.AddRange(new object[] {
             "h264 - Fast, good compatibility, medium quality per filesize",
-            "h265 - Slower, mixed compatibility, very good quality per filesize"});
+            "h265 - Slower, mixed compatibility, very good quality per filesize",
+            "h264 NVENC - GPU-accelerated encoding, worse compression than h264",
+            "h265 NVENC - GPU-accelerated encoding, worse compression than h265"});
             this.mp4Enc.Location = new System.Drawing.Point(280, 207);
             this.mp4Enc.Name = "mp4Enc";
             this.mp4Enc.Size = new System.Drawing.Size(400, 21);

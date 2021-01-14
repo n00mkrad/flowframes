@@ -9,15 +9,18 @@ namespace Flowframes.AudioVideo
 {
     class FFmpegUtils
     {
-        public enum Codec { H264, H265, VP9, ProRes, AviRaw }
+        public enum Codec { H264, H265, NVENC264, NVENC265, VP9, ProRes, AviRaw }
 
 
         public static Codec GetCodec(Interpolate.OutMode mode)
         {
             if (mode == Interpolate.OutMode.VidMp4)
             {
-                bool h265 = Config.GetInt("mp4Enc") == 1;
-                return h265 ? Codec.H265 : Codec.H264;
+                int mp4Enc = Config.GetInt("mp4Enc");
+                if (mp4Enc == 0) return Codec.H264;
+                if (mp4Enc == 1) return Codec.H265;
+                if (mp4Enc == 2) return Codec.NVENC264;
+                if (mp4Enc == 3) return Codec.NVENC265;
             }
 
             if (mode == Interpolate.OutMode.VidWebm)
@@ -38,6 +41,8 @@ namespace Flowframes.AudioVideo
             {
                 case Codec.H264: return "libx264";
                 case Codec.H265: return "libx265";
+                case Codec.NVENC264: return "h264_nvenc";
+                case Codec.NVENC265: return "hevc_nvenc";
                 case Codec.VP9: return "libvpx-vp9";
                 case Codec.ProRes: return "prores_ks";
                 case Codec.AviRaw: return Config.Get("aviCodec");
@@ -57,6 +62,16 @@ namespace Flowframes.AudioVideo
             if (codec == Codec.H265)
             {
                 args += $"-crf {Config.GetInt("h265Crf")} -preset {Config.Get("ffEncPreset")} -pix_fmt yuv420p";
+            }
+
+            if (codec == Codec.NVENC264)
+            {
+                args += $"-crf {Config.GetInt("h264Crf")} -preset default -pix_fmt yuv420p";
+            }
+
+            if (codec == Codec.NVENC265)
+            {
+                args += $"-crf {Config.GetInt("h265Crf")} -preset default -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
