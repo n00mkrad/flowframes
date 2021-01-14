@@ -248,7 +248,7 @@
     <Compile Include="Main\CreateVideo.cs" />
     <Compile Include="Main\InterpolateSteps.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
-    <Compile Include="Main\FrameTiming.cs" />
+    <Compile Include="Main\FrameOrder.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />
