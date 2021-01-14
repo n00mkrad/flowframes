@@ -239,6 +239,7 @@
     </Compile>
     <Compile Include="IO\ConfigParser.cs" />
     <Compile Include="Data\FlowPackage.cs" />
+    <Compile Include="IO\ModelDownloader.cs" />
     <Compile Include="IO\PkgInstaller.cs" />
     <Compile Include="Data\Packages.cs" />
     <Compile Include="IO\PkgUtils.cs" />

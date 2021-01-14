@@ -55,7 +55,7 @@ namespace Flowframes
             await PostProcessFrames();
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(current.interpFolder, current.ai, current.model);
+            await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
@@ -140,8 +140,11 @@ namespace Flowframes
             AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, 8);
         }
 
-        public static async Task RunAi(string outpath, AI ai, string model, bool stepByStep = false)
+        public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
+            await ModelDownloader.DownloadModelFiles(Path.GetFileNameWithoutExtension(ai.pkg.fileName), current.model);
+            if (canceled) return;
+
             currentlyUsingAutoEnc = Utils.UseAutoEnc(stepByStep, current);
 
             IOUtils.CreateDir(outpath);

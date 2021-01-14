@@ -537,7 +537,7 @@ namespace Flowframes.IO
 			string hashStr = "";
             if (IsPathDirectory(path))
             {
-				Logger.Log($"Path is directory! Returning empty hash for {Path.GetFileName(path)}", true);
+				Logger.Log($"Path '{path}' is directory! Returning empty hash.", true);
 				return hashStr;
             }
             try

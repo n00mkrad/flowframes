@@ -119,7 +119,7 @@ namespace Flowframes.Main
             int targetFrameCount = frames * current.interpFactor;
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(current.interpFolder, current.ai, current.model, true);
+            await RunAi(current.interpFolder, current.ai, true);
             Program.mainForm.SetProgress(0);
         }
 
