@@ -158,8 +158,6 @@ namespace Flowframes.Magick
                 }
             }
 
-            // File.WriteAllText(infoFile, fileContent);    // DISABLED FOR NOW as we use a single piece of code for mpdec and this code
-
             foreach (string frame in framesToDelete)
                 IOUtils.TryDeleteIfExists(frame);
 
@@ -196,12 +194,12 @@ namespace Flowframes.Magick
             Size res = Interpolate.current.GetScaledRes();
             long pixels = res.Width * res.Height;    // 4K = 8294400, 1440p = 3686400, 1080p = 2073600, 720p = 921600, 540p = 518400, 360p = 230400
             int bufferSize = 100;
-            if (pixels < 518400) bufferSize = 2800;
-            if (pixels >= 518400) return 2000;
-            if (pixels >= 921600) return 1200;
-            if (pixels >= 2073600) return 800;
-            if (pixels >= 3686400) return 400;
-            if (pixels >= 8294400) return 200;
+            if (pixels < 518400) bufferSize = 2200;
+            if (pixels >= 518400) return 1700;
+            if (pixels >= 921600) return 900;
+            if (pixels >= 2073600) return 600;
+            if (pixels >= 3686400) return 300;
+            if (pixels >= 8294400) return 150;
             Logger.Log($"Using magick dedupe buffer size {bufferSize} for frame resolution {res.Width}x{res.Height}", true);
             return bufferSize;
         }
@@ -216,6 +214,7 @@ namespace Flowframes.Magick
             for(int i = 0; i < frameFiles.Length; i++)
             {
                 bool isLastItem = (i + 1) == frameFiles.Length;
+
                 int frameNum1 = frameFiles[i].Name.GetInt();
                 int frameNum2 = isLastItem ? lastFrameNum : frameFiles[i+1].Name.GetInt();
 
