@@ -108,7 +108,7 @@ namespace Flowframes
         public static string StripBadChars(this string str)
         {
             string outStr = Regex.Replace(str, @"[^\u0020-\u007E]", string.Empty);
-            outStr = outStr.Replace("(", "").Replace(")", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", "").Replace("%", "");
+            outStr = outStr.Remove("(").Remove(")").Remove("[").Remove("]").Remove("{").Remove("}").Remove("%").Remove("'");
             return outStr;
         }
 
@@ -122,17 +122,6 @@ namespace Flowframes
             if (str == null || stringToRemove == null)
                 return str;
             return str.Replace(stringToRemove, "");
-        }
-
-        public static string TrimWhitespacesSafe (this string str)      // Trim whitespaces, unless they are "quoted" (to avoid trimming file paths)
-        {
-            var result = str.Split('"').Select((element, index) => index % 2 == 0  ? element.TrimWhitespaces() : element.Wrap());
-            string resultJoined = string.Join("", result);
-
-            result = resultJoined.Split('\'').Select((element, index) => index % 2 == 0  ? element.TrimWhitespaces() : "'" + element + "'");
-            resultJoined = string.Join("", result);
-
-            return resultJoined;
         }
 
         public static string TrimWhitespaces(this string str)

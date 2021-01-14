@@ -29,7 +29,6 @@ namespace Flowframes
 
         public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, TaskType taskType = TaskType.Other)
         {
-            args = args.TrimWhitespacesSafe();
             lastOutputFfmpeg = "";
             currentLogMode = logMode;
             Process ffmpeg = OSUtils.NewProcess(true);
