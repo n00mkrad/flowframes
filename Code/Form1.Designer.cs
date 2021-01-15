@@ -88,7 +88,6 @@
             this.patreonBtn = new HTAlt.WinForms.HTButton();
             this.paypalBtn = new HTAlt.WinForms.HTButton();
             this.discordBtn = new HTAlt.WinForms.HTButton();
-            this.installerBtn = new HTAlt.WinForms.HTButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
             this.cancelBtn = new System.Windows.Forms.Button();
@@ -578,7 +577,8 @@
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(884, 142);
             this.label14.TabIndex = 2;
-            this.label14.Text = resources.GetString("label14.Text");
+            this.label14.Text = "Flowframes - Created by n00mkrad aka nmkd\r\n\r\nBased on:\r\n- RIFE by hzwer\r\n- rife-n" +
+    "cnn-vulkan by nihui";
             // 
             // runBtn
             // 
@@ -852,25 +852,6 @@
             this.toolTip1.SetToolTip(this.discordBtn, "Chat on Discord");
             this.discordBtn.UseVisualStyleBackColor = false;
             this.discordBtn.Click += new System.EventHandler(this.discordBtn_Click);
-            // 
-            // installerBtn
-            // 
-            this.installerBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.installerBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_fact_check_white_48dp;
-            this.installerBtn.DrawImage = true;
-            this.installerBtn.FlatAppearance.BorderSize = 0;
-            this.installerBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.installerBtn.ForeColor = System.Drawing.Color.White;
-            this.installerBtn.ImageIndex = 0;
-            this.installerBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.installerBtn.Location = new System.Drawing.Point(468, 12);
-            this.installerBtn.Name = "installerBtn";
-            this.installerBtn.Size = new System.Drawing.Size(40, 40);
-            this.installerBtn.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.installerBtn, "Open Package Installer");
-            this.installerBtn.UseVisualStyleBackColor = false;
-            this.installerBtn.Visible = false;
-            this.installerBtn.Click += new System.EventHandler(this.installerBtn_Click);
             // 
             // pictureBox1
             // 
@@ -1325,7 +1306,6 @@
             this.Controls.Add(this.paypalBtn);
             this.Controls.Add(this.discordBtn);
             this.Controls.Add(this.longProgBar);
-            this.Controls.Add(this.installerBtn);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.progressCircle);
@@ -1420,7 +1400,6 @@
         private System.Windows.Forms.Button utilsDedupTestBtn;
         private System.Windows.Forms.Button utilsDedupBtn;
         private System.Windows.Forms.Label label26;
-        private HTAlt.WinForms.HTButton installerBtn;
         private HTAlt.WinForms.HTProgressBar longProgBar;
         private System.Windows.Forms.Button cancelBtn;
         private HTAlt.WinForms.HTButton discordBtn;

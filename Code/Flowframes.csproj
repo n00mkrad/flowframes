@@ -219,12 +219,6 @@
     <Compile Include="Forms\BigPreviewForm.Designer.cs">
       <DependentUpon>BigPreviewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\InstallerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\InstallerForm.Designer.cs">
-      <DependentUpon>InstallerForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -240,7 +234,6 @@
     <Compile Include="IO\ConfigParser.cs" />
     <Compile Include="Data\FlowPackage.cs" />
     <Compile Include="IO\ModelDownloader.cs" />
-    <Compile Include="IO\PkgInstaller.cs" />
     <Compile Include="Data\Packages.cs" />
     <Compile Include="IO\PkgUtils.cs" />
     <Compile Include="Main\AutoEncode.cs" />
@@ -275,7 +268,6 @@
     <Compile Include="OS\Updater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IO\Setup.cs" />
     <Compile Include="MiscUtils\FormatUtils.cs" />
     <Compile Include="UI\GetWebInfo.cs" />
     <Compile Include="UI\MainUiFunctions.cs" />
@@ -290,9 +282,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BigPreviewForm.resx">
       <DependentUpon>BigPreviewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InstallerForm.resx">
-      <DependentUpon>InstallerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

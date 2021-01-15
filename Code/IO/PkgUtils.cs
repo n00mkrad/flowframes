@@ -9,18 +9,6 @@ namespace Flowframes.IO
 {
     class PkgUtils
     {
-        public static FlowPackage GetPkg(string friendlyNameOrFilename)
-        {
-            foreach (FlowPackage pkg in PkgInstaller.packages)
-            {
-                if (pkg.fileName == friendlyNameOrFilename)
-                    return pkg;
-                if (pkg.friendlyName == friendlyNameOrFilename)
-                    return pkg;
-            }
-            Logger.Log("Failed to find a package with name " + friendlyNameOrFilename); 
-            return new FlowPackage();
-        }
 
         public static string GetPkgFolder (FlowPackage pkg)
         {

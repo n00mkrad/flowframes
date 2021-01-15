@@ -50,7 +50,6 @@ namespace Flowframes
 
             ConfigParser.LoadComboxIndex(aiCombox);
 
-            Setup.Init();
             UpdateStepByStepControls(true);
 
             Initialized();
@@ -236,7 +235,7 @@ namespace Flowframes
         {
             Logger.Log($"SetWorking({state})", true);
             SetProgress(-1);
-            Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn, installerBtn };
+            Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn };
             Control[] controlsToHide = new Control[] { runBtn, runStepBtn, stepSelector };
             progressCircle.Visible = state;
             cancelBtn.Visible = state;
@@ -322,11 +321,6 @@ namespace Flowframes
         private void utilsDedupTestBtn_Click(object sender, EventArgs e)
         {
             UtilsTab.Dedupe(inputTbox.Text.Trim(), true);
-        }
-
-        private void installerBtn_Click(object sender, EventArgs e)
-        {
-            new InstallerForm().ShowDialog();
         }
 
         private void cancelBtn_Click(object sender, EventArgs e)

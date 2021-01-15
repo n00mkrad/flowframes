@@ -33,7 +33,6 @@ namespace Flowframes
             string oldExePath = IOUtils.GetExe() + ".old";
             IOUtils.TryDeleteIfExists(oldExePath);
 
-            PkgInstaller.Init();
             Networks.Init();
             NvApi.Init();
 
