@@ -48,9 +48,6 @@
             this.inputTbox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.utilsDedupTestBtn = new System.Windows.Forms.Button();
-            this.utilsDedupBtn = new System.Windows.Forms.Button();
-            this.label26 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.utilsConvCrf = new System.Windows.Forms.ComboBox();
             this.utilsConvertMp4Btn = new System.Windows.Forms.Button();
@@ -102,7 +99,6 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
             this.browseInputFileBtn = new HTAlt.WinForms.HTButton();
             this.browseInputBtn = new HTAlt.WinForms.HTButton();
@@ -192,14 +188,14 @@
             this.outModeCombox.FormattingEnabled = true;
             this.outModeCombox.Items.AddRange(new object[] {
             "MP4 Video (h264/h265)",
-            "WEBM Video (VP9)",
+            "WEBM Video (Google VP9)",
             "MOV Video (Apple ProRes)",
-            "AVI Video (Uncompressed)",
+            "AVI Video (Uncompressed/Lossless)",
             "Animated GIF",
             "Image Sequence"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 158);
             this.outModeCombox.Name = "outModeCombox";
-            this.outModeCombox.Size = new System.Drawing.Size(200, 23);
+            this.outModeCombox.Size = new System.Drawing.Size(400, 23);
             this.outModeCombox.TabIndex = 16;
             // 
             // label9
@@ -359,46 +355,11 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Input Video (or image sequence)";
             // 
-            // utilsDedupTestBtn
-            // 
-            this.utilsDedupTestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.utilsDedupTestBtn.ForeColor = System.Drawing.Color.White;
-            this.utilsDedupTestBtn.Location = new System.Drawing.Point(436, 36);
-            this.utilsDedupTestBtn.Name = "utilsDedupTestBtn";
-            this.utilsDedupTestBtn.Size = new System.Drawing.Size(200, 23);
-            this.utilsDedupTestBtn.TabIndex = 33;
-            this.utilsDedupTestBtn.Text = "Only Analyze, Don\'t Delete";
-            this.utilsDedupTestBtn.UseVisualStyleBackColor = true;
-            this.utilsDedupTestBtn.Click += new System.EventHandler(this.utilsDedupTestBtn_Click);
-            // 
-            // utilsDedupBtn
-            // 
-            this.utilsDedupBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.utilsDedupBtn.ForeColor = System.Drawing.Color.White;
-            this.utilsDedupBtn.Location = new System.Drawing.Point(280, 36);
-            this.utilsDedupBtn.Name = "utilsDedupBtn";
-            this.utilsDedupBtn.Size = new System.Drawing.Size(150, 23);
-            this.utilsDedupBtn.TabIndex = 32;
-            this.utilsDedupBtn.Text = "Run De-Duplication";
-            this.utilsDedupBtn.UseVisualStyleBackColor = true;
-            this.utilsDedupBtn.Click += new System.EventHandler(this.utilsDedupBtn_Click);
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.ForeColor = System.Drawing.Color.White;
-            this.label26.Location = new System.Drawing.Point(11, 41);
-            this.label26.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(147, 15);
-            this.label26.TabIndex = 31;
-            this.label26.Text = "Run Frame De-Duplication";
-            // 
             // label24
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.Color.White;
-            this.label24.Location = new System.Drawing.Point(441, 131);
+            this.label24.Location = new System.Drawing.Point(441, 100);
             this.label24.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(78, 15);
@@ -416,7 +377,7 @@
             "Quality: Normal (CRF 20)",
             "Quality: Medium (CRF 24)",
             "Quality: Low (CRF 28)"});
-            this.utilsConvCrf.Location = new System.Drawing.Point(575, 128);
+            this.utilsConvCrf.Location = new System.Drawing.Point(575, 97);
             this.utilsConvCrf.Name = "utilsConvCrf";
             this.utilsConvCrf.Size = new System.Drawing.Size(147, 23);
             this.utilsConvCrf.TabIndex = 28;
@@ -425,7 +386,7 @@
             // 
             this.utilsConvertMp4Btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.utilsConvertMp4Btn.ForeColor = System.Drawing.Color.White;
-            this.utilsConvertMp4Btn.Location = new System.Drawing.Point(280, 126);
+            this.utilsConvertMp4Btn.Location = new System.Drawing.Point(280, 95);
             this.utilsConvertMp4Btn.Name = "utilsConvertMp4Btn";
             this.utilsConvertMp4Btn.Size = new System.Drawing.Size(150, 23);
             this.utilsConvertMp4Btn.TabIndex = 27;
@@ -437,7 +398,7 @@
             // 
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.Color.White;
-            this.label23.Location = new System.Drawing.Point(11, 131);
+            this.label23.Location = new System.Drawing.Point(10, 100);
             this.label23.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(124, 15);
@@ -457,7 +418,7 @@
             "125%",
             "150%",
             "200%"});
-            this.utilsSpeedCombox.Location = new System.Drawing.Point(575, 98);
+            this.utilsSpeedCombox.Location = new System.Drawing.Point(575, 67);
             this.utilsSpeedCombox.Name = "utilsSpeedCombox";
             this.utilsSpeedCombox.Size = new System.Drawing.Size(100, 23);
             this.utilsSpeedCombox.TabIndex = 23;
@@ -466,7 +427,7 @@
             // 
             this.utilsChangeSpeedBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.utilsChangeSpeedBtn.ForeColor = System.Drawing.Color.White;
-            this.utilsChangeSpeedBtn.Location = new System.Drawing.Point(280, 96);
+            this.utilsChangeSpeedBtn.Location = new System.Drawing.Point(280, 65);
             this.utilsChangeSpeedBtn.Name = "utilsChangeSpeedBtn";
             this.utilsChangeSpeedBtn.Size = new System.Drawing.Size(150, 23);
             this.utilsChangeSpeedBtn.TabIndex = 22;
@@ -478,7 +439,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(441, 101);
+            this.label20.Location = new System.Drawing.Point(441, 70);
             this.label20.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(69, 15);
@@ -489,7 +450,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(12, 101);
+            this.label19.Location = new System.Drawing.Point(10, 70);
             this.label19.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(170, 15);
@@ -507,7 +468,7 @@
             "4",
             "8",
             "10"});
-            this.utilsLoopTimesCombox.Location = new System.Drawing.Point(575, 68);
+            this.utilsLoopTimesCombox.Location = new System.Drawing.Point(575, 37);
             this.utilsLoopTimesCombox.Name = "utilsLoopTimesCombox";
             this.utilsLoopTimesCombox.Size = new System.Drawing.Size(100, 23);
             this.utilsLoopTimesCombox.TabIndex = 19;
@@ -516,7 +477,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(441, 71);
+            this.label18.Location = new System.Drawing.Point(441, 40);
             this.label18.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(128, 15);
@@ -527,7 +488,7 @@
             // 
             this.utilsLoopVidBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.utilsLoopVidBtn.ForeColor = System.Drawing.Color.White;
-            this.utilsLoopVidBtn.Location = new System.Drawing.Point(280, 66);
+            this.utilsLoopVidBtn.Location = new System.Drawing.Point(280, 35);
             this.utilsLoopVidBtn.Name = "utilsLoopVidBtn";
             this.utilsLoopVidBtn.Size = new System.Drawing.Size(150, 23);
             this.utilsLoopVidBtn.TabIndex = 5;
@@ -539,7 +500,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.ForeColor = System.Drawing.Color.White;
-            this.label17.Location = new System.Drawing.Point(12, 71);
+            this.label17.Location = new System.Drawing.Point(10, 40);
             this.label17.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(121, 15);
@@ -562,7 +523,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.ForeColor = System.Drawing.Color.White;
-            this.label16.Location = new System.Drawing.Point(11, 11);
+            this.label16.Location = new System.Drawing.Point(10, 10);
             this.label16.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(265, 15);
@@ -748,14 +709,14 @@
             this.info1.Size = new System.Drawing.Size(29, 21);
             this.info1.TabIndex = 27;
             this.info1.TabStop = false;
-            this.toolTip1.SetToolTip(this.info1, "CAIN only supports 2x interpolation, but it\'s much faster than DAIN, and you can " +
-        "interpolate a video multiple times if you want more than 2x FPS.");
+            this.toolTip1.SetToolTip(this.info1, "Note: RIFE does not support factors that are not a power of two (like 3x, or 5x)." +
+        "\r\nFuture interpolation AIs might support this however.");
             // 
             // panel4
             // 
             this.panel4.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel4.Location = new System.Drawing.Point(728, 129);
+            this.panel4.Location = new System.Drawing.Point(728, 98);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(21, 21);
             this.panel4.TabIndex = 60;
@@ -765,7 +726,7 @@
             // 
             this.panel2.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel2.Location = new System.Drawing.Point(681, 100);
+            this.panel2.Location = new System.Drawing.Point(681, 69);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(21, 21);
             this.panel2.TabIndex = 59;
@@ -775,7 +736,7 @@
             // 
             this.panel3.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel3.Location = new System.Drawing.Point(681, 70);
+            this.panel3.Location = new System.Drawing.Point(681, 39);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(21, 21);
             this.panel3.TabIndex = 58;
@@ -862,6 +823,8 @@
             this.pictureBox1.Size = new System.Drawing.Size(29, 21);
             this.pictureBox1.TabIndex = 28;
             this.pictureBox1.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox1, "This is the trained data the AI will use.\r\nDifferent AI models will produce sligh" +
+        "tly different results. Try them for yourself.");
             // 
             // longProgBar
             // 
@@ -1032,7 +995,6 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
             this.interpOptsTab.Controls.Add(this.browseInputFileBtn);
             this.interpOptsTab.Controls.Add(this.browseInputBtn);
@@ -1066,17 +1028,6 @@
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.Silver;
-            this.label1.Location = new System.Drawing.Point(492, 162);
-            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(360, 15);
-            this.label1.TabIndex = 36;
-            this.label1.Text = "Export encoder and quality options can be changed in the Settings.";
             // 
             // browseOutBtn
             // 
@@ -1129,6 +1080,8 @@
             this.pictureBox2.Size = new System.Drawing.Size(29, 21);
             this.pictureBox2.TabIndex = 29;
             this.pictureBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox2, "Set your interpolation output format.\r\nEncoding and quality options can be change" +
+        "d in the Settings.");
             // 
             // videoUtilsTab
             // 
@@ -1138,11 +1091,8 @@
             this.videoUtilsTab.Controls.Add(this.panel3);
             this.videoUtilsTab.Controls.Add(this.label10);
             this.videoUtilsTab.Controls.Add(this.utilsExtractAudioCbox);
-            this.videoUtilsTab.Controls.Add(this.utilsDedupTestBtn);
             this.videoUtilsTab.Controls.Add(this.label16);
-            this.videoUtilsTab.Controls.Add(this.utilsDedupBtn);
             this.videoUtilsTab.Controls.Add(this.debugExtractFramesBtn);
-            this.videoUtilsTab.Controls.Add(this.label26);
             this.videoUtilsTab.Controls.Add(this.label17);
             this.videoUtilsTab.Controls.Add(this.utilsLoopVidBtn);
             this.videoUtilsTab.Controls.Add(this.label24);
@@ -1166,7 +1116,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.ForeColor = System.Drawing.Color.White;
-            this.label10.Location = new System.Drawing.Point(441, 11);
+            this.label10.Location = new System.Drawing.Point(441, 10);
             this.label10.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(107, 15);
@@ -1200,7 +1150,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.Color.Silver;
-            this.label22.Location = new System.Drawing.Point(3, 225);
+            this.label22.Location = new System.Drawing.Point(5, 5);
             this.label22.Margin = new System.Windows.Forms.Padding(3);
             this.label22.MaximumSize = new System.Drawing.Size(160, 0);
             this.label22.Name = "label22";
@@ -1208,7 +1158,6 @@
             this.label22.TabIndex = 38;
             this.label22.Text = "Click on the preview to open it in a separate window.";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label22.Visible = false;
             // 
             // previewPicturebox
             // 
@@ -1397,9 +1346,6 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.ComboBox utilsConvCrf;
         private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Button utilsDedupTestBtn;
-        private System.Windows.Forms.Button utilsDedupBtn;
-        private System.Windows.Forms.Label label26;
         private HTAlt.WinForms.HTProgressBar longProgBar;
         private System.Windows.Forms.Button cancelBtn;
         private HTAlt.WinForms.HTButton discordBtn;
@@ -1414,7 +1360,6 @@
         private HTAlt.WinForms.HTButton browseInputBtn;
         private System.Windows.Forms.TabPage previewTab;
         private System.Windows.Forms.PictureBox previewPicturebox;
-        private System.Windows.Forms.Label label1;
         public HTAlt.WinForms.HTTabControl mainTabControl;
         private HTAlt.WinForms.HTButton queueBtn;
         private HTAlt.WinForms.HTButton htButton1;
