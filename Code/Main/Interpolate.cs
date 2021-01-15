@@ -1,6 +1,5 @@
 ﻿using Flowframes;
 using Flowframes.Data;
-using Flowframes.FFmpeg;
 using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
