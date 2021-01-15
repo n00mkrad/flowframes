@@ -64,7 +64,7 @@ namespace Flowframes.Magick
             FileInfo[] framePaths = IOUtils.GetFileInfosSorted(path, false, "*." + ext);
             List<string> framesToDelete = new List<string>();
 
-            int bufferSize = GetBufferSize();
+            int bufferSize = await GetBufferSize();
 
             int currentOutFrame = 1;
             int currentDupeCount = 0;
@@ -189,9 +189,9 @@ namespace Flowframes.Magick
             return errPercent;
         }
 
-        static int GetBufferSize ()
+        static async Task<int> GetBufferSize ()
         {
-            Size res = Interpolate.current.GetScaledRes();
+            Size res = await Interpolate.current.GetScaledRes();
             long pixels = res.Width * res.Height;    // 4K = 8294400, 1440p = 3686400, 1080p = 2073600, 720p = 921600, 540p = 518400, 360p = 230400
             int bufferSize = 100;
             if (pixels < 518400) bufferSize = 2200;

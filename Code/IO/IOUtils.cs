@@ -2,6 +2,7 @@
 using Flowframes.Data;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
+using Flowframes.UI;
 using Force.Crc32;
 using Microsoft.WindowsAPICodePack.Shell;
 using Standart.Hash.xxHash;
@@ -336,6 +337,21 @@ namespace Flowframes.IO
 			}
 			catch { }
 			return fps;
+		}
+
+		public static async Task<Size> GetVideoOrFramesRes (string path)
+        {
+			Size res = new Size();
+			if (!IsPathDirectory(path))     // If path is video
+			{
+				res = GetVideoRes(path);
+			}
+			else     // Path is frame folder
+			{
+				Image thumb = await MainUiFunctions.GetThumbnail(path);
+				res = new Size(thumb.Width, thumb.Height);
+			}
+			return res;
 		}
 
 		public static Size GetVideoRes (string path)

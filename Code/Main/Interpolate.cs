@@ -48,7 +48,7 @@ namespace Flowframes
             if (!current.inputIsFrames)        // Input is video - extract frames first
                 await ExtractFrames(current.inPath, current.framesFolder);
             else
-                await FFmpegCommands.ImportImages(current.inPath, current.framesFolder);
+                await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, await Utils.GetOutputResolution(current.inPath, true));
             if (canceled) return;
             sw.Restart();
             await Task.Delay(10);
@@ -79,7 +79,7 @@ namespace Flowframes
 
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
-            await FFmpegCommands.VideoToFrames(inPath, outPath, current.inFps, mpdecimate, false, Utils.GetOutputResolution(inPath, true), false);
+            await FFmpegCommands.VideoToFrames(inPath, outPath, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true), false);
 
             if (mpdecimate)
             {

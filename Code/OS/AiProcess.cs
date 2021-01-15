@@ -74,7 +74,7 @@ namespace Flowframes
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "inference_video.py";
-            string uhdStr = InterpolateUtils.UseUHD() ? "--UHD" : "";
+            string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             string args = $" --input {framesPath.Wrap()} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {Paths.interpDir}";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
@@ -87,7 +87,7 @@ namespace Flowframes
             AiStarted(rifePy, 3500, Interpolate.current.interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
-            Logger.Log($"Running RIFE {(InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
+            Logger.Log($"Running RIFE {(await InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
             if (!OSUtils.ShowHiddenCmd())
             {
@@ -107,7 +107,7 @@ namespace Flowframes
         public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
         {
             processTimeMulti.Restart();
-            Logger.Log($"Running RIFE{(InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
+            Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
             bool useAutoEnc = Interpolate.currentlyUsingAutoEnc;
             if(factor > 2)
@@ -158,7 +158,7 @@ namespace Flowframes
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, 2, inPath);
 
-            string uhdStr = InterpolateUtils.UseUHD() ? "-u" : "";
+            string uhdStr = await InterpolateUtils.UseUHD() ? "-u" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {uhdStr} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";

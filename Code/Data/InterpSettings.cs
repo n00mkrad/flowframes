@@ -2,10 +2,12 @@
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
+using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Flowframes
 {
@@ -72,23 +74,23 @@ namespace Flowframes
             outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetExportSuffix(interpFactor, ai, model) + FFmpegUtils.GetExt(outMode));
         }
 
-        public Size GetInputRes ()
+        public async Task<Size> GetInputRes()
         {
-            RefreshResolutions();
+            await RefreshResolutions();
             return inputResolution;
         }
 
-        public Size GetScaledRes()
+        public async Task<Size> GetScaledRes()
         {
-            RefreshResolutions();
+            await RefreshResolutions();
             return scaledResolution;
         }
 
-        void RefreshResolutions ()
+        async Task RefreshResolutions ()
         {
             if (inputResolution.IsEmpty || scaledResolution.IsEmpty)
             {
-                inputResolution = IOUtils.GetVideoRes(inPath);
+                inputResolution = await IOUtils.GetVideoOrFramesRes(inPath);
                 scaledResolution = InterpolateUtils.GetOutputResolution(inputResolution, false);
             }
         }

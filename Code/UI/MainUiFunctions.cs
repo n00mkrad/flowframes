@@ -84,27 +84,17 @@ namespace Flowframes.UI
         static async Task PrintResolution (string path)
         {
             Size res = new Size();
+
             if(path == Interpolate.current.inPath)
-            {
-                res = Interpolate.current.GetInputRes();
-            }
+                res = await Interpolate.current.GetInputRes();
             else
-            {
-                if (!IOUtils.IsPathDirectory(path))     // If path is video
-                {
-                    res = FFmpegCommands.GetSize(path);
-                }
-                else     // Path is frame folder
-                {
-                    Image thumb = await GetThumbnail(path);
-                    res = new Size(thumb.Width, thumb.Height);
-                }
-            }
+                res = await IOUtils.GetVideoOrFramesRes(path);
+
             if (res.Width > 1 && res.Height > 1)
                 Logger.Log($"Input Resolution: {res.Width}x{res.Height}");
         }
 
-        static async Task<Image> GetThumbnail (string path)
+        public static async Task<Image> GetThumbnail (string path)
         {
             string imgOnDisk = Path.Combine(Paths.GetDataPath(), "thumb-temp.jpg");
             try

@@ -302,9 +302,9 @@ namespace Flowframes.Main
             Logger.Log("Message: " + msg, true);
         }
 
-        public static Size GetOutputResolution (string inputPath, bool print)
+        public static async Task<Size> GetOutputResolution (string inputPath, bool print)
         {
-            Size resolution = IOUtils.GetVideoRes(inputPath);
+            Size resolution = await IOUtils.GetVideoOrFramesRes(inputPath);
             return GetOutputResolution(resolution, print);
         }
 
@@ -365,9 +365,9 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static bool UseUHD ()
+        public static async Task<bool> UseUHD ()
         {
-            return GetOutputResolution(i.current.inPath, false).Height >= Config.GetInt("uhdThresh");
+            return (await GetOutputResolution(i.current.inPath, false)).Height >= Config.GetInt("uhdThresh");
         }
 
         public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
