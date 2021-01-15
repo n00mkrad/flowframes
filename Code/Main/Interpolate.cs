@@ -97,15 +97,6 @@ namespace Flowframes
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
-
-            if (!canceled && Config.GetBool("enableLoop") && Config.GetInt("timingMode") != 1)
-            {
-                string lastFrame = IOUtils.GetHighestFrameNumPath(outPath);
-                int newNum = Path.GetFileName(lastFrame).GetInt() + 1;
-                string newFilename = Path.Combine(lastFrame.GetParentDir(), newNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
-                string firstFrame = new DirectoryInfo(outPath).GetFiles("*.png")[0].FullName;
-                File.Copy(firstFrame, newFilename);
-            }
         }
 
         public static async Task PostProcessFrames (bool sbsMode = false)
@@ -133,8 +124,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
-            await FrameOrder.CreateTimecodeFiles(current.framesFolder, FrameOrder.Mode.CFR, Config.GetBool("enableLoop"), current.interpFactor, !useTimestamps);
+            await FrameOrder.CreateTimecodeFiles(current.framesFolder, FrameOrder.Mode.CFR, Config.GetBool("enableLoop"), current.interpFactor, false);
 
             if (canceled) return;
 
