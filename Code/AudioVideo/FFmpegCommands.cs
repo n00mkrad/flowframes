@@ -16,11 +16,8 @@ namespace Flowframes
     class FFmpegCommands
     {
         static string hdrFilter = @"-vf select=gte(n\,%frNum%),zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
-
-        static string videoEncArgs = "-pix_fmt yuv420p -movflags +faststart";
         static string divisionFilter = "\"crop=trunc(iw/2)*2:trunc(ih/2)*2\"";
         static string pngComprArg = "-compression_level 3";
-
         static string mpDecDef = "\"mpdecimate\"";
         static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
 
@@ -79,12 +76,34 @@ namespace Flowframes
                 DeleteSource(inpath);
         }
 
+        public static async Task ImportSingleImage(string inputFile, string outPath, Size size)
+        {
+            string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
+            bool isPng = (Path.GetExtension(outPath).ToLower() == ".png");
+            string comprArg = isPng ? pngComprArg : "";
+            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
+            string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {divisionFilter} {outPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden, AvProcess.TaskType.ExtractFrames);
+        }
+
         public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum)
         {
             bool isPng = (Path.GetExtension(outputPath).ToLower() == ".png");
             string comprArg = isPng ? pngComprArg : "";
-            string pixFmt = "-pix_fmt " + (isPng ? "rgb24" : "yuvj420p");
-            string args = $"-i {inputFile.Wrap()} {comprArg} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
+            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
+            string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden, AvProcess.TaskType.ExtractFrames);
+        }
+
+        public static async Task ExtractLastFrame(string inputFile, string outputPath, Size size)
+        {
+            if (IOUtils.IsPathDirectory(outputPath))
+                outputPath = Path.Combine(outputPath, "last.png");
+            bool isPng = (Path.GetExtension(outputPath).ToLower() == ".png");
+            string comprArg = isPng ? pngComprArg : "";
+            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
+            string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
+            string args = $"-sseof -1 -i {inputFile.Wrap()}  -update 1 {pixFmt} {sizeStr} {outputPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden, AvProcess.TaskType.ExtractFrames);
         }
 
@@ -179,31 +198,54 @@ namespace Flowframes
 
         public static async Task ExtractAudio(string inputFile, string outFile)    // https://stackoverflow.com/a/27413824/14274419
         {
+            string audioExt = Utils.GetAudioExt(inputFile);
+            outFile = Path.ChangeExtension(outFile, audioExt);
             Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
-            outFile = Path.ChangeExtension(outFile, ".ogg");
-            string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -acodec libopus -b:a 256k {outFile.Wrap()}";
+            string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -c:a copy {outFile.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
-            if (AvProcess.lastOutputFfmpeg.ToLower().Contains("error") && File.Exists(outFile))    // If broken file was written
+            if (File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512)
+            {
+                Logger.Log("Failed to extract audio losslessly! Trying to re-encode.");
                 File.Delete(outFile);
+
+                outFile = Path.ChangeExtension(outFile, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
+                args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outFile.Wrap()}";
+                await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+
+                if ((File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512) || AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
+                {
+                    Logger.Log("Failed to extract audio, even with re-encoding. Output will not have audio.");
+                    IOUtils.TryDeleteIfExists(outFile);
+                    return;
+                }
+
+                Logger.Log($"Source audio has been re-encoded as it can't be extracted losslessly. This may decrease the quality slightly.", false, true);
+            }
         }
 
         public static async Task MergeAudio(string inputFile, string audioPath, int looptimes = -1)    // https://superuser.com/a/277667
         {
             Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
             string tempPath = inputFile + "-temp" + Path.GetExtension(inputFile);
-            // if (Path.GetExtension(audioPath) == ".wav")
-            // {
-            //     Logger.Log("Using MKV instead of MP4 to enable support for raw audio.");
-            //     tempPath = Path.ChangeExtension(tempPath, "mkv");
-            // }
-            string aCodec = Utils.GetAudioEnc(Utils.GetCodec(Interpolate.current.outMode));
-            int aKbits = Utils.GetAudioKbits(aCodec);
-            string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c:v copy -c:a {aCodec} -b:a {aKbits}k {tempPath.Wrap()}";
+            string args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c copy {tempPath.Wrap()}";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
-            if (AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
+            if ((File.Exists(tempPath) && IOUtils.GetFilesize(tempPath) < 512) || AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
             {
-                Logger.Log("Failed to merge audio!");
-                return;
+                Logger.Log("Failed to merge audio losslessly! Trying to re-encode.");
+
+                args = $" -i {inputFile.Wrap()} -stream_loop {looptimes} -i {audioPath.Wrap()} -shortest -c:v copy {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {tempPath.Wrap()}";
+                await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+
+                if ((File.Exists(tempPath) && IOUtils.GetFilesize(tempPath) < 512) || AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
+                {
+                    Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.");
+                    IOUtils.TryDeleteIfExists(tempPath);
+                    return;
+                }
+
+                string audioExt = Path.GetExtension(audioPath).Remove(".").ToUpper();
+                string containerExt = Path.GetExtension(inputFile).Remove(".").ToUpper();
+                Logger.Log($"Source audio ({audioExt}) has been re-encoded to fit into the target container ({containerExt}). This may decrease the quality slightly.", false, true);
             }
             string movePath = Path.ChangeExtension(inputFile, Path.GetExtension(tempPath));
             File.Delete(movePath);

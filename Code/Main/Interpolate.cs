@@ -126,10 +126,12 @@ namespace Flowframes
             else
                 Dedupe.ClearCache();
 
-            if (Config.GetInt("dedupMode") == 2 || Config.GetInt("dedupMode") == 1)
+            await Utils.CopyLastFrame(currentInputFrameCount);
+
+            if (Config.GetInt("dedupMode") > 0)
                 await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);
 
-                if (canceled) return;
+            if (canceled) return;
 
             bool useTimestamps = Config.GetInt("timingMode") == 1;  // TODO: Auto-Disable timestamps if input frames are sequential, not timestamped
             await FrameOrder.CreateTimecodeFiles(current.framesFolder, FrameOrder.Mode.CFR, Config.GetBool("enableLoop"), current.interpFactor, !useTimestamps);

@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using i = Flowframes.Interpolate;
+using Padding = Flowframes.Data.Padding;
 
 namespace Flowframes.Main
 {
@@ -21,6 +22,33 @@ namespace Flowframes.Main
     {
         public static PictureBox preview;
         public static BigPreviewForm bigPreviewForm;
+
+        public static async Task CopyLastFrame (int lastFrameNum)
+        {
+            try
+            {
+                lastFrameNum--;     // We have to do this as extracted frames start at 0, not 1
+                bool frameFolderInput = IOUtils.IsPathDirectory(i.current.inPath);
+                string targetPath = Path.Combine(i.current.framesFolder, lastFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
+                if (File.Exists(targetPath)) return;
+
+                Size res = IOUtils.GetImage(IOUtils.GetFilesSorted(i.current.framesFolder, false).First()).Size;
+
+                if (frameFolderInput)
+                {
+                    string lastFramePath = IOUtils.GetFilesSorted(i.current.inPath, false).Last();
+                    await FFmpegCommands.ExtractLastFrame(lastFramePath, targetPath, res);
+                }
+                else
+                {
+                    await FFmpegCommands.ExtractLastFrame(i.current.inPath, targetPath, res);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("CopyLastFrame Error: " + e.Message);
+            }
+        }
 
         public static string GetOutExt (bool withDot = false)
         {

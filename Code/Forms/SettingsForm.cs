@@ -27,10 +27,10 @@ namespace Flowframes.Forms
         {
             LoadSettings();
             initialized = true;
-            LazyLoadingStuff();
+            CheckModelCacheSize();
         }
 
-        public async Task LazyLoadingStuff ()
+        public async Task CheckModelCacheSize ()
         {
             long modelFoldersBytes = 0;
 
@@ -196,6 +196,7 @@ namespace Flowframes.Forms
         {
             ModelDownloader.DeleteAllModels();
             clearModelCacheBtn.Text = "Clear Model Cache";
+            CheckModelCacheSize();
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Flowframes.Magick
                             sw.Restart();
                             Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
                             Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
-                            if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 2500))
+                            if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 3500))
                                 ClearCache();
                         }
                     }

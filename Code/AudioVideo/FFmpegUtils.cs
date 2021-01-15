@@ -104,16 +104,6 @@ namespace Flowframes.AudioVideo
             return "aac";
         }
 
-        public static int GetAudioKbits (string codec)
-        {
-            if (codec.Trim().ToLower() == "aac")
-                return Config.GetInt("aacBitrate", 160);
-            if (codec.Trim().ToLower().Contains("opus"))
-                return Config.GetInt("opusBitrate", 128);
-
-            return 192;
-        }
-
         public static string GetExt(Interpolate.OutMode outMode, bool dot = true)
         {
             string ext = dot ? "." : "";
@@ -130,7 +120,7 @@ namespace Flowframes.AudioVideo
             return ext;
         }
 
-        static string GetAudioExt(string videoFile)
+        public static string GetAudioExt(string videoFile)
         {
             switch (FFmpegCommands.GetAudioCodec(videoFile))
             {
@@ -140,6 +130,32 @@ namespace Flowframes.AudioVideo
                 case "aac": return "m4a";
                 default: return "wav";
             }
+        }
+
+        public static string GetAudioFallbackArgs (string containerExt)
+        {
+            containerExt = containerExt.Remove(".");
+            string codec = "aac";
+            string bitrate = $"{Config.GetInt("aacBitrate", 160)}k";
+
+            if(containerExt == "webm" || containerExt == "mkv")
+            {
+                codec = "libopus";
+                bitrate = $"{Config.GetInt("opusBitrate", 128)}";
+            }
+
+            return $"-c:a {codec} -b:a {bitrate} -ac 2";
+        }
+
+        public static string GetAudioExtForContainer(string containerExt)
+        {
+            containerExt = containerExt.Remove(".");
+            string ext = "m4a";
+
+            if (containerExt == "webm" || containerExt == "mkv")
+                ext = "ogg";
+
+            return ext;
         }
     }
 }
