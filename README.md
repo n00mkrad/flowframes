@@ -3,9 +3,9 @@ Flowframes Windows GUI for video interpolation - Supports RIFE Pytorch and NCNN 
 
 Flowframes is **open-source donationware**. Builds are released for free on itch after an early-access period on Patreon. This repo's code is complete and does not "paywall" experienced users who want to compile the program themselves.
 
-However, **I do not provide support for self-built versions** as I can't guarantee that the code of this repo is stable at any given moment. Refer to the releases if you want to get the most stable sourcce code.
+However, **I do not provide support for self-built versions** as I can't guarantee that the code of this repo is stable at any given moment. Refer to the releases if you want to get the most stable source code.
 
-
+![img](https://img.itch.zone/aW1hZ2UvNzU1NTQwLzQ2MTYyMzMucG5n/original/ENGtu5.png)
 
 ## Installation
 
