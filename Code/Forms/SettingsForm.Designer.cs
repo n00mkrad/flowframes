@@ -70,10 +70,6 @@
             this.magickDedupePanel = new System.Windows.Forms.Panel();
             this.dedupThresh = new System.Windows.Forms.NumericUpDown();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label27 = new System.Windows.Forms.Label();
-            this.jpegInterps = new System.Windows.Forms.CheckBox();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.enableLoop = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -467,10 +463,6 @@
             this.tabListPage2.Controls.Add(this.label50);
             this.tabListPage2.Controls.Add(this.mpDedupePanel);
             this.tabListPage2.Controls.Add(this.magickDedupePanel);
-            this.tabListPage2.Controls.Add(this.label27);
-            this.tabListPage2.Controls.Add(this.jpegInterps);
-            this.tabListPage2.Controls.Add(this.label25);
-            this.tabListPage2.Controls.Add(this.label26);
             this.tabListPage2.Controls.Add(this.label24);
             this.tabListPage2.Controls.Add(this.enableLoop);
             this.tabListPage2.Controls.Add(this.label15);
@@ -692,48 +684,6 @@
             this.panel3.Size = new System.Drawing.Size(21, 21);
             this.panel3.TabIndex = 57;
             this.toolTip1.SetToolTip(this.panel3, "Allows custom input.");
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.ForeColor = System.Drawing.Color.Silver;
-            this.label27.Location = new System.Drawing.Point(308, 301);
-            this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(449, 13);
-            this.label27.TabIndex = 49;
-            this.label27.Text = "Drastically reduces the amount of storage space needed during interpolation, but " +
-    "isn\'t lossless.";
-            // 
-            // jpegInterps
-            // 
-            this.jpegInterps.AutoSize = true;
-            this.jpegInterps.Location = new System.Drawing.Point(280, 300);
-            this.jpegInterps.Name = "jpegInterps";
-            this.jpegInterps.Size = new System.Drawing.Size(15, 14);
-            this.jpegInterps.TabIndex = 48;
-            this.jpegInterps.UseVisualStyleBackColor = true;
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(10, 300);
-            this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(149, 13);
-            this.label25.TabIndex = 47;
-            this.label25.Text = "Save Output Frames As JPEG";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 270);
-            this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(76, 16);
-            this.label26.TabIndex = 46;
-            this.label26.Text = "Technical";
             // 
             // label24
             // 
@@ -1851,10 +1801,6 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.CheckBox jpegInterps;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label24;
         private Cyotek.Windows.Forms.TabListPage aiOptsPage;
         private System.Windows.Forms.Panel panel1;

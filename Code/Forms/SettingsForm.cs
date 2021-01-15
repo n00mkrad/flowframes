@@ -75,7 +75,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(mpdecimateMode);
             ConfigParser.SaveGuiElement(dedupThresh);
             ConfigParser.SaveGuiElement(enableLoop);
-            ConfigParser.SaveGuiElement(jpegInterps);
             ConfigParser.SaveGuiElement(scnDetect);
             ConfigParser.SaveGuiElement(scnDetectValue);
             ConfigParser.SaveComboxIndex(autoEncMode);
@@ -123,7 +122,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(mpdecimateMode);
             ConfigParser.LoadGuiElement(dedupThresh);
             ConfigParser.LoadGuiElement(enableLoop);
-            ConfigParser.LoadGuiElement(jpegInterps);
             ConfigParser.LoadGuiElement(scnDetect);
             ConfigParser.LoadGuiElement(scnDetectValue);
             ConfigParser.LoadComboxIndex(autoEncMode);

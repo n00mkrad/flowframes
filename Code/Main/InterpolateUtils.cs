@@ -53,7 +53,7 @@ namespace Flowframes.Main
         public static string GetOutExt (bool withDot = false)
         {
             string dotStr = withDot ? "." : "";
-            if (Config.GetBool("jpegInterps"))
+            if (Config.GetBool("jpegInterp"))
                 return dotStr + "jpg";
             return dotStr + "png";
         }
