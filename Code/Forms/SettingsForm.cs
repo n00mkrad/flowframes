@@ -19,6 +19,7 @@ namespace Flowframes.Forms
 
         public SettingsForm()
         {
+            AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
         }
 

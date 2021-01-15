@@ -20,6 +20,7 @@ namespace Flowframes.Forms
 
         public InstallerForm()
         {
+            AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
         }
 

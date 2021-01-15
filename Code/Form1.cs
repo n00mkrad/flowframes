@@ -30,6 +30,7 @@ namespace Flowframes
         private void Form1_Load(object sender, EventArgs e)
         {
             CheckForIllegalCrossThreadCalls = false;
+            AutoScaleMode = AutoScaleMode.None;
             Text = $"Flowframes {Updater.GetInstalledVer()}";
 
             // Main Tab

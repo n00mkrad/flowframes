@@ -16,6 +16,7 @@ namespace Flowframes.Forms
 
         public UpdaterForm()
         {
+            AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
         }
 

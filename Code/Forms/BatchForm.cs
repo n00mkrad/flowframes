@@ -14,6 +14,7 @@ namespace Flowframes.Forms
     {
         public BatchForm()
         {
+            AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
             BatchProcessing.currentBatchForm = this;
         }
