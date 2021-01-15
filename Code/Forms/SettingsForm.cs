@@ -55,7 +55,6 @@ namespace Flowframes.Forms
             h264Crf.Text = h264Crf.GetInt().Clamp(0, 51).ToString();
             h265Crf.Text = h265Crf.GetInt().Clamp(0, 51).ToString();
             vp9Crf.Text = vp9Crf.GetInt().Clamp(0, 63).ToString();
-            ncnnThreads.Text = ncnnThreads.GetInt().Clamp(1, 8).ToString();
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
@@ -74,11 +73,11 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(enableAudio);
             ConfigParser.SaveComboxIndex(dedupMode);
             ConfigParser.SaveComboxIndex(mpdecimateMode);
-            ConfigParser.SaveGuiElement(dedupThresh, ConfigParser.StringMode.Float);
+            ConfigParser.SaveGuiElement(dedupThresh);
             ConfigParser.SaveGuiElement(enableLoop);
             ConfigParser.SaveGuiElement(jpegInterps);
             ConfigParser.SaveGuiElement(scnDetect);
-            ConfigParser.SaveGuiElement(scnDetectValue, ConfigParser.StringMode.Float);
+            ConfigParser.SaveGuiElement(scnDetectValue);
             ConfigParser.SaveComboxIndex(autoEncMode);
             ConfigParser.SaveGuiElement(sbsAllowAutoEnc);
             // AI
@@ -122,7 +121,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(enableAudio);
             ConfigParser.LoadComboxIndex(dedupMode);
             ConfigParser.LoadComboxIndex(mpdecimateMode);
-            ConfigParser.LoadGuiElement(dedupThresh, "%");
+            ConfigParser.LoadGuiElement(dedupThresh);
             ConfigParser.LoadGuiElement(enableLoop);
             ConfigParser.LoadGuiElement(jpegInterps);
             ConfigParser.LoadGuiElement(scnDetect);
@@ -154,11 +153,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffEncArgs);
             ConfigParser.LoadGuiElement(ffprobeCountFrames);
-        }
-
-        private void dedupThresh_Leave(object sender, EventArgs e)
-        {
-            dedupThresh.Text = dedupThresh.GetFloat().ToString() + "%";
         }
 
         private void tempFolderLoc_SelectedIndexChanged(object sender, EventArgs e)

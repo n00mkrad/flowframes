@@ -37,6 +37,16 @@ namespace Flowframes.IO
 			Config.Set(checkbox.Name, checkbox.Checked.ToString());
 		}
 
+		public static void SaveGuiElement(NumericUpDown upDown, StringMode stringMode = StringMode.Any)
+		{
+			switch (stringMode)
+			{
+				case StringMode.Any: Config.Set(upDown.Name, ((float)upDown.Value).ToString().Replace(",", ".")); break;
+				case StringMode.Int: Config.Set(upDown.Name, ((int)upDown.Value).ToString()); break;
+				case StringMode.Float: Config.Set(upDown.Name, ((float)upDown.Value).ToString().Replace(",", ".")); ; break;
+			}
+		}
+
 		public static void SaveComboxIndex(ComboBox comboBox)
 		{
 			Config.Set(comboBox.Name, comboBox.SelectedIndex.ToString());
@@ -55,6 +65,11 @@ namespace Flowframes.IO
 		public static void LoadGuiElement(CheckBox checkbox)
 		{
 			checkbox.Checked = Config.GetBool(checkbox.Name);
+		}
+
+		public static void LoadGuiElement(NumericUpDown upDown)
+		{
+			upDown.Value = Convert.ToDecimal(Config.GetFloat(upDown.Name));
 		}
 
 		public static void LoadComboxIndex(ComboBox comboBox)
