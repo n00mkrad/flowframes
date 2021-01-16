@@ -223,6 +223,23 @@ namespace Flowframes
             }
         }
 
+        public static async Task ExtractSubtitles (string inputFile, string outFolder)
+        {
+            for(int track = 0; track <= 30; track++)
+            {
+                string outPath = Path.Combine(outFolder, $"subtitles-{track}.srt");
+                string args = $" -loglevel error -i {inputFile.Wrap()} -map 0:s:{track} {outPath.Wrap()}";
+                await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+                if (AvProcess.lastOutputFfmpeg.Contains("matches no streams"))  // Break if there are no more subtitle tracks
+                {
+                    if(track > 0)
+                        Logger.Log($"Extracted {track + 1} subtitle tracks from the input video.");
+                    break;
+                }
+                Logger.Log($"[FFCmds] Extracted subtitle track {track} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true);
+            }
+        }
+
         public static async Task MergeAudio(string inputFile, string audioPath, int looptimes = -1)    // https://superuser.com/a/277667
         {
             Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);

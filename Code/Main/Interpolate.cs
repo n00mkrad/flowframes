@@ -97,6 +97,8 @@ namespace Flowframes
                 if (audioFile != null && !File.Exists(audioFile))
                     await FFmpegCommands.ExtractAudio(inPath, audioFile);
             }
+
+            await FFmpegCommands.ExtractSubtitles(inPath, current.tempFolder);
         }
 
         public static async Task PostProcessFrames (bool sbsMode = false)
