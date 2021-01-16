@@ -75,7 +75,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.dedupMode = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.enableAudio = new System.Windows.Forms.CheckBox();
+            this.keepAudio = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.aiOptsPage = new Cyotek.Windows.Forms.TabListPage();
             this.label30 = new System.Windows.Forms.Label();
@@ -152,6 +152,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ncnnThreads = new System.Windows.Forms.NumericUpDown();
             this.minOutVidLength = new System.Windows.Forms.NumericUpDown();
+            this.keepSubs = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -450,6 +451,7 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.keepSubs);
             this.tabListPage2.Controls.Add(this.scnDetectValue);
             this.tabListPage2.Controls.Add(this.sbsAllowAutoEnc);
             this.tabListPage2.Controls.Add(this.label4);
@@ -468,7 +470,7 @@
             this.tabListPage2.Controls.Add(this.label15);
             this.tabListPage2.Controls.Add(this.dedupMode);
             this.tabListPage2.Controls.Add(this.label2);
-            this.tabListPage2.Controls.Add(this.enableAudio);
+            this.tabListPage2.Controls.Add(this.keepAudio);
             this.tabListPage2.Controls.Add(this.label1);
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
@@ -742,14 +744,15 @@
             this.label2.TabIndex = 26;
             this.label2.Text = "Frame De-Duplication Mode";
             // 
-            // enableAudio
+            // keepAudio
             // 
-            this.enableAudio.AutoSize = true;
-            this.enableAudio.Location = new System.Drawing.Point(280, 40);
-            this.enableAudio.Name = "enableAudio";
-            this.enableAudio.Size = new System.Drawing.Size(15, 14);
-            this.enableAudio.TabIndex = 25;
-            this.enableAudio.UseVisualStyleBackColor = true;
+            this.keepAudio.AutoSize = true;
+            this.keepAudio.Location = new System.Drawing.Point(277, 39);
+            this.keepAudio.Name = "keepAudio";
+            this.keepAudio.Size = new System.Drawing.Size(81, 17);
+            this.keepAudio.TabIndex = 25;
+            this.keepAudio.Text = "Keep Audio";
+            this.keepAudio.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -757,9 +760,9 @@
             this.label1.Location = new System.Drawing.Point(10, 40);
             this.label1.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 13);
+            this.label1.Size = new System.Drawing.Size(124, 13);
             this.label1.TabIndex = 24;
-            this.label1.Text = "Copy Audio To Interpolated Video";
+            this.label1.Text = "Input Media To Preserve";
             // 
             // aiOptsPage
             // 
@@ -1722,6 +1725,16 @@
             0,
             131072});
             // 
+            // keepSubs
+            // 
+            this.keepSubs.AutoSize = true;
+            this.keepSubs.Location = new System.Drawing.Point(364, 39);
+            this.keepSubs.Name = "keepSubs";
+            this.keepSubs.Size = new System.Drawing.Size(94, 17);
+            this.keepSubs.TabIndex = 75;
+            this.keepSubs.Text = "Keep Subtitles";
+            this.keepSubs.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1770,7 +1783,7 @@
         private System.Windows.Forms.CheckBox delLogsOnStartup;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox enableAudio;
+        private System.Windows.Forms.CheckBox keepAudio;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox dedupMode;
         private System.Windows.Forms.Label label3;
@@ -1884,5 +1897,6 @@
         private System.Windows.Forms.NumericUpDown dedupThresh;
         private System.Windows.Forms.NumericUpDown ncnnThreads;
         private System.Windows.Forms.NumericUpDown minOutVidLength;
+        private System.Windows.Forms.CheckBox keepSubs;
     }
 }

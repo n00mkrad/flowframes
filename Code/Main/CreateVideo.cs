@@ -204,7 +204,7 @@ namespace Flowframes.Main
 
         public static async Task MergeAudio(string inputPath, string outVideo, int looptimes = -1)
         {
-            if (!Config.GetBool("enableAudio")) return;
+            if (!Config.GetBool("keepAudio")) return;
             try
             {
                 string audioFileBasePath = Path.Combine(i.current.tempFolder, "audio");
@@ -221,7 +221,7 @@ namespace Flowframes.Main
                     return;
                 }
 
-                await FFmpegCommands.MergeAudio(outVideo, IOUtils.GetAudioFile(audioFileBasePath));        // Merge from audioFile into outVideo
+                await FFmpegCommands.MergeAudioAndSubs(outVideo, IOUtils.GetAudioFile(audioFileBasePath), i.current.tempFolder);        // Merge from audioFile into outVideo
             }
             catch (Exception e)
             {

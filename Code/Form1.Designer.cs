@@ -188,7 +188,7 @@
             this.outModeCombox.FormattingEnabled = true;
             this.outModeCombox.Items.AddRange(new object[] {
             "MP4 Video (h264, h265)",
-            "MKV Video (h264, h265) (Supports more audio codecs than MP4)",
+            "MKV Video (h264, h265) (Best Audio/Subtitles Support)",
             "WEBM Video (Google VP9)",
             "MOV Video (Apple ProRes)",
             "AVI Video (ffv1, huffyuv, rawvideo)",

@@ -70,7 +70,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(clearLogOnInput);
             ConfigParser.SaveGuiElement(modelSuffix);
             // Interpolation
-            ConfigParser.SaveGuiElement(enableAudio);
+            ConfigParser.SaveGuiElement(keepAudio);
+            ConfigParser.SaveGuiElement(keepSubs);
             ConfigParser.SaveComboxIndex(dedupMode);
             ConfigParser.SaveComboxIndex(mpdecimateMode);
             ConfigParser.SaveGuiElement(dedupThresh);
@@ -117,7 +118,8 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(clearLogOnInput);
             ConfigParser.LoadGuiElement(modelSuffix);
             // Interpolation
-            ConfigParser.LoadGuiElement(enableAudio);
+            ConfigParser.LoadGuiElement(keepAudio);
+            ConfigParser.LoadGuiElement(keepSubs);
             ConfigParser.LoadComboxIndex(dedupMode);
             ConfigParser.LoadComboxIndex(mpdecimateMode);
             ConfigParser.LoadGuiElement(dedupThresh);

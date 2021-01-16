@@ -145,7 +145,7 @@ namespace Flowframes.AudioVideo
                 bitrate = $"{Config.GetInt("opusBitrate", 128)}";
             }
 
-            return $"-c:a {codec} -b:a {bitrate} -ac 2";
+            return $"-c:a {codec} -b:a {bitrate}k -ac 2";
         }
 
         public static string GetAudioExtForContainer(string containerExt)
@@ -157,6 +157,26 @@ namespace Flowframes.AudioVideo
                 ext = "ogg";
 
             return ext;
+        }
+
+        public static string GetSubCodecForContainer(string containerExt)
+        {
+            containerExt = containerExt.Remove("."); 
+
+            if (containerExt == "mp4") return "mov_text";
+            if (containerExt == "webm") return "webvtt";
+
+            return "copy";    // Default: Copy SRT subs
+        }
+
+        public static bool ContainerSupportsSubs(string containerExt, bool showWarningIfNotSupported = true)
+        {
+            containerExt = containerExt.Remove(".");
+            bool supported = (containerExt == "mp4" || containerExt == "mkv" || containerExt == "webm" || containerExt == "mov");
+            Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
+            if (Config.GetBool("keepSubs") && !supported)
+                Logger.Log($"Warning: Subtitles are enabled, but {containerExt.ToUpper()} does not support them. MKV is recommended instead.");
+            return supported;
         }
     }
 }
