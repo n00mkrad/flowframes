@@ -747,7 +747,7 @@
             // keepAudio
             // 
             this.keepAudio.AutoSize = true;
-            this.keepAudio.Location = new System.Drawing.Point(277, 39);
+            this.keepAudio.Location = new System.Drawing.Point(280, 39);
             this.keepAudio.Name = "keepAudio";
             this.keepAudio.Size = new System.Drawing.Size(81, 17);
             this.keepAudio.TabIndex = 25;
@@ -1728,7 +1728,7 @@
             // keepSubs
             // 
             this.keepSubs.AutoSize = true;
-            this.keepSubs.Location = new System.Drawing.Point(364, 39);
+            this.keepSubs.Location = new System.Drawing.Point(367, 39);
             this.keepSubs.Name = "keepSubs";
             this.keepSubs.Size = new System.Drawing.Size(94, 17);
             this.keepSubs.TabIndex = 75;

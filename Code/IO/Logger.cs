@@ -15,6 +15,7 @@ namespace Flowframes
         public static TextBox textbox;
         static string file;
         public const string defaultLogName = "sessionlog";
+        public static long id;
 
         public static void Log(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
@@ -52,9 +53,10 @@ namespace Flowframes
             try
             {
                 if (!noLineBreak)
-                    File.AppendAllText(file, Environment.NewLine + time + ": " + logStr);
+                    File.AppendAllText(file, $"{Environment.NewLine}[{id}] [{time}]: {logStr}");
                 else
                     File.AppendAllText(file, " " + logStr);
+                id++;
             }
             catch
             {
