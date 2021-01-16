@@ -4,6 +4,7 @@ using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -225,19 +226,42 @@ namespace Flowframes
 
         public static async Task ExtractSubtitles (string inputFile, string outFolder)
         {
-            for(int track = 0; track <= 30; track++)
+            Dictionary<int, string> subDict = await GetSubtitleTracks(inputFile);
+            foreach (KeyValuePair<int, string> subTrack in subDict)
             {
-                string outPath = Path.Combine(outFolder, $"subtitles-{track}.srt");
-                string args = $" -loglevel error -i {inputFile.Wrap()} -map 0:s:{track} {outPath.Wrap()}";
+                string trackName = subTrack.Value.Length > 4 ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(subTrack.Value.ToLower()) : subTrack.Value.ToUpper();
+                string outPath = Path.Combine(outFolder, $"{subTrack.Key}-{trackName}.srt");
+                string args = $" -loglevel error -i {inputFile.Wrap()} -map 0:s:{subTrack.Key} {outPath.Wrap()}";
                 await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
                 if (AvProcess.lastOutputFfmpeg.Contains("matches no streams"))  // Break if there are no more subtitle tracks
                 {
-                    if(track > 0)
-                        Logger.Log($"Extracted {track + 1} subtitle tracks from the input video.");
+                    Logger.Log($"Extracted {subTrack.Key + 1} subtitle tracks from the input video.");
                     break;
                 }
-                Logger.Log($"[FFCmds] Extracted subtitle track {track} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true);
+                Logger.Log($"[FFCmds] Extracted subtitle track {subTrack.Key} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true);
             }
+            if(subDict.Count > 0)
+                Logger.Log($"Extracted {subDict.Count} subtitle tracks from the input video.");
+        }
+
+        public static async Task<Dictionary<int, string>> GetSubtitleTracks (string inputFile)
+        {
+            Dictionary<int, string> subDict = new Dictionary<int, string>();
+            string args = $"-i {inputFile.Wrap()}";
+            string[] outputLines = (await AvProcess.GetFfmpegOutputAsync(args)).SplitIntoLines();
+            string[] filteredLines = outputLines.Where(l => l.Contains(" Subtitle: ")).ToArray();
+            int idx = 0;
+            foreach(string line in filteredLines)
+            {
+                string lang = "unknown";
+                bool hasLangInfo = line.Contains("(") && line.Contains("): Subtitle: ");
+                if (hasLangInfo)
+                    lang = line.Split('(')[1].Split(')')[0];
+                Logger.Log($"[FFCmds] Detected subtitle track {idx} '{lang}'", true);
+                subDict.Add(idx, lang);
+                idx++;
+            }
+            return subDict;
         }
 
         public static async Task MergeAudio(string inputFile, string audioPath, int looptimes = -1)    // https://superuser.com/a/277667

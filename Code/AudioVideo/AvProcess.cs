@@ -111,9 +111,10 @@ namespace Flowframes
             ffmpeg.BeginOutputReadLine();
             ffmpeg.BeginErrorReadLine();
             while (!ffmpeg.HasExited)
-                await Task.Delay(1);
+                await Task.Delay(10);
             if (setBusy)
                 Program.mainForm.SetWorking(false);
+            await Task.Delay(100);
             return lastOutputFfmpeg;
         }
 
