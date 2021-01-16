@@ -14,7 +14,7 @@ namespace Flowframes.AudioVideo
 
         public static Codec GetCodec(Interpolate.OutMode mode)
         {
-            if (mode == Interpolate.OutMode.VidMp4)
+            if (mode == Interpolate.OutMode.VidMp4 || mode == Interpolate.OutMode.VidMkv)
             {
                 int mp4Enc = Config.GetInt("mp4Enc");
                 if (mp4Enc == 0) return Codec.H264;
@@ -29,7 +29,7 @@ namespace Flowframes.AudioVideo
             if (mode == Interpolate.OutMode.VidProRes)
                 return Codec.ProRes;
 
-            if (mode == Interpolate.OutMode.VidAviRaw)
+            if (mode == Interpolate.OutMode.VidAvi)
                 return Codec.AviRaw;
 
             return Codec.H264;
@@ -111,9 +111,10 @@ namespace Flowframes.AudioVideo
             switch (outMode)
             {
                 case Interpolate.OutMode.VidMp4: ext += "mp4"; break;
+                case Interpolate.OutMode.VidMkv: ext += "mkv"; break;
                 case Interpolate.OutMode.VidWebm: ext += "webm"; break;
                 case Interpolate.OutMode.VidProRes: ext += "mov"; break;
-                case Interpolate.OutMode.VidAviRaw: ext += "avi"; break;
+                case Interpolate.OutMode.VidAvi: ext += "avi"; break;
                 case Interpolate.OutMode.VidGif: ext += "gif"; break;
             }
 

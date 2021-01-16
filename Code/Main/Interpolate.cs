@@ -21,7 +21,7 @@ namespace Flowframes
 {
     public class Interpolate
     {
-        public enum OutMode { VidMp4, VidWebm, VidProRes, VidAviRaw, VidGif, ImgPng }
+        public enum OutMode { VidMp4, VidMkv, VidWebm, VidProRes, VidAvi, VidGif, ImgPng }
 
         public static int currentInputFrameCount;
         public static bool currentlyUsingAutoEnc;

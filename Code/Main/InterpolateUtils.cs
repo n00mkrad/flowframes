@@ -224,7 +224,7 @@ namespace Flowframes.Main
                 ShowMessage("Interpolation factor is not valid!");
                 passes = false;
             }
-            if (passes && outMode == i.OutMode.VidGif && fpsOut >= 50)
+            if (passes && outMode == i.OutMode.VidGif && fpsOut > 50)
             {
                 ShowMessage("Invalid output frame rate!\nGIF does not properly support frame rates above 40 FPS.\nPlease use MP4, WEBM or another video format.");
                 passes = false;

@@ -170,9 +170,10 @@ namespace Flowframes
         Interpolate.OutMode GetOutMode()
         {
             Interpolate.OutMode outMode = Interpolate.OutMode.VidMp4;
+            if (outModeCombox.Text.ToLower().Contains("mkv")) outMode = Interpolate.OutMode.VidMkv;
             if (outModeCombox.Text.ToLower().Contains("webm")) outMode = Interpolate.OutMode.VidWebm;
             if (outModeCombox.Text.ToLower().Contains("prores")) outMode = Interpolate.OutMode.VidProRes;
-            if (outModeCombox.Text.ToLower().Contains("avi")) outMode = Interpolate.OutMode.VidAviRaw;
+            if (outModeCombox.Text.ToLower().Contains("avi")) outMode = Interpolate.OutMode.VidAvi;
             if (outModeCombox.Text.ToLower().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
             if (outModeCombox.Text.ToLower().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
             return outMode;
@@ -180,9 +181,18 @@ namespace Flowframes
 
         public void SetOutMode(Interpolate.OutMode mode)
         {
-            if (mode == Interpolate.OutMode.VidMp4) outModeCombox.SelectedIndex = 0;
-            if (mode == Interpolate.OutMode.VidGif) outModeCombox.SelectedIndex = 1;
-            if (mode == Interpolate.OutMode.ImgPng) outModeCombox.SelectedIndex = 2;
+            int theIndex = 0;
+            for(int i = 0; i < outModeCombox.Items.Count; i++)
+            {
+                string currentItem = outModeCombox.Items[i].ToString().ToLower();
+                if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) theIndex = i;
+                if (mode == Interpolate.OutMode.VidWebm && currentItem.Contains("webm")) theIndex = i;
+                if (mode == Interpolate.OutMode.VidProRes && currentItem.Contains("prores")) theIndex = i;
+                if (mode == Interpolate.OutMode.VidAvi && currentItem.Contains("avi")) theIndex = i;
+                if (mode == Interpolate.OutMode.VidGif && currentItem.Contains("gif")) theIndex = i;
+                if (mode == Interpolate.OutMode.ImgPng && currentItem.Contains("image")) theIndex = i;
+            }
+            outModeCombox.SelectedIndex = theIndex;
         }
 
         AI GetAi()

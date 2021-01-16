@@ -86,6 +86,7 @@
             this.paypalBtn = new HTAlt.WinForms.HTButton();
             this.discordBtn = new HTAlt.WinForms.HTButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
             this.cancelBtn = new System.Windows.Forms.Button();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
@@ -102,7 +103,6 @@
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
             this.browseInputFileBtn = new HTAlt.WinForms.HTButton();
             this.browseInputBtn = new HTAlt.WinForms.HTButton();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.videoUtilsTab = new System.Windows.Forms.TabPage();
             this.label10 = new System.Windows.Forms.Label();
             this.utilsExtractAudioCbox = new System.Windows.Forms.CheckBox();
@@ -118,12 +118,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.mainTabControl.SuspendLayout();
             this.welcomeTab.SuspendLayout();
             this.panel8.SuspendLayout();
             this.panel6.SuspendLayout();
             this.interpOptsTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.videoUtilsTab.SuspendLayout();
             this.previewTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).BeginInit();
@@ -187,11 +187,12 @@
             this.outModeCombox.ForeColor = System.Drawing.Color.White;
             this.outModeCombox.FormattingEnabled = true;
             this.outModeCombox.Items.AddRange(new object[] {
-            "MP4 Video (h264/h265)",
+            "MP4 Video (h264, h265)",
+            "MKV Video (h264, h265) (Supports more audio codecs than MP4)",
             "WEBM Video (Google VP9)",
             "MOV Video (Apple ProRes)",
-            "AVI Video (Uncompressed/Lossless)",
-            "Animated GIF",
+            "AVI Video (ffv1, huffyuv, rawvideo)",
+            "Animated GIF (Not recommended for more than 40 FPS)",
             "Image Sequence"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 158);
             this.outModeCombox.Name = "outModeCombox";
@@ -237,7 +238,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(560, 101);
+            this.label6.Location = new System.Drawing.Point(554, 101);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(15, 15);
             this.label6.TabIndex = 11;
@@ -258,11 +259,11 @@
             // 
             this.fpsOutTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.fpsOutTbox.ForeColor = System.Drawing.Color.White;
-            this.fpsOutTbox.Location = new System.Drawing.Point(581, 98);
+            this.fpsOutTbox.Location = new System.Drawing.Point(574, 98);
             this.fpsOutTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.fpsOutTbox.Name = "fpsOutTbox";
             this.fpsOutTbox.ReadOnly = true;
-            this.fpsOutTbox.Size = new System.Drawing.Size(100, 23);
+            this.fpsOutTbox.Size = new System.Drawing.Size(107, 23);
             this.fpsOutTbox.TabIndex = 9;
             // 
             // fpsInTbox
@@ -287,7 +288,7 @@
             "x2",
             "x4",
             "x8"});
-            this.interpFactorCombox.Location = new System.Drawing.Point(454, 98);
+            this.interpFactorCombox.Location = new System.Drawing.Point(447, 97);
             this.interpFactorCombox.Name = "interpFactorCombox";
             this.interpFactorCombox.Size = new System.Drawing.Size(100, 23);
             this.interpFactorCombox.TabIndex = 7;
@@ -826,6 +827,18 @@
             this.toolTip1.SetToolTip(this.pictureBox1, "This is the trained data the AI will use.\r\nDifferent AI models will produce sligh" +
         "tly different results. Try them for yourself.");
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(86, 158);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox2.TabIndex = 29;
+            this.pictureBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox2, "Set your interpolation output format.\r\nEncoding and quality options can be change" +
+        "d in the Settings.");
+            // 
             // longProgBar
             // 
             this.longProgBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -1071,18 +1084,6 @@
             this.browseInputBtn.UseVisualStyleBackColor = false;
             this.browseInputBtn.Click += new System.EventHandler(this.browseInputBtn_Click);
             // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox2.Location = new System.Drawing.Point(86, 158);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox2.TabIndex = 29;
-            this.pictureBox2.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox2, "Set your interpolation output format.\r\nEncoding and quality options can be change" +
-        "d in the Settings.");
-            // 
             // videoUtilsTab
             // 
             this.videoUtilsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
@@ -1275,6 +1276,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.mainTabControl.ResumeLayout(false);
             this.welcomeTab.ResumeLayout(false);
             this.welcomeTab.PerformLayout();
@@ -1284,7 +1286,6 @@
             this.panel6.PerformLayout();
             this.interpOptsTab.ResumeLayout(false);
             this.interpOptsTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.videoUtilsTab.ResumeLayout(false);
             this.videoUtilsTab.PerformLayout();
             this.previewTab.ResumeLayout(false);
