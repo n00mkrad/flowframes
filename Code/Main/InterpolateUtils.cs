@@ -354,7 +354,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static int RoundDiv2(int n)     // Round to a number that's divisible by 2 (for h264)
+        public static int RoundDiv2(int n)     // Round to a number that's divisible by 2 (for h264 etc)
         {
             int a = (n / 2) * 2;    // Smaller multiple
             int b = a + 2;   // Larger multiple

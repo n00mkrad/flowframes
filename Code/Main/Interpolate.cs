@@ -43,17 +43,14 @@ namespace Flowframes
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
-            await Task.Delay(10);
             if (!current.inputIsFrames)        // Input is video - extract frames first
                 await ExtractFrames(current.inPath, current.framesFolder);
             else
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, await Utils.GetOutputResolution(current.inPath, true));
             if (canceled) return;
             sw.Restart();
-            await Task.Delay(10);
             await PostProcessFrames();
             if (canceled) return;
-            Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
@@ -135,6 +132,7 @@ namespace Flowframes
 
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
+            Program.mainForm.SetStatus("Downloading models...");
             await ModelDownloader.DownloadModelFiles(Path.GetFileNameWithoutExtension(ai.pkg.fileName), current.model);
             if (canceled) return;
 
@@ -156,6 +154,7 @@ namespace Flowframes
                 tasks.Add(AutoEncode.MainLoop(outpath));
             }
 
+            Program.mainForm.SetStatus("Running AI...");
             await Task.WhenAll(tasks);
         }
 

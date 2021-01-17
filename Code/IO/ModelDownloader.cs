@@ -41,6 +41,7 @@ namespace Flowframes.IO
         static async Task DownloadTo (string url, string saveDir, int retries = 3)
         {
             string savePath = Path.Combine(saveDir, Path.GetFileName(url));
+            IOUtils.TryDeleteIfExists(savePath);
             Logger.Log($"Downloading '{url}' to '{savePath}'", true);
             Stopwatch sw = new Stopwatch();
             sw.Restart();
@@ -68,6 +69,7 @@ namespace Flowframes.IO
                 if (Interpolate.canceled)
                 {
                     client.CancelAsync();
+                    client.Dispose();
                     return;
                 }
                 if (sw.ElapsedMilliseconds > 6000)
@@ -106,7 +108,7 @@ namespace Flowframes.IO
 
                 foreach (KeyValuePair<string, string> modelFile in fileList)
                     await DownloadTo(GetMdlFileUrl(ai, model, modelFile.Key), mdlDir);
-
+ 
                 Logger.Log($"Downloaded \"{model}\" model files.", false, true);
             }
             catch (Exception e)
@@ -174,7 +176,7 @@ namespace Flowframes.IO
                 string md5 = IOUtils.GetHash(Path.Combine(mdlDir, file.Key), IOUtils.Hash.MD5);
                 if (md5.Trim() != file.Value.Trim())
                 {
-                    Logger.Log($"Files for model {model} not valid: Local MD5 ({md5.Trim()}) does not equal validation MD5 ({file.Value.Trim()}).", true);
+                    Logger.Log($"Files for model {model} not valid: MD5 of {file.Key} ({md5.Trim()}) does not equal validation MD5 ({file.Value.Trim()}).", true);
                     return false;
                 }
             }

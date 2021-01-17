@@ -558,23 +558,29 @@ namespace Flowframes.IO
             }
             try
             {
+				var stream = File.OpenRead(path);
+
 				if (hashType == Hash.MD5)
 				{
 					MD5 md5 = MD5.Create();
-					var hash = md5.ComputeHash(File.OpenRead(path));
+					var hash = md5.ComputeHash(stream);
 					hashStr = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 				}
+
 				if (hashType == Hash.CRC32)
 				{
 					var crc = new Crc32Algorithm();
-					var crc32bytes = crc.ComputeHash(File.OpenRead(path));
+					var crc32bytes = crc.ComputeHash(stream);
 					hashStr = BitConverter.ToUInt32(crc32bytes, 0).ToString();
 				}
+
 				if (hashType == Hash.xxHash)
 				{
-					ulong xxh64 = xxHash64.ComputeHash(File.OpenRead(path), 8192, (ulong)GetFilesize(path));
+					ulong xxh64 = xxHash64.ComputeHash(stream, 8192, (ulong)GetFilesize(path));
 					hashStr = xxh64.ToString();
 				}
+
+				stream.Close();
 			}
 			catch (Exception e)
             {
