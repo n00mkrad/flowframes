@@ -114,6 +114,17 @@ namespace Flowframes
             longProgBar.Refresh();
         }
 
+        public Size currInRes;
+        public float currInFps;
+        public int currInFrames;
+        public void UpdateInputInfo ()
+        {
+            string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
+            str += $"Framerate: {(currInFps > 0f ? $"{currInFps.ToStringDot()} FPS" : "Unknown")} - ";
+            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames} Frames" : "Unknown")}";
+            inputInfo.Text = str;
+        }
+
         void InitAis()
         {
             foreach (AI ai in Networks.networks)

@@ -36,6 +36,49 @@ namespace Flowframes.Magick
             }
         }
 
+        public static async Task ExtractAlpha (string inputDir, string outputDir, bool print = true, bool setProgress = true)
+        {
+            try
+            {
+
+                var files = IOUtils.GetFilesSorted(inputDir);
+                if (print) Logger.Log($"Extracting alpha channel from {files.Length} files in {inputDir}");
+                Directory.CreateDirectory(outputDir);
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+                int counter = 0;
+                foreach (string file in files)
+                {
+                    if (print) Logger.Log($"Extracting alpha from {Path.GetFileName(file)}", false, true);
+                    MagickImage img = new MagickImage(file);
+                    img.Format = MagickFormat.Png32;
+                    img.Quality = 10;
+
+                    // Fill the image with a transparent background
+                    img.FloodFill(MagickColors.None, 0, 0);
+                    // Change all the pixels that are not transparent to white.
+                    img.InverseOpaque(MagickColors.None, MagickColors.White);
+                    // Change the transparent pixels to black.
+                    //img.ColorAlpha(MagickColors.Black);
+
+                    string outPath = Path.Combine(outputDir, Path.GetFileName(file));
+                    img.Write(outPath);
+                    counter++;
+                    if (sw.ElapsedMilliseconds > 250)
+                    {
+                        if (setProgress)
+                            Program.mainForm.SetProgress((int)Math.Round(((float)counter / files.Length) * 100f));
+                        await Task.Delay(1);
+                        sw.Restart();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("ExtractAlpha Error: " + e.Message);
+            }
+        }
+
         public static async Task Preprocess (string dir, bool setProgress = true)
         {
             var files = IOUtils.GetFilesSorted(dir);

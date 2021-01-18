@@ -43,10 +43,13 @@ namespace Flowframes
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
+
             if (!current.inputIsFrames)        // Input is video - extract frames first
                 await ExtractFrames(current.inPath, current.framesFolder);
             else
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, await Utils.GetOutputResolution(current.inPath, true));
+
+            await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
             if (canceled) return;
             sw.Restart();
             await PostProcessFrames();

@@ -83,6 +83,12 @@ namespace Flowframes.IO
             return bool.Parse(Get(key, Type.Bool));
         }
 
+        public static bool GetBool(string key, bool defaultVal)
+        {
+            WriteIfDoesntExist(key, (defaultVal ? "True" : "False"));
+            return bool.Parse(Get(key, Type.Bool));
+        }
+
         public static int GetInt(string key)
         {
             return Get(key, Type.Int).GetInt();

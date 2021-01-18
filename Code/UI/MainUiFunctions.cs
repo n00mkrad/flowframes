@@ -46,6 +46,9 @@ namespace Flowframes.UI
             else
                 Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
 
+            Program.mainForm.currInFps = fps;
+            Program.mainForm.currInFrames = frameCount;
+            Program.mainForm.UpdateInputInfo();
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);
             await PrintResolution(path);
@@ -92,6 +95,9 @@ namespace Flowframes.UI
 
             if (res.Width > 1 && res.Height > 1)
                 Logger.Log($"Input Resolution: {res.Width}x{res.Height}");
+
+            Program.mainForm.currInRes = res;
+            Program.mainForm.UpdateInputInfo();
         }
 
         public static async Task<Image> GetThumbnail (string path)

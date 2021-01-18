@@ -100,6 +100,8 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.inputInfo = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
             this.browseInputFileBtn = new HTAlt.WinForms.HTButton();
             this.browseInputBtn = new HTAlt.WinForms.HTButton();
@@ -149,7 +151,7 @@
             this.aiModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aiModel.ForeColor = System.Drawing.Color.White;
             this.aiModel.FormattingEnabled = true;
-            this.aiModel.Location = new System.Drawing.Point(281, 127);
+            this.aiModel.Location = new System.Drawing.Point(281, 126);
             this.aiModel.Name = "aiModel";
             this.aiModel.Size = new System.Drawing.Size(400, 23);
             this.aiModel.TabIndex = 25;
@@ -161,7 +163,7 @@
             this.aiCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aiCombox.ForeColor = System.Drawing.Color.White;
             this.aiCombox.FormattingEnabled = true;
-            this.aiCombox.Location = new System.Drawing.Point(281, 8);
+            this.aiCombox.Location = new System.Drawing.Point(281, 7);
             this.aiCombox.Name = "aiCombox";
             this.aiCombox.Size = new System.Drawing.Size(400, 23);
             this.aiCombox.TabIndex = 21;
@@ -172,7 +174,7 @@
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.Color.White;
-            this.label13.Location = new System.Drawing.Point(11, 11);
+            this.label13.Location = new System.Drawing.Point(11, 10);
             this.label13.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(78, 13);
@@ -194,7 +196,7 @@
             "AVI Video (ffv1, huffyuv, rawvideo)",
             "Animated GIF (Not recommended for more than 40 FPS)",
             "Image Sequence"});
-            this.outModeCombox.Location = new System.Drawing.Point(281, 158);
+            this.outModeCombox.Location = new System.Drawing.Point(281, 157);
             this.outModeCombox.Name = "outModeCombox";
             this.outModeCombox.Size = new System.Drawing.Size(400, 23);
             this.outModeCombox.TabIndex = 16;
@@ -204,7 +206,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(11, 161);
+            this.label9.Location = new System.Drawing.Point(11, 160);
             this.label9.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(69, 13);
@@ -216,7 +218,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(11, 131);
+            this.label8.Location = new System.Drawing.Point(11, 130);
             this.label8.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(49, 13);
@@ -227,7 +229,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(684, 101);
+            this.label7.Location = new System.Drawing.Point(684, 100);
             this.label7.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(67, 15);
@@ -238,7 +240,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(554, 101);
+            this.label6.Location = new System.Drawing.Point(554, 100);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(15, 15);
             this.label6.TabIndex = 11;
@@ -248,7 +250,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(384, 101);
+            this.label5.Location = new System.Drawing.Point(384, 100);
             this.label5.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(57, 15);
@@ -259,7 +261,7 @@
             // 
             this.fpsOutTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.fpsOutTbox.ForeColor = System.Drawing.Color.White;
-            this.fpsOutTbox.Location = new System.Drawing.Point(574, 98);
+            this.fpsOutTbox.Location = new System.Drawing.Point(574, 97);
             this.fpsOutTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.fpsOutTbox.Name = "fpsOutTbox";
             this.fpsOutTbox.ReadOnly = true;
@@ -270,7 +272,7 @@
             // 
             this.fpsInTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.fpsInTbox.ForeColor = System.Drawing.Color.White;
-            this.fpsInTbox.Location = new System.Drawing.Point(281, 98);
+            this.fpsInTbox.Location = new System.Drawing.Point(281, 97);
             this.fpsInTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.fpsInTbox.Name = "fpsInTbox";
             this.fpsInTbox.Size = new System.Drawing.Size(100, 23);
@@ -288,7 +290,7 @@
             "x2",
             "x4",
             "x8"});
-            this.interpFactorCombox.Location = new System.Drawing.Point(447, 97);
+            this.interpFactorCombox.Location = new System.Drawing.Point(447, 96);
             this.interpFactorCombox.Name = "interpFactorCombox";
             this.interpFactorCombox.Size = new System.Drawing.Size(100, 23);
             this.interpFactorCombox.TabIndex = 7;
@@ -299,7 +301,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(11, 101);
+            this.label4.Location = new System.Drawing.Point(11, 100);
             this.label4.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(148, 13);
@@ -311,7 +313,7 @@
             this.outputTbox.AllowDrop = true;
             this.outputTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.outputTbox.ForeColor = System.Drawing.Color.White;
-            this.outputTbox.Location = new System.Drawing.Point(281, 68);
+            this.outputTbox.Location = new System.Drawing.Point(281, 67);
             this.outputTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.outputTbox.Name = "outputTbox";
             this.outputTbox.Size = new System.Drawing.Size(400, 23);
@@ -324,7 +326,7 @@
             this.inputTbox.AllowDrop = true;
             this.inputTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.inputTbox.ForeColor = System.Drawing.Color.White;
-            this.inputTbox.Location = new System.Drawing.Point(281, 38);
+            this.inputTbox.Location = new System.Drawing.Point(281, 37);
             this.inputTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.inputTbox.Name = "inputTbox";
             this.inputTbox.Size = new System.Drawing.Size(400, 23);
@@ -337,7 +339,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(11, 71);
+            this.label3.Location = new System.Drawing.Point(11, 70);
             this.label3.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(84, 13);
@@ -349,7 +351,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(11, 41);
+            this.label2.Location = new System.Drawing.Point(11, 40);
             this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(160, 13);
@@ -683,7 +685,7 @@
             // 
             this.pictureBox4.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox4.Location = new System.Drawing.Point(177, 38);
+            this.pictureBox4.Location = new System.Drawing.Point(177, 37);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(29, 21);
             this.pictureBox4.TabIndex = 31;
@@ -694,7 +696,7 @@
             // 
             this.pictureBox3.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox3.Location = new System.Drawing.Point(101, 68);
+            this.pictureBox3.Location = new System.Drawing.Point(101, 67);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(29, 21);
             this.pictureBox3.TabIndex = 30;
@@ -705,7 +707,7 @@
             // 
             this.info1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.info1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.info1.Location = new System.Drawing.Point(165, 98);
+            this.info1.Location = new System.Drawing.Point(165, 97);
             this.info1.Name = "info1";
             this.info1.Size = new System.Drawing.Size(29, 21);
             this.info1.TabIndex = 27;
@@ -819,7 +821,7 @@
             // 
             this.pictureBox1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(66, 128);
+            this.pictureBox1.Location = new System.Drawing.Point(66, 127);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(29, 21);
             this.pictureBox1.TabIndex = 28;
@@ -831,7 +833,7 @@
             // 
             this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox2.Location = new System.Drawing.Point(86, 158);
+            this.pictureBox2.Location = new System.Drawing.Point(86, 157);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(29, 21);
             this.pictureBox2.TabIndex = 29;
@@ -1008,6 +1010,8 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.inputInfo);
+            this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
             this.interpOptsTab.Controls.Add(this.browseInputFileBtn);
             this.interpOptsTab.Controls.Add(this.browseInputBtn);
@@ -1042,13 +1046,36 @@
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
+            // inputInfo
+            // 
+            this.inputInfo.AutoSize = true;
+            this.inputInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.inputInfo.ForeColor = System.Drawing.Color.Silver;
+            this.inputInfo.Location = new System.Drawing.Point(280, 190);
+            this.inputInfo.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.inputInfo.Name = "inputInfo";
+            this.inputInfo.Size = new System.Drawing.Size(0, 13);
+            this.inputInfo.TabIndex = 37;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Silver;
+            this.label1.Location = new System.Drawing.Point(11, 190);
+            this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 13);
+            this.label1.TabIndex = 36;
+            this.label1.Text = "Current Input Info";
+            // 
             // browseOutBtn
             // 
             this.browseOutBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.browseOutBtn.FlatAppearance.BorderSize = 0;
             this.browseOutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.browseOutBtn.ForeColor = System.Drawing.Color.White;
-            this.browseOutBtn.Location = new System.Drawing.Point(689, 68);
+            this.browseOutBtn.Location = new System.Drawing.Point(689, 67);
             this.browseOutBtn.Name = "browseOutBtn";
             this.browseOutBtn.Size = new System.Drawing.Size(206, 23);
             this.browseOutBtn.TabIndex = 35;
@@ -1062,7 +1089,7 @@
             this.browseInputFileBtn.FlatAppearance.BorderSize = 0;
             this.browseInputFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.browseInputFileBtn.ForeColor = System.Drawing.Color.White;
-            this.browseInputFileBtn.Location = new System.Drawing.Point(795, 39);
+            this.browseInputFileBtn.Location = new System.Drawing.Point(795, 38);
             this.browseInputFileBtn.Name = "browseInputFileBtn";
             this.browseInputFileBtn.Size = new System.Drawing.Size(100, 23);
             this.browseInputFileBtn.TabIndex = 34;
@@ -1076,7 +1103,7 @@
             this.browseInputBtn.FlatAppearance.BorderSize = 0;
             this.browseInputBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.browseInputBtn.ForeColor = System.Drawing.Color.White;
-            this.browseInputBtn.Location = new System.Drawing.Point(689, 39);
+            this.browseInputBtn.Location = new System.Drawing.Point(689, 38);
             this.browseInputBtn.Name = "browseInputBtn";
             this.browseInputBtn.Size = new System.Drawing.Size(100, 23);
             this.browseInputBtn.TabIndex = 33;
@@ -1382,6 +1409,8 @@
         private System.Windows.Forms.Button runStepBtn;
         private System.Windows.Forms.ComboBox stepSelector;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label inputInfo;
+        private System.Windows.Forms.Label label1;
     }
 }
 

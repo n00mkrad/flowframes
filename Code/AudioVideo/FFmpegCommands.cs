@@ -47,8 +47,9 @@ namespace Flowframes
             string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr } );
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
-            string pad = Padding.inputFrames.ToString();
-            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 -pix_fmt rgb24 {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{pad}d.png\"";
+            bool enableAlpha = (Config.GetBool("enableAlpha", true) && (Path.GetExtension(inputFile).ToLower() == ".gif"));
+            string pixFmt = enableAlpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
+            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{Padding.inputFrames}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode, AvProcess.TaskType.ExtractFrames);
             int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false, "*.png");
@@ -65,12 +66,15 @@ namespace Flowframes
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
             string concatFileContent = "";
-            foreach (string img in IOUtils.GetFilesSorted(inpath))
+            string[] files = IOUtils.GetFilesSorted(inpath);
+            foreach (string img in files)
                 concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
             File.WriteAllText(concatFile, concatFileContent);
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} -pix_fmt rgb24 -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
+            bool enableAlpha = (Config.GetBool("enableAlpha", true) && Path.GetExtension(files.First()).ToLower() == ".gif");
+            string pixFmt = enableAlpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
+            string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} {pixFmt} -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
             AvProcess.LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode, AvProcess.TaskType.ExtractFrames);
             if (delSrc)
