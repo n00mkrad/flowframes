@@ -42,16 +42,12 @@ namespace Flowframes
             int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.png");
             int target = (frames * factor) - (factor - 1);
             InterpolateUtils.progressPaused = false;
+            InterpolateUtils.currentFactor = factor;
 
             if (InterpolateUtils.progCheckRunning)
-            {
-                InterpolateUtils.currentFactor = factor;
                 InterpolateUtils.targetFrames = target;
-            }
             else
-            {
                 InterpolateUtils.GetProgressByFrameAmount(interpPath, target);
-            }
         }
 
         static async Task AiFinished (string aiName)
