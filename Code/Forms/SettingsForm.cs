@@ -64,6 +64,7 @@ namespace Flowframes.Forms
             // General
             ConfigParser.SaveComboxIndex(processingMode);
             ConfigParser.SaveGuiElement(maxVidHeight);
+            ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
             ConfigParser.SaveGuiElement(delLogsOnStartup);
@@ -112,6 +113,7 @@ namespace Flowframes.Forms
             // General
             ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
+            ConfigParser.LoadGuiElement(enableAlpha);
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
             ConfigParser.LoadGuiElement(delLogsOnStartup);
             ConfigParser.LoadGuiElement(keepTempFolder);
@@ -180,6 +182,7 @@ namespace Flowframes.Forms
 
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
         {
+            dedupeSensLabel.Visible = dedupMode.SelectedIndex != 0;
             magickDedupePanel.Visible = dedupMode.SelectedIndex == 1;
             mpDedupePanel.Visible = dedupMode.SelectedIndex == 2;
         }

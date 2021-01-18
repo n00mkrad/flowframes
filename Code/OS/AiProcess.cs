@@ -28,16 +28,30 @@ namespace Flowframes
 
         public static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
 
-        static void AiStarted (Process proc, int startupTimeMs, int factor, string inPath = "")
+        static void AiStarted (Process proc, int startupTimeMs, string inPath = "")
         {
             lastStartupTimeMs = startupTimeMs;
             processTime.Restart();
             currentAiProcess = proc;
             lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.current.framesFolder : inPath;
-            int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.png");
-            InterpolateUtils.currentFactor = factor;
-            InterpolateUtils.targetFrames = (frames * factor) - (factor - 1);
             hasShownError = false;
+        }
+
+        static void SetProgressCheck(string interpPath, int factor)
+        {
+            int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.png");
+            int target = (frames * factor) - (factor - 1);
+            InterpolateUtils.progressPaused = false;
+
+            if (InterpolateUtils.progCheckRunning)
+            {
+                InterpolateUtils.currentFactor = factor;
+                InterpolateUtils.targetFrames = target;
+            }
+            else
+            {
+                InterpolateUtils.GetProgressByFrameAmount(interpPath, target);
+            }
         }
 
         static async Task AiFinished (string aiName)
@@ -70,12 +84,8 @@ namespace Flowframes
 
         public static async Task RunRifeCuda(string framesPath, int interpFactor, string mdl)
         {
-            InterpolateUtils.GetProgressByFrameAmount(Interpolate.current.interpFolder, Interpolate.current.GetTargetFrameCount(framesPath, interpFactor));
-
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "inference_video.py";
-            string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
-            string args = $" --input {framesPath.Wrap()} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {Paths.interpDir}";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
             {
@@ -83,12 +93,38 @@ namespace Flowframes
                 return;
             }
 
+            await RunRifeCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                InterpolateUtils.progressPaused = true;
+                Logger.Log("Interpolating alpha channel...");
+                await RunRifeCudaProcess(framesPath + "-a", Paths.interpDir + "-a", script, interpFactor, mdl);
+            }
+
+            await AiFinished("RIFE");
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                Logger.Log("Processing alpha...");
+                string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
+                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, rgbInterpDir + "-a", Padding.interpFrames);
+            }
+        }
+
+        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, int interpFactor, string mdl)
+        {
+            string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
+            string args = $" --input {inPath.Wrap()} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {outDir}";
+            
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(rifePy, 3500, Interpolate.current.interpFactor);
+            AiStarted(rifePy, 3500);
+            SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE {(await InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
+
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifePy.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-cuda-log"); };
@@ -100,11 +136,11 @@ namespace Flowframes
                 rifePy.BeginOutputReadLine();
                 rifePy.BeginErrorReadLine();
             }
+
             while (!rifePy.HasExited) await Task.Delay(1);
-            AiFinished("RIFE");
         }
 
-        public static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
+        public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
         {
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
@@ -113,7 +149,7 @@ namespace Flowframes
             if(factor > 2)
                 AutoEncode.paused = true;  // Disable autoenc until the last iteration
 
-            await RunRifePartial(framesPath, outPath, mdl);
+            await RunRifeNcnnProcess(framesPath, outPath, mdl);
 
             if (factor == 4 || factor == 8)    // #2
             {
@@ -125,7 +161,7 @@ namespace Flowframes
                 Directory.CreateDirectory(outPath);
                 if (useAutoEnc && factor == 4)
                     AutoEncode.paused = false;
-                await RunRifePartial(run1ResultsPath, outPath, mdl);
+                await RunRifeNcnnProcess(run1ResultsPath, outPath, mdl);
                 IOUtils.TryDeleteIfExists(run1ResultsPath);
             }
 
@@ -139,7 +175,7 @@ namespace Flowframes
                 Directory.CreateDirectory(outPath);
                 if (useAutoEnc && factor == 8)
                     AutoEncode.paused = false;                    
-                await RunRifePartial(run2ResultsPath, outPath, mdl);
+                await RunRifeNcnnProcess(run2ResultsPath, outPath, mdl);
                 IOUtils.TryDeleteIfExists(run2ResultsPath);
             }
 
@@ -151,12 +187,11 @@ namespace Flowframes
             AiFinished("RIFE");
         }
 
-        static async Task RunRifePartial(string inPath, string outPath, string mdl)
+        static async Task RunRifeNcnnProcess(string inPath, string outPath, string mdl)
         {
-            InterpolateUtils.GetProgressByFrameAmount(Interpolate.current.interpFolder, Interpolate.current.GetTargetFrameCount(inPath, 2));
-
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(rifeNcnn, 1500, 2, inPath);
+            AiStarted(rifeNcnn, 1500, inPath);
+            SetProgressCheck(outPath, 2);
 
             string uhdStr = await InterpolateUtils.UseUHD() ? "-u" : "";
 

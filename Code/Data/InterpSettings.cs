@@ -30,6 +30,8 @@ namespace Flowframes
         public Size inputResolution;
         public Size scaledResolution;
 
+        public bool alpha;
+
         public InterpSettings(string inPathArg, string outPathArg, AI aiArg, float inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
         {
             inPath = inPathArg;
@@ -40,6 +42,8 @@ namespace Flowframes
             outFps = inFpsArg * interpFactorArg;
             outMode = outModeArg;
             model = modelArg;
+
+            alpha = false;
 
             try
             {

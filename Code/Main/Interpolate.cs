@@ -43,13 +43,7 @@ namespace Flowframes
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
-
-            if (!current.inputIsFrames)        // Input is video - extract frames first
-                await ExtractFrames(current.inPath, current.framesFolder);
-            else
-                await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, await Utils.GetOutputResolution(current.inPath, true));
-
-            await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
+            await GetFrames();
             if (canceled) return;
             sw.Restart();
             await PostProcessFrames();
@@ -67,7 +61,21 @@ namespace Flowframes
             Program.mainForm.SetStatus("Done interpolating!");
         }
 
-        public static async Task ExtractFrames(string inPath, string outPath, bool allowSceneDetect = true, bool extractAudio = true)
+        public static async Task GetFrames ()
+        {
+            if (!current.inputIsFrames)        // Input is video - extract frames first
+            {
+                current.alpha = (Config.GetBool("enableAlpha", true) && (Path.GetExtension(current.inPath).ToLower() == ".gif"));
+                await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
+            }
+            else
+            {
+                current.alpha = (Config.GetBool("enableAlpha", true) && Path.GetExtension(IOUtils.GetFilesSorted(current.inPath).First()).ToLower() == ".gif");
+                await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
+            }
+        }
+
+        public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool allowSceneDetect = true, bool extractAudio = true)
         {
             if (Config.GetBool("scnDetect"))
             {
@@ -78,7 +86,7 @@ namespace Flowframes
 
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
-            await FFmpegCommands.VideoToFrames(inPath, outPath, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true), false);
+            await FFmpegCommands.VideoToFrames(inPath, outPath, alpha, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true), false);
 
             if (mpdecimate)
             {
@@ -126,6 +134,7 @@ namespace Flowframes
 
             if (canceled) return;
 
+            await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
             await FrameOrder.CreateTimecodeFiles(current.framesFolder, FrameOrder.Mode.CFR, Config.GetBool("enableLoop"), current.interpFactor, false);
 
             if (canceled) return;
@@ -139,7 +148,7 @@ namespace Flowframes
             await ModelDownloader.DownloadModelFiles(Path.GetFileNameWithoutExtension(ai.pkg.fileName), current.model);
             if (canceled) return;
 
-            currentlyUsingAutoEnc = Utils.UseAutoEnc(stepByStep, current);
+            currentlyUsingAutoEnc = Utils.CanUseAutoEnc(stepByStep, current);
 
             IOUtils.CreateDir(outpath);
 
@@ -149,7 +158,7 @@ namespace Flowframes
                 tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnnMulti(current.framesFolder, outpath, current.interpFactor, current.model));
+                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, current.interpFactor, current.model));
 
             if (currentlyUsingAutoEnc)
             {

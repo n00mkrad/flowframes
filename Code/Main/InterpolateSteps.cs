@@ -42,10 +42,7 @@ namespace Flowframes.Main
 
             if (step.Contains("Extract Frames"))
             {
-                if (!current.inputIsFrames)        // Input is video - extract frames first
-                    await ExtractVideoFrames();
-                else
-                    await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, await InterpolateUtils.GetOutputResolution(current.inPath, true));
+                await GetFrames();
             }
 
             if (step.Contains("Run Interpolation"))

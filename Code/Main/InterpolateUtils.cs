@@ -59,21 +59,26 @@ namespace Flowframes.Main
         }
 
         public static int targetFrames;
+        public static string currentOutdir;
         public static int currentFactor;
+        public static bool progressPaused = false;
+        public static bool progCheckRunning = false;
         public static async void GetProgressByFrameAmount(string outdir, int target)
         {
-            Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{outdir}', target is {target} frames", true);
+            progCheckRunning = true;
+            targetFrames = target;
+            currentOutdir = outdir;
+            Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
-            targetFrames = target;
             while (Program.busy)
             {
-                if (AiProcess.processTime.IsRunning && Directory.Exists(outdir))
+                if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
                 {
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
                     firstProgUpd = false;
-                    string[] frames = IOUtils.GetFilesSorted(outdir, $"*.{GetOutExt()}");
+                    string[] frames = IOUtils.GetFilesSorted(currentOutdir, $"*.{GetOutExt()}");
                     if (frames.Length > 1)
                         UpdateInterpProgress(frames.Length, targetFrames, frames[frames.Length - 1]);
                     if (frames.Length >= targetFrames)
@@ -85,6 +90,7 @@ namespace Flowframes.Main
                     await Task.Delay(200);
                 }
             }
+            progCheckRunning = false;
         }
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
@@ -361,11 +367,17 @@ namespace Flowframes.Main
             return (n - a > b - n) ? b : a; // Return of closest of two
         }
 
-        public static bool UseAutoEnc (bool stepByStep, InterpSettings current)
+        public static bool CanUseAutoEnc (bool stepByStep, InterpSettings current)
         {
             AutoEncode.UpdateChunkAndBufferSizes();
 
-            if (!current.outMode.ToString().ToLower().Contains("vid"))
+            if (current.alpha)
+            {
+                Logger.Log($"Not Using AutoEnc: Alpha mode is enabled.", true);
+                return false;
+            }
+
+            if (!current.outMode.ToString().ToLower().Contains("vid") || current.outMode.ToString().ToLower().Contains("gif"))
             {
                 Logger.Log($"Not Using AutoEnc: Out Mode is not video ({current.outMode.ToString()})", true);
                 return false;

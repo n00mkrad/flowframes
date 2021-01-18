@@ -25,41 +25,40 @@ namespace Flowframes
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath, float rate)
         {
             Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, rate, false, false, new Size(320, 180), false, true);
+            await VideoToFrames(inputFile, frameFolderPath, false, rate, false, false, new Size(320, 180), false, true);
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
             int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false);
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, float rate, bool deDupe, bool delSrc, bool timecodes = true)
+        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, bool timecodes = true)
         {
-            await VideoToFrames(inputFile, frameFolderPath, rate, deDupe, delSrc, new Size(), timecodes);
+            await VideoToFrames(inputFile, framesDir, alpha, rate, deDupe, delSrc, new Size(), timecodes);
         }
 
-        public static async Task VideoToFrames(string inputFile, string frameFolderPath, float rate, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
+        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
         {
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            IOUtils.CreateDir(frameFolderPath);
+            IOUtils.CreateDir(framesDir);
             string timecodeStr = timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
             string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr } );
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
-            bool enableAlpha = (Config.GetBool("enableAlpha", true) && (Path.GetExtension(inputFile).ToLower() == ".gif"));
-            string pixFmt = enableAlpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} \"{frameFolderPath}/%{Padding.inputFrames}d.png\"";
+            string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
+            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} \"{framesDir}/%{Padding.inputFrames}d.png\"";
             AvProcess.LogMode logMode = Interpolate.currentInputFrameCount > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode, AvProcess.TaskType.ExtractFrames);
-            int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false, "*.png");
+            int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*.png");
             if (!sceneDetect) Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
             await Task.Delay(1);
             if (delSrc)
                 DeleteSource(inputFile);
         }
 
-        public static async Task ImportImages(string inpath, string outpath, Size size, bool delSrc = false, bool showLog = true)
+        public static async Task ImportImages(string inpath, string outpath, bool alpha, Size size, bool delSrc = false, bool showLog = true)
         {
             if (showLog) Logger.Log("Importing images...");
             Logger.Log($"Importing images from {inpath} to {outpath}.");
@@ -72,8 +71,7 @@ namespace Flowframes
             File.WriteAllText(concatFile, concatFileContent);
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            bool enableAlpha = (Config.GetBool("enableAlpha", true) && Path.GetExtension(files.First()).ToLower() == ".gif");
-            string pixFmt = enableAlpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
+            string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
             string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} {pixFmt} -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
             AvProcess.LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? AvProcess.LogMode.OnlyLastLine : AvProcess.LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode, AvProcess.TaskType.ExtractFrames);
@@ -154,24 +152,19 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine, AvProcess.TaskType.Encode);
         }
 
+        public static async Task MergeAlphaIntoRgb (string rgbDir, int rgbPad, string alphaDir, int aPad)
+        {
+            string filter = "-filter_complex [0:v:0][1:v:0]alphamerge[out] -map [out]";
+            string args = $"-i \"{rgbDir}/%{rgbPad}d.png\" -i \"{alphaDir}/%{aPad}d.png\" {filter} \"{rgbDir}/%{rgbPad}d.png\"";
+            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+        }
+
         public static async Task LoopVideo(string inputFile, int times, bool delSrc = false)
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
             string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy \"{pathNoExt}-Loop{times}{ext}\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
-            if (delSrc)
-                DeleteSource(inputFile);
-        }
-
-        public static async Task LoopVideoEnc(string inputFile, int times, bool useH265, int crf, bool delSrc = false)
-        {
-            string pathNoExt = Path.ChangeExtension(inputFile, null);
-            string ext = Path.GetExtension(inputFile);
-            string enc = "libx264";
-            if (useH265) enc = "libx265";
-            string args = " -stream_loop " + times + " -i \"" + inputFile + "\"  -c:v " + enc + " -crf " + crf + " -c:a copy \"" + pathNoExt + "-" + times + "xLoop" + ext + "\"";
-            await AvProcess.RunFfmpeg(args, AvProcess.LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputFile);
         }
