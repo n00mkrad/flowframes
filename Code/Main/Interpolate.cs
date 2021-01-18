@@ -134,7 +134,9 @@ namespace Flowframes
 
             if (canceled) return;
 
-            await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
+            if(current.alpha)
+                await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
+
             await FrameOrder.CreateTimecodeFiles(current.framesFolder, FrameOrder.Mode.CFR, Config.GetBool("enableLoop"), current.interpFactor, false);
 
             if (canceled) return;
