@@ -24,6 +24,8 @@ Sample size means how many frames have been interpolated at the time you measure
 | RTX 3070 8 GB [cuDNN 8.05] | 1.19 | 1280x720p - 2x | NVME SSD | >1400       | 33 FPS          |
 | GTX 1070 8 GB              | 1.21 | 1920x1080 - 2x | NVME SSD | >1600       | 9.2 FPS         |
 | GTX 1070 8 GB              | 1.21 | 1280x720p - 2x | NVME SSD | >1600       | 18.2 FPS        |
+| RTX 2060 KO 6 GB           | 1.19 | 1920x1080 - 2x | SATA SSD | 1800        | 12.1 FPS        |
+| RTX 2060 KO 6 GB           | 1.19 | 1280x720p - 2x | SATA SSD | 1800        | 24 FPS          |
 
 ## RIFE-NCNN
 
