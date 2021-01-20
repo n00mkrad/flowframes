@@ -167,7 +167,7 @@ namespace Flowframes.Main
         public static async Task CreateEncFile (string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun)
         {
             if (Interpolate.canceled) return;
-            Logger.Log($"Generating timecodes for {interpFactor}x...", false, true);
+            Logger.Log($"Generating frame order information for {interpFactor}x...", false, true);
 
             bool loop = Config.GetBool("enableLoop");
             bool sceneDetection = true;
@@ -186,9 +186,9 @@ namespace Flowframes.Main
             if (Directory.Exists(scnFramesPath))
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
 
-            bool debug = false;
+            bool debug = Config.GetBool("frameOrderDebug", false);
 
-            int totalFileCount = 1;
+            int totalFileCount = 0;
             for (int i = 0; i < (frameFiles.Length - 1); i++)
             {
                 if (Interpolate.canceled) return;
@@ -216,23 +216,23 @@ namespace Flowframes.Main
                         int lastNum = totalFileCount;
 
                         //if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}] [DiscardNext]");
                         totalFileCount++;
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}] [DiscardNext]");
 
                         //if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
                             if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}", true);
-                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
                             totalFileCount++;
+                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
                         }
 
                         frm = interpFramesAmount;
                     }
                     else
                     {
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]");
                         totalFileCount++;
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]");
                     }
                 }
 
@@ -240,14 +240,11 @@ namespace Flowframes.Main
                     await Task.Delay(1);
             }
 
-            if(debug) Logger.Log("target: " + ((frameFiles.Length * interpFactor) - (interpFactor - 1)), true);
-            if(debug) Logger.Log("totalFileCount: " + totalFileCount, true);
+            // if(debug) Logger.Log("target: " + ((frameFiles.Length * interpFactor) - (interpFactor - 1)), true);
+            // if(debug) Logger.Log("totalFileCount: " + totalFileCount, true);
 
-            if (totalFileCount < (frameFiles.Length * interpFactor) - (interpFactor - 1))
-            {
-                fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
-                totalFileCount++;
-            }
+            totalFileCount++;
+            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
 
             string finalFileContent = fileContent.Trim();
             if(loop)
