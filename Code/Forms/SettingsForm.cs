@@ -58,12 +58,10 @@ namespace Flowframes.Forms
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
-            // Force numbers...
-            ffEncThreads.Text = ffEncThreads.GetInt().ToString();
 
             // General
             ConfigParser.SaveComboxIndex(processingMode);
-            ConfigParser.SaveGuiElement(maxVidHeight);
+            ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
@@ -86,6 +84,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(ncnnGpus);
             ConfigParser.SaveGuiElement(ncnnThreads);
             ConfigParser.SaveGuiElement(uhdThresh);
+            ConfigParser.SaveGuiElement(dainNcnnTilesize, ConfigParser.StringMode.Int);
             // Video Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(mp4Enc);
@@ -102,7 +101,7 @@ namespace Flowframes.Forms
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveGuiElement(autoDedupFrames);
-            ConfigParser.SaveGuiElement(ffEncThreads);
+            ConfigParser.SaveGuiElement(ffEncThreads, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffEncArgs);
             ConfigParser.SaveGuiElement(ffprobeCountFrames);
@@ -135,6 +134,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ncnnGpus);
             ConfigParser.LoadGuiElement(ncnnThreads);
             ConfigParser.LoadGuiElement(uhdThresh);
+            ConfigParser.LoadGuiElement(dainNcnnTilesize);
             // Video Export
             ConfigParser.LoadGuiElement(minOutVidLength);
             ConfigParser.LoadComboxIndex(mp4Enc);

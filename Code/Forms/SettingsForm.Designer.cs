@@ -54,6 +54,9 @@
             this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.enableAlpha = new System.Windows.Forms.CheckBox();
+            this.label25 = new System.Windows.Forms.Label();
             this.keepSubs = new System.Windows.Forms.CheckBox();
             this.scnDetectValue = new System.Windows.Forms.NumericUpDown();
             this.sbsAllowAutoEnc = new System.Windows.Forms.CheckBox();
@@ -153,9 +156,11 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label25 = new System.Windows.Forms.Label();
-            this.enableAlpha = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.dainNcnnTilesize = new System.Windows.Forms.ComboBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -330,7 +335,7 @@
             this.tempDirCustom.Location = new System.Drawing.Point(486, 67);
             this.tempDirCustom.MinimumSize = new System.Drawing.Size(4, 21);
             this.tempDirCustom.Name = "tempDirCustom";
-            this.tempDirCustom.Size = new System.Drawing.Size(212, 21);
+            this.tempDirCustom.Size = new System.Drawing.Size(212, 20);
             this.tempDirCustom.TabIndex = 69;
             // 
             // keepTempFolder
@@ -481,6 +486,36 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.Silver;
+            this.label4.Location = new System.Drawing.Point(308, 70);
+            this.label4.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(300, 13);
+            this.label4.TabIndex = 78;
+            this.label4.Text = "Enables Transparency (Alpha) support for GIFs and PNG input";
+            // 
+            // enableAlpha
+            // 
+            this.enableAlpha.AutoSize = true;
+            this.enableAlpha.Location = new System.Drawing.Point(280, 70);
+            this.enableAlpha.Name = "enableAlpha";
+            this.enableAlpha.Size = new System.Drawing.Size(15, 14);
+            this.enableAlpha.TabIndex = 77;
+            this.enableAlpha.UseVisualStyleBackColor = true;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(10, 70);
+            this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(108, 13);
+            this.label25.TabIndex = 76;
+            this.label25.Text = "Enable Transparency";
             // 
             // keepSubs
             // 
@@ -783,6 +818,11 @@
             // aiOptsPage
             // 
             this.aiOptsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.aiOptsPage.Controls.Add(this.label35);
+            this.aiOptsPage.Controls.Add(this.panel12);
+            this.aiOptsPage.Controls.Add(this.dainNcnnTilesize);
+            this.aiOptsPage.Controls.Add(this.label27);
+            this.aiOptsPage.Controls.Add(this.label26);
             this.aiOptsPage.Controls.Add(this.ncnnThreads);
             this.aiOptsPage.Controls.Add(this.label30);
             this.aiOptsPage.Controls.Add(this.panel6);
@@ -1741,35 +1781,67 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label25
+            // label26
             // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(10, 70);
-            this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(108, 13);
-            this.label25.TabIndex = 76;
-            this.label25.Text = "Enable Transparency";
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label26.Location = new System.Drawing.Point(10, 230);
+            this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(152, 16);
+            this.label26.TabIndex = 76;
+            this.label26.Text = "DAIN-NCNN Settings";
             // 
-            // enableAlpha
+            // panel12
             // 
-            this.enableAlpha.AutoSize = true;
-            this.enableAlpha.Location = new System.Drawing.Point(280, 70);
-            this.enableAlpha.Name = "enableAlpha";
-            this.enableAlpha.Size = new System.Drawing.Size(15, 14);
-            this.enableAlpha.TabIndex = 77;
-            this.enableAlpha.UseVisualStyleBackColor = true;
+            this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel12.Location = new System.Drawing.Point(378, 257);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(21, 21);
+            this.panel12.TabIndex = 78;
+            this.toolTip1.SetToolTip(this.panel12, "Allows custom input.");
             // 
-            // label4
+            // dainNcnnTilesize
             // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.Silver;
-            this.label4.Location = new System.Drawing.Point(308, 70);
-            this.label4.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(300, 13);
-            this.label4.TabIndex = 78;
-            this.label4.Text = "Enables Transparency (Alpha) support for GIFs and PNG input";
+            this.dainNcnnTilesize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.dainNcnnTilesize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dainNcnnTilesize.ForeColor = System.Drawing.Color.White;
+            this.dainNcnnTilesize.FormattingEnabled = true;
+            this.dainNcnnTilesize.Items.AddRange(new object[] {
+            "256",
+            "384",
+            "512",
+            "768",
+            "1024",
+            "1536",
+            "2048"});
+            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 257);
+            this.dainNcnnTilesize.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.dainNcnnTilesize.Name = "dainNcnnTilesize";
+            this.dainNcnnTilesize.Size = new System.Drawing.Size(87, 21);
+            this.dainNcnnTilesize.TabIndex = 79;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(10, 260);
+            this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(47, 13);
+            this.label27.TabIndex = 77;
+            this.label27.Text = "Tile Size";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.ForeColor = System.Drawing.Color.Silver;
+            this.label35.Location = new System.Drawing.Point(412, 261);
+            this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(258, 13);
+            this.label35.TabIndex = 80;
+            this.label35.Text = "Lower values decrease VRAM usage but also speed.";
             // 
             // SettingsForm
             // 
@@ -1937,5 +2009,10 @@
         private System.Windows.Forms.CheckBox enableAlpha;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Panel panel12;
+        private System.Windows.Forms.ComboBox dainNcnnTilesize;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label26;
     }
 }
