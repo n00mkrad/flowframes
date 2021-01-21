@@ -294,7 +294,8 @@ namespace Flowframes
             if (!hasShownError && (line.Contains("vkQueueSubmit failed") || line.Contains("vkAllocateMemory failed")))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}", "Error");
+                string dain = (Interpolate.current.ai.aiName == Networks.dainNcnn.aiName) ? "\n\nTry reducing the tile size in the AI settings." : "";
+                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}{dain}", "Error");
             }
 
             if (!hasShownError && line.Contains("invalid gpu device"))
