@@ -142,8 +142,9 @@ namespace Flowframes.IO
             if (key == "gifColors")     return WriteDefault(key, "128 (High)");
             if (key == "minVidLength")  return WriteDefault(key, "2");
             // AI
-            if (key == "uhdThresh") return WriteDefault(key, "1440");
-            if (key == "ncnnThreads")   return WriteDefault(key, "1");
+            if (key == "uhdThresh")         return WriteDefault(key, "1440");
+            if (key == "ncnnThreads")       return WriteDefault(key, "1");
+            if (key == "dainNcnnTilesize")  return WriteDefault(key, "768");
             // Debug / Other / Experimental
             if (key == "ffEncPreset")           return WriteDefault(key, "medium");
             if (key == "ffEncArgs")             return WriteDefault(key, "");
