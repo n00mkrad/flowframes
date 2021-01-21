@@ -1,5 +1,5 @@
 # Flowframes - Windows GUI for Video Interpolation
-Flowframes Windows GUI for video interpolation - Supports RIFE Pytorch and NCNN implementations.
+Flowframes Windows GUI for video interpolation - Supports DAIN NCNN as well as RIFE Pytorch and NCNN implementations.
 
 Flowframes is **open-source donationware**. Builds are released for free on itch after an early-access period on Patreon. This repo's code is complete and does not "paywall" experienced users who want to compile the program themselves.
 
