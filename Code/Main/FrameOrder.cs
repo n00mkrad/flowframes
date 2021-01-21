@@ -94,17 +94,16 @@ namespace Flowframes.Main
 
                     if (discardThisFrame)     // If frame is scene cut frame
                     {
-                        int lastNum = totalFileCount;
-
                         //if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
                         totalFileCount++;
+                        int lastNum = totalFileCount;
                         fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}] [DiscardNext]");
 
                         //if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
-                            if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}", true);
                             totalFileCount++;
+                            if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}", true);
                             fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
                         }
 

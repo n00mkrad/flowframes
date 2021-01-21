@@ -160,6 +160,7 @@ namespace Flowframes.Main
         static int GetChunkSize(int targetFramesAmount)
         {
             if (targetFramesAmount > 50000) return 2000;
+            if (targetFramesAmount > 25000) return 1000;
             if (targetFramesAmount > 5000) return 500;
             if (targetFramesAmount > 1000) return 200;
             return 100;

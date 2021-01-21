@@ -97,7 +97,8 @@ namespace Flowframes
                 Logger.Log($"[Deduplication] Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.");
             }
 
-            Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
+            if(!Config.GetBool("allowConsecutiveSceneChanges", true))
+                Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
             if (extractAudio)
             {
