@@ -124,7 +124,7 @@ namespace Flowframes
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifePy.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-cuda-log"); };
-                rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log"); };
+                rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log", true); };
             }
             rifePy.Start();
             if (!OSUtils.ShowHiddenCmd())
@@ -200,7 +200,7 @@ namespace Flowframes
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log"); };
-                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log"); };
+                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log", true); };
             }
 
             rifeNcnn.Start();
@@ -234,7 +234,7 @@ namespace Flowframes
             if (!OSUtils.ShowHiddenCmd())
             {
                 dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "dain-ncnn-log"); };
-                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log"); };
+                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log", true); };
             }
 
             dain.Start();
@@ -255,7 +255,7 @@ namespace Flowframes
             AiFinished("DAIN");
         }
 
-        static void LogOutput (string line, string logFilename)
+        static void LogOutput (string line, string logFilename, bool err = false)
         {
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
@@ -265,16 +265,16 @@ namespace Flowframes
             if (line.Contains("ff:nocuda-cpu"))
                 Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
-            if (!hasShownError && line.ToLower().Contains("out of memory"))
+            if (!hasShownError && err && line.ToLower().Contains("out of memory"))
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}", "Error");
             }
 
-            if (!hasShownError && line.ToLower().Contains("modulenotfounderror"))
+            if (!hasShownError && err && line.ToLower().Contains("modulenotfounderror"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}\n\nIf you don't want to install it yourself, use the Python package from the Package Installer.", "Error");
+                InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}", "Error");
                 if(!Python.HasEmbeddedPyFolder())
                     Process.Start("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md");
             }
@@ -285,20 +285,28 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
             }
 
-            if (!hasShownError && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
+            if (!hasShownError && err && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A python error occured during interpolation!\nCheck {logFilename} for details.\n\n{line}", "Error");
             }
 
-            if (!hasShownError && (line.Contains("vkQueueSubmit failed") || line.Contains("vkAllocateMemory failed")))
+            if (!hasShownError && err && line.Contains("vk") && line.Contains(" failed"))
             {
                 hasShownError = true;
                 string dain = (Interpolate.current.ai.aiName == Networks.dainNcnn.aiName) ? "\n\nTry reducing the tile size in the AI settings." : "";
                 InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}{dain}", "Error");
             }
 
-            if (!hasShownError && line.Contains("invalid gpu device"))
+            if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
+            {
+                hasShownError = true;
+                bool usingDain = (Interpolate.current.ai.aiName == Networks.dainNcnn.aiName);
+                string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "Try a lower resolution (Settings -> Max Video Size).";
+                InterpolateUtils.ShowMessage($"Vulkan ran out of memory!\n\n{line}{msg}", "Error");
+            }
+
+            if (!hasShownError && err && line.Contains("invalid gpu device"))
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?", "Error");
