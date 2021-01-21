@@ -193,7 +193,7 @@ namespace Flowframes
             string ttaStr = Config.GetBool("rifeNcnnUseTta", false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get("ncnnGpus")} -f {InterpolateUtils.GetOutExt()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
             
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
            
@@ -212,6 +212,47 @@ namespace Flowframes
             }
 
             while (!rifeNcnn.HasExited) await Task.Delay(1);
+        }
+
+        public static async Task RunDainNcnn(string framesPath, string outPath, int factor, string mdl, int tilesize)
+        {
+            string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
+            Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+
+            AiStarted(dain, 1500);
+            SetProgressCheck(outPath, factor);
+
+            int targetFrames = (IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor) - (factor - 1);
+
+            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
+                $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j 2:1:2";
+
+            dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
+            Logger.Log("Running DAIN...", false);
+            Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
+
+            if (!OSUtils.ShowHiddenCmd())
+            {
+                dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "dain-ncnn-log"); };
+                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "dain-ncnn-log"); };
+            }
+
+            dain.Start();
+            if (!OSUtils.ShowHiddenCmd())
+            {
+                dain.BeginOutputReadLine();
+                dain.BeginErrorReadLine();
+            }
+
+            while (!dain.HasExited)
+                await Task.Delay(1);
+
+            if (Interpolate.canceled) return;
+
+            //if (!Interpolate.currentlyUsingAutoEnc)
+            //    IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
+
+            AiFinished("DAIN");
         }
 
         static void LogOutput (string line, string logFilename)
@@ -264,6 +305,11 @@ namespace Flowframes
 
             if (hasShownError)
                 Interpolate.Cancel();
+        }
+
+        static string GetNcnnPattern ()
+        {
+            return $"%0{Padding.interpFrames}d.{InterpolateUtils.GetOutExt()}";
         }
 
         static string GetNcnnTilesize(int tilesize)

@@ -92,6 +92,7 @@ namespace Flowframes.IO
 
         public static async Task DownloadModelFiles (string ai, string model)
         {
+            model = model.ToUpper();
             Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {model})", true);
 
             try
@@ -162,9 +163,9 @@ namespace Flowframes.IO
 
             string md5FilePath = Path.Combine(mdlDir, "md5.txt");
 
-            if (!File.Exists(md5FilePath))
+            if (!File.Exists(md5FilePath) || IOUtils.GetFilesize(md5FilePath) < 32)
             {
-                Logger.Log($"Files for model {model} not valid: {mdlDir} does not exist.", true);
+                Logger.Log($"Files for model {model} not valid: {mdlDir} does not exist or is incomplete.", true);
                 return false;
             }
 

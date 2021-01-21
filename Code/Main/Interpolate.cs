@@ -162,6 +162,9 @@ namespace Flowframes
             if (ai.aiName == Networks.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, current.interpFactor, current.model));
 
+            if (ai.aiName == Networks.dainNcnn.aiName)
+                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model, Config.GetInt("dainNcnnTilesize", 512)));
+
             if (currentlyUsingAutoEnc)
             {
                 Logger.Log($"{Logger.GetLastLine()} (Using Auto-Encode)", true);

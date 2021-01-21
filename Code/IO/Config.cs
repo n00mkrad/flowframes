@@ -65,9 +65,7 @@ namespace Flowframes.IO
                 {
                     string[] keyValuePair = cachedLines[i].Split('|');
                     if (keyValuePair[0] == key && !string.IsNullOrWhiteSpace(keyValuePair[1]))
-                    {
                         return keyValuePair[1];
-                    }
                 }
                 return WriteDefaultValIfExists(key, type);
             }
