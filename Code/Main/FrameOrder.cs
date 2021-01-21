@@ -17,15 +17,12 @@ namespace Flowframes.Main
         public enum Mode { CFR, VFR }
         public static int timebase = 10000;
 
-        public static async Task CreateFrameOrderFile(string framesPath, Mode mode, bool loopEnabled, int times, bool noTimestamps)
+        public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, int times)
         {
             Logger.Log("Generating frame order information...");
             try
             {
-                if (mode == Mode.VFR)
-                    await CreateTimecodeFile(framesPath, loopEnabled, times, false, noTimestamps);
-                if (mode == Mode.CFR)
-                    await CreateEncFile(framesPath, loopEnabled, times, false);
+                await CreateEncFile(framesPath, loopEnabled, times, false);
                 Logger.Log($"Generating frame order information... Done.", false, true);
             }
             catch (Exception e)
