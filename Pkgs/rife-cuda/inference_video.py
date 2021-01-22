@@ -39,6 +39,7 @@ parser.add_argument('--input', dest='input', type=str, default=None)
 parser.add_argument('--output', required=False, default='frames-interpolated')
 parser.add_argument('--model', required=False, default='models')
 parser.add_argument('--imgformat', default="png")
+parser.add_argument('--wthreads', dest='wthreads', type=int, default=4)
 parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
 parser.add_argument('--exp', dest='exp', type=int, default=1)
 args = parser.parse_args()
@@ -55,6 +56,8 @@ name = os.path.basename(path)
 interp_output_path = (args.output).join(path.rsplit(name, 1))
 print("\ninterp_output_path: " + interp_output_path)
 
+cnt = 1
+
 videogen = []
 for f in os.listdir(args.input):
     if 'png' in f:
@@ -68,19 +71,21 @@ vid_out = None
 if not os.path.exists(interp_output_path):
     os.mkdir(interp_output_path)
     
-def clear_write_buffer(user_args, write_buffer):
-    cnt = 1
+
+def clear_write_buffer(user_args, write_buffer, thread_id):
     while True:
         item = write_buffer.get()
         if item is None:
             break
-        print('=> {:0>8d}.{}'.format(cnt, args.imgformat))
-        cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, cnt, args.imgformat), item[:, :, ::-1])
-        cnt += 1
+        frameNum = item[0]
+        img = item[1]
+        print('[T{}] => {:0>8d}.{}'.format(thread_id, frameNum, args.imgformat))
+        cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, frameNum, args.imgformat), img[:, :, ::-1], [cv2.IMWRITE_PNG_COMPRESSION, 2])
 
 def build_read_buffer(user_args, read_buffer, videogen):
     for frame in videogen:
         if not user_args.input is None:
+            #print("Loading input frame " + str(frame))
             frame = cv2.imread(os.path.join(user_args.input, frame))[:, :, ::-1].copy()
         read_buffer.put(frame)
     read_buffer.put(None)
@@ -102,12 +107,13 @@ else:
     ph = ((h - 1) // 32 + 1) * 32
     pw = ((w - 1) // 32 + 1) * 32
 padding = (0, pw - w, 0, ph - h)
-skip_frame = 1
 
-write_buffer = Queue(maxsize=200)
-read_buffer = Queue(maxsize=200)
+write_buffer = Queue(maxsize=160)
+read_buffer = Queue(maxsize=160)
 _thread.start_new_thread(build_read_buffer, (args, read_buffer, videogen))
-_thread.start_new_thread(clear_write_buffer, (args, write_buffer))
+
+for x in range(args.wthreads):
+    _thread.start_new_thread(clear_write_buffer, (args, write_buffer, x))
 
 I1 = torch.from_numpy(np.transpose(lastframe, (2,0,1))).to(device, non_blocking=True).unsqueeze(0).float() / 255.
 I1 = F.pad(I1, padding)
@@ -121,18 +127,20 @@ while True:
     I1 = F.pad(I1, padding)
 
     output = make_inference(I0, I1, args.exp)
-    write_buffer.put(lastframe)
+    write_buffer.put([cnt, lastframe])
+    cnt += 1
     for mid in output:
         mid = (((mid[0] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))
-        write_buffer.put(mid[:h, :w])
+        # print(f"Adding #{cnt} to buffer.")
+        write_buffer.put([cnt, mid[:h, :w]])
+        cnt += 1
 
     lastframe = frame
-write_buffer.put(lastframe)
+write_buffer.put([cnt, lastframe])
 import time
 while(not write_buffer.empty()):
-    time.sleep(0.1)
-if not vid_out is None:
-    vid_out.release()
+    time.sleep(0.2)
+time.sleep(0.5)
     
     
     
