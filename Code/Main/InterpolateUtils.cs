@@ -73,7 +73,7 @@ namespace Flowframes.Main
             Program.mainForm.SetProgress(0);
             while (Program.busy)
             {
-                if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
+                if (!progressPaused && AiProcess.processTime.IsRunning && !i.canceled && Directory.Exists(currentOutdir))
                 {
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
@@ -91,6 +91,8 @@ namespace Flowframes.Main
                 }
             }
             progCheckRunning = false;
+            if (i.canceled)
+                Program.mainForm.SetProgress(0);
         }
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
