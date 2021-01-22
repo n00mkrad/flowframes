@@ -65,12 +65,12 @@ namespace Flowframes
         {
             if (!current.inputIsFrames)        // Input is video - extract frames first
             {
-                current.alpha = (Config.GetBool("enableAlpha", true) && (Path.GetExtension(current.inPath).ToLower() == ".gif"));
+                current.alpha = (Config.GetBool("enableAlpha", false) && (Path.GetExtension(current.inPath).ToLower() == ".gif"));
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             }
             else
             {
-                current.alpha = (Config.GetBool("enableAlpha", true) && Path.GetExtension(IOUtils.GetFilesSorted(current.inPath).First()).ToLower() == ".gif");
+                current.alpha = (Config.GetBool("enableAlpha", false) && Path.GetExtension(IOUtils.GetFilesSorted(current.inPath).First()).ToLower() == ".gif");
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
             }
         }

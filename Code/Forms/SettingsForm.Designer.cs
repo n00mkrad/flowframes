@@ -82,6 +82,11 @@
             this.keepAudio = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.aiOptsPage = new Cyotek.Windows.Forms.TabListPage();
+            this.label35 = new System.Windows.Forms.Label();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.dainNcnnTilesize = new System.Windows.Forms.ComboBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
             this.ncnnThreads = new System.Windows.Forms.NumericUpDown();
             this.label30 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -156,11 +161,7 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label26 = new System.Windows.Forms.Label();
-            this.panel12 = new System.Windows.Forms.Panel();
-            this.dainNcnnTilesize = new System.Windows.Forms.ComboBox();
-            this.label27 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -459,6 +460,7 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.label42);
             this.tabListPage2.Controls.Add(this.label4);
             this.tabListPage2.Controls.Add(this.enableAlpha);
             this.tabListPage2.Controls.Add(this.label25);
@@ -841,6 +843,68 @@
             this.aiOptsPage.Name = "aiOptsPage";
             this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Settings";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.ForeColor = System.Drawing.Color.Silver;
+            this.label35.Location = new System.Drawing.Point(412, 261);
+            this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(258, 13);
+            this.label35.TabIndex = 80;
+            this.label35.Text = "Lower values decrease VRAM usage but also speed.";
+            // 
+            // panel12
+            // 
+            this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel12.Location = new System.Drawing.Point(378, 257);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(21, 21);
+            this.panel12.TabIndex = 78;
+            this.toolTip1.SetToolTip(this.panel12, "Allows custom input.");
+            // 
+            // dainNcnnTilesize
+            // 
+            this.dainNcnnTilesize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.dainNcnnTilesize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dainNcnnTilesize.ForeColor = System.Drawing.Color.White;
+            this.dainNcnnTilesize.FormattingEnabled = true;
+            this.dainNcnnTilesize.Items.AddRange(new object[] {
+            "256",
+            "384",
+            "512",
+            "768",
+            "1024",
+            "1536",
+            "2048"});
+            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 257);
+            this.dainNcnnTilesize.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.dainNcnnTilesize.Name = "dainNcnnTilesize";
+            this.dainNcnnTilesize.Size = new System.Drawing.Size(87, 21);
+            this.dainNcnnTilesize.TabIndex = 79;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(10, 260);
+            this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(93, 13);
+            this.label27.TabIndex = 77;
+            this.label27.Text = "Tile Size (Splitting)";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label26.Location = new System.Drawing.Point(10, 230);
+            this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(152, 16);
+            this.label26.TabIndex = 76;
+            this.label26.Text = "DAIN-NCNN Settings";
             // 
             // ncnnThreads
             // 
@@ -1484,8 +1548,8 @@
             this.mp4Enc.Items.AddRange(new object[] {
             "h264 - Fast, good compatibility, medium quality per filesize",
             "h265 - Slower, mixed compatibility, very good quality per filesize",
-            "h264 NVENC - GPU-accelerated encoding, worse compression than h264",
-            "h265 NVENC - GPU-accelerated encoding, worse compression than h265"});
+            "h264 NVENC - Fast GPU-accelerated encoding, worse compression than h264",
+            "h265 NVENC - Fast GPU-accelerated encoding, worse compression than h265"});
             this.mp4Enc.Location = new System.Drawing.Point(280, 207);
             this.mp4Enc.Name = "mp4Enc";
             this.mp4Enc.Size = new System.Drawing.Size(400, 21);
@@ -1781,67 +1845,17 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label26
+            // label42
             // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 230);
-            this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(152, 16);
-            this.label26.TabIndex = 76;
-            this.label26.Text = "DAIN-NCNN Settings";
-            // 
-            // panel12
-            // 
-            this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel12.Location = new System.Drawing.Point(378, 257);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(21, 21);
-            this.panel12.TabIndex = 78;
-            this.toolTip1.SetToolTip(this.panel12, "Allows custom input.");
-            // 
-            // dainNcnnTilesize
-            // 
-            this.dainNcnnTilesize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.dainNcnnTilesize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.dainNcnnTilesize.ForeColor = System.Drawing.Color.White;
-            this.dainNcnnTilesize.FormattingEnabled = true;
-            this.dainNcnnTilesize.Items.AddRange(new object[] {
-            "256",
-            "384",
-            "512",
-            "768",
-            "1024",
-            "1536",
-            "2048"});
-            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 257);
-            this.dainNcnnTilesize.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
-            this.dainNcnnTilesize.Name = "dainNcnnTilesize";
-            this.dainNcnnTilesize.Size = new System.Drawing.Size(87, 21);
-            this.dainNcnnTilesize.TabIndex = 79;
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(10, 260);
-            this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(47, 13);
-            this.label27.TabIndex = 77;
-            this.label27.Text = "Tile Size";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.ForeColor = System.Drawing.Color.Silver;
-            this.label35.Location = new System.Drawing.Point(412, 261);
-            this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(258, 13);
-            this.label35.TabIndex = 80;
-            this.label35.Text = "Lower values decrease VRAM usage but also speed.";
+            this.label42.AutoSize = true;
+            this.label42.ForeColor = System.Drawing.Color.Silver;
+            this.label42.Location = new System.Drawing.Point(277, 70);
+            this.label42.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(346, 13);
+            this.label42.TabIndex = 79;
+            this.label42.Text = "Coming Soon                                                                      " +
+    "                      ";
             // 
             // SettingsForm
             // 
@@ -2014,5 +2028,6 @@
         private System.Windows.Forms.ComboBox dainNcnnTilesize;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label42;
     }
 }

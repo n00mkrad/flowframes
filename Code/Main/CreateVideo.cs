@@ -67,7 +67,7 @@ namespace Flowframes.Main
         {
             Program.mainForm.SetStatus("Copying output frames...");
             string copyPath = Path.Combine(i.current.outPath, folderName);
-            Logger.Log($"Copying interpolated frames to '{copyPath}'");
+            Logger.Log($"Moving output frames to '{copyPath}'");
             IOUtils.TryDeleteIfExists(copyPath);
             IOUtils.CreateDir(copyPath);
             Stopwatch sw = new Stopwatch();
@@ -91,7 +91,7 @@ namespace Flowframes.Main
                 if (sw.ElapsedMilliseconds >= 500 || idx == vfrLines.Length)
                 {
                     sw.Restart();
-                    Logger.Log($"Copying interpolated frames to '{Path.GetFileName(copyPath)}' - {idx}/{vfrLines.Length}", false, true);
+                    Logger.Log($"Moving output frames to '{Path.GetFileName(copyPath)}' - {idx}/{vfrLines.Length}", false, true);
                     await Task.Delay(1);
                 }
             }
