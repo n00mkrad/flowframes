@@ -20,12 +20,14 @@ Sample size means how many frames have been interpolated at the time you measure
 | Quadro P5000 16 GB         | 1.18   |        | 1280x720p - 2x | SAN/SSHD | 1800        | 20.2 FPS        |
 | GTX 1080 Ti 11 GB          | 1.18   |        | 1920x1080 - 2x | NVME SSD | >1400       | 12.2 FPS        |
 | GTX 1080 Ti 11 GB          | 1.18   |        | 1280x720p - 2x | NVME SSD | >1400       | 22.8 FPS        |
-| RTX 3070 8 GB [cuDNN 8.05] | 1.21.1 | 460.89 | 1920x1080 - 2x | NVME SSD | >1400       | 19 FPS          |
+| RTX 3070 8 GB [cuDNN 8.05] | 1.21.1 | 460.89 | 1920x1080 - 2x | NVME SSD | >1400       | 19.5 FPS        |
 | RTX 3070 8 GB [cuDNN 8.05] | 1.21.1 | 460.89 | 1280x720p - 2x | NVME SSD | >1400       | 40 FPS          |
 | GTX 1070 8 GB              | 1.21.1 | 460.89 | 1920x1080 - 2x | NVME SSD | >1600       | 9.2 FPS         |
 | GTX 1070 8 GB              | 1.21.1 | 460.89 | 1280x720p - 2x | NVME SSD | >1600       | 18.2 FPS        |
 | RTX 2060 KO 6 GB           | 1.19   |        | 1920x1080 - 2x | SATA SSD | 1800        | 12.1 FPS        |
 | RTX 2060 KO 6 GB           | 1.19   |        | 1280x720p - 2x | SATA SSD | 1800        | 24 FPS          |
+| RTX 3080 10 GB             | 1.21.1 | 460.89 | 1920x1080 - 2x | NVME SSD | >1600       | 30 FPS          |
+| RTX 3080 10 GB             | 1.21.1 | 460.89 | 1280x720p - 2x | NVME SSD | >1600       | 55.5 FPS        |
 
 ## RIFE-NCNN
 
