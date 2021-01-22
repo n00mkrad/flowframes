@@ -73,7 +73,7 @@ namespace Flowframes.Main
             Program.mainForm.SetProgress(0);
             while (Program.busy)
             {
-                if (!progressPaused && AiProcess.processTime.IsRunning && !i.canceled && Directory.Exists(currentOutdir))
+                if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
                 {
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
@@ -97,6 +97,8 @@ namespace Flowframes.Main
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
+            if (i.canceled) return;
+
             frames = frames.Clamp(0, target);
             int percent = (int)Math.Round(((float)frames / target) * 100f);
             Program.mainForm.SetProgress(percent);

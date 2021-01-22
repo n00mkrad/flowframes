@@ -128,7 +128,8 @@ namespace Flowframes
             else
                 Dedupe.ClearCache();
 
-            await Utils.CopyLastFrame(currentInputFrameCount);
+            if(!Config.GetBool("enableLoop"))
+                await Utils.CopyLastFrame(currentInputFrameCount);
 
             if (Config.GetInt("dedupMode") > 0)
                 await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);
