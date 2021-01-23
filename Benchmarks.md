@@ -30,6 +30,8 @@ Sample size means how many frames have been interpolated at the time you measure
 | RTX 3080 10 GB             | 1.21.1 | 460.89 | 1280x720p - 2x | NVME SSD | >1600       | 55.5 FPS        |
 | RTX 3090 24 GB             | 1.21.1 | 460.89 | 1920x1080 - 2x | NVME SSD | >1600       | 33 FPS          |
 | RTX 3090 24 GB             | 1.21.1 | 460.89 | 1280x720p - 2x | NVME SSD | >1600       | 60 FPS          |
+| RTX 2080 8 GB              | 1.21.1 | 461.09 | 1920x1080 - 2x | NVME SSD | >1600       | 18.8 FPS        |
+| RTX 2080 8 GB              | 1.21.1 | 461.09 | 1280x720p - 2x | NVME SSD | >1600       | 37 FPS          |
 
 ## RIFE-NCNN
 
