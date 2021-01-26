@@ -38,13 +38,16 @@ rmdir /s/q ..\Release\FlowframesApp%ver%\FlowframesData\logs
 del ..\Release\FlowframesApp%ver%\FlowframesData\config.ini
 
 
+del FF-%ver%-Slim.7z
 7za.exe a FF-%ver%-Slim.7z -m0=flzma2 -mx5 "..\Release\FlowframesApp%ver%"
 
 xcopy "../pkgs/py-tu" "..\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-tu" /E /I
+del FF-%ver%-Full.7z
 7za.exe a FF-%ver%-Full.7z -m0=flzma2 -mx7 "..\Release\FlowframesApp%ver%"
 
 rmdir /s/q ..\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-tu
 xcopy "../pkgs/py-amp" "..\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-amp" /E /I
+del FF-%ver%-Full-RTX3000.7z
 7za.exe a FF-%ver%-Full-RTX3000.7z -m0=flzma2 -mx7 "..\Release\FlowframesApp%ver%"
 
 

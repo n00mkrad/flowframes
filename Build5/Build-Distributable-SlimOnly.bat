@@ -38,6 +38,7 @@ rmdir /s/q ..\Release\FlowframesApp%ver%\FlowframesData\logs
 del ..\Release\FlowframesApp%ver%\FlowframesData\config.ini
 
 
+del FF-%ver%-Slim.7z
 7za.exe a FF-%ver%-Slim.7z -m0=flzma2 -mx5 "..\Release\FlowframesApp%ver%"
 
 
