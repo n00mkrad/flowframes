@@ -23,6 +23,7 @@ namespace Flowframes.Main
             canceled = false;
             Program.mainForm.SetWorking(true);
             current = Program.mainForm.GetCurrentSettings();
+            current.RefreshAlpha();
 
             if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
 
@@ -82,6 +83,7 @@ namespace Flowframes.Main
         public static async Task DoInterpolate()
         {
             current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
+
             if (!Directory.Exists(current.framesFolder) || IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png") < 2)
             {
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
@@ -95,9 +97,6 @@ namespace Flowframes.Main
 
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
-            foreach (string ini in Directory.GetFiles(current.tempFolder, "*.ini", SearchOption.TopDirectoryOnly))
-                IOUtils.TryDeleteIfExists(ini);
-
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
 
             // TODO: Check if this works lol, remove if it does
@@ -106,8 +105,6 @@ namespace Flowframes.Main
 
             await PostProcessFrames(true);
 
-            int frames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
-            int targetFrameCount = frames * current.interpFactor;
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Flowframes
@@ -109,6 +110,22 @@ namespace Flowframes
             int factor = (overrideFactor > 0) ? overrideFactor : interpFactor;
             int targetFrameCount = (frames * factor) - (interpFactor - 1);
             return targetFrameCount;
+        }
+
+        public void RefreshAlpha ()
+        {
+            try
+            {
+                if (!inputIsFrames)
+                    alpha = (Config.GetBool("enableAlpha", false) && (Path.GetExtension(inPath).ToLower() == ".gif"));
+                else
+                    alpha = (Config.GetBool("enableAlpha", false) && Path.GetExtension(IOUtils.GetFilesSorted(inPath).First()).ToLower() == ".gif");
+            }
+            catch (Exception e)
+            {
+                Logger.Log("RefreshAlpha Error: " + e.Message, true);
+                alpha = false;
+            }
         }
     }
 }

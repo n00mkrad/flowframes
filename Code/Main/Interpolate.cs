@@ -64,16 +64,15 @@ namespace Flowframes
 
         public static async Task GetFrames ()
         {
+            current.RefreshAlpha();
+
             if (!current.inputIsFrames)        // Input is video - extract frames first
-            {
-                current.alpha = (Config.GetBool("enableAlpha", false) && (Path.GetExtension(current.inPath).ToLower() == ".gif"));
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
-            }
             else
-            {
-                current.alpha = (Config.GetBool("enableAlpha", false) && Path.GetExtension(IOUtils.GetFilesSorted(current.inPath).First()).ToLower() == ".gif");
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
-            }
+            
+            if (current.alpha)
+                await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool allowSceneDetect = true, bool extractAudio = true)
@@ -136,9 +135,6 @@ namespace Flowframes
                 await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);
 
             if (canceled) return;
-
-            if(current.alpha)
-                await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
 
             await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor);
 
