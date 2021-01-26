@@ -7,6 +7,7 @@
 
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
 
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
