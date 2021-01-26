@@ -17,12 +17,6 @@ namespace Flowframes.Main
     {
         public enum Step { ExtractScnChanges, ExtractFrames, Interpolate, CreateVid, Reset }
 
-        //public static string current.inPath;
-        //public static string currentOutPath;
-        //public static string current.interpFolder;
-        //public static AI currentAi;
-        //public static OutMode currentOutMode;
-
         public static async Task Run(string step)
         {
             Logger.Log($"[SBS] Running step '{step}'", true);
@@ -42,7 +36,7 @@ namespace Flowframes.Main
 
             if (step.Contains("Extract Frames"))
             {
-                await GetFrames();
+                await ExtractFramesStep();
             }
 
             if (step.Contains("Run Interpolation"))
@@ -71,7 +65,7 @@ namespace Flowframes.Main
             await Task.Delay(10);
         }
 
-        public static async Task ExtractVideoFrames()
+        public static async Task ExtractFramesStep()
         {
             if (!IOUtils.TryDeleteIfExists(current.framesFolder))
             {
@@ -82,7 +76,7 @@ namespace Flowframes.Main
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
             AiProcess.filenameMap.Clear();
 
-            await ExtractFrames(current.inPath, current.framesFolder, false, true);
+            await GetFrames();
         }
 
         public static async Task DoInterpolate()
@@ -136,7 +130,7 @@ namespace Flowframes.Main
 
         public static async Task Reset()
         {
-            Cleanup(current.interpFolder, true);
+            await Cleanup(true);
         }
     }
 }

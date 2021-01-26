@@ -161,7 +161,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label42 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -460,7 +459,6 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.tabListPage2.Controls.Add(this.label42);
             this.tabListPage2.Controls.Add(this.label4);
             this.tabListPage2.Controls.Add(this.enableAlpha);
             this.tabListPage2.Controls.Add(this.label25);
@@ -1582,9 +1580,9 @@
             this.label8.Location = new System.Drawing.Point(10, 40);
             this.label8.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(165, 13);
+            this.label8.Size = new System.Drawing.Size(192, 13);
             this.label8.TabIndex = 30;
-            this.label8.Text = "Minimum Video Length (Seconds)";
+            this.label8.Text = "Minimum Loop Video Length (Seconds)";
             // 
             // debugTab
             // 
@@ -1845,18 +1843,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.ForeColor = System.Drawing.Color.Silver;
-            this.label42.Location = new System.Drawing.Point(277, 70);
-            this.label42.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(346, 13);
-            this.label42.TabIndex = 79;
-            this.label42.Text = "Coming Soon                                                                      " +
-    "                      ";
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2028,6 +2014,5 @@
         private System.Windows.Forms.ComboBox dainNcnnTilesize;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label42;
     }
 }

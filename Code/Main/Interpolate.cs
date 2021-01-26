@@ -34,6 +34,7 @@ namespace Flowframes
 
         public static async Task Start()
         {
+            if (Program.busy) return;
             canceled = false;
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
@@ -54,7 +55,7 @@ namespace Flowframes
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode);
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
-            Cleanup(current.interpFolder);
+            await Cleanup();
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
@@ -143,7 +144,17 @@ namespace Flowframes
 
             if (canceled) return;
 
-            AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, 8);
+            try
+            {
+                AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error renaming frame files: {e.Message}");
+                Cancel("Error renaming frame files. Check the log for details.");
+            }
+
+            if (canceled) return;
         }
 
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
@@ -197,19 +208,23 @@ namespace Flowframes
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
         }
 
-        public static void Cleanup(string interpFramesDir, bool ignoreKeepSetting = false)
+        public static async Task Cleanup(bool ignoreKeepSetting = false, int retriesLeft = 3, bool isRetry = false)
         {
-            if (!ignoreKeepSetting && Config.GetBool("keepTempFolder")) return;
-            Logger.Log("Deleting temporary files...");
+            if ((!ignoreKeepSetting && Config.GetBool("keepTempFolder")) || !Program.busy) return;
+            if (!isRetry)
+                Logger.Log("Deleting temporary files...");
             try
             {
-                if (Config.GetBool("keepFrames"))
-                    IOUtils.Copy(interpFramesDir, Path.Combine(current.tempFolder.GetParentDir(), Path.GetFileName(current.tempFolder).Replace("-temp", "-interpframes")));
                 Directory.Delete(current.tempFolder, true);
             }
             catch (Exception e)
             {
                 Logger.Log("Cleanup Error: " + e.Message, true);
+                if(retriesLeft > 0)
+                {
+                    await Task.Delay(1000);
+                    await Cleanup(ignoreKeepSetting, retriesLeft - 1, true);
+                }
             }
         }
     }

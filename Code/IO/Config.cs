@@ -133,14 +133,15 @@ namespace Flowframes.IO
             if (key == "scnDetectValue")    return WriteDefault(key, "0.2");
             if (key == "autoEncMode")       return WriteDefault(key, "2");
             // Video Export
-            if (key == "h264Crf")       return WriteDefault(key, "20");
-            if (key == "h265Crf")       return WriteDefault(key, "24");
-            if (key == "vp9Crf")        return WriteDefault(key, "32");
-            if (key == "proResProfile") return WriteDefault(key, "2");
-            if (key == "aviCodec")      return WriteDefault(key, "ffv1");
-            if (key == "aviColors")     return WriteDefault(key, "yuv420p");
-            if (key == "gifColors")     return WriteDefault(key, "128 (High)");
-            if (key == "minVidLength")  return WriteDefault(key, "2");
+            if (key == "minOutVidLength")   return WriteDefault(key, "5");
+            if (key == "h264Crf")           return WriteDefault(key, "20");
+            if (key == "h265Crf")           return WriteDefault(key, "24");
+            if (key == "vp9Crf")            return WriteDefault(key, "32");
+            if (key == "proResProfile")     return WriteDefault(key, "2");
+            if (key == "aviCodec")          return WriteDefault(key, "ffv1");
+            if (key == "aviColors")         return WriteDefault(key, "yuv420p");
+            if (key == "gifColors")         return WriteDefault(key, "128 (High)");
+            if (key == "minVidLength")      return WriteDefault(key, "2");
             // AI
             if (key == "uhdThresh")         return WriteDefault(key, "1440");
             if (key == "ncnnThreads")       return WriteDefault(key, "1");

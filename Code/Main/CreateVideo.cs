@@ -110,10 +110,7 @@ namespace Flowframes.Main
             {
                 await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
                 await MergeAudio(i.current.inPath, outPath);
-
-                int looptimes = GetLoopTimes();
-                if (looptimes > 0)
-                    await Loop(currentOutFile, looptimes);
+                await Loop(currentOutFile, GetLoopTimes());
             }
         }
 
@@ -154,10 +151,7 @@ namespace Flowframes.Main
         {
             await FFmpegCommands.ConcatVideos(vfrFile, outPath, -1);
             await MergeAudio(i.current.inPath, outPath);
-
-            int looptimes = GetLoopTimes();
-            if (looptimes > 0)
-                await Loop(outPath, looptimes);
+            await Loop(outPath, GetLoopTimes());
         }
 
         public static async Task EncodeChunk(string outPath, i.OutMode mode, int firstFrameNum, int framesAmount)
@@ -185,6 +179,7 @@ namespace Flowframes.Main
 
         static async Task Loop(string outPath, int looptimes)
         {
+            if (looptimes < 1 || !Config.GetBool("enableLoop")) return;
             Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt("minOutVidLength")}s...");
             await FFmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }

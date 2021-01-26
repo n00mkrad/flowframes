@@ -73,7 +73,7 @@ namespace Flowframes
                 }
                 if (timeSinceFfmpegRan.ElapsedMilliseconds > 3000)
                     break;
-                // Logger.Log($"AiProcess loop - Program.busy = {Program.busy}");
+
                 await Task.Delay(500);
             }
         }
@@ -81,7 +81,7 @@ namespace Flowframes
         public static async Task RunRifeCuda(string framesPath, int interpFactor, string mdl)
         {
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
-            string script = "inference_video.py";
+            string script = "rife.py";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
             {
@@ -110,9 +110,13 @@ namespace Flowframes
 
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, int interpFactor, string mdl)
         {
+            bool parallel = false;
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
-            string args = $" --input {inPath.Wrap()} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {outDir}";
-            
+            string outPath = Path.Combine(inPath.GetParentDir(), outDir);
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} ";
+            if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
+            if (parallel) script = "rife-parallel.py";
+
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
