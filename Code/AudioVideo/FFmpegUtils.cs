@@ -66,12 +66,12 @@ namespace Flowframes.AudioVideo
 
             if (codec == Codec.NVENC264)
             {
-                args += $"-crf {Config.GetInt("h264Crf")} -preset default -pix_fmt yuv420p";
+                args += $"-cq {Config.GetInt("h264Crf")} -preset slow -pix_fmt yuv420p";
             }
 
             if (codec == Codec.NVENC265)
             {
-                args += $"-crf {Config.GetInt("h265Crf")} -preset default -pix_fmt yuv420p";
+                args += $"-cq {Config.GetInt("h265Crf")} -preset slow -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
