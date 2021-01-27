@@ -327,9 +327,6 @@ namespace Flowframes.Main
         {
             if (videoPath == null || !IOUtils.IsFileValid(videoPath))
                 return false;
-            // string ext = Path.GetExtension(videoPath).ToLower();
-            // if (!Formats.supported.Contains(ext))
-            //     return false;
             return true;
         }
 
@@ -340,13 +337,13 @@ namespace Flowframes.Main
             Logger.Log("Message: " + msg, true);
         }
 
-        public static async Task<Size> GetOutputResolution (string inputPath, bool print)
+        public static async Task<Size> GetOutputResolution (string inputPath, bool print, bool returnZeroIfUnchanged = false)
         {
             Size resolution = await IOUtils.GetVideoOrFramesRes(inputPath);
-            return GetOutputResolution(resolution, print);
+            return GetOutputResolution(resolution, print, returnZeroIfUnchanged);
         }
 
-        public static Size GetOutputResolution(Size inputRes, bool print = false)
+        public static Size GetOutputResolution(Size inputRes, bool print = false, bool returnZeroIfUnchanged = false)
         {
             int maxHeight = RoundDiv2(Config.GetInt("maxVidHeight"));
             if (inputRes.Height > maxHeight)
@@ -360,7 +357,11 @@ namespace Flowframes.Main
             }
             else
             {
-                return new Size(RoundDiv2(inputRes.Width), RoundDiv2(inputRes.Height));
+                //return new Size(RoundDiv2(inputRes.Width), RoundDiv2(inputRes.Height));
+                if (returnZeroIfUnchanged)
+                    return new Size();
+                else
+                    return inputRes;
             }
         }
 

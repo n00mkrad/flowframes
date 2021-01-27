@@ -513,9 +513,9 @@
             this.label25.Location = new System.Drawing.Point(10, 70);
             this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(108, 13);
+            this.label25.Size = new System.Drawing.Size(177, 13);
             this.label25.TabIndex = 76;
-            this.label25.Text = "Enable Transparency";
+            this.label25.Text = "Enable Transparency (Experimental)";
             // 
             // keepSubs
             // 

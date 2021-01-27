@@ -36,11 +36,45 @@ namespace Flowframes.Magick
             }
         }
 
-        public static async Task ExtractAlpha (string inputDir, string outputDir, bool print = true, bool setProgress = true)
+        public static async Task MakeBinary (string inputDir, string outputDir, bool print = true, bool setProgress = true)
         {
             try
             {
+                var files = IOUtils.GetFilesSorted(inputDir);
+                if (print) Logger.Log($"Processing alpha channel...");
+                Directory.CreateDirectory(outputDir);
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+                int counter = 0;
+                foreach (string file in files)
+                {
+                    MagickImage img = new MagickImage(file);
+                    img.Format = MagickFormat.Png24;
+                    img.Quality = 10;
+                    img.Threshold(new Percentage(90));
 
+                    string outPath = Path.Combine(outputDir, Path.GetFileName(file));
+                    img.Write(outPath);
+                    counter++;
+                    if (sw.ElapsedMilliseconds > 250)
+                    {
+                        if (setProgress)
+                            Program.mainForm.SetProgress((int)Math.Round(((float)counter / files.Length) * 100f));
+                        await Task.Delay(1);
+                        sw.Restart();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("ExtractAlpha Error: " + e.Message);
+            }
+        }
+
+        public static async Task ExtractAlpha (string inputDir, string outputDir, bool print = true, bool setProgress = true, bool removeInputAlpha = true)
+        {
+            try
+            {
                 var files = IOUtils.GetFilesSorted(inputDir);
                 if (print) Logger.Log($"Extracting alpha channel from images...");
                 Directory.CreateDirectory(outputDir);
@@ -49,16 +83,28 @@ namespace Flowframes.Magick
                 int counter = 0;
                 foreach (string file in files)
                 {
-                    MagickImage img = new MagickImage(file);
-                    img.Format = MagickFormat.Png32;
-                    img.Quality = 10;
+                    MagickImage alphaImg = new MagickImage(file);
+
+                    if (removeInputAlpha)
+                    {
+                        MagickImage rgbImg = alphaImg;
+                        rgbImg.Format = MagickFormat.Png24;
+                        rgbImg.Quality = 10;
+                        MagickImage bg = new MagickImage(MagickColors.Black, rgbImg.Width, rgbImg.Height);
+                        bg.Composite(rgbImg, CompositeOperator.Over);
+                        rgbImg = bg;
+                        rgbImg.Write(file);
+                    }
+
+                    alphaImg.Format = MagickFormat.Png24;
+                    alphaImg.Quality = 10;
                     
-                    img.FloodFill(MagickColors.None, 0, 0);     // Fill the image with a transparent background
-                    img.InverseOpaque(MagickColors.None, MagickColors.White);   // Change all the pixels that are not transparent to white.
-                    img.ColorAlpha(MagickColors.Black);     // Change the transparent pixels to black.
+                    alphaImg.FloodFill(MagickColors.None, 0, 0);     // Fill the image with a transparent background
+                    alphaImg.InverseOpaque(MagickColors.None, MagickColors.White);   // Change all the pixels that are not transparent to white.
+                    alphaImg.ColorAlpha(MagickColors.Black);     // Change the transparent pixels to black.
 
                     string outPath = Path.Combine(outputDir, Path.GetFileName(file));
-                    img.Write(outPath);
+                    alphaImg.Write(outPath);
                     counter++;
                     if (sw.ElapsedMilliseconds > 250)
                     {

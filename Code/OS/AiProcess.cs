@@ -12,6 +12,7 @@ using Flowframes.UI;
 using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
+using Flowframes.Magick;
 
 namespace Flowframes
 {
@@ -76,6 +77,17 @@ namespace Flowframes
 
                 await Task.Delay(500);
             }
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                Logger.Log("Processing alpha...");
+                string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
+                string alphaInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir + Paths.alphaSuffix);
+                if (!Directory.Exists(alphaInterpDir)) return;
+                if (Interpolate.current.outMode == Interpolate.OutMode.VidGif)
+                    await Converter.MakeBinary(alphaInterpDir, alphaInterpDir, false);   // Apply threshold if output has binary alpha
+                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames);
+            }
         }
 
         public static async Task RunRifeCuda(string framesPath, int interpFactor, string mdl)
@@ -95,17 +107,10 @@ namespace Flowframes
             {
                 InterpolateUtils.progressPaused = true;
                 Logger.Log("Interpolating alpha channel...");
-                await RunRifeCudaProcess(framesPath + "-a", Paths.interpDir + "-a", script, interpFactor, mdl);
+                await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
             }
 
             await AiFinished("RIFE");
-
-            if (!Interpolate.canceled && Interpolate.current.alpha)
-            {
-                Logger.Log("Processing alpha...");
-                string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
-                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, rgbInterpDir + "-a", Padding.interpFrames);
-            }
         }
 
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, int interpFactor, string mdl)

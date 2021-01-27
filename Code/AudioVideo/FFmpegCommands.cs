@@ -16,7 +16,6 @@ namespace Flowframes
 {
     class FFmpegCommands
     {
-        static string hdrFilter = @"-vf select=gte(n\,%frNum%),zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
         static string divisionFilter = "\"pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0\"";
         static string pngComprArg = "-compression_level 3";
         static string mpDecDef = "\"mpdecimate\"";
@@ -44,7 +43,7 @@ namespace Flowframes
             string timecodeStr = timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string filters = FormatUtils.ConcatStrings(new string[] { scnDetect, mpStr } );
+            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, scnDetect, mpStr } );
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support

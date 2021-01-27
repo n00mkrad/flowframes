@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.IO
 {
@@ -13,11 +10,7 @@ namespace Flowframes.IO
 		public const string interpDir = "interp";
 		public const string chunksDir = "vchunks";
 		public const string scenesDir = "scenes";
-
-		public static void Init()
-		{
-			
-		}
+		public const string alphaSuffix = "-a";
 
 		public static string GetVerPath()
 		{
