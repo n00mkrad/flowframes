@@ -213,12 +213,25 @@ namespace Flowframes
 
         public static async Task RunDainNcnn(string framesPath, string outPath, int factor, string mdl, int tilesize)
         {
-            string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
-            Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
 
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                InterpolateUtils.progressPaused = true;
+                Logger.Log("Interpolating alpha channel...");
+                await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
+            }
+
+            await AiFinished("DAIN");
+        }
+
+        public static async Task RunDainNcnnProcess (string framesPath, string outPath, int factor, string mdl, int tilesize)
+        {
+            string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
+            Directory.CreateDirectory(outPath);
+            Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
-
             int targetFrames = (IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor) - (factor - 1);
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
@@ -243,8 +256,6 @@ namespace Flowframes
 
             while (!dain.HasExited)
                 await Task.Delay(100);
-
-            await AiFinished("DAIN");
         }
 
         static void LogOutput (string line, string logFilename, bool err = false)
