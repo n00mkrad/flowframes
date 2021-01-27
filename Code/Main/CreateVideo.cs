@@ -21,13 +21,13 @@ namespace Flowframes.Main
     {
         static string currentOutFile;   // Keeps track of the out file, in case it gets renamed (FPS limiting, looping, etc) before finishing export
 
-        public static async Task Export(string path, string outPath, i.OutMode mode)
+        public static async Task Export(string path, string outPath, i.OutMode mode, bool stepByStep)
         {
             if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
                 {
-                    await CopyOutputFrames(path, Path.GetFileNameWithoutExtension(outPath));
+                    await CopyOutputFrames(path, Path.GetFileNameWithoutExtension(outPath), stepByStep);
                 }
                 catch(Exception e)
                 {
@@ -63,7 +63,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task CopyOutputFrames (string framesPath, string folderName)
+        static async Task CopyOutputFrames (string framesPath, string folderName, bool dontMove)
         {
             Program.mainForm.SetStatus("Copying output frames...");
             string copyPath = Path.Combine(i.current.outPath, folderName);
@@ -83,7 +83,7 @@ namespace Flowframes.Main
                 string framePath = Path.Combine(framesPath, inFilename);
                 string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
 
-                if ((idx < vfrLines.Length) && vfrLines[idx].Contains(inFilename))   // If file is re-used in the next line, copy instead of move
+                if (dontMove || ((idx < vfrLines.Length) && vfrLines[idx].Contains(inFilename)))   // If file is re-used in the next line, copy instead of move
                     File.Copy(framePath, outFilename);
                 else
                     File.Move(framePath, outFilename);

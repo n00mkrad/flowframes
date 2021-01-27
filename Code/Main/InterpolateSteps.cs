@@ -122,7 +122,7 @@ namespace Flowframes.Main
             }
 
             string outPath = Path.Combine(current.outPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetCurrentExportSuffix() + FFmpegUtils.GetExt(current.outMode));
-            await CreateVideo.Export(current.interpFolder, outPath, current.outMode);
+            await CreateVideo.Export(current.interpFolder, outPath, current.outMode, true);
         }
 
         public static async Task Reset()
