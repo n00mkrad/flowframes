@@ -87,7 +87,7 @@ namespace Flowframes
                 if (!Directory.Exists(alphaInterpDir)) return;
                 if (Interpolate.current.outMode == Interpolate.OutMode.VidGif)
                     await Converter.MakeBinary(alphaInterpDir, alphaInterpDir, false);   // Apply threshold if output has binary alpha
-                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames);
+                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, true);
             }
         }
 

@@ -151,11 +151,13 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine, AvProcess.TaskType.Encode);
         }
 
-        public static async Task MergeAlphaIntoRgb (string rgbDir, int rgbPad, string alphaDir, int aPad)
+        public static async Task MergeAlphaIntoRgb (string rgbDir, int rgbPad, string alphaDir, int aPad, bool deleteAlphaDir)
         {
             string filter = "-filter_complex [0:v:0][1:v:0]alphamerge[out] -map [out]";
             string args = $"-i \"{rgbDir}/%{rgbPad}d.png\" -i \"{alphaDir}/%{aPad}d.png\" {filter} \"{rgbDir}/%{rgbPad}d.png\"";
             await AvProcess.RunFfmpeg(args, AvProcess.LogMode.Hidden);
+            if (deleteAlphaDir)
+                IOUtils.TryDeleteIfExists(alphaDir);
         }
 
         public static async Task LoopVideo(string inputFile, int times, bool delSrc = false)
