@@ -541,8 +541,7 @@
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(884, 142);
             this.label14.TabIndex = 2;
-            this.label14.Text = "Flowframes - Created by n00mkrad aka nmkd\r\n\r\nBased on:\r\n- RIFE by hzwer\r\n- rife-n" +
-    "cnn-vulkan by nihui";
+            this.label14.Text = resources.GetString("label14.Text");
             // 
             // runBtn
             // 
