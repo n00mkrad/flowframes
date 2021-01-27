@@ -53,6 +53,7 @@ namespace Flowframes
 
         static async Task AiFinished (string aiName)
         {
+            if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             InterpolateUtils.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*.png"), InterpolateUtils.targetFrames);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
@@ -147,49 +148,36 @@ namespace Flowframes
 
         public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
         {
+            int times = (int)Math.Log(factor, 2);
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
-            bool useAutoEnc = Interpolate.currentlyUsingAutoEnc;
-            if(factor > 2)
+            if(times > 1)
                 AutoEncode.paused = true;  // Disable autoenc until the last iteration
 
-            await RunRifeNcnnProcess(framesPath, outPath, mdl);
-
-            if (factor == 4 || factor == 8)    // #2
+            for(int iteration = 1; iteration <= times; iteration++)
             {
                 if (Interpolate.canceled) return;
-                Logger.Log("Re-Running RIFE for 4x interpolation...", false);
-                string run1ResultsPath = outPath + "-run1";
-                IOUtils.TryDeleteIfExists(run1ResultsPath);
-                Directory.Move(outPath, run1ResultsPath);
-                Directory.CreateDirectory(outPath);
-                if (useAutoEnc && factor == 4)
+
+                if (Interpolate.currentlyUsingAutoEnc && iteration == times)      // Enable autoenc if this is the last iteration
                     AutoEncode.paused = false;
-                await RunRifeNcnnProcess(run1ResultsPath, outPath, mdl);
-                IOUtils.TryDeleteIfExists(run1ResultsPath);
+
+                if (iteration > 1)
+                {
+                    Logger.Log($"Re-Running RIFE for {Math.Pow(2, iteration)}x interpolation...", false);
+                    string lastInterpPath = outPath + $"-run{iteration - 1}";
+                    Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
+                    Directory.CreateDirectory(outPath);
+                    await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
+                    IOUtils.TryDeleteIfExists(lastInterpPath);
+                }
+                else
+                {
+                    await RunRifeNcnnProcess(framesPath, outPath, mdl);
+                }
             }
 
-            if (factor == 8)    // #3
-            {
-                if (Interpolate.canceled) return;
-                Logger.Log("Re-Running RIFE for 8x interpolation...", false);
-                string run2ResultsPath = outPath + "-run2";
-                IOUtils.TryDeleteIfExists(run2ResultsPath);
-                Directory.Move(outPath, run2ResultsPath);
-                Directory.CreateDirectory(outPath);
-                if (useAutoEnc && factor == 8)
-                    AutoEncode.paused = false;                    
-                await RunRifeNcnnProcess(run2ResultsPath, outPath, mdl);
-                IOUtils.TryDeleteIfExists(run2ResultsPath);
-            }
-
-            if (Interpolate.canceled) return;
-
-            if (!Interpolate.currentlyUsingAutoEnc)
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
-
-            AiFinished("RIFE");
+            await AiFinished("RIFE");
         }
 
         static async Task RunRifeNcnnProcess(string inPath, string outPath, string mdl)
@@ -254,14 +242,9 @@ namespace Flowframes
             }
 
             while (!dain.HasExited)
-                await Task.Delay(1);
+                await Task.Delay(100);
 
-            if (Interpolate.canceled) return;
-
-            //if (!Interpolate.currentlyUsingAutoEnc)
-            //    IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
-
-            AiFinished("DAIN");
+            await AiFinished("DAIN");
         }
 
         static void LogOutput (string line, string logFilename, bool err = false)

@@ -72,7 +72,7 @@ namespace Flowframes
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
             
             if (current.alpha)
-                await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + "-a");
+                await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool allowSceneDetect = true, bool extractAudio = true)

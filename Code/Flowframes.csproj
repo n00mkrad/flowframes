@@ -257,7 +257,7 @@
     <Compile Include="IO\Config.cs" />
     <Compile Include="Data\Formats.cs" />
     <Compile Include="IO\IOUtils.cs" />
-    <Compile Include="IO\Paths.cs" />
+    <Compile Include="Data\Paths.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Magick\Converter.cs" />
     <Compile Include="Magick\Dedupe.cs" />
