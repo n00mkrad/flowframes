@@ -148,14 +148,29 @@ namespace Flowframes
 
         public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
         {
-            int times = (int)Math.Log(factor, 2);
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
-            if(times > 1)
+            await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                InterpolateUtils.progressPaused = true;
+                Logger.Log("Interpolating alpha channel...");
+                await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
+            }
+
+            await AiFinished("RIFE");
+        }
+
+        static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
+        {
+            int times = (int)Math.Log(factor, 2);
+
+            if (times > 1)
                 AutoEncode.paused = true;  // Disable autoenc until the last iteration
 
-            for(int iteration = 1; iteration <= times; iteration++)
+            for (int iteration = 1; iteration <= times; iteration++)
             {
                 if (Interpolate.canceled) return;
 
@@ -167,7 +182,6 @@ namespace Flowframes
                     Logger.Log($"Re-Running RIFE for {Math.Pow(2, iteration)}x interpolation...", false);
                     string lastInterpPath = outPath + $"-run{iteration - 1}";
                     Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
-                    Directory.CreateDirectory(outPath);
                     await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
                     IOUtils.TryDeleteIfExists(lastInterpPath);
                 }
@@ -176,12 +190,11 @@ namespace Flowframes
                     await RunRifeNcnnProcess(framesPath, outPath, mdl);
                 }
             }
-
-            await AiFinished("RIFE");
         }
 
         static async Task RunRifeNcnnProcess(string inPath, string outPath, string mdl)
         {
+            Directory.CreateDirectory(outPath);
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, 2);
