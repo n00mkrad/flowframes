@@ -127,6 +127,13 @@ namespace Flowframes
             inputInfo.Text = str;
         }
 
+        public void ResetInputInfo ()
+        {
+            currInRes = new Size();
+            currInFps = 0;
+            currInFrames = 0;
+        }
+
         void InitAis()
         {
             foreach (AI ai in Networks.networks)

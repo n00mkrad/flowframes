@@ -18,6 +18,7 @@ namespace Flowframes.UI
         public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
         {
             Program.mainForm.SetTab("interpolate");
+            Program.mainForm.ResetInputInfo();
 
             if (Config.GetBool("clearLogOnInput"))
                 Logger.ClearLogBox();
