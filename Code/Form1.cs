@@ -110,7 +110,9 @@ namespace Flowframes
 
         public void SetProgress(int percent)
         {
-            longProgBar.Value = percent.Clamp(0, 100);
+            percent = percent.Clamp(0, 100);
+            TaskbarManager.Instance.SetProgressValue(percent, 100);
+            longProgBar.Value = percent;
             longProgBar.Refresh();
         }
 
