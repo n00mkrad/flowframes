@@ -15,6 +15,7 @@ using HTAlt.WinForms;
 using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Threading.Tasks;
+using Flowframes.MiscUtils;
 
 namespace Flowframes
 {
@@ -119,11 +120,13 @@ namespace Flowframes
         public Size currInRes;
         public float currInFps;
         public int currInFrames;
+        public long currInDuration;
         public void UpdateInputInfo ()
         {
             string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
             str += $"Framerate: {(currInFps > 0f ? $"{currInFps.ToStringDot()} FPS" : "Unknown")} - ";
-            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames} Frames" : "Unknown")}";
+            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames} Frames" : "Unknown")} - ";
+            str += $"Duration: {(currInDuration > 0 ? $"{FormatUtils.MsToTimestamp(currInDuration)}" : "Unknown")}";
             inputInfo.Text = str;
         }
 
@@ -132,6 +135,7 @@ namespace Flowframes
             currInRes = new Size();
             currInFps = 0;
             currInFrames = 0;
+            currInDuration = 0;
         }
 
         void InitAis()

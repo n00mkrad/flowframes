@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace Flowframes.UI
 {
@@ -49,6 +50,7 @@ namespace Flowframes.UI
 
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
+            InterpolateUtils.UpdateVideoDuration(path);
             Program.mainForm.UpdateInputInfo();
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);

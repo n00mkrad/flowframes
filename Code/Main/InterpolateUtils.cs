@@ -63,6 +63,7 @@ namespace Flowframes.Main
         public static int currentFactor;
         public static bool progressPaused = false;
         public static bool progCheckRunning = false;
+
         public static async void GetProgressByFrameAmount(string outdir, int target)
         {
             progCheckRunning = true;
@@ -440,6 +441,11 @@ namespace Flowframes.Main
 
             foreach (string frame in sceneFramesToDelete)
                 IOUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + ".png"));
+        }
+
+        public static void UpdateVideoDuration(string path)
+        {
+            Program.mainForm.currInDuration = FFmpegCommands.GetDuration(path);
         }
     }
 }
