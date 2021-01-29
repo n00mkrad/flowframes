@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Flowframes
@@ -100,7 +98,7 @@ namespace Flowframes
         public static string Trunc(this string inStr, int maxChars, bool addEllipsis = true)
         {
             string str = inStr.Length <= maxChars ? inStr : inStr.Substring(0, maxChars);
-            if(addEllipsis && inStr.Length > maxChars)
+            if (addEllipsis && inStr.Length > maxChars)
                 str += "…";
             return str;
         }
@@ -146,7 +144,7 @@ namespace Flowframes
             return newString.ToString();
         }
 
-        public static string ReplaceLast (this string str, string stringToReplace, string replaceWith)
+        public static string ReplaceLast(this string str, string stringToReplace, string replaceWith)
         {
             int place = str.LastIndexOf(stringToReplace);
 
@@ -156,12 +154,12 @@ namespace Flowframes
             return str.Remove(place, stringToReplace.Length).Insert(place, replaceWith);
         }
 
-        public static string[] SplitBy (this string str, string splitBy)
+        public static string[] SplitBy(this string str, string splitBy)
         {
             return str.Split(new string[] { splitBy }, StringSplitOptions.None);
         }
 
-        public static string RemoveComments (this string str)
+        public static string RemoveComments(this string str)
         {
             return str.Split('#')[0].SplitBy("//")[0];
         }
@@ -173,9 +171,9 @@ namespace Flowframes
             return filename + suffix + ext;
         }
 
-        public static string ToStringDot (this float f, string format = "")
+        public static string ToStringDot(this float f, string format = "")
         {
-            if(string.IsNullOrWhiteSpace(format))
+            if (string.IsNullOrWhiteSpace(format))
                 return f.ToString().Replace(",", ".");
             else
                 return f.ToString(format).Replace(",", ".");

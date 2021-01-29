@@ -3,10 +3,8 @@ using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.OS;
-using Flowframes.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -23,7 +21,7 @@ namespace Flowframes.Main
         public static PictureBox preview;
         public static BigPreviewForm bigPreviewForm;
 
-        public static async Task CopyLastFrame (int lastFrameNum)
+        public static async Task CopyLastFrame(int lastFrameNum)
         {
             try
             {
@@ -50,7 +48,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static string GetOutExt (bool withDot = false)
+        public static string GetOutExt(bool withDot = false)
         {
             string dotStr = withDot ? "." : "";
             if (Config.GetBool("jpegInterp"))
@@ -133,7 +131,7 @@ namespace Flowframes.Main
             catch { }
         }
 
-        public static void SetPreviewImg (Image img)
+        public static void SetPreviewImg(Image img)
         {
             if (img == null)
                 return;
@@ -143,7 +141,7 @@ namespace Flowframes.Main
         }
 
         public static Dictionary<string, int> frameCountCache = new Dictionary<string, int>();
-        public static async Task<int> GetInputFrameCountAsync (string path)
+        public static async Task<int> GetInputFrameCountAsync(string path)
         {
             string hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
             if (hash.Length > 1 && frameCountCache.ContainsKey(hash))
@@ -191,11 +189,11 @@ namespace Flowframes.Main
             return (waitMs * hddMultiplier).RoundToInt();
         }
 
-        public static string GetTempFolderLoc (string inPath, string outPath)
+        public static string GetTempFolderLoc(string inPath, string outPath)
         {
             string basePath = inPath.GetParentDir();
 
-            if(Config.GetInt("tempFolderLoc") == 1)
+            if (Config.GetInt("tempFolderLoc") == 1)
                 basePath = outPath.GetParentDir();
 
             if (Config.GetInt("tempFolderLoc") == 2)
@@ -207,7 +205,7 @@ namespace Flowframes.Main
             if (Config.GetInt("tempFolderLoc") == 4)
             {
                 string custPath = Config.Get("tempDirCustom");
-                if(IOUtils.IsDirValid(custPath))
+                if (IOUtils.IsDirValid(custPath))
                     basePath = custPath;
             }
 
@@ -250,10 +248,10 @@ namespace Flowframes.Main
             return passes;
         }
 
-        public static void PathAsciiCheck (string inpath, string outpath)
+        public static void PathAsciiCheck(string inpath, string outpath)
         {
             bool shownMsg = false;
-            
+
             if (OSUtils.HasNonAsciiChars(inpath))
             {
                 ShowMessage("Warning: Input path includes non-ASCII characters. This might cause problems.");
@@ -264,12 +262,12 @@ namespace Flowframes.Main
                 ShowMessage("Warning: Output path includes non-ASCII characters. This might cause problems.");
         }
 
-        public static void GifCompatCheck (Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)
+        public static void GifCompatCheck(Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)
         {
             if (outMode != Interpolate.OutMode.VidGif)
                 return;
 
-            if(fpsOut >= 50f)
+            if (fpsOut >= 50f)
                 Logger.Log("Warning: GIFs above 50 FPS might play slower on certain software/hardware! MP4 is recommended for higher frame rates.");
 
             int maxGifFrames = 200;
@@ -280,7 +278,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static bool CheckAiAvailable (AI ai)
+        public static bool CheckAiAvailable(AI ai)
         {
             if (!PkgUtils.IsAiAvailable(ai))
             {
@@ -291,7 +289,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static bool CheckDeleteOldTempFolder ()
+        public static bool CheckDeleteOldTempFolder()
         {
             if (!IOUtils.TryDeleteIfExists(i.current.tempFolder))
             {
@@ -302,7 +300,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static bool CheckPathValid (string path)
+        public static bool CheckPathValid(string path)
         {
             if (IOUtils.IsPathDirectory(path))
             {
@@ -338,7 +336,7 @@ namespace Flowframes.Main
             Logger.Log("Message: " + msg, true);
         }
 
-        public static async Task<Size> GetOutputResolution (string inputPath, bool print, bool returnZeroIfUnchanged = false)
+        public static async Task<Size> GetOutputResolution(string inputPath, bool print, bool returnZeroIfUnchanged = false)
         {
             Size resolution = await IOUtils.GetVideoOrFramesRes(inputPath);
             return GetOutputResolution(resolution, print, returnZeroIfUnchanged);
@@ -373,7 +371,7 @@ namespace Flowframes.Main
             return (n - a > b - n) ? b : a; // Return of closest of two
         }
 
-        public static bool CanUseAutoEnc (bool stepByStep, InterpSettings current)
+        public static bool CanUseAutoEnc(bool stepByStep, InterpSettings current)
         {
             AutoEncode.UpdateChunkAndBufferSizes();
 
@@ -389,7 +387,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if(stepByStep && !Config.GetBool("sbsAllowAutoEnc"))
+            if (stepByStep && !Config.GetBool("sbsAllowAutoEnc"))
             {
                 Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false.", true);
                 return false;
@@ -411,12 +409,12 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> UseUHD ()
+        public static async Task<bool> UseUHD()
         {
             return (await GetOutputResolution(i.current.inPath, false)).Height >= Config.GetInt("uhdThresh");
         }
 
-        public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
+        public static void FixConsecutiveSceneFrames(string sceneFramesPath, string sourceFramesPath)
         {
             if (!Directory.Exists(sceneFramesPath) || IOUtils.GetAmountOfFiles(sceneFramesPath, false) < 1)
                 return;
@@ -425,7 +423,7 @@ namespace Flowframes.Main
             List<string> sourceFrames = IOUtils.GetFilesSorted(sourceFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
             List<string> sceneFramesToDelete = new List<string>();
 
-            foreach(string scnFrame in sceneFrames)
+            foreach (string scnFrame in sceneFrames)
             {
                 if (sceneFramesToDelete.Contains(scnFrame))
                     continue;

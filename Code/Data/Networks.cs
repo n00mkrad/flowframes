@@ -1,5 +1,4 @@
 ﻿using Flowframes.IO;
-using System;
 using System.Collections.Generic;
 
 namespace Flowframes.Data
@@ -12,7 +11,7 @@ namespace Flowframes.Data
 
         public static List<AI> networks = new List<AI>();
 
-        public static void Init ()
+        public static void Init()
         {
             networks.Clear();
             networks.Add(rifeCuda);

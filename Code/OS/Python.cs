@@ -1,7 +1,5 @@
 ﻿using Flowframes.IO;
 using Flowframes.MiscUtils;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,9 +14,9 @@ namespace Flowframes.OS
 
         public static string compactOutput;
 
-        public static async Task CheckCompression ()
+        public static async Task CheckCompression()
         {
-            if(HasEmbeddedPyFolder() && (Config.Get("compressedPyVersion") != Updater.GetInstalledVer().ToString()))
+            if (HasEmbeddedPyFolder() && (Config.Get("compressedPyVersion") != Updater.GetInstalledVer().ToString()))
             {
                 Program.mainForm.SetWorking(true, false);
                 Stopwatch sw = new Stopwatch();
@@ -38,7 +36,7 @@ namespace Flowframes.OS
                     while (!compact.HasExited)
                     {
                         await Task.Delay(500);
-                        if(sw.ElapsedMilliseconds > 10000)
+                        if (sw.ElapsedMilliseconds > 10000)
                         {
                             Logger.Log($"This can take up to a few minutes... (Elapsed: {FormatUtils.Time(sw.Elapsed)})", false, shownPatienceMsg);
                             shownPatienceMsg = true;
@@ -54,7 +52,7 @@ namespace Flowframes.OS
             }
         }
 
-        static void CompactOutputHandler (object sendingProcess, DataReceivedEventArgs outLine)
+        static void CompactOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
             if (outLine == null || outLine.Data == null)
                 return;
@@ -62,7 +60,7 @@ namespace Flowframes.OS
             compactOutput = compactOutput + line + "\n";
         }
 
-        public static string GetPyCmd ()
+        public static string GetPyCmd()
         {
             if (HasEmbeddedPyFolder())
             {
@@ -84,12 +82,12 @@ namespace Flowframes.OS
             return "";
         }
 
-        public static bool HasEmbeddedPyFolder ()
+        public static bool HasEmbeddedPyFolder()
         {
             return (Directory.Exists(GetPyFolder()) && IOUtils.GetDirSize(GetPyFolder(), false) > 1024 * 1024 * 5);
         }
 
-        public static string GetPyFolder ()
+        public static string GetPyFolder()
         {
             if (Directory.Exists(Path.Combine(Paths.GetPkgPath(), "py-amp")))
                 return Path.Combine(Paths.GetPkgPath(), "py-amp");
@@ -99,8 +97,8 @@ namespace Flowframes.OS
 
             return "";
         }
-        
-        public static bool IsPytorchReady ()
+
+        public static bool IsPytorchReady()
         {
             string torchVer = GetPytorchVer();
             if (!string.IsNullOrWhiteSpace(torchVer) && torchVer.Length <= 35)
@@ -130,7 +128,7 @@ namespace Flowframes.OS
             }
         }
 
-        public static bool IsSysPyInstalled ()
+        public static bool IsSysPyInstalled()
         {
             if (hasCheckedSysPy)
                 return sysPyInstalled;

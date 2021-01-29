@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Security.Principal;
+﻿using DiskDetector;
+using DiskDetector.Models;
+using Flowframes.IO;
+using Microsoft.VisualBasic.Devices;
 using System;
 using System.Diagnostics;
 using System.Management;
-using Flowframes.IO;
-using DiskDetector;
-using DiskDetector.Models;
-using Microsoft.VisualBasic.Devices;
+using System.Security.Principal;
+using System.Text;
 
 namespace Flowframes.OS
 {
@@ -124,7 +123,7 @@ namespace Flowframes.OS
             return (Encoding.UTF8.GetByteCount(str) != str.Length);
         }
 
-        public static int GetFreeRamMb ()
+        public static int GetFreeRamMb()
         {
             try
             {

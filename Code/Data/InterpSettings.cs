@@ -2,9 +2,7 @@
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
-using Flowframes.UI;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -68,7 +66,7 @@ namespace Flowframes
             scaledResolution = new Size(0, 0);
         }
 
-        public void UpdatePaths (string inPathArg, string outPathArg)
+        public void UpdatePaths(string inPathArg, string outPathArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -91,7 +89,7 @@ namespace Flowframes
             return scaledResolution;
         }
 
-        async Task RefreshResolutions ()
+        async Task RefreshResolutions()
         {
             if (inputResolution.IsEmpty || scaledResolution.IsEmpty)
             {
@@ -112,7 +110,7 @@ namespace Flowframes
             return targetFrameCount;
         }
 
-        public void RefreshAlpha ()
+        public void RefreshAlpha()
         {
             try
             {

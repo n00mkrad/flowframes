@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Flowframes.Data
+﻿namespace Flowframes.Data
 {
     public struct SemVer
     {
@@ -24,7 +21,7 @@ namespace Flowframes.Data
             patch = nums[2].GetInt();
         }
 
-        public override string ToString ()
+        public override string ToString()
         {
             return $"{major}.{minor}.{patch}";
         }

@@ -1,11 +1,6 @@
 ﻿using Flowframes.IO;
-using Flowframes.Magick;
 using Flowframes.Main;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -27,7 +22,7 @@ namespace Flowframes.UI
             Logger.Log("Done.");
         }
 
-        public static async Task LoopVideo (string inputFile, ComboBox loopTimes)
+        public static async Task LoopVideo(string inputFile, ComboBox loopTimes)
         {
             if (!InputIsValid(inputFile))
                 return;
@@ -53,14 +48,14 @@ namespace Flowframes.UI
                 return;
             int crf = crfBox.GetInt();
             Logger.Log("Creating MP4 with CRF " + crf + "...", true);
-            if(Path.GetExtension(inputFile).ToUpper() != ".MP4")
+            if (Path.GetExtension(inputFile).ToUpper() != ".MP4")
                 await FFmpegCommands.Encode(inputFile, "libx264", "aac", crf, 128);
             else
                 await FFmpegCommands.Encode(inputFile, "libx264", "copy", crf);      // Copy audio if input is MP4
             Logger.Log("Done", true);
         }
 
-        static bool InputIsValid (string inPath)
+        static bool InputIsValid(string inPath)
         {
             bool isFile = !IOUtils.IsPathDirectory(inPath);
             if ((isFile && !IOUtils.IsFileValid(inPath)) || (!isFile && !IOUtils.IsDirValid(inPath)))
@@ -71,7 +66,7 @@ namespace Flowframes.UI
             return true;
         }
 
-        public static async void Dedupe (string inPath, bool testRun)
+        public static async void Dedupe(string inPath, bool testRun)
         {
             bool isFile = !IOUtils.IsPathDirectory(inPath);
             if ((isFile && !IOUtils.IsFileValid(inPath)) || (!isFile && !IOUtils.IsDirValid(inPath)))

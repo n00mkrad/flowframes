@@ -1,9 +1,4 @@
 ﻿using Flowframes.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.AudioVideo
 {
@@ -50,11 +45,11 @@ namespace Flowframes.AudioVideo
             return "libx264";
         }
 
-        public static string GetEncArgs (Codec codec)
+        public static string GetEncArgs(Codec codec)
         {
             string args = $"-c:v { GetEnc(codec)} ";
 
-            if(codec == Codec.H264)
+            if (codec == Codec.H264)
             {
                 args += $"-crf {Config.GetInt("h264Crf")} -preset {Config.Get("ffEncPreset")} -pix_fmt yuv420p";
             }
@@ -82,7 +77,7 @@ namespace Flowframes.AudioVideo
                 args += $"{qualityStr} -cpu-used {cpuUsed} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
             }
 
-            if(codec == Codec.ProRes)
+            if (codec == Codec.ProRes)
             {
                 args += $"-profile:v {Config.GetInt("proResProfile")} -pix_fmt yuv420p";
             }
@@ -133,13 +128,13 @@ namespace Flowframes.AudioVideo
             }
         }
 
-        public static string GetAudioFallbackArgs (string containerExt)
+        public static string GetAudioFallbackArgs(string containerExt)
         {
             containerExt = containerExt.Remove(".");
             string codec = "aac";
             string bitrate = $"{Config.GetInt("aacBitrate", 160)}k";
 
-            if(containerExt == "webm" || containerExt == "mkv")
+            if (containerExt == "webm" || containerExt == "mkv")
             {
                 codec = "libopus";
                 bitrate = $"{Config.GetInt("opusBitrate", 128)}";
@@ -161,7 +156,7 @@ namespace Flowframes.AudioVideo
 
         public static string GetSubCodecForContainer(string containerExt)
         {
-            containerExt = containerExt.Remove("."); 
+            containerExt = containerExt.Remove(".");
 
             if (containerExt == "mp4") return "mov_text";
             if (containerExt == "webm") return "webvtt";

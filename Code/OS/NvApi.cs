@@ -1,12 +1,6 @@
 ﻿using NvAPIWrapper;
 using NvAPIWrapper.GPU;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Flowframes.OS
 {
@@ -32,7 +26,7 @@ namespace Flowframes.OS
             }
         }
 
-        public static float GetVramGb ()
+        public static float GetVramGb()
         {
             try
             {

@@ -1,15 +1,12 @@
-﻿using Flowframes.AudioVideo;
-using Flowframes.Data;
+﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utils = Flowframes.AudioVideo.FFmpegUtils;
 
@@ -44,7 +41,7 @@ namespace Flowframes
             string timecodeStr = timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, scnDetect, mpStr } );
+            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, scnDetect, mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
@@ -152,7 +149,7 @@ namespace Flowframes
             await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), AvProcess.LogMode.OnlyLastLine, AvProcess.TaskType.Encode);
         }
 
-        public static async Task MergeAlphaIntoRgb (string rgbDir, int rgbPad, string alphaDir, int aPad, bool deleteAlphaDir)
+        public static async Task MergeAlphaIntoRgb(string rgbDir, int rgbPad, string alphaDir, int aPad, bool deleteAlphaDir)
         {
             string filter = "-filter_complex [0:v:0][1:v:0]alphamerge[out] -map [out]";
             string args = $"-i \"{rgbDir}/%{rgbPad}d.png\" -i \"{alphaDir}/%{aPad}d.png\" {filter} \"{rgbDir}/%{rgbPad}d.png\"";
@@ -223,7 +220,7 @@ namespace Flowframes
             }
         }
 
-        public static async Task ExtractSubtitles (string inputFile, string outFolder, Interpolate.OutMode outMode)
+        public static async Task ExtractSubtitles(string inputFile, string outFolder, Interpolate.OutMode outMode)
         {
             Dictionary<int, string> subDict = await GetSubtitleTracks(inputFile);
             foreach (KeyValuePair<int, string> subTrack in subDict)
@@ -236,21 +233,21 @@ namespace Flowframes
                     break;
                 Logger.Log($"[FFCmds] Extracted subtitle track {subTrack.Key} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true, false, "ffmpeg");
             }
-            if(subDict.Count > 0)
+            if (subDict.Count > 0)
             {
                 Logger.Log($"Extracted {subDict.Count} subtitle tracks from the input video.");
                 Utils.ContainerSupportsSubs(Utils.GetExt(outMode), true);
             }
         }
 
-        public static async Task<Dictionary<int, string>> GetSubtitleTracks (string inputFile)
+        public static async Task<Dictionary<int, string>> GetSubtitleTracks(string inputFile)
         {
             Dictionary<int, string> subDict = new Dictionary<int, string>();
             string args = $"-i {inputFile.Wrap()}";
             string[] outputLines = (await AvProcess.GetFfmpegOutputAsync(args)).SplitIntoLines();
             string[] filteredLines = outputLines.Where(l => l.Contains(" Subtitle: ")).ToArray();
             int idx = 0;
-            foreach(string line in filteredLines)
+            foreach (string line in filteredLines)
             {
                 string lang = "unknown";
                 bool hasLangInfo = line.Contains("(") && line.Contains("): Subtitle: ");
@@ -281,7 +278,7 @@ namespace Flowframes
             for (int subTrack = 0; subTrack < subTracks.Length; subTrack++)
             {
                 subInputArgs += $" -i {Path.GetFileName(subTracks[subTrack])}";
-                subMapArgs += $" -map {subTrack+2}";
+                subMapArgs += $" -map {subTrack + 2}";
                 subMetaArgs += $" -metadata:s:s:{subTrack} language={Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('-').Last()}";
             }
 
@@ -297,7 +294,7 @@ namespace Flowframes
 
                 args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
                 $"{subInputArgs} -map 0:v -map 1:a {subMapArgs} -c:v copy {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} -c:s {subCodec} {subMetaArgs} -shortest {outName}";
-                
+
                 await AvProcess.RunFfmpeg(args, tempFolder, AvProcess.LogMode.Hidden);
 
                 if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || AvProcess.lastOutputFfmpeg.Contains("Invalid data") || AvProcess.lastOutputFfmpeg.Contains("Error initializing output stream"))
@@ -313,8 +310,8 @@ namespace Flowframes
 
             //string movePath = Path.ChangeExtension(inputFile, Path.GetExtension(tempPath));
             //File.Delete(movePath);
-            if(File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
-                {
+            if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
+            {
                 File.Delete(tempPath);
                 File.Move(outPath, inputFile);
             }
@@ -464,7 +461,7 @@ namespace Flowframes
             return -1;
         }
 
-        static async Task<int> ReadFrameCountFfmpegAsync (string inputFile)
+        static async Task<int> ReadFrameCountFfmpegAsync(string inputFile)
         {
             string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
             string info = await AvProcess.GetFfmpegOutputAsync(args, true);

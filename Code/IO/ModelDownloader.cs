@@ -4,16 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.IO
 {
     class ModelDownloader
     {
-        public static async Task<Dictionary<string, string>> GetFilelist (string ai, string model)
+        public static async Task<Dictionary<string, string>> GetFilelist(string ai, string model)
         {
             var client = new WebClient();
             string[] fileLines = client.DownloadString(GetMdlFileUrl(ai, model, "md5.txt")).SplitIntoLines();
@@ -21,7 +19,7 @@ namespace Flowframes.IO
             return filesDict;
         }
 
-        static string GetMdlUrl (string ai, string model)
+        static string GetMdlUrl(string ai, string model)
         {
             string baseUrl = Config.Get("modelsBaseUrl");
             return Path.Combine(baseUrl, ai.ToLower(), model);
@@ -37,7 +35,7 @@ namespace Flowframes.IO
             return Path.Combine(Paths.GetPkgPath(), ai, model);
         }
 
-        static async Task DownloadTo (string url, string saveDir, int retries = 3)
+        static async Task DownloadTo(string url, string saveDir, int retries = 3)
         {
             string savePath = Path.Combine(saveDir, Path.GetFileName(url));
             IOUtils.TryDeleteIfExists(savePath);
@@ -74,7 +72,7 @@ namespace Flowframes.IO
                 if (sw.ElapsedMilliseconds > 6000)
                 {
                     client.CancelAsync();
-                    if(retries > 0)
+                    if (retries > 0)
                     {
                         await DownloadTo(url, saveDir, retries--);
                     }
@@ -89,7 +87,7 @@ namespace Flowframes.IO
             Logger.Log($"Downloaded '{Path.GetFileName(url)}' ({IOUtils.GetFilesize(savePath) / 1024} KB)", true);
         }
 
-        public static async Task DownloadModelFiles (string ai, string model)
+        public static async Task DownloadModelFiles(string ai, string model)
         {
             model = model.ToUpper();
             Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {model})", true);
@@ -108,7 +106,7 @@ namespace Flowframes.IO
 
                 foreach (KeyValuePair<string, string> modelFile in fileList)
                     await DownloadTo(GetMdlFileUrl(ai, model, modelFile.Key), mdlDir);
- 
+
                 Logger.Log($"Downloaded \"{model}\" model files.", false, true);
             }
             catch (Exception e)
@@ -118,9 +116,9 @@ namespace Flowframes.IO
             }
         }
 
-        public static void DeleteAllModels ()
+        public static void DeleteAllModels()
         {
-            foreach(string modelFolder in GetAllModelFolders())
+            foreach (string modelFolder in GetAllModelFolders())
             {
                 string size = FormatUtils.Bytes(IOUtils.GetDirSize(modelFolder, true));
                 if (IOUtils.TryDeleteIfExists(modelFolder))
@@ -150,7 +148,7 @@ namespace Flowframes.IO
             return modelPaths;
         }
 
-        public static bool AreFilesValid (string ai, string model)
+        public static bool AreFilesValid(string ai, string model)
         {
             string mdlDir = GetLocalPath(ai, model);
 
@@ -171,7 +169,7 @@ namespace Flowframes.IO
             string[] md5Lines = IOUtils.ReadLines(md5FilePath);
             Dictionary<string, string> filesDict = GetDict(md5Lines);
 
-            foreach(KeyValuePair<string, string> file in filesDict)
+            foreach (KeyValuePair<string, string> file in filesDict)
             {
                 string md5 = IOUtils.GetHash(Path.Combine(mdlDir, file.Key), IOUtils.Hash.MD5);
                 if (md5.Trim() != file.Value.Trim())
@@ -184,7 +182,7 @@ namespace Flowframes.IO
             return true;
         }
 
-        static Dictionary<string, string> GetDict (string[] lines, char sep = ':')
+        static Dictionary<string, string> GetDict(string[] lines, char sep = ':')
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
 

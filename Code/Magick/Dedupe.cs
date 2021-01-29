@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Flowframes.IO;
+using Flowframes.OS;
+using ImageMagick;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Flowframes.IO;
-using ImageMagick;
-using Flowframes.OS;
-using Flowframes.Data;
 using System.Drawing;
-using Paths = Flowframes.IO.Paths;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Flowframes.Magick
 {
@@ -26,7 +23,7 @@ namespace Flowframes.Magick
 
             currentMode = Mode.Auto;
 
-            if(setStatus)
+            if (setStatus)
                 Program.mainForm.SetStatus("Running frame de-duplication");
 
             currentThreshold = Config.GetFloat("dedupThresh");
@@ -50,7 +47,7 @@ namespace Flowframes.Magick
             return imageCache[path];
         }
 
-        public static void ClearCache ()
+        public static void ClearCache()
         {
             imageCache.Clear();
         }
@@ -128,7 +125,7 @@ namespace Flowframes.Magick
                             break;
                         }
 
-                        if (sw.ElapsedMilliseconds >= 500 || (i+1) == framePaths.Length)   // Print every 0.5s (or when done)
+                        if (sw.ElapsedMilliseconds >= 500 || (i + 1) == framePaths.Length)   // Print every 0.5s (or when done)
                         {
                             sw.Restart();
                             Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
@@ -146,7 +143,7 @@ namespace Flowframes.Magick
                 //     i = 0;
                 // }
 
-                if(i % 3 == 0)
+                if (i % 3 == 0)
                     await Task.Delay(1);
 
                 if (Interpolate.canceled) return;
@@ -179,7 +176,7 @@ namespace Flowframes.Magick
                 Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");
         }
 
-        static float GetDifference (string img1Path, string img2Path)
+        static float GetDifference(string img1Path, string img2Path)
         {
             MagickImage img2 = GetImage(img2Path);
             MagickImage img1 = GetImage(img1Path);
@@ -189,7 +186,7 @@ namespace Flowframes.Magick
             return errPercent;
         }
 
-        static async Task<int> GetBufferSize ()
+        static async Task<int> GetBufferSize()
         {
             Size res = await Interpolate.current.GetScaledRes();
             long pixels = res.Width * res.Height;    // 4K = 8294400, 1440p = 3686400, 1080p = 2073600, 720p = 921600, 540p = 518400, 360p = 230400
@@ -205,19 +202,19 @@ namespace Flowframes.Magick
             return bufferSize;
         }
 
-        public static async Task CreateDupesFile (string framesPath, int lastFrameNum)
+        public static async Task CreateDupesFile(string framesPath, int lastFrameNum)
         {
             string infoFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
             string fileContent = "";
 
             FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, "*.png");
 
-            for(int i = 0; i < frameFiles.Length; i++)
+            for (int i = 0; i < frameFiles.Length; i++)
             {
                 bool isLastItem = (i + 1) == frameFiles.Length;
 
                 int frameNum1 = frameFiles[i].Name.GetInt();
-                int frameNum2 = isLastItem ? lastFrameNum : frameFiles[i+1].Name.GetInt();
+                int frameNum2 = isLastItem ? lastFrameNum : frameFiles[i + 1].Name.GetInt();
 
                 int diff = frameNum2 - frameNum1;
                 int dupes = diff - 1;

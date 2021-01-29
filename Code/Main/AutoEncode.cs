@@ -1,5 +1,4 @@
 ﻿using Flowframes.AudioVideo;
-using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.Main
@@ -26,7 +24,7 @@ namespace Flowframes.Main
 
         public static bool paused;
 
-        public static void UpdateChunkAndBufferSizes ()
+        public static void UpdateChunkAndBufferSizes()
         {
             chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor);
             bool isNcnn = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN");
@@ -71,7 +69,7 @@ namespace Flowframes.Main
                     unencodedFrameLines.Clear();
 
                     for (int vfrLine = lastEncodedFrameNum; vfrLine < interpFramesLines.Length; vfrLine++)
-                            unencodedFrameLines.Add(vfrLine);
+                        unencodedFrameLines.Add(vfrLine);
 
                     bool aiRunning = !AiProcess.currentAiProcess.HasExited;
 
@@ -107,7 +105,7 @@ namespace Flowframes.Main
                         encodedFrameLines.AddRange(frameLinesToEncode);
 
                         Logger.Log("Done Encoding Chunk #" + videoIndex, true, false, "ffmpeg");
-                        lastEncodedFrameNum = (frameLinesToEncode.Last() + 1 );
+                        lastEncodedFrameNum = (frameLinesToEncode.Last() + 1);
 
                         videoIndex++;
                         busy = false;
@@ -127,7 +125,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task DeleteOldFramesAsync (string interpFramesPath, List<int> frameLinesToEncode)
+        static async Task DeleteOldFramesAsync(string interpFramesPath, List<int> frameLinesToEncode)
         {
             Logger.Log("[AutoEnc] Starting DeleteOldFramesAsync.", true, false, "ffmpeg");
             Stopwatch sw = new Stopwatch();
@@ -147,14 +145,14 @@ namespace Flowframes.Main
             Logger.Log("[AutoEnc] DeleteOldFramesAsync finished in " + FormatUtils.TimeSw(sw), true, false, "ffmpeg");
         }
 
-        static bool FrameIsStillNeeded (string frameName, int frameIndex)
+        static bool FrameIsStillNeeded(string frameName, int frameIndex)
         {
-            if ((frameIndex + 1) < interpFramesLines.Length && interpFramesLines[frameIndex+1].Contains(frameName))
+            if ((frameIndex + 1) < interpFramesLines.Length && interpFramesLines[frameIndex + 1].Contains(frameName))
                 return true;
             return false;
         }
 
-        public static bool HasWorkToDo ()
+        public static bool HasWorkToDo()
         {
             if (Interpolate.canceled || interpFramesFolder == null) return false;
             // Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");

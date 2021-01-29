@@ -1,16 +1,12 @@
 ﻿using Flowframes.Data;
-using Flowframes.Forms;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 
 namespace Flowframes.IO
 {
     class PkgUtils
     {
 
-        public static string GetPkgFolder (FlowPackage pkg)
+        public static string GetPkgFolder(FlowPackage pkg)
         {
             return Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(pkg.fileName));
         }
@@ -26,7 +22,7 @@ namespace Flowframes.IO
             return (GetVersion(pkg) >= minVersion);
         }
 
-        public static int GetVersion (FlowPackage pkg)
+        public static int GetVersion(FlowPackage pkg)
         {
             string versionFilePath = Path.Combine(GetPkgFolder(pkg), "ver.ini");
             if (!File.Exists(versionFilePath))

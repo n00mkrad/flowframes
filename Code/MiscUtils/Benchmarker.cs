@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.MiscUtils
 {
@@ -11,12 +7,12 @@ namespace Flowframes.MiscUtils
     {
         static Stopwatch sw = new Stopwatch();
 
-        public static void Start ()
+        public static void Start()
         {
             sw.Restart();
         }
 
-        public static string GetTimeStr (bool stop)
+        public static string GetTimeStr(bool stop)
         {
             if (stop)
                 sw.Stop();

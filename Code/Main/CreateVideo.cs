@@ -1,19 +1,13 @@
-﻿using Flowframes;
+﻿using Flowframes.AudioVideo;
 using Flowframes.IO;
-using Flowframes.Magick;
-using Flowframes.Main;
-using Flowframes.OS;
-using Flowframes.UI;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Padding = Flowframes.Data.Padding;
 using i = Flowframes.Interpolate;
-using System.Diagnostics;
-using Flowframes.AudioVideo;
+using Padding = Flowframes.Data.Padding;
 
 namespace Flowframes.Main
 {
@@ -29,7 +23,7 @@ namespace Flowframes.Main
                 {
                     await CopyOutputFrames(path, Path.GetFileNameWithoutExtension(outPath), stepByStep);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Logger.Log("Failed to move interp frames folder: " + e.Message);
                 }
@@ -50,7 +44,7 @@ namespace Flowframes.Main
 
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
-                if(!dontEncodeFullFpsVid)
+                if (!dontEncodeFullFpsVid)
                     await Encode(mode, path, outPath, i.current.outFps);
 
                 if (fpsLimit)
@@ -63,7 +57,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task CopyOutputFrames (string framesPath, string folderName, bool dontMove)
+        static async Task CopyOutputFrames(string framesPath, string folderName, bool dontMove)
         {
             Program.mainForm.SetStatus("Copying output frames...");
             string copyPath = Path.Combine(i.current.outPath, folderName);
@@ -78,7 +72,7 @@ namespace Flowframes.Main
 
             for (int idx = 1; idx <= vfrLines.Length; idx++)
             {
-                string line = vfrLines[idx-1];
+                string line = vfrLines[idx - 1];
                 string inFilename = line.Split('/').Last().Remove("'").RemoveComments();
                 string framePath = Path.Combine(framesPath, inFilename);
                 string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
@@ -127,7 +121,7 @@ namespace Flowframes.Main
             try
             {
                 DirectoryInfo chunksDir = new DirectoryInfo(chunksFolder);
-                foreach(DirectoryInfo dir in chunksDir.GetDirectories())
+                foreach (DirectoryInfo dir in chunksDir.GetDirectories())
                 {
                     string suffix = dir.Name.Replace("chunks", "");
                     string tempConcatFile = Path.Combine(tempFolder, $"chunks-concat{suffix}.ini");
@@ -165,7 +159,7 @@ namespace Flowframes.Main
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
-            if(!dontEncodeFullFpsVid)
+            if (!dontEncodeFullFpsVid)
                 await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
 
             if (fpsLimit)
@@ -209,7 +203,7 @@ namespace Flowframes.Main
 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
                     await FFmpegCommands.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
-                
+
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
                     Logger.Log("No compatible audio stream found.", true);

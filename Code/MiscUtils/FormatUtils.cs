@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.MiscUtils
 {
@@ -39,7 +36,7 @@ namespace Flowframes.MiscUtils
 
         public static string Time(TimeSpan span, bool allowMs = true)
         {
-            if(span.TotalHours >= 1f)
+            if (span.TotalHours >= 1f)
                 return span.ToString(@"hh\:mm\:ss");
 
             if (span.TotalMinutes >= 1f)
@@ -90,7 +87,7 @@ namespace Flowframes.MiscUtils
             string outStr = "";
 
             strings = strings.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-            if(distinct)
+            if (distinct)
                 strings = strings.Distinct().ToArray();
 
             for (int i = 0; i < strings.Length; i++)

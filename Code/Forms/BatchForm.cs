@@ -1,7 +1,6 @@
 ﻿using Flowframes.IO;
 using Flowframes.Main;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace Flowframes.Forms
             RefreshGui();
         }
 
-        public void RefreshGui ()
+        public void RefreshGui()
         {
             taskList.Items.Clear();
             string nl = Environment.NewLine;
@@ -38,14 +37,14 @@ namespace Flowframes.Forms
             }
         }
 
-        public void SetWorking (bool working)
+        public void SetWorking(bool working)
         {
             runBtn.Enabled = !working;
             addToQueue.Enabled = !working;
             stopBtn.Visible = working;
             forceStopBtn.Visible = working;
             stopBtn.Enabled = working;
-        } 
+        }
 
         private void BatchForm_Load(object sender, EventArgs e)
         {
@@ -91,7 +90,7 @@ namespace Flowframes.Forms
 
             Queue<InterpSettings> temp = new Queue<InterpSettings>();
 
-            for(int i = 0; i < Program.batchQueue.Count; i++)
+            for (int i = 0; i < Program.batchQueue.Count; i++)
             {
                 if (i != taskList.SelectedIndex)
                     temp.Enqueue(Program.batchQueue.ElementAt(i));
@@ -115,8 +114,8 @@ namespace Flowframes.Forms
             await LoadDroppedPaths(droppedPaths);
         }
 
-        public async Task LoadDroppedPaths (string[] droppedPaths)
-        {                
+        public async Task LoadDroppedPaths(string[] droppedPaths)
+        {
             foreach (string path in droppedPaths)
             {
                 Logger.Log($"Dropped file: '{path}'", true);
@@ -137,7 +136,7 @@ namespace Flowframes.Forms
             }
         }
 
-        float GetFramerate (string path)
+        float GetFramerate(string path)
         {
             float fps = Interpolate.current.inFps;
             float fpsFromFile = IOUtils.GetFpsFolderOrVideo(path);

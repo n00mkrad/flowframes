@@ -2,11 +2,8 @@
 using Flowframes.Forms;
 using Flowframes.IO;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,7 +27,7 @@ namespace Flowframes.OS
             }
         }
 
-        public static bool IsVersionNewer (SemVer currentVer, SemVer newVer)
+        public static bool IsVersionNewer(SemVer currentVer, SemVer newVer)
         {
             if (newVer.major > currentVer.major)
             {
@@ -38,7 +35,7 @@ namespace Flowframes.OS
             }
             else
             {
-                if(newVer.minor > currentVer.minor)
+                if (newVer.minor > currentVer.minor)
                 {
                     return true;
                 }
@@ -56,12 +53,12 @@ namespace Flowframes.OS
             }
         }
 
-        public static bool VersionMatches (SemVer v1, SemVer v2)
+        public static bool VersionMatches(SemVer v1, SemVer v2)
         {
             return v1.major == v2.major && v1.minor == v2.minor && v1.patch == v2.patch;
         }
 
-        public static SemVer GetLatestVer (bool patreon)
+        public static SemVer GetLatestVer(bool patreon)
         {
             var client = new WebClient();
             int line = patreon ? 0 : 2;
@@ -83,7 +80,7 @@ namespace Flowframes.OS
             }
         }
 
-        public static async Task UpdateTo (int version, UpdaterForm form = null)
+        public static async Task UpdateTo(int version, UpdaterForm form = null)
         {
             Logger.Log("Updating to " + version, true);
             string savePath = Path.Combine(IOUtils.GetExeDir(), $"FlowframesV{version}");
@@ -132,7 +129,7 @@ namespace Flowframes.OS
             Application.Exit();
         }
 
-        public static async Task AsyncUpdateCheck ()
+        public static async Task AsyncUpdateCheck()
         {
             SemVer installed = GetInstalledVer();
             SemVer latestPat = GetLatestVer(true);

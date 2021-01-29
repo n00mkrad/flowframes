@@ -1,19 +1,14 @@
-﻿using Flowframes;
-using Flowframes.Data;
+﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
 using Flowframes.OS;
-using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using Utils = Flowframes.Main.InterpolateUtils;
 
@@ -39,7 +34,7 @@ namespace Flowframes
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
-            if(!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
+            if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(current.inPath, current.outPath);
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             Program.mainForm.SetStatus("Starting...");
@@ -52,7 +47,7 @@ namespace Flowframes
             await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
-            if(!currentlyUsingAutoEnc)
+            if (!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode, false);
             IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
             await Cleanup();
@@ -62,7 +57,7 @@ namespace Flowframes
             Program.mainForm.SetStatus("Done interpolating!");
         }
 
-        public static async Task GetFrames ()
+        public static async Task GetFrames()
         {
             current.RefreshAlpha();
 
@@ -70,7 +65,7 @@ namespace Flowframes
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
-            
+
             if (current.alpha)
                 await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
         }
@@ -97,7 +92,7 @@ namespace Flowframes
                 Logger.Log($"[Deduplication] Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.");
             }
 
-            if(!Config.GetBool("allowConsecutiveSceneChanges", true))
+            if (!Config.GetBool("allowConsecutiveSceneChanges", true))
                 Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
             if (extractAudio)
@@ -110,25 +105,25 @@ namespace Flowframes
             await FFmpegCommands.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
         }
 
-        public static async Task PostProcessFrames (bool sbsMode = false)
+        public static async Task PostProcessFrames(bool sbsMode = false)
         {
             if (canceled) return;
 
             int extractedFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
             if (!Directory.Exists(current.framesFolder) || currentInputFrameCount <= 0 || extractedFrames < 2)
             {
-                if(extractedFrames == 1)
+                if (extractedFrames == 1)
                     Cancel("Only a single frame was extracted from your input file!\n\nPossibly your input is an image, not a video?");
                 else
                     Cancel("Frame extraction failed!\n\nYour input file might be incompatible.");
-            }  
+            }
 
             if (Config.GetInt("dedupMode") == 1)
                 await Dedupe.Run(current.framesFolder);
             else
                 Dedupe.ClearCache();
 
-            if(!Config.GetBool("enableLoop"))
+            if (!Config.GetBool("enableLoop"))
                 await Utils.CopyLastFrame(currentInputFrameCount);
 
             if (Config.GetInt("dedupMode") > 0)
@@ -215,7 +210,7 @@ namespace Flowframes
             catch (Exception e)
             {
                 Logger.Log("Cleanup Error: " + e.Message, true);
-                if(retriesLeft > 0)
+                if (retriesLeft > 0)
                 {
                     await Task.Delay(1000);
                     await Cleanup(ignoreKeepSetting, retriesLeft - 1, true);

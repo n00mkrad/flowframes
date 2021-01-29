@@ -1,14 +1,11 @@
 ﻿using Flowframes.IO;
+using Flowframes.MiscUtils;
 using Flowframes.OS;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Flowframes.MiscUtils;
 
 namespace Flowframes
 {
@@ -36,7 +33,7 @@ namespace Flowframes
             Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
             lastTask = taskType;
-            if(!string.IsNullOrWhiteSpace(workingDir))
+            if (!string.IsNullOrWhiteSpace(workingDir))
                 ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
             else
                 ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel warning -y -stats {args}";
@@ -62,7 +59,7 @@ namespace Flowframes
             string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
             Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");
 
-            if(line.Contains("Could not open file"))
+            if (line.Contains("Could not open file"))
                 Interpolate.Cancel($"FFmpeg Error: {line}");
 
             if (line.Contains("No NVENC capable devices found"))
@@ -76,7 +73,7 @@ namespace Flowframes
             }
         }
 
-        static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
+        static void FfmpegOutputHandlerSilent(object sendingProcess, DataReceivedEventArgs outLine)
         {
             if (outLine == null || outLine.Data == null || outLine.Data.Trim().Length < 2)
                 return;
@@ -88,7 +85,7 @@ namespace Flowframes
             Logger.Log(line, true, false, "ffmpeg");
         }
 
-        public static string GetFfmpegOutput (string args)
+        public static string GetFfmpegOutput(string args)
         {
             Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
@@ -127,7 +124,7 @@ namespace Flowframes
             return lastOutputFfmpeg;
         }
 
-        public static string GetFfprobeOutput (string args)
+        public static string GetFfprobeOutput(string args)
         {
             Process ffprobe = OSUtils.NewProcess(true);
             ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
@@ -157,7 +154,7 @@ namespace Flowframes
         public static void UpdateFfmpegProgress(String ffmpegTime)
         {
             long total = Program.mainForm.currInDuration / 100;
-            if(total == 0) return;
+            if (total == 0) return;
             long current = FormatUtils.MsFromTimestamp(ffmpegTime);
             int progress = Convert.ToInt32(current / total);
             Program.mainForm.SetProgress(progress);
@@ -191,23 +188,23 @@ namespace Flowframes
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
             Logger.Log(outLine.Data, hidden, replaceLastLine);
         }
-        
-        static string GetAvDir ()
+
+        static string GetAvDir()
         {
             return Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.audioVideo.fileName));
         }
 
-        static string GetCmdArg ()
+        static string GetCmdArg()
         {
             return "/C";
         }
 
-        public static async Task SetBusyWhileRunning ()
+        public static async Task SetBusyWhileRunning()
         {
             if (Program.busy) return;
 
             await Task.Delay(100);
-            while(!lastProcess.HasExited)
+            while (!lastProcess.HasExited)
                 await Task.Delay(10);
         }
     }

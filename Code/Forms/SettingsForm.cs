@@ -2,12 +2,6 @@
 using Flowframes.MiscUtils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,7 +24,7 @@ namespace Flowframes.Forms
             CheckModelCacheSize();
         }
 
-        public async Task CheckModelCacheSize ()
+        public async Task CheckModelCacheSize()
         {
             long modelFoldersBytes = 0;
 
@@ -49,7 +43,7 @@ namespace Flowframes.Forms
             Program.mainForm.UpdateStepByStepControls(true);
         }
 
-        void SaveSettings ()
+        void SaveSettings()
         {
             // Clamp...
             h264Crf.Text = h264Crf.GetInt().Clamp(0, 51).ToString();

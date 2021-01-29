@@ -1,21 +1,18 @@
-﻿using Flowframes.Forms;
+﻿using Flowframes.Data;
+using Flowframes.Forms;
 using Flowframes.IO;
-using Flowframes.Magick;
 using Flowframes.Main;
+using Flowframes.MiscUtils;
 using Flowframes.OS;
 using Flowframes.UI;
+using HTAlt.WinForms;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using HTAlt.WinForms;
-using Flowframes.Data;
-using Microsoft.WindowsAPICodePack.Taskbar;
-using System.Threading.Tasks;
-using Flowframes.MiscUtils;
 
 namespace Flowframes
 {
@@ -121,7 +118,7 @@ namespace Flowframes
         public float currInFps;
         public int currInFrames;
         public long currInDuration;
-        public void UpdateInputInfo ()
+        public void UpdateInputInfo()
         {
             string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
             str += $"Framerate: {(currInFps > 0f ? $"{currInFps.ToStringDot()} FPS" : "Unknown")} - ";
@@ -130,7 +127,7 @@ namespace Flowframes
             inputInfo.Text = str;
         }
 
-        public void ResetInputInfo ()
+        public void ResetInputInfo()
         {
             currInRes = new Size();
             currInFps = 0;
@@ -206,7 +203,7 @@ namespace Flowframes
         public void SetOutMode(Interpolate.OutMode mode)
         {
             int theIndex = 0;
-            for(int i = 0; i < outModeCombox.Items.Count; i++)
+            for (int i = 0; i < outModeCombox.Items.Count; i++)
             {
                 string currentItem = outModeCombox.Items[i].ToString().ToLower();
                 if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) theIndex = i;

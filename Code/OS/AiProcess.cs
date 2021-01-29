@@ -1,18 +1,15 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
+using Flowframes.Magick;
+using Flowframes.Main;
+using Flowframes.MiscUtils;
+using Flowframes.OS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using Flowframes.OS;
-using Flowframes.UI;
-using Flowframes.Main;
-using Flowframes.Data;
-using Flowframes.MiscUtils;
-using Flowframes.Magick;
 
 namespace Flowframes
 {
@@ -29,7 +26,7 @@ namespace Flowframes
 
         public static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
 
-        static void AiStarted (Process proc, int startupTimeMs, string inPath = "")
+        static void AiStarted(Process proc, int startupTimeMs, string inPath = "")
         {
             lastStartupTimeMs = startupTimeMs;
             processTime.Restart();
@@ -51,7 +48,7 @@ namespace Flowframes
                 InterpolateUtils.GetProgressByFrameAmount(interpPath, target);
         }
 
-        static async Task AiFinished (string aiName)
+        static async Task AiFinished(string aiName)
         {
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
@@ -114,7 +111,7 @@ namespace Flowframes
             await AiFinished("RIFE");
         }
 
-        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, int interpFactor, string mdl)
+        public static async Task RunRifeCudaProcess(string inPath, string outDir, string script, int interpFactor, string mdl)
         {
             bool parallel = false;
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
@@ -146,7 +143,7 @@ namespace Flowframes
             while (!rifePy.HasExited) await Task.Delay(1);
         }
 
-        public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
+        public static async Task RunRifeNcnn(string framesPath, string outPath, int factor, string mdl)
         {
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
@@ -204,9 +201,9 @@ namespace Flowframes
 
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
-            
+
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
-           
+
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log"); };
@@ -238,7 +235,7 @@ namespace Flowframes
             await AiFinished("DAIN");
         }
 
-        public static async Task RunDainNcnnProcess (string framesPath, string outPath, int factor, string mdl, int tilesize)
+        public static async Task RunDainNcnnProcess(string framesPath, string outPath, int factor, string mdl, int tilesize)
         {
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Directory.CreateDirectory(outPath);
@@ -271,7 +268,7 @@ namespace Flowframes
                 await Task.Delay(100);
         }
 
-        static void LogOutput (string line, string logFilename, bool err = false)
+        static void LogOutput(string line, string logFilename, bool err = false)
         {
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
@@ -291,7 +288,7 @@ namespace Flowframes
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}", "Error");
-                if(!Python.HasEmbeddedPyFolder())
+                if (!Python.HasEmbeddedPyFolder())
                     Process.Start("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md");
             }
 
@@ -332,7 +329,7 @@ namespace Flowframes
                 Interpolate.Cancel();
         }
 
-        static string GetNcnnPattern ()
+        static string GetNcnnPattern()
         {
             return $"%0{Padding.interpFrames}d.{InterpolateUtils.GetOutExt()}";
         }
@@ -348,7 +345,7 @@ namespace Flowframes
             return tilesizeStr;
         }
 
-        static string GetNcnnThreads ()
+        static string GetNcnnThreads()
         {
             int gpusAmount = Config.Get("ncnnGpus").Split(',').Length;
             int procThreads = Config.GetInt("ncnnThreads");

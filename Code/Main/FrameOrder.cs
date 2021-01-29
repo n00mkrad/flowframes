@@ -1,13 +1,9 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
-using Flowframes.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.Main
@@ -33,19 +29,19 @@ namespace Flowframes.Main
 
         static Dictionary<string, int> dupesDict = new Dictionary<string, int>();
 
-        static void LoadDupesFile (string path)
+        static void LoadDupesFile(string path)
         {
             dupesDict.Clear();
             if (!File.Exists(path)) return;
             string[] dupesFileLines = IOUtils.ReadLines(path);
-            foreach(string line in dupesFileLines)
+            foreach (string line in dupesFileLines)
             {
                 string[] values = line.Split(':');
                 dupesDict.Add(values[0], values[1].GetInt());
             }
         }
 
-        public static async Task CreateEncFile (string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun)
+        public static async Task CreateEncFile(string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating frame order information for {interpFactor}x...", false, true);
@@ -77,8 +73,8 @@ namespace Flowframes.Main
                 int interpFramesAmount = interpFactor;
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFiles[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
-                
-                if(debug) Logger.Log($"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)} has {dupesAmount} dupes", true);
+
+                if (debug) Logger.Log($"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)} has {dupesAmount} dupes", true);
 
                 bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
@@ -127,7 +123,7 @@ namespace Flowframes.Main
             fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
 
             string finalFileContent = fileContent.Trim();
-            if(loop)
+            if (loop)
                 finalFileContent = finalFileContent.Remove(finalFileContent.LastIndexOf("\n"));
             File.WriteAllText(vfrFile, finalFileContent);
 
@@ -147,12 +143,12 @@ namespace Flowframes.Main
             }
         }
 
-        static string WriteFrameWithDupes (int dupesAmount, string fileContent, int frameNum, string interpPath, string ext, bool debug, string note = "")
+        static string WriteFrameWithDupes(int dupesAmount, string fileContent, int frameNum, string interpPath, string ext, bool debug, string note = "")
         {
             for (int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
             {
                 if (debug) Logger.Log($"Writing frame {frameNum} (writtenDupes {writtenDupes})", true, false);
-                fileContent += $"file '{interpPath}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($" # Dupe {(writtenDupes+1).ToString("000")} {note}").Replace("Dupe 000", "        ") : "" )}\n";
+                fileContent += $"file '{interpPath}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($" # Dupe {(writtenDupes + 1).ToString("000")} {note}").Replace("Dupe 000", "        ") : "")}\n";
             }
             return fileContent;
         }

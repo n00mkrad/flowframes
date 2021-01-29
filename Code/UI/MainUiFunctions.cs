@@ -3,20 +3,16 @@ using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.OS;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace Flowframes.UI
 {
     class MainUiFunctions
     {
-        public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
+        public static async Task InitInput(TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
         {
             Program.mainForm.SetTab("interpolate");
             Program.mainForm.ResetInputInfo();
@@ -27,7 +23,7 @@ namespace Flowframes.UI
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;
-            
+
             Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
             if (!Program.lastInputPathIsSsd)
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
@@ -60,7 +56,7 @@ namespace Flowframes.UI
             InterpolateUtils.SetPreviewImg(await GetThumbnail(path));
         }
 
-        static void CheckExistingFolder (string inpath, string outpath)
+        static void CheckExistingFolder(string inpath, string outpath)
         {
             if (Config.GetInt("processingMode") == 0) return;
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
@@ -87,11 +83,11 @@ namespace Flowframes.UI
             }
         }
 
-        static async Task PrintResolution (string path)
+        static async Task PrintResolution(string path)
         {
             Size res = new Size();
 
-            if(path == Interpolate.current.inPath)
+            if (path == Interpolate.current.inPath)
                 res = await Interpolate.current.GetInputRes();
             else
                 res = await IOUtils.GetVideoOrFramesRes(path);
@@ -103,7 +99,7 @@ namespace Flowframes.UI
             Program.mainForm.UpdateInputInfo();
         }
 
-        public static async Task<Image> GetThumbnail (string path)
+        public static async Task<Image> GetThumbnail(string path)
         {
             string imgOnDisk = Path.Combine(Paths.GetDataPath(), "thumb-temp.jpg");
             try

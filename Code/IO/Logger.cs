@@ -1,10 +1,7 @@
 ﻿using Flowframes.IO;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DT = System.DateTime;
 
@@ -64,13 +61,13 @@ namespace Flowframes
             }
         }
 
-        public static void LogIfLastLineDoesNotContainMsg (string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
+        public static void LogIfLastLineDoesNotContainMsg(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
             if (!GetLastLine().Contains(s))
                 Log(s, hidden, replaceLastLine, filename);
         }
 
-        public static void WriteToFile (string content, bool append, string filename)
+        public static void WriteToFile(string content, bool append, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
                 filename = defaultLogName;
@@ -91,16 +88,16 @@ namespace Flowframes
             }
             catch
             {
-                
+
             }
         }
 
-        public static void ClearLogBox ()
+        public static void ClearLogBox()
         {
             textbox.Text = "";
         }
 
-        public static string GetLastLine ()
+        public static string GetLastLine()
         {
             string[] lines = textbox.Text.SplitIntoLines();
             if (lines.Length < 1)
@@ -108,7 +105,7 @@ namespace Flowframes
             return lines.Last();
         }
 
-        public static void RemoveLastLine ()
+        public static void RemoveLastLine()
         {
             textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine));
         }

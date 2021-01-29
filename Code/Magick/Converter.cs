@@ -1,13 +1,8 @@
-﻿using Flowframes;
-using Flowframes.IO;
-using Flowframes.UI;
+﻿using Flowframes.IO;
 using ImageMagick;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.Magick
@@ -15,10 +10,10 @@ namespace Flowframes.Magick
 
     class Converter
     {
-        public static async Task Convert (string dir, MagickFormat format, int quality, string ext = "", bool print = true, bool setProgress = true)
+        public static async Task Convert(string dir, MagickFormat format, int quality, string ext = "", bool print = true, bool setProgress = true)
         {
             var files = IOUtils.GetFilesSorted(dir);
-            if(print) Logger.Log($"Converting {files.Length} files in {dir}");
+            if (print) Logger.Log($"Converting {files.Length} files in {dir}");
             int counter = 0;
             foreach (string file in files)
             {
@@ -30,13 +25,13 @@ namespace Flowframes.Magick
                 if (!string.IsNullOrWhiteSpace(ext)) outpath = Path.ChangeExtension(outpath, ext);
                 img.Write(outpath);
                 counter++;
-                if(setProgress)
+                if (setProgress)
                     Program.mainForm.SetProgress((int)Math.Round(((float)counter / files.Length) * 100f));
                 await Task.Delay(1);
             }
         }
 
-        public static async Task MakeBinary (string inputDir, string outputDir, bool print = true, bool setProgress = true)
+        public static async Task MakeBinary(string inputDir, string outputDir, bool print = true, bool setProgress = true)
         {
             try
             {
@@ -71,7 +66,7 @@ namespace Flowframes.Magick
             }
         }
 
-        public static async Task ExtractAlpha (string inputDir, string outputDir, bool print = true, bool setProgress = true, bool removeInputAlpha = true)
+        public static async Task ExtractAlpha(string inputDir, string outputDir, bool print = true, bool setProgress = true, bool removeInputAlpha = true)
         {
             try
             {
@@ -98,7 +93,7 @@ namespace Flowframes.Magick
 
                     alphaImg.Format = MagickFormat.Png24;
                     alphaImg.Quality = 10;
-                    
+
                     alphaImg.FloodFill(MagickColors.None, 0, 0);     // Fill the image with a transparent background
                     alphaImg.InverseOpaque(MagickColors.None, MagickColors.White);   // Change all the pixels that are not transparent to white.
                     alphaImg.ColorAlpha(MagickColors.Black);     // Change the transparent pixels to black.
@@ -121,7 +116,7 @@ namespace Flowframes.Magick
             }
         }
 
-        public static async Task Preprocess (string dir, bool setProgress = true)
+        public static async Task Preprocess(string dir, bool setProgress = true)
         {
             var files = IOUtils.GetFilesSorted(dir);
             Logger.Log($"Preprocessing {files} files in {dir}");
