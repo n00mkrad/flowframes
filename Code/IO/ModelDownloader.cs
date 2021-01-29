@@ -13,8 +13,6 @@ namespace Flowframes.IO
 {
     class ModelDownloader
     {
-        static string baseUrl = "https://dl.nmkd.de/flowframes/mdl/";
-
         public static async Task<Dictionary<string, string>> GetFilelist (string ai, string model)
         {
             var client = new WebClient();
@@ -25,6 +23,7 @@ namespace Flowframes.IO
 
         static string GetMdlUrl (string ai, string model)
         {
+            string baseUrl = Config.Get("modelsBaseUrl");
             return Path.Combine(baseUrl, ai.ToLower(), model);
         }
 
