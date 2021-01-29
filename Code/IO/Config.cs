@@ -57,6 +57,12 @@ namespace Flowframes.IO
             cachedLines = list.ToArray();
         }
 
+        public static string Get(string key, string defaultVal)
+        {
+            WriteIfDoesntExist(key, defaultVal);
+            return Get(key);
+        }
+
         public static string Get(string key, Type type = Type.String)
         {
             try
@@ -147,12 +153,9 @@ namespace Flowframes.IO
             if (key == "ncnnThreads")       return WriteDefault(key, "1");
             if (key == "dainNcnnTilesize")  return WriteDefault(key, "768");
             // Debug / Other / Experimental
-            if (key == "ffEncPreset")           return WriteDefault(key, "medium");
-            if (key == "ffEncArgs")             return WriteDefault(key, "");
-            // Tile Sizes
-            if (key == "tilesize_RIFE_NCNN")    return WriteDefault(key, "2048");
-            if (key == "tilesize_DAIN_NCNN")    return WriteDefault(key, "512");
-            if (key == "tilesize_CAIN_NCNN")    return WriteDefault(key, "2048");
+            if (key == "modelsBaseUrl")     return WriteDefault(key, "https://dl.nmkd.de/flowframes/mdl/");
+            if (key == "ffEncPreset")       return WriteDefault(key, "medium");
+            if (key == "ffEncArgs")         return WriteDefault(key, "");
 
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)
