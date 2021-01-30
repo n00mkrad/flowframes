@@ -118,11 +118,8 @@ namespace Flowframes
             {
                 bool alphaEnabled = Config.GetBool("enableAlpha", false);
                 bool outputSupportsAlpha = (outMode == Interpolate.OutMode.ImgPng || outMode == Interpolate.OutMode.VidGif);
-
-                if (!inputIsFrames)
-                    alpha = (alphaEnabled && outputSupportsAlpha && (Path.GetExtension(inPath).ToLower() == ".gif"));
-                else
-                    alpha = (alphaEnabled && outputSupportsAlpha && Path.GetExtension(IOUtils.GetFilesSorted(inPath).First()).ToLower() == ".gif");
+                string ext = inputIsFrames ? Path.GetExtension(IOUtils.GetFilesSorted(inPath).First()).ToLower() : Path.GetExtension(inPath).ToLower();
+                alpha = (alphaEnabled && outputSupportsAlpha && (ext == ".gif" || ext == ".png" || ext == ".apng"));
             }
             catch (Exception e)
             {
