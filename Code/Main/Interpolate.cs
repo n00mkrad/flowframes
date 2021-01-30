@@ -25,11 +25,8 @@ namespace Flowframes
 
         public static int currentInputFrameCount;
         public static bool currentlyUsingAutoEnc;
-
         public static InterpSettings current;
-
         public static bool canceled = false;
-
         static Stopwatch sw = new Stopwatch();
 
         public static async Task Start()
@@ -54,7 +51,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode, false);
-            IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+            await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
             await Cleanup();
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));

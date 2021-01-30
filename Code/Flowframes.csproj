@@ -205,6 +205,7 @@
     <Compile Include="Data\InterpSettings.cs" />
     <Compile Include="Data\Networks.cs" />
     <Compile Include="Data\Padding.cs" />
+    <Compile Include="Data\ResumeState.cs" />
     <Compile Include="Data\SemVer.cs" />
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
@@ -241,6 +242,7 @@
     <Compile Include="Main\InterpolateSteps.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
     <Compile Include="Main\FrameOrder.cs" />
+    <Compile Include="Main\ResumeUtils.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />

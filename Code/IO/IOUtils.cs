@@ -280,11 +280,16 @@ namespace Flowframes.IO
 			return oldNewNamesMap;
 		}
 
-		public static void ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)
+		public static async Task ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)
 		{
 			if (oldNewMap == null || oldNewMap.Count < 1) return;
+			int counter = 0;
 			foreach (KeyValuePair<string, string> pair in oldNewMap)
+            {
 				TryMove(pair.Value, pair.Key);
+				if (counter % 1000 == 0)
+					await Task.Delay(1);
+			}
 			if (clearDict)
 				oldNewMap.Clear();
 		}

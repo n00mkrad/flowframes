@@ -117,7 +117,7 @@ namespace Flowframes.Main
 
                 if (Interpolate.canceled) return;
 
-                IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+                await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
                 await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
             }
             catch (Exception e)

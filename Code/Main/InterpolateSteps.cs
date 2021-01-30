@@ -98,7 +98,7 @@ namespace Flowframes.Main
 
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
-            IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+            await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
 
             // TODO: Check if this works lol, remove if it does
             //if (Config.GetBool("sbsAllowAutoEnc"))

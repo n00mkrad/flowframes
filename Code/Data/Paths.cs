@@ -9,6 +9,7 @@ namespace Flowframes.IO
 		public const string framesDir = "frames";
 		public const string interpDir = "interp";
 		public const string chunksDir = "vchunks";
+		public const string resumeDir = "resumedata";
 		public const string scenesDir = "scenes";
 		public const string alphaSuffix = "-a";
 
