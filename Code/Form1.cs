@@ -125,7 +125,7 @@ namespace Flowframes
         {
             string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
             str += $"Framerate: {(currInFps > 0f ? $"{currInFps.ToStringDot()} FPS" : "Unknown")} - ";
-            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames} Frames" : "Unknown")} - ";
+            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames}" : "Unknown")} - ";
             str += $"Duration: {(currInDuration > 0 ? $"{FormatUtils.MsToTimestamp(currInDuration)}" : "Unknown")}";
             inputInfo.Text = str;
         }
@@ -244,7 +244,6 @@ namespace Flowframes
         private void fpsInTbox_TextChanged(object sender, EventArgs e)
         {
             fpsInTbox.Text = fpsInTbox.Text.TrimNumbers(true);
-            //Interpolate.SetFps(fpsInTbox.GetFloat());
             UpdateOutputFPS();
         }
 
@@ -252,7 +251,6 @@ namespace Flowframes
         {
             float fpsOut = fpsInTbox.GetFloat() * interpFactorCombox.GetFloat();
             fpsOutTbox.Text = fpsOut.ToString();
-            //Interpolate.interpFactor = interpFactorCombox.GetInt();
         }
 
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
@@ -289,12 +287,13 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(aiCombox.Text) || aiCombox.Text == lastAiComboxStr) return;
             lastAiComboxStr = aiCombox.Text;
             aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
+            ConfigParser.SaveComboxIndex(aiCombox);
             interpFactorCombox_SelectedIndexChanged(null, null);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ConfigParser.SaveComboxIndex(aiCombox);
+            Logger.Log("Closing main form.", true);
         }
 
         private async void debugExtractFramesBtn_Click(object sender, EventArgs e)
