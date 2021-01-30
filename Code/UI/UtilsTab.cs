@@ -25,6 +25,7 @@ namespace Flowframes.UI
                 await FFmpegCommands.ExtractAudio(videoPath, Path.Combine(outPath, "audio"));
             Program.mainForm.SetWorking(false);
             Logger.Log("Done.");
+            Program.mainForm.SetProgress(0);
         }
 
         public static async Task LoopVideo (string inputFile, ComboBox loopTimes)
@@ -35,6 +36,7 @@ namespace Flowframes.UI
             Logger.Log("Lopping video " + times + "x...", true);
             await FFmpegCommands.LoopVideo(inputFile, times, false);
             Logger.Log("Done", true);
+            Program.mainForm.SetProgress(0);
         }
 
         public static async Task ChangeSpeed(string inputFile, ComboBox speed)
@@ -45,6 +47,7 @@ namespace Flowframes.UI
             Logger.Log("Creating video with " + speed + "% speed...", true);
             await FFmpegCommands.ChangeSpeed(inputFile, speedFloat, false);
             Logger.Log("Done", true);
+            Program.mainForm.SetProgress(0);
         }
 
         public static async Task Convert(string inputFile, ComboBox crfBox)
@@ -58,6 +61,7 @@ namespace Flowframes.UI
             else
                 await FFmpegCommands.Encode(inputFile, "libx264", "copy", crf);      // Copy audio if input is MP4
             Logger.Log("Done", true);
+            Program.mainForm.SetProgress(0);
         }
 
         static bool InputIsValid (string inPath)

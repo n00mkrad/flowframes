@@ -78,7 +78,7 @@ namespace Flowframes
             }
         }
 
-        public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool allowSceneDetect = true, bool extractAudio = true)
+        public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool extractAudio = true)
         {
             if (Config.GetBool("scnDetect"))
             {
