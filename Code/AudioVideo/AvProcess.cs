@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Flowframes.MiscUtils;
 
 namespace Flowframes
 {
@@ -65,6 +67,13 @@ namespace Flowframes
 
             if (line.Contains("No NVENC capable devices found"))
                 Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
+
+            if (line.Contains("time=") && !hidden)
+            {
+                Regex timeRegex = new Regex("(?<=time=).*(?= )");
+                String timestamp = timeRegex.Match(line).Value;
+                UpdateFfmpegProgress(timeRegex.Match(line).Value);
+            }
         }
 
         static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
@@ -144,6 +153,16 @@ namespace Flowframes
             if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
             return output;
         }
+
+        public static void UpdateFfmpegProgress(String ffmpegTime)
+        {
+            long total = Program.mainForm.currInDuration / 100;
+            if (total == 0) return;
+            long current = FormatUtils.MsFromTimestamp(ffmpegTime);
+            int progress = Convert.ToInt32(current / total);
+            Program.mainForm.SetProgress(progress);
+        }
+
 
         public static async Task RunGifski(string args, LogMode logMode)
         {

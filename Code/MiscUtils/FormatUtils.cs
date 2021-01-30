@@ -57,6 +57,22 @@ namespace Flowframes.MiscUtils
             return Time(elapsedMs);
         }
 
+        public static long MsFromTimestamp(String timestamp)
+        {
+            string[] values = timestamp.Split(':');
+            int hours = Int32.Parse(values[0]);
+            int minutes = Int32.Parse(values[1]);
+            int seconds = Int32.Parse(values[2].Split('.')[0]);
+            int milliseconds = Int32.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
+            long ms = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+            return ms;
+        }
+
+        public static String MsToTimestamp(long milliseconds)
+        {
+            return (new DateTime(1970, 1, 1)).AddMilliseconds(milliseconds).ToLongTimeString();
+        }
+
         public static string Ratio(long numFrom, long numTo)
         {
             float ratio = ((float)numTo / (float)numFrom) * 100f;

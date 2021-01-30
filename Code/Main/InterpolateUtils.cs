@@ -442,5 +442,10 @@ namespace Flowframes.Main
             foreach (string frame in sceneFramesToDelete)
                 IOUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + ".png"));
         }
+
+        public static void UpdateVideoDuration(string path)
+        {
+            Program.mainForm.currInDuration = FFmpegCommands.GetDuration(path);
+        }
     }
 }
