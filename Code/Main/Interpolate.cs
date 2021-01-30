@@ -67,9 +67,15 @@ namespace Flowframes
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
                 await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
-            
+
             if (current.alpha)
-                await Converter.ExtractAlpha(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
+            {
+                Program.mainForm.SetStatus("Extracting transparency...");
+                Logger.Log("Extracting transparency... (1/2)");
+                await FFmpegCommands.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
+                Logger.Log("Extracting transparency... (2/2)", false, true);
+                await FFmpegCommands.RemoveAlpha(current.framesFolder, current.framesFolder);
+            }
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool allowSceneDetect = true, bool extractAudio = true)

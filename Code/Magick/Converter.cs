@@ -51,7 +51,7 @@ namespace Flowframes.Magick
                     MagickImage img = new MagickImage(file);
                     img.Format = MagickFormat.Png24;
                     img.Quality = 10;
-                    img.Threshold(new Percentage(90));
+                    img.Threshold(new Percentage(75));
 
                     string outPath = Path.Combine(outputDir, Path.GetFileName(file));
                     img.Write(outPath);
@@ -67,7 +67,7 @@ namespace Flowframes.Magick
             }
             catch (Exception e)
             {
-                Logger.Log("ExtractAlpha Error: " + e.Message);
+                Logger.Log("MakeBinary Error: " + e.Message);
             }
         }
 
