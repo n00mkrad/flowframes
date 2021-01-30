@@ -31,12 +31,12 @@ namespace Flowframes
 
         public static async Task Start()
         {
-            if (Program.busy) return;
+            if (!BatchProcessing.busy && Program.busy) return;
             canceled = false;
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
-            if(!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
+            if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(current.inPath, current.outPath);
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             Program.mainForm.SetStatus("Starting...");

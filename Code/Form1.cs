@@ -136,6 +136,7 @@ namespace Flowframes
             currInFps = 0;
             currInFrames = 0;
             currInDuration = 0;
+            UpdateInputInfo();
         }
 
         void InitAis()

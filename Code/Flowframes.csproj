@@ -257,7 +257,6 @@
     <Compile Include="Main\Interpolate.cs" />
     <Compile Include="IO\CfgStrings.cs" />
     <Compile Include="IO\Config.cs" />
-    <Compile Include="Data\Formats.cs" />
     <Compile Include="IO\IOUtils.cs" />
     <Compile Include="Data\Paths.cs" />
     <Compile Include="IO\Logger.cs" />

@@ -14,7 +14,6 @@ namespace Flowframes.UI
     class UtilsTab
     {
 
-
         public static async Task ExtractVideo(string videoPath, bool withAudio)
         {
             string outPath = Path.ChangeExtension(videoPath, null) + "-extracted";
