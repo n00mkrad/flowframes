@@ -49,6 +49,7 @@ namespace Flowframes.UI
 
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
+            InterpolateUtils.UpdateVideoDuration(path);
             Program.mainForm.UpdateInputInfo();
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);

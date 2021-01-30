@@ -348,6 +348,15 @@ namespace Flowframes
             }
         }
 
+        public static long GetDuration(string inputFile)
+        {
+            Logger.Log("Reading Duration using ffprobe.", true, false, "ffprobe");
+            string args = $" -v panic -select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
+            string info = AvProcess.GetFfprobeOutput(args);
+            return FormatUtils.MsFromTimestamp(info);
+            return -1;
+        }
+
         public static float GetFramerate(string inputFile)
         {
             Logger.Log("Reading FPS using ffmpeg.", true, false, "ffmpeg");
