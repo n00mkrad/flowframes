@@ -198,9 +198,16 @@ namespace Flowframes
             Program.mainForm.SetProgress(0);
             if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
             {
-                DialogResult dialogResult = MessageBox.Show($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
+                if(IOUtils.GetAmountOfFiles(current.interpFolder, false) > ResumeUtils.minFrames)
+                {
+                    DialogResult dialogResult = MessageBox.Show($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                        IOUtils.TryDeleteIfExists(current.tempFolder);
+                }
+                else
+                {
                     IOUtils.TryDeleteIfExists(current.tempFolder);
+                }
             }
             AutoEncode.busy = false;
             Program.mainForm.SetWorking(false);

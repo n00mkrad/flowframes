@@ -132,16 +132,20 @@ namespace Flowframes.Main
             Logger.Log("[AutoEnc] Starting DeleteOldFramesAsync.", true, false, "ffmpeg");
             Stopwatch sw = new Stopwatch();
             sw.Restart();
+            int counter = 0;
 
             foreach (int frame in frameLinesToEncode)
             {
-                bool delete = !FrameIsStillNeeded(interpFramesLines[frame], frame);
-                if (delete)    // Make sure frames are no longer needed (e.g. for dupes) before deleting!
+                if (!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (for dupes) before deleting!
                 {
                     string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
                     File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
-                    await Task.Delay(1);
                 }
+
+                if(counter % 100 == 0)
+                    await Task.Delay(1);
+
+                counter++;
             }
 
             Logger.Log("[AutoEnc] DeleteOldFramesAsync finished in " + FormatUtils.TimeSw(sw), true, false, "ffmpeg");
