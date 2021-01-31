@@ -57,8 +57,9 @@ namespace Flowframes.Main
 
             foreach (KeyValuePair<string, string> entry in AiProcess.filenameMap)
             {
-                if (counter % 500 == 0) await Task.Delay(1);
+                if (counter % 1000 == 0) await Task.Delay(1);
                 fileContent += $"{entry.Key}|{entry.Value}\n";
+                counter++;
             }
 
             File.WriteAllText(filePath, fileContent);

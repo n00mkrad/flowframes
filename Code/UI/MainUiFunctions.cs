@@ -74,11 +74,7 @@ namespace Flowframes.UI
                 string msg = $"A temporary folder for this video already exists. It contains {scnFrames}, {srcFrames}, {interpFrames}.";
 
                 DialogResult dialogResult = MessageBox.Show($"{msg}\n\nClick \"Yes\" to use the existing files or \"No\" to delete them.", "Use files from existing temp folder?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    return;
-                }
-                else if (dialogResult == DialogResult.No)
+                if (dialogResult == DialogResult.No)
                 {
                     IOUtils.TryDeleteIfExists(tmpFolder);
                     Logger.Log("Deleted old temp folder.");

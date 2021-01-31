@@ -197,7 +197,11 @@ namespace Flowframes
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
             if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
-                IOUtils.TryDeleteIfExists(current.tempFolder);
+            {
+                DialogResult dialogResult = MessageBox.Show($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                    IOUtils.TryDeleteIfExists(current.tempFolder);
+            }
             AutoEncode.busy = false;
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");
