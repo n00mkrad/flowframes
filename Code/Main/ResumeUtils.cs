@@ -15,39 +15,39 @@ namespace Flowframes.Main
     {
         public static float timeBetweenSaves = 10;
         public static int minFrames = 100;
-        public static int safetyDelayFrames = 100;
-        public static string resumeFileName = "resume.ini";
-        public static string filenameMapFileName = "frameFilenames.ini";
+        public static int safetyDelayFrames = 50;
+        public static string resumeFilename = "resume.ini";
+        public static string interpSettingsFilename = "interpSettings.ini";
+        public static string filenameMapFilename = "frameFilenames.ini";
 
         public static int currentOutFrames;
         public static Stopwatch timeSinceLastSave = new Stopwatch();
 
         public static void Save ()
         {
+            Logger.Log("Save()", true);
             if (timeSinceLastSave.IsRunning && timeSinceLastSave.ElapsedMilliseconds < (timeBetweenSaves * 1000f).RoundToInt()) return;
+            Logger.Log("Stopwatch is running and elapsed time is long enough to save again", true);
+            int frames = (int)Math.Round((float)currentOutFrames / Interpolate.current.interpFactor) - safetyDelayFrames;
+            Logger.Log($"frames minus safetyDelayFrames = {frames}", true);
+            if (frames < 1) return;
             timeSinceLastSave.Restart();
             Directory.CreateDirectory(Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir));
-            SaveState();
+            SaveState(frames);
+            SaveInterpSettings();
+            SaveFilenameMap();
         }
 
-        public static async Task SaveState ()
+        static void SaveState (int frames)
         {
-            int frames = GetSafeInterpolatedInputFramesAmount();
-            if (frames < 1) return;
             ResumeState state = new ResumeState(Interpolate.currentlyUsingAutoEnc, frames);
-            string stateFilePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, resumeFileName);
-            File.WriteAllText(stateFilePath, state.ToString());
-            await SaveFilenameMap();
-        }
-
-        public static int GetSafeInterpolatedInputFramesAmount()
-        {
-            return (int)Math.Round((float)currentOutFrames / Interpolate.current.interpFactor) - safetyDelayFrames;
+            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, resumeFilename);
+            File.WriteAllText(filePath, state.ToString());
         }
 
         static async Task SaveFilenameMap ()
         {
-            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, filenameMapFileName);
+            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, filenameMapFilename);
 
             if (File.Exists(filePath) && IOUtils.GetFilesize(filePath) > 0)
                 return;
@@ -65,10 +65,21 @@ namespace Flowframes.Main
             File.WriteAllText(filePath, fileContent);
         }
 
+        static void SaveInterpSettings ()
+        {
+            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, interpSettingsFilename);
+            File.WriteAllText(filePath, Interpolate.current.Serialize());
+        }
+
+        public static void LoadTempFolder (string tempFolderPath)
+        {
+            string resumeFolderPath = Path.Combine(tempFolderPath, Paths.resumeDir);
+        }
+
         static void LoadFilenameMap()
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
-            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, filenameMapFileName);
+            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, filenameMapFilename);
             string[] dictLines = File.ReadAllLines(filePath);
 
             foreach (string line in dictLines)

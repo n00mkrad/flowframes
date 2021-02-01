@@ -421,9 +421,9 @@ namespace Flowframes.IO
 			return GetExportSuffix(Interpolate.current.interpFactor, Interpolate.current.ai, Interpolate.current.model);
 		}
 
-		public static string GetExportSuffix(int factor, AI ai, string mdl)
+		public static string GetExportSuffix(float factor, AI ai, string mdl)
 		{
-			string suffix = $"-{factor}x-{ai.aiNameShort.ToUpper()}";
+			string suffix = $"-{factor.ToStringDot()}x-{ai.aiNameShort.ToUpper()}";
 			if (Config.GetBool("modelSuffix"))
 				suffix += $"-{mdl}";
 			return suffix;

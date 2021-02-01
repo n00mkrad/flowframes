@@ -61,7 +61,7 @@ namespace Flowframes.Main
 
         public static int targetFrames;
         public static string currentOutdir;
-        public static int currentFactor;
+        public static float currentFactor;
         public static bool progressPaused = false;
         public static bool progCheckRunning = false;
         public static async void GetProgressByFrameAmount(string outdir, int target)
@@ -215,7 +215,7 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, float fpsOut, int interp, Interpolate.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, float fpsOut, float factor, Interpolate.OutMode outMode)
         {
             bool passes = true;
 
@@ -231,7 +231,7 @@ namespace Flowframes.Main
                 ShowMessage("Output path is not valid!");
                 passes = false;
             }
-            if (passes && interp != 2 && interp != 4 && interp != 8)
+            if (passes && /*factor != 2 && factor != 4 && factor != 8*/ factor > 16)
             {
                 ShowMessage("Interpolation factor is not valid!");
                 passes = false;

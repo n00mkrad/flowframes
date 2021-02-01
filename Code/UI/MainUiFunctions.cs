@@ -27,8 +27,8 @@ namespace Flowframes.UI
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
             string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;
-            
             Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
+
             if (!Program.lastInputPathIsSsd)
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
 
@@ -37,11 +37,10 @@ namespace Flowframes.UI
 
             string fpsStr = "Not Found";
             float fps = IOUtils.GetFpsFolderOrVideo(path);
+            fpsInTbox.Text = fps.ToString();
+
             if (fps > 0)
-            {
                 fpsStr = fps.ToString();
-                fpsInTbox.Text = fpsStr;
-            }
 
             if (IOUtils.IsPathDirectory(path))
                 Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {frameCount}", false, true);

@@ -173,7 +173,7 @@ namespace Flowframes
                 tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, current.interpFactor, current.model));
+                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, (int)current.interpFactor, current.model));
 
             if (ai.aiName == Networks.dainNcnn.aiName)
                 tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model, Config.GetInt("dainNcnnTilesize", 512)));
@@ -199,7 +199,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(0);
             if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
             {
-                if(IOUtils.GetAmountOfFiles(current.interpFolder, false) > ResumeUtils.minFrames)
+                if(IOUtils.GetAmountOfFiles(Path.Combine(current.tempFolder, Paths.resumeDir), true) > 0)
                 {
                     DialogResult dialogResult = MessageBox.Show($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)

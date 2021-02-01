@@ -189,7 +189,7 @@ namespace Flowframes.Main
             int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
             int minFrameCount = (minLength * i.current.outFps).RoundToInt();
-            int outFrames = i.currentInputFrameCount * i.current.interpFactor;
+            int outFrames = (i.currentInputFrameCount * i.current.interpFactor).RoundToInt();
             if (outFrames / i.current.outFps < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
             times--;    // Not counting the 1st play (0 loops)

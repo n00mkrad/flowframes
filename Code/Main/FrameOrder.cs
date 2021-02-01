@@ -17,7 +17,7 @@ namespace Flowframes.Main
         public enum Mode { CFR, VFR }
         public static int timebase = 10000;
 
-        public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, int times)
+        public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, float times)
         {
             Logger.Log("Generating frame order information...");
             try
@@ -45,7 +45,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static async Task CreateEncFile (string framesPath, bool loopEnabled, int interpFactor, bool notFirstRun)
+        public static async Task CreateEncFile (string framesPath, bool loopEnabled, float interpFactor, bool notFirstRun)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating frame order information for {interpFactor}x...", false, true);
@@ -55,7 +55,7 @@ namespace Flowframes.Main
             string ext = InterpolateUtils.GetOutExt();
 
             FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor}x.ini");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor.ToStringDot()}x.ini");
             string fileContent = "";
             string dupesFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
             LoadDupesFile(dupesFile);
@@ -74,7 +74,7 @@ namespace Flowframes.Main
             {
                 if (Interpolate.canceled) return;
 
-                int interpFramesAmount = interpFactor;
+                int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFiles[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
                 

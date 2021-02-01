@@ -38,10 +38,10 @@ namespace Flowframes
             hasShownError = false;
         }
 
-        static void SetProgressCheck(string interpPath, int factor)
+        static void SetProgressCheck(string interpPath, float factor)
         {
             int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.png");
-            int target = (frames * factor) - (factor - 1);
+            int target = ((frames * factor) - (factor - 1)).RoundToInt();
             InterpolateUtils.progressPaused = false;
             InterpolateUtils.currentFactor = factor;
 
@@ -89,7 +89,7 @@ namespace Flowframes
             }
         }
 
-        public static async Task RunRifeCuda(string framesPath, int interpFactor, string mdl)
+        public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
         {
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "rife.py";
@@ -112,7 +112,7 @@ namespace Flowframes
             await AiFinished("RIFE");
         }
 
-        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, int interpFactor, string mdl)
+        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
             bool parallel = false;
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
@@ -222,7 +222,7 @@ namespace Flowframes
             while (!rifeNcnn.HasExited) await Task.Delay(1);
         }
 
-        public static async Task RunDainNcnn(string framesPath, string outPath, int factor, string mdl, int tilesize)
+        public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
             await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
 
@@ -236,14 +236,14 @@ namespace Flowframes
             await AiFinished("DAIN");
         }
 
-        public static async Task RunDainNcnnProcess (string framesPath, string outPath, int factor, string mdl, int tilesize)
+        public static async Task RunDainNcnnProcess (string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
             Directory.CreateDirectory(outPath);
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
-            int targetFrames = (IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor) - (factor - 1);
+            int targetFrames = ((IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Won't work with fractional factors
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
                 $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j 2:1:2";

@@ -19,11 +19,11 @@ namespace Flowframes.Data
 
         public override string ToString ()
         {
-            string s = $"AUTOENC|{autoEncode}";
+            string s = $"AUTOENC|{autoEncode}\n";
 
             if (!autoEncode)
             {
-                s += $"\nLASTINPUTFRAME|{lastInterpolatedInputFrame}";
+                s += $"LASTINPUTFRAME|{lastInterpolatedInputFrame}";
             }
 
             return s;

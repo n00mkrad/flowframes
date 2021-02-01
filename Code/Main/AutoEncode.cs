@@ -28,7 +28,7 @@ namespace Flowframes.Main
 
         public static void UpdateChunkAndBufferSizes ()
         {
-            chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor);
+            chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor).RoundToInt());
             bool isNcnn = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN");
             safetyBufferFrames = isNcnn ? Config.GetInt("autoEncSafeBufferNcnn", 90) : Config.GetInt("autoEncSafeBufferCuda", 30);    // Use bigger safety buffer for NCNN
         }
