@@ -15,6 +15,7 @@ namespace Flowframes
     class AvProcess
     {
         public static Process lastProcess;
+        public static Stopwatch timeSinceLastOutput = new Stopwatch();
         public enum TaskType { ExtractFrames, Encode, GetInfo, Merge, Other };
         public static TaskType lastTask = TaskType.Other;
 
@@ -36,6 +37,7 @@ namespace Flowframes
             currentLogMode = logMode;
             showProgressBar = progressBar;
             Process ffmpeg = OSUtils.NewProcess(true);
+            timeSinceLastOutput.Restart();
             lastProcess = ffmpeg;
             lastTask = taskType;
             if(!string.IsNullOrWhiteSpace(workingDir))
@@ -55,6 +57,7 @@ namespace Flowframes
 
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
+            timeSinceLastOutput.Restart();
             if (outLine == null || outLine.Data == null)
                 return;
             string line = outLine.Data;

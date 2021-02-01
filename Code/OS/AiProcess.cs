@@ -62,18 +62,15 @@ namespace Flowframes
             Logger.Log(logStr);
             processTime.Stop();
 
-            Stopwatch timeSinceFfmpegRan = new Stopwatch();
-            timeSinceFfmpegRan.Restart();
-
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
                 if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
                 {
-                    timeSinceFfmpegRan.Restart();
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
                     Logger.Log(lastLine.Trim().TrimWhitespaces(), false, Logger.GetLastLine().Contains("frame"));
                 }
-                if (timeSinceFfmpegRan.ElapsedMilliseconds > 3000)
+
+                if (AvProcess.timeSinceLastOutput.IsRunning && AvProcess.timeSinceLastOutput.ElapsedMilliseconds > 2500)
                     break;
 
                 await Task.Delay(500);

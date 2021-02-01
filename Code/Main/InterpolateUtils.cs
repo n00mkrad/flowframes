@@ -147,6 +147,7 @@ namespace Flowframes.Main
         public static async Task<int> GetInputFrameCountAsync (string path)
         {
             string hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
+
             if (hash.Length > 1 && frameCountCache.ContainsKey(hash))
             {
                 Logger.Log($"FrameCountCache contains this hash ({hash}), using cached frame count.", true);
@@ -168,6 +169,7 @@ namespace Flowframes.Main
                 Logger.Log($"Adding hash ({hash}) with frame count {frameCount} to cache.", true);
                 frameCountCache[hash] = frameCount;      // Use CRC32 instead of path to avoid using cached value if file was changed
             }
+
             return frameCount;
         }
 

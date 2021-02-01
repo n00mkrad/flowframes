@@ -287,9 +287,12 @@ namespace Flowframes.IO
 			foreach (KeyValuePair<string, string> pair in oldNewMap)
             {
 				TryMove(pair.Value, pair.Key);
+				counter++;
+
 				if (counter % 1000 == 0)
 					await Task.Delay(1);
 			}
+
 			if (clearDict)
 				oldNewMap.Clear();
 		}

@@ -32,6 +32,7 @@ namespace Flowframes
         public Size scaledResolution;
 
         public bool alpha;
+        public bool stepByStep;
 
         public InterpSettings(string inPathArg, string outPathArg, AI aiArg, float inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
         {
@@ -45,6 +46,7 @@ namespace Flowframes
             model = modelArg;
 
             alpha = false;
+            stepByStep = false;
 
             try
             {

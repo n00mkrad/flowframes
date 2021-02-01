@@ -25,11 +25,8 @@ namespace Flowframes.Main
 
         public static void Save ()
         {
-            Logger.Log("Save()", true);
             if (timeSinceLastSave.IsRunning && timeSinceLastSave.ElapsedMilliseconds < (timeBetweenSaves * 1000f).RoundToInt()) return;
-            Logger.Log("Stopwatch is running and elapsed time is long enough to save again", true);
             int frames = (int)Math.Round((float)currentOutFrames / Interpolate.current.interpFactor) - safetyDelayFrames;
-            Logger.Log($"frames minus safetyDelayFrames = {frames}", true);
             if (frames < 1) return;
             timeSinceLastSave.Restart();
             Directory.CreateDirectory(Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir));

@@ -77,7 +77,6 @@ namespace Flowframes.Main
 
                     if (unencodedFrameLines.Count > 0 && (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning))     // Encode every n frames, or after process has exited
                     {
-
                         List<int> frameLinesToEncode = aiRunning ? unencodedFrameLines.Take(chunkSize).ToList() : unencodedFrameLines;     // Take all remaining frames if process is done
 
                         string lastOfChunk = Path.Combine(interpFramesPath, interpFramesLines[frameLinesToEncode.Last()]);
@@ -99,7 +98,7 @@ namespace Flowframes.Main
 
                         if (Interpolate.canceled) return;
 
-                        if (Config.GetInt("autoEncMode") == 2)
+                        if (aiRunning && Config.GetInt("autoEncMode") == 2)
                             Task.Run(() => DeleteOldFramesAsync(interpFramesPath, frameLinesToEncode));
 
                         if (Interpolate.canceled) return;
@@ -117,7 +116,9 @@ namespace Flowframes.Main
 
                 if (Interpolate.canceled) return;
 
-                await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+                if(!Interpolate.current.stepByStep)
+                    await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+
                 await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
             }
             catch (Exception e)
@@ -142,7 +143,7 @@ namespace Flowframes.Main
                     File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
                 }
 
-                if(counter % 100 == 0)
+                if(counter % 1000 == 0)
                     await Task.Delay(1);
 
                 counter++;
