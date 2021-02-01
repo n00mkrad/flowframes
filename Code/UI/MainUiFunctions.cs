@@ -61,7 +61,7 @@ namespace Flowframes.UI
 
         static void CheckExistingFolder (string inpath, string outpath)
         {
-            if (Config.GetInt("processingMode") == 0) return;
+            if (!Interpolate.current.stepByStep) return;
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
             if (Directory.Exists(tmpFolder))
             {

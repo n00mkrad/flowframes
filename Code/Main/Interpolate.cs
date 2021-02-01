@@ -40,6 +40,7 @@ namespace Flowframes
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(current.inPath, current.outPath);
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
+            current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
             await GetFrames();
@@ -197,7 +198,7 @@ namespace Flowframes
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
-            if (Config.GetInt("processingMode") == 0 && !Config.GetBool("keepTempFolder"))
+            if (!current.stepByStep && !Config.GetBool("keepTempFolder"))
             {
                 if(IOUtils.GetAmountOfFiles(Path.Combine(current.tempFolder, Paths.resumeDir), true) > 0)
                 {

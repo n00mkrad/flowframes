@@ -431,8 +431,8 @@ namespace Flowframes
                     stepSelector.Items.AddRange(new string[] { "1) Import/Extract Frames", "2) Run Interpolation", "3) Export", "4) Cleanup & Reset" });
                 stepSelector.SelectedIndex = 0;
             }
-            bool stepByStep = Config.GetInt("processingMode") == 1;
-            runBtn.Visible = !stepByStep && !Program.busy;
+
+            runBtn.Visible = Config.GetInt("processingMode") == 1 || Program.busy;
         }
 
         private async void runStepBtn_Click(object sender, EventArgs e)
