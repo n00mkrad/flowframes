@@ -108,7 +108,7 @@ namespace Flowframes
         public static string StripBadChars(this string str)
         {
             string outStr = Regex.Replace(str, @"[^\u0020-\u007E]", string.Empty);
-            outStr = outStr.Remove("(").Remove(")").Remove("[").Remove("]").Remove("{").Remove("}").Remove("%").Remove("'");
+            outStr = outStr.Remove("(").Remove(")").Remove("[").Remove("]").Remove("{").Remove("}").Remove("%").Remove("'").Remove("~");
             return outStr;
         }
 

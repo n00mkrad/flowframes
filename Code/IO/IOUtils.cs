@@ -749,5 +749,10 @@ namespace Flowframes.IO
 			}
 			return buffer;
 		}
+
+		public static bool HasBadChars(string str)
+		{
+			return str != str.StripBadChars();
+		}
 	}
 }

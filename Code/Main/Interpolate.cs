@@ -38,7 +38,7 @@ namespace Flowframes
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
             if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
-            Utils.PathAsciiCheck(current.inPath, current.outPath);
+            Utils.PathAsciiCheck(current.outPath, "output path");
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");

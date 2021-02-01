@@ -253,18 +253,10 @@ namespace Flowframes.Main
             return passes;
         }
 
-        public static void PathAsciiCheck (string inpath, string outpath)
-        {
-            bool shownMsg = false;
-            
-            if (OSUtils.HasNonAsciiChars(inpath))
-            {
-                ShowMessage("Warning: Input path includes non-ASCII characters. This might cause problems.");
-                shownMsg = true;
-            }
-
-            if (!shownMsg && OSUtils.HasNonAsciiChars(outpath))
-                ShowMessage("Warning: Output path includes non-ASCII characters. This might cause problems.");
+        public static void PathAsciiCheck (string path, string pathTitle)
+        {            
+            if (IOUtils.HasBadChars(path) || OSUtils.HasNonAsciiChars(path))
+                ShowMessage($"Warning: Your {pathTitle} includes special characters. This might cause problems.");
         }
 
         public static void GifCompatCheck (Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)

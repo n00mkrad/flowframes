@@ -432,7 +432,8 @@ namespace Flowframes
                 stepSelector.SelectedIndex = 0;
             }
 
-            runBtn.Visible = Config.GetInt("processingMode") == 1 || Program.busy;
+            bool stepByStep = Config.GetInt("processingMode") == 1;
+            runBtn.Visible = !stepByStep && !Program.busy;
         }
 
         private async void runStepBtn_Click(object sender, EventArgs e)
