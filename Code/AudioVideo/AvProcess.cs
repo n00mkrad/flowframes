@@ -23,16 +23,18 @@ namespace Flowframes
 
         public enum LogMode { Visible, OnlyLastLine, Hidden }
         static LogMode currentLogMode;
+        static bool showProgressBar;
 
-        public static async Task RunFfmpeg(string args, LogMode logMode, TaskType taskType = TaskType.Other)
+        public static async Task RunFfmpeg(string args, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
         {
-            await RunFfmpeg(args, "", logMode, taskType);
+            await RunFfmpeg(args, "", logMode, taskType, progressBar);
         }
 
-        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, TaskType taskType = TaskType.Other)
+        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
         {
             lastOutputFfmpeg = "";
             currentLogMode = logMode;
+            showProgressBar = progressBar;
             Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
             lastTask = taskType;
@@ -68,10 +70,9 @@ namespace Flowframes
             if (line.Contains("No NVENC capable devices found"))
                 Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
 
-            if (line.Contains("time=") && !hidden)
+            if (!hidden && showProgressBar && line.Contains("time="))
             {
                 Regex timeRegex = new Regex("(?<=time=).*(?= )");
-                String timestamp = timeRegex.Match(line).Value;
                 UpdateFfmpegProgress(timeRegex.Match(line).Value);
             }
         }
@@ -154,10 +155,15 @@ namespace Flowframes
             return output;
         }
 
-        public static void UpdateFfmpegProgress(String ffmpegTime)
+        public static void UpdateFfmpegProgress(string ffmpegTime)
         {
+            if (Program.mainForm.currInDuration < 1)
+            {
+                Program.mainForm.SetProgress(0);
+                return;
+            }
+
             long total = Program.mainForm.currInDuration / 100;
-            if (total == 0) return;
             long current = FormatUtils.MsFromTimestamp(ffmpegTime);
             int progress = Convert.ToInt32(current / total);
             Program.mainForm.SetProgress(progress);
