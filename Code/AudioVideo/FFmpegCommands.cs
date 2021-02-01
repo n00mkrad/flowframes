@@ -10,126 +10,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Flowframes.AvProcess;
 using Utils = Flowframes.AudioVideo.FFmpegUtils;
-using TaskType = Flowframes.AvProcess.TaskType;
-using LogMode = Flowframes.AvProcess.LogMode;
 
 namespace Flowframes
 {
     class FFmpegCommands
     {
-        static string divisionFilter = "\"pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0\"";
-        static string pngComprArg = "-compression_level 3";
-        static string mpDecDef = "\"mpdecimate\"";
-        static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
-
-        public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath, float rate)
-        {
-            Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, false, rate, false, false, new Size(320, 180), false, true);
-            bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
-            int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false);
-            Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
-        }
-
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, bool timecodes = true)
-        {
-            await VideoToFrames(inputFile, framesDir, alpha, rate, deDupe, delSrc, new Size(), timecodes);
-        }
-
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
-        {
-            if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
-            string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            IOUtils.CreateDir(framesDir);
-            string timecodeStr = timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : "-copyts -frame_pts true";
-            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
-            string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, scnDetect, mpStr } );
-            string vf = filters.Length > 2 ? $"-vf {filters}" : "";
-            string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
-            string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} \"{framesDir}/%{Padding.inputFrames}d.png\"";
-            LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await AvProcess.RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
-            int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*.png");
-            if (!sceneDetect) Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
-            await Task.Delay(1);
-            if (delSrc)
-                DeleteSource(inputFile);
-        }
-
-        public static async Task ImportImages(string inpath, string outpath, bool alpha, Size size, bool delSrc = false, bool showLog = true)
-        {
-            if (showLog) Logger.Log("Importing images...");
-            Logger.Log($"Importing images from {inpath} to {outpath}.", true);
-            IOUtils.CreateDir(outpath);
-            string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
-            string concatFileContent = "";
-            string[] files = IOUtils.GetFilesSorted(inpath);
-            foreach (string img in files)
-                concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
-            File.WriteAllText(concatFile, concatFileContent);
-
-            string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} {pixFmt} -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
-            LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await AvProcess.RunFfmpeg(args, logMode, TaskType.ExtractFrames);
-            if (delSrc)
-                DeleteSource(inpath);
-        }
-
-        public static async Task ImportSingleImage(string inputFile, string outPath, Size size)
-        {
-            string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            bool isPng = (Path.GetExtension(outPath).ToLower() == ".png");
-            string comprArg = isPng ? pngComprArg : "";
-            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
-            string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {divisionFilter} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
-        }
-
-        public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum)
-        {
-            bool isPng = (Path.GetExtension(outputPath).ToLower() == ".png");
-            string comprArg = isPng ? pngComprArg : "";
-            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
-            string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
-        }
-
-        public static async Task ExtractLastFrame(string inputFile, string outputPath, Size size)
-        {
-            if (IOUtils.IsPathDirectory(outputPath))
-                outputPath = Path.Combine(outputPath, "last.png");
-            bool isPng = (Path.GetExtension(outputPath).ToLower() == ".png");
-            string comprArg = isPng ? pngComprArg : "";
-            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
-            string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            string args = $"-sseof -1 -i {inputFile.Wrap()} -update 1 {pixFmt} {sizeStr} {outputPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
-        }
-
-        public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
-        {
-            await FramesToVideoConcat(framesFile, outPath, outMode, fps, 0, logMode, isChunk);
-        }
-
-        public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, float resampleFps, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
-        {
-            if (logMode != LogMode.Hidden)
-                Logger.Log((resampleFps <= 0) ? $"Encoding video..." : $"Encoding video resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
-            Directory.CreateDirectory(outPath.GetParentDir());
-            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
-            if (!isChunk) encArgs += $" -movflags +faststart";
-            string vfrFilename = Path.GetFileName(framesFile);
-            string rate = fps.ToString().Replace(",", ".");
-            string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToStringDot()}";
-            string extraArgs = Config.Get("ffEncArgs");
-            string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), logMode, TaskType.Encode, !isChunk);
-        }
+        public static string divisionFilter = "\"pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0\"";
+        public static string pngComprArg = "-compression_level 3";
+        public static string mpDecDef = "\"mpdecimate\"";
+        public static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
         {
@@ -137,7 +28,7 @@ namespace Flowframes
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
             string args = $" {loopStr} -vsync 1 -f concat -i {vfrFilename} -c copy -movflags +faststart {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, concatFile.GetParentDir(), LogMode.Hidden, TaskType.Merge);
+            await RunFfmpeg(args, concatFile.GetParentDir(), LogMode.Hidden, TaskType.Merge);
         }
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64, float resampleFps = -1, LogMode logMode = LogMode.OnlyLastLine)
@@ -150,7 +41,7 @@ namespace Flowframes
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
             string rate = fps.ToStringDot();
             string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, TaskType.Encode);
+            await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, TaskType.Encode);
         }
 
         public static async Task ExtractAlphaDir (string rgbDir, string alphaDir)
@@ -159,7 +50,7 @@ namespace Flowframes
             foreach (FileInfo file in IOUtils.GetFileInfosSorted(rgbDir))
             {
                 string args = $"-i {file.FullName.Wrap()} -vf format=yuva444p16le,alphaextract,format=yuv420p {Path.Combine(alphaDir, file.Name).Wrap()}";
-                await AvProcess.RunFfmpeg(args, LogMode.Hidden);
+                await RunFfmpeg(args, LogMode.Hidden);
             }
         }
 
@@ -172,7 +63,7 @@ namespace Flowframes
                 Size res = IOUtils.GetImage(file.FullName).Size;
                 string args = $" -f lavfi -i color={fillColor}:s={res.Width}x{res.Height} -i {file.FullName.Wrap()} " +
                     $"-filter_complex overlay=0:0:shortest=1 -pix_fmt rgb24 {outFilename.Wrap()}";
-                await AvProcess.RunFfmpeg(args, LogMode.Hidden);
+                await RunFfmpeg(args, LogMode.Hidden);
                 file.Delete();
                 File.Move(outFilename, file.FullName);
             }
@@ -182,7 +73,7 @@ namespace Flowframes
         {
             string filter = "-filter_complex [0:v:0][1:v:0]alphamerge[out] -map [out]";
             string args = $"-i \"{rgbDir}/%{rgbPad}d.png\" -i \"{alphaDir}/%{aPad}d.png\" {filter} \"{rgbDir}/%{rgbPad}d.png\"";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden);
+            await RunFfmpeg(args, LogMode.Hidden);
             if (deleteAlphaDir)
                 IOUtils.TryDeleteIfExists(alphaDir);
         }
@@ -192,7 +83,7 @@ namespace Flowframes
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
             string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy \"{pathNoExt}-Loop{times}{ext}\"";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden);
+            await RunFfmpeg(args, LogMode.Hidden);
             if (delSrc)
                 DeleteSource(inputFile);
         }
@@ -204,20 +95,7 @@ namespace Flowframes
             float val = newSpeedPercent / 100f;
             string speedVal = (1f / val).ToString("0.0000").Replace(",", ".");
             string args = " -itsscale " + speedVal + " -i \"" + inputFile + "\"  -c copy \"" + pathNoExt + "-" + newSpeedPercent + "pcSpeed" + ext + "\"";
-            await AvProcess.RunFfmpeg(args, LogMode.OnlyLastLine);
-            if (delSrc)
-                DeleteSource(inputFile);
-        }
-
-        public static async Task Encode(string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)
-        {
-            string outPath = Path.ChangeExtension(inputFile, null) + "-convert.mp4";
-            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k -vf {divisionFilter} {outPath.Wrap()}";
-            if (string.IsNullOrWhiteSpace(acodec))
-                args = args.Replace("-c:a", "-an");
-            if (audioKbps < 0)
-                args = args.Replace($" -b:a {audioKbps}", "");
-            await AvProcess.RunFfmpeg(args, LogMode.OnlyLastLine, TaskType.Encode, true);
+            await RunFfmpeg(args, LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputFile);
         }
@@ -228,7 +106,7 @@ namespace Flowframes
             outFile = Path.ChangeExtension(outFile, audioExt);
             Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
             string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -c:a copy {outFile.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden);
+            await RunFfmpeg(args, LogMode.Hidden);
             if (File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512)
             {
                 Logger.Log("Failed to extract audio losslessly! Trying to re-encode.");
@@ -236,9 +114,9 @@ namespace Flowframes
 
                 outFile = Path.ChangeExtension(outFile, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
                 args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outFile.Wrap()}";
-                await AvProcess.RunFfmpeg(args, LogMode.Hidden);
+                await RunFfmpeg(args, LogMode.Hidden);
 
-                if ((File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512) || AvProcess.lastOutputFfmpeg.Contains("Invalid data"))
+                if ((File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512) || lastOutputFfmpeg.Contains("Invalid data"))
                 {
                     Logger.Log("Failed to extract audio, even with re-encoding. Output will not have audio.");
                     IOUtils.TryDeleteIfExists(outFile);
@@ -258,8 +136,8 @@ namespace Flowframes
                 string trackName = subTrack.Value.Length > 4 ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(subTrack.Value.ToLower()) : subTrack.Value.ToUpper();
                 string outPath = Path.Combine(outFolder, $"{subTrack.Key}-{trackName}.srt");
                 string args = $" -loglevel error -i {inputFile.Wrap()} -map 0:s:{subTrack.Key} {outPath.Wrap()}";
-                await AvProcess.RunFfmpeg(args, LogMode.Hidden);
-                if (AvProcess.lastOutputFfmpeg.Contains("matches no streams"))  // Break if there are no more subtitle tracks
+                await RunFfmpeg(args, LogMode.Hidden);
+                if (lastOutputFfmpeg.Contains("matches no streams"))  // Break if there are no more subtitle tracks
                     break;
                 Logger.Log($"[FFCmds] Extracted subtitle track {subTrack.Key} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true, false, "ffmpeg");
             }
@@ -275,7 +153,7 @@ namespace Flowframes
         {
             Dictionary<int, string> subDict = new Dictionary<int, string>();
             string args = $"-i {inputFile.Wrap()}";
-            string[] outputLines = (await AvProcess.GetFfmpegOutputAsync(args)).SplitIntoLines();
+            string[] outputLines = (await GetFfmpegOutputAsync(args)).SplitIntoLines();
             string[] filteredLines = outputLines.Where(l => l.Contains(" Subtitle: ")).ToArray();
             int idx = 0;
             foreach(string line in filteredLines)
@@ -318,18 +196,18 @@ namespace Flowframes
             string args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
                 $"{subInputArgs} -map 0:v -map 1:a {subMapArgs} -c:v copy -c:a copy -c:s {subCodec} {subMetaArgs} -shortest {outName}";
 
-            await AvProcess.RunFfmpeg(args, tempFolder, LogMode.Hidden);
+            await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
-            if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || AvProcess.lastOutputFfmpeg.Contains("Invalid data") || AvProcess.lastOutputFfmpeg.Contains("Error initializing output stream"))
+            if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || lastOutputFfmpeg.Contains("Invalid data") || lastOutputFfmpeg.Contains("Error initializing output stream"))
             {
                 Logger.Log("Failed to merge audio losslessly! Trying to re-encode.", false, false, "ffmpeg");
 
                 args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
                 $"{subInputArgs} -map 0:v -map 1:a {subMapArgs} -c:v copy {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} -c:s {subCodec} {subMetaArgs} -shortest {outName}";
                 
-                await AvProcess.RunFfmpeg(args, tempFolder, LogMode.Hidden);
+                await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
-                if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || AvProcess.lastOutputFfmpeg.Contains("Invalid data") || AvProcess.lastOutputFfmpeg.Contains("Error initializing output stream"))
+                if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || lastOutputFfmpeg.Contains("Invalid data") || lastOutputFfmpeg.Contains("Error initializing output stream"))
                 {
                     Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.", false, false, "ffmpeg");
                     IOUtils.TryDeleteIfExists(tempPath);
@@ -340,8 +218,6 @@ namespace Flowframes
                 Logger.Log($"Source audio ({audioExt}) has been re-encoded to fit into the target container ({containerExt.Remove(".").ToUpper()}). This may decrease the quality slightly.", false, true, "ffmpeg");
             }
 
-            //string movePath = Path.ChangeExtension(inputFile, Path.GetExtension(tempPath));
-            //File.Delete(movePath);
             if(File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
                 {
                 File.Delete(tempPath);
@@ -357,7 +233,7 @@ namespace Flowframes
         {
             Logger.Log("Reading Duration using ffprobe.", true, false, "ffprobe");
             string args = $" -v panic -select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
-            string info = AvProcess.GetFfprobeOutput(args);
+            string info = GetFfprobeOutput(args);
             return FormatUtils.MsFromTimestamp(info);
             return -1;
         }
@@ -366,7 +242,7 @@ namespace Flowframes
         {
             Logger.Log("Reading FPS using ffmpeg.", true, false, "ffmpeg");
             string args = $" -i {inputFile.Wrap()}";
-            string output = AvProcess.GetFfmpegOutput(args);
+            string output = GetFfmpegOutput(args);
             string[] entries = output.Split(',');
             foreach (string entry in entries)
             {
@@ -385,7 +261,7 @@ namespace Flowframes
         public static Size GetSize(string inputFile)
         {
             string args = $" -v panic -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
-            string output = AvProcess.GetFfprobeOutput(args);
+            string output = GetFfprobeOutput(args);
 
             if (output.Length > 4 && output.Contains("x"))
             {
@@ -439,7 +315,7 @@ namespace Flowframes
                 Logger.Log("Counting total frames using FFprobe. This can take a moment...");
                 args = $" -v panic -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
             }
-            string info = AvProcess.GetFfprobeOutput(args);
+            string info = GetFfprobeOutput(args);
             string[] entries = info.SplitIntoLines();
             try
             {
@@ -464,7 +340,7 @@ namespace Flowframes
                 await Task.Delay(10);
                 args = $" -v panic -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
             }
-            string info = AvProcess.GetFfprobeOutput(args);
+            string info = GetFfprobeOutput(args);
             string[] entries = info.SplitIntoLines();
             try
             {
@@ -483,7 +359,7 @@ namespace Flowframes
         static int ReadFrameCountFfmpeg(string inputFile)
         {
             string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
-            string info = AvProcess.GetFfmpegOutput(args);
+            string info = GetFfmpegOutput(args);
             string[] entries = info.SplitIntoLines();
             foreach (string entry in entries)
             {
@@ -496,7 +372,7 @@ namespace Flowframes
         static async Task<int> ReadFrameCountFfmpegAsync (string inputFile)
         {
             string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
-            string info = await AvProcess.GetFfmpegOutputAsync(args, true);
+            string info = await GetFfmpegOutputAsync(args, true);
             try
             {
                 string[] lines = info.SplitIntoLines();
@@ -512,7 +388,7 @@ namespace Flowframes
         public static string GetAudioCodec(string path)
         {
             string args = $" -v panic -show_streams -select_streams a -show_entries stream=codec_name {path.Wrap()}";
-            string info = AvProcess.GetFfprobeOutput(args);
+            string info = GetFfprobeOutput(args);
             string[] entries = info.SplitIntoLines();
             foreach (string entry in entries)
             {
@@ -522,7 +398,7 @@ namespace Flowframes
             return "";
         }
 
-        static void DeleteSource(string path)
+        public static void DeleteSource(string path)
         {
             Logger.Log("[FFCmds] Deleting input file/dir: " + path, true);
 

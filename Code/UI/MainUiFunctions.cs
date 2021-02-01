@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.AudioVideo;
+using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.OS;
@@ -105,7 +106,7 @@ namespace Flowframes.UI
             {
                 if (!IOUtils.IsPathDirectory(path))     // If path is video - Extract first frame
                 {
-                    await FFmpegCommands.ExtractSingleFrame(path, imgOnDisk, 1);
+                    await FfmpegExtract.ExtractSingleFrame(path, imgOnDisk, 1);
                     return IOUtils.GetImage(imgOnDisk);
                 }
                 else     // Path is frame folder - Get first frame

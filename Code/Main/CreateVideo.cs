@@ -108,7 +108,7 @@ namespace Flowframes.Main
             }
             else
             {
-                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
+                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
                 await MergeAudio(i.current.inPath, outPath);
                 await Loop(currentOutFile, GetLoopTimes());
             }
@@ -166,14 +166,14 @@ namespace Flowframes.Main
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
             if(!dontEncodeFullFpsVid)
-                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
+                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
 
             if (fpsLimit)
             {
                 string filename = Path.GetFileName(outPath);
                 string newParentDir = outPath.GetParentDir() + "-" + maxFps.ToStringDot("0.00") + "fps";
                 outPath = Path.Combine(newParentDir, filename);
-                await FFmpegCommands.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
             }
         }
 

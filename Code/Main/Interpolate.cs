@@ -1,4 +1,5 @@
 ﻿using Flowframes;
+using Flowframes.AudioVideo;
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Magick;
@@ -66,7 +67,7 @@ namespace Flowframes
             if (!current.inputIsFrames)        // Input is video - extract frames first
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
-                await FFmpegCommands.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
+                await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
 
             if (current.alpha)
             {
@@ -83,13 +84,13 @@ namespace Flowframes
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FFmpegCommands.ExtractSceneChanges(inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFps);
+                await FfmpegExtract.ExtractSceneChanges(inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFps);
                 await Task.Delay(10);
             }
 
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
-            await FFmpegCommands.VideoToFrames(inPath, outPath, alpha, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true, true), false);
+            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true, true), false);
 
             if (mpdecimate)
             {

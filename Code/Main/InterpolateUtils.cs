@@ -1,4 +1,5 @@
-﻿using Flowframes.Data;
+﻿using Flowframes.AudioVideo;
+using Flowframes.Data;
 using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
@@ -37,11 +38,11 @@ namespace Flowframes.Main
                 if (frameFolderInput)
                 {
                     string lastFramePath = IOUtils.GetFilesSorted(i.current.inPath, false).Last();
-                    await FFmpegCommands.ExtractLastFrame(lastFramePath, targetPath, res);
+                    await FfmpegExtract.ExtractLastFrame(lastFramePath, targetPath, res);
                 }
                 else
                 {
-                    await FFmpegCommands.ExtractLastFrame(i.current.inPath, targetPath, res);
+                    await FfmpegExtract.ExtractLastFrame(i.current.inPath, targetPath, res);
                 }
             }
             catch (Exception e)

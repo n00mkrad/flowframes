@@ -63,7 +63,7 @@ namespace Flowframes.Main
                 return;
             }
             Program.mainForm.SetStatus("Extracting scenes from video...");
-            await FFmpegCommands.ExtractSceneChanges(current.inPath, scenesPath, current.inFps);
+            await FfmpegExtract.ExtractSceneChanges(current.inPath, scenesPath, current.inFps);
             await Task.Delay(10);
         }
 

@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.AudioVideo;
+using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
 using System;
@@ -18,7 +19,7 @@ namespace Flowframes.UI
         {
             string outPath = Path.ChangeExtension(videoPath, null) + "-extracted";
             Program.mainForm.SetWorking(true);
-            await FFmpegCommands.VideoToFrames(videoPath, Path.Combine(outPath, Paths.framesDir), false, Interpolate.current.inFps, false, false, false);
+            await FfmpegExtract.VideoToFrames(videoPath, Path.Combine(outPath, Paths.framesDir), false, Interpolate.current.inFps, false, false, false);
             File.WriteAllText(Path.Combine(outPath, "fps.ini"), Interpolate.current.inFps.ToString());
             if (withAudio)
                 await FFmpegCommands.ExtractAudio(videoPath, Path.Combine(outPath, "audio"));
@@ -56,9 +57,9 @@ namespace Flowframes.UI
             int crf = crfBox.GetInt();
             Logger.Log("Creating MP4 with CRF " + crf + "...", true);
             if(Path.GetExtension(inputFile).ToUpper() != ".MP4")
-                await FFmpegCommands.Encode(inputFile, "libx264", "aac", crf, 128);
+                await FfmpegEncode.Encode(inputFile, "libx264", "aac", crf, 128);
             else
-                await FFmpegCommands.Encode(inputFile, "libx264", "copy", crf);      // Copy audio if input is MP4
+                await FfmpegEncode.Encode(inputFile, "libx264", "copy", crf);      // Copy audio if input is MP4
             Logger.Log("Done", true);
             Program.mainForm.SetProgress(0);
         }
