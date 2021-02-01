@@ -2,6 +2,7 @@
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
+using Flowframes.MiscUtils;
 using Flowframes.UI;
 using System;
 using System.Collections.Generic;
@@ -70,9 +71,21 @@ namespace Flowframes
             scaledResolution = new Size(0, 0);
         }
 
-        /*
         public InterpSettings (string serializedData)
         {
+            inPath = "";
+            outPath = "";
+            ai = Networks.networks[0];
+            inFps = 0;
+            interpFactor = 0;
+            outFps = 0;
+            outMode = Interpolate.OutMode.VidMp4;
+            model = "";
+            alpha = false;
+            stepByStep = false;
+            inputResolution = new Size(0, 0);
+            scaledResolution = new Size(0, 0);
+
             Dictionary<string, string> entries = new Dictionary<string, string>();
 
             foreach(string line in serializedData.SplitIntoLines())
@@ -94,10 +107,31 @@ namespace Flowframes
                     case "INTERPFACTOR": interpFactor = float.Parse(entry.Value); break;
                     case "OUTMODE": outMode = (Interpolate.OutMode)Enum.Parse(typeof(Interpolate.OutMode), entry.Value); break;
                     case "MODEL": model = entry.Value; break;
+                    case "INPUTRES": inputResolution = FormatUtils.ParseSize(entry.Value); break;
+                    case "OUTPUTRES": scaledResolution = FormatUtils.ParseSize(entry.Value); break;
+                    case "ALPHA": alpha = bool.Parse(entry.Value); break;
+                    case "STEPBYSTEP": stepByStep = bool.Parse(entry.Value); break;
                 }
             }
+
+            try
+            {
+                tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);
+                framesFolder = Path.Combine(tempFolder, Paths.framesDir);
+                interpFolder = Path.Combine(tempFolder, Paths.interpDir);
+                inputIsFrames = IOUtils.IsPathDirectory(inPath);
+                outFilename = Path.Combine(outPath, Path.GetFileNameWithoutExtension(inPath) + IOUtils.GetExportSuffix(interpFactor, ai, model) + FFmpegUtils.GetExt(outMode));
+            }
+            catch
+            {
+                Logger.Log("Tried to create InterpSettings struct without an inpath. Can't set tempFolder, framesFolder and interpFolder.", true);
+                tempFolder = "";
+                framesFolder = "";
+                interpFolder = "";
+                inputIsFrames = false;
+                outFilename = "";
+            }
         }
-        */
 
         public void UpdatePaths (string inPathArg, string outPathArg)
         {
@@ -169,9 +203,10 @@ namespace Flowframes
             s += $"INTERPFACTOR|{interpFactor}\n";
             s += $"OUTMODE|{outMode}\n";
             s += $"MODEL|{model}\n";
-            s += $"INPUTRES|{inputResolution}\n";
-            s += $"OUTPUTRES|{scaledResolution}\n";
+            s += $"INPUTRES|{inputResolution.Width}x{inputResolution.Height}\n";
+            s += $"OUTPUTRES|{scaledResolution.Width}x{scaledResolution.Height}\n";
             s += $"ALPHA|{alpha}\n";
+            s += $"STEPBYSTEP|{stepByStep}\n";
 
             return s;
         }

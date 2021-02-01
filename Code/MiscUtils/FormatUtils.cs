@@ -102,5 +102,18 @@ namespace Flowframes.MiscUtils
 
             return outStr;
         }
+
+        public static System.Drawing.Size ParseSize (string str)
+        {
+            try
+            {
+                string[] values = str.Split('x');
+                return new System.Drawing.Size(values[0].GetInt(), values[1].GetInt());
+            }
+            catch
+            {
+                return new System.Drawing.Size();
+            }
+        }
     }
 }

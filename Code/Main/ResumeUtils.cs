@@ -71,6 +71,9 @@ namespace Flowframes.Main
         public static void LoadTempFolder (string tempFolderPath)
         {
             string resumeFolderPath = Path.Combine(tempFolderPath, Paths.resumeDir);
+            string interpSettingsPath = Path.Combine(resumeFolderPath, interpSettingsFilename);
+            InterpSettings interpSettings = new InterpSettings(File.ReadAllText(interpSettingsPath));
+            Program.mainForm.LoadBatchEntry(interpSettings);
         }
 
         static void LoadFilenameMap()
