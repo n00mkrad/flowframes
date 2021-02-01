@@ -96,10 +96,12 @@ namespace Flowframes.Main
                 Program.mainForm.SetProgress(0);
         }
 
+        public static int interpolatedInputFramesCount;
+
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
             if (i.canceled) return;
-            ResumeUtils.currentOutFrames = frames;
+            interpolatedInputFramesCount = ((frames / i.current.interpFactor).RoundToInt() - 1);
             ResumeUtils.Save();
             frames = frames.Clamp(0, target);
             int percent = (int)Math.Round(((float)frames / target) * 100f);
@@ -132,6 +134,20 @@ namespace Flowframes.Main
                 }
             }
             catch { }
+        }
+
+        public static async Task DeleteInterpolatedInputFrames ()
+        {
+            string[] inputFrames = IOUtils.GetFilesSorted(i.current.framesFolder);
+
+            for (int i = 0; i < inputFrames.Length; i++)
+            {
+                while (Program.busy && (i + 20) > interpolatedInputFramesCount) await Task.Delay(1000);
+                if (!Program.busy) break;
+                if(i != 0 && i != inputFrames.Length - 1)
+                    IOUtils.OverwriteFileWithText(inputFrames[i]);
+                if (i % 10 == 0) await Task.Delay(10);
+            }
         }
 
         public static void SetPreviewImg (Image img)

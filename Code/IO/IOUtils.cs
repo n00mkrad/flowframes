@@ -754,5 +754,17 @@ namespace Flowframes.IO
 		{
 			return str != str.StripBadChars();
 		}
+
+		public static void OverwriteFileWithText (string path, string text = "THIS IS A DUMMY FILE - DO NOT DELETE ME")
+        {
+            try
+            {
+				File.WriteAllText(path, text);
+			}
+			catch (Exception e)
+            {
+				Logger.Log($"OverwriteWithText failed for '{path}': {e.Message}");
+            }
+		}
 	}
 }

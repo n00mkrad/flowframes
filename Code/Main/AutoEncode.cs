@@ -89,7 +89,6 @@ namespace Flowframes.Main
 
                         busy = true;
                         string outpath = Path.Combine(videoChunksFolder, "chunks", $"{videoIndex.ToString().PadLeft(4, '0')}{FFmpegUtils.GetExt(Interpolate.current.outMode)}");
-                        //int firstFrameNum = frameLinesToEncode[0];
                         int firstLineNum = frameLinesToEncode.First();
                         int lastLineNum = frameLinesToEncode.Last();
                         Logger.Log($"[AutoEnc] Encoding Chunk #{videoIndex} to '{outpath}' using line {firstLineNum} ({Path.GetFileName(interpFramesLines[firstLineNum])}) through {lastLineNum} ({Path.GetFileName(Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()]))})", true, false, "ffmpeg");
@@ -140,7 +139,7 @@ namespace Flowframes.Main
                 if (!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (for dupes) before deleting!
                 {
                     string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
-                    File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
+                    IOUtils.OverwriteFileWithText(framePath);    // Overwrite to save space without breaking progress counter
                 }
 
                 if(counter % 1000 == 0)

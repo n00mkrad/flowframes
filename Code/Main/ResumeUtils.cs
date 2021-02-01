@@ -20,13 +20,12 @@ namespace Flowframes.Main
         public static string interpSettingsFilename = "interpSettings.ini";
         public static string filenameMapFilename = "frameFilenames.ini";
 
-        public static int currentOutFrames;
         public static Stopwatch timeSinceLastSave = new Stopwatch();
 
         public static void Save ()
         {
             if (timeSinceLastSave.IsRunning && timeSinceLastSave.ElapsedMilliseconds < (timeBetweenSaves * 1000f).RoundToInt()) return;
-            int frames = (int)Math.Round((float)currentOutFrames / Interpolate.current.interpFactor) - safetyDelayFrames;
+            int frames = (int)Math.Round((float)InterpolateUtils.interpolatedInputFramesCount / Interpolate.current.interpFactor) - safetyDelayFrames;
             if (frames < 1) return;
             timeSinceLastSave.Restart();
             Directory.CreateDirectory(Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir));
