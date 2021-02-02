@@ -48,7 +48,7 @@ namespace Flowframes
             sw.Restart();
             await PostProcessFrames();
             if (canceled) return;
-            Task.Run(() => Utils.DeleteInterpolatedInputFrames());
+            //Task.Run(() => Utils.DeleteInterpolatedInputFrames());
             await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
