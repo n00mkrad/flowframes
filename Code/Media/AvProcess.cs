@@ -51,8 +51,12 @@ namespace Flowframes
             ffmpeg.Start();
             ffmpeg.BeginOutputReadLine();
             ffmpeg.BeginErrorReadLine();
+
             while (!ffmpeg.HasExited)
                 await Task.Delay(1);
+
+            if(progressBar)
+                Program.mainForm.SetProgress(0);
         }
 
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)

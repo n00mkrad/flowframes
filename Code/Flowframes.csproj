@@ -200,10 +200,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioVideo\FfmpegAudioAndMetadata.cs" />
-    <Compile Include="AudioVideo\FfmpegEncode.cs" />
-    <Compile Include="AudioVideo\FfmpegExtract.cs" />
-    <Compile Include="AudioVideo\FFmpegUtils.cs" />
     <Compile Include="Data\AI.cs" />
     <Compile Include="Data\InterpSettings.cs" />
     <Compile Include="Data\Networks.cs" />
@@ -246,11 +242,15 @@
     <Compile Include="Main\InterpolateUtils.cs" />
     <Compile Include="Main\FrameOrder.cs" />
     <Compile Include="Main\ResumeUtils.cs" />
+    <Compile Include="Media\AvProcess.cs" />
+    <Compile Include="Media\FfmpegAudioAndMetadata.cs" />
+    <Compile Include="Media\FfmpegCommands.cs" />
+    <Compile Include="Media\FfmpegEncode.cs" />
+    <Compile Include="Media\FfmpegExtract.cs" />
+    <Compile Include="Media\FFmpegUtils.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="AudioVideo\AvProcess.cs" />
-    <Compile Include="AudioVideo\FFmpegCommands.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

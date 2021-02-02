@@ -138,6 +138,7 @@ namespace Flowframes.Main
 
         public static async Task DeleteInterpolatedInputFrames ()
         {
+            interpolatedInputFramesCount = 0;
             string[] inputFrames = IOUtils.GetFilesSorted(i.current.framesFolder);
 
             for (int i = 0; i < inputFrames.Length; i++)
