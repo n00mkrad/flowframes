@@ -339,7 +339,10 @@ namespace Flowframes
                 Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
                 inputTbox.Text = files[0];
 
-                if (IOUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0)
+                bool resume = (IOUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0);
+                ResumeUtils.resumeNextRun = resume;
+
+                if (resume)
                     ResumeUtils.LoadTempFolder(files[0]);
 
                 MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);

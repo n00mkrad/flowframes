@@ -143,7 +143,7 @@ namespace Flowframes.Main
 
             for (int i = 0; i < inputFrames.Length; i++)
             {
-                while (Program.busy && (i + 20) > interpolatedInputFramesCount) await Task.Delay(1000);
+                while (Program.busy && (i + 10) > interpolatedInputFramesCount) await Task.Delay(1000);
                 if (!Program.busy) break;
                 if(i != 0 && i != inputFrames.Length - 1)
                     IOUtils.OverwriteFileWithText(inputFrames[i]);

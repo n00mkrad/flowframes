@@ -36,19 +36,25 @@ namespace Flowframes
             canceled = false;
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
-            if (!Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
+            if (!ResumeUtils.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             Utils.PathAsciiCheck(current.outPath, "output path");
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
             Program.mainForm.SetWorking(true);
-            await GetFrames();
+
+            if (!ResumeUtils.resumeNextRun)
+            {
+                await GetFrames();
+                if (canceled) return;
+                sw.Restart();
+                await PostProcessFrames();
+            }
+
             if (canceled) return;
-            sw.Restart();
-            await PostProcessFrames();
-            if (canceled) return;
-            Task.Run(() => Utils.DeleteInterpolatedInputFrames());
+            await ResumeUtils.PrepareResumedRun();
+            //Task.Run(() => Utils.DeleteInterpolatedInputFrames());
             await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
@@ -90,6 +96,7 @@ namespace Flowframes
                 await Task.Delay(10);
             }
 
+            if (canceled) return;
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
             await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true, true), false);
@@ -106,12 +113,16 @@ namespace Flowframes
             if(!Config.GetBool("allowConsecutiveSceneChanges", true))
                 Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
+            if (canceled) return;
+
             if (extractAudio)
             {
                 string audioFile = Path.Combine(current.tempFolder, "audio");
                 if (audioFile != null && !File.Exists(audioFile))
                     await FfmpegAudioAndMetadata.ExtractAudio(inPath, audioFile);
             }
+
+            if (canceled) return;
 
             await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
         }

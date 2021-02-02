@@ -13,6 +13,8 @@ namespace Flowframes.Main
 
     class ResumeUtils
     {
+        public static bool resumeNextRun;
+
         public static float timeBetweenSaves = 10;
         public static int minFrames = 100;
         public static int safetyDelayFrames = 50;
@@ -63,8 +65,8 @@ namespace Flowframes.Main
 
         static void SaveInterpSettings ()
         {
-            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, interpSettingsFilename);
-            File.WriteAllText(filePath, Interpolate.current.Serialize());
+            string filepath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, interpSettingsFilename);
+            File.WriteAllText(filepath, Interpolate.current.Serialize());
         }
 
         public static void LoadTempFolder (string tempFolderPath)
@@ -73,6 +75,22 @@ namespace Flowframes.Main
             string interpSettingsPath = Path.Combine(resumeFolderPath, interpSettingsFilename);
             InterpSettings interpSettings = new InterpSettings(File.ReadAllText(interpSettingsPath));
             Program.mainForm.LoadBatchEntry(interpSettings);
+        }
+
+        public static async Task PrepareResumedRun ()
+        {
+            if (!resumeNextRun) return;
+
+            string stateFilepath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, resumeFilename);
+            ResumeState state = new ResumeState(File.ReadAllText(stateFilepath));
+
+            string[] inputFrames = IOUtils.GetFilesSorted(Interpolate.current.framesFolder);
+
+            for (int i = 0; i < state.interpolatedInputFrames; i++)
+            {
+                IOUtils.TryDeleteIfExists(inputFrames[i]);
+                if (i % 100 == 0) await Task.Delay(1);
+            }
         }
 
         static void LoadFilenameMap()
