@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using i = Flowframes.Interpolate;
 using System.Diagnostics;
-using Flowframes.AudioVideo;
+using Flowframes.Media;
 
 namespace Flowframes.Main
 {
@@ -104,7 +104,7 @@ namespace Flowframes.Main
 
             if (mode == i.OutMode.VidGif)
             {
-                await FFmpegCommands.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
+                await FfmpegEncode.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
             }
             else
             {
@@ -149,7 +149,7 @@ namespace Flowframes.Main
 
         static async Task MergeChunks(string vfrFile, string outPath)
         {
-            await FFmpegCommands.ConcatVideos(vfrFile, outPath, -1);
+            await FfmpegCommands.ConcatVideos(vfrFile, outPath, -1);
             await MergeAudio(i.current.inPath, outPath);
             await Loop(outPath, GetLoopTimes());
         }
@@ -181,7 +181,7 @@ namespace Flowframes.Main
         {
             if (looptimes < 1 || !Config.GetBool("enableLoop")) return;
             Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt("minOutVidLength")}s...");
-            await FFmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
+            await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }
 
         static int GetLoopTimes()
@@ -208,7 +208,7 @@ namespace Flowframes.Main
                     audioFileBasePath = Path.Combine(i.current.tempFolder.GetParentDir(), "audio");
 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
-                    await FFmpegCommands.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
+                    await FfmpegAudioAndMetadata.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
                 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
@@ -216,7 +216,7 @@ namespace Flowframes.Main
                     return;
                 }
 
-                await FFmpegCommands.MergeAudioAndSubs(outVideo, IOUtils.GetAudioFile(audioFileBasePath), i.current.tempFolder);        // Merge from audioFile into outVideo
+                await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, IOUtils.GetAudioFile(audioFileBasePath), i.current.tempFolder);        // Merge from audioFile into outVideo
             }
             catch (Exception e)
             {

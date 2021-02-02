@@ -11,9 +11,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
 
-namespace Flowframes.AudioVideo
+namespace Flowframes.Media
 {
-    partial class FfmpegExtract : FFmpegCommands
+    partial class FfmpegExtract : FfmpegCommands
     {
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath, float rate)
         {

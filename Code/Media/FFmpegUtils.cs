@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Flowframes.AudioVideo
+namespace Flowframes.Media
 {
     class FFmpegUtils
     {
@@ -123,7 +123,7 @@ namespace Flowframes.AudioVideo
 
         public static string GetAudioExt(string videoFile)
         {
-            switch (FFmpegCommands.GetAudioCodec(videoFile))
+            switch (FfmpegCommands.GetAudioCodec(videoFile))
             {
                 case "vorbis": return "ogg";
                 case "opus": return "ogg";

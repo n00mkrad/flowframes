@@ -1,5 +1,5 @@
 ﻿using Flowframes;
-using Flowframes.AudioVideo;
+using Flowframes.Media;
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Magick;
@@ -75,9 +75,9 @@ namespace Flowframes
             {
                 Program.mainForm.SetStatus("Extracting transparency...");
                 Logger.Log("Extracting transparency... (1/2)");
-                await FFmpegCommands.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
+                await FfmpegCommands.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
                 Logger.Log("Extracting transparency... (2/2)", false, true);
-                await FFmpegCommands.RemoveAlpha(current.framesFolder, current.framesFolder);
+                await FfmpegCommands.RemoveAlpha(current.framesFolder, current.framesFolder);
             }
         }
 
@@ -110,10 +110,10 @@ namespace Flowframes
             {
                 string audioFile = Path.Combine(current.tempFolder, "audio");
                 if (audioFile != null && !File.Exists(audioFile))
-                    await FFmpegCommands.ExtractAudio(inPath, audioFile);
+                    await FfmpegAudioAndMetadata.ExtractAudio(inPath, audioFile);
             }
 
-            await FFmpegCommands.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
+            await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
         }
 
         public static async Task PostProcessFrames (bool sbsMode = false)

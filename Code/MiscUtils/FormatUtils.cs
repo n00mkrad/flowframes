@@ -59,13 +59,21 @@ namespace Flowframes.MiscUtils
 
         public static long MsFromTimestamp(string timestamp)
         {
-            string[] values = timestamp.Split(':');
-            int hours = int.Parse(values[0]);
-            int minutes = int.Parse(values[1]);
-            int seconds = int.Parse(values[2].Split('.')[0]);
-            int milliseconds = int.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
-            long ms = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
-            return ms;
+            try
+            {
+                string[] values = timestamp.Split(':');
+                int hours = int.Parse(values[0]);
+                int minutes = int.Parse(values[1]);
+                int seconds = int.Parse(values[2].Split('.')[0]);
+                int milliseconds = int.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
+                long ms = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+                return ms;
+            }
+            catch (Exception e)
+            {
+                Logger.Log("MsFromTimeStamp Exception: " + e.Message);
+                return 0;
+            }
         }
 
         public static string MsToTimestamp(long milliseconds)

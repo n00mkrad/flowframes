@@ -200,6 +200,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioVideo\FfmpegAudioAndMetadata.cs" />
     <Compile Include="AudioVideo\FfmpegEncode.cs" />
     <Compile Include="AudioVideo\FfmpegExtract.cs" />
     <Compile Include="AudioVideo\FFmpegUtils.cs" />

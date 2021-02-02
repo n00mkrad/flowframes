@@ -10,11 +10,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
-using Utils = Flowframes.AudioVideo.FFmpegUtils;
+using Utils = Flowframes.Media.FFmpegUtils;
 
-namespace Flowframes.AudioVideo
+namespace Flowframes.Media
 {
-    partial class FfmpegEncode : FFmpegCommands
+    partial class FfmpegEncode : FfmpegCommands
     {
         public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, float fps, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
@@ -34,6 +34,19 @@ namespace Flowframes.AudioVideo
             string extraArgs = Config.Get("ffEncArgs");
             string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, TaskType.Encode, !isChunk);
+        }
+
+        public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64, float resampleFps = -1, LogMode logMode = LogMode.OnlyLastLine)
+        {
+            if (logMode != LogMode.Hidden)
+                Logger.Log((resampleFps <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
+            string vfrFilename = Path.GetFileName(framesFile);
+            string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither=floyd_steinberg:diff_mode=rectangle\"" : "";
+            string fpsFilter = (resampleFps <= 0) ? "" : $"fps=fps={resampleFps.ToStringDot()}";
+            string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
+            string rate = fps.ToStringDot();
+            string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
+            await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, TaskType.Encode);
         }
 
         public static async Task Encode(string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)

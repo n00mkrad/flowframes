@@ -1,4 +1,4 @@
-﻿using Flowframes.AudioVideo;
+﻿using Flowframes.Media;
 using Flowframes.Data;
 using Flowframes.Forms;
 using Flowframes.IO;
@@ -178,7 +178,7 @@ namespace Flowframes.Main
             if (IOUtils.IsPathDirectory(path))
                 frameCount = IOUtils.GetAmountOfFiles(path, false);
             else
-                frameCount = await FFmpegCommands.GetFrameCountAsync(path);
+                frameCount = await FfmpegCommands.GetFrameCountAsync(path);
 
             if (hash.Length > 1 && frameCount > 5000)     // Cache if >5k frames to avoid re-reading it every single time
             {
@@ -456,7 +456,7 @@ namespace Flowframes.Main
 
         public static void UpdateVideoDuration(string path)
         {
-            Program.mainForm.currInDuration = FFmpegCommands.GetDuration(path);
+            Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
         }
     }
 }

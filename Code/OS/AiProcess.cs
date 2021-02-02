@@ -82,7 +82,7 @@ namespace Flowframes
                 string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
                 string alphaInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir + Paths.alphaSuffix);
                 if (!Directory.Exists(alphaInterpDir)) return;
-                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, false);
+                await FfmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, false);
             }
         }
 

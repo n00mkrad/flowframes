@@ -1,4 +1,4 @@
-﻿using Flowframes.AudioVideo;
+﻿using Flowframes.Media;
 using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
@@ -22,7 +22,7 @@ namespace Flowframes.UI
             await FfmpegExtract.VideoToFrames(videoPath, Path.Combine(outPath, Paths.framesDir), false, Interpolate.current.inFps, false, false, false);
             File.WriteAllText(Path.Combine(outPath, "fps.ini"), Interpolate.current.inFps.ToString());
             if (withAudio)
-                await FFmpegCommands.ExtractAudio(videoPath, Path.Combine(outPath, "audio"));
+                await FfmpegAudioAndMetadata.ExtractAudio(videoPath, Path.Combine(outPath, "audio"));
             Program.mainForm.SetWorking(false);
             Logger.Log("Done.");
             Program.mainForm.SetProgress(0);
@@ -34,7 +34,7 @@ namespace Flowframes.UI
                 return;
             int times = loopTimes.GetInt();
             Logger.Log("Lopping video " + times + "x...", true);
-            await FFmpegCommands.LoopVideo(inputFile, times, false);
+            await FfmpegCommands.LoopVideo(inputFile, times, false);
             Logger.Log("Done", true);
             Program.mainForm.SetProgress(0);
         }
@@ -45,7 +45,7 @@ namespace Flowframes.UI
                 return;
             float speedFloat = speed.GetFloat();
             Logger.Log("Creating video with " + speed + "% speed...", true);
-            await FFmpegCommands.ChangeSpeed(inputFile, speedFloat, false);
+            await FfmpegCommands.ChangeSpeed(inputFile, speedFloat, false);
             Logger.Log("Done", true);
             Program.mainForm.SetProgress(0);
         }

@@ -313,7 +313,7 @@ namespace Flowframes.IO
 				Logger.Log("Failed to read FPS - Trying alternative method...", true);
 				try
 				{
-					fps = FFmpegCommands.GetFramerate(path);
+					fps = FfmpegCommands.GetFramerate(path);
 					Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
 				}
 				catch
@@ -377,7 +377,7 @@ namespace Flowframes.IO
 				Logger.Log($"Failed to read video size ({e.Message}) - Trying alternative method...", true);
 				try
 				{
-					size = FFmpegCommands.GetSize(path);
+					size = FfmpegCommands.GetSize(path);
 					Logger.Log($"Detected video size of {Path.GetFileName(path)} as {size.Width}x{size.Height}", true);
 				}
 				catch
