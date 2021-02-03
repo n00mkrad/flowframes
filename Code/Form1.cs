@@ -49,8 +49,6 @@ namespace Flowframes
             InitAis();
             InterpolateUtils.preview = previewPicturebox;
 
-            ConfigParser.LoadComboxIndex(aiCombox);
-
             UpdateStepByStepControls(true);
 
             Initialized();
@@ -143,7 +141,7 @@ namespace Flowframes
         {
             foreach (AI ai in Networks.networks)
                 aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
-            aiCombox.SelectedIndex = 0;
+            ConfigParser.LoadComboxIndex(aiCombox);
         }
 
         public void Initialized()
@@ -287,7 +285,8 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(aiCombox.Text) || aiCombox.Text == lastAiComboxStr) return;
             lastAiComboxStr = aiCombox.Text;
             aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
-            ConfigParser.SaveComboxIndex(aiCombox);
+            if(initialized)
+                ConfigParser.SaveComboxIndex(aiCombox);
             interpFactorCombox_SelectedIndexChanged(null, null);
         }
 
