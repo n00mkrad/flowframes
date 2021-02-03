@@ -60,7 +60,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode, false);
-            await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
+            await IOUtils.ReverseRenaming(Interpolate.current.framesFolder, AiProcess.filenameMap, true);   // Get timestamps back
             await Cleanup();
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
@@ -159,7 +159,8 @@ namespace Flowframes
 
             try
             {
-                AiProcess.filenameMap = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+                Dictionary<string, string> renamedFilesDict = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+                AiProcess.filenameMap = renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value));    // Save rel paths
             }
             catch (Exception e)
             {

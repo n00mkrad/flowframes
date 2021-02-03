@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using I = Flowframes.Interpolate;
 
 namespace Flowframes.Main
 {
@@ -27,10 +28,10 @@ namespace Flowframes.Main
         public static void Save ()
         {
             if (timeSinceLastSave.IsRunning && timeSinceLastSave.ElapsedMilliseconds < (timeBetweenSaves * 1000f).RoundToInt()) return;
-            int frames = (int)Math.Round((float)InterpolateUtils.interpolatedInputFramesCount / Interpolate.current.interpFactor) - safetyDelayFrames;
+            int frames = (int)Math.Round((float)InterpolateUtils.interpolatedInputFramesCount / I.current.interpFactor) - safetyDelayFrames;
             if (frames < 1) return;
             timeSinceLastSave.Restart();
-            Directory.CreateDirectory(Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir));
+            Directory.CreateDirectory(Path.Combine(I.current.tempFolder, Paths.resumeDir));
             SaveState(frames);
             SaveInterpSettings();
             SaveFilenameMap();
@@ -38,14 +39,14 @@ namespace Flowframes.Main
 
         static void SaveState (int frames)
         {
-            ResumeState state = new ResumeState(Interpolate.currentlyUsingAutoEnc, frames);
-            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, resumeFilename);
+            ResumeState state = new ResumeState(I.currentlyUsingAutoEnc, frames);
+            string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, resumeFilename);
             File.WriteAllText(filePath, state.ToString());
         }
 
         static async Task SaveFilenameMap ()
         {
-            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, filenameMapFilename);
+            string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
 
             if (File.Exists(filePath) && IOUtils.GetFilesize(filePath) > 0)
                 return;
@@ -65,8 +66,8 @@ namespace Flowframes.Main
 
         static void SaveInterpSettings ()
         {
-            string filepath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, interpSettingsFilename);
-            File.WriteAllText(filepath, Interpolate.current.Serialize());
+            string filepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, interpSettingsFilename);
+            File.WriteAllText(filepath, I.current.Serialize());
         }
 
         public static void LoadTempFolder (string tempFolderPath)
@@ -81,22 +82,26 @@ namespace Flowframes.Main
         {
             if (!resumeNextRun) return;
 
-            string stateFilepath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, resumeFilename);
+            string stateFilepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, resumeFilename);
             ResumeState state = new ResumeState(File.ReadAllText(stateFilepath));
 
-            string[] inputFrames = IOUtils.GetFilesSorted(Interpolate.current.framesFolder);
+            string fileMapFilepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
+            List<string> inputFrameLines = File.ReadAllLines(fileMapFilepath).Where(l => l.Trim().Length > 3).ToList();
+            List<string> inputFrames = inputFrameLines.Select(l => Path.Combine(I.current.framesFolder, l.Split('|')[1])).ToList();
 
             for (int i = 0; i < state.interpolatedInputFrames; i++)
             {
                 IOUtils.TryDeleteIfExists(inputFrames[i]);
-                if (i % 100 == 0) await Task.Delay(1);
+                if (i % 1000 == 0) await Task.Delay(1);
             }
+
+            LoadFilenameMap();
         }
 
         static void LoadFilenameMap()
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
-            string filePath = Path.Combine(Interpolate.current.tempFolder, Paths.resumeDir, filenameMapFilename);
+            string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
             string[] dictLines = File.ReadAllLines(filePath);
 
             foreach (string line in dictLines)

@@ -280,10 +280,17 @@ namespace Flowframes.IO
 			return oldNewNamesMap;
 		}
 
-		public static async Task ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)
+		public static async Task ReverseRenaming(string basePath, Dictionary<string, string> oldNewMap, bool clearDict)	// Relative -> absolute paths
+		{
+			Dictionary<string, string> absPaths = oldNewMap.ToDictionary(x => Path.Combine(basePath, x.Key), x => Path.Combine(basePath, x.Value));
+			await ReverseRenaming(absPaths, clearDict);
+		}
+
+		public static async Task ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)	// Takes absolute paths only
 		{
 			if (oldNewMap == null || oldNewMap.Count < 1) return;
 			int counter = 0;
+
 			foreach (KeyValuePair<string, string> pair in oldNewMap)
             {
 				TryMove(pair.Value, pair.Key);

@@ -99,8 +99,6 @@ namespace Flowframes.Main
 
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
-            await IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
-
             // TODO: Check if this works lol, remove if it does
             //if (Config.GetBool("sbsAllowAutoEnc"))
             //    nextOutPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetAiSuffix(current.ai, current.interpFactor) + InterpolateUtils.GetExt(current.outMode));
@@ -110,6 +108,7 @@ namespace Flowframes.Main
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);
+            await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap, true);   // Get timestamps back
             Program.mainForm.SetProgress(0);
         }
 
