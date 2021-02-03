@@ -140,6 +140,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.panel13 = new System.Windows.Forms.Panel();
+            this.modelsBaseUrl = new System.Windows.Forms.ComboBox();
+            this.label42 = new System.Windows.Forms.Label();
             this.ffEncArgs = new System.Windows.Forms.TextBox();
             this.label56 = new System.Windows.Forms.Label();
             this.label48 = new System.Windows.Forms.Label();
@@ -161,9 +164,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label42 = new System.Windows.Forms.Label();
-            this.modelsBaseUrl = new System.Windows.Forms.ComboBox();
-            this.panel13 = new System.Windows.Forms.Panel();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -1616,6 +1616,41 @@
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Debugging / Experimental";
             // 
+            // panel13
+            // 
+            this.panel13.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel13.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel13.Location = new System.Drawing.Point(536, 97);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(21, 21);
+            this.panel13.TabIndex = 61;
+            this.toolTip1.SetToolTip(this.panel13, "Allows custom input.");
+            // 
+            // modelsBaseUrl
+            // 
+            this.modelsBaseUrl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.modelsBaseUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modelsBaseUrl.ForeColor = System.Drawing.Color.White;
+            this.modelsBaseUrl.FormattingEnabled = true;
+            this.modelsBaseUrl.Items.AddRange(new object[] {
+            "https://dl.nmkd.de/flowframes/mdl/",
+            "http://45.132.246.240/dl/flowframes/mdl/",
+            "http://104.225.145.33/models/"});
+            this.modelsBaseUrl.Location = new System.Drawing.Point(280, 97);
+            this.modelsBaseUrl.Name = "modelsBaseUrl";
+            this.modelsBaseUrl.Size = new System.Drawing.Size(250, 21);
+            this.modelsBaseUrl.TabIndex = 87;
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(10, 100);
+            this.label42.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(174, 13);
+            this.label42.TabIndex = 86;
+            this.label42.Text = "Model Download Mirror (Base URL)";
+            // 
             // ffEncArgs
             // 
             this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -1623,7 +1658,7 @@
             this.ffEncArgs.Location = new System.Drawing.Point(280, 240);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(250, 21);
+            this.ffEncArgs.Size = new System.Drawing.Size(250, 20);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
@@ -1759,7 +1794,7 @@
             this.ffEncThreads.Location = new System.Drawing.Point(280, 183);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
@@ -1848,40 +1883,6 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(10, 100);
-            this.label42.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(174, 13);
-            this.label42.TabIndex = 86;
-            this.label42.Text = "Model Download Mirror (Base URL)";
-            // 
-            // modelsBaseUrl
-            // 
-            this.modelsBaseUrl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.modelsBaseUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modelsBaseUrl.ForeColor = System.Drawing.Color.White;
-            this.modelsBaseUrl.FormattingEnabled = true;
-            this.modelsBaseUrl.Items.AddRange(new object[] {
-            "https://dl.nmkd.de/flowframes/mdl/",
-            "http://45.132.246.240/dl/flowframes/mdl/"});
-            this.modelsBaseUrl.Location = new System.Drawing.Point(280, 97);
-            this.modelsBaseUrl.Name = "modelsBaseUrl";
-            this.modelsBaseUrl.Size = new System.Drawing.Size(250, 21);
-            this.modelsBaseUrl.TabIndex = 87;
-            // 
-            // panel13
-            // 
-            this.panel13.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel13.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel13.Location = new System.Drawing.Point(536, 97);
-            this.panel13.Name = "panel13";
-            this.panel13.Size = new System.Drawing.Size(21, 21);
-            this.panel13.TabIndex = 61;
-            this.toolTip1.SetToolTip(this.panel13, "Allows custom input.");
             // 
             // SettingsForm
             // 
