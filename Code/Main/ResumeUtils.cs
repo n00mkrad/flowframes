@@ -95,6 +95,9 @@ namespace Flowframes.Main
                 if (i % 1000 == 0) await Task.Delay(1);
             }
 
+            Directory.Move(I.current.interpFolder, I.current.interpFolder + Paths.prevSuffix);  // Move existing interp frames
+            Directory.CreateDirectory(I.current.interpFolder);  // Re-create empty interp folder
+
             LoadFilenameMap();
         }
 
