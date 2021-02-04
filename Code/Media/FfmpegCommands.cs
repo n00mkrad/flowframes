@@ -17,7 +17,7 @@ namespace Flowframes
 {
     class FfmpegCommands
     {
-        public static string divisionFilter = "\"pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0\"";
+        public static string divisionFilter = "pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0";
         public static string pngComprArg = "-compression_level 3";
         public static string mpDecDef = "\"mpdecimate\"";
         public static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";

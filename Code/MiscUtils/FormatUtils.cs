@@ -71,7 +71,7 @@ namespace Flowframes.MiscUtils
             }
             catch (Exception e)
             {
-                Logger.Log("MsFromTimeStamp Exception: " + e.Message);
+                Logger.Log($"MsFromTimeStamp({timestamp}) Exception: {e.Message}", true);
                 return 0;
             }
         }

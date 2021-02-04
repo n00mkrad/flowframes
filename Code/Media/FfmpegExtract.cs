@@ -65,7 +65,8 @@ namespace Flowframes.Media
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} {pixFmt} -vsync 0 -vf {divisionFilter} \"{outpath}/%{Padding.inputFrames}d.png\"";
+            string vf = alpha ? $"-filter_complex \"[0:v]{divisionFilter},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {divisionFilter}";
+            string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} {pixFmt} -vsync 0 {vf} \"{outpath}/%{Padding.inputFrames}d.png\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await AvProcess.RunFfmpeg(args, logMode, TaskType.ExtractFrames);
             if (delSrc)
