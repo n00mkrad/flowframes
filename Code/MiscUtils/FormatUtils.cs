@@ -83,13 +83,19 @@ namespace Flowframes.MiscUtils
 
         public static string Ratio(long numFrom, long numTo)
         {
-            float ratio = ((float)numTo / (float)numFrom) * 100f;
+            float ratio = ((float)numFrom / (float)numTo) * 100f;
             return ratio.ToString("0.00") + "%";
         }
 
-        public static string RatioInt(long numFrom, long numTo)
+        public static int RatioInt(long numFrom, long numTo)
         {
-            double ratio = Math.Round(((float)numTo / (float)numFrom) * 100f);
+            double ratio = Math.Round(((float)numFrom / (float)numTo) * 100f);
+            return (int)ratio;
+        }
+
+        public static string RatioIntStr(long numFrom, long numTo)
+        {
+            double ratio = Math.Round(((float)numFrom / (float)numTo) * 100f);
             return ratio + "%";
         }
 

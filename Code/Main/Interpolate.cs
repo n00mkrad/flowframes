@@ -113,17 +113,17 @@ namespace Flowframes
             if(!Config.GetBool("allowConsecutiveSceneChanges", true))
                 Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
-            if (canceled) return;
-
             if (extractAudio)
             {
+                if (canceled) return;
+                Program.mainForm.SetStatus("Extracting audio from video...");
                 string audioFile = Path.Combine(current.tempFolder, "audio");
                 if (audioFile != null && !File.Exists(audioFile))
                     await FfmpegAudioAndMetadata.ExtractAudio(inPath, audioFile);
             }
 
             if (canceled) return;
-
+            Program.mainForm.SetStatus("Extracting subtitles from video...");
             await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
         }
 
