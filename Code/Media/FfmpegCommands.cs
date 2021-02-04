@@ -89,7 +89,7 @@ namespace Flowframes
 
         public static long GetDuration(string inputFile)
         {
-            Logger.Log("Reading Duration using ffprobe.", true, false, "ffprobe");
+            Logger.Log("Reading Duration using ffprobe.", true, false, "ffmpeg");
             string args = $" -v panic -select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
             string info = GetFfprobeOutput(args);
             return FormatUtils.MsFromTimestamp(info);
