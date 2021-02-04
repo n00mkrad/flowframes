@@ -268,9 +268,9 @@ namespace Flowframes.Main
                 ShowMessage("Invalid output frame rate!\nGIF does not properly support frame rates above 40 FPS.\nPlease use MP4, WEBM or another video format.");
                 passes = false;
             }
-            if (passes && fpsOut < 1 || fpsOut > 500)
+            if (passes && fpsOut < 1 || fpsOut > 1000)
             {
-                ShowMessage("Invalid output frame rate - Must be 1-500.");
+                ShowMessage("Invalid output frame rate - Must be 1-1000.");
                 passes = false;
             }
             if (!passes)
