@@ -244,6 +244,7 @@
     <Compile Include="Main\FrameOrder.cs" />
     <Compile Include="Main\ResumeUtils.cs" />
     <Compile Include="Media\AvProcess.cs" />
+    <Compile Include="Media\FfmpegAlpha.cs" />
     <Compile Include="Media\FfmpegAudioAndMetadata.cs" />
     <Compile Include="Media\FfmpegCommands.cs" />
     <Compile Include="Media\FfmpegEncode.cs" />
