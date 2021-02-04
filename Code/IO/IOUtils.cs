@@ -738,13 +738,27 @@ namespace Flowframes.IO
 
 		public static long GetFilesize(string path)
 		{
-			return new FileInfo(path).Length;
+            try
+            {
+				return new FileInfo(path).Length;
+			}
+            catch
+            {
+				return -1;
+            }
 		}
 
 		public static string GetFilesizeStr (string path)
         {
-			return FormatUtils.Bytes(GetFilesize(path));
-        }
+			try
+			{
+				return FormatUtils.Bytes(GetFilesize(path));
+			}
+			catch
+			{
+				return "?";
+			}
+		}
 
 		public static byte[] GetLastBytes (string path, int startAt, int bytesAmount)
         {

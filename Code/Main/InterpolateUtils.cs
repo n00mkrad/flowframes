@@ -155,7 +155,9 @@ namespace Flowframes.Main
         {
             if (img == null)
                 return;
+
             preview.Image = img;
+
             if (bigPreviewForm != null)
                 bigPreviewForm.SetImage(img);
         }
@@ -163,7 +165,13 @@ namespace Flowframes.Main
         public static Dictionary<string, int> frameCountCache = new Dictionary<string, int>();
         public static async Task<int> GetInputFrameCountAsync (string path)
         {
-            string hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
+            int maxMb = Config.GetInt("storeHashedFramecountMaxSizeMb", 256);
+            string hash = "";
+
+            if (IOUtils.GetFilesize(path) >= 0 && IOUtils.GetFilesize(path) < maxMb * 1024 * 1024)
+                hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
+            else
+                Logger.Log($"GetInputFrameCountAsync: File bigger than {maxMb}mb, won't hash.", true);
 
             if (hash.Length > 1 && frameCountCache.ContainsKey(hash))
             {

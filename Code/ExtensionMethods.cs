@@ -38,7 +38,7 @@ namespace Flowframes
             try { return int.Parse(str.TrimNumbers()); }
             catch (Exception e)
             {
-                Logger.Log("Failed to parse \"" + str + "\" to int: " + e, true);
+                Logger.Log("Failed to parse \"" + str + "\" to int: " + e.Message, true);
                 return 0;
             }
         }
