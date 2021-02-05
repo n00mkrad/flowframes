@@ -10,9 +10,9 @@ namespace Flowframes.Forms
 {
     public partial class UpdaterForm : Form
     {
-        SemVer installed;
-        SemVer latestPat;
-        SemVer latestFree;
+        Version installed;
+        Version latestPat;
+        Version latestFree;
 
         public UpdaterForm()
         {
@@ -30,27 +30,27 @@ namespace Flowframes.Forms
             await Task.Delay(100);
             latestLabel.Text = $"{latestPat} (Patreon/Beta) - {latestFree} (Free/Stable)";
 
-            if (Updater.VersionMatches(installed, latestFree))
+            if (Updater.CompareVersions(installed, latestFree) == Updater.VersionCompareResult.Equal)
             {
                 statusLabel.Text = "Latest Free Version Is Installed.";
 
-                if (Updater.IsVersionNewer(installed, latestPat))
+                if (Updater.CompareVersions(installed, latestPat) == Updater.VersionCompareResult.Newer)
                     statusLabel.Text += "\nBeta Update Available On Patreon.";
 
                 return;
             }
 
-            if (Updater.VersionMatches(installed, latestPat))
+            if (Updater.CompareVersions(installed, latestPat) == Updater.VersionCompareResult.Equal)
             {
                 statusLabel.Text = "Latest Patreon/Beta Version Is Installed.";
                 return;
             }
 
-            if (Updater.IsVersionNewer(installed, latestPat))
+            if (Updater.CompareVersions(installed, latestPat) == Updater.VersionCompareResult.Newer)
             {
                 statusLabel.Text = "Update available on Patreon!";
 
-                if (Updater.IsVersionNewer(installed, latestFree))
+                if (Updater.CompareVersions(installed, latestFree) == Updater.VersionCompareResult.Newer)
                     statusLabel.Text = $"Beta Updates Available On Patreon and Itch.io.";
 
                 return;

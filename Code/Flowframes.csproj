@@ -205,7 +205,6 @@
     <Compile Include="Data\Networks.cs" />
     <Compile Include="Data\Padding.cs" />
     <Compile Include="Data\ResumeState.cs" />
-    <Compile Include="Data\SemVer.cs" />
     <Compile Include="Data\SubtitleTrack.cs" />
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
