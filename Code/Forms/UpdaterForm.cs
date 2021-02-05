@@ -51,7 +51,7 @@ namespace Flowframes.Forms
                 statusLabel.Text = "Update available on Patreon!";
 
                 if (Updater.IsVersionNewer(installed, latestFree))
-                    statusLabel.Text += " - Beta Updates Available On Patreon and Itch.io.";
+                    statusLabel.Text = $"Beta Updates Available On Patreon and Itch.io.";
 
                 return;
             }

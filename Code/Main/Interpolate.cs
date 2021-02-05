@@ -81,9 +81,9 @@ namespace Flowframes
             {
                 Program.mainForm.SetStatus("Extracting transparency...");
                 Logger.Log("Extracting transparency... (1/2)");
-                await FfmpegCommands.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
+                await FfmpegAlpha.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
                 Logger.Log("Extracting transparency... (2/2)", false, true);
-                await FfmpegCommands.RemoveAlpha(current.framesFolder, current.framesFolder);
+                await FfmpegAlpha.RemoveAlpha(current.framesFolder, current.framesFolder);
             }
         }
 

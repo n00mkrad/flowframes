@@ -30,30 +30,28 @@ namespace Flowframes.OS
             }
         }
 
-        public static bool IsVersionNewer (SemVer currentVer, SemVer newVer)
+        public static bool IsVersionNewer (SemVer currentVersion, SemVer newVersion)
         {
-            if (newVer.major > currentVer.major)
+            Logger.Log($"Checking if {newVersion} > {currentVersion}", true);
+
+            Version currVer = new Version(currentVersion.major, currentVersion.minor, currentVersion.patch);
+            Version newVer = new Version(newVersion.major, newVersion.minor, newVersion.patch);
+            int result = newVer.CompareTo(currVer);
+
+            if (result > 0)
             {
+                Logger.Log($"{newVer} is newer than {currentVersion}.", true);
                 return true;
             }
-            else
+
+            if (result < 0)
             {
-                if(newVer.minor > currentVer.minor)
-                {
-                    return true;
-                }
-                else
-                {
-                    if (newVer.patch > currentVer.patch)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                Logger.Log($"{newVer} is older than {currentVersion}.", true);
+                return false;
             }
+
+            Logger.Log($"{newVer} is equal to {currentVersion}.", true);
+            return false;
         }
 
         public static bool VersionMatches (SemVer v1, SemVer v2)

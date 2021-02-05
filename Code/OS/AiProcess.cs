@@ -13,6 +13,7 @@ using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
 using Flowframes.Magick;
+using Flowframes.Media;
 
 namespace Flowframes
 {
@@ -82,7 +83,7 @@ namespace Flowframes
                 string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
                 string alphaInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir + Paths.alphaSuffix);
                 if (!Directory.Exists(alphaInterpDir)) return;
-                await FfmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, false);
+                await FfmpegAlpha.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, false);
             }
         }
 
