@@ -155,6 +155,7 @@ namespace Flowframes.Media
                 if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || lastOutputFfmpeg.Contains("Invalid data") || lastOutputFfmpeg.Contains("Error initializing output stream"))
                 {
                     Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.", false, false, "ffmpeg");
+                    IOUtils.TryMove(tempPath, inputFile);   // Move temp file back
                     IOUtils.TryDeleteIfExists(tempPath);
                     return;
                 }

@@ -222,7 +222,7 @@ namespace Flowframes.IO
 			return true;
 		}
 
-		static bool TryMove(string source, string target, bool deleteIfExists = true)
+		public static bool TryMove(string source, string target, bool deleteIfExists = true)
 		{
 			try
 			{

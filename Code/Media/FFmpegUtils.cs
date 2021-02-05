@@ -137,7 +137,7 @@ namespace Flowframes.Media
         {
             containerExt = containerExt.Remove(".");
             string codec = "aac";
-            string bitrate = $"{Config.GetInt("aacBitrate", 160)}k";
+            string bitrate = $"{Config.GetInt("aacBitrate", 160)}";
 
             if(containerExt == "webm" || containerExt == "mkv")
             {
