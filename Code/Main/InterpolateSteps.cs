@@ -108,7 +108,8 @@ namespace Flowframes.Main
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);
-            await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap, true);   // Get timestamps back
+            await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
+            AiProcess.filenameMap.Clear();
             Program.mainForm.SetProgress(0);
         }
 

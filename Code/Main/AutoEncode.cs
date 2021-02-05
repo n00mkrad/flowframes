@@ -114,10 +114,6 @@ namespace Flowframes.Main
                 }
 
                 if (Interpolate.canceled) return;
-
-                if(!Interpolate.current.stepByStep)
-                    await IOUtils.ReverseRenaming(Interpolate.current.framesFolder, AiProcess.filenameMap, true);   // Get timestamps back
-
                 await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
             }
             catch (Exception e)

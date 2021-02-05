@@ -168,20 +168,6 @@ namespace Flowframes.IO
 			File.Move(path, targetPath);
 		}
 
-		public static bool TryCopy(string source, string dest, bool overwrite = true)      // Copy with error handling. Returns false if failed
-		{
-			try
-			{
-				File.Copy(source, dest, overwrite);
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show("Copy from \"" + source + "\" to \"" + dest + " (Overwrite: " + overwrite + ") failed: \n\n" + e.Message);
-				return false;
-			}
-			return true;
-		}
-
 		public static int GetFilenameCounterLength(string file, string prefixToRemove = "")
 		{
 			string filenameNoExt = Path.GetFileNameWithoutExtension(file);
@@ -209,31 +195,36 @@ namespace Flowframes.IO
             }
 		}
 
-		static bool TryCopy(string source, string target)
+		static bool TryCopy(string source, string target, bool overwrite = true)
 		{
 			try
 			{
-				File.Copy(source, target);
+				File.Copy(source, target, overwrite);
 			}
-			catch
+			catch (Exception e)
 			{
+				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}");
 				return false;
 			}
+
 			return true;
 		}
 
-		public static bool TryMove(string source, string target, bool deleteIfExists = true)
+		public static bool TryMove(string source, string target, bool overwrite = true)
 		{
 			try
 			{
-				if (deleteIfExists && File.Exists(target))
+				if (overwrite && File.Exists(target))
 					File.Delete(target);
+
 				File.Move(source, target);
 			}
-			catch
+			catch (Exception e)
 			{
+				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}");
 				return false;
 			}
+
 			return true;
 		}
 
@@ -280,28 +271,33 @@ namespace Flowframes.IO
 			return oldNewNamesMap;
 		}
 
-		public static async Task ReverseRenaming(string basePath, Dictionary<string, string> oldNewMap, bool clearDict)	// Relative -> absolute paths
+		public static async Task ReverseRenaming(string basePath, Dictionary<string, string> oldNewMap)	// Relative -> absolute paths
 		{
 			Dictionary<string, string> absPaths = oldNewMap.ToDictionary(x => Path.Combine(basePath, x.Key), x => Path.Combine(basePath, x.Value));
-			await ReverseRenaming(absPaths, clearDict);
+			await ReverseRenaming(absPaths);
 		}
 
-		public static async Task ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)	// Takes absolute paths only
+		public static async Task ReverseRenaming(Dictionary<string, string> oldNewMap)	// Takes absolute paths only
 		{
 			if (oldNewMap == null || oldNewMap.Count < 1) return;
 			int counter = 0;
+			int failCount = 0;
 
 			foreach (KeyValuePair<string, string> pair in oldNewMap)
             {
-				TryMove(pair.Value, pair.Key);
+				bool success = TryMove(pair.Value, pair.Key);
+
+				if (!success)
+					failCount++;
+
+				if (failCount >= 100)
+					break;
+
 				counter++;
 
 				if (counter % 1000 == 0)
 					await Task.Delay(1);
 			}
-
-			if (clearDict)
-				oldNewMap.Clear();
 		}
 
 		public static float GetVideoFramerate (string path)

@@ -60,7 +60,8 @@ namespace Flowframes
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode, false);
-            await IOUtils.ReverseRenaming(Interpolate.current.framesFolder, AiProcess.filenameMap, true);   // Get timestamps back
+            await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
+            AiProcess.filenameMap.Clear();
             await Cleanup();
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
