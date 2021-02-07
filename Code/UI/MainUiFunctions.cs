@@ -34,8 +34,8 @@ namespace Flowframes.UI
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
 
             Logger.Log("Loading metadata...");
+            Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
             int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
-
             string fpsStr = "Not Found";
             float fps = await IOUtils.GetFpsFolderOrVideo(path);
             fpsInTbox.Text = fps.ToString();
@@ -50,7 +50,6 @@ namespace Flowframes.UI
 
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
-            InterpolateUtils.UpdateVideoDuration(path);
             Program.mainForm.UpdateInputInfo();
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);

@@ -103,35 +103,19 @@ namespace Flowframes
             return new Size(0, 0);
         }
 
-        public static int GetFrameCount(string inputFile)
-        {
-            int frames = 0;
-
-            Logger.Log("Reading frame count using ffprobe.", true, false, "ffmpeg");
-            frames = ReadFrameCountFfprobe(inputFile, Config.GetBool("ffprobeCountFrames"));      // Try reading frame count with ffprobe
-            if (frames > 0)
-                return frames;
-
-            Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Reading frame count using ffmpeg.", true, false, "ffmpeg");
-            frames = ReadFrameCountFfmpeg(inputFile);       // Try reading frame count with ffmpeg
-            if (frames > 0)
-                return frames;
-
-            Logger.Log("Failed to get total frame count of video.");
-            return 0;
-        }
-
         public static async Task<int> GetFrameCountAsync(string inputFile)
         {
+            Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe first.", true, false, "ffmpeg");
             int frames = 0;
 
-            Logger.Log("Reading frame count using ffprobe.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool("ffprobeCountFrames"));      // Try reading frame count with ffprobe
+            
             if (frames > 0)
                 return frames;
 
             Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Reading frame count using ffmpeg.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
+            
             if (frames > 0)
                 return frames;
 
@@ -204,7 +188,7 @@ namespace Flowframes
         static async Task<int> ReadFrameCountFfmpegAsync (string inputFile)
         {
             string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
-            string info = await GetFfmpegOutputAsync(args, true);
+            string info = await GetFfmpegOutputAsync(args, true, true);
             try
             {
                 string[] lines = info.SplitIntoLines();

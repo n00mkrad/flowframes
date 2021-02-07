@@ -95,6 +95,13 @@ namespace Flowframes
                 lastOutputFfmpeg += "\n";
             lastOutputFfmpeg = lastOutputFfmpeg + line;
             Logger.Log(line, true, false, "ffmpeg");
+
+            if (showProgressBar && line.Contains("time="))
+            {
+                Logger.Log($"showProgressBar, contains: {line.Contains("time=")}", true, false, "ffmpeg");
+                Regex timeRegex = new Regex("(?<=time=).*(?= )");
+                UpdateFfmpegProgress(timeRegex.Match(line).Value);
+            }
         }
 
         public static string GetFfmpegOutput (string args)
@@ -111,11 +118,12 @@ namespace Flowframes
             return output;
         }
 
-        public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false)
+        public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false, bool progressBar = false)
         {
             timeSinceLastOutput.Restart();
             if (Program.busy) setBusy = false;
             lastOutputFfmpeg = "";
+            showProgressBar = progressBar;
             Process ffmpeg = OSUtils.NewProcess(true);
             lastProcess = ffmpeg;
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
