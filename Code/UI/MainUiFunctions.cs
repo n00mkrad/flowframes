@@ -37,7 +37,7 @@ namespace Flowframes.UI
             int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
 
             string fpsStr = "Not Found";
-            float fps = IOUtils.GetFpsFolderOrVideo(path);
+            float fps = await IOUtils.GetFpsFolderOrVideo(path);
             fpsInTbox.Text = fps.ToString();
 
             if (fps > 0)

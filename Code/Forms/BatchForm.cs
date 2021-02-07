@@ -129,7 +129,7 @@ namespace Flowframes.Forms
 
                 InterpSettings current = Program.mainForm.GetCurrentSettings();
                 current.UpdatePaths(path, path.GetParentDir());
-                current.inFps = GetFramerate(path);
+                current.inFps = await GetFramerate(path);
                 current.outFps = current.inFps * current.interpFactor;
                 Program.batchQueue.Enqueue(current);
                 RefreshGui();
@@ -137,10 +137,10 @@ namespace Flowframes.Forms
             }
         }
 
-        float GetFramerate (string path)
+        async Task<float> GetFramerate (string path)
         {
             float fps = Interpolate.current.inFps;
-            float fpsFromFile = IOUtils.GetFpsFolderOrVideo(path);
+            float fpsFromFile = await IOUtils.GetFpsFolderOrVideo(path);
             if (fpsFromFile > 0)
                 return fpsFromFile;
 

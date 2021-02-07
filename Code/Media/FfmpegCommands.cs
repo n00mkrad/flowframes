@@ -61,23 +61,32 @@ namespace Flowframes
             return FormatUtils.MsFromTimestamp(info);
         }
 
-        public static float GetFramerate(string inputFile)
+        public static async Task<float> GetFramerate(string inputFile)
         {
-            Logger.Log("Reading FPS using ffmpeg.", true, false, "ffmpeg");
-            string args = $" -i {inputFile.Wrap()}";
-            string output = GetFfmpegOutput(args);
-            string[] entries = output.Split(',');
-            foreach (string entry in entries)
+            Logger.Log($"GetFramerate('{inputFile}')", true, false, "ffmpeg");
+
+            try
             {
-                if (entry.Contains(" fps") && !entry.Contains("Input "))    // Avoid reading FPS from the filename, in case filename contains "fps"
+                string args = $" -i {inputFile.Wrap()}";
+                string output = await GetFfmpegOutputAsync(args);
+                string[] entries = output.Split(',');
+
+                foreach (string entry in entries)
                 {
-                    Logger.Log("[FFCmds] FPS Entry: " + entry, true);
-                    string num = entry.Replace(" fps", "").Trim().Replace(",", ".");
-                    float value;
-                    float.TryParse(num, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
-                    return value;
+                    if (entry.Contains(" fps") && !entry.Contains("Input "))    // Avoid reading FPS from the filename, in case filename contains "fps"
+                    {
+                        string num = entry.Replace(" fps", "").Trim().Replace(",", ".");
+                        float value;
+                        float.TryParse(num, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
+                        return value;
+                    }
                 }
             }
+            catch(Exception e)
+            {
+                Logger.Log("GetFramerate Error: " + e.Message, true, false);
+            }
+            
             return 0f;
         }
 

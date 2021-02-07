@@ -1244,9 +1244,9 @@
             this.label58.Location = new System.Drawing.Point(420, 301);
             this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(255, 13);
+            this.label58.Size = new System.Drawing.Size(221, 13);
             this.label58.TabIndex = 65;
-            this.label58.Text = "Lower is better. Use slightly higher values than h265!";
+            this.label58.Text = "Lower is better. Use higher values than h265!";
             // 
             // vp9Crf
             // 

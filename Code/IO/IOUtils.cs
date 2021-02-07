@@ -300,7 +300,7 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static float GetVideoFramerate (string path)
+		public static async Task<float> GetVideoFramerate (string path)
         {
 			float fps = 0;
             try
@@ -316,7 +316,7 @@ namespace Flowframes.IO
 				Logger.Log("Failed to read FPS - Trying alternative method...", true);
 				try
 				{
-					fps = FfmpegCommands.GetFramerate(path);
+					fps = await FfmpegCommands.GetFramerate(path);
 					Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
 				}
 				catch
@@ -478,19 +478,21 @@ namespace Flowframes.IO
 			return null;
 		}
 
-		public static float GetFpsFolderOrVideo(string path)
+		public static async Task<float> GetFpsFolderOrVideo(string path)
 		{
             try
             {
 				if (IsPathDirectory(path))
 				{
 					float dirFps = GetVideoFramerateForDir(path);
+
 					if (dirFps > 0)
 						return dirFps;
 				}
 				else
 				{
-					float vidFps = GetVideoFramerate(path);
+					float vidFps = await GetVideoFramerate(path);
+
 					if (vidFps > 0)
 						return vidFps;
 				}
@@ -499,6 +501,7 @@ namespace Flowframes.IO
             {
 				Logger.Log("GetFpsFolderOrVideo() Error: " + e.Message);
             }
+
 			return 0;
 		}
 
