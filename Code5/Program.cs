@@ -24,7 +24,6 @@ namespace Flowframes
         [STAThread]
         static void Main()
         {
-            Paths.Init();
             Config.Init();
 
             if (Config.GetBool("delLogsOnStartup"))

@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Media;
+using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.OS;
@@ -18,33 +19,31 @@ namespace Flowframes.UI
         public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
         {
             Program.mainForm.SetTab("interpolate");
+            Program.mainForm.ResetInputInfo();
+            string path = inputTbox.Text.Trim();
+            InterpolateUtils.PathAsciiCheck(path, "input path");
 
             if (Config.GetBool("clearLogOnInput"))
                 Logger.ClearLogBox();
 
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
-            string path = inputTbox.Text.Trim();
             Program.lastInputPath = path;
-            
             Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
+
             if (!Program.lastInputPathIsSsd)
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
 
             Logger.Log("Loading metadata...");
+            Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
             int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
-
             string fpsStr = "Not Found";
-            float fps = IOUtils.GetFpsFolderOrVideo(path);
-            if (fps > 0)
-            {
-                fpsStr = fps.ToString();
-                fpsInTbox.Text = fpsStr;
-            }
+            float fps = await IOUtils.GetFpsFolderOrVideo(path);
+            fpsInTbox.Text = fps.ToString();
 
-            if (IOUtils.IsPathDirectory(path))
-                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
-            else
-                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
+            if (fps > 0)
+                fpsStr = fps.ToString();
+
+            Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
 
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
@@ -59,7 +58,7 @@ namespace Flowframes.UI
 
         static void CheckExistingFolder (string inpath, string outpath)
         {
-            if (Config.GetInt("processingMode") == 0) return;
+            if (!Interpolate.current.stepByStep) return;
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
             if (Directory.Exists(tmpFolder))
             {
@@ -72,11 +71,7 @@ namespace Flowframes.UI
                 string msg = $"A temporary folder for this video already exists. It contains {scnFrames}, {srcFrames}, {interpFrames}.";
 
                 DialogResult dialogResult = MessageBox.Show($"{msg}\n\nClick \"Yes\" to use the existing files or \"No\" to delete them.", "Use files from existing temp folder?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    return;
-                }
-                else if (dialogResult == DialogResult.No)
+                if (dialogResult == DialogResult.No)
                 {
                     IOUtils.TryDeleteIfExists(tmpFolder);
                     Logger.Log("Deleted old temp folder.");
@@ -107,7 +102,7 @@ namespace Flowframes.UI
             {
                 if (!IOUtils.IsPathDirectory(path))     // If path is video - Extract first frame
                 {
-                    await FFmpegCommands.ExtractSingleFrame(path, imgOnDisk, 1);
+                    await FfmpegExtract.ExtractSingleFrame(path, imgOnDisk, 1);
                     return IOUtils.GetImage(imgOnDisk);
                 }
                 else     // Path is frame folder - Get first frame

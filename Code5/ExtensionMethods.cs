@@ -38,7 +38,7 @@ namespace Flowframes
             try { return int.Parse(str.TrimNumbers()); }
             catch (Exception e)
             {
-                Logger.Log("Failed to parse \"" + str + "\" to int: " + e, true);
+                Logger.Log("Failed to parse \"" + str + "\" to int: " + e.Message, true);
                 return 0;
             }
         }
@@ -108,7 +108,7 @@ namespace Flowframes
         public static string StripBadChars(this string str)
         {
             string outStr = Regex.Replace(str, @"[^\u0020-\u007E]", string.Empty);
-            outStr = outStr.Remove("(").Remove(")").Remove("[").Remove("]").Remove("{").Remove("}").Remove("%").Remove("'");
+            outStr = outStr.Remove("(").Remove(")").Remove("[").Remove("]").Remove("{").Remove("}").Remove("%").Remove("'").Remove("~");
             return outStr;
         }
 

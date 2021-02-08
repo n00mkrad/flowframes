@@ -1,4 +1,4 @@
-﻿using Flowframes.AudioVideo;
+﻿using Flowframes.Media;
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
@@ -28,7 +28,7 @@ namespace Flowframes.Main
 
         public static void UpdateChunkAndBufferSizes ()
         {
-            chunkSize = GetChunkSize(IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor);
+            chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor).RoundToInt());
             bool isNcnn = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN");
             safetyBufferFrames = isNcnn ? Config.GetInt("autoEncSafeBufferNcnn", 90) : Config.GetInt("autoEncSafeBufferCuda", 30);    // Use bigger safety buffer for NCNN
         }
@@ -49,7 +49,7 @@ namespace Flowframes.Main
 
                 Logger.Log($"[AutoEnc] Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
                 int videoIndex = 1;
-                string encFile = Path.Combine(interpFramesPath.GetParentDir(), $"vfr-{Interpolate.current.interpFactor}x.ini");
+                string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.current.interpFactor));
                 interpFramesLines = IOUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
 
                 while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
@@ -77,7 +77,6 @@ namespace Flowframes.Main
 
                     if (unencodedFrameLines.Count > 0 && (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning))     // Encode every n frames, or after process has exited
                     {
-
                         List<int> frameLinesToEncode = aiRunning ? unencodedFrameLines.Take(chunkSize).ToList() : unencodedFrameLines;     // Take all remaining frames if process is done
 
                         string lastOfChunk = Path.Combine(interpFramesPath, interpFramesLines[frameLinesToEncode.Last()]);
@@ -90,7 +89,6 @@ namespace Flowframes.Main
 
                         busy = true;
                         string outpath = Path.Combine(videoChunksFolder, "chunks", $"{videoIndex.ToString().PadLeft(4, '0')}{FFmpegUtils.GetExt(Interpolate.current.outMode)}");
-                        //int firstFrameNum = frameLinesToEncode[0];
                         int firstLineNum = frameLinesToEncode.First();
                         int lastLineNum = frameLinesToEncode.Last();
                         Logger.Log($"[AutoEnc] Encoding Chunk #{videoIndex} to '{outpath}' using line {firstLineNum} ({Path.GetFileName(interpFramesLines[firstLineNum])}) through {lastLineNum} ({Path.GetFileName(Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()]))})", true, false, "ffmpeg");
@@ -99,7 +97,7 @@ namespace Flowframes.Main
 
                         if (Interpolate.canceled) return;
 
-                        if (Config.GetInt("autoEncMode") == 2)
+                        if (aiRunning && Config.GetInt("autoEncMode") == 2)
                             Task.Run(() => DeleteOldFramesAsync(interpFramesPath, frameLinesToEncode));
 
                         if (Interpolate.canceled) return;
@@ -116,8 +114,6 @@ namespace Flowframes.Main
                 }
 
                 if (Interpolate.canceled) return;
-
-                IOUtils.ReverseRenaming(AiProcess.filenameMap, true);   // Get timestamps back
                 await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
             }
             catch (Exception e)
@@ -132,16 +128,20 @@ namespace Flowframes.Main
             Logger.Log("[AutoEnc] Starting DeleteOldFramesAsync.", true, false, "ffmpeg");
             Stopwatch sw = new Stopwatch();
             sw.Restart();
+            int counter = 0;
 
             foreach (int frame in frameLinesToEncode)
             {
-                bool delete = !FrameIsStillNeeded(interpFramesLines[frame], frame);
-                if (delete)    // Make sure frames are no longer needed (e.g. for dupes) before deleting!
+                if (!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (for dupes) before deleting!
                 {
                     string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
-                    File.WriteAllText(framePath, "THIS IS A DUMMY FILE - DO NOT DELETE ME");    // Overwrite to save space without breaking progress counter
-                    await Task.Delay(1);
+                    IOUtils.OverwriteFileWithText(framePath);    // Overwrite to save space without breaking progress counter
                 }
+
+                if(counter % 1000 == 0)
+                    await Task.Delay(1);
+
+                counter++;
             }
 
             Logger.Log("[AutoEnc] DeleteOldFramesAsync finished in " + FormatUtils.TimeSw(sw), true, false, "ffmpeg");

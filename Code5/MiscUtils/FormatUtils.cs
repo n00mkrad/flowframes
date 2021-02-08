@@ -57,15 +57,45 @@ namespace Flowframes.MiscUtils
             return Time(elapsedMs);
         }
 
+        public static long MsFromTimestamp(string timestamp)
+        {
+            try
+            {
+                string[] values = timestamp.Split(':');
+                int hours = int.Parse(values[0]);
+                int minutes = int.Parse(values[1]);
+                int seconds = int.Parse(values[2].Split('.')[0]);
+                int milliseconds = int.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
+                long ms = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+                return ms;
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"MsFromTimeStamp({timestamp}) Exception: {e.Message}", true);
+                return 0;
+            }
+        }
+
+        public static string MsToTimestamp(long milliseconds)
+        {
+            return (new DateTime(1970, 1, 1)).AddMilliseconds(milliseconds).ToString("HH:mm:ss");
+        }
+
         public static string Ratio(long numFrom, long numTo)
         {
-            float ratio = ((float)numTo / (float)numFrom) * 100f;
+            float ratio = ((float)numFrom / (float)numTo) * 100f;
             return ratio.ToString("0.00") + "%";
         }
 
-        public static string RatioInt(long numFrom, long numTo)
+        public static int RatioInt(long numFrom, long numTo)
         {
-            double ratio = Math.Round(((float)numTo / (float)numFrom) * 100f);
+            double ratio = Math.Round(((float)numFrom / (float)numTo) * 100f);
+            return (int)ratio;
+        }
+
+        public static string RatioIntStr(long numFrom, long numTo)
+        {
+            double ratio = Math.Round(((float)numFrom / (float)numTo) * 100f);
             return ratio + "%";
         }
 
@@ -85,6 +115,19 @@ namespace Flowframes.MiscUtils
             }
 
             return outStr;
+        }
+
+        public static System.Drawing.Size ParseSize (string str)
+        {
+            try
+            {
+                string[] values = str.Split('x');
+                return new System.Drawing.Size(values[0].GetInt(), values[1].GetInt());
+            }
+            catch
+            {
+                return new System.Drawing.Size();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Flowframes.Data;
+﻿using Flowframes.Media;
+using Flowframes.Data;
 using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
@@ -37,11 +38,11 @@ namespace Flowframes.Main
                 if (frameFolderInput)
                 {
                     string lastFramePath = IOUtils.GetFilesSorted(i.current.inPath, false).Last();
-                    await FFmpegCommands.ExtractLastFrame(lastFramePath, targetPath, res);
+                    await FfmpegExtract.ExtractLastFrame(lastFramePath, targetPath, res);
                 }
                 else
                 {
-                    await FFmpegCommands.ExtractLastFrame(i.current.inPath, targetPath, res);
+                    await FfmpegExtract.ExtractLastFrame(i.current.inPath, targetPath, res);
                 }
             }
             catch (Exception e)
@@ -60,7 +61,7 @@ namespace Flowframes.Main
 
         public static int targetFrames;
         public static string currentOutdir;
-        public static int currentFactor;
+        public static float currentFactor;
         public static bool progressPaused = false;
         public static bool progCheckRunning = false;
         public static async void GetProgressByFrameAmount(string outdir, int target)
@@ -95,10 +96,13 @@ namespace Flowframes.Main
                 Program.mainForm.SetProgress(0);
         }
 
+        public static int interpolatedInputFramesCount;
+
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
             if (i.canceled) return;
-
+            interpolatedInputFramesCount = ((frames / i.current.interpFactor).RoundToInt() - 1);
+            ResumeUtils.Save();
             frames = frames.Clamp(0, target);
             int percent = (int)Math.Round(((float)frames / target) * 100f);
             Program.mainForm.SetProgress(percent);
@@ -132,11 +136,28 @@ namespace Flowframes.Main
             catch { }
         }
 
+        public static async Task DeleteInterpolatedInputFrames ()
+        {
+            interpolatedInputFramesCount = 0;
+            string[] inputFrames = IOUtils.GetFilesSorted(i.current.framesFolder);
+
+            for (int i = 0; i < inputFrames.Length; i++)
+            {
+                while (Program.busy && (i + 10) > interpolatedInputFramesCount) await Task.Delay(1000);
+                if (!Program.busy) break;
+                if(i != 0 && i != inputFrames.Length - 1)
+                    IOUtils.OverwriteFileWithText(inputFrames[i]);
+                if (i % 10 == 0) await Task.Delay(10);
+            }
+        }
+
         public static void SetPreviewImg (Image img)
         {
             if (img == null)
                 return;
+
             preview.Image = img;
+
             if (bigPreviewForm != null)
                 bigPreviewForm.SetImage(img);
         }
@@ -144,7 +165,14 @@ namespace Flowframes.Main
         public static Dictionary<string, int> frameCountCache = new Dictionary<string, int>();
         public static async Task<int> GetInputFrameCountAsync (string path)
         {
-            string hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
+            int maxMb = Config.GetInt("storeHashedFramecountMaxSizeMb", 256);
+            string hash = "";
+
+            if (IOUtils.GetFilesize(path) >= 0 && IOUtils.GetFilesize(path) < maxMb * 1024 * 1024)
+                hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
+            else
+                Logger.Log($"GetInputFrameCountAsync: File bigger than {maxMb}mb, won't hash.", true);
+
             if (hash.Length > 1 && frameCountCache.ContainsKey(hash))
             {
                 Logger.Log($"FrameCountCache contains this hash ({hash}), using cached frame count.", true);
@@ -156,16 +184,18 @@ namespace Flowframes.Main
             }
 
             int frameCount = 0;
+
             if (IOUtils.IsPathDirectory(path))
                 frameCount = IOUtils.GetAmountOfFiles(path, false);
             else
-                frameCount = await FFmpegCommands.GetFrameCountAsync(path);
+                frameCount = await FfmpegCommands.GetFrameCountAsync(path);
 
             if (hash.Length > 1 && frameCount > 5000)     // Cache if >5k frames to avoid re-reading it every single time
             {
                 Logger.Log($"Adding hash ({hash}) with frame count {frameCount} to cache.", true);
                 frameCountCache[hash] = frameCount;      // Use CRC32 instead of path to avoid using cached value if file was changed
             }
+
             return frameCount;
         }
 
@@ -213,7 +243,7 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, float fpsOut, int interp, Interpolate.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, float fpsOut, float factor, Interpolate.OutMode outMode)
         {
             bool passes = true;
 
@@ -229,7 +259,7 @@ namespace Flowframes.Main
                 ShowMessage("Output path is not valid!");
                 passes = false;
             }
-            if (passes && interp != 2 && interp != 4 && interp != 8)
+            if (passes && /*factor != 2 && factor != 4 && factor != 8*/ factor > 16)
             {
                 ShowMessage("Interpolation factor is not valid!");
                 passes = false;
@@ -239,9 +269,9 @@ namespace Flowframes.Main
                 ShowMessage("Invalid output frame rate!\nGIF does not properly support frame rates above 40 FPS.\nPlease use MP4, WEBM or another video format.");
                 passes = false;
             }
-            if (passes && fpsOut < 1 || fpsOut > 500)
+            if (passes && fpsOut < 1 || fpsOut > 1000)
             {
-                ShowMessage("Invalid output frame rate - Must be 1-500.");
+                ShowMessage("Invalid output frame rate - Must be 1-1000.");
                 passes = false;
             }
             if (!passes)
@@ -249,18 +279,10 @@ namespace Flowframes.Main
             return passes;
         }
 
-        public static void PathAsciiCheck (string inpath, string outpath)
-        {
-            bool shownMsg = false;
-            
-            if (OSUtils.HasNonAsciiChars(inpath))
-            {
-                ShowMessage("Warning: Input path includes non-ASCII characters. This might cause problems.");
-                shownMsg = true;
-            }
-
-            if (!shownMsg && OSUtils.HasNonAsciiChars(outpath))
-                ShowMessage("Warning: Output path includes non-ASCII characters. This might cause problems.");
+        public static void PathAsciiCheck (string path, string pathTitle)
+        {            
+            if (IOUtils.HasBadChars(path) || OSUtils.HasNonAsciiChars(path))
+                ShowMessage($"Warning: Your {pathTitle} includes special characters. This might cause problems.");
         }
 
         public static void GifCompatCheck (Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)
@@ -327,9 +349,6 @@ namespace Flowframes.Main
         {
             if (videoPath == null || !IOUtils.IsFileValid(videoPath))
                 return false;
-            // string ext = Path.GetExtension(videoPath).ToLower();
-            // if (!Formats.supported.Contains(ext))
-            //     return false;
             return true;
         }
 
@@ -340,13 +359,13 @@ namespace Flowframes.Main
             Logger.Log("Message: " + msg, true);
         }
 
-        public static async Task<Size> GetOutputResolution (string inputPath, bool print)
+        public static async Task<Size> GetOutputResolution (string inputPath, bool print, bool returnZeroIfUnchanged = false)
         {
             Size resolution = await IOUtils.GetVideoOrFramesRes(inputPath);
-            return GetOutputResolution(resolution, print);
+            return GetOutputResolution(resolution, print, returnZeroIfUnchanged);
         }
 
-        public static Size GetOutputResolution(Size inputRes, bool print = false)
+        public static Size GetOutputResolution(Size inputRes, bool print = false, bool returnZeroIfUnchanged = false)
         {
             int maxHeight = RoundDiv2(Config.GetInt("maxVidHeight"));
             if (inputRes.Height > maxHeight)
@@ -360,7 +379,11 @@ namespace Flowframes.Main
             }
             else
             {
-                return new Size(RoundDiv2(inputRes.Width), RoundDiv2(inputRes.Height));
+                //return new Size(RoundDiv2(inputRes.Width), RoundDiv2(inputRes.Height));
+                if (returnZeroIfUnchanged)
+                    return new Size();
+                else
+                    return inputRes;
             }
         }
 

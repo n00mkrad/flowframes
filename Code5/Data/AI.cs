@@ -19,8 +19,7 @@ namespace Flowframes.Data
         public AI(string aiNameArg, string friendlyNameArg, string descArg, FlowPackage pkgArg, bool supportsAnyExpArg)
         {
             aiName = aiNameArg;
-            aiNameShort = aiNameArg.Split(' ')[0];
-            aiNameShort = aiNameArg.Split('_')[0];
+            aiNameShort = aiNameArg.Split(' ')[0].Split('_')[0];
             friendlyName = friendlyNameArg;
             description = descArg;
             pkg = pkgArg;
