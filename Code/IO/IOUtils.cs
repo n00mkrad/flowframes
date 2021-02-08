@@ -246,8 +246,10 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static Dictionary<string, string> RenameCounterDirReversible(string path, string ext, int startAt, int padding = 0)
+		public static async Task<Dictionary<string, string>> RenameCounterDirReversibleAsync(string path, string ext, int startAt, int padding = 0)
 		{
+			Stopwatch sw = new Stopwatch();
+			sw.Restart();
 			Dictionary<string, string> oldNewNamesMap = new Dictionary<string, string>();
 
 			int counter = startAt;
@@ -258,14 +260,17 @@ namespace Flowframes.IO
 			{
 				string dir = new DirectoryInfo(file.FullName).Parent.FullName;
 				int filesDigits = (int)Math.Floor(Math.Log10((double)files.Length) + 1);
-				string outpath = "";
-				if (padding > 0)
-					outpath = Path.Combine(dir, counter.ToString().PadLeft(padding, '0') + Path.GetExtension(file.FullName));
-				else
-					outpath = Path.Combine(dir, counter.ToString() + Path.GetExtension(file.FullName));
+				string newFilename = (padding > 0) ? counter.ToString().PadLeft(padding, '0') : counter.ToString();
+				string outpath = outpath = Path.Combine(dir, newFilename + Path.GetExtension(file.FullName));
 				File.Move(file.FullName, outpath);
 				oldNewNamesMap.Add(file.FullName, outpath);
 				counter++;
+
+				if(sw.ElapsedMilliseconds > 100)
+                {
+					await Task.Delay(1);
+					sw.Restart();
+                }
 			}
 
 			return oldNewNamesMap;

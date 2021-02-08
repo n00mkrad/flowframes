@@ -128,7 +128,7 @@ namespace Flowframes
             await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
         }
 
-        public static async Task PostProcessFrames (bool sbsMode = false)
+        public static async Task PostProcessFrames (bool stepByStep = false)
         {
             if (canceled) return;
 
@@ -160,16 +160,16 @@ namespace Flowframes
 
             try
             {
-                Dictionary<string, string> renamedFilesDict = IOUtils.RenameCounterDirReversible(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
-                AiProcess.filenameMap = renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value));    // Save rel paths
+                Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+                
+                if(stepByStep)
+                    AiProcess.filenameMap = renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value));    // Save rel paths
             }
             catch (Exception e)
             {
                 Logger.Log($"Error renaming frame files: {e.Message}");
                 Cancel("Error renaming frame files. Check the log for details.");
             }
-
-            if (canceled) return;
         }
 
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)

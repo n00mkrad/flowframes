@@ -73,8 +73,6 @@ namespace Flowframes.Main
             int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
             int totalFileCount = 0;
 
-            Logger.Log($"Starting frame loop after {benchmark.ElapsedMilliseconds} ms", true);
-
             for (int i = 0; i < (frameFiles.Length - 1); i++)
             {
                 if (Interpolate.canceled) return;
@@ -110,8 +108,12 @@ namespace Flowframes.Main
                     }
                 }
 
-                if ((i + 1) % 200 == 0)
+                if (i % 250 == 0)
+                {
+                    if (i % 1000 == 0)
+                        Logger.Log($"Generating frame order information... {i}/{frameFiles.Length}.", false, true);
                     await Task.Delay(1);
+                }
             }
 
             totalFileCount++;

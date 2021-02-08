@@ -43,10 +43,7 @@ namespace Flowframes.UI
             if (fps > 0)
                 fpsStr = fps.ToString();
 
-            if (IOUtils.IsPathDirectory(path))
-                Logger.Log($"Video FPS (Loaded from fps.ini): {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
-            else
-                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
+            Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
 
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
