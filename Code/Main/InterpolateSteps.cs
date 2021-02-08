@@ -37,9 +37,7 @@ namespace Flowframes.Main
             }
 
             if (step.Contains("Extract Frames"))
-            {
                 await ExtractFramesStep();
-            }
 
             if (step.Contains("Run Interpolation"))
                 await DoInterpolate();
@@ -79,7 +77,7 @@ namespace Flowframes.Main
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
             AiProcess.filenameMap.Clear();
 
-            await GetFrames();
+            await GetFrames(true);
         }
 
         public static async Task DoInterpolate()

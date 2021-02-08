@@ -98,7 +98,7 @@ namespace Flowframes.UI
                 await Task.Delay(10);
                 framesPath = Path.ChangeExtension(inPath, null) + "-frames";
                 Directory.CreateDirectory(framesPath);
-                await Interpolate.ExtractFrames(inPath, framesPath, false);
+                await Interpolate.ExtractFrames(inPath, framesPath, false, false);
             }
             else
             {
