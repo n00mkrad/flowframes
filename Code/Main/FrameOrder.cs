@@ -19,8 +19,12 @@ namespace Flowframes.Main
         public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, float times)
         {
             Logger.Log("Generating frame order information...");
+
             try
             {
+                foreach (FileInfo file in IOUtils.GetFileInfosSorted(framesPath.GetParentDir(), false, $"{Paths.frameOrderPrefix}*.*"))
+                    file.Delete();
+
                 benchmark.Restart();
                 await CreateEncFile(framesPath, loopEnabled, times, false);
                 Logger.Log($"Generating frame order information... Done.", false, true);

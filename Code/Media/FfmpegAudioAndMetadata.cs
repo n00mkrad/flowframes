@@ -71,9 +71,10 @@ namespace Flowframes.Media
                 }
 
                 if (subtitleTracks.Count > 0)
+                {
+                    Logger.Log($"Extracted {subtitleTracks.Count} subtitle tracks from the input video.", false, Logger.GetLastLine().Contains(msg));
                     Utils.ContainerSupportsSubs(Utils.GetExt(outMode), true);
-
-                Logger.Log($"Extracted {subtitleTracks.Count} subtitle tracks from the input video.".Replace(" 0 ", " no "), false, Logger.GetLastLine().Contains(msg));
+                }
             }
             catch (Exception e)
             {
