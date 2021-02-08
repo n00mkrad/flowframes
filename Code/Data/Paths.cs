@@ -15,6 +15,18 @@ namespace Flowframes.IO
 		public const string alphaSuffix = "-a";
 		public const string prevSuffix = "-previous";
 
+		public const string frameOrderPrefix = "frames";
+
+		public static string GetFrameOrderFilename(float factor)
+		{
+			return $"{frameOrderPrefix}-{factor.ToStringDot()}x.ini";
+		}
+
+		public static string GetFrameOrderFilenameChunk (int from, int to)
+		{
+			return $"{frameOrderPrefix}-chunk-{from}-{to}.ini";
+		}
+
 		public static string GetVerPath()
 		{
 			return Path.Combine(GetDataPath(), "ver.ini");

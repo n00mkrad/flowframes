@@ -135,7 +135,6 @@ namespace Flowframes.IO
             if (key == "keepAudio")         return WriteDefault(key, "True");
             if (key == "keepSubs")          return WriteDefault(key, "True");
             if (key == "autoDedupFrames")   return WriteDefault(key, "100");
-            if (key == "vfrDedupe")         return WriteDefault(key, "True");
             if (key == "scnDetectValue")    return WriteDefault(key, "0.2");
             if (key == "autoEncMode")       return WriteDefault(key, "2");
             // Video Export

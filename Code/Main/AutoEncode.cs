@@ -49,7 +49,7 @@ namespace Flowframes.Main
 
                 Logger.Log($"[AutoEnc] Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
                 int videoIndex = 1;
-                string encFile = Path.Combine(interpFramesPath.GetParentDir(), $"vfr-{Interpolate.current.interpFactor}x.ini");
+                string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.current.interpFactor));
                 interpFramesLines = IOUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
 
                 while (!Interpolate.canceled && GetInterpFramesAmount() < 2)

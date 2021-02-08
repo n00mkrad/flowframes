@@ -73,7 +73,7 @@ namespace Flowframes.Main
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.current.interpFactor}x.ini");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(i.current.interpFactor));
             string[] vfrLines = IOUtils.ReadLines(vfrFile);
 
             for (int idx = 1; idx <= vfrLines.Length; idx++)
@@ -100,7 +100,7 @@ namespace Flowframes.Main
         static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float resampleFps = -1)
         {
             currentOutFile = outPath;
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{i.current.interpFactor}x.ini");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(i.current.interpFactor));
 
             if (mode == i.OutMode.VidGif)
             {
@@ -156,8 +156,8 @@ namespace Flowframes.Main
 
         public static async Task EncodeChunk(string outPath, i.OutMode mode, int firstFrameNum, int framesAmount)
         {
-            string vfrFileOriginal = Path.Combine(i.current.tempFolder, $"vfr-{i.current.interpFactor}x.ini");
-            string vfrFile = Path.Combine(i.current.tempFolder, $"vfr-chunk-{firstFrameNum}-{firstFrameNum + framesAmount}.ini");
+            string vfrFileOriginal = Path.Combine(i.current.tempFolder, Paths.GetFrameOrderFilename(i.current.interpFactor));
+            string vfrFile = Path.Combine(i.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum).Take(framesAmount));
 
             float maxFps = Config.GetFloat("maxFps");

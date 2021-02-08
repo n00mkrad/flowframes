@@ -56,7 +56,7 @@ namespace Flowframes.Main
             string ext = InterpolateUtils.GetOutExt();
 
             FileInfo[] frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), $"vfr-{interpFactor.ToStringDot()}x.ini");
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(interpFactor));
             string fileContent = "";
             string dupesFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
             LoadDupesFile(dupesFile);
