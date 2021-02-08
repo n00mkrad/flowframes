@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
-using i = Flowframes.Interpolate;
+using I = Flowframes.Interpolate;
 using System.Diagnostics;
 using Flowframes.Media;
 
@@ -21,7 +21,7 @@ namespace Flowframes.Main
     {
         static string currentOutFile;   // Keeps track of the out file, in case it gets renamed (FPS limiting, looping, etc) before finishing export
 
-        public static async Task Export(string path, string outPath, i.OutMode mode, bool stepByStep)
+        public static async Task Export(string path, string outPath, I.OutMode mode, bool stepByStep)
         {
             if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
@@ -33,28 +33,31 @@ namespace Flowframes.Main
                 {
                     Logger.Log("Failed to move interp frames folder: " + e.Message);
                 }
+
                 return;
             }
 
             if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.GetOutExt()}") <= 1)
             {
-                i.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
+                I.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
             }
+
             await Task.Delay(10);
             Program.mainForm.SetStatus("Creating output video from frames...");
+
             try
             {
                 float maxFps = Config.GetFloat("maxFps");
-                bool fpsLimit = maxFps != 0 && i.current.outFps > maxFps;
+                bool fpsLimit = maxFps != 0 && I.current.outFps > maxFps;
 
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
                 if(!dontEncodeFullFpsVid)
-                    await Encode(mode, path, outPath, i.current.outFps);
+                    await Encode(mode, path, outPath, I.current.outFps);
 
                 if (fpsLimit)
-                    await Encode(mode, path, outPath.FilenameSuffix($"-{maxFps.ToStringDot("0.00")}fps"), i.current.outFps, maxFps);
+                    await Encode(mode, path, outPath.FilenameSuffix($"-{maxFps.ToStringDot("0.00")}fps"), I.current.outFps, maxFps);
             }
             catch (Exception e)
             {
@@ -66,14 +69,14 @@ namespace Flowframes.Main
         static async Task CopyOutputFrames (string framesPath, string folderName, bool dontMove)
         {
             Program.mainForm.SetStatus("Copying output frames...");
-            string copyPath = Path.Combine(i.current.outPath, folderName);
+            string copyPath = Path.Combine(I.current.outPath, folderName);
             Logger.Log($"Moving output frames to '{copyPath}'");
             IOUtils.TryDeleteIfExists(copyPath);
             IOUtils.CreateDir(copyPath);
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(i.current.interpFactor));
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
             string[] vfrLines = IOUtils.ReadLines(vfrFile);
 
             for (int idx = 1; idx <= vfrLines.Length; idx++)
@@ -97,28 +100,35 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Encode(i.OutMode mode, string framesPath, string outPath, float fps, float resampleFps = -1)
+        static async Task Encode(I.OutMode mode, string framesPath, string outPath, float fps, float resampleFps = -1)
         {
             currentOutFile = outPath;
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(i.current.interpFactor));
+            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
 
-            if (mode == i.OutMode.VidGif)
+            if (!File.Exists(vfrFile))
+            {
+                bool sbs = Config.GetInt("processingMode") == 1;
+                I.Cancel($"Frame order file for this interpolation factor not found!{(sbs ? "\n\nDid you run the interpolation step with the current factor?" : "")}");
+                return;
+            }
+
+            if (mode == I.OutMode.VidGif)
             {
                 await FfmpegEncode.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
             }
             else
             {
                 await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
-                await MergeAudio(i.current.inPath, outPath);
+                await MergeAudio(I.current.inPath, outPath);
                 await Loop(currentOutFile, GetLoopTimes());
             }
         }
 
         public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath)
         {
-            if (IOUtils.GetAmountOfFiles(chunksFolder, true, $"*{FFmpegUtils.GetExt(i.current.outMode)}") < 1)
+            if (IOUtils.GetAmountOfFiles(chunksFolder, true, $"*{FFmpegUtils.GetExt(I.current.outMode)}") < 1)
             {
-                i.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
+                I.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
                 return;
             }
 
@@ -150,30 +160,30 @@ namespace Flowframes.Main
         static async Task MergeChunks(string vfrFile, string outPath)
         {
             await FfmpegCommands.ConcatVideos(vfrFile, outPath, -1);
-            await MergeAudio(i.current.inPath, outPath);
+            await MergeAudio(I.current.inPath, outPath);
             await Loop(outPath, GetLoopTimes());
         }
 
-        public static async Task EncodeChunk(string outPath, i.OutMode mode, int firstFrameNum, int framesAmount)
+        public static async Task EncodeChunk(string outPath, I.OutMode mode, int firstFrameNum, int framesAmount)
         {
-            string vfrFileOriginal = Path.Combine(i.current.tempFolder, Paths.GetFrameOrderFilename(i.current.interpFactor));
-            string vfrFile = Path.Combine(i.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
+            string vfrFileOriginal = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilename(I.current.interpFactor));
+            string vfrFile = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
             File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum).Take(framesAmount));
 
             float maxFps = Config.GetFloat("maxFps");
-            bool fpsLimit = maxFps != 0 && i.current.outFps > maxFps;
+            bool fpsLimit = maxFps != 0 && I.current.outFps > maxFps;
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
             if(!dontEncodeFullFpsVid)
-                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
+                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, I.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
 
             if (fpsLimit)
             {
                 string filename = Path.GetFileName(outPath);
                 string newParentDir = outPath.GetParentDir() + "-" + maxFps.ToStringDot("0.00") + "fps";
                 outPath = Path.Combine(newParentDir, filename);
-                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, i.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, I.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
             }
         }
 
@@ -188,9 +198,9 @@ namespace Flowframes.Main
         {
             int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
-            int minFrameCount = (minLength * i.current.outFps).RoundToInt();
-            int outFrames = (i.currentInputFrameCount * i.current.interpFactor).RoundToInt();
-            if (outFrames / i.current.outFps < minLength)
+            int minFrameCount = (minLength * I.current.outFps).RoundToInt();
+            int outFrames = (I.currentInputFrameCount * I.current.interpFactor).RoundToInt();
+            if (outFrames / I.current.outFps < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
             times--;    // Not counting the 1st play (0 loops)
             if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing
@@ -202,10 +212,10 @@ namespace Flowframes.Main
             if (!Config.GetBool("keepAudio")) return;
             try
             {
-                string audioFileBasePath = Path.Combine(i.current.tempFolder, "audio");
+                string audioFileBasePath = Path.Combine(I.current.tempFolder, "audio");
 
                 if (inputPath != null && IOUtils.IsPathDirectory(inputPath) && !File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))   // Try loading out of same folder as input if input is a folder
-                    audioFileBasePath = Path.Combine(i.current.tempFolder.GetParentDir(), "audio");
+                    audioFileBasePath = Path.Combine(I.current.tempFolder.GetParentDir(), "audio");
 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
                     await FfmpegAudioAndMetadata.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
@@ -216,7 +226,7 @@ namespace Flowframes.Main
                     return;
                 }
 
-                await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, IOUtils.GetAudioFile(audioFileBasePath), i.current.tempFolder);        // Merge from audioFile into outVideo
+                await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, IOUtils.GetAudioFile(audioFileBasePath), I.current.tempFolder);        // Merge from audioFile into outVideo
             }
             catch (Exception e)
             {

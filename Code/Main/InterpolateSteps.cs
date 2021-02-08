@@ -113,6 +113,12 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid()
         {
+            if (!Directory.Exists(current.interpFolder) || IOUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
+            {
+                Cancel($"There are no interpolated frames to encode!\n\nDid you delete the folder?");
+                return;
+            }
+
             string[] outFrames = IOUtils.GetFilesSorted(current.interpFolder, $"*.{InterpolateUtils.GetOutExt()}");
 
             if (outFrames.Length > 0 && !IOUtils.CheckImageValid(outFrames[0]))

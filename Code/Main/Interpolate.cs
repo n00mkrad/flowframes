@@ -205,11 +205,14 @@ namespace Flowframes
         {
             if (AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)
                 OSUtils.KillProcessTree(AiProcess.currentAiProcess.Id);
+
             if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited)
                 OSUtils.KillProcessTree(AvProcess.lastProcess.Id);
+
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
+
             if (!current.stepByStep && !Config.GetBool("keepTempFolder"))
             {
                 if(false /* IOUtils.GetAmountOfFiles(Path.Combine(current.tempFolder, Paths.resumeDir), true) > 0 */)   // TODO: Uncomment for 1.23
@@ -223,10 +226,12 @@ namespace Flowframes
                     IOUtils.TryDeleteIfExists(current.tempFolder);
                 }
             }
+
             AutoEncode.busy = false;
             Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");
             Logger.LogIfLastLineDoesNotContainMsg("Canceled interpolation.");
+
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 Utils.ShowMessage($"Canceled:\n\n{reason}");
         }
