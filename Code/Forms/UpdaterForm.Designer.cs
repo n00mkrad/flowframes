@@ -108,7 +108,7 @@
             this.installedLabel.AutoSize = true;
             this.installedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.installedLabel.ForeColor = System.Drawing.Color.White;
-            this.installedLabel.Location = new System.Drawing.Point(200, 67);
+            this.installedLabel.Location = new System.Drawing.Point(170, 67);
             this.installedLabel.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.installedLabel.Name = "installedLabel";
             this.installedLabel.Size = new System.Drawing.Size(76, 16);
@@ -120,7 +120,7 @@
             this.latestLabel.AutoSize = true;
             this.latestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.latestLabel.ForeColor = System.Drawing.Color.White;
-            this.latestLabel.Location = new System.Drawing.Point(200, 93);
+            this.latestLabel.Location = new System.Drawing.Point(170, 93);
             this.latestLabel.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.latestLabel.Name = "latestLabel";
             this.latestLabel.Size = new System.Drawing.Size(76, 16);
@@ -132,7 +132,7 @@
             this.statusLabel.AutoSize = true;
             this.statusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusLabel.ForeColor = System.Drawing.Color.White;
-            this.statusLabel.Location = new System.Drawing.Point(200, 119);
+            this.statusLabel.Location = new System.Drawing.Point(170, 119);
             this.statusLabel.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(76, 16);

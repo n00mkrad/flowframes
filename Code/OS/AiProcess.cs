@@ -12,6 +12,8 @@ using Flowframes.UI;
 using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
+using Flowframes.Magick;
+using Flowframes.Media;
 
 namespace Flowframes
 {
@@ -37,10 +39,10 @@ namespace Flowframes
             hasShownError = false;
         }
 
-        static void SetProgressCheck(string interpPath, int factor)
+        static void SetProgressCheck(string interpPath, float factor)
         {
             int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.png");
-            int target = (frames * factor) - (factor - 1);
+            int target = ((frames * factor) - (factor - 1)).RoundToInt();
             InterpolateUtils.progressPaused = false;
             InterpolateUtils.currentFactor = factor;
 
@@ -52,6 +54,7 @@ namespace Flowframes
 
         static async Task AiFinished (string aiName)
         {
+            if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             InterpolateUtils.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*.png"), InterpolateUtils.targetFrames);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
@@ -60,28 +63,34 @@ namespace Flowframes
             Logger.Log(logStr);
             processTime.Stop();
 
-            Stopwatch timeSinceFfmpegRan = new Stopwatch();
-            timeSinceFfmpegRan.Restart();
-
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
                 if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
                 {
-                    timeSinceFfmpegRan.Restart();
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
                     Logger.Log(lastLine.Trim().TrimWhitespaces(), false, Logger.GetLastLine().Contains("frame"));
                 }
-                if (timeSinceFfmpegRan.ElapsedMilliseconds > 3000)
+
+                if (AvProcess.timeSinceLastOutput.IsRunning && AvProcess.timeSinceLastOutput.ElapsedMilliseconds > 2500)
                     break;
-                // Logger.Log($"AiProcess loop - Program.busy = {Program.busy}");
+
                 await Task.Delay(500);
+            }
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                Logger.Log("Processing alpha...");
+                string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
+                string alphaInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir + Paths.alphaSuffix);
+                if (!Directory.Exists(alphaInterpDir)) return;
+                await FfmpegAlpha.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, false);
             }
         }
 
-        public static async Task RunRifeCuda(string framesPath, int interpFactor, string mdl)
+        public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
         {
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
-            string script = "inference_video.py";
+            string script = "rife.py";
 
             if (!File.Exists(Path.Combine(rifeDir, script)))
             {
@@ -95,24 +104,21 @@ namespace Flowframes
             {
                 InterpolateUtils.progressPaused = true;
                 Logger.Log("Interpolating alpha channel...");
-                await RunRifeCudaProcess(framesPath + "-a", Paths.interpDir + "-a", script, interpFactor, mdl);
+                await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
             }
 
             await AiFinished("RIFE");
-
-            if (!Interpolate.canceled && Interpolate.current.alpha)
-            {
-                Logger.Log("Processing alpha...");
-                string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
-                await FFmpegCommands.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, rgbInterpDir + "-a", Padding.interpFrames);
-            }
         }
 
-        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, int interpFactor, string mdl)
+        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
+            bool parallel = false;
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
-            string args = $" --input {inPath.Wrap()} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} --imgformat {InterpolateUtils.GetOutExt()} --output {outDir}";
-            
+            string outPath = Path.Combine(inPath.GetParentDir(), outDir);
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} ";
+            if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
+            if (parallel) script = "rife-parallel.py";
+
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
@@ -141,50 +147,50 @@ namespace Flowframes
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
-            bool useAutoEnc = Interpolate.currentlyUsingAutoEnc;
-            if(factor > 2)
+            await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                InterpolateUtils.progressPaused = true;
+                Logger.Log("Interpolating alpha channel...");
+                await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
+            }
+
+            await AiFinished("RIFE");
+        }
+
+        static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
+        {
+            int times = (int)Math.Log(factor, 2);
+
+            if (times > 1)
                 AutoEncode.paused = true;  // Disable autoenc until the last iteration
 
-            await RunRifeNcnnProcess(framesPath, outPath, mdl);
-
-            if (factor == 4 || factor == 8)    // #2
+            for (int iteration = 1; iteration <= times; iteration++)
             {
                 if (Interpolate.canceled) return;
-                Logger.Log("Re-Running RIFE for 4x interpolation...", false);
-                string run1ResultsPath = outPath + "-run1";
-                IOUtils.TryDeleteIfExists(run1ResultsPath);
-                Directory.Move(outPath, run1ResultsPath);
-                Directory.CreateDirectory(outPath);
-                if (useAutoEnc && factor == 4)
+
+                if (Interpolate.currentlyUsingAutoEnc && iteration == times)      // Enable autoenc if this is the last iteration
                     AutoEncode.paused = false;
-                await RunRifeNcnnProcess(run1ResultsPath, outPath, mdl);
-                IOUtils.TryDeleteIfExists(run1ResultsPath);
+
+                if (iteration > 1)
+                {
+                    Logger.Log($"Re-Running RIFE for {Math.Pow(2, iteration)}x interpolation...", false);
+                    string lastInterpPath = outPath + $"-run{iteration - 1}";
+                    Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
+                    await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
+                    IOUtils.TryDeleteIfExists(lastInterpPath);
+                }
+                else
+                {
+                    await RunRifeNcnnProcess(framesPath, outPath, mdl);
+                }
             }
-
-            if (factor == 8)    // #3
-            {
-                if (Interpolate.canceled) return;
-                Logger.Log("Re-Running RIFE for 8x interpolation...", false);
-                string run2ResultsPath = outPath + "-run2";
-                IOUtils.TryDeleteIfExists(run2ResultsPath);
-                Directory.Move(outPath, run2ResultsPath);
-                Directory.CreateDirectory(outPath);
-                if (useAutoEnc && factor == 8)
-                    AutoEncode.paused = false;                    
-                await RunRifeNcnnProcess(run2ResultsPath, outPath, mdl);
-                IOUtils.TryDeleteIfExists(run2ResultsPath);
-            }
-
-            if (Interpolate.canceled) return;
-
-            if (!Interpolate.currentlyUsingAutoEnc)
-                IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
-
-            AiFinished("RIFE");
         }
 
         static async Task RunRifeNcnnProcess(string inPath, string outPath, string mdl)
         {
+            Directory.CreateDirectory(outPath);
             Process rifeNcnn = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, 2);
@@ -214,15 +220,28 @@ namespace Flowframes
             while (!rifeNcnn.HasExited) await Task.Delay(1);
         }
 
-        public static async Task RunDainNcnn(string framesPath, string outPath, int factor, string mdl, int tilesize)
+        public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
+        {
+            await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
+
+            if (!Interpolate.canceled && Interpolate.current.alpha)
+            {
+                InterpolateUtils.progressPaused = true;
+                Logger.Log("Interpolating alpha channel...");
+                await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
+            }
+
+            await AiFinished("DAIN");
+        }
+
+        public static async Task RunDainNcnnProcess (string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
             string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
+            Directory.CreateDirectory(outPath);
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
-
-            int targetFrames = (IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor) - (factor - 1);
+            int targetFrames = ((IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Won't work with fractional factors
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
                 $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j 2:1:2";
@@ -245,14 +264,7 @@ namespace Flowframes
             }
 
             while (!dain.HasExited)
-                await Task.Delay(1);
-
-            if (Interpolate.canceled) return;
-
-            //if (!Interpolate.currentlyUsingAutoEnc)
-            //    IOUtils.ZeroPadDir(outPath, InterpolateUtils.GetOutExt(), Padding.interpFrames);
-
-            AiFinished("DAIN");
+                await Task.Delay(100);
         }
 
         static void LogOutput (string line, string logFilename, bool err = false)

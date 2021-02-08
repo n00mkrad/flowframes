@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.IO
 {
@@ -12,11 +9,22 @@ namespace Flowframes.IO
 		public const string framesDir = "frames";
 		public const string interpDir = "interp";
 		public const string chunksDir = "vchunks";
+		public const string resumeDir = "resumedata";
 		public const string scenesDir = "scenes";
 
-		public static void Init()
+		public const string alphaSuffix = "-a";
+		public const string prevSuffix = "-previous";
+
+		public const string frameOrderPrefix = "frames";
+
+		public static string GetFrameOrderFilename(float factor)
 		{
-			
+			return $"{frameOrderPrefix}-{factor.ToStringDot()}x.ini";
+		}
+
+		public static string GetFrameOrderFilenameChunk (int from, int to)
+		{
+			return $"{frameOrderPrefix}-chunk-{from}-{to}.ini";
 		}
 
 		public static string GetVerPath()

@@ -57,6 +57,12 @@ namespace Flowframes.IO
             cachedLines = list.ToArray();
         }
 
+        public static string Get(string key, string defaultVal)
+        {
+            WriteIfDoesntExist(key, defaultVal);
+            return Get(key);
+        }
+
         public static string Get(string key, Type type = Type.String)
         {
             try
@@ -129,29 +135,26 @@ namespace Flowframes.IO
             if (key == "keepAudio")         return WriteDefault(key, "True");
             if (key == "keepSubs")          return WriteDefault(key, "True");
             if (key == "autoDedupFrames")   return WriteDefault(key, "100");
-            if (key == "vfrDedupe")         return WriteDefault(key, "True");
             if (key == "scnDetectValue")    return WriteDefault(key, "0.2");
             if (key == "autoEncMode")       return WriteDefault(key, "2");
             // Video Export
-            if (key == "h264Crf")       return WriteDefault(key, "20");
-            if (key == "h265Crf")       return WriteDefault(key, "24");
-            if (key == "vp9Crf")        return WriteDefault(key, "32");
-            if (key == "proResProfile") return WriteDefault(key, "2");
-            if (key == "aviCodec")      return WriteDefault(key, "ffv1");
-            if (key == "aviColors")     return WriteDefault(key, "yuv420p");
-            if (key == "gifColors")     return WriteDefault(key, "128 (High)");
-            if (key == "minVidLength")  return WriteDefault(key, "2");
+            if (key == "minOutVidLength")   return WriteDefault(key, "5");
+            if (key == "h264Crf")           return WriteDefault(key, "20");
+            if (key == "h265Crf")           return WriteDefault(key, "24");
+            if (key == "vp9Crf")            return WriteDefault(key, "32");
+            if (key == "proResProfile")     return WriteDefault(key, "2");
+            if (key == "aviCodec")          return WriteDefault(key, "ffv1");
+            if (key == "aviColors")         return WriteDefault(key, "yuv420p");
+            if (key == "gifColors")         return WriteDefault(key, "128 (High)");
+            if (key == "minVidLength")      return WriteDefault(key, "2");
             // AI
             if (key == "uhdThresh")         return WriteDefault(key, "1440");
             if (key == "ncnnThreads")       return WriteDefault(key, "1");
             if (key == "dainNcnnTilesize")  return WriteDefault(key, "768");
             // Debug / Other / Experimental
-            if (key == "ffEncPreset")           return WriteDefault(key, "medium");
-            if (key == "ffEncArgs")             return WriteDefault(key, "");
-            // Tile Sizes
-            if (key == "tilesize_RIFE_NCNN")    return WriteDefault(key, "2048");
-            if (key == "tilesize_DAIN_NCNN")    return WriteDefault(key, "512");
-            if (key == "tilesize_CAIN_NCNN")    return WriteDefault(key, "2048");
+            if (key == "modelsBaseUrl")     return WriteDefault(key, "https://dl.nmkd.de/flowframes/mdl/");
+            if (key == "ffEncPreset")       return WriteDefault(key, "medium");
+            if (key == "ffEncArgs")         return WriteDefault(key, "");
 
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)

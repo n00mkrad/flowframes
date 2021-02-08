@@ -19,5 +19,16 @@ namespace Flowframes.Data
             networks.Add(rifeNcnn);
             networks.Add(dainNcnn);
         }
+
+        public static AI GetAi (string aiName)
+        {
+            foreach(AI ai in networks)
+            {
+                if (ai.aiName == aiName)
+                    return ai;
+            }
+
+            return networks[0];
+        }
     }
 }

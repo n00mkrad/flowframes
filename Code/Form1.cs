@@ -15,6 +15,7 @@ using HTAlt.WinForms;
 using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Threading.Tasks;
+using Flowframes.MiscUtils;
 
 namespace Flowframes
 {
@@ -47,8 +48,6 @@ namespace Flowframes
 
             InitAis();
             InterpolateUtils.preview = previewPicturebox;
-
-            ConfigParser.LoadComboxIndex(aiCombox);
 
             UpdateStepByStepControls(true);
 
@@ -110,26 +109,39 @@ namespace Flowframes
 
         public void SetProgress(int percent)
         {
-            longProgBar.Value = percent.Clamp(0, 100);
+            percent = percent.Clamp(0, 100);
+            TaskbarManager.Instance.SetProgressValue(percent, 100);
+            longProgBar.Value = percent;
             longProgBar.Refresh();
         }
 
         public Size currInRes;
         public float currInFps;
         public int currInFrames;
+        public long currInDuration;
         public void UpdateInputInfo ()
         {
             string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
             str += $"Framerate: {(currInFps > 0f ? $"{currInFps.ToStringDot()} FPS" : "Unknown")} - ";
-            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames} Frames" : "Unknown")}";
+            str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames}" : "Unknown")} - ";
+            str += $"Duration: {(currInDuration > 0 ? $"{FormatUtils.MsToTimestamp(currInDuration)}" : "Unknown")}";
             inputInfo.Text = str;
+        }
+
+        public void ResetInputInfo ()
+        {
+            currInRes = new Size();
+            currInFps = 0;
+            currInFrames = 0;
+            currInDuration = 0;
+            UpdateInputInfo();
         }
 
         void InitAis()
         {
             foreach (AI ai in Networks.networks)
                 aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
-            aiCombox.SelectedIndex = 0;
+            ConfigParser.LoadComboxIndex(aiCombox);
         }
 
         public void Initialized()
@@ -230,7 +242,6 @@ namespace Flowframes
         private void fpsInTbox_TextChanged(object sender, EventArgs e)
         {
             fpsInTbox.Text = fpsInTbox.Text.TrimNumbers(true);
-            //Interpolate.SetFps(fpsInTbox.GetFloat());
             UpdateOutputFPS();
         }
 
@@ -238,7 +249,6 @@ namespace Flowframes
         {
             float fpsOut = fpsInTbox.GetFloat() * interpFactorCombox.GetFloat();
             fpsOutTbox.Text = fpsOut.ToString();
-            //Interpolate.interpFactor = interpFactorCombox.GetInt();
         }
 
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
@@ -275,12 +285,14 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(aiCombox.Text) || aiCombox.Text == lastAiComboxStr) return;
             lastAiComboxStr = aiCombox.Text;
             aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
+            if(initialized)
+                ConfigParser.SaveComboxIndex(aiCombox);
             interpFactorCombox_SelectedIndexChanged(null, null);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ConfigParser.SaveComboxIndex(aiCombox);
+            Logger.Log("Closing main form.", true);
         }
 
         private async void debugExtractFramesBtn_Click(object sender, EventArgs e)
@@ -325,6 +337,13 @@ namespace Flowframes
                 SetTab("interpolation");
                 Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
                 inputTbox.Text = files[0];
+
+                bool resume = (IOUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0);
+                ResumeUtils.resumeNextRun = resume;
+
+                if (resume)
+                    ResumeUtils.LoadTempFolder(files[0]);
+
                 MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
             }
         }
@@ -414,6 +433,7 @@ namespace Flowframes
                     stepSelector.Items.AddRange(new string[] { "1) Import/Extract Frames", "2) Run Interpolation", "3) Export", "4) Cleanup & Reset" });
                 stepSelector.SelectedIndex = 0;
             }
+
             bool stepByStep = Config.GetInt("processingMode") == 1;
             runBtn.Visible = !stepByStep && !Program.busy;
         }

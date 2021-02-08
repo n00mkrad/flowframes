@@ -36,35 +36,43 @@ namespace Flowframes.UI
 
         public static string ParsePatreonCsv(string csvData)
         {
-            List<string> goldPatrons = new List<string>();
-            List<string> silverPatrons = new List<string>();
-            string str = "Gold:\n";
-            string[] lines = csvData.SplitIntoLines();
-            for (int i = 0; i < lines.Length; i++)
+            try
             {
-                string line = lines[i];
-                string[] values = line.Split(',');
-                if (i == 0 || line.Length < 10 || values.Length < 5) continue;
-                string name = values[0];
-                float amount = float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture);
-                if(amount >= 4.5f)
+                List<string> goldPatrons = new List<string>();
+                List<string> silverPatrons = new List<string>();
+                string str = "Gold:\n";
+                string[] lines = csvData.SplitIntoLines();
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    if (amount >= 11f)
-                        goldPatrons.Add(name);
-                    else
-                        silverPatrons.Add(name);
+                    string line = lines[i].Replace(";", ",");
+                    string[] values = line.Split(',');
+                    if (i == 0 || line.Length < 10 || values.Length < 5) continue;
+                    string name = values[0];
+                    float amount = float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture);
+                    if (amount >= 4.5f)
+                    {
+                        if (amount >= 11f)
+                            goldPatrons.Add(name);
+                        else
+                            silverPatrons.Add(name);
+                    }
                 }
+
+                foreach (string pat in goldPatrons)
+                    str += pat + "\n";
+
+                str += "\nSilver:\n";
+
+                foreach (string pat in silverPatrons)
+                    str += pat + "\n";
+
+                return str;
             }
-
-            foreach (string pat in goldPatrons)
-                str += pat + "\n";
-
-            str += "\nSilver:\n";
-
-            foreach (string pat in silverPatrons)
-                str += pat + "\n";
-
-            return str;
+            catch (Exception e)
+            {
+                Logger.Log("Failed to parse Patreon CSV: " + e.Message, true);
+                return "Failed to load patron list.";
+            }
         }
     }
 }

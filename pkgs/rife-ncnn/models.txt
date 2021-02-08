@@ -1,3 +1,4 @@
-RIFE 1.5 - Optimized for general and HD content
-RIFE 1.6 - Optimized for general and HD/UHD content
+RIFE 1.5 - Optimized for general content
+RIFE 1.6 - Updated general model
 RIFE 1.7 - Optimized for 2D animation (Recommended)
+RIFE 1.8 - Updated 2D animation model (Experimental)

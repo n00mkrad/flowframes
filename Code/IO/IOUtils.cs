@@ -168,20 +168,6 @@ namespace Flowframes.IO
 			File.Move(path, targetPath);
 		}
 
-		public static bool TryCopy(string source, string dest, bool overwrite = true)      // Copy with error handling. Returns false if failed
-		{
-			try
-			{
-				File.Copy(source, dest, overwrite);
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show("Copy from \"" + source + "\" to \"" + dest + " (Overwrite: " + overwrite + ") failed: \n\n" + e.Message);
-				return false;
-			}
-			return true;
-		}
-
 		public static int GetFilenameCounterLength(string file, string prefixToRemove = "")
 		{
 			string filenameNoExt = Path.GetFileNameWithoutExtension(file);
@@ -209,31 +195,36 @@ namespace Flowframes.IO
             }
 		}
 
-		static bool TryCopy(string source, string target)
+		static bool TryCopy(string source, string target, bool overwrite = true)
 		{
 			try
 			{
-				File.Copy(source, target);
+				File.Copy(source, target, overwrite);
 			}
-			catch
+			catch (Exception e)
 			{
+				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}");
 				return false;
 			}
+
 			return true;
 		}
 
-		static bool TryMove(string source, string target, bool deleteIfExists = true)
+		public static bool TryMove(string source, string target, bool overwrite = true)
 		{
 			try
 			{
-				if (deleteIfExists && File.Exists(target))
+				if (overwrite && File.Exists(target))
 					File.Delete(target);
+
 				File.Move(source, target);
 			}
-			catch
+			catch (Exception e)
 			{
+				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}");
 				return false;
 			}
+
 			return true;
 		}
 
@@ -255,8 +246,10 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static Dictionary<string, string> RenameCounterDirReversible(string path, string ext, int startAt, int padding = 0)
+		public static async Task<Dictionary<string, string>> RenameCounterDirReversibleAsync(string path, string ext, int startAt, int padding = 0)
 		{
+			Stopwatch sw = new Stopwatch();
+			sw.Restart();
 			Dictionary<string, string> oldNewNamesMap = new Dictionary<string, string>();
 
 			int counter = startAt;
@@ -267,29 +260,52 @@ namespace Flowframes.IO
 			{
 				string dir = new DirectoryInfo(file.FullName).Parent.FullName;
 				int filesDigits = (int)Math.Floor(Math.Log10((double)files.Length) + 1);
-				string outpath = "";
-				if (padding > 0)
-					outpath = Path.Combine(dir, counter.ToString().PadLeft(padding, '0') + Path.GetExtension(file.FullName));
-				else
-					outpath = Path.Combine(dir, counter.ToString() + Path.GetExtension(file.FullName));
+				string newFilename = (padding > 0) ? counter.ToString().PadLeft(padding, '0') : counter.ToString();
+				string outpath = outpath = Path.Combine(dir, newFilename + Path.GetExtension(file.FullName));
 				File.Move(file.FullName, outpath);
 				oldNewNamesMap.Add(file.FullName, outpath);
 				counter++;
+
+				if(sw.ElapsedMilliseconds > 100)
+                {
+					await Task.Delay(1);
+					sw.Restart();
+                }
 			}
 
 			return oldNewNamesMap;
 		}
 
-		public static void ReverseRenaming(Dictionary<string, string> oldNewMap, bool clearDict)
+		public static async Task ReverseRenaming(string basePath, Dictionary<string, string> oldNewMap)	// Relative -> absolute paths
 		{
-			if (oldNewMap == null || oldNewMap.Count < 1) return;
-			foreach (KeyValuePair<string, string> pair in oldNewMap)
-				TryMove(pair.Value, pair.Key);
-			if (clearDict)
-				oldNewMap.Clear();
+			Dictionary<string, string> absPaths = oldNewMap.ToDictionary(x => Path.Combine(basePath, x.Key), x => Path.Combine(basePath, x.Value));
+			await ReverseRenaming(absPaths);
 		}
 
-		public static float GetVideoFramerate (string path)
+		public static async Task ReverseRenaming(Dictionary<string, string> oldNewMap)	// Takes absolute paths only
+		{
+			if (oldNewMap == null || oldNewMap.Count < 1) return;
+			int counter = 0;
+			int failCount = 0;
+
+			foreach (KeyValuePair<string, string> pair in oldNewMap)
+            {
+				bool success = TryMove(pair.Value, pair.Key);
+
+				if (!success)
+					failCount++;
+
+				if (failCount >= 100)
+					break;
+
+				counter++;
+
+				if (counter % 1000 == 0)
+					await Task.Delay(1);
+			}
+		}
+
+		public static async Task<float> GetVideoFramerate (string path)
         {
 			float fps = 0;
             try
@@ -305,7 +321,7 @@ namespace Flowframes.IO
 				Logger.Log("Failed to read FPS - Trying alternative method...", true);
 				try
 				{
-					fps = FFmpegCommands.GetFramerate(path);
+					fps = await FfmpegCommands.GetFramerate(path);
 					Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
 				}
 				catch
@@ -369,7 +385,7 @@ namespace Flowframes.IO
 				Logger.Log($"Failed to read video size ({e.Message}) - Trying alternative method...", true);
 				try
 				{
-					size = FFmpegCommands.GetSize(path);
+					size = FfmpegCommands.GetSize(path);
 					Logger.Log($"Detected video size of {Path.GetFileName(path)} as {size.Width}x{size.Height}", true);
 				}
 				catch
@@ -416,9 +432,9 @@ namespace Flowframes.IO
 			return GetExportSuffix(Interpolate.current.interpFactor, Interpolate.current.ai, Interpolate.current.model);
 		}
 
-		public static string GetExportSuffix(int factor, AI ai, string mdl)
+		public static string GetExportSuffix(float factor, AI ai, string mdl)
 		{
-			string suffix = $"-{factor}x-{ai.aiNameShort.ToUpper()}";
+			string suffix = $"-{factor.ToStringDot()}x-{ai.aiNameShort.ToUpper()}";
 			if (Config.GetBool("modelSuffix"))
 				suffix += $"-{mdl}";
 			return suffix;
@@ -467,19 +483,21 @@ namespace Flowframes.IO
 			return null;
 		}
 
-		public static float GetFpsFolderOrVideo(string path)
+		public static async Task<float> GetFpsFolderOrVideo(string path)
 		{
             try
             {
 				if (IsPathDirectory(path))
 				{
 					float dirFps = GetVideoFramerateForDir(path);
+
 					if (dirFps > 0)
 						return dirFps;
 				}
 				else
 				{
-					float vidFps = GetVideoFramerate(path);
+					float vidFps = await GetVideoFramerate(path);
+
 					if (vidFps > 0)
 						return vidFps;
 				}
@@ -488,6 +506,7 @@ namespace Flowframes.IO
             {
 				Logger.Log("GetFpsFolderOrVideo() Error: " + e.Message);
             }
+
 			return 0;
 		}
 
@@ -723,13 +742,27 @@ namespace Flowframes.IO
 
 		public static long GetFilesize(string path)
 		{
-			return new FileInfo(path).Length;
+            try
+            {
+				return new FileInfo(path).Length;
+			}
+            catch
+            {
+				return -1;
+            }
 		}
 
 		public static string GetFilesizeStr (string path)
         {
-			return FormatUtils.Bytes(GetFilesize(path));
-        }
+			try
+			{
+				return FormatUtils.Bytes(GetFilesize(path));
+			}
+			catch
+			{
+				return "?";
+			}
+		}
 
 		public static byte[] GetLastBytes (string path, int startAt, int bytesAmount)
         {
@@ -740,6 +773,23 @@ namespace Flowframes.IO
 				reader.Read(buffer, 0, bytesAmount);
 			}
 			return buffer;
+		}
+
+		public static bool HasBadChars(string str)
+		{
+			return str != str.StripBadChars();
+		}
+
+		public static void OverwriteFileWithText (string path, string text = "THIS IS A DUMMY FILE - DO NOT DELETE ME")
+        {
+            try
+            {
+				File.WriteAllText(path, text);
+			}
+			catch (Exception e)
+            {
+				Logger.Log($"OverwriteWithText failed for '{path}': {e.Message}");
+            }
 		}
 	}
 }

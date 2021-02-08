@@ -200,12 +200,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioVideo\FFmpegUtils.cs" />
     <Compile Include="Data\AI.cs" />
     <Compile Include="Data\InterpSettings.cs" />
     <Compile Include="Data\Networks.cs" />
     <Compile Include="Data\Padding.cs" />
-    <Compile Include="Data\SemVer.cs" />
+    <Compile Include="Data\ResumeState.cs" />
+    <Compile Include="Data\SubtitleTrack.cs" />
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -241,11 +241,17 @@
     <Compile Include="Main\InterpolateSteps.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
     <Compile Include="Main\FrameOrder.cs" />
+    <Compile Include="Main\ResumeUtils.cs" />
+    <Compile Include="Media\AvProcess.cs" />
+    <Compile Include="Media\FfmpegAlpha.cs" />
+    <Compile Include="Media\FfmpegAudioAndMetadata.cs" />
+    <Compile Include="Media\FfmpegCommands.cs" />
+    <Compile Include="Media\FfmpegEncode.cs" />
+    <Compile Include="Media\FfmpegExtract.cs" />
+    <Compile Include="Media\FFmpegUtils.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="AudioVideo\AvProcess.cs" />
-    <Compile Include="AudioVideo\FFmpegCommands.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -255,9 +261,8 @@
     <Compile Include="Main\Interpolate.cs" />
     <Compile Include="IO\CfgStrings.cs" />
     <Compile Include="IO\Config.cs" />
-    <Compile Include="Data\Formats.cs" />
     <Compile Include="IO\IOUtils.cs" />
-    <Compile Include="IO\Paths.cs" />
+    <Compile Include="Data\Paths.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Magick\Converter.cs" />
     <Compile Include="Magick\Dedupe.cs" />

@@ -14,58 +14,49 @@ namespace Flowframes.OS
 {
     class Updater
     {
+        public enum VersionCompareResult { Older, Newer, Equal };
         public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/ver.ini";
 
-        public static SemVer GetInstalledVer()
+        public static Version GetInstalledVer()
         {
             try
             {
                 string verStr = IOUtils.ReadLines(Paths.GetVerPath())[0];
-                return new SemVer(verStr);
+                return new Version(verStr);
             }
             catch (Exception e)
             {
                 Logger.Log("Error getting installed version: " + e.Message);
-                return new SemVer(0, 0, 0);
+                return new Version(0, 0, 0);
             }
         }
 
-        public static bool IsVersionNewer (SemVer currentVer, SemVer newVer)
+        public static VersionCompareResult CompareVersions (Version currentVersion, Version newVersion)
         {
-            if (newVer.major > currentVer.major)
+            Logger.Log($"Checking if {newVersion} > {currentVersion}", true);
+            int result = newVersion.CompareTo(currentVersion);
+
+            if (result > 0)
             {
-                return true;
+                Logger.Log($"{newVersion} is newer than {currentVersion}.", true);
+                return VersionCompareResult.Newer;
             }
-            else
+
+            if (result < 0)
             {
-                if(newVer.minor > currentVer.minor)
-                {
-                    return true;
-                }
-                else
-                {
-                    if (newVer.patch > currentVer.patch)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                Logger.Log($"{newVersion} is older than {currentVersion}.", true);
+                return VersionCompareResult.Older;
             }
+
+            Logger.Log($"{newVersion} is equal to {currentVersion}.", true);
+            return VersionCompareResult.Equal;
         }
 
-        public static bool VersionMatches (SemVer v1, SemVer v2)
-        {
-            return v1.major == v2.major && v1.minor == v2.minor && v1.patch == v2.patch;
-        }
-
-        public static SemVer GetLatestVer (bool patreon)
+        public static Version GetLatestVer (bool patreon)
         {
             var client = new WebClient();
             int line = patreon ? 0 : 2;
-            return new SemVer(client.DownloadString(latestVerUrl).SplitIntoLines()[line]);
+            return new Version(client.DownloadString(latestVerUrl).SplitIntoLines()[line]);
         }
 
         public static string GetLatestVerLink(bool patreon)
@@ -134,16 +125,11 @@ namespace Flowframes.OS
 
         public static async Task AsyncUpdateCheck ()
         {
-            SemVer installed = GetInstalledVer();
-            SemVer latestPat = GetLatestVer(true);
-            SemVer latestFree = GetLatestVer(false);
+            Version installed = GetInstalledVer();
+            Version latestPat = GetLatestVer(true);
+            Version latestFree = GetLatestVer(false);
 
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
-
-            // if (IsVersionNewer(installed, latest))
-            //     Logger.Log($"An update for Flowframes ({latest}) is available! Download it from the Updater.");
-            // else
-            //     Logger.Log($"Flowframes is up to date ({installed}).");
         }
     }
 }

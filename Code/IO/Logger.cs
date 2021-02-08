@@ -64,6 +64,12 @@ namespace Flowframes
             }
         }
 
+        public static void LogIfLastLineDoesNotContainMsg (string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
+        {
+            if (!GetLastLine().Contains(s))
+                Log(s, hidden, replaceLastLine, filename);
+        }
+
         public static void WriteToFile (string content, bool append, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
