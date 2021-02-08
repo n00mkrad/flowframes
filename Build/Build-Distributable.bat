@@ -12,7 +12,7 @@ set /p ver="Enter the version number: "
 
 cd ..
 
-dotnet publish -c Release -o "Release/Build" "Code5"
+dotnet publish -c Release -o "Release/Build" "Code"
 
 cd Release
 
@@ -32,7 +32,7 @@ echo %ver% >> "FlowframesApp%ver%/FlowframesData/ver.ini"
 
 xcopy /E "Build" "FlowframesApp%ver%"
 
-cd ..\Build5
+cd ..\Build
 
 rmdir /s/q ..\Release\FlowframesApp%ver%\FlowframesData\logs
 del ..\Release\FlowframesApp%ver%\FlowframesData\config.ini
