@@ -166,36 +166,6 @@ namespace Flowframes
             int progress = Convert.ToInt32(current / total);
             Program.mainForm.SetProgress(progress);
         }
-
-
-        public static async Task RunGifski(string args, LogMode logMode)
-        {
-            lastOutputGifski = "";
-            currentLogMode = logMode;
-            Process gifski = OSUtils.NewProcess(true);
-            lastProcess = gifski;
-            gifski.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & gifski.exe {args}";
-            Logger.Log("Running gifski...");
-            Logger.Log("cmd.exe " + gifski.StartInfo.Arguments, true, false, "ffmpeg");
-            gifski.OutputDataReceived += new DataReceivedEventHandler(OutputHandlerGifski);
-            gifski.ErrorDataReceived += new DataReceivedEventHandler(OutputHandlerGifski);
-            gifski.Start();
-            gifski.BeginOutputReadLine();
-            gifski.BeginErrorReadLine();
-            while (!gifski.HasExited)
-                await Task.Delay(100);
-            Logger.Log("Done running gifski.", true);
-        }
-
-        static void OutputHandlerGifski(object sendingProcess, DataReceivedEventArgs outLine)
-        {
-            if (outLine == null || outLine.Data == null)
-                return;
-            lastOutputGifski = lastOutputGifski + outLine.Data + "\n";
-            bool hidden = currentLogMode == LogMode.Hidden;
-            bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
-            Logger.Log(outLine.Data, hidden, replaceLastLine);
-        }
         
         static string GetAvDir ()
         {
