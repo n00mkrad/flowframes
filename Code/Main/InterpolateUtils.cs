@@ -184,6 +184,7 @@ namespace Flowframes.Main
             }
 
             int frameCount = 0;
+
             if (IOUtils.IsPathDirectory(path))
                 frameCount = IOUtils.GetAmountOfFiles(path, false);
             else

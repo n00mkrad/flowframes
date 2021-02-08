@@ -55,7 +55,7 @@ namespace Flowframes
 
         public static long GetDuration(string inputFile)
         {
-            Logger.Log("Reading Duration using ffprobe.", true, false, "ffmpeg");
+            Logger.Log($"GetDuration({inputFile}) - Reading Duration using ffprobe.", true, false, "ffmpeg");
             string args = $" -v panic -select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
             string info = GetFfprobeOutput(args);
             return FormatUtils.MsFromTimestamp(info);
@@ -109,42 +109,23 @@ namespace Flowframes
             int frames = 0;
 
             frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool("ffprobeCountFrames"));      // Try reading frame count with ffprobe
-            
-            if (frames > 0)
-                return frames;
+            if (frames > 0) return frames;
 
-            Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Reading frame count using ffmpeg.", true, false, "ffmpeg");
+            Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Trying to calculate with duration * fps.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
-            
-            if (frames > 0)
-                return frames;
+            if (frames > 0) return frames;
 
             Logger.Log("Failed to get total frame count of video.");
             return 0;
         }
 
-        static int ReadFrameCountFfprobe(string inputFile, bool readFramesSlow)
+        static int ReadFrameCountFromDuration (string inputFile, long durationMs, float fps)
         {
-            string args = $" -v panic -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {inputFile.Wrap()}";
-            if (readFramesSlow)
-            {
-                Logger.Log("Counting total frames using FFprobe. This can take a moment...");
-                args = $" -v panic -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
-            }
-            string info = GetFfprobeOutput(args);
-            string[] entries = info.SplitIntoLines();
-            try
-            {
-                if (readFramesSlow)
-                    return info.GetInt();
-                foreach (string entry in entries)
-                {
-                    if (entry.Contains("nb_frames="))
-                        return entry.GetInt();
-                }
-            }
-            catch { }
-            return -1;
+            float durationSeconds = durationMs / 1000f;
+            float frameCount = durationSeconds * fps;
+            int frameCountRounded = frameCount.RoundToInt();
+            Logger.Log($"ReadFrameCountFromDuration: Got frame count of {frameCount}, rounded to {frameCountRounded}");
+            return frameCountRounded;
         }
 
         static async Task<int> ReadFrameCountFfprobeAsync(string inputFile, bool readFramesSlow)
@@ -169,19 +150,6 @@ namespace Flowframes
                 }
             }
             catch { }
-            return -1;
-        }
-
-        static int ReadFrameCountFfmpeg(string inputFile)
-        {
-            string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
-            string info = GetFfmpegOutput(args);
-            string[] entries = info.SplitIntoLines();
-            foreach (string entry in entries)
-            {
-                if (entry.Contains("frame="))
-                    return entry.Substring(0, entry.IndexOf("fps")).GetInt();
-            }
             return -1;
         }
 
