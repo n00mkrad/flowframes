@@ -14,16 +14,17 @@ namespace Flowframes.Main
 {
     class FrameOrder
     {
-        public enum Mode { CFR, VFR }
-        public static int timebase = 10000;
+        static Stopwatch benchmark = new Stopwatch();
 
         public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, float times)
         {
             Logger.Log("Generating frame order information...");
             try
             {
+                benchmark.Restart();
                 await CreateEncFile(framesPath, loopEnabled, times, false);
                 Logger.Log($"Generating frame order information... Done.", false, true);
+                Logger.Log($"Generated frame order info file in {benchmark.ElapsedMilliseconds} ms", true);
             }
             catch (Exception e)
             {
@@ -69,41 +70,34 @@ namespace Flowframes.Main
 
             bool debug = Config.GetBool("frameOrderDebug", false);
 
+            int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
             int totalFileCount = 0;
+
+            Logger.Log($"Starting frame loop after {benchmark.ElapsedMilliseconds} ms", true);
+
             for (int i = 0; i < (frameFiles.Length - 1); i++)
             {
                 if (Interpolate.canceled) return;
-
-                int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
+                
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFiles[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
-                
-                if(debug) Logger.Log($"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)} has {dupesAmount} dupes", true);
-
                 bool discardThisFrame = (sceneDetection && (i + 2) < frameFiles.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 // If loop is enabled, account for the extra frame added to the end for loop continuity
                 if (loopEnabled && i == (frameFiles.Length - 2))
                     interpFramesAmount = interpFramesAmount * 2;
-
-                if (debug) Logger.Log($"Writing out frames for in frame {i} which has {dupesAmount} dupes", true);
-                // Generate frames file lines
-                for (int frm = 0; frm < interpFramesAmount; frm++)
+                
+                for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
                 {
-                    //if (debug) Logger.Log($"Writing out frame {frm+1}/{interpFramesAmount}", true);
-
                     if (discardThisFrame)     // If frame is scene cut frame
                     {
-                        //if (debug) Logger.Log($"Writing frame {totalFileCount} [Discarding Next]", true);
                         totalFileCount++;
                         int lastNum = totalFileCount;
                         fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}] [DiscardNext]");
 
-                        //if (debug) Logger.Log("Discarding interp frames with out num " + totalFileCount);
                         for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                         {
                             totalFileCount++;
-                            if (debug) Logger.Log($"Writing frame {totalFileCount} which is actually repeated frame {lastNum}", true);
                             fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, interpPath, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
                         }
 
@@ -116,20 +110,17 @@ namespace Flowframes.Main
                     }
                 }
 
-                if ((i + 1) % 100 == 0)
+                if ((i + 1) % 200 == 0)
                     await Task.Delay(1);
             }
-
-            // if(debug) Logger.Log("target: " + ((frameFiles.Length * interpFactor) - (interpFactor - 1)), true);
-            // if(debug) Logger.Log("totalFileCount: " + totalFileCount, true);
 
             totalFileCount++;
             fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
 
-            string finalFileContent = fileContent.Trim();
             if(loop)
-                finalFileContent = finalFileContent.Remove(finalFileContent.LastIndexOf("\n"));
-            File.WriteAllText(vfrFile, finalFileContent);
+                fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
+
+            File.WriteAllText(vfrFile, fileContent);
 
             if (notFirstRun) return;    // Skip all steps that only need to be done once
 

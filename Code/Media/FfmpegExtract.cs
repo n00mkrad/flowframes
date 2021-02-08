@@ -18,23 +18,23 @@ namespace Flowframes.Media
         public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath, float rate)
         {
             Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, false, rate, false, false, new Size(320, 180), false, true);
+            await VideoToFrames(inputFile, frameFolderPath, false, rate, false, false, new Size(320, 180), true);
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
             int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false);
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, bool timecodes = true)
+        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc)
         {
-            await VideoToFrames(inputFile, framesDir, alpha, rate, deDupe, delSrc, new Size(), timecodes);
+            await VideoToFrames(inputFile, framesDir, alpha, rate, deDupe, delSrc, new Size());
         }
 
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size, bool timecodes, bool sceneDetect = false)
+        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size, bool sceneDetect = false)
         {
             if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(framesDir);
-            string timecodeStr = timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : "-copyts -frame_pts true";
+            string timecodeStr = /* timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : */ "-copyts -frame_pts true";
             string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
             string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, scnDetect, mpStr });
