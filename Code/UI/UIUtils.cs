@@ -36,26 +36,34 @@ namespace Flowframes.UI
 
 		public static ComboBox FillAiModelsCombox (ComboBox combox, AI ai)
         {
-			string pkgPath = PkgUtils.GetPkgFolder(ai.pkg);
-			string modelsFile = Path.Combine(pkgPath, "models.txt");
-			string[] modelsWithDec = IOUtils.ReadLines(modelsFile);
 			combox.Items.Clear();
 
-			for (int i = 0; i < modelsWithDec.Length; i++)
+            try
             {
-				string model = modelsWithDec[i];
+				string pkgPath = PkgUtils.GetPkgFolder(ai.pkg);
+				string modelsFile = Path.Combine(pkgPath, "models.txt");
+				string[] modelsWithDec = IOUtils.ReadLines(modelsFile);
 
-				if (string.IsNullOrWhiteSpace(model))
-					continue;
+				for (int i = 0; i < modelsWithDec.Length; i++)
+				{
+					string model = modelsWithDec[i];
 
-				combox.Items.Add(model);
+					if (string.IsNullOrWhiteSpace(model))
+						continue;
 
-				if (model.Contains("Recommended") || model.Contains("Default"))
-					combox.SelectedIndex = i;
+					combox.Items.Add(model);
+
+					if (model.Contains("Recommended") || model.Contains("Default"))
+						combox.SelectedIndex = i;
+				}
+
+				if (combox.SelectedIndex < 0)
+					combox.SelectedIndex = 0;
+			}
+            catch (Exception e)
+            {
+				Logger.Log($"Failed to load available AI models for {ai.aiName}! {e.Message}");
             }
-
-			if(combox.SelectedIndex < 0)
-				combox.SelectedIndex = 0;
 
 			return combox;
 		}
