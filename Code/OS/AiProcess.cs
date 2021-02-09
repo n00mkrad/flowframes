@@ -288,7 +288,7 @@ namespace Flowframes
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}", "Error");
                 if(!Python.HasEmbeddedPyFolder())
-                    Process.Start(new ProcessStartInfo("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md") { UseShellExecute = true });
+                    Process.Start("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md");
             }
 
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
