@@ -89,6 +89,9 @@ namespace Flowframes
 
         public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
         {
+            if(Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
+                AutoEncode.paused = false;
+
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "rife.py";
 
@@ -165,6 +168,8 @@ namespace Flowframes
 
             if (times > 1)
                 AutoEncode.paused = true;  // Disable autoenc until the last iteration
+            else
+                AutoEncode.paused = false;
 
             for (int iteration = 1; iteration <= times; iteration++)
             {
@@ -222,6 +227,9 @@ namespace Flowframes
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
+            if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
+                AutoEncode.paused = false;
+
             await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
 
             if (!Interpolate.canceled && Interpolate.current.alpha)
