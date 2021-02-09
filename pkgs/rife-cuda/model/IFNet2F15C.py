@@ -32,7 +32,7 @@ class ResBlock(nn.Module):
         else:
             self.conv0 = nn.Conv2d(in_planes, out_planes,
                                    3, stride, 1, bias=False)
-        self.conv1 = conv(in_planes, out_planes, 5, stride, 2)
+        self.conv1 = conv(in_planes, out_planes, 3, stride, 1)
         self.conv2 = conv_wo_act(out_planes, out_planes, 3, 1, 1)
         self.relu1 = nn.PReLU(1)
         self.relu2 = nn.PReLU(out_planes)
@@ -54,14 +54,14 @@ class IFBlock(nn.Module):
     def __init__(self, in_planes, scale=1, c=64):
         super(IFBlock, self).__init__()
         self.scale = scale
-        self.conv0 = conv(in_planes, c, 5, 2, 2)
+        self.conv0 = conv(in_planes, c, 3, 1, 1)
         self.res0 = ResBlock(c, c)
         self.res1 = ResBlock(c, c)
         self.res2 = ResBlock(c, c)
         self.res3 = ResBlock(c, c)
         self.res4 = ResBlock(c, c)
         self.res5 = ResBlock(c, c)
-        self.conv1 = nn.Conv2d(c, 8, 3, 1, 1)
+        self.conv1 = nn.Conv2d(c, 2, 3, 1, 1)
         self.up = nn.PixelShuffle(2)
 
     def forward(self, x):
@@ -76,7 +76,7 @@ class IFBlock(nn.Module):
         x = self.res4(x)
         x = self.res5(x)
         x = self.conv1(x)
-        flow = self.up(x)
+        flow = x # self.up(x)
         if self.scale != 1:
             flow = F.interpolate(flow, scale_factor=self.scale, mode="bilinear",
                                  align_corners=False)
@@ -86,17 +86,13 @@ class IFBlock(nn.Module):
 class IFNet(nn.Module):
     def __init__(self):
         super(IFNet, self).__init__()
-        self.block0 = IFBlock(6, scale=8, c=192)
-        self.block1 = IFBlock(8, scale=4, c=128)
-        self.block2 = IFBlock(8, scale=2, c=96)
-        self.block3 = IFBlock(8, scale=1, c=48)
+        self.block0 = IFBlock(6, scale=4, c=288)
+        self.block1 = IFBlock(8, scale=2, c=192)
+        self.block2 = IFBlock(8, scale=1, c=96)
 
-    def forward(self, x, UHD=False):
-        if UHD:
-            x = F.interpolate(x, scale_factor=0.25, mode="bilinear", align_corners=False)
-        else:
-            x = F.interpolate(x, scale_factor=0.5, mode="bilinear",
-                              align_corners=False)
+    def forward(self, x):
+        x = F.interpolate(x, scale_factor=0.5, mode="bilinear",
+                          align_corners=False)
         flow0 = self.block0(x)
         F1 = flow0
         warped_img0 = warp(x[:, :3], F1)
@@ -107,11 +103,7 @@ class IFNet(nn.Module):
         warped_img1 = warp(x[:, 3:], -F2)
         flow2 = self.block2(torch.cat((warped_img0, warped_img1, F2), 1))
         F3 = (flow0 + flow1 + flow2)
-        warped_img0 = warp(x[:, :3], F3)
-        warped_img1 = warp(x[:, 3:], -F3)
-        flow3 = self.block3(torch.cat((warped_img0, warped_img1, F3), 1))
-        F4 = (flow0 + flow1 + flow2 + flow3)
-        return F4, [F1, F2, F3, F4]
+        return F3, [F1, F2, F3]
 
 if __name__ == '__main__':
     img0 = torch.zeros(3, 3, 256, 256).float().to(device)

@@ -45,9 +45,14 @@ parser.add_argument('--exp', dest='exp', type=int, default=1)
 args = parser.parse_args()
 assert (not args.input is None)
 
-from model.RIFE_HD import Model
-model = Model()
-model.load_model(os.path.join(dname, args.model), -1)
+try:
+    from model.RIFE_HD import Model
+    model = Model()
+    model.load_model(os.path.join(dname, args.model), -1)
+except:
+    from model.RIFE_HDv2 import Model
+    model = Model()
+    model.load_model(os.path.join(dname, args.model), -1)
 model.eval()
 model.device()
 
