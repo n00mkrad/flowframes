@@ -371,17 +371,17 @@ namespace Flowframes
 
         private void discordBtn_Click(object sender, EventArgs e)
         {
-            Process.Start("https://discord.gg/eJHD2NSJRe");
+            Process.Start(new ProcessStartInfo("https://discord.gg/eJHD2NSJRe") { UseShellExecute = true });
         }
 
         private void paypalBtn_Click(object sender, EventArgs e)
         {
-            Process.Start("https://www.paypal.com/paypalme/nmkd/10");
+            Process.Start(new ProcessStartInfo("https://www.paypal.com/paypalme/nmkd/10") { UseShellExecute = true });
         }
 
         private void patreonBtn_Click(object sender, EventArgs e)
         {
-            Process.Start("https://patreon.com/n00mkrad");
+            Process.Start(new ProcessStartInfo("https://patreon.com/n00mkrad") { UseShellExecute = true });
         }
 
         private void settingsBtn_Click(object sender, EventArgs e)

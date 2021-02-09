@@ -29,7 +29,9 @@ namespace Flowframes.IO
 
 		public static string GetExeDir()
 		{
-			return AppDomain.CurrentDomain.BaseDirectory;
+			// Messy workaround for Single File compilation to get correct working directory
+			var fileName = Process.GetCurrentProcess().MainModule?.FileName;
+			return fileName != null ? Directory.GetParent(fileName).ToString() : AppDomain.CurrentDomain.BaseDirectory;
 		}
 
 		public static Image GetImage(string path)

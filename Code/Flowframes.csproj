@@ -1,369 +1,54 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Costura.Fody.4.1.0\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{389E42DD-A163-49D7-9E0A-AE41090A07B3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Flowframes</RootNamespace>
-    <AssemblyName>Flowframes</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <ApplicationIcon>flowframesIcoNew.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="7z.NET, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\7z.NET.1.0.3\lib\net463\7z.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="CircularProgressBar, Version=2.8.0.16, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
-      <HintPath>packages\CircularProgressBar.2.8.0.16\lib\net40\CircularProgressBar.dll</HintPath>
-    </Reference>
-    <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
-      <HintPath>packages\Costura.Fody.4.1.0\lib\net40\Costura.dll</HintPath>
-    </Reference>
-    <Reference Include="Crc32.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc0b95cf99bf4e99, processorArchitecture=MSIL">
-      <HintPath>packages\Crc32.NET.1.2.0\lib\net20\Crc32.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="CustomMarshalers" />
-    <Reference Include="Cyotek.Windows.Forms.TabList, Version=2.0.0.0, Culture=neutral, PublicKeyToken=58daa28b0b2de221, processorArchitecture=MSIL">
-      <HintPath>packages\CyotekTabList.2.0.0\lib\net35\Cyotek.Windows.Forms.TabList.dll</HintPath>
-    </Reference>
-    <Reference Include="DiskDetector, Version=0.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\diskdetector-net.0.3.2\lib\netstandard2.0\DiskDetector.dll</HintPath>
-    </Reference>
-    <Reference Include="HTAlt WinForms, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\HTAlt.WinForms.0.1.6\lib\net461\HTAlt WinForms.dll</HintPath>
-    </Reference>
-    <Reference Include="HTAlt.Standart, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\HTAlt.Standart.0.1.6\lib\netstandard2.0\HTAlt.Standart.dll</HintPath>
-    </Reference>
-    <Reference Include="Magick.NET-Q16-AnyCPU, Version=7.21.1.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-      <HintPath>packages\Magick.NET-Q16-AnyCPU.7.21.1\lib\net40\Magick.NET-Q16-AnyCPU.dll</HintPath>
-    </Reference>
-    <Reference Include="Magick.NET.Core, Version=4.1.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-      <HintPath>packages\Magick.NET.Core.4.1.0\lib\net40\Magick.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
-    <Reference Include="NvAPIWrapper, Version=0.8.0.98, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
-      <HintPath>packages\NvAPIWrapper.Net.0.8.0.98\lib\net45\NvAPIWrapper.dll</HintPath>
-    </Reference>
-    <Reference Include="PagedControl, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\PagedControl.2.2.0\lib\net35\PagedControl.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="Standart.Hash.xxHash, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Standart.Hash.xxHash.3.1.0\lib\netstandard2.0\Standart.Hash.xxHash.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.HashFunction.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=80c9288e394c1322, processorArchitecture=MSIL">
-      <HintPath>packages\System.Data.HashFunction.Core.2.0.0\lib\net45\System.Data.HashFunction.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.HashFunction.Interfaces, Version=2.0.0.0, Culture=neutral, PublicKeyToken=80c9288e394c1322, processorArchitecture=MSIL">
-      <HintPath>packages\System.Data.HashFunction.Interfaces.2.0.0\lib\net45\System.Data.HashFunction.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Design" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Drawing.Common.5.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Management" />
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security.Claims, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Security.Claims.4.3.0\lib\net46\System.Security.Claims.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Security.Principal.Windows, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Security.Principal.Windows.4.3.0\lib\net46\System.Security.Principal.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TabControl, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\TabControl.2.1.2\lib\net35\TabControl.dll</HintPath>
-    </Reference>
-    <Reference Include="Win32Interop.Dwmapi, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Win32Interop.Dwmapi.1.0.1\lib\Win32Interop.Dwmapi.dll</HintPath>
-    </Reference>
-    <Reference Include="Win32Interop.Gdi32, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Win32Interop.Gdi32.1.0.1\lib\Win32Interop.Gdi32.dll</HintPath>
-    </Reference>
-    <Reference Include="Win32Interop.Kernel32, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Win32Interop.Kernel32.1.0.1\lib\Win32Interop.Kernel32.dll</HintPath>
-    </Reference>
-    <Reference Include="Win32Interop.User32, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Win32Interop.User32.1.0.1\lib\Win32Interop.User32.dll</HintPath>
-    </Reference>
-    <Reference Include="Win32Interop.Uxtheme, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Win32Interop.Uxtheme.1.0.1\lib\Win32Interop.Uxtheme.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="WinFormAnimation, Version=1.6.0.4, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
-      <HintPath>packages\WinFormAnimation.1.6.0.4\lib\net40\WinFormAnimation.dll</HintPath>
-    </Reference>
+    <PackageReference Include="CircularProgressBar" Version="2.8.0.16" />
+    <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="CyotekTabList" Version="2.2.0" />
+    <PackageReference Include="diskdetector-net" Version="0.3.2" />
+    <PackageReference Include="HTAlt.Standart" Version="0.1.6" />
+    <PackageReference Include="HTAlt.WinForms" Version="0.1.6" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.23.1" />
+    <PackageReference Include="Magick.NET.Core" Version="6.1.0" />
+    <PackageReference Include="NvAPIWrapper.Net" Version="0.8.1.101" />
+    <PackageReference Include="Standart.Hash.xxHash" Version="3.1.0" />
+    <PackageReference Include="System.Management" Version="5.0.0" />
+    <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.2" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="WinFormAnimation" Version="1.6.0.4" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Data\AI.cs" />
-    <Compile Include="Data\InterpSettings.cs" />
-    <Compile Include="Data\Networks.cs" />
-    <Compile Include="Data\Padding.cs" />
-    <Compile Include="Data\ResumeState.cs" />
-    <Compile Include="Data\SubtitleTrack.cs" />
-    <Compile Include="Forms\BatchForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\BatchForm.Designer.cs">
-      <DependentUpon>BatchForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\BigPreviewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\BigPreviewForm.Designer.cs">
-      <DependentUpon>BigPreviewForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SettingsForm.Designer.cs">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\UpdaterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\UpdaterForm.Designer.cs">
-      <DependentUpon>UpdaterForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IO\ConfigParser.cs" />
-    <Compile Include="Data\FlowPackage.cs" />
-    <Compile Include="IO\ModelDownloader.cs" />
-    <Compile Include="Data\Packages.cs" />
-    <Compile Include="IO\PkgUtils.cs" />
-    <Compile Include="Main\AutoEncode.cs" />
-    <Compile Include="Main\BatchProcessing.cs" />
-    <Compile Include="Main\CreateVideo.cs" />
-    <Compile Include="Main\InterpolateSteps.cs" />
-    <Compile Include="Main\InterpolateUtils.cs" />
-    <Compile Include="Main\FrameOrder.cs" />
-    <Compile Include="Main\ResumeUtils.cs" />
-    <Compile Include="Media\AvProcess.cs" />
-    <Compile Include="Media\FfmpegAlpha.cs" />
-    <Compile Include="Media\FfmpegAudioAndMetadata.cs" />
-    <Compile Include="Media\FfmpegCommands.cs" />
-    <Compile Include="Media\FfmpegEncode.cs" />
-    <Compile Include="Media\FfmpegExtract.cs" />
-    <Compile Include="Media\FFmpegUtils.cs" />
-    <Compile Include="MiscUtils\Benchmarker.cs" />
-    <Compile Include="OS\AiProcess.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Main\Interpolate.cs" />
-    <Compile Include="IO\CfgStrings.cs" />
-    <Compile Include="IO\Config.cs" />
-    <Compile Include="IO\IOUtils.cs" />
-    <Compile Include="Data\Paths.cs" />
-    <Compile Include="IO\Logger.cs" />
-    <Compile Include="Magick\Converter.cs" />
-    <Compile Include="Magick\Dedupe.cs" />
-    <Compile Include="OS\NvApi.cs" />
-    <Compile Include="OS\OSUtils.cs" />
-    <Compile Include="OS\Python.cs" />
-    <Compile Include="OS\Updater.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MiscUtils\FormatUtils.cs" />
-    <Compile Include="UI\GetWebInfo.cs" />
-    <Compile Include="UI\MainUiFunctions.cs" />
-    <Compile Include="UI\UIUtils.cs" />
-    <Compile Include="UI\UtilsTab.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BatchForm.resx">
-      <DependentUpon>BatchForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BigPreviewForm.resx">
-      <DependentUpon>BigPreviewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SettingsForm.resx">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UpdaterForm.resx">
-      <DependentUpon>UpdaterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="FlowFramesFunkyLogo1.ico" />
-    <Content Include="FlowFramesFunkyLogo2.ico" />
-    <None Include="Resources\flowframesIcoNew-512px.png" />
-    <None Include="Resources\flowframesIcoNew.png" />
-    <None Include="Resources\questmark-72px-bordeer.png" />
-    <None Include="Resources\7za.exe" />
-    <None Include="Resources\baseline_fact_check_white_48dp.png" />
-    <None Include="Resources\discordIco.png" />
-    <None Include="Resources\paypal256px.png" />
-    <None Include="Resources\patreon256px.png" />
-    <None Include="Resources\baseline_settings_white_48dp.png" />
-    <None Include="Resources\baseline_image_white_48dp.png" />
-    <None Include="Resources\baseline_image_white_48dp-4x.png" />
-    <None Include="Resources\baseline_image_white_48dp-4x-25pcAlpha.png" />
-    <None Include="Resources\baseline_queue_white_48dp.png" />
-    <None Include="Resources\separatorTest1.png" />
-    <None Include="Resources\discordIcoColored.png" />
-    <None Include="Resources\patreon256pxColored.png" />
-    <None Include="Resources\baseline_create_white_18dp.png" />
-    <None Include="Resources\baseline_create_white_18dp-semiTransparent.png" />
-    <Content Include="flowframesIcoNew.ico" />
-    <None Include="Resources\baseline_system_update_alt_white_48dp.png" />
-    <None Include="Resources\baseline_system_update_alt_white_48dp1.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.4.1.0\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('packages\7z.NET.1.0.3\build\7z.NET.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\7z.NET.1.0.3\build\7z.NET.targets'))" />
-    <Error Condition="!Exists('packages\Fody.6.3.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.3.0\build\Fody.targets'))" />
-  </Target>
-  <Import Project="packages\7z.NET.1.0.3\build\7z.NET.targets" Condition="Exists('packages\7z.NET.1.0.3\build\7z.NET.targets')" />
-  <Import Project="packages\Fody.6.3.0\build\Fody.targets" Condition="Exists('packages\Fody.6.3.0\build\Fody.targets')" />
+
 </Project>
