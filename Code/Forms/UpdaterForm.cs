@@ -69,14 +69,14 @@ namespace Flowframes.Forms
         {
             string link = Updater.GetLatestVerLink(true);
             if(!string.IsNullOrWhiteSpace(link))
-                Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
+                Process.Start(link);
         }
 
         private void updateFreeBtn_Click(object sender, EventArgs e)
         {
             string link = Updater.GetLatestVerLink(false);
             if (!string.IsNullOrWhiteSpace(link))
-                Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
+                Process.Start(link);
         }
     }
 }
