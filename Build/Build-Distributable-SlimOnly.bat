@@ -30,7 +30,7 @@ xcopy "../pkgs/rife-ncnn" "FlowframesApp%ver%/FlowframesData\pkgs\rife-ncnn" /E 
 
 echo %ver% >> "FlowframesApp%ver%/FlowframesData/ver.ini"
 
-xcopy /E "Build" "FlowframesApp%ver%"
+xcopy "Build\Flowframes.exe" "FlowframesApp%ver%"
 
 cd ..\Build
 

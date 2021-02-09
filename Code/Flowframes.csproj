@@ -5,8 +5,12 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
 
-    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-    <PublishTrimmed>true</PublishTrimmed>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
 
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
