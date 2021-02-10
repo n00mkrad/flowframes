@@ -223,7 +223,6 @@ namespace Flowframes
                 }
                 else
                 {
-                    Logger.Log("Deleting temp folder because current.stepByStep = " + current.stepByStep);
                     IOUtils.TryDeleteIfExists(current.tempFolder);
                 }
             }
