@@ -1,0 +1,8 @@
+depthnet.bin:8d30fde8980439811b4b87e322097151
+depthnet.param:ed34e044f5d754b85049687e0f0ca649
+flownet.bin:8d74b6c4b4dba99990fc0b72cbfb23f2
+flownet.param:f19a2adc9cee150f22ca06ce9c61e1db
+interpolation.bin:4f0264a14d8e6d6970725d145c63955c
+interpolation.param:4e0635bda56a52e779f830e2df3116df
+ctxnet.bin:0a0cd28bd35973a90ffc2776983d09a8
+ctxnet.param:1d57210ae38f1604468e793b834ec755
