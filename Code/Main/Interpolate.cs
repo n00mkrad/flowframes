@@ -77,15 +77,6 @@ namespace Flowframes
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha, !stepByStep);
             else
                 await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
-
-            if (current.alpha)
-            {
-                Program.mainForm.SetStatus("Extracting transparency...");
-                Logger.Log("Extracting transparency... (1/2)");
-                await FfmpegAlpha.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
-                Logger.Log("Extracting transparency... (2/2)", false, true);
-                await FfmpegAlpha.RemoveAlpha(current.framesFolder, current.framesFolder);
-            }
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool sceneDetect)
@@ -167,6 +158,15 @@ namespace Flowframes
             {
                 Logger.Log($"Error renaming frame files: {e.Message}");
                 Cancel("Error renaming frame files. Check the log for details.");
+            }
+
+            if (current.alpha)
+            {
+                Program.mainForm.SetStatus("Extracting transparency...");
+                Logger.Log("Extracting transparency... (1/2)");
+                await FfmpegAlpha.ExtractAlphaDir(current.framesFolder, current.framesFolder + Paths.alphaSuffix);
+                Logger.Log("Extracting transparency... (2/2)", false, true);
+                await FfmpegAlpha.RemoveAlpha(current.framesFolder, current.framesFolder);
             }
         }
 
