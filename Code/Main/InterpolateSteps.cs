@@ -24,7 +24,7 @@ namespace Flowframes.Main
             Program.mainForm.SetWorking(true);
             current = Program.mainForm.GetCurrentSettings();
             current.RefreshAlpha();
-            current.stepByStep = false;
+            current.stepByStep = true;
 
             if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
 

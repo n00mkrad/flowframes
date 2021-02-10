@@ -203,6 +203,9 @@ namespace Flowframes
             string uhdStr = await InterpolateUtils.UseUHD() ? "-u" : "";
             string ttaStr = Config.GetBool("rifeNcnnUseTta", false) ? "-x" : "";
 
+            string oldMdlName = mdl;
+            mdl = RifeNcnn2Workaround(mdl);     // TODO: REMOVE ONCE NIHUI HAS GOTTEN RID OF THE SHITTY HARDCODED VERSION CHECK
+
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
             
@@ -223,6 +226,7 @@ namespace Flowframes
             }
 
             while (!rifeNcnn.HasExited) await Task.Delay(1);
+            RifeNcnn2Workaround(oldMdlName, true);
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
@@ -362,6 +366,28 @@ namespace Flowframes
                 progThreadsStr += $",{procThreads}";
 
             return $"4:{progThreadsStr}:4"; ;
+        }
+
+        static string RifeNcnn2Workaround (string modelName, bool reset = false)
+        {
+            if (modelName != "RIFE20") return modelName;
+            string validMdlName = "rife-v2";
+            string rifeFolderPath = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeNcnn.fileName));
+            string modelFolderPath = Path.Combine(rifeFolderPath, modelName);
+            string fixedModelFolderPath = Path.Combine(rifeFolderPath, validMdlName);
+
+            if (!reset)
+            {
+                IOUtils.TryDeleteIfExists(fixedModelFolderPath);
+                Directory.Move(modelFolderPath, fixedModelFolderPath);
+            }
+            else
+            {
+                IOUtils.TryDeleteIfExists(modelFolderPath);
+                Directory.Move(fixedModelFolderPath, modelFolderPath);
+            }
+
+            return validMdlName;
         }
     }
 }

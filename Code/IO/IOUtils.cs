@@ -99,7 +99,7 @@ namespace Flowframes.IO
 			return true;
 		}
 
-		public static void Copy(string sourceDirectoryName, string targetDirectoryName, bool move = false)
+		public static void CopyDir(string sourceDirectoryName, string targetDirectoryName, bool move = false)
 		{
 			Directory.CreateDirectory(targetDirectoryName);
 			DirectoryInfo source = new DirectoryInfo(sourceDirectoryName);
@@ -195,7 +195,7 @@ namespace Flowframes.IO
             }
 		}
 
-		static bool TryCopy(string source, string target, bool overwrite = true)
+		static bool TryCopy(string source, string target, bool overwrite = true, bool showLog = false)
 		{
 			try
 			{
@@ -203,14 +203,14 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
 			{
-				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}");
+				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}, !showLog");
 				return false;
 			}
 
 			return true;
 		}
 
-		public static bool TryMove(string source, string target, bool overwrite = true)
+		public static bool TryMove(string source, string target, bool overwrite = true, bool showLog = false)
 		{
 			try
 			{
@@ -221,7 +221,7 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
 			{
-				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}");
+				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}", !showLog);
 				return false;
 			}
 
