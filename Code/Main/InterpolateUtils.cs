@@ -97,8 +97,8 @@ namespace Flowframes.Main
 
         public static void UpdateLastFrameFromInterpOutput(string output)
         {
-            string dainStr = AiProcess.currentAiName == "DAIN" ? " done" : "";
-            Regex frameRegex = new Regex($@"(?<=.)\d*(?=.{GetOutExt()}{dainStr})");
+            string ncnnStr = Interpolate.current.ai.aiName.Contains("NCNN") ? " done" : "";
+            Regex frameRegex = new Regex($@"(?<=.)\d*(?=.{GetOutExt()}{ncnnStr})");
             if (!frameRegex.IsMatch(output)) return;
             lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
         }
