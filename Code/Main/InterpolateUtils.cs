@@ -74,6 +74,7 @@ namespace Flowframes.Main
             Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
+            lastFrame = 0;
             while (Program.busy)
             {
                 if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
@@ -95,7 +96,6 @@ namespace Flowframes.Main
 
         public static void UpdateLastFrameFromInterpOutput(string output)
         {
-            Logger.Log(output);
             switch (AiProcess.currentAiName)
             {
                 case "RIFE-CUDA":
@@ -138,7 +138,7 @@ namespace Flowframes.Main
             float eta = framesLeft * secondsPerFrame;
             string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()), false);
 
-            bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
+            bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average speed: ");
 
             string logStr = $"Interpolated {frames}/{target} frames ({percent}%) - Average speed: {fpsIn} FPS in / {fpsOut} FPS out - ";
             logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
@@ -157,7 +157,7 @@ namespace Flowframes.Main
             catch { }
         }
 
-        public static async Task DeleteInterpolatedInputFrames ()
+        public static async Task DeleteInterpolatedInputFrames()
         {
             interpolatedInputFramesCount = 0;
             string[] inputFrames = IOUtils.GetFilesSorted(i.current.framesFolder);
@@ -172,7 +172,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static void SetPreviewImg (Image img)
+        public static void SetPreviewImg(Image img)
         {
             if (img == null)
                 return;
