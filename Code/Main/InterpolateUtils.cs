@@ -59,11 +59,13 @@ namespace Flowframes.Main
             return dotStr + "png";
         }
 
+        public static int lastFrame;
         public static int targetFrames;
         public static string currentOutdir;
         public static float currentFactor;
         public static bool progressPaused = false;
         public static bool progCheckRunning = false;
+
         public static async void GetProgressByFrameAmount(string outdir, int target)
         {
             progCheckRunning = true;
@@ -79,21 +81,40 @@ namespace Flowframes.Main
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
                     firstProgUpd = false;
-                    string[] frames = IOUtils.GetFilesSorted(currentOutdir, $"*.{GetOutExt()}");
-                    if (frames.Length > 1)
-                        UpdateInterpProgress(frames.Length, targetFrames, frames[frames.Length - 1]);
-                    if (frames.Length >= targetFrames)
+                    if (lastFrame > 1)
+                        UpdateInterpProgress(lastFrame, targetFrames, currentOutdir + lastFrame.ToString("00000000") + $".{GetOutExt()}");
+                    if (lastFrame >= targetFrames)
                         break;
-                    await Task.Delay(GetProgressWaitTime(frames.Length));
                 }
-                else
-                {
-                    await Task.Delay(200);
-                }
+                await Task.Delay(100);
             }
             progCheckRunning = false;
             if (i.canceled)
                 Program.mainForm.SetProgress(0);
+        }
+
+        public static void UpdateLastFrameFromInterpOutput(string output)
+        {
+            Logger.Log(output);
+            switch (AiProcess.currentAiName)
+            {
+                case "RIFE-CUDA":
+                {
+                    Regex frameRegex = new Regex($@"(?<=> )\d*(?=.{GetOutExt()})");
+                    if (!frameRegex.IsMatch(output)) return;
+                    lastFrame = int.Parse(frameRegex.Match(output).Value);
+                    break;
+                }
+                case "RIFE-NCNN":
+                {
+                    break;
+                }
+                case "DAIN":
+                {
+                    break;
+                }
+                default: return;
+            }
         }
 
         public static int interpolatedInputFramesCount;
@@ -119,7 +140,7 @@ namespace Flowframes.Main
 
             bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
 
-            string logStr = $"Interpolated {frames}/{target} frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
+            string logStr = $"Interpolated {frames}/{target} frames ({percent}%) - Average speed: {fpsIn} FPS in / {fpsOut} FPS out - ";
             logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
             if (AutoEncode.busy) logStr += " - Encoding...";
             Logger.Log(logStr, false, replaceLine);
