@@ -127,16 +127,16 @@ namespace Flowframes.Magick
                             currentDupeCount = 0;
                             break;
                         }
-
-                        if (sw.ElapsedMilliseconds >= 500 || (i+1) == framePaths.Length)   // Print every 0.5s (or when done)
-                        {
-                            sw.Restart();
-                            Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
-                            Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
-                            if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 3500))
-                                ClearCache();
-                        }
                     }
+                }
+
+                if (sw.ElapsedMilliseconds >= 500 || (i + 1) == framePaths.Length)   // Print every 0.5s (or when done)
+                {
+                    sw.Restart();
+                    Logger.Log($"[Deduplication] Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
+                    Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
+                    if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OSUtils.GetFreeRamMb() < 3500))
+                        ClearCache();
                 }
 
                 // int oldIndex = -1; // TODO: Compare with 1st to fix loops?
@@ -146,7 +146,7 @@ namespace Flowframes.Magick
                 //     i = 0;
                 // }
 
-                if(i % 3 == 0)
+                if (i % 3 == 0)
                     await Task.Delay(1);
 
                 if (Interpolate.canceled) return;
