@@ -59,11 +59,13 @@ namespace Flowframes.Main
             return dotStr + "png";
         }
 
+        public static int lastFrame;
         public static int targetFrames;
         public static string currentOutdir;
         public static float currentFactor;
         public static bool progressPaused = false;
         public static bool progCheckRunning = false;
+
         public static async void GetProgressByFrameAmount(string outdir, int target)
         {
             progCheckRunning = true;
@@ -72,6 +74,7 @@ namespace Flowframes.Main
             Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
+            lastFrame = 0;
             while (Program.busy)
             {
                 if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
@@ -79,21 +82,25 @@ namespace Flowframes.Main
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
                     firstProgUpd = false;
-                    string[] frames = IOUtils.GetFilesSorted(currentOutdir, $"*.{GetOutExt()}");
-                    if (frames.Length > 1)
-                        UpdateInterpProgress(frames.Length, targetFrames, frames[frames.Length - 1]);
-                    if (frames.Length >= targetFrames)
+                    string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + $".{GetOutExt()}";
+                    if (lastFrame > 1)
+                        UpdateInterpProgress(lastFrame, targetFrames, lastFramePath);
+                    if (lastFrame >= targetFrames)
                         break;
-                    await Task.Delay(GetProgressWaitTime(frames.Length));
                 }
-                else
-                {
-                    await Task.Delay(200);
-                }
+                await Task.Delay(100);
             }
             progCheckRunning = false;
             if (i.canceled)
                 Program.mainForm.SetProgress(0);
+        }
+
+        public static void UpdateLastFrameFromInterpOutput(string output)
+        {
+            string dainStr = AiProcess.currentAiName == "DAIN" ? " done" : "";
+            Regex frameRegex = new Regex($@"(?<=.)\d*(?=.{GetOutExt()}{dainStr})");
+            if (!frameRegex.IsMatch(output)) return;
+            lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
         }
 
         public static int interpolatedInputFramesCount;
@@ -119,7 +126,7 @@ namespace Flowframes.Main
 
             bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
 
-            string logStr = $"Interpolated {frames}/{target} frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
+            string logStr = $"Interpolated {frames}/{target} Frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
             logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
             if (AutoEncode.busy) logStr += " - Encoding...";
             Logger.Log(logStr, false, replaceLine);
@@ -136,7 +143,7 @@ namespace Flowframes.Main
             catch { }
         }
 
-        public static async Task DeleteInterpolatedInputFrames ()
+        public static async Task DeleteInterpolatedInputFrames()
         {
             interpolatedInputFramesCount = 0;
             string[] inputFrames = IOUtils.GetFilesSorted(i.current.framesFolder);
@@ -151,7 +158,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static void SetPreviewImg (Image img)
+        public static void SetPreviewImg(Image img)
         {
             if (img == null)
                 return;

@@ -22,6 +22,7 @@ namespace Flowframes
         public static bool hasShownError;
 
         public static Process currentAiProcess;
+        public static string currentAiName;
         public static Stopwatch processTime = new Stopwatch();
         public static Stopwatch processTimeMulti = new Stopwatch();
 
@@ -52,12 +53,12 @@ namespace Flowframes
                 InterpolateUtils.GetProgressByFrameAmount(interpPath, target);
         }
 
-        static async Task AiFinished (string aiName)
+        static async Task AiFinished()
         {
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             InterpolateUtils.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*.png"), InterpolateUtils.targetFrames);
-            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
+            string logStr = $"Done running {currentAiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
@@ -92,6 +93,8 @@ namespace Flowframes
             if(Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
+            currentAiName = "RIFE";
+
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "rife.py";
 
@@ -110,12 +113,13 @@ namespace Flowframes
                 await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
             }
 
-            await AiFinished("RIFE");
+            await AiFinished();
         }
 
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
             bool parallel = false;
+            bool unbuffered = true;
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} ";
@@ -126,7 +130,7 @@ namespace Flowframes
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} " + (unbuffered ? "-u" : "") + $" {script} {args}";
             Logger.Log($"Running RIFE {(await InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
@@ -150,6 +154,8 @@ namespace Flowframes
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
+            currentAiName = "RIFE";
+
             await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
 
             if (!Interpolate.canceled && Interpolate.current.alpha)
@@ -158,8 +164,6 @@ namespace Flowframes
                 Logger.Log("Interpolating alpha channel...");
                 await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
             }
-
-            await AiFinished("RIFE");
         }
 
         static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
@@ -234,6 +238,8 @@ namespace Flowframes
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
+            currentAiName = "DAIN";
+
             await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
 
             if (!Interpolate.canceled && Interpolate.current.alpha)
@@ -242,8 +248,6 @@ namespace Flowframes
                 Logger.Log("Interpolating alpha channel...");
                 await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
             }
-
-            await AiFinished("DAIN");
         }
 
         public static async Task RunDainNcnnProcess (string framesPath, string outPath, float factor, string mdl, int tilesize)
@@ -338,6 +342,8 @@ namespace Flowframes
 
             if (hasShownError)
                 Interpolate.Cancel();
+
+            InterpolateUtils.UpdateLastFrameFromInterpOutput(line);
         }
 
         static string GetNcnnPattern ()
