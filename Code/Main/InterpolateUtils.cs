@@ -81,13 +81,19 @@ namespace Flowframes.Main
                 {
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
+
                     firstProgUpd = false;
                     string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + $".{GetOutExt()}";
+
                     if (lastFrame > 1)
                         UpdateInterpProgress(lastFrame, targetFrames, lastFramePath);
+
+                    await Task.Delay(200);
+
                     if (lastFrame >= targetFrames)
                         break;
                 }
+
                 await Task.Delay(100);
             }
             progCheckRunning = false;
