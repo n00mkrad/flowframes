@@ -96,25 +96,10 @@ namespace Flowframes.Main
 
         public static void UpdateLastFrameFromInterpOutput(string output)
         {
-            switch (AiProcess.currentAiName)
-            {
-                case "RIFE-CUDA":
-                {
-                    Regex frameRegex = new Regex($@"(?<=> )\d*(?=.{GetOutExt()})");
-                    if (!frameRegex.IsMatch(output)) return;
-                    lastFrame = int.Parse(frameRegex.Match(output).Value);
-                    break;
-                }
-                case "RIFE-NCNN":
-                {
-                    break;
-                }
-                case "DAIN":
-                {
-                    break;
-                }
-                default: return;
-            }
+            string dainStr = AiProcess.currentAiName == "DAIN" ? " done" : "";
+            Regex frameRegex = new Regex($@"(?<=.)\d*(?=.{GetOutExt()}{dainStr})");
+            if (!frameRegex.IsMatch(output)) return;
+            lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
         }
 
         public static int interpolatedInputFramesCount;

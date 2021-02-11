@@ -93,7 +93,7 @@ namespace Flowframes
             if(Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
-            currentAiName = "RIFE-CUDA";
+            currentAiName = "RIFE";
 
             string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
             string script = "rife.py";
@@ -154,7 +154,7 @@ namespace Flowframes
             processTimeMulti.Restart();
             Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
-            currentAiName = "RIFE-NCNN";
+            currentAiName = "RIFE";
 
             await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
 
