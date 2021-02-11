@@ -82,8 +82,9 @@ namespace Flowframes.Main
                     if (firstProgUpd && Program.mainForm.IsInFocus())
                         Program.mainForm.SetTab("preview");
                     firstProgUpd = false;
+                    string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + $".{GetOutExt()}";
                     if (lastFrame > 1)
-                        UpdateInterpProgress(lastFrame, targetFrames, currentOutdir + lastFrame.ToString("00000000") + $".{GetOutExt()}");
+                        UpdateInterpProgress(lastFrame, targetFrames, lastFramePath);
                     if (lastFrame >= targetFrames)
                         break;
                 }
