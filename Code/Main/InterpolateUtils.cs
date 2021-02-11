@@ -123,9 +123,9 @@ namespace Flowframes.Main
             float eta = framesLeft * secondsPerFrame;
             string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()), false);
 
-            bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average speed: ");
+            bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
 
-            string logStr = $"Interpolated {frames}/{target} frames ({percent}%) - Average speed: {fpsIn} FPS in / {fpsOut} FPS out - ";
+            string logStr = $"Interpolated {frames}/{target} Frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
             logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
             if (AutoEncode.busy) logStr += " - Encoding...";
             Logger.Log(logStr, false, replaceLine);
