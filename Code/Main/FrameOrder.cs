@@ -121,7 +121,7 @@ namespace Flowframes.Main
             }
 
             totalFileCount++;
-            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'\n";
+            fileContent += $"file '{interpPath}/{totalFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'";     // Last frame (source)
 
             if(loop)
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
