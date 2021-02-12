@@ -93,8 +93,10 @@ namespace Flowframes.Main
                     if (lastFrame >= targetFrames)
                         break;
                 }
-
-                await Task.Delay(100);
+                else
+                {
+                    await Task.Delay(100);
+                }
             }
             progCheckRunning = false;
             if (I.canceled)
