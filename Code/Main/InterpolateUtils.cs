@@ -110,7 +110,10 @@ namespace Flowframes.Main
                 if (!frameRegex.IsMatch(output)) return;
                 lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
             }
-            catch { }
+            catch
+            {
+                Logger.Log($"UpdateLastFrameFromInterpOutput: Failed to get progress from '{output}' even though Regex matched!");
+            }
         }
 
         public static int interpolatedInputFramesCount;
