@@ -71,7 +71,7 @@ namespace Flowframes
             catch (Exception e)
             {
                 Logger.Log("Non-critical error while performing online checks. See logs for details.");
-                Logger.Log($"{e.Message} \n {e.StackTrace}", true);
+                Logger.Log($"{e.Message}\n{e.StackTrace}", true);
             }
         }
 
@@ -91,7 +91,7 @@ namespace Flowframes
             catch (Exception e)
             {
                 Logger.Log($"Failed to load input from given launch arguments.");
-                Logger.Log($"{e.Message} \n {e.StackTrace}", true);
+                Logger.Log($"{e.Message}\n{e.StackTrace}", true);
             }
         }
 
