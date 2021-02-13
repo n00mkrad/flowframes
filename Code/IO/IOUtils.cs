@@ -1,5 +1,4 @@
-﻿
-using Flowframes.Data;
+﻿using Flowframes.Data;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
 using Flowframes.UI;

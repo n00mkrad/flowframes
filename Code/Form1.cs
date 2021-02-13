@@ -81,10 +81,11 @@ namespace Flowframes
             {
                 string[] args = Environment.GetCommandLineArgs();
                 List<string> files = new List<string>();
+
                 foreach (string arg in args)
-                    if (IOUtils.IsFileValid(arg)) 
+                    if (Path.GetExtension(arg) != ".exe" && IOUtils.IsFileValid(arg)) 
                         files.Add(arg);
-                files.RemoveAt(0); // remove flowframes executable
+
                 if(files.Count > 0)
                     DragDropHandler(files.ToArray());
             }
