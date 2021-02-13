@@ -6,6 +6,7 @@ using Flowframes.OS;
 using Flowframes.UI;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -15,6 +16,7 @@ using HTAlt.WinForms;
 using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using Flowframes.MiscUtils;
 
 namespace Flowframes
@@ -53,6 +55,8 @@ namespace Flowframes
 
             Initialized();
             Checks();
+
+            HandleArguments();
         }
 
         void Checks()
@@ -67,7 +71,27 @@ namespace Flowframes
             catch (Exception e)
             {
                 Logger.Log("Non-critical error while performing online checks. See logs for details.");
-                Logger.Log(e.Message + "\n" + e.StackTrace, true);
+                Logger.Log($"{e.Message} \n {e.StackTrace}", true);
+            }
+        }
+
+        void HandleArguments()
+        {
+            try
+            {
+                string[] args = Environment.GetCommandLineArgs();
+                List<string> files = new List<string>();
+                foreach (string arg in args)
+                    if (IOUtils.IsFileValid(arg)) 
+                        files.Add(arg);
+                files.RemoveAt(0); // remove flowframes executable
+                if(files.Count > 0)
+                    DragDropHandler(files.ToArray());
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load input from given launch arguments.");
+                Logger.Log($"{e.Message} \n {e.StackTrace}", true);
             }
         }
 
