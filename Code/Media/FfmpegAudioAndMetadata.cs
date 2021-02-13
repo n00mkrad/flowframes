@@ -34,7 +34,7 @@ namespace Flowframes.Media
                     args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outFile.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden);
 
-                    if ((File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512) || lastOutputFfmpeg.Contains("Invalid data"))
+                    if (File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512)
                     {
                         Logger.Log("Failed to extract audio, even with re-encoding. Output will not have audio.");
                         IOUtils.TryDeleteIfExists(outFile);
@@ -144,7 +144,7 @@ namespace Flowframes.Media
 
             await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
-            if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || lastOutputFfmpeg.Contains("Invalid data") || lastOutputFfmpeg.Contains("Error initializing output stream"))
+            if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
             {
                 Logger.Log("Failed to merge audio losslessly! Trying to re-encode.", false, false, "ffmpeg");
 
@@ -153,7 +153,7 @@ namespace Flowframes.Media
 
                 await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
-                if ((File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024) || lastOutputFfmpeg.Contains("Invalid data") || lastOutputFfmpeg.Contains("Error initializing output stream"))
+                if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
                 {
                     Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.", false, false, "ffmpeg");
                     IOUtils.TryMove(tempPath, inputFile);   // Move temp file back
