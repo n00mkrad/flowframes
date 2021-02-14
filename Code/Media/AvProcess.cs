@@ -71,7 +71,10 @@ namespace Flowframes
             string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
             Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");
 
-            if(line.Contains("Could not open file"))
+            if (line.Contains(".srt: Invalid data found"))
+                Logger.Log($"Warning: Failed to encode subtitle track {line.Split(':')[1]}. This track will be missing in the output file.");
+
+            if (line.Contains("Could not open file"))
                 Interpolate.Cancel($"FFmpeg Error: {line}");
 
             if (line.Contains("No NVENC capable devices found"))
@@ -98,7 +101,6 @@ namespace Flowframes
 
             if (showProgressBar && line.Contains("time="))
             {
-                Logger.Log($"showProgressBar, contains: {line.Contains("time=")}", true, false, "ffmpeg");
                 Regex timeRegex = new Regex("(?<=time=).*(?= )");
                 UpdateFfmpegProgress(timeRegex.Match(line).Value);
             }

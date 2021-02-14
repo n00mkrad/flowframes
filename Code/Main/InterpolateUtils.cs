@@ -24,7 +24,7 @@ namespace Flowframes.Main
         public static PictureBox preview;
         public static BigPreviewForm bigPreviewForm;
 
-        public static async Task CopyLastFrame (int lastFrameNum)
+        public static async Task CopyLastFrame(int lastFrameNum)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static string GetOutExt (bool withDot = false)
+        public static string GetOutExt(bool withDot = false)
         {
             string dotStr = withDot ? "." : "";
             if (Config.GetBool("jpegInterp"))
@@ -167,7 +167,7 @@ namespace Flowframes.Main
             {
                 while (Program.busy && (i + 10) > interpolatedInputFramesCount) await Task.Delay(1000);
                 if (!Program.busy) break;
-                if(i != 0 && i != inputFrames.Length - 1)
+                if (i != 0 && i != inputFrames.Length - 1)
                     IOUtils.OverwriteFileWithText(inputFrames[i]);
                 if (i % 10 == 0) await Task.Delay(10);
             }
@@ -184,41 +184,53 @@ namespace Flowframes.Main
                 bigPreviewForm.SetImage(img);
         }
 
-        public static Dictionary<string, int> frameCountCache = new Dictionary<string, int>();
-        public static async Task<int> GetInputFrameCountAsync (string path)
+        public static Dictionary<PseudoUniqueFile, int> frameCountCache = new Dictionary<PseudoUniqueFile, int>();
+        public static async Task<int> GetInputFrameCountAsync(string path)
         {
-            int maxMb = Config.GetInt("storeHashedFramecountMaxSizeMb", 256);
-            string hash = "";
 
-            if (IOUtils.GetFilesize(path) >= 0 && IOUtils.GetFilesize(path) < maxMb * 1024 * 1024)
-                hash = await IOUtils.GetHashAsync(path, IOUtils.Hash.xxHash);     // Get checksum for caching
-            else
-                Logger.Log($"GetInputFrameCountAsync: File bigger than {maxMb}mb, won't hash.", true);
+            long filesize = IOUtils.GetFilesize(path);
 
-            if (hash.Length > 1 && frameCountCache.ContainsKey(hash))
+            PseudoUniqueFile hash = new PseudoUniqueFile(path, filesize);
+
+            if (filesize > 0 && FrameCountCacheContains(hash))
             {
-                Logger.Log($"FrameCountCache contains this hash ({hash}), using cached frame count.", true);
-                return frameCountCache[hash];
+                Logger.Log($"FrameCountCache contains this hash, using cached frame count.", true);
+                return GetFrameCountFromCache(hash);
             }
             else
             {
-                Logger.Log($"Hash ({hash}) not cached, reading frame count.", true);
+                Logger.Log($"Hash not cached, reading frame count.", true);
             }
 
-            int frameCount = 0;
+            int frameCount;
 
             if (IOUtils.IsPathDirectory(path))
                 frameCount = IOUtils.GetAmountOfFiles(path, false);
             else
                 frameCount = await FfmpegCommands.GetFrameCountAsync(path);
 
-            if (hash.Length > 1 && frameCount > 5000)     // Cache if >5k frames to avoid re-reading it every single time
-            {
-                Logger.Log($"Adding hash ({hash}) with frame count {frameCount} to cache.", true);
-                frameCountCache[hash] = frameCount;      // Use CRC32 instead of path to avoid using cached value if file was changed
-            }
+            Logger.Log($"Adding hash with frame count {frameCount} to cache.", true);
+            frameCountCache.Add(hash, frameCount);
 
             return frameCount;
+        }
+
+        private static bool FrameCountCacheContains (PseudoUniqueFile hash)
+        {
+            foreach(KeyValuePair<PseudoUniqueFile, int> entry in frameCountCache)
+                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
+                    return true;
+
+            return false;
+        }
+
+        private static int GetFrameCountFromCache(PseudoUniqueFile hash)
+        {
+            foreach (KeyValuePair<PseudoUniqueFile, int> entry in frameCountCache)
+                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
+                    return entry.Value;
+
+            return 0;
         }
 
         public static int GetProgressWaitTime(int numFrames)
@@ -242,11 +254,11 @@ namespace Flowframes.Main
             return (waitMs * hddMultiplier).RoundToInt();
         }
 
-        public static string GetTempFolderLoc (string inPath, string outPath)
+        public static string GetTempFolderLoc(string inPath, string outPath)
         {
             string basePath = inPath.GetParentDir();
 
-            if(Config.GetInt("tempFolderLoc") == 1)
+            if (Config.GetInt("tempFolderLoc") == 1)
                 basePath = outPath.GetParentDir();
 
             if (Config.GetInt("tempFolderLoc") == 2)
@@ -258,7 +270,7 @@ namespace Flowframes.Main
             if (Config.GetInt("tempFolderLoc") == 4)
             {
                 string custPath = Config.Get("tempDirCustom");
-                if(IOUtils.IsDirValid(custPath))
+                if (IOUtils.IsDirValid(custPath))
                     basePath = custPath;
             }
 
@@ -301,18 +313,18 @@ namespace Flowframes.Main
             return passes;
         }
 
-        public static void PathAsciiCheck (string path, string pathTitle)
-        {            
+        public static void PathAsciiCheck(string path, string pathTitle)
+        {
             if (IOUtils.HasBadChars(path) || OSUtils.HasNonAsciiChars(path))
                 ShowMessage($"Warning: Your {pathTitle} includes special characters. This might cause problems.");
         }
 
-        public static void GifCompatCheck (Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)
+        public static void GifCompatCheck(Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)
         {
             if (outMode != Interpolate.OutMode.VidGif)
                 return;
 
-            if(fpsOut >= 50f)
+            if (fpsOut >= 50f)
                 Logger.Log("Warning: GIFs above 50 FPS might play slower on certain software/hardware! MP4 is recommended for higher frame rates.");
 
             int maxGifFrames = 200;
@@ -323,7 +335,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static bool CheckAiAvailable (AI ai)
+        public static bool CheckAiAvailable(AI ai)
         {
             if (!PkgUtils.IsAiAvailable(ai))
             {
@@ -334,7 +346,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static bool CheckDeleteOldTempFolder ()
+        public static bool CheckDeleteOldTempFolder()
         {
             if (!IOUtils.TryDeleteIfExists(I.current.tempFolder))
             {
@@ -345,7 +357,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static bool CheckPathValid (string path)
+        public static bool CheckPathValid(string path)
         {
             if (IOUtils.IsPathDirectory(path))
             {
@@ -381,7 +393,7 @@ namespace Flowframes.Main
             Logger.Log("Message: " + msg, true);
         }
 
-        public static async Task<Size> GetOutputResolution (string inputPath, bool print, bool returnZeroIfUnchanged = false)
+        public static async Task<Size> GetOutputResolution(string inputPath, bool print, bool returnZeroIfUnchanged = false)
         {
             Size resolution = await IOUtils.GetVideoOrFramesRes(inputPath);
             return GetOutputResolution(resolution, print, returnZeroIfUnchanged);
@@ -416,7 +428,7 @@ namespace Flowframes.Main
             return (n - a > b - n) ? b : a; // Return of closest of two
         }
 
-        public static bool CanUseAutoEnc (bool stepByStep, InterpSettings current)
+        public static bool CanUseAutoEnc(bool stepByStep, InterpSettings current)
         {
             AutoEncode.UpdateChunkAndBufferSizes();
 
@@ -432,7 +444,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if(stepByStep && !Config.GetBool("sbsAllowAutoEnc"))
+            if (stepByStep && !Config.GetBool("sbsAllowAutoEnc"))
             {
                 Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false.", true);
                 return false;
@@ -454,12 +466,12 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> UseUHD ()
+        public static async Task<bool> UseUHD()
         {
             return (await GetOutputResolution(I.current.inPath, false)).Height >= Config.GetInt("uhdThresh");
         }
 
-        public static void FixConsecutiveSceneFrames (string sceneFramesPath, string sourceFramesPath)
+        public static void FixConsecutiveSceneFrames(string sceneFramesPath, string sourceFramesPath)
         {
             if (!Directory.Exists(sceneFramesPath) || IOUtils.GetAmountOfFiles(sceneFramesPath, false) < 1)
                 return;
@@ -468,7 +480,7 @@ namespace Flowframes.Main
             List<string> sourceFrames = IOUtils.GetFilesSorted(sourceFramesPath).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
             List<string> sceneFramesToDelete = new List<string>();
 
-            foreach(string scnFrame in sceneFrames)
+            foreach (string scnFrame in sceneFrames)
             {
                 if (sceneFramesToDelete.Contains(scnFrame))
                     continue;

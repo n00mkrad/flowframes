@@ -204,6 +204,7 @@
     <Compile Include="Data\InterpSettings.cs" />
     <Compile Include="Data\Networks.cs" />
     <Compile Include="Data\Padding.cs" />
+    <Compile Include="Data\PseudoUniqueFile.cs" />
     <Compile Include="Data\ResumeState.cs" />
     <Compile Include="Data\SubtitleTrack.cs" />
     <Compile Include="Forms\BatchForm.cs">
