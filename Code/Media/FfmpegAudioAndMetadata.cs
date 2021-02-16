@@ -29,10 +29,9 @@ namespace Flowframes.Media
                 {
                     Logger.Log("Failed to extract audio losslessly! Trying to re-encode.");
                     File.Delete(outFile);
-
                     outFile = Path.ChangeExtension(outFile, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
                     args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outFile.Wrap()}";
-                    await RunFfmpeg(args, LogMode.Hidden);
+                    await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractOther, true);
 
                     if (File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512)
                     {

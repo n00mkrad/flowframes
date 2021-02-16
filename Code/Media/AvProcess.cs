@@ -16,7 +16,7 @@ namespace Flowframes
     {
         public static Process lastProcess;
         public static Stopwatch timeSinceLastOutput = new Stopwatch();
-        public enum TaskType { ExtractFrames, Encode, GetInfo, Merge, Other };
+        public enum TaskType { ExtractFrames, ExtractOther, Encode, GetInfo, Merge, Other };
         public static TaskType lastTask = TaskType.Other;
 
         public static string lastOutputFfmpeg;

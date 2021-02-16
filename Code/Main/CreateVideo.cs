@@ -222,7 +222,7 @@ namespace Flowframes.Main
                 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {
-                    Logger.Log("No compatible audio stream found.", true);
+                    Logger.Log("Can't merge audio as there's no extracted audio file in the temp folder.", true);
                     return;
                 }
 
