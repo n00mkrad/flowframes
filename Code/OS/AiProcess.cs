@@ -115,19 +115,20 @@ namespace Flowframes
 
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
-            bool parallel = false;
-            bool unbuffered = true;
+            //bool parallel = false;
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
-            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} ";
-            if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
-            if (parallel) script = "rife-parallel.py";
+            string wthreads = $"--wthreads {2 * (int)interpFactor}";
+            string rbuffer = $"--rbuffer {Config.GetInt("rifeCudaBufferSize", 200)}";
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {wthreads} {rbuffer}";
+            // if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
+            // if (parallel) script = "rife-parallel.py";
 
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} " + (unbuffered ? "-u" : "") + $" {script} {args}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE {(await InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
@@ -270,6 +271,7 @@ namespace Flowframes
             }
 
             dain.Start();
+
             if (!OSUtils.ShowHiddenCmd())
             {
                 dain.BeginOutputReadLine();

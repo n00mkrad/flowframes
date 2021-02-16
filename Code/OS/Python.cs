@@ -62,18 +62,18 @@ namespace Flowframes.OS
             compactOutput = compactOutput + line + "\n";
         }
 
-        public static string GetPyCmd ()
+        public static string GetPyCmd (bool unbufferedStdOut = true)
         {
             if (HasEmbeddedPyFolder())
             {
                 Logger.Log("Using embedded Python runtime.");
-                return Path.Combine(GetPyFolder(), "python.exe").Wrap();
+                return Path.Combine(GetPyFolder(), "python.exe").Wrap() + (unbufferedStdOut ? " -u " : "");
             }
             else
             {
                 if (IsSysPyInstalled())
                 {
-                    return "python";
+                    return "python" + (unbufferedStdOut ? " -u " : "");
                 }
                 else
                 {
@@ -81,6 +81,7 @@ namespace Flowframes.OS
                     Interpolate.Cancel("Neither the Flowframes Python Runtime nor System Python installation could be found!");
                 }
             }
+
             return "";
         }
 

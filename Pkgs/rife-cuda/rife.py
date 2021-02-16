@@ -39,6 +39,7 @@ parser.add_argument('--input', dest='input', type=str, default=None)
 parser.add_argument('--output', required=False, default='frames-interpolated')
 parser.add_argument('--model', required=False, default='models')
 parser.add_argument('--imgformat', default="png")
+parser.add_argument('--rbuffer', dest='rbuffer', type=int, default=200)
 parser.add_argument('--wthreads', dest='wthreads', type=int, default=4)
 parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
 parser.add_argument('--exp', dest='exp', type=int, default=1)
@@ -113,8 +114,8 @@ else:
     pw = ((w - 1) // 32 + 1) * 32
 padding = (0, pw - w, 0, ph - h)
 
-write_buffer = Queue(maxsize=160)
-read_buffer = Queue(maxsize=160)
+write_buffer = Queue(maxsize=args.rbuffer)
+read_buffer = Queue(maxsize=args.rbuffer)
 _thread.start_new_thread(build_read_buffer, (args, read_buffer, videogen))
 
 for x in range(args.wthreads):

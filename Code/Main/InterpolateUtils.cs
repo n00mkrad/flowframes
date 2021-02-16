@@ -187,9 +187,7 @@ namespace Flowframes.Main
         public static Dictionary<PseudoUniqueFile, int> frameCountCache = new Dictionary<PseudoUniqueFile, int>();
         public static async Task<int> GetInputFrameCountAsync(string path)
         {
-
             long filesize = IOUtils.GetFilesize(path);
-
             PseudoUniqueFile hash = new PseudoUniqueFile(path, filesize);
 
             if (filesize > 0 && FrameCountCacheContains(hash))
