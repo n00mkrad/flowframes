@@ -27,10 +27,7 @@ namespace Flowframes
             Config.Init();
 
             if (Config.GetBool("delLogsOnStartup"))
-                IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs not from this session
-
-            string oldExePath = IOUtils.GetExe() + ".old";
-            IOUtils.TryDeleteIfExists(oldExePath);
+                IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs from previous session
 
             Networks.Init();
             NvApi.Init();

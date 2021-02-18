@@ -34,6 +34,14 @@ namespace Flowframes
         {
             CheckForIllegalCrossThreadCalls = false;
             AutoScaleMode = AutoScaleMode.None;
+
+            if(!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().ToLower().Contains("temp"))
+            {
+                MessageBox.Show("You seem to be running Flowframes out of an archive.\nPlease extract the whole archive first!", "Error");
+                IOUtils.TryDeleteIfExists(Paths.GetDataPath());
+                Application.Exit();
+            }
+
             Text = $"Flowframes {Updater.GetInstalledVer()}";
 
             // Main Tab

@@ -27,6 +27,16 @@ namespace Flowframes.IO
 			return $"{frameOrderPrefix}-chunk-{from}-{to}.ini";
 		}
 
+		public static string GetExe()
+		{
+			return System.Reflection.Assembly.GetEntryAssembly().GetName().CodeBase.Replace("file:///", "");
+		}
+
+		public static string GetExeDir()
+		{
+			return AppDomain.CurrentDomain.BaseDirectory;
+		}
+
 		public static string GetVerPath()
 		{
 			return Path.Combine(GetDataPath(), "ver.ini");
@@ -34,7 +44,7 @@ namespace Flowframes.IO
 
 		public static string GetDataPath ()
 		{
-			string path = Path.Combine(IOUtils.GetExeDir(), "FlowframesData");
+			string path = Path.Combine(GetExeDir(), "FlowframesData");
 			Directory.CreateDirectory(path);
 			return path;
 		}

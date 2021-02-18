@@ -77,7 +77,7 @@ namespace Flowframes.OS
         public static async Task UpdateTo (int version, UpdaterForm form = null)
         {
             Logger.Log("Updating to " + version, true);
-            string savePath = Path.Combine(IOUtils.GetExeDir(), $"FlowframesV{version}");
+            string savePath = Path.Combine(Paths.GetExeDir(), $"FlowframesV{version}");
             try
             {
                 var client = new WebClient();
@@ -105,7 +105,7 @@ namespace Flowframes.OS
             try
             {
                 Logger.Log("Installing v" + version, true);
-                string runningExePath = IOUtils.GetExe();
+                string runningExePath = Paths.GetExe();
                 string oldExePath = runningExePath + ".old";
                 IOUtils.TryDeleteIfExists(oldExePath);
                 File.Move(runningExePath, oldExePath);

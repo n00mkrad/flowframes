@@ -354,9 +354,9 @@
             this.label2.Location = new System.Drawing.Point(11, 40);
             this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(160, 13);
+            this.label2.Size = new System.Drawing.Size(150, 13);
             this.label2.TabIndex = 0;
-            this.label2.Text = "Input Video (or image sequence)";
+            this.label2.Text = "Input Video (Or Frames Folder)";
             // 
             // label24
             // 
@@ -684,7 +684,7 @@
             // 
             this.pictureBox4.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox4.Location = new System.Drawing.Point(177, 37);
+            this.pictureBox4.Location = new System.Drawing.Point(167, 37);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(29, 21);
             this.pictureBox4.TabIndex = 31;

@@ -21,16 +21,6 @@ namespace Flowframes.IO
 {
     class IOUtils
     {
-		public static string GetExe()
-		{
-			return System.Reflection.Assembly.GetEntryAssembly().GetName().CodeBase.Replace("file:///", "");
-		}
-
-		public static string GetExeDir()
-		{
-			return AppDomain.CurrentDomain.BaseDirectory;
-		}
-
 		public static Image GetImage(string path)
 		{
 			using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))

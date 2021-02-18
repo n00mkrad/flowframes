@@ -263,7 +263,7 @@ namespace Flowframes.Main
                 basePath = outPath;
 
             if (Config.GetInt("tempFolderLoc") == 3)
-                basePath = IOUtils.GetExeDir();
+                basePath = Paths.GetExeDir();
 
             if (Config.GetInt("tempFolderLoc") == 4)
             {
@@ -317,27 +317,11 @@ namespace Flowframes.Main
                 ShowMessage($"Warning: Your {pathTitle} includes special characters. This might cause problems.");
         }
 
-        public static void GifCompatCheck(Interpolate.OutMode outMode, float fpsOut, int targetFrameCount)
-        {
-            if (outMode != Interpolate.OutMode.VidGif)
-                return;
-
-            if (fpsOut >= 50f)
-                Logger.Log("Warning: GIFs above 50 FPS might play slower on certain software/hardware! MP4 is recommended for higher frame rates.");
-
-            int maxGifFrames = 200;
-            if (targetFrameCount > maxGifFrames)
-            {
-                ShowMessage($"You can't use GIF with more than {maxGifFrames} output frames!\nPlease use MP4 for this.", "Error");
-                I.Cancel($"Can't use GIF encoding with more than {maxGifFrames} frames!");
-            }
-        }
-
         public static bool CheckAiAvailable(AI ai)
         {
             if (!PkgUtils.IsAiAvailable(ai))
             {
-                ShowMessage("The selected AI is not installed!\nYou can download it from the Package Installer.", "Error");
+                ShowMessage("The selected AI is not installed!", "Error");
                 I.Cancel("Selected AI not available.", true);
                 return false;
             }
