@@ -24,6 +24,7 @@ namespace Flowframes.IO
         public static void Set(string key, string value)
         {
             string[] lines = new string[1];
+
             try
             {
                 lines = File.ReadAllLines(configPath);
@@ -31,9 +32,11 @@ namespace Flowframes.IO
             catch
             {
                 MessageBox.Show("Failed to read config file!\nFlowframes will try to re-create the file if it does not exist.", "Error");
+
                 if(!File.Exists(configPath))
                     Init();
             }
+
             for (int i = 0; i < lines.Length; i++)
             {
                 if (lines[i].Split('|')[0] == key)
@@ -44,6 +47,7 @@ namespace Flowframes.IO
                     return;
                 }
             }
+
             List<string> list = lines.ToList();
             list.Add(key + "|" + value);
             list = list.OrderBy(p => p).ToList();
@@ -130,7 +134,6 @@ namespace Flowframes.IO
             if (key == "clearLogOnInput")   return WriteDefault(key, "True");
             if (key == "tempDirCustom")     return WriteDefault(key, "C:/");
             // Interpolation
-            if (key == "dedupMode")         return WriteDefault(key, "2");
             if (key == "dedupThresh")       return WriteDefault(key, "2");
             if (key == "keepAudio")         return WriteDefault(key, "True");
             if (key == "keepSubs")          return WriteDefault(key, "True");
