@@ -120,7 +120,8 @@ namespace Flowframes
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt("rifeCudaBufferSize", 200)}";
-            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {wthreads} {rbuffer}";
+            string prec = Config.GetBool("rifeCudaFp16") ? "--fp16" : "";
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {wthreads} {rbuffer} {prec}";
             // if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
             // if (parallel) script = "rife-parallel.py";
 

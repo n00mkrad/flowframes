@@ -164,6 +164,8 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label65 = new System.Windows.Forms.Label();
+            this.rifeCudaFp16 = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -821,6 +823,8 @@
             // aiOptsPage
             // 
             this.aiOptsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.aiOptsPage.Controls.Add(this.rifeCudaFp16);
+            this.aiOptsPage.Controls.Add(this.label65);
             this.aiOptsPage.Controls.Add(this.label35);
             this.aiOptsPage.Controls.Add(this.panel12);
             this.aiOptsPage.Controls.Add(this.dainNcnnTilesize);
@@ -849,7 +853,7 @@
             // 
             this.label35.AutoSize = true;
             this.label35.ForeColor = System.Drawing.Color.Silver;
-            this.label35.Location = new System.Drawing.Point(412, 261);
+            this.label35.Location = new System.Drawing.Point(412, 291);
             this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(258, 13);
@@ -860,7 +864,7 @@
             // 
             this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel12.Location = new System.Drawing.Point(378, 257);
+            this.panel12.Location = new System.Drawing.Point(378, 287);
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(21, 21);
             this.panel12.TabIndex = 78;
@@ -880,7 +884,7 @@
             "1024",
             "1536",
             "2048"});
-            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 257);
+            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 287);
             this.dainNcnnTilesize.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
             this.dainNcnnTilesize.Name = "dainNcnnTilesize";
             this.dainNcnnTilesize.Size = new System.Drawing.Size(87, 21);
@@ -889,7 +893,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(10, 260);
+            this.label27.Location = new System.Drawing.Point(10, 290);
             this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(93, 13);
@@ -900,7 +904,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 230);
+            this.label26.Location = new System.Drawing.Point(10, 260);
             this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(152, 16);
@@ -1884,6 +1888,25 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(11, 210);
+            this.label65.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(120, 13);
+            this.label65.TabIndex = 81;
+            this.label65.Text = "Fast Mode (CUDA Only)";
+            // 
+            // rifeCudaFp16
+            // 
+            this.rifeCudaFp16.AutoSize = true;
+            this.rifeCudaFp16.Location = new System.Drawing.Point(280, 210);
+            this.rifeCudaFp16.Name = "rifeCudaFp16";
+            this.rifeCudaFp16.Size = new System.Drawing.Size(15, 14);
+            this.rifeCudaFp16.TabIndex = 82;
+            this.rifeCudaFp16.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2058,5 +2081,7 @@
         private System.Windows.Forms.ComboBox modelsBaseUrl;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.Panel panel13;
+        private System.Windows.Forms.CheckBox rifeCudaFp16;
+        private System.Windows.Forms.Label label65;
     }
 }

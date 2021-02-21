@@ -84,6 +84,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(ncnnGpus);
             ConfigParser.SaveGuiElement(ncnnThreads);
             ConfigParser.SaveGuiElement(uhdThresh);
+            ConfigParser.SaveGuiElement(rifeCudaFp16);
             ConfigParser.SaveGuiElement(dainNcnnTilesize, ConfigParser.StringMode.Int);
             // Video Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
@@ -135,6 +136,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ncnnGpus);
             ConfigParser.LoadGuiElement(ncnnThreads);
             ConfigParser.LoadGuiElement(uhdThresh);
+            ConfigParser.LoadGuiElement(rifeCudaFp16);
             ConfigParser.LoadGuiElement(dainNcnnTilesize);
             // Video Export
             ConfigParser.LoadGuiElement(minOutVidLength);

@@ -24,7 +24,7 @@ namespace Flowframes.OS
                     return;
                 gpu = gpus[0];
 
-                Logger.Log($"Initialized NvApi. GPU: {gpu.FullName}");
+                Logger.Log($"Initialized NvApi. GPU: {gpu.FullName} - Tensor Cores: {HasTensorCores()}");
             }
             catch (Exception e)
             {
@@ -50,7 +50,7 @@ namespace Flowframes.OS
             {
                 return (gpu.MemoryInformation.CurrentAvailableDedicatedVideoMemoryInkB / 1000f / 1024f);
             }
-            catch (Exception e)
+            catch
             {
                 return 0f;
             }
@@ -71,6 +71,19 @@ namespace Flowframes.OS
             {
                 return "";
             }
+        }
+
+        public static bool HasTensorCores ()
+        {
+            if (gpu == null)
+                Init();
+
+            if (gpu == null)
+                return false;
+
+            string gpuName = gpu.FullName;
+
+            return (gpuName.Contains("RTX 20") || gpuName.Contains("RTX 30") || gpuName.Contains("Tesla V") || gpuName.Contains("Tesla T"));
         }
     }
 }

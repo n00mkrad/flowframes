@@ -19,11 +19,29 @@ os.chdir(os.path.dirname(dname))
 print("Added {0} to temporary PATH".format(dname))
 sys.path.append(dname)
 
+
+parser = argparse.ArgumentParser(description='Interpolation for a pair of images')
+parser.add_argument('--input', dest='input', type=str, default=None)
+parser.add_argument('--output', required=False, default='frames-interpolated')
+parser.add_argument('--model', required=False, default='models')
+parser.add_argument('--imgformat', default="png")
+parser.add_argument('--rbuffer', dest='rbuffer', type=int, default=200)
+parser.add_argument('--wthreads', dest='wthreads', type=int, default=4)
+parser.add_argument('--fp16', dest='fp16', action='store_true', help='half-precision mode')
+parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
+parser.add_argument('--exp', dest='exp', type=int, default=1)
+args = parser.parse_args()
+assert (not args.input is None)
+
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.set_grad_enabled(False)
 if torch.cuda.is_available():
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
+    if(args.fp16):
+        torch.set_default_tensor_type(torch.HalfTensor)
+        print("RIFE is running in FP16 mode.")
 else:
     print("WARNING: CUDA is not available, RIFE is running on CPU! [ff:nocuda-cpu]")
     
@@ -33,18 +51,6 @@ try:
     print("Hardware Acceleration: Using {} device(s), first is {}".format( torch.cuda.device_count(), torch.cuda.get_device_name(0)))
 except:
     print("Failed to get hardware info!")
-
-parser = argparse.ArgumentParser(description='Interpolation for a pair of images')
-parser.add_argument('--input', dest='input', type=str, default=None)
-parser.add_argument('--output', required=False, default='frames-interpolated')
-parser.add_argument('--model', required=False, default='models')
-parser.add_argument('--imgformat', default="png")
-parser.add_argument('--rbuffer', dest='rbuffer', type=int, default=200)
-parser.add_argument('--wthreads', dest='wthreads', type=int, default=4)
-parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
-parser.add_argument('--exp', dest='exp', type=int, default=1)
-args = parser.parse_args()
-assert (not args.input is None)
 
 try:
     from model.RIFE_HD import Model
@@ -104,6 +110,12 @@ def make_inference(I0, I1, exp):
     first_half = make_inference(I0, middle, exp=exp - 1)
     second_half = make_inference(middle, I1, exp=exp - 1)
     return [*first_half, middle, *second_half]
+    
+def pad_image(img):
+    if(args.fp16):
+        return F.pad(img, padding).half()
+    else:
+        return F.pad(img, padding)
 
 if args.UHD:
     print("UHD mode enabled.")
@@ -122,7 +134,7 @@ for x in range(args.wthreads):
     _thread.start_new_thread(clear_write_buffer, (args, write_buffer, x))
 
 I1 = torch.from_numpy(np.transpose(lastframe, (2,0,1))).to(device, non_blocking=True).unsqueeze(0).float() / 255.
-I1 = F.pad(I1, padding)
+I1 = F.pad(I1, padding).half()
 
 while True:
     frame = read_buffer.get()
@@ -130,7 +142,7 @@ while True:
         break
     I0 = I1
     I1 = torch.from_numpy(np.transpose(frame, (2,0,1))).to(device, non_blocking=True).unsqueeze(0).float() / 255.
-    I1 = F.pad(I1, padding)
+    I1 = pad_image(I1)
 
     output = make_inference(I0, I1, args.exp)
     write_buffer.put([cnt, lastframe])

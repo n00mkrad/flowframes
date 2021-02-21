@@ -152,6 +152,7 @@ namespace Flowframes.IO
             if (key == "minVidLength")      return WriteDefault(key, "2");
             // AI
             if (key == "uhdThresh")         return WriteDefault(key, "1440");
+            if (key == "rifeCudaFp16")      return WriteDefault(key, NvApi.HasTensorCores().ToString());
             if (key == "ncnnThreads")       return WriteDefault(key, "1");
             if (key == "dainNcnnTilesize")  return WriteDefault(key, "768");
             // Debug / Other / Experimental
