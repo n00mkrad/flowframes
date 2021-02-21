@@ -1251,11 +1251,10 @@
             this.stepSelector.ForeColor = System.Drawing.Color.White;
             this.stepSelector.FormattingEnabled = true;
             this.stepSelector.Items.AddRange(new object[] {
-            "1) Extract Scene Changes",
-            "2) Extract Video Frames",
-            "3) Run Interpolation",
-            "4) Create Output Video",
-            "5) Reset/Cleanup"});
+            "1) Import/Extract Frames",
+            "2) Run Interpolation",
+            "3) Export",
+            "4) Cleanup & Reset"});
             this.stepSelector.Location = new System.Drawing.Point(12, 418);
             this.stepSelector.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.stepSelector.Name = "stepSelector";

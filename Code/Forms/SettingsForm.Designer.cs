@@ -166,6 +166,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label65 = new System.Windows.Forms.Label();
             this.rifeCudaFp16 = new System.Windows.Forms.CheckBox();
+            this.label66 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -823,6 +824,7 @@
             // aiOptsPage
             // 
             this.aiOptsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.aiOptsPage.Controls.Add(this.label66);
             this.aiOptsPage.Controls.Add(this.rifeCudaFp16);
             this.aiOptsPage.Controls.Add(this.label65);
             this.aiOptsPage.Controls.Add(this.label35);
@@ -1907,6 +1909,17 @@
             this.rifeCudaFp16.TabIndex = 82;
             this.rifeCudaFp16.UseVisualStyleBackColor = true;
             // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.ForeColor = System.Drawing.Color.Silver;
+            this.label66.Location = new System.Drawing.Point(308, 211);
+            this.label66.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(290, 13);
+            this.label66.TabIndex = 83;
+            this.label66.Text = "Only recommended for GeForce RTX or recent Tesla GPUs.";
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2083,5 +2096,6 @@
         private System.Windows.Forms.Panel panel13;
         private System.Windows.Forms.CheckBox rifeCudaFp16;
         private System.Windows.Forms.Label label65;
+        private System.Windows.Forms.Label label66;
     }
 }

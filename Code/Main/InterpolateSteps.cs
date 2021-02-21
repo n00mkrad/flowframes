@@ -28,13 +28,13 @@ namespace Flowframes.Main
 
             if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
 
-            if (step.Contains("Extract Scene Changes"))
-            {
-                if (!current.inputIsFrames)        // Input is video - extract frames first
-                    await ExtractSceneChanges();
-                else
-                    InterpolateUtils.ShowMessage("Scene changes can only be extracted from videos, not frames!", "Error");
-            }
+            // if (step.Contains("Extract Scene Changes"))
+            // {
+            //     if (!current.inputIsFrames)        // Input is video - extract frames first
+            //         await ExtractSceneChanges();
+            //     else
+            //         InterpolateUtils.ShowMessage("Scene changes can only be extracted from videos, not frames!", "Error");
+            // }
 
             if (step.Contains("Extract Frames"))
                 await ExtractFramesStep();
@@ -68,6 +68,9 @@ namespace Flowframes.Main
 
         public static async Task ExtractFramesStep()
         {
+            if (!current.inputIsFrames)        // Input is video - extract frames first
+                await ExtractSceneChanges();
+
             if (!IOUtils.TryDeleteIfExists(current.framesFolder))
             {
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
@@ -78,6 +81,7 @@ namespace Flowframes.Main
             AiProcess.filenameMap.Clear();
 
             await GetFrames(true);
+            await PostProcessFrames(true);
         }
 
         public static async Task DoInterpolate()
@@ -100,8 +104,6 @@ namespace Flowframes.Main
             // TODO: Check if this works lol, remove if it does
             //if (Config.GetBool("sbsAllowAutoEnc"))
             //    nextOutPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetAiSuffix(current.ai, current.interpFactor) + InterpolateUtils.GetExt(current.outMode));
-
-            await PostProcessFrames(true);
 
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");

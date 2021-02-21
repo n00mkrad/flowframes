@@ -59,7 +59,7 @@ namespace Flowframes
             InitAis();
             InterpolateUtils.preview = previewPicturebox;
 
-            UpdateStepByStepControls(true);
+            UpdateStepByStepControls();
 
             Initialized();
             Checks();
@@ -309,7 +309,7 @@ namespace Flowframes
                 c.Visible = !state;
             cancelBtn.Enabled = allowCancel;
             Program.busy = state;
-            Program.mainForm.UpdateStepByStepControls(false);
+            Program.mainForm.UpdateStepByStepControls();
         }
 
         string lastAiComboxStr = "";
@@ -455,17 +455,10 @@ namespace Flowframes
             SetTab("interpolation");
         }
 
-        public void UpdateStepByStepControls(bool settingsMayHaveChanged)
+        public void UpdateStepByStepControls()
         {
-            if (settingsMayHaveChanged)
-            {
-                stepSelector.Items.Clear();
-                if (Config.GetBool("scnDetect"))
-                    stepSelector.Items.AddRange(new string[] { "1) Extract Scene Changes", "2) Import/Extract Frames", "3) Run Interpolation", "4) Export", "5) Cleanup & Reset" });
-                else
-                    stepSelector.Items.AddRange(new string[] { "1) Import/Extract Frames", "2) Run Interpolation", "3) Export", "4) Cleanup & Reset" });
+            if(stepSelector.SelectedIndex < 0)
                 stepSelector.SelectedIndex = 0;
-            }
 
             bool stepByStep = Config.GetInt("processingMode") == 1;
             runBtn.Visible = !stepByStep && !Program.busy;
