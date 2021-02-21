@@ -77,7 +77,7 @@ namespace Flowframes
             if (line.Contains("Could not open file"))
                 Interpolate.Cancel($"FFmpeg Error: {line}");
 
-            if (line.Contains("No NVENC capable devices found"))
+            if (line.Contains("No NVENC capable devices found") || line.Contains("Cannot load nvcuda.dll"))
                 Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
 
             if (!hidden && showProgressBar && line.Contains("time="))

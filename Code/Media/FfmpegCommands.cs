@@ -169,6 +169,14 @@ namespace Flowframes
             }
         }
 
+        public static async Task<bool> IsEncoderCompatible(string enc)
+        {
+            Logger.Log($"IsEncoderCompatible('{enc}')", true, false, "ffmpeg");
+            string args = $"-loglevel error -f lavfi -i color=black:s=540x540 -vframes 1 -an -c:v {enc} -f null -";
+            string output = await GetFfmpegOutputAsync(args);
+            return !output.ToLower().Contains("error");
+        }
+
         public static string GetAudioCodec(string path)
         {
             string args = $" -v panic -show_streams -select_streams a -show_entries stream=codec_name {path.Wrap()}";

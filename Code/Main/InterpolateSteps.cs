@@ -15,7 +15,6 @@ namespace Flowframes.Main
 
     class InterpolateSteps
     {
-        public enum Step { ExtractScnChanges, ExtractFrames, Interpolate, CreateVid, Reset }
 
         public static async Task Run(string step)
         {
@@ -27,14 +26,7 @@ namespace Flowframes.Main
             current.stepByStep = true;
 
             if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
-
-            // if (step.Contains("Extract Scene Changes"))
-            // {
-            //     if (!current.inputIsFrames)        // Input is video - extract frames first
-            //         await ExtractSceneChanges();
-            //     else
-            //         InterpolateUtils.ShowMessage("Scene changes can only be extracted from videos, not frames!", "Error");
-            // }
+            if (!InterpolateUtils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
 
             if (step.Contains("Extract Frames"))
                 await ExtractFramesStep();
@@ -86,6 +78,8 @@ namespace Flowframes.Main
 
         public static async Task DoInterpolate()
         {
+            if (!InterpolateUtils.CheckAiAvailable(current.ai)) return;
+
             current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
 
             if (!Directory.Exists(current.framesFolder) || IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png") < 2)
@@ -105,6 +99,8 @@ namespace Flowframes.Main
             //if (Config.GetBool("sbsAllowAutoEnc"))
             //    nextOutPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetAiSuffix(current.ai, current.interpFactor) + InterpolateUtils.GetExt(current.outMode));
 
+            if (Config.GetBool("sbsAllowAutoEnc") && !(await InterpolateUtils.CheckEncoderValid())) return;
+
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);
@@ -120,6 +116,8 @@ namespace Flowframes.Main
                 Cancel($"There are no interpolated frames to encode!\n\nDid you delete the folder?");
                 return;
             }
+
+            if (!(await InterpolateUtils.CheckEncoderValid())) return;
 
             string[] outFrames = IOUtils.GetFilesSorted(current.interpFolder, $"*.{InterpolateUtils.GetOutExt()}");
 

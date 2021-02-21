@@ -361,6 +361,23 @@ namespace Flowframes.Main
             return true;
         }
 
+        public static async Task<bool> CheckEncoderValid ()
+        {
+            string enc = FFmpegUtils.GetEnc(FFmpegUtils.GetCodec(I.current.outMode));
+
+            if (!enc.ToLower().Contains("nvenc"))
+                return true;
+
+            if (!(await FfmpegCommands.IsEncoderCompatible(enc)))
+            {
+                ShowMessage("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", "Error");
+                I.Cancel();
+                return false;
+            }
+
+            return true;
+        }
+
         public static bool IsVideoValid(string videoPath)
         {
             if (videoPath == null || !IOUtils.IsFileValid(videoPath))

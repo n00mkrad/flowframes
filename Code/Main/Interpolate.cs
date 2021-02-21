@@ -34,15 +34,16 @@ namespace Flowframes
         {
             if (!BatchProcessing.busy && Program.busy) return;
             canceled = false;
+            Program.mainForm.SetWorking(true);
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
             if (!ResumeUtils.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
+            if (!(await Utils.CheckEncoderValid())) return;           // Check NVENC compat
             Utils.PathAsciiCheck(current.outPath, "output path");
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
-            Program.mainForm.SetWorking(true);
 
             if (!ResumeUtils.resumeNextRun)
             {
