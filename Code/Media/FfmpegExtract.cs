@@ -2,6 +2,7 @@
 using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
+using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -41,9 +42,9 @@ namespace Flowframes.Media
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} \"{framesDir}/%{Padding.inputFrames}d.png\"";
+            string args = $"{rateArg} -i {inputFile.Wrap()} {pngComprArg} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} {GetTrimArg()} \"{framesDir}/%{Padding.inputFrames}d.png\"";
             LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await AvProcess.RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
+            await RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
             int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*.png");
             if (!sceneDetect) Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
             await Task.Delay(1);
@@ -68,9 +69,17 @@ namespace Flowframes.Media
             string vf = alpha ? $"-filter_complex \"[0:v]{divisionFilter},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {divisionFilter}";
             string args = $" -loglevel panic -f concat -safe 0 -i {concatFile.Wrap()} {pngComprArg} {sizeStr} {pixFmt} -vsync 0 {vf} \"{outpath}/%{Padding.inputFrames}d.png\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await AvProcess.RunFfmpeg(args, logMode, TaskType.ExtractFrames);
+            await RunFfmpeg(args, logMode, TaskType.ExtractFrames);
             if (delSrc)
                 DeleteSource(inpath);
+        }
+
+        static string GetTrimArg ()
+        {
+            if (!QuickSettingsTab.trimEnabled)
+                return "";
+
+            return $"-ss {QuickSettingsTab.trimStart} -to {QuickSettingsTab.trimEnd}";
         }
 
         public static async Task ImportSingleImage(string inputFile, string outPath, Size size)
@@ -80,7 +89,7 @@ namespace Flowframes.Media
             string comprArg = isPng ? pngComprArg : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {divisionFilter} {outPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
+            await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
         }
 
         public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum)
@@ -89,19 +98,25 @@ namespace Flowframes.Media
             string comprArg = isPng ? pngComprArg : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
+            await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
         }
 
         public static async Task ExtractLastFrame(string inputFile, string outputPath, Size size)
         {
+            if (QuickSettingsTab.trimEnabled)
+                return;
+
             if (IOUtils.IsPathDirectory(outputPath))
                 outputPath = Path.Combine(outputPath, "last.png");
+
             bool isPng = (Path.GetExtension(outputPath).ToLower() == ".png");
             string comprArg = isPng ? pngComprArg : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            string args = $"-sseof -1 -i {inputFile.Wrap()} -update 1 {pixFmt} {sizeStr} {outputPath.Wrap()}";
-            await AvProcess.RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
+            string trim = QuickSettingsTab.trimEnabled ? $"-ss {QuickSettingsTab.GetTrimEndMinusOne()} -to {QuickSettingsTab.trimEnd}" : "";
+            string sseof = string.IsNullOrWhiteSpace(trim) ? "-sseof -1" : "";
+            string args = $"{sseof} -i {inputFile.Wrap()} -update 1 {pixFmt} {sizeStr} {trim} {outputPath.Wrap()}";
+            await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
         }
     }
 }

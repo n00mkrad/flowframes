@@ -49,9 +49,7 @@ namespace Flowframes
             UIUtils.InitCombox(outModeCombox, 0);
             UIUtils.InitCombox(aiModel, 2);
             // Video Utils
-            UIUtils.InitCombox(utilsLoopTimesCombox, 0);
-            UIUtils.InitCombox(utilsSpeedCombox, 0);
-            UIUtils.InitCombox(utilsConvCrf, 0);
+            UIUtils.InitCombox(trimCombox, 0);
 
             Program.mainForm = this;
             Logger.textbox = logBox;
@@ -152,12 +150,13 @@ namespace Flowframes
         public float currInFps;
         public int currInFrames;
         public long currInDuration;
+        public long currInDurationCut;
         public void UpdateInputInfo ()
         {
             string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
             str += $"Framerate: {(currInFps > 0f ? $"{currInFps.ToStringDot()} FPS" : "Unknown")} - ";
             str += $"Frame Count: {(currInFrames > 0 ? $"{currInFrames}" : "Unknown")} - ";
-            str += $"Duration: {(currInDuration > 0 ? $"{FormatUtils.MsToTimestamp(currInDuration)}" : "Unknown")}";
+            str += $"Duration: {(currInDuration > 0 ? FormatUtils.MsToTimestamp(currInDuration) : "Unknown")}";
             inputInfo.Text = str;
         }
 
@@ -167,6 +166,7 @@ namespace Flowframes
             currInFps = 0;
             currInFrames = 0;
             currInDuration = 0;
+            currInDurationCut = 0;
             UpdateInputInfo();
         }
 
@@ -328,24 +328,9 @@ namespace Flowframes
             Logger.Log("Closing main form.", true);
         }
 
-        private async void debugExtractFramesBtn_Click(object sender, EventArgs e)
-        {
-            await UtilsTab.ExtractVideo(inputTbox.Text.Trim(), utilsExtractAudioCbox.Checked);
-        }
-
         private void licenseBtn_Click(object sender, EventArgs e)
         {
             Process.Start("explorer.exe", Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.licenses.fileName)));
-        }
-
-        private async void utilsLoopVidBtn_Click(object sender, EventArgs e)
-        {
-            await UtilsTab.LoopVideo(inputTbox.Text.Trim(), utilsLoopTimesCombox);
-        }
-
-        private async void utilsChangeSpeedBtn_Click(object sender, EventArgs e)
-        {
-            await UtilsTab.ChangeSpeed(inputTbox.Text.Trim(), utilsSpeedCombox);
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -377,23 +362,10 @@ namespace Flowframes
                 if (resume)
                     ResumeUtils.LoadTempFolder(files[0]);
 
+                trimCombox.SelectedIndex = 0;
+
                 MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
             }
-        }
-
-        private async void utilsConvertMp4Btn_Click(object sender, EventArgs e)
-        {
-            await UtilsTab.Convert(inputTbox.Text.Trim(), utilsConvCrf);
-        }
-
-        private void utilsDedupBtn_Click(object sender, EventArgs e)
-        {
-            UtilsTab.Dedupe(inputTbox.Text.Trim(), false);
-        }
-
-        private void utilsDedupTestBtn_Click(object sender, EventArgs e)
-        {
-            UtilsTab.Dedupe(inputTbox.Text.Trim(), true);
         }
 
         private void cancelBtn_Click(object sender, EventArgs e)
@@ -474,6 +446,29 @@ namespace Flowframes
         {
             if (!initialized) return;
             aiCombox_SelectedIndexChanged(null, null);
+        }
+
+        private void trimCombox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            QuickSettingsTab.trimEnabled = trimCombox.SelectedIndex > 0;
+            trimPanel.Visible = QuickSettingsTab.trimEnabled;
+
+            if (trimCombox.SelectedIndex == 1)
+            {
+                trimStartBox.Text = "00:00:00";
+                Logger.Log("Setting trimEndBox text to FormatUtils.MsToTimestamp(currInDuration) = " + FormatUtils.MsToTimestamp(currInDuration));
+                trimEndBox.Text = FormatUtils.MsToTimestamp(currInDuration);
+            }
+        }
+
+        private void trimResetBtn_Click(object sender, EventArgs e)
+        {
+            trimCombox_SelectedIndexChanged(null, null);
+        }
+
+        private void trimBox_TextChanged(object sender, EventArgs e)
+        {
+            QuickSettingsTab.UpdateTrim(trimStartBox, trimEndBox);
         }
     }
 }

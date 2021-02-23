@@ -57,7 +57,7 @@ namespace Flowframes.MiscUtils
             return Time(elapsedMs);
         }
 
-        public static long MsFromTimestamp(string timestamp)
+        public static long TimestampToSecs(string timestamp, bool hasMilliseconds = true)
         {
             try
             {
@@ -65,8 +65,45 @@ namespace Flowframes.MiscUtils
                 int hours = int.Parse(values[0]);
                 int minutes = int.Parse(values[1]);
                 int seconds = int.Parse(values[2].Split('.')[0]);
-                int milliseconds = int.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
-                long ms = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+                long secs = hours * 3600000 + minutes * 60000 + seconds;
+
+                if (hasMilliseconds)
+                {
+                    int milliseconds = int.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
+
+                    if (milliseconds >= 500)
+                        secs++;
+                }
+
+                return secs;
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"TimestampToSecs({timestamp}) Exception: {e.Message}", true);
+                return 0;
+            }
+        }
+
+        public static long TimestampToMs(string timestamp, bool hasMilliseconds = true)
+        {
+            try
+            {
+                string[] values = timestamp.Split(':');
+                int hours = int.Parse(values[0]);
+                int minutes = int.Parse(values[1]);
+                int seconds = int.Parse(values[2].Split('.')[0]);
+                long ms = 0;
+
+                if (hasMilliseconds)
+                {
+                    int milliseconds = int.Parse(values[2].Split('.')[1].Substring(0, 2)) * 10;
+                    ms = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+                }
+                else
+                {
+                    ms = hours * 3600000 + minutes * 60000 + seconds * 1000;
+                }
+                
                 return ms;
             }
             catch (Exception e)
@@ -74,6 +111,11 @@ namespace Flowframes.MiscUtils
                 Logger.Log($"MsFromTimeStamp({timestamp}) Exception: {e.Message}", true);
                 return 0;
             }
+        }
+
+        public static string SecsToTimestamp(long seconds)
+        {
+            return (new DateTime(1970, 1, 1)).AddSeconds(seconds).ToString("HH:mm:ss");
         }
 
         public static string MsToTimestamp(long milliseconds)

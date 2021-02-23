@@ -277,7 +277,7 @@
     <Compile Include="UI\GetWebInfo.cs" />
     <Compile Include="UI\MainUiFunctions.cs" />
     <Compile Include="UI\UIUtils.cs" />
-    <Compile Include="UI\UtilsTab.cs" />
+    <Compile Include="UI\QuickSettingsTab.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>

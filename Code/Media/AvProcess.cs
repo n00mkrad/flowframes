@@ -157,14 +157,17 @@ namespace Flowframes
 
         public static void UpdateFfmpegProgress(string ffmpegTime)
         {
-            if (Program.mainForm.currInDuration < 1)
+            Form1 form = Program.mainForm;
+            long currInDuration = (form.currInDuration != form.currInDurationCut) ? form.currInDurationCut : form.currInDuration;
+
+            if (currInDuration < 1)
             {
                 Program.mainForm.SetProgress(0);
                 return;
             }
 
-            long total = Program.mainForm.currInDuration / 100;
-            long current = FormatUtils.MsFromTimestamp(ffmpegTime);
+            long total = currInDuration / 100;
+            long current = FormatUtils.TimestampToMs(ffmpegTime);
             int progress = Convert.ToInt32(current / total);
             Program.mainForm.SetProgress(progress);
         }

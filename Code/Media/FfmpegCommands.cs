@@ -58,7 +58,7 @@ namespace Flowframes
             Logger.Log($"GetDuration({inputFile}) - Reading Duration using ffprobe.", true, false, "ffmpeg");
             string args = $" -v panic -select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
             string info = GetFfprobeOutput(args);
-            return FormatUtils.MsFromTimestamp(info);
+            return FormatUtils.TimestampToMs(info);
         }
 
         public static async Task<float> GetFramerate(string inputFile)

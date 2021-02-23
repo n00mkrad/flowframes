@@ -1,7 +1,7 @@
 1) Download...
-   - FF-Slim if you have an AMD/Intel GPU, or if you have an Nvidia GPU and Pytorch already installed
-   - FF-Full if you have an Nvidia Turing (RTX 2000) or older GPU
-   - FF-Full-RTX3000 if you have an Nvidia Ampere (RTX 3000) GPU. Also compatible with older GPUs, but has bigger filesize.
+   - FF-Slim if you have an AMD/Intel graphics card, or if you have an Nvidia GPU and Pytorch already installed
+   - FF-Full if you have an Nvidia Turing (RTX 2000) or older card
+   - FF-Full-RTX3000 if you have an Nvidia Ampere (RTX 3000) card. Also compatible with older card, but has bigger filesize than Full.
 
 2) Extract the 7z file using 7zip or any other program that supports it
 

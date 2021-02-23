@@ -35,6 +35,7 @@ namespace Flowframes.UI
 
             Logger.Log("Loading metadata...");
             Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
+            Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
             int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
             string fpsStr = "Not Found";
             float fps = await IOUtils.GetFpsFolderOrVideo(path);
