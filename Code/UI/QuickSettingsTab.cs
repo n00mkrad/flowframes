@@ -30,7 +30,7 @@ namespace Flowframes.UI
             if (endSecs <= startSecs)
                 trimEndBox.Text = FormatUtils.SecsToTimestamp(startSecs + 1);
 
-            long dur = FormatUtils.TimestampToMs(trimStart, false) - FormatUtils.TimestampToMs(trimEnd, false);
+            long dur = FormatUtils.TimestampToMs(trimEnd, false) - FormatUtils.TimestampToMs(trimStart, false);
             Program.mainForm.currInDurationCut = dur;
         }
 

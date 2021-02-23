@@ -158,7 +158,7 @@ namespace Flowframes
         public static void UpdateFfmpegProgress(string ffmpegTime)
         {
             Form1 form = Program.mainForm;
-            long currInDuration = (form.currInDuration != form.currInDurationCut) ? form.currInDurationCut : form.currInDuration;
+            long currInDuration = (form.currInDurationCut < form.currInDuration) ? form.currInDurationCut : form.currInDuration;
 
             if (currInDuration < 1)
             {
