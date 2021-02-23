@@ -66,7 +66,7 @@ namespace Flowframes.Media
 
                 int streamIndex = line.Remove("Stream #0:").Split(':')[0].GetInt();
 
-                string title = "unknown";
+                string title = "";
                 string codec = "";
 
                 if ((i + 2 < outputLines.Length) && outputLines[i + 1].Contains("Metadata:") && outputLines[i + 2].Contains("title"))
@@ -121,12 +121,13 @@ namespace Flowframes.Media
             string args = $"-i {inputFile.Wrap()}";
             Logger.Log("GetSubtitleTracks()", true, false, "ffmpeg");
             string[] outputLines = (await GetFfmpegOutputAsync(args)).SplitIntoLines();
-            int idx = 0;
 
             for (int i = 0; i < outputLines.Length; i++)
             {
                 string line = outputLines[i];
                 if (!line.Contains(" Subtitle: ")) continue;
+
+                int streamIndex = line.Remove("Stream #0:").Split(':')[0].GetInt();
 
                 string lang = "unknown";
                 string subEnc = "UTF-8";
@@ -137,9 +138,8 @@ namespace Flowframes.Media
                 if ((i + 2 < outputLines.Length) && outputLines[i + 1].Contains("Metadata:") && outputLines[i + 2].Contains("SUB_CHARENC"))  // Subtitle encoding is in metadata!
                     subEnc = outputLines[i + 2].Remove("SUB_CHARENC").Remove(":").TrimWhitespaces();
 
-                Logger.Log($"Found subtitle track #{idx} with language '{lang}' and encoding '{subEnc}'", true, false, "ffmpeg");
-                subtitleTracks.Add(new SubtitleTrack(idx, lang, subEnc));
-                idx++;
+                Logger.Log($"Found subtitle track #{streamIndex} with language '{lang}' and encoding '{subEnc}'", true, false, "ffmpeg");
+                subtitleTracks.Add(new SubtitleTrack(streamIndex, lang, subEnc));
             }
 
             return subtitleTracks;
@@ -147,56 +147,92 @@ namespace Flowframes.Media
 
         #endregion
 
-        public static async Task MergeAudioAndSubs(string inputFile, string audioPath, string tempFolder, int looptimes = -1)    // https://superuser.com/a/277667
+        public static async Task MergeAudioAndSubs(string inputFile, string tempFolder, int looptimes = -1)    // https://superuser.com/a/277667
         {
-            Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
+            // Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
             string containerExt = Path.GetExtension(inputFile);
-            string tempPath = Path.Combine(tempFolder, $"vid{containerExt}"); // inputFile + "-temp" + Path.GetExtension(inputFile);
-            string outPath = Path.Combine(tempFolder, $"muxed{containerExt}"); // inputFile + "-temp" + Path.GetExtension(inputFile);
+            string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
+            string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
             File.Move(inputFile, tempPath);
             string inName = Path.GetFileName(tempPath);
-            string audioName = Path.GetFileName(audioPath);
+            // string audioName = Path.GetFileName(audioPath);
             string outName = Path.GetFileName(outPath);
 
-            bool subs = Utils.ContainerSupportsSubs(containerExt, false) && Config.GetBool("keepSubs");
-            string subInputArgs = "";
-            string subMapArgs = "";
-            string subMetaArgs = "";
-            string[] subTracks = subs ? IOUtils.GetFilesSorted(tempFolder, false, "*.srt") : new string[0];
+            string[] audioTracks = IOUtils.GetFilesSorted(tempFolder, false, "*_audio.*");     // Find audio files
+            string[] subTracks = IOUtils.GetFilesSorted(tempFolder, false, "*.srt");     // Find subtitle files
 
-            for (int subTrack = 0; subTrack < subTracks.Length; subTrack++)
+            Dictionary<int, string> trackFiles = new Dictionary<int, string>();    // Dict holding all track files with their index
+
+            foreach (string audioTrack in audioTracks)  // Loop through audio streams to add them to the dict
+                trackFiles[Path.GetFileNameWithoutExtension(audioTrack).Split('_')[0].GetInt()] = audioTrack;   // Add file, dict key is stream index
+
+            foreach (string subTrack in subTracks)  // Loop through subtitle streams to add them to the dict
+                trackFiles[Path.GetFileNameWithoutExtension(subTrack).Split('_')[0].GetInt()] = subTrack;   // Add file, dict key is stream index
+
+            bool audio = Config.GetBool("keepSubs");
+            bool subs = Utils.ContainerSupportsSubs(containerExt, false) && Config.GetBool("keepSubs");
+
+            string trackInputArgs = "";
+            string trackMapArgs = "";
+            string trackMetaArgs = "";
+
+            // for (int subTrack = 0; subTrack < subTracks.Length; subTrack++)
+            // {
+            //     trackInputArgs += $" -i {Path.GetFileName(subTracks[subTrack])}";     // Input filename
+            //     trackMapArgs += $" -map {Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[0].GetInt()}";  // Stream index
+            //     trackMetaArgs += $" -metadata:s:s:{subTrack} language={Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[1]}"; // Language
+            // }
+
+            SortedDictionary<int, string> sortedTrackFiles = new SortedDictionary<int, string>(trackFiles);
+
+            foreach (KeyValuePair<int, string> track in sortedTrackFiles)
             {
-                subInputArgs += $" -i {Path.GetFileName(subTracks[subTrack])}";     // Input filename
-                subMapArgs += $" -map {Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[0].GetInt()}";  // Stream index
-                subMetaArgs += $" -metadata:s:s:{subTrack} language={Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[1]}"; // Language
+                int streamIndex = track.Key;
+                string trackFile = track.Value;
+
+                trackInputArgs += $" -i {Path.GetFileName(trackFile)}";     // Input filename
+                trackMapArgs += $" -map {Path.GetFileNameWithoutExtension(trackFile).Split('_')[0].GetInt()}";  // Set stream index
+                trackMetaArgs += $" -metadata:s:{streamIndex} title={Path.GetFileNameWithoutExtension(trackFile).Split('_')[1]}"; // Language or title
             }
 
-            string subCodec = Utils.GetSubCodecForContainer(containerExt);
-            string args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
-                $"{subInputArgs} -map 0:v -map 1:a {subMapArgs} -c:v copy -c:a copy -c:s {subCodec} {subMetaArgs} -shortest {outName}";
+            bool allAudioCodecsSupported = true;
+
+            foreach (string audioTrack in audioTracks)
+                if (!Utils.ContainerSupportsAudioFormat(Interpolate.current.outMode, Path.GetExtension(audioTrack)))
+                    allAudioCodecsSupported = false;
+
+            if(!allAudioCodecsSupported)
+                Logger.Log("Warning: Input audio format(s) not fully support in output container. Audio transfer will not be lossless.", false, false, "ffmpeg");
+
+            string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
+            string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile));
+
+            string args = $" -i {inName} -stream_loop {looptimes}" +
+                $"{trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} -shortest {outName}";
 
             await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
-            if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
-            {
-                Logger.Log("Failed to merge audio losslessly! Trying to re-encode.", false, false, "ffmpeg");
 
-                args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
-                $"{subInputArgs} -map 0:v -map 1:a {subMapArgs} -c:v copy {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} -c:s {subCodec} {subMetaArgs} -shortest {outName}";
-
-                await RunFfmpeg(args, tempFolder, LogMode.Hidden);
-
-                if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
-                {
-                    Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.", false, false, "ffmpeg");
-                    IOUtils.TryMove(tempPath, inputFile);   // Move temp file back
-                    IOUtils.TryDeleteIfExists(tempPath);
-                    return;
-                }
-
-                string audioExt = Path.GetExtension(audioPath).Remove(".").ToUpper();
-                Logger.Log($"Source audio ({audioExt}) has been re-encoded to fit into the target container ({containerExt.Remove(".").ToUpper()}). This may decrease the quality slightly.", false, true, "ffmpeg");
-            }
+            // if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
+            // {
+            //     Logger.Log("Failed to merge audio losslessly! Trying to re-encode.", false, false, "ffmpeg");
+            // 
+            //     args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
+            //     $"{trackInputArgs} -map 0:v -map 1:a {trackMapArgs} -c:v copy {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} -c:s {subCodec} {trackMetaArgs} -shortest {outName}";
+            // 
+            //     await RunFfmpeg(args, tempFolder, LogMode.Hidden);
+            // 
+            //     if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
+            //     {
+            //         Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.", false, false, "ffmpeg");
+            //         IOUtils.TryMove(tempPath, inputFile);   // Move temp file back
+            //         IOUtils.TryDeleteIfExists(tempPath);
+            //         return;
+            //     }
+            // 
+            //     string audioExt = Path.GetExtension(audioPath).Remove(".").ToUpper();
+            //     Logger.Log($"Source audio ({audioExt}) has been re-encoded to fit into the target container ({containerExt.Remove(".").ToUpper()}). This may decrease the quality slightly.", false, true, "ffmpeg");
+            // }
 
             if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
             {

@@ -210,6 +210,7 @@ namespace Flowframes.Main
         public static async Task MergeAudio(string inputPath, string outVideo, int looptimes = -1)
         {
             if (!Config.GetBool("keepAudio")) return;
+
             try
             {
                 string audioFileBasePath = Path.Combine(I.current.tempFolder, "audio");
@@ -217,16 +218,16 @@ namespace Flowframes.Main
                 if (inputPath != null && IOUtils.IsPathDirectory(inputPath) && !File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))   // Try loading out of same folder as input if input is a folder
                     audioFileBasePath = Path.Combine(I.current.tempFolder.GetParentDir(), "audio");
 
-                if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
-                    await FfmpegAudioAndMetadata.ExtractAudioTracks(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
+                // if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
+                //     await FfmpegAudioAndMetadata.ExtractAudioTracks(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
                 
-                if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
-                {
-                    Logger.Log("Can't merge audio as there's no extracted audio file in the temp folder.", true);
-                    return;
-                }
+                // if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
+                // {
+                //     Logger.Log("Can't merge audio as there's no extracted audio file in the temp folder.", true);
+                //     return;
+                // }
 
-                await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, IOUtils.GetAudioFile(audioFileBasePath), I.current.tempFolder);        // Merge from audioFile into outVideo
+                await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, I.current.tempFolder);        // Merge from audioFile into outVideo
             }
             catch (Exception e)
             {

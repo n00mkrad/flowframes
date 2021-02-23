@@ -12,8 +12,8 @@ namespace Flowframes.Data
         public SubtitleTrack(int streamNum, string langStr, string encodingStr)
         {
             streamIndex = streamNum;
-            lang = langStr;
-            langFriendly = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(langStr.ToLower());
+            lang = langStr.Trim().Replace(" ", ".");
+            langFriendly = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(langStr.ToLower().Trim().Replace(" ", "."));
             encoding = encodingStr.Trim();
         }
     }

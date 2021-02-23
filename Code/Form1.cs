@@ -459,7 +459,6 @@ namespace Flowframes
             if (trimCombox.SelectedIndex == 1)
             {
                 trimStartBox.Text = "00:00:00";
-                Logger.Log("Setting trimEndBox text to FormatUtils.MsToTimestamp(currInDuration) = " + FormatUtils.MsToTimestamp(currInDuration));
                 trimEndBox.Text = FormatUtils.MsToTimestamp(currInDuration);
             }
         }

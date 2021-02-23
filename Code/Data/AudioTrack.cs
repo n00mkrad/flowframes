@@ -11,7 +11,7 @@ namespace Flowframes.Data
         public AudioTrack(int streamNum, string titleStr, string codecStr)
         {
             streamIndex = streamNum;
-            title = titleStr.Trim();
+            title = titleStr.Trim().Replace(" ", ".");
             codec = codecStr.Trim();
         }
     }

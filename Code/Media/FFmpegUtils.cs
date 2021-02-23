@@ -95,13 +95,26 @@ namespace Flowframes.Media
             return args;
         }
 
-        public static string GetAudioEnc(Codec codec)
+        public static bool ContainerSupportsAudioFormat (Interpolate.OutMode outMode, string format)
         {
-            switch (codec)
+            format = format.Remove(".");
+
+            string[] formatsMp4 = new string[] { "m4a", "ac3", "dts" };
+            string[] formatsMkv = new string[] { "m4a", "ac3", "dts", "ogg", "mp2", "wav" };
+            string[] formatsWebm = new string[] { "ogg" };
+            string[] formatsProres = new string[] { "m4a" };
+            string[] formatsAvi = new string[] { "m4a", "ac3", "dts" };
+
+            switch (outMode)
             {
-                case Codec.VP9: return "libopus";
+                case Interpolate.OutMode.VidMp4: return formatsMp4.Contains(format);
+                case Interpolate.OutMode.VidMkv: return formatsMkv.Contains(format);
+                case Interpolate.OutMode.VidWebm: return formatsWebm.Contains(format);
+                case Interpolate.OutMode.VidProRes: return formatsProres.Contains(format);
+                case Interpolate.OutMode.VidAvi: return formatsAvi.Contains(format);
             }
-            return "aac";
+
+            return false;
         }
 
         public static string GetExt(Interpolate.OutMode outMode, bool dot = true)
