@@ -207,6 +207,9 @@
     <Compile Include="Data\PseudoUniqueFile.cs" />
     <Compile Include="Data\ResumeState.cs" />
     <Compile Include="Data\SubtitleTrack.cs" />
+    <Compile Include="Form1.QuickSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
     </Compile>

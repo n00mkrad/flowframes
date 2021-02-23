@@ -446,6 +446,9 @@ namespace Flowframes
         {
             if (!initialized) return;
             aiCombox_SelectedIndexChanged(null, null);
+
+            if (mainTabControl.SelectedTab.Text == "Quick Settings")
+                LoadQuickSettings();
         }
 
         private void trimCombox_SelectedIndexChanged(object sender, EventArgs e)
@@ -470,5 +473,50 @@ namespace Flowframes
         {
             QuickSettingsTab.UpdateTrim(trimStartBox, trimEndBox);
         }
+
+        #region Quick Settings
+
+        public void SaveQuickSettings (object sender, EventArgs e)
+        {
+            ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
+            ConfigParser.SaveComboxIndex(dedupMode);
+            ConfigParser.SaveComboxIndex(mpdecimateMode);
+            ConfigParser.SaveGuiElement(dedupThresh);
+            ConfigParser.SaveGuiElement(enableLoop);
+            ConfigParser.SaveGuiElement(scnDetect);
+            ConfigParser.SaveGuiElement(scnDetectValue);
+        }
+
+        public void LoadQuickSettings ()
+        {
+            Logger.Log("LoadQuickSettings");
+            ConfigParser.LoadGuiElement(maxVidHeight);
+            ConfigParser.LoadComboxIndex(dedupMode);
+            ConfigParser.LoadComboxIndex(mpdecimateMode);
+            ConfigParser.LoadGuiElement(dedupThresh);
+            ConfigParser.LoadGuiElement(enableLoop);
+            ConfigParser.LoadGuiElement(scnDetect);
+            ConfigParser.LoadGuiElement(scnDetectValue);
+        }
+
+        private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            dedupeSensLabel.Visible = dedupMode.SelectedIndex != 0;
+            magickDedupePanel.Visible = dedupMode.SelectedIndex == 1;
+            mpDedupePanel.Visible = dedupMode.SelectedIndex == 2;
+            SaveQuickSettings(null, null);
+        }
+
+        private void quickSettingsTab_Layout(object sender, LayoutEventArgs e)
+        {
+            //LoadQuickSettings();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            new SettingsForm().ShowDialog();
+        }
+
+        #endregion
     }
 }

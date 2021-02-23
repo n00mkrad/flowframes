@@ -47,6 +47,7 @@ namespace Flowframes.Forms
         {
             SaveSettings();
             Program.mainForm.UpdateStepByStepControls();
+            Program.mainForm.LoadQuickSettings();
         }
 
         void SaveSettings ()

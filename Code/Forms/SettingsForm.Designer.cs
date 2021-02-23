@@ -82,6 +82,9 @@
             this.keepAudio = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.aiOptsPage = new Cyotek.Windows.Forms.TabListPage();
+            this.label66 = new System.Windows.Forms.Label();
+            this.rifeCudaFp16 = new System.Windows.Forms.CheckBox();
+            this.label65 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
             this.panel12 = new System.Windows.Forms.Panel();
             this.dainNcnnTilesize = new System.Windows.Forms.ComboBox();
@@ -164,9 +167,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label65 = new System.Windows.Forms.Label();
-            this.rifeCudaFp16 = new System.Windows.Forms.CheckBox();
-            this.label66 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -850,6 +850,36 @@
             this.aiOptsPage.Name = "aiOptsPage";
             this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Settings";
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.ForeColor = System.Drawing.Color.Silver;
+            this.label66.Location = new System.Drawing.Point(308, 211);
+            this.label66.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(290, 13);
+            this.label66.TabIndex = 83;
+            this.label66.Text = "Only recommended for GeForce RTX or recent Tesla GPUs.";
+            // 
+            // rifeCudaFp16
+            // 
+            this.rifeCudaFp16.AutoSize = true;
+            this.rifeCudaFp16.Location = new System.Drawing.Point(280, 210);
+            this.rifeCudaFp16.Name = "rifeCudaFp16";
+            this.rifeCudaFp16.Size = new System.Drawing.Size(15, 14);
+            this.rifeCudaFp16.TabIndex = 82;
+            this.rifeCudaFp16.UseVisualStyleBackColor = true;
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(11, 210);
+            this.label65.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(120, 13);
+            this.label65.TabIndex = 81;
+            this.label65.Text = "Fast Mode (CUDA Only)";
             // 
             // label35
             // 
@@ -1889,36 +1919,6 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
-            // 
-            // label65
-            // 
-            this.label65.AutoSize = true;
-            this.label65.Location = new System.Drawing.Point(11, 210);
-            this.label65.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(120, 13);
-            this.label65.TabIndex = 81;
-            this.label65.Text = "Fast Mode (CUDA Only)";
-            // 
-            // rifeCudaFp16
-            // 
-            this.rifeCudaFp16.AutoSize = true;
-            this.rifeCudaFp16.Location = new System.Drawing.Point(280, 210);
-            this.rifeCudaFp16.Name = "rifeCudaFp16";
-            this.rifeCudaFp16.Size = new System.Drawing.Size(15, 14);
-            this.rifeCudaFp16.TabIndex = 82;
-            this.rifeCudaFp16.UseVisualStyleBackColor = true;
-            // 
-            // label66
-            // 
-            this.label66.AutoSize = true;
-            this.label66.ForeColor = System.Drawing.Color.Silver;
-            this.label66.Location = new System.Drawing.Point(308, 211);
-            this.label66.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(290, 13);
-            this.label66.TabIndex = 83;
-            this.label66.Text = "Only recommended for GeForce RTX or recent Tesla GPUs.";
             // 
             // SettingsForm
             // 
