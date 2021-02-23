@@ -121,14 +121,16 @@ namespace Flowframes.Media
             return ext;
         }
 
-        public static string GetAudioExt(string videoFile)
+        public static string GetAudioExt(string videoFile, int streamIndex = -1)
         {
-            switch (FfmpegCommands.GetAudioCodec(videoFile))
+            switch (FfmpegCommands.GetAudioCodec(videoFile, streamIndex))
             {
                 case "vorbis": return "ogg";
                 case "opus": return "ogg";
                 case "mp2": return "mp2";
                 case "aac": return "m4a";
+                case "ac3": return "ac3";
+                case "dts": return "dts";
                 default: return "wav";
             }
         }

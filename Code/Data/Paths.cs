@@ -17,6 +17,8 @@ namespace Flowframes.IO
 
 		public const string frameOrderPrefix = "frames";
 
+		public const string audioSuffix = "audio";
+
 		public static string GetFrameOrderFilename(float factor)
 		{
 			return $"{frameOrderPrefix}-{factor.ToStringDot()}x.ini";

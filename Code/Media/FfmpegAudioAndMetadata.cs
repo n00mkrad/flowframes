@@ -16,38 +16,70 @@ namespace Flowframes.Media
 {
     partial class FfmpegAudioAndMetadata : FfmpegCommands
     {
-        public static async Task ExtractAudio(string inputFile, string outFile)    // https://stackoverflow.com/a/27413824/14274419
+        public static async Task ExtractAudioTracks(string inputFile, string outFolder)
         {
-            try
+            List<AudioTrack> audioTracks = await GetAudioTracks(inputFile);
+            int counter = 1;
+
+            foreach (AudioTrack track in audioTracks)
             {
-                string audioExt = Utils.GetAudioExt(inputFile);
-                outFile = Path.ChangeExtension(outFile, audioExt);
-                Logger.Log($"[FFCmds] Extracting audio from {inputFile} to {outFile}", true);
-                string args = $" -loglevel panic -i {inputFile.Wrap()} -vn -c:a copy {outFile.Wrap()}";
+                string audioExt = Utils.GetAudioExt(inputFile, track.streamIndex);
+                string outPath = Path.Combine(outFolder, $"{track.streamIndex}_{track.title}_audio.{audioExt}");
+                string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:{track.streamIndex} -vn -c:a copy {outPath.Wrap()}";
                 await RunFfmpeg(args, LogMode.Hidden);
-                if (File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512)
+
+                if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
                 {
-                    Logger.Log("Failed to extract audio losslessly! Trying to re-encode.");
-                    File.Delete(outFile);
-                    outFile = Path.ChangeExtension(outFile, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
-                    args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outFile.Wrap()}";
+                    Logger.Log($"Failed to extract audio stream #{track.streamIndex} losslessly! Trying to re-encode.");
+                    File.Delete(outPath);
+                    outPath = Path.ChangeExtension(outPath, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
+                    args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractOther, true);
 
-                    if (File.Exists(outFile) && IOUtils.GetFilesize(outFile) < 512)
+                    if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
                     {
-                        Logger.Log("Failed to extract audio, even with re-encoding. Output will not have audio.");
-                        IOUtils.TryDeleteIfExists(outFile);
+                        Logger.Log($"Failed to extract audio stream #{track.streamIndex}, even with re-encoding. Will be missing from output.");
+                        IOUtils.TryDeleteIfExists(outPath);
                         return;
                     }
 
-                    Logger.Log($"Source audio has been re-encoded as it can't be extracted losslessly. This may decrease the quality slightly.", false, true);
+                    Logger.Log($"Audio stream #{track.streamIndex} has been re-encoded as it can't be extracted losslessly. This may decrease the quality slightly.", false, true);
                 }
-            }
-            catch (Exception e)
-            {
-                Logger.Log("Error extracting audio: " + e.Message);
+
+                if (audioTracks.Count > 1) Program.mainForm.SetProgress(FormatUtils.RatioInt(counter, audioTracks.Count));
+                Logger.Log($"[FFCmds] Extracted audio track {track.streamIndex} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true, false, "ffmpeg");
+                counter++;
             }
         }
+
+        public static async Task<List<AudioTrack>> GetAudioTracks(string inputFile)
+        {
+            List<AudioTrack> audioTracks = new List<AudioTrack>();
+            string args = $"-i {inputFile.Wrap()}";
+            Logger.Log("GetAudioTracks()", true, false, "ffmpeg");
+            string[] outputLines = (await GetFfmpegOutputAsync(args)).SplitIntoLines();
+
+            for (int i = 0; i < outputLines.Length; i++)
+            {
+                string line = outputLines[i];
+                if (!line.Contains(" Audio: ")) continue;
+
+                int streamIndex = line.Remove("Stream #0:").Split(':')[0].GetInt();
+
+                string title = "unknown";
+                string codec = "";
+
+                if ((i + 2 < outputLines.Length) && outputLines[i + 1].Contains("Metadata:") && outputLines[i + 2].Contains("title"))
+                    title = outputLines[i + 2].Remove("title").Remove(":").TrimWhitespaces();
+
+                Logger.Log($"Found audio stream #{streamIndex} {title}", true, false, "ffmpeg");
+                audioTracks.Add(new AudioTrack(streamIndex, title, codec));
+            }
+
+            return audioTracks;
+        }
+
+        #region Subtitles
 
         public static async Task ExtractSubtitles(string inputFile, string outFolder, Interpolate.OutMode outMode,bool showMsg = true)
         {
@@ -62,7 +94,7 @@ namespace Flowframes.Media
                 foreach (SubtitleTrack subTrack in subtitleTracks)
                 {
                     string outPath = Path.Combine(outFolder, $"{subTrack.streamIndex}_{subTrack.langFriendly}_{subTrack.encoding}.srt");
-                    string args = $" -loglevel error -sub_charenc {subTrack.encoding} -i {inputFile.Wrap()} -map 0:s:{subTrack.streamIndex} {outPath.Wrap()}";
+                    string args = $" -loglevel error -sub_charenc {subTrack.encoding} -i {inputFile.Wrap()} -map 0:{subTrack.streamIndex} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden);
                     if (subtitleTracks.Count > 4) Program.mainForm.SetProgress(FormatUtils.RatioInt(counter, subtitleTracks.Count));
                     Logger.Log($"[FFCmds] Extracted subtitle track {subTrack.streamIndex} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true, false, "ffmpeg");
@@ -113,6 +145,8 @@ namespace Flowframes.Media
             return subtitleTracks;
         }
 
+        #endregion
+
         public static async Task MergeAudioAndSubs(string inputFile, string audioPath, string tempFolder, int looptimes = -1)    // https://superuser.com/a/277667
         {
             Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
@@ -132,9 +166,9 @@ namespace Flowframes.Media
 
             for (int subTrack = 0; subTrack < subTracks.Length; subTrack++)
             {
-                subInputArgs += $" -i {Path.GetFileName(subTracks[subTrack])}";
-                subMapArgs += $" -map {subTrack + 2}";
-                subMetaArgs += $" -metadata:s:s:{subTrack} language={Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[1]}";
+                subInputArgs += $" -i {Path.GetFileName(subTracks[subTrack])}";     // Input filename
+                subMapArgs += $" -map {Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[0].GetInt()}";  // Stream index
+                subMetaArgs += $" -metadata:s:s:{subTrack} language={Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[1]}"; // Language
             }
 
             string subCodec = Utils.GetSubCodecForContainer(containerExt);

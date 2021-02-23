@@ -177,9 +177,10 @@ namespace Flowframes
             return !output.ToLower().Contains("error");
         }
 
-        public static string GetAudioCodec(string path)
+        public static string GetAudioCodec(string path, int streamIndex = -1)
         {
-            string args = $" -v panic -show_streams -select_streams a -show_entries stream=codec_name {path.Wrap()}";
+            string stream = (streamIndex < 0) ? "a" : $"{streamIndex}";
+            string args = $" -v panic -show_streams -select_streams {stream} -show_entries stream=codec_name {path.Wrap()}";
             string info = GetFfprobeOutput(args);
             string[] entries = info.SplitIntoLines();
             foreach (string entry in entries)

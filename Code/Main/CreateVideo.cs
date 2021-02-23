@@ -218,7 +218,7 @@ namespace Flowframes.Main
                     audioFileBasePath = Path.Combine(I.current.tempFolder.GetParentDir(), "audio");
 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)))
-                    await FfmpegAudioAndMetadata.ExtractAudio(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
+                    await FfmpegAudioAndMetadata.ExtractAudioTracks(inputPath, audioFileBasePath);      // Extract from sourceVideo to audioFile unless it already exists
                 
                 if (!File.Exists(IOUtils.GetAudioFile(audioFileBasePath)) || new FileInfo(IOUtils.GetAudioFile(audioFileBasePath)).Length < 4096)
                 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 
 namespace Flowframes.Data
 {
@@ -12,7 +9,7 @@ namespace Flowframes.Data
         public string langFriendly;
         public string encoding;
 
-        public SubtitleTrack (int streamNum, string langStr, string encodingStr)
+        public SubtitleTrack(int streamNum, string langStr, string encodingStr)
         {
             streamIndex = streamNum;
             lang = langStr;

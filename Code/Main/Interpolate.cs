@@ -108,10 +108,10 @@ namespace Flowframes
 
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting audio from video...");
-            string audioFile = Path.Combine(current.tempFolder, "audio");
+            //string audioFile = Path.Combine(current.tempFolder, "audio");
 
-            if (audioFile != null && !File.Exists(audioFile))
-                await FfmpegAudioAndMetadata.ExtractAudio(inPath, audioFile);
+            //if (audioFile != null && !File.Exists(audioFile))
+            await FfmpegAudioAndMetadata.ExtractAudioTracks(inPath, current.tempFolder);
 
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting subtitles from video...");
