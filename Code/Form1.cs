@@ -489,7 +489,6 @@ namespace Flowframes
 
         public void LoadQuickSettings ()
         {
-            Logger.Log("LoadQuickSettings");
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(dedupMode);
             ConfigParser.LoadComboxIndex(mpdecimateMode);
