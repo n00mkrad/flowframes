@@ -40,7 +40,7 @@ if torch.cuda.is_available():
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     if(args.fp16):
-        torch.set_default_tensor_type(torch.HalfTensor)
+        torch.set_default_tensor_type(torch.cuda.HalfTensor)
         print("RIFE is running in FP16 mode.")
 else:
     print("WARNING: CUDA is not available, RIFE is running on CPU! [ff:nocuda-cpu]")
@@ -134,7 +134,7 @@ for x in range(args.wthreads):
     _thread.start_new_thread(clear_write_buffer, (args, write_buffer, x))
 
 I1 = torch.from_numpy(np.transpose(lastframe, (2,0,1))).to(device, non_blocking=True).unsqueeze(0).float() / 255.
-I1 = F.pad(I1, padding).half()
+I1 = pad_image(I1)
 
 while True:
     frame = read_buffer.get()
