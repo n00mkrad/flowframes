@@ -75,6 +75,8 @@ namespace Flowframes.Main
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
             lastFrame = 0;
+            peakFpsOut = 0f;
+
             while (Program.busy)
             {
                 if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
@@ -98,7 +100,9 @@ namespace Flowframes.Main
                     await Task.Delay(100);
                 }
             }
+
             progCheckRunning = false;
+
             if (I.canceled)
                 Program.mainForm.SetProgress(0);
         }
@@ -119,6 +123,7 @@ namespace Flowframes.Main
         }
 
         public static int interpolatedInputFramesCount;
+        public static float peakFpsOut;
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
@@ -133,6 +138,9 @@ namespace Flowframes.Main
             float fps = (float)frames / generousTime;
             string fpsIn = (fps / currentFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");
+
+            if (fps > peakFpsOut)
+                peakFpsOut = fps;
 
             float secondsPerFrame = generousTime / (float)frames;
             int framesLeft = target - frames;

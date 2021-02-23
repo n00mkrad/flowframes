@@ -57,7 +57,7 @@ namespace Flowframes
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             InterpolateUtils.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*.png"), InterpolateUtils.targetFrames);
-            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}";
+            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolateUtils.peakFpsOut.ToString("0.00")}";
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
                 logStr += " - Waiting for encoding to finish...";
             Logger.Log(logStr);
