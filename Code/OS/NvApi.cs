@@ -83,7 +83,7 @@ namespace Flowframes.OS
 
             string gpuName = gpu.FullName;
 
-            return (gpuName.Contains("RTX 20") || gpuName.Contains("RTX 30") || gpuName.Contains("Tesla V") || gpuName.Contains("Tesla T"));
+            return (gpuName.Contains("RTX ") || gpuName.Contains("Tesla V") || gpuName.Contains("Tesla T"));
         }
     }
 }
