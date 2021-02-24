@@ -213,7 +213,7 @@ namespace Flowframes.Media
                     allAudioCodecsSupported = false;
 
             if(!allAudioCodecsSupported)
-                Logger.Log("Warning: Input audio format(s) not fully support in output container. Audio transfer will not be lossless.", false, false, "ffmpeg");
+                Logger.Log("Warning: Input audio format(s) not fully supported in output container. Audio transfer will not be lossless.", false, false, "ffmpeg");
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
             string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile));

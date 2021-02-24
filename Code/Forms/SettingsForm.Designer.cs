@@ -1480,6 +1480,7 @@
             this.gifColors.ForeColor = System.Drawing.Color.White;
             this.gifColors.FormattingEnabled = true;
             this.gifColors.Items.AddRange(new object[] {
+            "256 (Max)",
             "128 (High)",
             "64 (Medium)",
             "32 (Low)",
