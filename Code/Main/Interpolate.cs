@@ -106,15 +106,20 @@ namespace Flowframes
                 Utils.FixConsecutiveSceneFrames(Path.Combine(current.tempFolder, Paths.scenesDir), current.framesFolder);
 
             if (canceled) return;
-            Program.mainForm.SetStatus("Extracting audio from video...");
-            //string audioFile = Path.Combine(current.tempFolder, "audio");
 
-            //if (audioFile != null && !File.Exists(audioFile))
-            await FfmpegAudioAndMetadata.ExtractAudioTracks(inPath, current.tempFolder);
+            if (Config.GetBool("keepAudio"))
+            {
+                Program.mainForm.SetStatus("Extracting audio from video...");
+                await FfmpegAudioAndMetadata.ExtractAudioTracks(inPath, current.tempFolder);
+            }
 
             if (canceled) return;
-            Program.mainForm.SetStatus("Extracting subtitles from video...");
-            await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
+
+            if (Config.GetBool("keepSubs"))
+            {
+                Program.mainForm.SetStatus("Extracting subtitles from video...");
+                await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
+            }
         }
 
         public static async Task PostProcessFrames (bool stepByStep)

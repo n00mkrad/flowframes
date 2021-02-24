@@ -156,7 +156,6 @@ namespace Flowframes.Media
 
         public static async Task MergeAudioAndSubs(string inputFile, string tempFolder)    // https://superuser.com/a/277667
         {
-            // Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
             string containerExt = Path.GetExtension(inputFile);
             string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
             string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
@@ -164,8 +163,11 @@ namespace Flowframes.Media
             string inName = Path.GetFileName(tempPath);
             string outName = Path.GetFileName(outPath);
 
-            string[] audioTracks = IOUtils.GetFilesSorted(tempFolder, false, "*_audio.*");     // Find audio files
-            string[] subTracks = IOUtils.GetFilesSorted(tempFolder, false, "*.srt");     // Find subtitle files
+            bool audio = Config.GetBool("keepAudio");
+            bool subs = Utils.ContainerSupportsSubs(containerExt, false) && Config.GetBool("keepSubs");
+
+            string[] audioTracks = audio ? IOUtils.GetFilesSorted(tempFolder, false, "*_audio.*") : new string[0];     // Find audio files
+            string[] subTracks = subs ? IOUtils.GetFilesSorted(tempFolder, false, "*.srt") : new string[0];     // Find subtitle files
 
             Dictionary<int, string> trackFiles = new Dictionary<int, string>();    // Dict holding all track files with their index
 
@@ -174,9 +176,6 @@ namespace Flowframes.Media
 
             foreach (string subTrack in subTracks)  // Loop through subtitle streams to add them to the dict
                 trackFiles[Path.GetFileNameWithoutExtension(subTrack).Split('_')[0].GetInt()] = subTrack;   // Add file, dict key is stream index
-
-            bool audio = Config.GetBool("keepSubs");
-            bool subs = Utils.ContainerSupportsSubs(containerExt, false) && Config.GetBool("keepSubs");
 
             string trackInputArgs = "";
             string trackMapArgs = "";
