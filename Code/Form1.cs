@@ -24,6 +24,7 @@ namespace Flowframes
     public partial class Form1 : Form
     {
         public bool initialized = false;
+        public bool quickSettingsInitialized = false;
 
         public Form1()
         {
@@ -478,6 +479,8 @@ namespace Flowframes
 
         public void SaveQuickSettings (object sender, EventArgs e)
         {
+            if (!quickSettingsInitialized) return;
+
             ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(dedupMode);
             ConfigParser.SaveComboxIndex(mpdecimateMode);
@@ -496,6 +499,8 @@ namespace Flowframes
             ConfigParser.LoadGuiElement(enableLoop);
             ConfigParser.LoadGuiElement(scnDetect);
             ConfigParser.LoadGuiElement(scnDetectValue);
+
+            quickSettingsInitialized = true;
         }
 
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
