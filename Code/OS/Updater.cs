@@ -26,7 +26,8 @@ namespace Flowframes.OS
             }
             catch (Exception e)
             {
-                Logger.Log("Error getting installed version: " + e.Message);
+                Logger.Log("Error getting installed version!");
+                Logger.Log(e.Message, true);
                 return new Version(0, 0, 0);
             }
         }

@@ -30,7 +30,6 @@ namespace Flowframes
                 IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs from previous session
 
             Networks.Init();
-            NvApi.Init();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
