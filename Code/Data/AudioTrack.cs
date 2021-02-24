@@ -5,13 +5,13 @@ namespace Flowframes.Data
     class AudioTrack
     {
         public int streamIndex;
-        public string title;
+        public string metadata;
         public string codec;
 
-        public AudioTrack(int streamNum, string titleStr, string codecStr)
+        public AudioTrack(int streamNum, string metaStr, string codecStr)
         {
             streamIndex = streamNum;
-            title = titleStr.Trim().Replace("_", ".").Replace(" ", ".");
+            metadata = metaStr.Trim().Replace("_", ".").Replace(" ", ".");
             codec = codecStr.Trim().Replace("_", ".");
         }
     }

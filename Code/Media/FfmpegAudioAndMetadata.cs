@@ -29,7 +29,7 @@ namespace Flowframes.Media
             foreach (AudioTrack track in audioTracks)
             {
                 string audioExt = Utils.GetAudioExt(inputFile, track.streamIndex);
-                string outPath = Path.Combine(outFolder, $"{track.streamIndex}_{track.title}_audio.{audioExt}");
+                string outPath = Path.Combine(outFolder, $"{track.streamIndex}_{track.metadata}_audio.{audioExt}");
                 string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:{track.streamIndex} -vn -c:a copy {outPath.Wrap()}";
                 await RunFfmpeg(args, LogMode.Hidden);
 
@@ -71,14 +71,14 @@ namespace Flowframes.Media
 
                 int streamIndex = line.Remove("Stream #0:").Split(':')[0].GetInt();
 
-                string title = "";
+                string meta = "";
                 string codec = "";
 
-                if ((i + 2 < outputLines.Length) && outputLines[i + 1].Contains("Metadata:") && outputLines[i + 2].Contains("title"))
-                    title = outputLines[i + 2].Remove("title").Remove(":").TrimWhitespaces();
+                if ((i + 2 < outputLines.Length) && outputLines[i + 1].Contains("Metadata:") && (outputLines[i + 2].Contains("title") || outputLines[i + 2].Contains("lang")))
+                    meta = outputLines[i + 2].Replace(":", "=").Remove(" ");
 
-                Logger.Log($"Found audio stream #{streamIndex} {title}", true, false, "ffmpeg");
-                audioTracks.Add(new AudioTrack(streamIndex, title, codec));
+                Logger.Log($"Found audio stream #{streamIndex} {meta}", true, false, "ffmpeg");
+                audioTracks.Add(new AudioTrack(streamIndex, meta, codec));
             }
 
             return audioTracks;
@@ -100,7 +100,7 @@ namespace Flowframes.Media
 
                 foreach (SubtitleTrack subTrack in subtitleTracks)
                 {
-                    string outPath = Path.Combine(outFolder, $"{subTrack.streamIndex}_{subTrack.langFriendly}_{subTrack.encoding}.srt");
+                    string outPath = Path.Combine(outFolder, $"{subTrack.streamIndex}_{subTrack.lang}_{subTrack.encoding}.srt");
                     string args = $" -loglevel error -sub_charenc {subTrack.encoding} -i {inputFile.Wrap()} -map 0:{subTrack.streamIndex} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden);
                     if (subtitleTracks.Count > 4) Program.mainForm.SetProgress(FormatUtils.RatioInt(counter, subtitleTracks.Count));
@@ -136,7 +136,7 @@ namespace Flowframes.Media
 
                 int streamIndex = line.Remove("Stream #0:").Split(':')[0].GetInt();
 
-                string lang = "unknown";
+                string lang = "";
                 string subEnc = "UTF-8";
 
                 if (line.Contains("(") && line.Contains("): Subtitle: "))   // Lang code in stream name, like "Stream #0:2(eng): Subtitle: ..."
@@ -193,7 +193,16 @@ namespace Flowframes.Media
 
                 trackInputArgs += $" -i {Path.GetFileName(trackFile)}";     // Input filename
                 trackMapArgs += $" -map {inputIndex}";  // Map input file
-                trackMetaArgs += $" -metadata:s:{inputIndex} title={Path.GetFileNameWithoutExtension(trackFile).Split('_')[1]}"; // Language or title
+
+                string meta = Path.GetFileNameWithoutExtension(trackFile).Split('_')[1];
+
+                if (!string.IsNullOrWhiteSpace(meta))
+                {
+                    if (Path.GetFileNameWithoutExtension(trackFile).Contains("_audio"))
+                        trackMetaArgs += $" -metadata:s:{inputIndex} {meta}"; // Metadata
+                    else
+                        trackMetaArgs += $" -metadata:s:{inputIndex} language={meta}"; // Language
+                }
 
                 inputIndex++;
             }
