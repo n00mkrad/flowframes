@@ -1,6 +1,5 @@
 ﻿using Flowframes.Forms;
 using Flowframes.IO;
-using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.OS;
 using Flowframes.UI;
@@ -10,13 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using HTAlt.WinForms;
 using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using Flowframes.MiscUtils;
 
 namespace Flowframes
@@ -509,11 +505,6 @@ namespace Flowframes
             magickDedupePanel.Visible = dedupMode.SelectedIndex == 1;
             mpDedupePanel.Visible = dedupMode.SelectedIndex == 2;
             SaveQuickSettings(null, null);
-        }
-
-        private void quickSettingsTab_Layout(object sender, LayoutEventArgs e)
-        {
-            //LoadQuickSettings();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
