@@ -16,8 +16,13 @@ namespace Flowframes.Media
 {
     partial class FfmpegAudioAndMetadata : FfmpegCommands
     {
-        public static async Task ExtractAudioTracks(string inputFile, string outFolder)
+        #region Audio
+
+        public static async Task ExtractAudioTracks(string inputFile, string outFolder, bool showMsg = true)
         {
+            string msg = "Extracting audio from video...";
+            if (showMsg) Logger.Log(msg);
+
             List<AudioTrack> audioTracks = await GetAudioTracks(inputFile);
             int counter = 1;
 
@@ -78,6 +83,8 @@ namespace Flowframes.Media
 
             return audioTracks;
         }
+
+        #endregion
 
         #region Subtitles
 
@@ -147,7 +154,7 @@ namespace Flowframes.Media
 
         #endregion
 
-        public static async Task MergeAudioAndSubs(string inputFile, string tempFolder, int looptimes = -1)    // https://superuser.com/a/277667
+        public static async Task MergeAudioAndSubs(string inputFile, string tempFolder)    // https://superuser.com/a/277667
         {
             // Logger.Log($"[FFCmds] Merging audio from {audioPath} into {inputFile}", true);
             string containerExt = Path.GetExtension(inputFile);
@@ -155,7 +162,6 @@ namespace Flowframes.Media
             string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
             File.Move(inputFile, tempPath);
             string inName = Path.GetFileName(tempPath);
-            // string audioName = Path.GetFileName(audioPath);
             string outName = Path.GetFileName(outPath);
 
             string[] audioTracks = IOUtils.GetFilesSorted(tempFolder, false, "*_audio.*");     // Find audio files
@@ -176,14 +182,9 @@ namespace Flowframes.Media
             string trackMapArgs = "";
             string trackMetaArgs = "";
 
-            // for (int subTrack = 0; subTrack < subTracks.Length; subTrack++)
-            // {
-            //     trackInputArgs += $" -i {Path.GetFileName(subTracks[subTrack])}";     // Input filename
-            //     trackMapArgs += $" -map {Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[0].GetInt()}";  // Stream index
-            //     trackMetaArgs += $" -metadata:s:s:{subTrack} language={Path.GetFileNameWithoutExtension(subTracks[subTrack]).Split('_')[1]}"; // Language
-            // }
-
             SortedDictionary<int, string> sortedTrackFiles = new SortedDictionary<int, string>(trackFiles);
+
+            int inputIndex = 1; // Input index (= output stream index) - Start at 1 since 0 is the video stream
 
             foreach (KeyValuePair<int, string> track in sortedTrackFiles)
             {
@@ -191,8 +192,10 @@ namespace Flowframes.Media
                 string trackFile = track.Value;
 
                 trackInputArgs += $" -i {Path.GetFileName(trackFile)}";     // Input filename
-                trackMapArgs += $" -map {Path.GetFileNameWithoutExtension(trackFile).Split('_')[0].GetInt()}";  // Set stream index
-                trackMetaArgs += $" -metadata:s:{streamIndex} title={Path.GetFileNameWithoutExtension(trackFile).Split('_')[1]}"; // Language or title
+                trackMapArgs += $" -map {inputIndex}";  // Map input file
+                trackMetaArgs += $" -metadata:s:{inputIndex} title={Path.GetFileNameWithoutExtension(trackFile).Split('_')[1]}"; // Language or title
+
+                inputIndex++;
             }
 
             bool allAudioCodecsSupported = true;
@@ -207,8 +210,7 @@ namespace Flowframes.Media
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
             string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile));
 
-            string args = $" -i {inName} -stream_loop {looptimes}" +
-                $"{trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} -shortest {outName}";
+            string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} -shortest {outName}";
 
             await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
