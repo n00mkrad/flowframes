@@ -333,6 +333,14 @@ namespace Flowframes.Main
                 I.Cancel("Selected AI not available.", true);
                 return false;
             }
+
+            if (I.current.ai.aiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
+            {
+                ShowMessage("An Nvidia GPU is required for CUDA implementations!\n\nTry an NCNN implementation instead.", "Error");
+                I.Cancel("No CUDA-capable graphics card available.", true);
+                return false;
+            }
+
             return true;
         }
 

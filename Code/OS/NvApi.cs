@@ -9,7 +9,7 @@ namespace Flowframes.OS
 {
     class NvApi
     {
-        static List<PhysicalGPU> gpuList = new List<PhysicalGPU>();
+        public static List<PhysicalGPU> gpuList = new List<PhysicalGPU>();
 
         public static void Init()
         {
