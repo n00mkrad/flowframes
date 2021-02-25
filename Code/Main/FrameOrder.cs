@@ -95,8 +95,6 @@ namespace Flowframes.Main
             int linesPerTask = 400 / (int)interpFactor;
             int num = 0;
 
-            linesPerTask = 100000;
-
             for (int i = 0; i < (frameFilesWithoutLast.Length - 1); i+= linesPerTask)
             {
                 tasks.Add(GenerateFrameLines(num, i, linesPerTask, (int)interpFactor, loopEnabled, sceneDetection, debug));
