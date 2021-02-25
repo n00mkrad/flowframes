@@ -48,11 +48,13 @@ namespace Flowframes.Main
         public static async Task ExtractSceneChanges()
         {
             string scenesPath = Path.Combine(current.tempFolder, Paths.scenesDir);
+
             if (!IOUtils.TryDeleteIfExists(scenesPath))
             {
                 InterpolateUtils.ShowMessage("Failed to delete existing scenes folder - Make sure no file is opened in another program!", "Error");
                 return;
             }
+
             Program.mainForm.SetStatus("Extracting scenes from video...");
             await FfmpegExtract.ExtractSceneChanges(current.inPath, scenesPath, current.inFps);
             await Task.Delay(10);
@@ -60,7 +62,7 @@ namespace Flowframes.Main
 
         public static async Task ExtractFramesStep()
         {
-            if (!current.inputIsFrames)        // Input is video - extract frames first
+            if (Config.GetBool("scnDetect") && !current.inputIsFrames)        // Input is video - extract frames first
                 await ExtractSceneChanges();
 
             if (!IOUtils.TryDeleteIfExists(current.framesFolder))
