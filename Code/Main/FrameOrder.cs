@@ -81,15 +81,13 @@ namespace Flowframes.Main
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
 
             sceneFrames.Clear();
+
             if (Directory.Exists(scnFramesPath))
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
 
             bool debug = Config.GetBool("frameOrderDebug", false);
 
             int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
-
-            Stopwatch delaySw = new Stopwatch(); delaySw.Start();
-            Stopwatch printSw = new Stopwatch(); printSw.Start();
 
             List<Task> tasks = new List<Task>();
             int linesPerTask = 400 / (int)interpFactor;
