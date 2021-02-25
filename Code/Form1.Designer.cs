@@ -1055,6 +1055,7 @@
             this.maxVidHeight.Size = new System.Drawing.Size(87, 23);
             this.maxVidHeight.TabIndex = 68;
             this.maxVidHeight.SelectedIndexChanged += new System.EventHandler(this.SaveQuickSettings);
+			this.maxVidHeight.TextChanged += new System.EventHandler(this.SaveQuickSettings);
             // 
             // label18
             // 
