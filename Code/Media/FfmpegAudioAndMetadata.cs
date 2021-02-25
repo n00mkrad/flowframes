@@ -97,6 +97,7 @@ namespace Flowframes.Media
 
                 List<SubtitleTrack> subtitleTracks = await GetSubtitleTracks(inputFile);
                 int counter = 1;
+                int extractedSuccessfully = 0;
 
                 foreach (SubtitleTrack subTrack in subtitleTracks)
                 {
@@ -104,13 +105,22 @@ namespace Flowframes.Media
                     string args = $" -loglevel error -sub_charenc {subTrack.encoding} -i {inputFile.Wrap()} -map 0:{subTrack.streamIndex} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden);
                     if (subtitleTracks.Count > 4) Program.mainForm.SetProgress(FormatUtils.RatioInt(counter, subtitleTracks.Count));
-                    Logger.Log($"[FFCmds] Extracted subtitle track {subTrack.streamIndex} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true, false, "ffmpeg");
                     counter++;
+
+                    if(IOUtils.GetFilesize(outPath) >= 32)
+                    {
+                        Logger.Log($"[FFCmds] Extracted subtitle track {subTrack.streamIndex} to {outPath} ({FormatUtils.Bytes(IOUtils.GetFilesize(outPath))})", true, false, "ffmpeg");
+                        extractedSuccessfully++;
+                    }
+                    else
+                    {
+                        IOUtils.TryDeleteIfExists(outPath);     // Delete if encode was not successful
+                    }
                 }
 
-                if (subtitleTracks.Count > 0)
+                if (extractedSuccessfully > 0)
                 {
-                    Logger.Log($"Extracted {subtitleTracks.Count} subtitle tracks from the input video.", false, Logger.GetLastLine().Contains(msg));
+                    Logger.Log($"Extracted {extractedSuccessfully} subtitle tracks from the input video.", false, Logger.GetLastLine().Contains(msg));
                     Utils.ContainerSupportsSubs(Utils.GetExt(outMode), true);
                 }
             }

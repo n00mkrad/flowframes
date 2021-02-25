@@ -72,7 +72,7 @@ namespace Flowframes
             Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");
 
             if (line.Contains(".srt: Invalid data found"))
-                Logger.Log($"Warning: Failed to encode subtitle track {line.Split(':')[1]}. This track will be missing in the output file.");
+                Logger.Log($"Warning: Failed to encode subtitle track {line.Split(':')[2]}. This track will be missing in the output file.");
 
             if (line.Contains("Could not open file"))
                 Interpolate.Cancel($"FFmpeg Error: {line}");
