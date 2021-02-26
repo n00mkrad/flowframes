@@ -102,7 +102,7 @@ namespace Flowframes.Media
             string[] formatsMp4 = new string[] { "m4a", "ac3", "dts" };
             string[] formatsMkv = new string[] { "m4a", "ac3", "dts", "ogg", "mp2", "wav" };
             string[] formatsWebm = new string[] { "ogg" };
-            string[] formatsProres = new string[] { "m4a" };
+            string[] formatsProres = new string[] { "m4a", "ac3", "dts", "wav" };
             string[] formatsAvi = new string[] { "m4a", "ac3", "dts" };
 
             switch (outMode)
