@@ -1311,7 +1311,7 @@
             this.trimEndBox.Size = new System.Drawing.Size(75, 23);
             this.trimEndBox.TabIndex = 63;
             this.trimEndBox.Text = "00:00:00";
-            this.trimEndBox.TextChanged += new System.EventHandler(this.trimBox_TextChanged);
+            this.trimEndBox.Leave += new System.EventHandler(this.trimBox_TextChanged);
             // 
             // trimCombox
             // 
