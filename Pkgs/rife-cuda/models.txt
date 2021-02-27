@@ -6,3 +6,4 @@ RIFE 2.0 - New general model
 RIFE 2.1 - Updated general model
 RIFE 2.2 - Updated general model
 RIFE 2.3 - Updated general model (Recommended)
+RIFE 2.4 - Updated general model (Experimental)
