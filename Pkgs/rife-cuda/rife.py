@@ -10,6 +10,7 @@ import _thread
 import skvideo.io
 from queue import Queue, Empty
 import shutil
+import base64
 warnings.filterwarnings("ignore")
 
 abspath = os.path.abspath(__file__)
@@ -29,6 +30,7 @@ parser.add_argument('--rbuffer', dest='rbuffer', type=int, default=200)
 parser.add_argument('--wthreads', dest='wthreads', type=int, default=4)
 parser.add_argument('--fp16', dest='fp16', action='store_true', help='half-precision mode')
 parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
+parser.add_argument('--scale', dest='scale', type=float, default=1.0, help='Try scale=0.5 for 4k video')
 parser.add_argument('--exp', dest='exp', type=int, default=1)
 args = parser.parse_args()
 assert (not args.input is None)
@@ -92,19 +94,20 @@ def clear_write_buffer(user_args, write_buffer, thread_id):
         frameNum = item[0]
         img = item[1]
         print('[T{}] => {:0>8d}.{}'.format(thread_id, frameNum, args.imgformat))
+        #imgBytes = base64.b64encode(cv2.imencode(f'.{args.imgformat}', img[:, :, ::-1], [cv2.IMWRITE_PNG_COMPRESSION, 2])[1].tostring())
+        #print(f"{frameNum:08}:"+ imgBytes.decode('utf-8') + "\n\n\n\n")
         cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, frameNum, args.imgformat), img[:, :, ::-1], [cv2.IMWRITE_PNG_COMPRESSION, 2])
 
 def build_read_buffer(user_args, read_buffer, videogen):
     for frame in videogen:
         if not user_args.input is None:
-            #print("Loading input frame " + str(frame))
             frame = cv2.imread(os.path.join(user_args.input, frame))[:, :, ::-1].copy()
         read_buffer.put(frame)
     read_buffer.put(None)
 
 def make_inference(I0, I1, exp):
     global model
-    middle = model.inference(I0, I1, args.UHD)
+    middle = model.inference(I0, I1, args.scale)
     if exp == 1:
         return [middle]
     first_half = make_inference(I0, middle, exp=exp - 1)
@@ -117,13 +120,10 @@ def pad_image(img):
     else:
         return F.pad(img, padding)
 
-if args.UHD:
-    print("UHD mode enabled.")
-    ph = ((h - 1) // 64 + 1) * 64
-    pw = ((w - 1) // 64 + 1) * 64
-else:
-    ph = ((h - 1) // 32 + 1) * 32
-    pw = ((w - 1) // 32 + 1) * 32
+print(f"Scale: {args.scale}")
+tmp = max(32, int(32 / args.scale))
+ph = ((h - 1) // tmp + 1) * tmp
+pw = ((w - 1) // tmp + 1) * tmp
 padding = (0, pw - w, 0, ph - h)
 
 write_buffer = Queue(maxsize=args.rbuffer)
