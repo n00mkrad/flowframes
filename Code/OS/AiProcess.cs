@@ -14,6 +14,7 @@ using Flowframes.Data;
 using Flowframes.MiscUtils;
 using Flowframes.Magick;
 using Flowframes.Media;
+using System.Drawing;
 
 namespace Flowframes
 {
@@ -135,7 +136,7 @@ namespace Flowframes
 
             if (!OSUtils.ShowHiddenCmd())
             {
-                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-cuda-log"); };
+                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "rife-cuda-log"); };
                 rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log", true); };
             }
             rifePy.Start();
@@ -288,6 +289,26 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
 
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+
+            if (line.Contains("iVBOR"))
+            {
+                try
+                {
+                    string[] split = line.Split(':');
+                    //MemoryStream stream = new MemoryStream(Convert.FromBase64String(split[1]));
+                    //Image img = Image.FromStream(stream);
+                    Logger.Log($"Received image {split[0]} in {sw.ElapsedMilliseconds} ms", true);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"Failed to decode b64 string - {e}:");
+                    Logger.Log(line);
+                }
+                return;
+            }
+
             Logger.LogToFile(line, false, logFilename);
 
             if (line.Contains("ff:nocuda-cpu"))
@@ -376,7 +397,7 @@ namespace Flowframes
 
         static string RifeNcnn2Workaround (string modelName, bool reset = false)
         {
-            if (modelName != "RIFE20") return modelName;
+            if (!modelName.StartsWith("RIFE2")) return modelName;
             string validMdlName = "rife-v2";
             string rifeFolderPath = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeNcnn.fileName));
             string modelFolderPath = Path.Combine(rifeFolderPath, modelName);
