@@ -664,9 +664,9 @@
             this.label50.Location = new System.Drawing.Point(10, 160);
             this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(194, 13);
+            this.label50.Size = new System.Drawing.Size(129, 13);
             this.label50.TabIndex = 63;
-            this.label50.Text = "Don\'t Interpolate Scene Changes (Cuts)";
+            this.label50.Text = "Fix Scene Changes (Cuts)";
             // 
             // mpDedupePanel
             // 

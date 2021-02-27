@@ -380,9 +380,9 @@
             this.label23.Location = new System.Drawing.Point(8, 130);
             this.label23.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(136, 15);
+            this.label23.Size = new System.Drawing.Size(105, 15);
             this.label23.TabIndex = 26;
-            this.label23.Text = "Scene Change Detection";
+            this.label23.Text = "Fix Scene Changes";
             // 
             // label19
             // 
