@@ -2,11 +2,8 @@
 using Flowframes.Forms;
 using Flowframes.IO;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -131,6 +128,27 @@ namespace Flowframes.OS
             Version latestFree = GetLatestVer(false);
 
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
+        }
+
+        public static async Task UpdateModelList()
+        {
+            try
+            {
+                Networks.networks.ForEach(ai =>
+                {
+                    var client = new WebClient();
+                    string aiName = Path.GetFileNameWithoutExtension(ai.pkg.fileName);
+                    string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/Pkgs/{aiName}/models.txt";
+                    string savePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
+                    if(File.Exists(savePath)) File.Delete(savePath);
+                    client.DownloadFile(url, savePath);
+                });
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Non-critical error while performing model list update. See logs for details.");
+                Logger.Log($"{e.Message}\n{e.StackTrace}", true);
+            }
         }
     }
 }

@@ -70,6 +70,7 @@ namespace Flowframes
                 GetWebInfo.LoadNews(newsLabel);
                 GetWebInfo.LoadPatronListCsv(patronsLabel);
                 Updater.AsyncUpdateCheck();
+                Updater.UpdateModelList();
                 Python.CheckCompression();
             }
             catch (Exception e)
