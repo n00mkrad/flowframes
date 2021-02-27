@@ -1670,6 +1670,7 @@
             this.modelsBaseUrl.ForeColor = System.Drawing.Color.White;
             this.modelsBaseUrl.FormattingEnabled = true;
             this.modelsBaseUrl.Items.AddRange(new object[] {
+            "https://raw.githubusercontent.com/n00mkrad/flowframes/main/Models/",
             "https://dl.nmkd.de/flowframes/mdl/",
             "http://45.132.246.240/dl/flowframes/mdl/",
             "http://104.225.145.33/models/"});
