@@ -125,6 +125,8 @@ namespace Flowframes.Main
         public static int interpolatedInputFramesCount;
         public static float peakFpsOut;
 
+        public static int previewUpdateRateMs = 250;
+
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
             if (I.canceled) return;
@@ -159,6 +161,7 @@ namespace Flowframes.Main
                 if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > currentFactor)
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
+                    if (timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
                     Image img = IOUtils.GetImage(latestFramePath);
                     SetPreviewImg(img);
                 }
@@ -181,10 +184,14 @@ namespace Flowframes.Main
             }
         }
 
+        public static Stopwatch timeSinceLastPreviewUpdate = new Stopwatch();
+
         public static void SetPreviewImg(Image img)
         {
             if (img == null)
                 return;
+
+            timeSinceLastPreviewUpdate.Restart();
 
             preview.Image = img;
 
