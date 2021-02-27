@@ -102,6 +102,7 @@ namespace Flowframes
         }
 
         public HTTabControl GetMainTabControl() { return mainTabControl; }
+        public TextBox GetInputFpsTextbox () { return fpsInTbox; }
 
         public bool IsInFocus() { return (ActiveForm == this); }
 
@@ -150,6 +151,7 @@ namespace Flowframes
         public int currInFrames;
         public long currInDuration;
         public long currInDurationCut;
+
         public void UpdateInputInfo ()
         {
             string str = $"Resolution: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";

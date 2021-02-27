@@ -45,7 +45,7 @@ namespace Flowframes.UI
                 fpsStr = fps.ToString();
 
             Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
-
+            Program.mainForm.GetInputFpsTextbox().ReadOnly = fps > 0;
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
             Program.mainForm.UpdateInputInfo();
