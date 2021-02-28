@@ -454,9 +454,6 @@ namespace Flowframes
         {
             if (!initialized) return;
             aiCombox_SelectedIndexChanged(null, null);
-
-            if (mainTabControl.SelectedTab.Text == "Quick Settings")
-                LoadQuickSettings();
         }
 
         private void trimCombox_SelectedIndexChanged(object sender, EventArgs e)
@@ -487,6 +484,9 @@ namespace Flowframes
         {
             if (!quickSettingsInitialized) return;
 
+            if (Program.busy)
+                LoadQuickSettings();    // Discard any changes if busy
+
             ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(dedupMode);
             ConfigParser.SaveComboxIndex(mpdecimateMode);
@@ -496,7 +496,7 @@ namespace Flowframes
             ConfigParser.SaveGuiElement(scnDetectValue);
         }
 
-        public void LoadQuickSettings ()
+        public void LoadQuickSettings (object sender = null, EventArgs e = null)
         {
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(dedupMode);
@@ -519,9 +519,20 @@ namespace Flowframes
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (Program.busy) return;
             new SettingsForm().ShowDialog();
         }
 
         #endregion
+
+        private void quickSettingsTab_Enter(object sender, EventArgs e)
+        {
+            Logger.Log("enter");
+        }
+
+        private void quickSettingsTab_Leave(object sender, EventArgs e)
+        {
+            Logger.Log("leave");
+        }
     }
 }

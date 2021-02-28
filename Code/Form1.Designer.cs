@@ -1024,6 +1024,7 @@
             this.quickSettingsTab.Size = new System.Drawing.Size(901, 258);
             this.quickSettingsTab.TabIndex = 1;
             this.quickSettingsTab.Text = "Quick Settings";
+            this.quickSettingsTab.Enter += new System.EventHandler(this.LoadQuickSettings);
             // 
             // linkLabel1
             // 

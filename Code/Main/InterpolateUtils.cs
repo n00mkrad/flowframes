@@ -161,12 +161,17 @@ namespace Flowframes.Main
                 if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > currentFactor)
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
-                    if (timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
+                    Logger.Log($"timeSinceLastPreviewUpdate.IsRunning: {timeSinceLastPreviewUpdate.IsRunning} - timeSinceLastPreviewUpdate.ElapsedMilliseconds: {timeSinceLastPreviewUpdate.ElapsedMilliseconds}", true);
+                    if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
+                    Logger.Log("Updating preview", true);
                     Image img = IOUtils.GetImage(latestFramePath);
                     SetPreviewImg(img);
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                Logger.Log("Error updating preview: " + e.Message, true);
+            }
         }
 
         public static async Task DeleteInterpolatedInputFrames()
