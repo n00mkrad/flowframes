@@ -113,6 +113,12 @@ namespace Flowframes.IO
             return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
         }
 
+        public static float GetFloat(string key, float defaultVal)
+        {
+            WriteIfDoesntExist(key, defaultVal.ToStringDot());
+            return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
+        }
+
         public static string GetFloatString (string key)
         {
             return Get(key, Type.Float).Replace(",", ".");

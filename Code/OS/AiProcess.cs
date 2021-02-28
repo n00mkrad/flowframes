@@ -117,12 +117,12 @@ namespace Flowframes
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
             //bool parallel = false;
-            string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt("rifeCudaBufferSize", 200)}";
+            string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
             string prec = Config.GetBool("rifeCudaFp16") ? "--fp16" : "";
-            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {wthreads} {rbuffer} {prec}";
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {scale} {wthreads} {rbuffer} {prec}";
             // if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
             // if (parallel) script = "rife-parallel.py";
 
@@ -131,7 +131,7 @@ namespace Flowframes
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
-            Logger.Log($"Running RIFE {(await InterpolateUtils.UseUHD() ? "(UHD Mode)" : "")} ({script})...".TrimWhitespaces(), false);
+            Logger.Log($"Running RIFE (CUDA)...".TrimWhitespaces(), false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
             if (!OSUtils.ShowHiddenCmd())
@@ -152,7 +152,7 @@ namespace Flowframes
         public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
         {
             processTimeMulti.Restart();
-            Logger.Log($"Running RIFE{(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
+            Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
             await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
 
