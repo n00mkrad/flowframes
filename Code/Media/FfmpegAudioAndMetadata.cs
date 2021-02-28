@@ -201,7 +201,11 @@ namespace Flowframes.Media
                 string trackFile = track.Value;
 
                 trackInputArgs += $" -i {Path.GetFileName(trackFile)}";     // Input filename
-                trackMapArgs += $" -map {inputIndex}";  // Map input file
+
+                if (Path.GetFileNameWithoutExtension(trackFile).Contains("_audio"))
+                    trackMapArgs += $" -map {inputIndex}:a";  // Map input file (audio track)
+                else
+                    trackMapArgs += $" -map {inputIndex}:s";  // Map input file (subtitle track)
 
                 string meta = Path.GetFileNameWithoutExtension(trackFile).Split('_')[1];
 
