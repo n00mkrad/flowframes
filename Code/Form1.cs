@@ -524,15 +524,5 @@ namespace Flowframes
         }
 
         #endregion
-
-        private void quickSettingsTab_Enter(object sender, EventArgs e)
-        {
-            Logger.Log("enter");
-        }
-
-        private void quickSettingsTab_Leave(object sender, EventArgs e)
-        {
-            Logger.Log("leave");
-        }
     }
 }
