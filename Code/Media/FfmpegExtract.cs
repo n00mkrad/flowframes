@@ -79,7 +79,12 @@ namespace Flowframes.Media
             if (!QuickSettingsTab.trimEnabled)
                 return "";
 
-            return $"-ss {QuickSettingsTab.trimStart} -to {QuickSettingsTab.trimEnd}";
+            string arg = $"-ss {QuickSettingsTab.trimStart}";
+
+            if(QuickSettingsTab.doTrimEnd)
+                arg += $" -to {QuickSettingsTab.trimEnd}";
+
+            return arg;
         }
 
         public static async Task ImportSingleImage(string inputFile, string outPath, Size size)

@@ -16,6 +16,7 @@ namespace Flowframes.UI
     class QuickSettingsTab
     {
         public static bool trimEnabled;
+        public static bool doTrimEnd;
         public static string trimStart;
         public static string trimEnd;
 
@@ -32,6 +33,8 @@ namespace Flowframes.UI
 
             long dur = FormatUtils.TimestampToMs(trimEnd, false) - FormatUtils.TimestampToMs(trimStart, false);
             Program.mainForm.currInDurationCut = dur;
+
+            doTrimEnd = FormatUtils.TimestampToMs(trimEnd, false) != FormatUtils.TimestampToMs(FormatUtils.MsToTimestamp(Program.mainForm.currInDuration), false);
         }
 
         public static string GetTrimEndMinusOne ()
