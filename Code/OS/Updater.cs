@@ -140,7 +140,6 @@ namespace Flowframes.OS
                     string aiName = Path.GetFileNameWithoutExtension(ai.pkg.fileName);
                     string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/Pkgs/{aiName}/models.txt";
                     string savePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
-                    if(File.Exists(savePath)) File.Delete(savePath);
                     client.DownloadFile(url, savePath);
                     Program.mainForm.UpdateAiModelCombox();
                 });
