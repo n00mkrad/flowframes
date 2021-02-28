@@ -318,10 +318,17 @@ namespace Flowframes
         {
             if (string.IsNullOrWhiteSpace(aiCombox.Text) || aiCombox.Text == lastAiComboxStr) return;
             lastAiComboxStr = aiCombox.Text;
-            aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
+            UpdateAiModelCombox();
+            
             if(initialized)
                 ConfigParser.SaveComboxIndex(aiCombox);
+
             interpFactorCombox_SelectedIndexChanged(null, null);
+        }
+
+        public void UpdateAiModelCombox ()
+        {
+            aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

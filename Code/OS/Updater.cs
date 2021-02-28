@@ -142,6 +142,7 @@ namespace Flowframes.OS
                     string savePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
                     if(File.Exists(savePath)) File.Delete(savePath);
                     client.DownloadFile(url, savePath);
+                    Program.mainForm.UpdateAiModelCombox();
                 });
             }
             catch (Exception e)
