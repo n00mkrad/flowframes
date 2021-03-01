@@ -181,10 +181,7 @@ namespace Flowframes.Main
         static string WriteFrameWithDupes (int dupesAmount, string fileContent, int frameNum, string ext, bool debug, string note = "")
         {
             for (int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
-            {
-                if (debug) Logger.Log($"Writing frame {frameNum} (writtenDupes {writtenDupes})", true, false);
                 fileContent += $"file '{Paths.interpDir}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($" # Dupe {(writtenDupes+1).ToString("000")} {note}").Replace("Dupe 000", "        ") : "" )}\n";
-            }
 
             return fileContent;
         }
