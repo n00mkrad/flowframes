@@ -297,27 +297,17 @@ namespace Flowframes.IO
 		public static async Task<float> GetVideoFramerate (string path)
         {
 			float fps = 0;
-            try
-            {
-				ShellFile shellFile = ShellFile.FromFilePath(path);
-				fps = (float)shellFile.Properties.System.Video.FrameRate.Value / 1000f;
+
+			try
+			{
+				fps = await FfmpegCommands.GetFramerate(path);
 				Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
-				if (fps <= 0)
-					throw new Exception("FPS is 0.");
 			}
 			catch
             {
-				Logger.Log("Failed to read FPS - Trying alternative method...", true);
-				try
-				{
-					fps = await FfmpegCommands.GetFramerate(path);
-					Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
-				}
-				catch
-                {
-					Logger.Log("Failed to read FPS - Please enter it manually.");
-				}
+				Logger.Log("Failed to read FPS - Please enter it manually.");
 			}
+
 			return fps;
 		}
 
