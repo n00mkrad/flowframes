@@ -28,6 +28,8 @@ namespace Flowframes.Media
 
             foreach (AudioTrack track in audioTracks)
             {
+                if (Interpolate.canceled) break;
+
                 string audioExt = Utils.GetAudioExt(inputFile, track.streamIndex);
                 string outPath = Path.Combine(outFolder, $"{track.streamIndex}_{track.metadata}_audio.{audioExt}");
                 string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:{track.streamIndex} -vn -c:a copy {outPath.Wrap()}";
@@ -101,6 +103,8 @@ namespace Flowframes.Media
 
                 foreach (SubtitleTrack subTrack in subtitleTracks)
                 {
+                    if (Interpolate.canceled) break;
+
                     string outPath = Path.Combine(outFolder, $"{subTrack.streamIndex}_{subTrack.lang}_{subTrack.encoding}.srt");
                     string args = $" -loglevel error -sub_charenc {subTrack.encoding} -i {inputFile.Wrap()} -map 0:{subTrack.streamIndex} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden);
