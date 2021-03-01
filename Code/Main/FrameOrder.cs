@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.Main
@@ -86,17 +85,18 @@ namespace Flowframes.Main
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
 
             bool debug = Config.GetBool("frameOrderDebug", false);
-
             int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
-
             List<Task> tasks = new List<Task>();
             int linesPerTask = 400 / (int)interpFactor;
             int num = 0;
 
-            for (int i = 0; i < (frameFilesWithoutLast.Length - 1); i+= linesPerTask)
+            Logger.Log($"frameFiles.Length: {frameFiles.Length} - frameFilesWithoutLast.Length: {frameFilesWithoutLast.Length}");
+
+            for (int i = 0; i < frameFilesWithoutLast.Length; i+= linesPerTask)
             {
                 tasks.Add(GenerateFrameLines(num, i, linesPerTask, (int)interpFactor, loopEnabled, sceneDetection, debug));
                 num++;
+                Logger.Log($"Added frame order task {num} starting at {i}, {linesPerTask} lines");
             }
 
             await Task.WhenAll(tasks);
