@@ -90,13 +90,10 @@ namespace Flowframes.Main
             int linesPerTask = 400 / (int)interpFactor;
             int num = 0;
 
-            Logger.Log($"frameFiles.Length: {frameFiles.Length} - frameFilesWithoutLast.Length: {frameFilesWithoutLast.Length}");
-
             for (int i = 0; i < frameFilesWithoutLast.Length; i+= linesPerTask)
             {
                 tasks.Add(GenerateFrameLines(num, i, linesPerTask, (int)interpFactor, loopEnabled, sceneDetection, debug));
                 num++;
-                Logger.Log($"Added frame order task {num} starting at {i}, {linesPerTask} lines");
             }
 
             await Task.WhenAll(tasks);
