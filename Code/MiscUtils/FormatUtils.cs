@@ -65,7 +65,7 @@ namespace Flowframes.MiscUtils
                 int hours = int.Parse(values[0]);
                 int minutes = int.Parse(values[1]);
                 int seconds = int.Parse(values[2].Split('.')[0]);
-                long secs = hours * 3600000 + minutes * 60000 + seconds;
+                long secs = hours * 3600 + minutes * 60 + seconds;
 
                 if (hasMilliseconds)
                 {

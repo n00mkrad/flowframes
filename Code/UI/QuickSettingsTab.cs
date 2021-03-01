@@ -19,17 +19,19 @@ namespace Flowframes.UI
         public static bool doTrimEnd;
         public static string trimStart;
         public static string trimEnd;
+        public static long trimStartSecs;
+        public static long trimEndSecs;
 
         public static void UpdateTrim (TextBox trimStartBox, TextBox trimEndBox)
         {
             trimStart = trimStartBox.Text.Trim();
             trimEnd = trimEndBox.Text.Trim();
 
-            long startSecs = FormatUtils.TimestampToSecs(trimStart, false);
-            long endSecs = FormatUtils.TimestampToSecs(trimEnd, false);
+            trimStartSecs = FormatUtils.TimestampToSecs(trimStart, false);
+            trimEndSecs = FormatUtils.TimestampToSecs(trimEnd, false);
 
-            if (endSecs <= startSecs)
-                trimEndBox.Text = FormatUtils.SecsToTimestamp(startSecs + 1);
+            if (trimEndSecs <= trimStartSecs)
+                trimEndBox.Text = FormatUtils.SecsToTimestamp(trimStartSecs + 1);
 
             long dur = FormatUtils.TimestampToMs(trimEnd, false) - FormatUtils.TimestampToMs(trimStart, false);
             Program.mainForm.currInDurationCut = dur;

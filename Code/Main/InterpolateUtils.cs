@@ -26,6 +26,8 @@ namespace Flowframes.Main
 
         public static async Task CopyLastFrame(int lastFrameNum)
         {
+            if (I.canceled) return;
+
             try
             {
                 lastFrameNum--;     // We have to do this as extracted frames start at 0, not 1
