@@ -208,11 +208,12 @@ namespace Flowframes
 
         public static void Cancel(string reason = "", bool noMsgBox = false)
         {
-            if (AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)
+            try
+            {
                 OSUtils.KillProcessTree(AiProcess.currentAiProcess.Id);
-
-            if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited)
                 OSUtils.KillProcessTree(AvProcess.lastProcess.Id);
+            }
+            catch { }
 
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");

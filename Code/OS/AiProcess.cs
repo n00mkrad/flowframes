@@ -93,22 +93,29 @@ namespace Flowframes
             if(Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
-            string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
-            string script = "rife.py";
-
-            if (!File.Exists(Path.Combine(rifeDir, script)))
+            try
             {
-                Interpolate.Cancel("RIFE script not found! Make sure you didn't modify any files.");
-                return;
+                string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
+                string script = "rife.py";
+
+                if (!File.Exists(Path.Combine(rifeDir, script)))
+                {
+                    Interpolate.Cancel("RIFE script not found! Make sure you didn't modify any files.");
+                    return;
+                }
+
+                await RunRifeCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
+
+                if (!Interpolate.canceled && Interpolate.current.alpha)
+                {
+                    InterpolateUtils.progressPaused = true;
+                    Logger.Log("Interpolating alpha channel...");
+                    await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
+                }
             }
-
-            await RunRifeCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
-
-            if (!Interpolate.canceled && Interpolate.current.alpha)
+            catch (Exception e)
             {
-                InterpolateUtils.progressPaused = true;
-                Logger.Log("Interpolating alpha channel...");
-                await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
+                Logger.Log("Error running RIFE-CUDA: " + e.Message);
             }
 
             await AiFinished("RIFE");
@@ -152,15 +159,23 @@ namespace Flowframes
         public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
         {
             processTimeMulti.Restart();
-            Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
 
-            await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
-
-            if (!Interpolate.canceled && Interpolate.current.alpha)
+            try
             {
-                InterpolateUtils.progressPaused = true;
-                Logger.Log("Interpolating alpha channel...");
-                await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
+                Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
+
+                await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
+
+                if (!Interpolate.canceled && Interpolate.current.alpha)
+                {
+                    InterpolateUtils.progressPaused = true;
+                    Logger.Log("Interpolating alpha channel...");
+                    await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error running RIFE-NCNN: " + e.Message);
             }
 
             await AiFinished("RIFE");
@@ -238,13 +253,20 @@ namespace Flowframes
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
-            await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
-
-            if (!Interpolate.canceled && Interpolate.current.alpha)
+            try
             {
-                InterpolateUtils.progressPaused = true;
-                Logger.Log("Interpolating alpha channel...");
-                await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
+                await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
+
+                if (!Interpolate.canceled && Interpolate.current.alpha)
+                {
+                    InterpolateUtils.progressPaused = true;
+                    Logger.Log("Interpolating alpha channel...");
+                    await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error running DAIN-NCNN: " + e.Message);
             }
 
             await AiFinished("DAIN");
