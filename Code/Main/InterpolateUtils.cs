@@ -127,7 +127,7 @@ namespace Flowframes.Main
         public static int interpolatedInputFramesCount;
         public static float peakFpsOut;
 
-        public static int previewUpdateRateMs = 250;
+        public static int previewUpdateRateMs = 200;
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
@@ -163,7 +163,6 @@ namespace Flowframes.Main
                 if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > currentFactor)
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
-                    Logger.Log($"timeSinceLastPreviewUpdate.IsRunning: {timeSinceLastPreviewUpdate.IsRunning} - timeSinceLastPreviewUpdate.ElapsedMilliseconds: {timeSinceLastPreviewUpdate.ElapsedMilliseconds}", true);
                     if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
                     Logger.Log("Updating preview", true);
                     Image img = IOUtils.GetImage(latestFramePath);
