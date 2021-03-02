@@ -107,7 +107,7 @@ def build_read_buffer(user_args, read_buffer, videogen):
 
 def make_inference(I0, I1, exp):
     global model
-    middle = model.inference(I0, I1, args.scale)
+    middle = model.inference(I0, I1, args.UHD)
     if exp == 1:
         return [middle]
     first_half = make_inference(I0, middle, exp=exp - 1)
@@ -120,10 +120,13 @@ def pad_image(img):
     else:
         return F.pad(img, padding)
 
-print(f"Scale: {args.scale}")
-tmp = max(32, int(32 / args.scale))
-ph = ((h - 1) // tmp + 1) * tmp
-pw = ((w - 1) // tmp + 1) * tmp
+if args.UHD:
+    print("UHD mode enabled.")
+    ph = ((h - 1) // 64 + 1) * 64
+    pw = ((w - 1) // 64 + 1) * 64
+else:
+    ph = ((h - 1) // 32 + 1) * 32
+    pw = ((w - 1) // 32 + 1) * 32
 padding = (0, pw - w, 0, ph - h)
 
 write_buffer = Queue(maxsize=args.rbuffer)
