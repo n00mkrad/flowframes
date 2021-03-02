@@ -26,12 +26,24 @@ namespace Flowframes
         static LogMode currentLogMode;
         static bool showProgressBar;
 
+        static string defLogLevel = "warning";
+
         public static async Task RunFfmpeg(string args, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
         {
-            await RunFfmpeg(args, "", logMode, taskType, progressBar);
+            await RunFfmpeg(args, "", logMode, defLogLevel, taskType, progressBar);
+        }
+
+        public static async Task RunFfmpeg(string args, LogMode logMode, string loglevel, TaskType taskType = TaskType.Other, bool progressBar = false)
+        {
+            await RunFfmpeg(args, "", logMode, loglevel, taskType, progressBar);
         }
 
         public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
+        {
+            await RunFfmpeg(args, workingDir, logMode, defLogLevel, taskType, progressBar);
+        }
+
+        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, string loglevel, TaskType taskType = TaskType.Other, bool progressBar = false)
         {
             lastOutputFfmpeg = "";
             currentLogMode = logMode;
@@ -40,10 +52,15 @@ namespace Flowframes
             timeSinceLastOutput.Restart();
             lastProcess = ffmpeg;
             lastTask = taskType;
+
+            if (string.IsNullOrWhiteSpace(loglevel))
+                loglevel = defLogLevel;
+
             if(!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel warning -y -stats {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel {loglevel} -y -stats {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel warning -y -stats {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel {loglevel} -y -stats {args}";
+            
             if (logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
             Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
             ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);

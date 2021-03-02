@@ -32,8 +32,8 @@ namespace Flowframes.Media
             string rate = fps.ToString().Replace(",", ".");
             string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToStringDot()}";
             string extraArgs = Config.Get("ffEncArgs");
-            string args = $"-loglevel error -vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
-            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, TaskType.Encode, !isChunk);
+            string args = $"-vsync 0 -f concat -r {rate} -i {vfrFilename} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
+            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
         }
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, float fps, bool palette, int colors = 64, float resampleFps = -1, LogMode logMode = LogMode.OnlyLastLine)
@@ -45,8 +45,8 @@ namespace Flowframes.Media
             string fpsFilter = (resampleFps <= 0) ? "" : $"fps=fps={resampleFps.ToStringDot()}";
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
             string rate = fps.ToStringDot();
-            string args = $"-loglevel error -f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
-            await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, TaskType.Encode);
+            string args = $"-f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
+            await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, "error", TaskType.Encode);
         }
 
         public static async Task Encode(string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)

@@ -47,7 +47,7 @@ namespace Flowframes
             string ext = Path.GetExtension(inputFile);
             float val = newSpeedPercent / 100f;
             string speedVal = (1f / val).ToString("0.0000").Replace(",", ".");
-            string args = " -itsscale " + speedVal + " -i \"" + inputFile + "\"  -c copy \"" + pathNoExt + "-" + newSpeedPercent + "pcSpeed" + ext + "\"";
+            string args = " -itsscale " + speedVal + " -i \"" + inputFile + "\" -c copy \"" + pathNoExt + "-" + newSpeedPercent + "pcSpeed" + ext + "\"";
             await RunFfmpeg(args, LogMode.OnlyLastLine);
             if (delSrc)
                 DeleteSource(inputFile);

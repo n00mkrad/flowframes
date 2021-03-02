@@ -32,16 +32,17 @@ namespace Flowframes.Media
 
                 string audioExt = Utils.GetAudioExt(inputFile, track.streamIndex);
                 string outPath = Path.Combine(outFolder, $"{track.streamIndex}_{track.metadata}_audio.{audioExt}");
-                string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:{track.streamIndex} -vn -c:a copy {outPath.Wrap()}";
-                await RunFfmpeg(args, LogMode.Hidden);
+                string[] trim = FfmpegExtract.GetTrimArgs();
+                string args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -map 0:{track.streamIndex} -vn -c:a copy {outPath.Wrap()}";
+                await RunFfmpeg(args, LogMode.Hidden, "panic");
 
                 if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
                 {
                     Logger.Log($"Failed to extract audio stream #{track.streamIndex} losslessly! Trying to re-encode.");
                     File.Delete(outPath);
                     outPath = Path.ChangeExtension(outPath, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
-                    args = $" -loglevel panic -i {inputFile.Wrap()} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outPath.Wrap()}";
-                    await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractOther, true);
+                    args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outPath.Wrap()}";
+                    await RunFfmpeg(args, LogMode.Hidden, "panic", TaskType.ExtractOther, true);
 
                     if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
                     {
@@ -106,8 +107,9 @@ namespace Flowframes.Media
                     if (Interpolate.canceled) break;
 
                     string outPath = Path.Combine(outFolder, $"{subTrack.streamIndex}_{subTrack.lang}_{subTrack.encoding}.srt");
-                    string args = $" -loglevel error -sub_charenc {subTrack.encoding} -i {inputFile.Wrap()} -map 0:{subTrack.streamIndex} {outPath.Wrap()}";
-                    await RunFfmpeg(args, LogMode.Hidden);
+                    string[] trim = FfmpegExtract.GetTrimArgs();
+                    string args = $"-sub_charenc {subTrack.encoding} {trim[0]} -i {inputFile.Wrap()} {trim[1]} -map 0:{subTrack.streamIndex} {outPath.Wrap()}";
+                    await RunFfmpeg(args, LogMode.Hidden, "error");
                     if (subtitleTracks.Count > 4) Program.mainForm.SetProgress(FormatUtils.RatioInt(counter, subtitleTracks.Count));
                     counter++;
 
@@ -178,7 +180,7 @@ namespace Flowframes.Media
             string outName = Path.GetFileName(outPath);
 
             bool audio = Config.GetBool("keepAudio");
-            bool subs = Utils.ContainerSupportsSubs(containerExt, false) && Config.GetBool("keepSubs");
+            bool subs = Config.GetBool("keepSubs") && Utils.ContainerSupportsSubs(containerExt, false);
 
             string[] audioTracks = audio ? IOUtils.GetFilesSorted(tempFolder, false, "*_audio.*") : new string[0];     // Find audio files
             string[] subTracks = subs ? IOUtils.GetFilesSorted(tempFolder, false, "*.srt") : new string[0];     // Find subtitle files
@@ -236,7 +238,7 @@ namespace Flowframes.Media
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
             string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile));
 
-            string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} -shortest {outName}";
+            string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} {outName}";
 
             await RunFfmpeg(args, tempFolder, LogMode.Hidden);
 
