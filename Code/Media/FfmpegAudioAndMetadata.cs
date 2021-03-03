@@ -173,6 +173,12 @@ namespace Flowframes.Media
 
         public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder)
         {
+            if (!File.Exists(inputVideo))
+            {
+                Logger.Log("Warning: Input video file not found, can't copy audio/subtitle streams to output video!");
+                return;
+            }
+
             string containerExt = Path.GetExtension(interpVideo);
             string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
             string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
@@ -190,8 +196,6 @@ namespace Flowframes.Media
 
             if (!Config.GetBool("keepSubs"))
                 subArgs = "-sn";
-
-            // TODO: Check if movflags faststart is needed here!
 
             if (QuickSettingsTab.trimEnabled)
             {
