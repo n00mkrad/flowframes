@@ -57,7 +57,14 @@ namespace Flowframes.Main
                     await Encode(mode, path, outPath, I.current.outFps);
 
                 if (fpsLimit)
-                    await Encode(mode, path, outPath.FilenameSuffix($"{Config.Get("exportFilenameSeparator")}{maxFps.ToStringDot("0.00")}fps"), I.current.outFps, maxFps);
+                {
+                    bool addSuffix = (!Config.Get("exportNamePattern").Contains("[FPS]") && !Config.Get("exportNamePattern").Contains("[ROUNDFPS]"));
+                    
+                    if (addSuffix)
+                        outPath = outPath.FilenameSuffix($"_{maxFps.ToStringDot("0.00")}fpsLimit");
+
+                    await Encode(mode, path, outPath, I.current.outFps, maxFps);
+                }
             }
             catch (Exception e)
             {

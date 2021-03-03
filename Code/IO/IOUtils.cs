@@ -406,18 +406,25 @@ namespace Flowframes.IO
 			return false;
         }
 
-		public static string GetCurrentExportSuffix ()
-        {
-			return GetExportSuffix(Interpolate.current.interpFactor, Interpolate.current.ai, Interpolate.current.model);
+		public static string GetCurrentExportFilename()
+		{
+			InterpSettings curr = Interpolate.current;
+			return GetExportFilename(curr.inPath, curr.interpFactor, curr.ai, curr.model, curr.outFps);
 		}
 
-		public static string GetExportSuffix(float factor, AI ai, string mdl)
-		{
-			string sep = Config.Get("exportFilenameSeparator");
-			string suffix = $"{sep}{factor.ToStringDot()}x{sep}{ai.aiNameShort.ToUpper()}";
-			if (Config.GetBool("modelSuffix"))
-				suffix += $"{sep}{mdl}";
-			return suffix;
+		public static string GetExportFilename (string inputName, float factor, AI ai, string mdl, float fps)
+        {
+			string name = Config.Get("exportNamePattern");
+
+			name = name.Replace("[NAME]", Path.GetFileNameWithoutExtension(inputName));
+			name = name.Replace("[NAMEWITHEXT]", Path.GetFileName(inputName));
+			name = name.Replace("[FACTOR]", factor.ToStringDot());
+			name = name.Replace("[AI]", ai.aiNameShort.ToUpper());
+			name = name.Replace("[MODEL]", mdl);
+			name = name.Replace("[FPS]", fps.ToStringDot());
+			name = name.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
+
+			return name;
 		}
 
 		public static string GetHighestFrameNumPath (string path)
@@ -743,17 +750,6 @@ namespace Flowframes.IO
 			{
 				return "?";
 			}
-		}
-
-		public static byte[] GetLastBytes (string path, int startAt, int bytesAmount)
-        {
-			byte[] buffer = new byte[bytesAmount];
-			using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open)))
-			{
-				reader.BaseStream.Seek(startAt, SeekOrigin.Begin);
-				reader.Read(buffer, 0, bytesAmount);
-			}
-			return buffer;
 		}
 
 		public static bool HasBadChars(string str)

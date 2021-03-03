@@ -135,10 +135,12 @@ namespace Flowframes.IO
         public enum Type { String, Int, Float, Bool }
         private static string WriteDefaultValIfExists(string key, Type type)
         {
-            if (key == "maxVidHeight")      return WriteDefault(key, "2160");
-            if (key == "delLogsOnStartup")  return WriteDefault(key, "True");
-            if (key == "clearLogOnInput")   return WriteDefault(key, "True");
-            if (key == "tempDirCustom")     return WriteDefault(key, "C:/");
+            if (key == "maxVidHeight")          return WriteDefault(key, "2160");
+            if (key == "delLogsOnStartup")      return WriteDefault(key, "True");
+            if (key == "clearLogOnInput")       return WriteDefault(key, "True");
+            if (key == "tempDirCustom")         return WriteDefault(key, "C:/");
+            if (key == "exportNamePattern")     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[FPS]fps");
+            if (key == "exportNamePatternLoop") return WriteDefault(key, "-Loop[LOOPS]");
             // Interpolation
             if (key == "dedupThresh")       return WriteDefault(key, "2");
             if (key == "keepAudio")         return WriteDefault(key, "True");
@@ -165,8 +167,6 @@ namespace Flowframes.IO
             if (key == "modelsBaseUrl")     return WriteDefault(key, "https://raw.githubusercontent.com/n00mkrad/flowframes/main/Models/");
             if (key == "ffEncPreset")       return WriteDefault(key, "medium");
             if (key == "ffEncArgs")         return WriteDefault(key, "");
-            // Misc, not exposed in UI
-            if (key == "exportFilenameSeparator")   return WriteDefault(key, "-");
 
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)

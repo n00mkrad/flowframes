@@ -35,8 +35,10 @@ namespace Flowframes
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
-            string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy \"{pathNoExt}-Loop{times}{ext}\"";
+            string loopSuffix = Config.Get("exportNamePatternLoop").Replace("[LOOPS]", $"{times}").Replace("[PLAYS]", $"{times + 1}");
+            string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy \"{pathNoExt}{loopSuffix}{ext}\"";
             await RunFfmpeg(args, LogMode.Hidden);
+
             if (delSrc)
                 DeleteSource(inputFile);
         }

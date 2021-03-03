@@ -167,6 +167,12 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label67 = new System.Windows.Forms.Label();
+            this.exportNamePattern = new System.Windows.Forms.TextBox();
+            this.info1 = new System.Windows.Forms.PictureBox();
+            this.label68 = new System.Windows.Forms.Label();
+            this.label69 = new System.Windows.Forms.Label();
+            this.exportNamePatternLoop = new System.Windows.Forms.TextBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.tabListPage2.SuspendLayout();
@@ -179,6 +185,7 @@
             this.vidExportTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
             this.debugTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -198,6 +205,12 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.exportNamePatternLoop);
+            this.generalTab.Controls.Add(this.label69);
+            this.generalTab.Controls.Add(this.label68);
+            this.generalTab.Controls.Add(this.info1);
+            this.generalTab.Controls.Add(this.exportNamePattern);
+            this.generalTab.Controls.Add(this.label67);
             this.generalTab.Controls.Add(this.clearModelCacheBtn);
             this.generalTab.Controls.Add(this.label64);
             this.generalTab.Controls.Add(this.modelSuffix);
@@ -229,7 +242,7 @@
             this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
             this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
-            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 216);
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 246);
             this.clearModelCacheBtn.Name = "clearModelCacheBtn";
             this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
             this.clearModelCacheBtn.TabIndex = 79;
@@ -240,7 +253,7 @@
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(10, 221);
+            this.label64.Location = new System.Drawing.Point(10, 251);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(157, 13);
@@ -250,7 +263,7 @@
             // modelSuffix
             // 
             this.modelSuffix.AutoSize = true;
-            this.modelSuffix.Location = new System.Drawing.Point(280, 191);
+            this.modelSuffix.Location = new System.Drawing.Point(280, 221);
             this.modelSuffix.Name = "modelSuffix";
             this.modelSuffix.Size = new System.Drawing.Size(15, 14);
             this.modelSuffix.TabIndex = 77;
@@ -259,7 +272,7 @@
             // label63
             // 
             this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(10, 191);
+            this.label63.Location = new System.Drawing.Point(10, 221);
             this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label63.Name = "label63";
             this.label63.Size = new System.Drawing.Size(210, 13);
@@ -270,7 +283,7 @@
             // 
             this.label62.AutoSize = true;
             this.label62.ForeColor = System.Drawing.Color.Silver;
-            this.label62.Location = new System.Drawing.Point(308, 161);
+            this.label62.Location = new System.Drawing.Point(308, 191);
             this.label62.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(249, 13);
@@ -280,7 +293,7 @@
             // clearLogOnInput
             // 
             this.clearLogOnInput.AutoSize = true;
-            this.clearLogOnInput.Location = new System.Drawing.Point(280, 161);
+            this.clearLogOnInput.Location = new System.Drawing.Point(280, 191);
             this.clearLogOnInput.Name = "clearLogOnInput";
             this.clearLogOnInput.Size = new System.Drawing.Size(15, 14);
             this.clearLogOnInput.TabIndex = 74;
@@ -289,7 +302,7 @@
             // label61
             // 
             this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(10, 161);
+            this.label61.Location = new System.Drawing.Point(10, 191);
             this.label61.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(181, 13);
@@ -446,7 +459,7 @@
             // delLogsOnStartup
             // 
             this.delLogsOnStartup.AutoSize = true;
-            this.delLogsOnStartup.Location = new System.Drawing.Point(280, 130);
+            this.delLogsOnStartup.Location = new System.Drawing.Point(280, 160);
             this.delLogsOnStartup.Name = "delLogsOnStartup";
             this.delLogsOnStartup.Size = new System.Drawing.Size(15, 14);
             this.delLogsOnStartup.TabIndex = 23;
@@ -455,7 +468,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(10, 130);
+            this.label11.Location = new System.Drawing.Point(10, 160);
             this.label11.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(216, 13);
@@ -1922,6 +1935,67 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(10, 130);
+            this.label67.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(105, 13);
+            this.label67.TabIndex = 80;
+            this.label67.Text = "Export Name Pattern";
+            // 
+            // exportNamePattern
+            // 
+            this.exportNamePattern.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.exportNamePattern.ForeColor = System.Drawing.Color.White;
+            this.exportNamePattern.Location = new System.Drawing.Point(317, 127);
+            this.exportNamePattern.MinimumSize = new System.Drawing.Size(4, 21);
+            this.exportNamePattern.Name = "exportNamePattern";
+            this.exportNamePattern.Size = new System.Drawing.Size(207, 21);
+            this.exportNamePattern.TabIndex = 81;
+            // 
+            // info1
+            // 
+            this.info1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.info1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.info1.Location = new System.Drawing.Point(730, 127);
+            this.info1.Name = "info1";
+            this.info1.Size = new System.Drawing.Size(29, 21);
+            this.info1.TabIndex = 82;
+            this.info1.TabStop = false;
+            this.toolTip1.SetToolTip(this.info1, resources.GetString("info1.ToolTip"));
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(277, 130);
+            this.label68.Margin = new System.Windows.Forms.Padding(10, 10, 3, 7);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(34, 13);
+            this.label68.TabIndex = 83;
+            this.label68.Text = "Base:";
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(530, 130);
+            this.label69.Margin = new System.Windows.Forms.Padding(3, 10, 3, 7);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(63, 13);
+            this.label69.TabIndex = 84;
+            this.label69.Text = "Loop Suffix:";
+            // 
+            // exportNamePatternLoop
+            // 
+            this.exportNamePatternLoop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.exportNamePatternLoop.ForeColor = System.Drawing.Color.White;
+            this.exportNamePatternLoop.Location = new System.Drawing.Point(599, 127);
+            this.exportNamePatternLoop.MinimumSize = new System.Drawing.Size(4, 21);
+            this.exportNamePatternLoop.Name = "exportNamePatternLoop";
+            this.exportNamePatternLoop.Size = new System.Drawing.Size(125, 21);
+            this.exportNamePatternLoop.TabIndex = 85;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1955,6 +2029,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2099,5 +2174,11 @@
         private System.Windows.Forms.CheckBox rifeCudaFp16;
         private System.Windows.Forms.Label label65;
         private System.Windows.Forms.Label label66;
+        private System.Windows.Forms.TextBox exportNamePattern;
+        private System.Windows.Forms.Label label67;
+        private System.Windows.Forms.PictureBox info1;
+        private System.Windows.Forms.TextBox exportNamePatternLoop;
+        private System.Windows.Forms.Label label69;
+        private System.Windows.Forms.Label label68;
     }
 }

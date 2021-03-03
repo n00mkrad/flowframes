@@ -66,6 +66,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
+            ConfigParser.SaveGuiElement(exportNamePattern);
+            ConfigParser.SaveGuiElement(exportNamePatternLoop);
             ConfigParser.SaveGuiElement(delLogsOnStartup);
             ConfigParser.SaveGuiElement(clearLogOnInput);
             ConfigParser.SaveGuiElement(modelSuffix);
@@ -119,6 +121,8 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
             ConfigParser.LoadGuiElement(delLogsOnStartup);
             ConfigParser.LoadGuiElement(keepTempFolder);
+            ConfigParser.LoadGuiElement(exportNamePattern);
+            ConfigParser.LoadGuiElement(exportNamePatternLoop);
             ConfigParser.LoadGuiElement(clearLogOnInput);
             ConfigParser.LoadGuiElement(modelSuffix);
             // Interpolation
