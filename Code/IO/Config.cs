@@ -165,6 +165,8 @@ namespace Flowframes.IO
             if (key == "modelsBaseUrl")     return WriteDefault(key, "https://raw.githubusercontent.com/n00mkrad/flowframes/main/Models/");
             if (key == "ffEncPreset")       return WriteDefault(key, "medium");
             if (key == "ffEncArgs")         return WriteDefault(key, "");
+            // Misc, not exposed in UI
+            if (key == "exportFilenameSeparator")   return WriteDefault(key, "-");
 
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)

@@ -413,9 +413,10 @@ namespace Flowframes.IO
 
 		public static string GetExportSuffix(float factor, AI ai, string mdl)
 		{
-			string suffix = $"-{factor.ToStringDot()}x-{ai.aiNameShort.ToUpper()}";
+			string sep = Config.Get("exportFilenameSeparator");
+			string suffix = $"{sep}{factor.ToStringDot()}x{sep}{ai.aiNameShort.ToUpper()}";
 			if (Config.GetBool("modelSuffix"))
-				suffix += $"-{mdl}";
+				suffix += $"{sep}{mdl}";
 			return suffix;
 		}
 
