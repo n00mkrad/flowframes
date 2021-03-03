@@ -209,7 +209,10 @@ namespace Flowframes.Main
 
         public static async Task MuxOutputVideo(string inputPath, string outVideo)
         {
-            bool muxFromInput = true;
+            if (!Config.GetBool("keepAudio") && !Config.GetBool("keepAudio"))
+                return;
+
+            bool muxFromInput = Config.GetInt("audioSubTransferMode") == 0;
 
             try
             {

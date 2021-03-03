@@ -185,6 +185,12 @@ namespace Flowframes.Media
             bool audioCompat = Utils.ContainerSupportsAllAudioFormats(Interpolate.current.outMode, GetAudioCodecs(interpVideo));
             string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(Interpolate.current.outMode);
 
+            if (!Config.GetBool("keepAudio"))
+                audioArgs = "-an";
+
+            if (!Config.GetBool("keepSubs"))
+                subArgs = "-sn";
+
             // TODO: Check if movflags faststart is needed here!
 
             if (QuickSettingsTab.trimEnabled)
@@ -200,7 +206,7 @@ namespace Flowframes.Media
 
                 IOUtils.TryDeleteIfExists(Path.Combine(tempFolder, otherStreamsName));
             }
-            else // If trimming is disabled we can pull the streams directly from the input file
+            else   // If trimming is disabled we can pull the streams directly from the input file
             {
                 string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {outName}";
                 await RunFfmpeg(args, tempFolder, LogMode.Hidden);

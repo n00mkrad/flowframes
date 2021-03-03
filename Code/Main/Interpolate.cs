@@ -107,7 +107,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            if (Config.GetBool("keepAudio"))
+            if (Config.GetBool("keepAudio") && Config.GetInt("audioSubTransferMode") == 1)
             {
                 Program.mainForm.SetStatus("Extracting audio from video...");
                 await FfmpegAudioAndMetadata.ExtractAudioTracks(inPath, current.tempFolder);
@@ -115,7 +115,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            if (Config.GetBool("keepSubs"))
+            if (Config.GetBool("keepSubs") && Config.GetInt("audioSubTransferMode") == 1)
             {
                 Program.mainForm.SetStatus("Extracting subtitles from video...");
                 await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
