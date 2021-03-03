@@ -101,11 +101,6 @@ namespace Flowframes.Main
             for (int x = 0; x < frameFileContents.Count; x++)
                 fileContent += frameFileContents[x];
 
-            bool discardLast = (sceneDetection && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles.Last().Name)));
-
-            if (debug)
-                fileContent += $"# discardLast: {discardLast}\n";
-
             lastOutFileCount++;
             fileContent += $"file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'";     // Last frame (source)
 
@@ -152,7 +147,7 @@ namespace Flowframes.Main
 
                 if(i + 1 == frameFilesWithoutLast.Length)   // Is last frame
                 {
-                    if (sceneDetection && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles.Last().Name)));  // Scene detection for last frame
+                    if (sceneDetection && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles.Last().Name)))  // Scene detection for last frame
                         discardThisFrame = true;
                 }
 
