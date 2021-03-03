@@ -95,6 +95,17 @@ namespace Flowframes.Media
             return args;
         }
 
+        public static bool ContainerSupportsAllAudioFormats (Interpolate.OutMode outMode, List<string> codecs)
+        {
+            foreach(string format in codecs)
+            {
+                if (!ContainerSupportsAudioFormat(outMode, format))
+                    return false;
+            }
+
+            return true;
+        }
+
         public static bool ContainerSupportsAudioFormat (Interpolate.OutMode outMode, string format)
         {
             format = format.Remove(".");
@@ -143,18 +154,18 @@ namespace Flowframes.Media
                 case "mp2": return "mp2";
                 case "aac": return "m4a";
                 case "ac3": return "ac3";
+                case "eac3": return "ac3";
                 case "dts": return "dts";
                 default: return "wav";
             }
         }
 
-        public static string GetAudioFallbackArgs (string containerExt)
+        public static string GetAudioFallbackArgs (Interpolate.OutMode outMode)
         {
-            containerExt = containerExt.Remove(".");
             string codec = "aac";
             string bitrate = $"{Config.GetInt("aacBitrate", 160)}";
 
-            if(containerExt == "webm" || containerExt == "mkv")
+            if(outMode == Interpolate.OutMode.VidMkv || outMode == Interpolate.OutMode.VidWebm)
             {
                 codec = "libopus";
                 bitrate = $"{Config.GetInt("opusBitrate", 128)}";

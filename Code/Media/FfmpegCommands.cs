@@ -180,15 +180,32 @@ namespace Flowframes
         public static string GetAudioCodec(string path, int streamIndex = -1)
         {
             string stream = (streamIndex < 0) ? "a" : $"{streamIndex}";
-            string args = $" -v panic -show_streams -select_streams {stream} -show_entries stream=codec_name {path.Wrap()}";
+            string args = $"-v panic -show_streams -select_streams {stream} -show_entries stream=codec_name {path.Wrap()}";
             string info = GetFfprobeOutput(args);
             string[] entries = info.SplitIntoLines();
+
             foreach (string entry in entries)
             {
                 if (entry.Contains("codec_name="))
                     return entry.Split('=')[1];
             }
             return "";
+        }
+
+        public static List<string> GetAudioCodecs(string path, int streamIndex = -1)
+        {
+            List<string> codecNames = new List<string>();
+            string args = $"-loglevel panic -select_streams a -show_entries stream=codec_name {path.Wrap()}";
+            string info = GetFfprobeOutput(args);
+            string[] entries = info.SplitIntoLines();
+
+            foreach (string entry in entries)
+            {
+                if (entry.Contains("codec_name="))
+                    codecNames.Add(entry.Remove("codec_name=").Trim());
+            }
+
+            return codecNames;
         }
 
         public static void DeleteSource(string path)

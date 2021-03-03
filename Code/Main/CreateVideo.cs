@@ -119,7 +119,7 @@ namespace Flowframes.Main
             else
             {
                 await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
-                await MergeAudio(I.current.inPath, outPath);
+                await MuxOutputVideo(I.current.inPath, outPath);
                 await Loop(currentOutFile, GetLoopTimes());
             }
         }
@@ -160,7 +160,7 @@ namespace Flowframes.Main
         static async Task MergeChunks(string vfrFile, string outPath)
         {
             await FfmpegCommands.ConcatVideos(vfrFile, outPath, -1);
-            await MergeAudio(I.current.inPath, outPath);
+            await MuxOutputVideo(I.current.inPath, outPath);
             await Loop(outPath, GetLoopTimes());
         }
 
@@ -207,11 +207,16 @@ namespace Flowframes.Main
             return times;
         }
 
-        public static async Task MergeAudio(string inputPath, string outVideo)
+        public static async Task MuxOutputVideo(string inputPath, string outVideo)
         {
+            bool muxFromInput = true;
+
             try
             {
-                await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, I.current.tempFolder);        // Merge from audioFile into outVideo
+                if (muxFromInput)
+                    await FfmpegAudioAndMetadata.MergeStreamsFromInput(inputPath, outVideo, I.current.tempFolder);
+                else
+                    await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, I.current.tempFolder);        // Merge from audioFile into outVideo
             }
             catch (Exception e)
             {

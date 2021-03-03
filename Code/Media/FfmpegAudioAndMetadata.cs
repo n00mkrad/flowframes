@@ -2,6 +2,7 @@
 using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
+using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -41,7 +42,7 @@ namespace Flowframes.Media
                     Logger.Log($"Failed to extract audio stream #{track.streamIndex} losslessly! Trying to re-encode.");
                     File.Delete(outPath);
                     outPath = Path.ChangeExtension(outPath, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
-                    args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -vn {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} {outPath.Wrap()}";
+                    args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -vn {Utils.GetAudioFallbackArgs(Interpolate.current.outMode)} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden, "panic", TaskType.ExtractOther, true);
 
                     if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
@@ -170,12 +171,58 @@ namespace Flowframes.Media
 
         #endregion
 
-        public static async Task MergeAudioAndSubs(string inputFile, string tempFolder)    // https://superuser.com/a/277667
+        public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder)
         {
-            string containerExt = Path.GetExtension(inputFile);
+            string containerExt = Path.GetExtension(interpVideo);
             string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
             string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
-            File.Move(inputFile, tempPath);
+            File.Move(interpVideo, tempPath);
+            string inName = Path.GetFileName(tempPath);
+            string outName = Path.GetFileName(outPath);
+
+            string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
+
+            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(Interpolate.current.outMode, GetAudioCodecs(interpVideo));
+            string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(Interpolate.current.outMode);
+
+            // TODO: Check if movflags faststart is needed here!
+
+            if (QuickSettingsTab.trimEnabled)
+            {
+                string otherStreamsName = $"otherStreams{containerExt}";
+
+                string[] trim = FfmpegExtract.GetTrimArgs();
+                string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -vn -map 0 -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
+                await RunFfmpeg(args1, tempFolder, LogMode.Hidden);
+
+                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {outName}"; // Merge interp + trimmed original
+                await RunFfmpeg(args2, tempFolder, LogMode.Hidden);
+
+                IOUtils.TryDeleteIfExists(Path.Combine(tempFolder, otherStreamsName));
+            }
+            else // If trimming is disabled we can pull the streams directly from the input file
+            {
+                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {outName}";
+                await RunFfmpeg(args, tempFolder, LogMode.Hidden);
+            }
+
+            if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
+            {
+                File.Delete(tempPath);
+                File.Move(outPath, interpVideo);
+            }
+            else
+            {
+                File.Move(tempPath, interpVideo);   // Muxing failed, move unmuxed video file back
+            }
+        }
+
+        public static async Task MergeAudioAndSubs(string interpVideo, string tempFolder)    // https://superuser.com/a/277667
+        {
+            string containerExt = Path.GetExtension(interpVideo);
+            string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
+            string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
+            File.Move(interpVideo, tempPath);
             string inName = Path.GetFileName(tempPath);
             string outName = Path.GetFileName(outPath);
 
@@ -236,7 +283,7 @@ namespace Flowframes.Media
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container. Audio transfer will not be lossless.", false, false, "ffmpeg");
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
-            string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile));
+            string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Interpolate.current.outMode);
 
             string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} {outName}";
 
@@ -267,11 +314,11 @@ namespace Flowframes.Media
             if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
             {
                 File.Delete(tempPath);
-                File.Move(outPath, inputFile);
+                File.Move(outPath, interpVideo);
             }
             else
             {
-                File.Move(tempPath, inputFile);
+                File.Move(tempPath, interpVideo);
             }
         }
     }
