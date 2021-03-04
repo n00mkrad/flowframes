@@ -1,4 +1,5 @@
 ﻿using Flowframes.IO;
+using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,10 @@ namespace Flowframes
             try
             {
                 if (replaceLastLine)
+                {
+                    textbox.Suspend();
                     textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine));
+                }
             }
             catch { }
 
@@ -35,6 +39,8 @@ namespace Flowframes
 
             if (!hidden && textbox != null)
                 textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + s);
+
+            textbox.Resume();
 
             LogToFile(s, false, filename);
         }

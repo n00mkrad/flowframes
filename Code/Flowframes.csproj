@@ -275,6 +275,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscUtils\FormatUtils.cs" />
+    <Compile Include="UI\ControlExtensions.cs" />
     <Compile Include="UI\GetWebInfo.cs" />
     <Compile Include="UI\MainUiFunctions.cs" />
     <Compile Include="UI\UIUtils.cs" />
