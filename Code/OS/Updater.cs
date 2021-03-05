@@ -134,19 +134,31 @@ namespace Flowframes.OS
         {
             try
             {
-                Networks.networks.ForEach(ai =>
+                foreach(AI ai in Networks.networks)
                 {
                     var client = new WebClient();
                     string aiName = Path.GetFileNameWithoutExtension(ai.pkg.fileName);
                     string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/Pkgs/{aiName}/models.txt";
-                    string savePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
+                    string movePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
+                    string savePath = movePath + ".tmp";
                     client.DownloadFile(url, savePath);
+
+                    if (IOUtils.GetFilesize(savePath) > 8)
+                    {
+                        File.Delete(movePath);
+                        File.Move(savePath, movePath);
+                    }
+                    else
+                    {
+                        File.Delete(savePath);
+                    }
+
                     Program.mainForm.UpdateAiModelCombox();
-                });
+                }
             }
             catch (Exception e)
             {
-                Logger.Log("Non-critical error while performing model list update. See logs for details.");
+                Logger.Log("Failed to fetch models file. Ignore this if you are not connected to the internet.");
                 Logger.Log($"{e.Message}\n{e.StackTrace}", true);
             }
         }
