@@ -32,6 +32,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.exportNamePatternLoop = new System.Windows.Forms.TextBox();
+            this.label69 = new System.Windows.Forms.Label();
+            this.label68 = new System.Windows.Forms.Label();
+            this.info1 = new System.Windows.Forms.PictureBox();
+            this.exportNamePattern = new System.Windows.Forms.TextBox();
+            this.label67 = new System.Windows.Forms.Label();
             this.clearModelCacheBtn = new HTAlt.WinForms.HTButton();
             this.label64 = new System.Windows.Forms.Label();
             this.modelSuffix = new System.Windows.Forms.CheckBox();
@@ -143,6 +149,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.audioSubTransferMode = new System.Windows.Forms.ComboBox();
+            this.label70 = new System.Windows.Forms.Label();
             this.panel13 = new System.Windows.Forms.Panel();
             this.modelsBaseUrl = new System.Windows.Forms.ComboBox();
             this.label42 = new System.Windows.Forms.Label();
@@ -167,16 +175,9 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label67 = new System.Windows.Forms.Label();
-            this.exportNamePattern = new System.Windows.Forms.TextBox();
-            this.info1 = new System.Windows.Forms.PictureBox();
-            this.label68 = new System.Windows.Forms.Label();
-            this.label69 = new System.Windows.Forms.Label();
-            this.exportNamePatternLoop = new System.Windows.Forms.TextBox();
-            this.label70 = new System.Windows.Forms.Label();
-            this.audioSubTransferMode = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             this.tabListPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).BeginInit();
             this.mpDedupePanel.SuspendLayout();
@@ -187,7 +188,6 @@
             this.vidExportTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
             this.debugTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -237,6 +237,67 @@
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "General";
+            // 
+            // exportNamePatternLoop
+            // 
+            this.exportNamePatternLoop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.exportNamePatternLoop.ForeColor = System.Drawing.Color.White;
+            this.exportNamePatternLoop.Location = new System.Drawing.Point(624, 127);
+            this.exportNamePatternLoop.MinimumSize = new System.Drawing.Size(4, 21);
+            this.exportNamePatternLoop.Name = "exportNamePatternLoop";
+            this.exportNamePatternLoop.Size = new System.Drawing.Size(100, 21);
+            this.exportNamePatternLoop.TabIndex = 85;
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(555, 130);
+            this.label69.Margin = new System.Windows.Forms.Padding(3, 10, 3, 7);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(63, 13);
+            this.label69.TabIndex = 84;
+            this.label69.Text = "Loop Suffix:";
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(277, 130);
+            this.label68.Margin = new System.Windows.Forms.Padding(10, 10, 3, 7);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(34, 13);
+            this.label68.TabIndex = 83;
+            this.label68.Text = "Base:";
+            // 
+            // info1
+            // 
+            this.info1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.info1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.info1.Location = new System.Drawing.Point(730, 127);
+            this.info1.Name = "info1";
+            this.info1.Size = new System.Drawing.Size(29, 21);
+            this.info1.TabIndex = 82;
+            this.info1.TabStop = false;
+            this.toolTip1.SetToolTip(this.info1, resources.GetString("info1.ToolTip"));
+            // 
+            // exportNamePattern
+            // 
+            this.exportNamePattern.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.exportNamePattern.ForeColor = System.Drawing.Color.White;
+            this.exportNamePattern.Location = new System.Drawing.Point(317, 127);
+            this.exportNamePattern.MinimumSize = new System.Drawing.Size(4, 21);
+            this.exportNamePattern.Name = "exportNamePattern";
+            this.exportNamePattern.Size = new System.Drawing.Size(232, 21);
+            this.exportNamePattern.TabIndex = 81;
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(10, 130);
+            this.label67.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(105, 13);
+            this.label67.TabIndex = 80;
+            this.label67.Text = "Export Name Pattern";
             // 
             // clearModelCacheBtn
             // 
@@ -1670,6 +1731,31 @@
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Debugging / Experimental";
             // 
+            // audioSubTransferMode
+            // 
+            this.audioSubTransferMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.audioSubTransferMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.audioSubTransferMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.audioSubTransferMode.ForeColor = System.Drawing.Color.White;
+            this.audioSubTransferMode.FormattingEnabled = true;
+            this.audioSubTransferMode.Items.AddRange(new object[] {
+            "Copy Streams Directly From Input Video",
+            "Extract, Interpolate, Then Merge (Works even if input video was deleted)"});
+            this.audioSubTransferMode.Location = new System.Drawing.Point(280, 179);
+            this.audioSubTransferMode.Name = "audioSubTransferMode";
+            this.audioSubTransferMode.Size = new System.Drawing.Size(400, 21);
+            this.audioSubTransferMode.TabIndex = 89;
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.Location = new System.Drawing.Point(10, 182);
+            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(165, 13);
+            this.label70.TabIndex = 88;
+            this.label70.Text = "Audio And Subtitle Merging Mode";
+            // 
             // panel13
             // 
             this.panel13.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
@@ -1713,7 +1799,7 @@
             this.ffEncArgs.Location = new System.Drawing.Point(280, 270);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(250, 21);
+            this.ffEncArgs.Size = new System.Drawing.Size(250, 20);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
@@ -1849,7 +1935,7 @@
             this.ffEncThreads.Location = new System.Drawing.Point(280, 210);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
@@ -1939,92 +2025,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label67
-            // 
-            this.label67.AutoSize = true;
-            this.label67.Location = new System.Drawing.Point(10, 130);
-            this.label67.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label67.Name = "label67";
-            this.label67.Size = new System.Drawing.Size(105, 13);
-            this.label67.TabIndex = 80;
-            this.label67.Text = "Export Name Pattern";
-            // 
-            // exportNamePattern
-            // 
-            this.exportNamePattern.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.exportNamePattern.ForeColor = System.Drawing.Color.White;
-            this.exportNamePattern.Location = new System.Drawing.Point(317, 127);
-            this.exportNamePattern.MinimumSize = new System.Drawing.Size(4, 21);
-            this.exportNamePattern.Name = "exportNamePattern";
-            this.exportNamePattern.Size = new System.Drawing.Size(207, 21);
-            this.exportNamePattern.TabIndex = 81;
-            // 
-            // info1
-            // 
-            this.info1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.info1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.info1.Location = new System.Drawing.Point(730, 127);
-            this.info1.Name = "info1";
-            this.info1.Size = new System.Drawing.Size(29, 21);
-            this.info1.TabIndex = 82;
-            this.info1.TabStop = false;
-            this.toolTip1.SetToolTip(this.info1, resources.GetString("info1.ToolTip"));
-            // 
-            // label68
-            // 
-            this.label68.AutoSize = true;
-            this.label68.Location = new System.Drawing.Point(277, 130);
-            this.label68.Margin = new System.Windows.Forms.Padding(10, 10, 3, 7);
-            this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(34, 13);
-            this.label68.TabIndex = 83;
-            this.label68.Text = "Base:";
-            // 
-            // label69
-            // 
-            this.label69.AutoSize = true;
-            this.label69.Location = new System.Drawing.Point(530, 130);
-            this.label69.Margin = new System.Windows.Forms.Padding(3, 10, 3, 7);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(63, 13);
-            this.label69.TabIndex = 84;
-            this.label69.Text = "Loop Suffix:";
-            // 
-            // exportNamePatternLoop
-            // 
-            this.exportNamePatternLoop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.exportNamePatternLoop.ForeColor = System.Drawing.Color.White;
-            this.exportNamePatternLoop.Location = new System.Drawing.Point(599, 127);
-            this.exportNamePatternLoop.MinimumSize = new System.Drawing.Size(4, 21);
-            this.exportNamePatternLoop.Name = "exportNamePatternLoop";
-            this.exportNamePatternLoop.Size = new System.Drawing.Size(125, 21);
-            this.exportNamePatternLoop.TabIndex = 85;
-            // 
-            // label70
-            // 
-            this.label70.AutoSize = true;
-            this.label70.Location = new System.Drawing.Point(10, 182);
-            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(165, 13);
-            this.label70.TabIndex = 88;
-            this.label70.Text = "Audio And Subtitle Merging Mode";
-            // 
-            // audioSubTransferMode
-            // 
-            this.audioSubTransferMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.audioSubTransferMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.audioSubTransferMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.audioSubTransferMode.ForeColor = System.Drawing.Color.White;
-            this.audioSubTransferMode.FormattingEnabled = true;
-            this.audioSubTransferMode.Items.AddRange(new object[] {
-            "Copy Streams Directly From Input Video",
-            "Extract, Interpolate, Then Merge (Works even if input video was deleted)"});
-            this.audioSubTransferMode.Location = new System.Drawing.Point(280, 179);
-            this.audioSubTransferMode.Name = "audioSubTransferMode";
-            this.audioSubTransferMode.Size = new System.Drawing.Size(400, 21);
-            this.audioSubTransferMode.TabIndex = 89;
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2044,6 +2044,7 @@
             this.settingsTabList.ResumeLayout(false);
             this.generalTab.ResumeLayout(false);
             this.generalTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             this.tabListPage2.ResumeLayout(false);
             this.tabListPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).EndInit();
@@ -2058,7 +2059,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

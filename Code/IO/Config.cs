@@ -139,7 +139,7 @@ namespace Flowframes.IO
             if (key == "delLogsOnStartup")      return WriteDefault(key, "True");
             if (key == "clearLogOnInput")       return WriteDefault(key, "True");
             if (key == "tempDirCustom")         return WriteDefault(key, "C:/");
-            if (key == "exportNamePattern")     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[FPS]fps");
+            if (key == "exportNamePattern")     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[MODEL]-[FPS]fps");
             if (key == "exportNamePatternLoop") return WriteDefault(key, "-Loop[LOOPS]");
             // Interpolation
             if (key == "dedupThresh")       return WriteDefault(key, "2");
