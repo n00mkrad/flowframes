@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FFmpegUtils;
+using I = Flowframes.Interpolate;
 
 namespace Flowframes.Media
 {
@@ -188,14 +189,16 @@ namespace Flowframes.Media
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
 
-            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(Interpolate.current.outMode, GetAudioCodecs(interpVideo));
-            string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(Interpolate.current.outMode);
+            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(interpVideo));
+            string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(I.current.outMode);
 
             if (!Config.GetBool("keepAudio"))
                 audioArgs = "-an";
 
             if (!Config.GetBool("keepSubs"))
                 subArgs = "-sn";
+
+            string mkvFix = I.current.outMode == I.OutMode.VidMkv ? "-max_interleave_delta 0" : ""; // https://www.reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
 
             if (QuickSettingsTab.trimEnabled)
             {
@@ -205,14 +208,14 @@ namespace Flowframes.Media
                 string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -vn -map 0 -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
                 await RunFfmpeg(args1, tempFolder, LogMode.Hidden);
 
-                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {outName}"; // Merge interp + trimmed original
+                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {mkvFix} {outName}"; // Merge interp + trimmed original
                 await RunFfmpeg(args2, tempFolder, LogMode.Hidden);
 
                 IOUtils.TryDeleteIfExists(Path.Combine(tempFolder, otherStreamsName));
             }
             else   // If trimming is disabled we can pull the streams directly from the input file
             {
-                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {outName}";
+                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {mkvFix} {outName}";
                 await RunFfmpeg(args, tempFolder, LogMode.Hidden);
             }
 
@@ -286,14 +289,14 @@ namespace Flowframes.Media
             bool allAudioCodecsSupported = true;
 
             foreach (string audioTrack in audioTracks)
-                if (!Utils.ContainerSupportsAudioFormat(Interpolate.current.outMode, Path.GetExtension(audioTrack)))
+                if (!Utils.ContainerSupportsAudioFormat(I.current.outMode, Path.GetExtension(audioTrack)))
                     allAudioCodecsSupported = false;
 
             if(!allAudioCodecsSupported)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container. Audio transfer will not be lossless.", false, false, "ffmpeg");
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
-            string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(Interpolate.current.outMode);
+            string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(I.current.outMode);
 
             string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} {outName}";
 
