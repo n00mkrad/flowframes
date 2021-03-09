@@ -31,12 +31,34 @@ namespace Flowframes
 
             Networks.Init();
 
+            Task.Run(() => DiskSpaceCheckLoop());
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             mainForm = new Form1();
             Application.Run(mainForm);
+        }
 
+        static async Task DiskSpaceCheckLoop ()
+        {
+            while (true)
+            {
+                if (busy)
+                {
+                    string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
+                    long mb = IOUtils.GetDiskSpace(Interpolate.current.tempFolder);
+
+                    Logger.Log($"Disk space check for '{drivePath}/': {mb} MB free.", true);
+
+                    if (mb < 4096)
+                    {
+                        Interpolate.Cancel("Running out of disk space!");
+                    }
+                }
+
+                await Task.Delay(15000);
+            }
         }
     }
 }

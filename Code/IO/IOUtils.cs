@@ -775,5 +775,30 @@ namespace Flowframes.IO
 				Logger.Log($"OverwriteWithText failed for '{path}': {e.Message}");
             }
 		}
+
+		public static long GetDiskSpace(string path, bool mbytes = true)
+		{
+			try
+			{
+				string driveLetter = path.Substring(0, 2);      // Make 'C:/some/random/path' => 'C:' etc
+				DriveInfo[] allDrives = DriveInfo.GetDrives();
+
+				foreach (DriveInfo d in allDrives)
+				{
+					if (d.IsReady == true && d.Name.StartsWith(driveLetter))
+					{
+						if (mbytes)
+							return (long)(d.AvailableFreeSpace / 1024f / 1000f);
+						else
+							return d.AvailableFreeSpace;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logger.Log("Error trying to get disk space: " + e.Message, true);
+			}
+			return 0;
+		}
 	}
 }
