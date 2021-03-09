@@ -49,9 +49,9 @@ namespace Flowframes
                     string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
                     long mb = IOUtils.GetDiskSpace(Interpolate.current.tempFolder);
 
-                    Logger.Log($"Disk space check for '{drivePath}/': {mb} MB free.", true);
+                    Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 
-                    if (mb < 4096)
+                    if (mb < (Config.GetInt("minDiskSpaceGb", 6) * 1024))
                     {
                         Interpolate.Cancel("Running out of disk space!");
                     }
