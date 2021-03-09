@@ -28,7 +28,6 @@ namespace Flowframes
         public string framesFolder;
         public string interpFolder;
         public bool inputIsFrames;
-        public string outFilename;
         public Size inputResolution;
         public Size scaledResolution;
 
@@ -55,7 +54,6 @@ namespace Flowframes
                 framesFolder = Path.Combine(tempFolder, Paths.framesDir);
                 interpFolder = Path.Combine(tempFolder, Paths.interpDir);
                 inputIsFrames = IOUtils.IsPathDirectory(inPath);
-                outFilename = Path.Combine(outPath, IOUtils.GetExportFilename(inPath, interpFactor, ai, model, outFps)) + FFmpegUtils.GetExt(outMode);
             }
             catch
             {
@@ -64,7 +62,6 @@ namespace Flowframes
                 framesFolder = "";
                 interpFolder = "";
                 inputIsFrames = false;
-                outFilename = "";
             }
 
             inputResolution = new Size(0, 0);
@@ -120,7 +117,6 @@ namespace Flowframes
                 framesFolder = Path.Combine(tempFolder, Paths.framesDir);
                 interpFolder = Path.Combine(tempFolder, Paths.interpDir);
                 inputIsFrames = IOUtils.IsPathDirectory(inPath);
-                outFilename = Path.Combine(outPath, IOUtils.GetExportFilename(inPath, interpFactor, ai, model, outFps)) + FFmpegUtils.GetExt(outMode);
             }
             catch
             {
@@ -129,7 +125,6 @@ namespace Flowframes
                 framesFolder = "";
                 interpFolder = "";
                 inputIsFrames = false;
-                outFilename = "";
             }
         }
 
@@ -141,7 +136,6 @@ namespace Flowframes
             framesFolder = Path.Combine(tempFolder, Paths.framesDir);
             interpFolder = Path.Combine(tempFolder, Paths.interpDir);
             inputIsFrames = IOUtils.IsPathDirectory(inPath);
-            outFilename = Path.Combine(outPath, IOUtils.GetExportFilename(inPath, interpFactor, ai, model, outFps)) + FFmpegUtils.GetExt(outMode);
         }
 
         public async Task<Size> GetInputRes()

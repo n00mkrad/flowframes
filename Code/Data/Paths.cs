@@ -14,6 +14,7 @@ namespace Flowframes.IO
 
 		public const string alphaSuffix = "-a";
 		public const string prevSuffix = "-previous";
+		public const string fpsLimitSuffix = "-fpsLimit";
 
 		public const string frameOrderPrefix = "frames";
 

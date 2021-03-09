@@ -6,7 +6,6 @@ using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -174,7 +173,7 @@ namespace Flowframes.Media
 
         public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder)
         {
-            if (!File.Exists(inputVideo))
+            if (!File.Exists(inputVideo) && !I.current.inputIsFrames)
             {
                 Logger.Log("Warning: Input video file not found, can't copy audio/subtitle streams to output video!");
                 return;

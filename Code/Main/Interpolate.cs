@@ -59,7 +59,7 @@ namespace Flowframes
             if (canceled) return;
             Program.mainForm.SetProgress(100);
             if(!currentlyUsingAutoEnc)
-                await CreateVideo.Export(current.interpFolder, current.outFilename, current.outMode, false);
+                await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, false);
             await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
             AiProcess.filenameMap.Clear();
             await Cleanup();

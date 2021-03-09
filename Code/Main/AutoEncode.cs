@@ -123,7 +123,7 @@ namespace Flowframes.Main
                 }
 
                 if (Interpolate.canceled) return;
-                await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outFilename);
+                await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath);
             }
             catch (Exception e)
             {

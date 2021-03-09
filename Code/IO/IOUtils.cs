@@ -1,5 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.Main;
+using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.UI;
 using Force.Crc32;
@@ -406,25 +407,31 @@ namespace Flowframes.IO
 			return false;
         }
 
-		public static string GetCurrentExportFilename()
+		public static string GetCurrentExportFilename(bool fpsLimit, bool withExt)
 		{
 			InterpSettings curr = Interpolate.current;
-			return GetExportFilename(curr.inPath, curr.interpFactor, curr.ai, curr.model, curr.outFps);
-		}
+			float fps = fpsLimit ? Config.GetFloat("maxFps") : curr.outFps;
 
-		public static string GetExportFilename (string inputName, float factor, AI ai, string mdl, float fps)
-        {
-			string name = Config.Get("exportNamePattern");
+			string pattern = Config.Get("exportNamePattern");
+			string inName = Interpolate.current.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
+			bool addSuffix = fpsLimit && (!pattern.Contains("[FPS]") && !pattern.Contains("[ROUNDFPS]"));
+			string filename = pattern;
 
-			name = name.Replace("[NAME]", Path.GetFileNameWithoutExtension(inputName));
-			name = name.Replace("[NAMEWITHEXT]", Path.GetFileName(inputName));
-			name = name.Replace("[FACTOR]", factor.ToStringDot());
-			name = name.Replace("[AI]", ai.aiNameShort.ToUpper());
-			name = name.Replace("[MODEL]", mdl);
-			name = name.Replace("[FPS]", fps.ToStringDot());
-			name = name.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
+			filename = filename.Replace("[NAME]", inName);
+			filename = filename.Replace("[NAMEWITHEXT]", Path.GetFileName(curr.inPath));
+			filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
+			filename = filename.Replace("[AI]", curr.ai.aiNameShort.ToUpper());
+			filename = filename.Replace("[MODEL]", curr.model);
+			filename = filename.Replace("[FPS]", fps.ToStringDot());
+			filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
 
-			return name;
+			if (addSuffix)
+				filename += Paths.fpsLimitSuffix;
+
+			if (withExt)
+				filename += FFmpegUtils.GetExt(curr.outMode);
+
+			return filename;
 		}
 
 		public static string GetHighestFrameNumPath (string path)
