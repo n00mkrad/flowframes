@@ -216,6 +216,8 @@ namespace Flowframes.Main
             if (!Config.GetBool("keepAudio") && !Config.GetBool("keepAudio"))
                 return;
 
+            Program.mainForm.SetStatus("Muxing audio/subtitles into video...");
+
             bool muxFromInput = Config.GetInt("audioSubTransferMode") == 0;
 
             try
