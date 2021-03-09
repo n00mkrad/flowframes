@@ -164,7 +164,6 @@ namespace Flowframes.Main
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
-                    Logger.Log("Updating preview", true);
                     Image img = IOUtils.GetImage(latestFramePath);
                     SetPreviewImg(img);
                 }
