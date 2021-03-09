@@ -51,10 +51,8 @@ namespace Flowframes
 
                     Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 
-                    if (mb < (Config.GetInt("minDiskSpaceGb", 6) * 1024))
-                    {
+                    if (!Interpolate.canceled && mb < (Config.GetInt("minDiskSpaceGb", 6) * 1024))
                         Interpolate.Cancel("Running out of disk space!");
-                    }
                 }
 
                 await Task.Delay(15000);
