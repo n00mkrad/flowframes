@@ -16,29 +16,40 @@ namespace Flowframes.Media
 {
     partial class FfmpegExtract : FfmpegCommands
     {
-        public static async Task ExtractSceneChanges(string inputFile, string frameFolderPath, float rate)
+        public static async Task ExtractSceneChanges(string inPath, string outDir, float rate, bool inputIsFrames = false)
         {
             Logger.Log("Extracting scene changes...");
-            await VideoToFrames(inputFile, frameFolderPath, false, rate, false, false, new Size(320, 180), true);
+            Directory.CreateDirectory(outDir);
+
+            string inArg = $"-i {inPath.Wrap()}";
+
+            if (inputIsFrames)
+            {
+                string concatFile = Path.Combine(Paths.GetDataPath(), "png-scndetect-concat-temp.ini");
+                GetConcatFile(inPath, concatFile);
+                inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
+            }
+
+            string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"";
+            string rateArg = (rate > 0) ? $"-r {rate.ToStringDot()}" : "";
+            string args = $"{rateArg} -vsync 0 {GetTrimArg(true)} {inArg} {compr} {scnDetect} -frame_pts true -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d.png\"";
+
+            LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
+            await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", TaskType.ExtractFrames, true);
+
             bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
-            int amount = IOUtils.GetAmountOfFiles(frameFolderPath, false);
+            int amount = IOUtils.GetAmountOfFiles(outDir, false);
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc)
+        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size)
         {
-            await VideoToFrames(inputFile, framesDir, alpha, rate, deDupe, delSrc, new Size());
-        }
-
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size, bool sceneDetect = false)
-        {
-            if (!sceneDetect) Logger.Log("Extracting video frames from input video...");
+            Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(framesDir);
             string timecodeStr = /* timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : */ "-frame_pts true";
-            string scnDetect = sceneDetect ? $"\"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"" : "";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, scnDetect, mpStr });
+            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
@@ -46,7 +57,7 @@ namespace Flowframes.Media
             LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
             int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*.png");
-            if (!sceneDetect) Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
+            Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
             await Task.Delay(1);
             if (delSrc)
                 DeleteSource(inputFile);
@@ -58,11 +69,7 @@ namespace Flowframes.Media
             Logger.Log($"Importing images from {inpath} to {outpath}.", true);
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
-            string concatFileContent = "";
-            string[] files = IOUtils.GetFilesSorted(inpath);
-            foreach (string img in files)
-                concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
-            File.WriteAllText(concatFile, concatFileContent);
+            GetConcatFile(inpath, concatFile);
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
@@ -72,6 +79,17 @@ namespace Flowframes.Media
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
             if (delSrc)
                 DeleteSource(inpath);
+        }
+
+        public static void GetConcatFile (string inputFilesDir, string concatFilePath)
+        {
+            string concatFileContent = "";
+            string[] files = IOUtils.GetFilesSorted(inputFilesDir);
+
+            foreach (string img in files)
+                concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
+
+            File.WriteAllText(concatFilePath, concatFileContent);
         }
 
         public static string[] GetTrimArgs()

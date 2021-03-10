@@ -39,8 +39,6 @@ namespace Flowframes
                 Application.Exit();
             }
 
-            Text = $"Flowframes {Updater.GetInstalledVer()}";
-
             // Main Tab
             UIUtils.InitCombox(interpFactorCombox, 0);
             UIUtils.InitCombox(outModeCombox, 0);
@@ -50,17 +48,14 @@ namespace Flowframes
 
             Program.mainForm = this;
             Logger.textbox = logBox;
-
             NvApi.Init();
             InitAis();
             InterpolateUtils.preview = previewPicturebox;
-
             UpdateStepByStepControls();
-
             Initialized();
             Checks();
-
             HandleArguments();
+            Text = $"Flowframes {Updater.GetInstalledVer()}";
         }
 
         void Checks()
@@ -204,9 +199,6 @@ namespace Flowframes
 
         private void browseOutBtn_Click(object sender, EventArgs e)
         {
-            Magick.SceneDetect.RunSceneDetection(inputTbox.Text.Trim());
-            return;
-
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.InitialDirectory = inputTbox.Text.Trim();
             dialog.IsFolderPicker = true;

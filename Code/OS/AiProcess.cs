@@ -22,7 +22,7 @@ namespace Flowframes
     {
         public static bool hasShownError;
 
-        public static Process currentAiProcess;
+        public static Process lastAiProcess;
         public static Stopwatch processTime = new Stopwatch();
         public static Stopwatch processTimeMulti = new Stopwatch();
 
@@ -31,11 +31,25 @@ namespace Flowframes
 
         public static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
 
+        public static void Kill ()
+        {
+            if (lastAiProcess == null) return;
+
+            try
+            {
+                OSUtils.KillProcessTree(lastAiProcess.Id);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to kill currentAiProcess process tree: {e.Message}", true);
+            }
+        }
+
         static void AiStarted (Process proc, int startupTimeMs, string inPath = "")
         {
             lastStartupTimeMs = startupTimeMs;
             processTime.Restart();
-            currentAiProcess = proc;
+            lastAiProcess = proc;
             lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.current.framesFolder : inPath;
             hasShownError = false;
         }
@@ -66,7 +80,7 @@ namespace Flowframes
 
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
-                if (AvProcess.lastProcess != null && !AvProcess.lastProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
+                if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
                 {
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
                     Logger.Log(lastLine.Trim().TrimWhitespaces(), false, Logger.GetLastLine().Contains("frame"));

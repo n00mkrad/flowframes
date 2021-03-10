@@ -14,7 +14,7 @@ namespace Flowframes
 {
     class AvProcess
     {
-        public static Process lastProcess;
+        public static Process lastAvProcess;
         public static Stopwatch timeSinceLastOutput = new Stopwatch();
         public enum TaskType { ExtractFrames, ExtractOther, Encode, GetInfo, Merge, Other };
         public static TaskType lastTask = TaskType.Other;
@@ -27,6 +27,20 @@ namespace Flowframes
         static bool showProgressBar;
 
         static string defLogLevel = "warning";
+
+        public static void Kill()
+        {
+            if (lastAvProcess == null) return;
+
+            try
+            {
+                OSUtils.KillProcessTree(lastAvProcess.Id);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to kill lastAvProcess process tree: {e.Message}", true);
+            }
+        }
 
         public static async Task RunFfmpeg(string args, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
         {
@@ -50,7 +64,7 @@ namespace Flowframes
             showProgressBar = progressBar;
             Process ffmpeg = OSUtils.NewProcess(true);
             timeSinceLastOutput.Restart();
-            lastProcess = ffmpeg;
+            lastAvProcess = ffmpeg;
             lastTask = taskType;
 
             if (string.IsNullOrWhiteSpace(loglevel))
@@ -126,7 +140,7 @@ namespace Flowframes
         public static string GetFfmpegOutput (string args)
         {
             Process ffmpeg = OSUtils.NewProcess(true);
-            lastProcess = ffmpeg;
+            lastAvProcess = ffmpeg;
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
             Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
             ffmpeg.Start();
@@ -144,7 +158,7 @@ namespace Flowframes
             lastOutputFfmpeg = "";
             showProgressBar = progressBar;
             Process ffmpeg = OSUtils.NewProcess(true);
-            lastProcess = ffmpeg;
+            lastAvProcess = ffmpeg;
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
             Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
             if (setBusy) Program.mainForm.SetWorking(true);
@@ -204,7 +218,7 @@ namespace Flowframes
             if (Program.busy) return;
 
             await Task.Delay(100);
-            while(!lastProcess.HasExited)
+            while(!lastAvProcess.HasExited)
                 await Task.Delay(10);
         }
     }

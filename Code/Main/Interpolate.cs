@@ -69,25 +69,24 @@ namespace Flowframes
             Program.mainForm.SetStatus("Done interpolating!");
         }
 
-        public static async Task GetFrames (bool stepByStep = false)
+        public static async Task GetFrames ()
         {
             current.RefreshAlpha();
 
+            if (Config.GetBool("scnDetect"))
+            {
+                Program.mainForm.SetStatus("Extracting scenes from video...");
+                await FfmpegExtract.ExtractSceneChanges(current.inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFps, current.inputIsFrames);
+            }
+
             if (!current.inputIsFrames)        // Extract if input is video, import if image sequence
-                await ExtractFrames(current.inPath, current.framesFolder, current.alpha, !stepByStep);
+                await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
                 await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true));
         }
 
-        public static async Task ExtractFrames(string inPath, string outPath, bool alpha, bool sceneDetect)
+        public static async Task ExtractFrames(string inPath, string outPath, bool alpha)
         {
-            if (sceneDetect && Config.GetBool("scnDetect"))
-            {
-                Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FfmpegExtract.ExtractSceneChanges(inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFps);
-                await Task.Delay(10);
-            }
-
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
@@ -208,16 +207,11 @@ namespace Flowframes
 
         public static void Cancel(string reason = "", bool noMsgBox = false)
         {
-            try
-            {
-                OSUtils.KillProcessTree(AiProcess.currentAiProcess.Id);
-                OSUtils.KillProcessTree(AvProcess.lastProcess.Id);
-            }
-            catch { }
-
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);
+            AiProcess.Kill();
+            AvProcess.Kill();
 
             if (!current.stepByStep && !Config.GetBool("keepTempFolder"))
             {

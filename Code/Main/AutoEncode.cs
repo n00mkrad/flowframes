@@ -74,7 +74,7 @@ namespace Flowframes.Main
                     for (int vfrLine = lastEncodedFrameNum; vfrLine < interpFramesLines.Length; vfrLine++)
                             unencodedFrameLines.Add(vfrLine);
 
-                    bool aiRunning = !AiProcess.currentAiProcess.HasExited;
+                    bool aiRunning = !AiProcess.lastAiProcess.HasExited;
 
                     if (unencodedFrameLines.Count > 0 && (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning))     // Encode every n frames, or after process has exited
                     {
@@ -167,7 +167,7 @@ namespace Flowframes.Main
         {
             if (Interpolate.canceled || interpFramesFolder == null) return false;
             // Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
-            return ((AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited) || encodedFrameLines.Count < interpFramesLines.Length);
+            return ((AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) || encodedFrameLines.Count < interpFramesLines.Length);
         }
 
         static int GetChunkSize(int targetFramesAmount)

@@ -49,8 +49,8 @@ namespace Flowframes.Magick
 
         static async Task ProcessFrame (FileInfo frame, FileInfo lastFrame, string outFolder)
         {
-            MagickImage prevFrame = GetImage(lastFrame.FullName);
-            MagickImage currFrame = GetImage(frame.FullName);
+            MagickImage prevFrame = GetImage(lastFrame.FullName, false);
+            MagickImage currFrame = GetImage(frame.FullName, false);
 
             Size originalSize = new Size(currFrame.Width, currFrame.Height);
             int downscaleHeight = 144;
@@ -60,17 +60,16 @@ namespace Flowframes.Magick
             double errNormalizedCrossCorrelation = currFrame.Compare(prevFrame, ErrorMetric.NormalizedCrossCorrelation);
             double errRootMeanSquared = currFrame.Compare(prevFrame, ErrorMetric.RootMeanSquared);
 
-            string str = $"Metrics of {frame.Name.Split('.')[0]} against {lastFrame.Name.Split('.')[0]}:\n";
+            string str = $"\nMetrics of {frame.Name.Split('.')[0]} against {lastFrame.Name.Split('.')[0]}:\n";
             str += $"NormalizedCrossCorrelation: {errNormalizedCrossCorrelation.ToString("0.000")}\n";
             str += $"RootMeanSquared: {errRootMeanSquared.ToString("0.000")}\n";
             str += "\n\n";
+
             bool nccTrigger = errNormalizedCrossCorrelation < 0.45f;
             bool rMeanSqrTrigger = errRootMeanSquared > 0.18f;
             bool rmsNccTrigger = errRootMeanSquared > 0.18f && errNormalizedCrossCorrelation < 0.6f;
             bool nccRmsTrigger = errNormalizedCrossCorrelation < 0.45f && errRootMeanSquared > 0.11f;
 
-            // if (nccTrigger) str += "\nNCC SCENE CHANGE TRIGGER!";
-            // if (rMeanSqrTrigger) str += "\nROOTMEANSQR SCENE CHANGE TRIGGER!";
             if (rmsNccTrigger) str += "\n\nRMS -> NCC DOUBLE SCENE CHANGE TRIGGER!";
             if (nccRmsTrigger) str += "\n\nNCC -> RMS DOUBLE SCENE CHANGE TRIGGER!";
 
