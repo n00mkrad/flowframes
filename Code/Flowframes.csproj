@@ -237,6 +237,7 @@
     <Compile Include="IO\ModelDownloader.cs" />
     <Compile Include="Data\Packages.cs" />
     <Compile Include="IO\PkgUtils.cs" />
+    <Compile Include="Magick\SceneDetect.cs" />
     <Compile Include="Main\AutoEncode.cs" />
     <Compile Include="Main\BatchProcessing.cs" />
     <Compile Include="Main\CreateVideo.cs" />
