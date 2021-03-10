@@ -204,6 +204,9 @@ namespace Flowframes
 
         private void browseOutBtn_Click(object sender, EventArgs e)
         {
+            Magick.SceneDetect.RunSceneDetection(inputTbox.Text.Trim());
+            return;
+
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.InitialDirectory = inputTbox.Text.Trim();
             dialog.IsFolderPicker = true;

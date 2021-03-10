@@ -19,8 +19,6 @@ namespace Flowframes.Magick
             string ext = "png";
             FileInfo[] frames = IOUtils.GetFileInfosSorted(path, false, "*." + ext);
 
-            Logger.Log("frames count = " + frames.Length);
-
             for (int i = 1; i < frames.Length; i++)
             {
                 FileInfo frame = frames[i];
@@ -29,10 +27,30 @@ namespace Flowframes.Magick
             }
         }
 
+        public static Dictionary<string, MagickImage> imageCache = new Dictionary<string, MagickImage>();
+        static MagickImage GetImage(string path, bool allowCaching = true)
+        {
+            if (!allowCaching)
+                return new MagickImage(path);
+
+            if (imageCache.Count >= 30)
+                ClearCache();
+
+            if (!imageCache.ContainsKey(path))
+                imageCache.Add(path, new MagickImage(path));
+
+            return imageCache[path];
+        }
+
+        public static void ClearCache()
+        {
+            imageCache.Clear();
+        }
+
         static async Task ProcessFrame (FileInfo frame, FileInfo lastFrame, string outFolder)
         {
-            MagickImage prevFrame = new MagickImage(lastFrame.FullName);
-            MagickImage currFrame = new MagickImage(frame.FullName);
+            MagickImage prevFrame = GetImage(lastFrame.FullName);
+            MagickImage currFrame = GetImage(frame.FullName);
 
             Size originalSize = new Size(currFrame.Width, currFrame.Height);
             int downscaleHeight = 144;
