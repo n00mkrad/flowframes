@@ -109,7 +109,7 @@ namespace Flowframes
 
             try
             {
-                string rifeDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeCuda.fileName));
+                string rifeDir = Path.Combine(Paths.GetPkgPath(), Networks.rifeCuda.pkgDir);
                 string script = "rife.py";
 
                 if (!File.Exists(Path.Combine(rifeDir, script)))
@@ -151,7 +151,7 @@ namespace Flowframes
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
-            rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeCuda).Wrap()} & " +
+            rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeCuda.pkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
@@ -240,7 +240,7 @@ namespace Flowframes
             string oldMdlName = mdl;
             mdl = RifeNcnn2Workaround(mdl);     // TODO: REMOVE ONCE NIHUI HAS GOTTEN RID OF THE SHITTY HARDCODED VERSION CHECK
 
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {PkgUtils.GetPkgFolder(Packages.rifeNcnn).Wrap()} & rife-ncnn-vulkan.exe " +
+            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
             
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
@@ -289,7 +289,7 @@ namespace Flowframes
 
         public static async Task RunDainNcnnProcess (string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
-            string dainDir = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.dainNcnn.fileName));
+            string dainDir = Path.Combine(Paths.GetPkgPath(), Networks.dainNcnn.pkgDir);
             Directory.CreateDirectory(outPath);
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
@@ -436,7 +436,7 @@ namespace Flowframes
         {
             if (!modelName.StartsWith("RIFE2")) return modelName;
             string validMdlName = "rife-v2";
-            string rifeFolderPath = Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.rifeNcnn.fileName));
+            string rifeFolderPath = Path.Combine(Paths.GetPkgPath(), Networks.rifeNcnn.pkgDir);
             string modelFolderPath = Path.Combine(rifeFolderPath, modelName);
             string fixedModelFolderPath = Path.Combine(rifeFolderPath, validMdlName);
 

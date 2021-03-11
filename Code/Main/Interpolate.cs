@@ -177,7 +177,7 @@ namespace Flowframes
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
             Program.mainForm.SetStatus("Downloading models...");
-            await ModelDownloader.DownloadModelFiles(Path.GetFileNameWithoutExtension(ai.pkg.fileName), current.model);
+            await ModelDownloader.DownloadModelFiles(ai.pkgDir, current.model);
             if (canceled) return;
 
             currentlyUsingAutoEnc = Utils.CanUseAutoEnc(stepByStep, current);

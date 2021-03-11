@@ -40,7 +40,7 @@ namespace Flowframes.UI
 
             try
             {
-				string pkgPath = PkgUtils.GetPkgFolder(ai.pkg);
+				string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
 				string modelsFile = Path.Combine(pkgPath, "models.txt");
 				string[] modelsWithDec = IOUtils.ReadLines(modelsFile);
 

@@ -205,7 +205,7 @@ namespace Flowframes
         
         static string GetAvDir ()
         {
-            return Path.Combine(Paths.GetPkgPath(), Path.GetFileNameWithoutExtension(Packages.audioVideo.fileName));
+            return Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
         }
 
         static string GetCmdArg ()

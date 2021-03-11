@@ -233,10 +233,7 @@
       <DependentUpon>UpdaterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="IO\ConfigParser.cs" />
-    <Compile Include="Data\FlowPackage.cs" />
     <Compile Include="IO\ModelDownloader.cs" />
-    <Compile Include="Data\Packages.cs" />
-    <Compile Include="IO\PkgUtils.cs" />
     <Compile Include="Magick\SceneDetect.cs" />
     <Compile Include="Main\AutoEncode.cs" />
     <Compile Include="Main\BatchProcessing.cs" />

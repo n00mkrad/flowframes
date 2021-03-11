@@ -137,7 +137,7 @@ namespace Flowframes.OS
                 foreach(AI ai in Networks.networks)
                 {
                     var client = new WebClient();
-                    string aiName = Path.GetFileNameWithoutExtension(ai.pkg.fileName);
+                    string aiName = ai.pkgDir;
                     string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/Pkgs/{aiName}/models.txt";
                     string movePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
                     string savePath = movePath + ".tmp";

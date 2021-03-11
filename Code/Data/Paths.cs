@@ -20,6 +20,9 @@ namespace Flowframes.IO
 
 		public const string audioSuffix = "audio";
 
+		public const string audioVideoDir = "av";
+		public const string licensesDir = "licenses";
+
 		public static string GetFrameOrderFilename(float factor)
 		{
 			return $"{frameOrderPrefix}-{factor.ToStringDot()}x.ini";

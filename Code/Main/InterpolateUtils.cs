@@ -339,7 +339,7 @@ namespace Flowframes.Main
 
         public static bool CheckAiAvailable(AI ai)
         {
-            if (!PkgUtils.IsAiAvailable(ai))
+            if (IOUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.pkgDir), true) < 1)
             {
                 ShowMessage("The selected AI is not installed!", "Error");
                 I.Cancel("Selected AI not available.", true);

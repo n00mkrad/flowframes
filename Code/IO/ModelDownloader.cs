@@ -134,7 +134,7 @@ namespace Flowframes.IO
 
             foreach (AI ai in Networks.networks)
             {
-                string aiPkgFolder = PkgUtils.GetPkgFolder(ai.pkg);
+                string aiPkgFolder = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
                 string modelsFile = Path.Combine(aiPkgFolder, "models.txt");
                 if (!File.Exists(modelsFile)) continue;
 
