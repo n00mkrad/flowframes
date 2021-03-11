@@ -29,8 +29,17 @@ namespace Flowframes.Main
         public static void UpdateChunkAndBufferSizes ()
         {
             chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor).RoundToInt());
-            bool isNcnn = Interpolate.current.ai.aiName.ToUpper().Contains("NCNN");
-            safetyBufferFrames = isNcnn ? Config.GetInt("autoEncSafeBufferNcnn", 90) : Config.GetInt("autoEncSafeBufferCuda", 30);    // Use bigger safety buffer for NCNN
+
+            safetyBufferFrames = 90;
+
+            if (Interpolate.current.ai.aiName.ToUpper().Contains("NCNN"))
+                safetyBufferFrames = Config.GetInt("autoEncSafeBufferNcnn", 160);
+
+            if (Interpolate.current.ai.aiName == Networks.rifeCuda.aiName)
+                safetyBufferFrames = Config.GetInt("autoEncSafeBufferRifeCuda", 90);
+
+            if (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName)
+                safetyBufferFrames = Config.GetInt("autoEncSafeBufferFlavrCuda", 90);
         }
 
         public static async Task MainLoop(string interpFramesPath)

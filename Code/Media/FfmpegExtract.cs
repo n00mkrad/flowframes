@@ -49,7 +49,7 @@ namespace Flowframes.Media
             IOUtils.CreateDir(framesDir);
             string timecodeStr = /* timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : */ "-frame_pts true";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
-            string filters = FormatUtils.ConcatStrings(new string[] { divisionFilter, mpStr });
+            string filters = FormatUtils.ConcatStrings(new string[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
@@ -73,7 +73,7 @@ namespace Flowframes.Media
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string vf = alpha ? $"-filter_complex \"[0:v]{divisionFilter},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {divisionFilter}";
+            string vf = alpha ? $"-filter_complex \"[0:v]{GetPadFilter()},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {GetPadFilter()}";
             string args = $"-f concat -safe 0 -i {concatFile.Wrap()} {compr} {sizeStr} {pixFmt} -vsync 0 {vf} \"{outpath}/%{Padding.inputFrames}d.png\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
@@ -142,7 +142,7 @@ namespace Flowframes.Media
             bool isPng = (Path.GetExtension(outPath).ToLower() == ".png");
             string comprArg = isPng ? compr : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
-            string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {divisionFilter} {outPath.Wrap()}";
+            string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {GetPadFilter()} {outPath.Wrap()}";
             await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
         }
 

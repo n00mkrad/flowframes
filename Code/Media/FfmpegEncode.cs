@@ -52,7 +52,7 @@ namespace Flowframes.Media
         public static async Task Encode(string inputFile, string vcodec, string acodec, int crf, int audioKbps = 0, bool delSrc = false)
         {
             string outPath = Path.ChangeExtension(inputFile, null) + "-convert.mp4";
-            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k -vf {divisionFilter} {outPath.Wrap()}";
+            string args = $" -i {inputFile.Wrap()} -c:v {vcodec} -crf {crf} -pix_fmt yuv420p -c:a {acodec} -b:a {audioKbps}k -vf {GetPadFilter()} {outPath.Wrap()}";
             if (string.IsNullOrWhiteSpace(acodec))
                 args = args.Replace("-c:a", "-an");
             if (audioKbps < 0)

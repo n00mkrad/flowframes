@@ -8,7 +8,7 @@ namespace Flowframes.Data
     {
         public static AI rifeCuda = new AI("RIFE_CUDA", "RIFE", "CUDA/Pytorch Implementation of RIFE (Nvidia Only!)", "rife-cuda", true);
         public static AI rifeNcnn = new AI("RIFE_NCNN", "RIFE (NCNN)", "Vulkan/NCNN Implementation of RIFE", "rife-ncnn", false);
-        public static AI flavrCuda = new AI("FLAVR_CUDA", "RIFE", "Experimental Pytorch Implementation of FLAVR (Nvidia Only!)", "flavr-cuda", true);
+        public static AI flavrCuda = new AI("FLAVR_CUDA", "FLAVR", "Experimental Pytorch Implementation of FLAVR (Nvidia Only!)", "flavr-cuda", true);
         public static AI dainNcnn = new AI("DAIN_NCNN", "DAIN (NCNN)", "Vulkan/NCNN Implementation of DAIN", "dain-ncnn", true);
 
         public static List<AI> networks = new List<AI>();
@@ -18,7 +18,7 @@ namespace Flowframes.Data
             networks.Clear();
             networks.Add(rifeCuda);
             networks.Add(rifeNcnn);
-            // networks.Add(flavrCuda);
+            networks.Add(flavrCuda);
             networks.Add(dainNcnn);
         }
 

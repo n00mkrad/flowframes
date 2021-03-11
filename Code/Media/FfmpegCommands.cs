@@ -17,10 +17,16 @@ namespace Flowframes
 {
     class FfmpegCommands
     {
-        public static string divisionFilter = "pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0";
+        //public static string padFilter = "pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0";
         public static string compr = "-compression_level 3";
         public static string mpDecDef = "\"mpdecimate\"";
         public static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
+
+        public static string GetPadFilter ()
+        {
+            int divisibleBy = (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
+            return $"pad=width=ceil(iw/{divisibleBy})*{divisibleBy}:height=ceil(ih/{divisibleBy})*{divisibleBy}:color=black@0";
+        }
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
         {

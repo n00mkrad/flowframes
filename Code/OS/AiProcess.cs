@@ -137,7 +137,6 @@ namespace Flowframes
 
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
-            //bool parallel = false;
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
@@ -145,8 +144,6 @@ namespace Flowframes
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
             string prec = Config.GetBool("rifeCudaFp16") ? "--fp16" : "";
             string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} {wthreads} {rbuffer} {prec}";
-            // if (parallel) args = $" --input {inPath.Wrap()} --output {outPath} --model {mdl} --factor {interpFactor}";
-            // if (parallel) script = "rife-parallel.py";
 
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
@@ -169,6 +166,72 @@ namespace Flowframes
             }
 
             while (!rifePy.HasExited) await Task.Delay(1);
+        }
+
+        public static async Task RunFlavrCuda(string framesPath, float interpFactor, string mdl)
+        {
+            if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
+                AutoEncode.paused = false;
+
+            try
+            {
+                string flavDir = Path.Combine(Paths.GetPkgPath(), Networks.flavrCuda.pkgDir);
+                string script = "flavr.py";
+
+                if (!File.Exists(Path.Combine(flavDir, script)))
+                {
+                    Interpolate.Cancel("FLAVR script not found! Make sure you didn't modify any files.");
+                    return;
+                }
+
+                await RunFlavrCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
+
+                if (!Interpolate.canceled && Interpolate.current.alpha)
+                {
+                    InterpolateUtils.progressPaused = true;
+                    Logger.Log("Interpolating alpha channel...");
+                    await RunFlavrCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error running FLAVR-CUDA: " + e.Message);
+            }
+
+            await AiFinished("FLAVR");
+        }
+
+        public static async Task RunFlavrCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdl)
+        {
+            string outPath = Path.Combine(inPath.GetParentDir(), outDir);
+            //string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
+            //string wthreads = $"--wthreads {2 * (int)interpFactor}";
+            //string rbuffer = $"--rbuffer {Config.GetInt("flavrCudaBufferSize", 200)}";
+            //string scale = $"--scale {Config.GetFloat("flavrCudaScale", 1.0f).ToStringDot()}";
+            // string prec = Config.GetBool("flavrCudaFp16") ? "--fp16" : "";
+            string args = $" --input {inPath.Wrap()} --output {outPath.Wrap()} --model {mdl}/{mdl}.pth --factor {interpFactor}";
+
+            Process flavrPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            AiStarted(flavrPy, 4000);
+            SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
+            flavrPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.flavrCuda.pkgDir).Wrap()} & " +
+                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
+            Logger.Log($"Running FLAVR (CUDA)...", false);
+            Logger.Log("cmd.exe " + flavrPy.StartInfo.Arguments, true);
+
+            if (!OSUtils.ShowHiddenCmd())
+            {
+                flavrPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "flavr-cuda-log"); };
+                flavrPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "flavr-cuda-log", true); };
+            }
+            flavrPy.Start();
+            if (!OSUtils.ShowHiddenCmd())
+            {
+                flavrPy.BeginOutputReadLine();
+                flavrPy.BeginErrorReadLine();
+            }
+
+            while (!flavrPy.HasExited) await Task.Delay(1);
         }
 
         public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
