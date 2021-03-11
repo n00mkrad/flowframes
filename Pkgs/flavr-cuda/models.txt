@@ -1,0 +1,3 @@
+FLAVR 2x - Official model for 2x interpolation
+FLAVR 4x - Official model for 4x interpolation
+FLAVR 8x - Official model for 8x interpolation
