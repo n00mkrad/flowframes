@@ -192,6 +192,9 @@ namespace Flowframes
             if (ai.aiName == Networks.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, (int)current.interpFactor, current.model));
 
+            if (ai.aiName == Networks.flavrCuda.aiName)
+                tasks.Add(AiProcess.RunFlavrCuda(current.framesFolder, current.interpFactor, current.model));
+
             if (ai.aiName == Networks.dainNcnn.aiName)
                 tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model, Config.GetInt("dainNcnnTilesize", 512)));
 
