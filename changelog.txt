@@ -1,3 +1,58 @@
+Flowframes 1.23.4 Changelog:
+- Scene detection now also works for Image Sequence inputs
+- Added a disk space check that will cancel the interpolation if disk space is too low
+- Model name is included in output name pattern by default
+- Fixed bug where framerate in output filename is incorrect when using FPS limiter
+- Fixed FFmpeg MKV muxing bug (caused audio stuttering or complete lack of audio)
+- Fixed models.txt files getting deleted if update fails
+- Fixed log box flickering in certain situation
+
+
+Flowframes 1.23.3 Changelog:
+- Added option to customize the output filename pattern using placeholders/variables
+- Audio/subtitle streams are now pulled from the input file, no longer requires extraction
+- Trimming is now a lot faster for longer videos (like movies)
+- Fixed UHD mode not working with RIFE-CUDA
+- Fixed rare bug where videos with specific frame counts got cut off at the end
+- Fixed scene detection not working for the last frame of a video
+- Fixed problem that sometimes made the output video shorter, especially when trimming
+
+
+Flowframes 1.23.2 Changelog:
+- Added RIFE 2.4 model (CUDA & NCNN)
+- Model list now gets loaded from GitHub, model updates won't require a Flowframes update
+- Fixed manual FPS input for image sequence or videos where no framerate was detected
+- Fixed a bug where encoding would sometimes fail
+- Fixed a bug with trimming where the end of video would get cut off when it shouldn't
+
+
+Flowframes 1.23.1 Changelog:
+- Added RIFE 2.3 model (CUDA)
+- Added AC3, DTS and PCM/Raw lossless audio transfer support for MOV output
+- Fixed problem where muxing would fail if there's an incompatible subtitle stream
+- Fixed "generating frame order information" optimizations being disabled
+- Fixed scene detection running even if it's disabled (in Step-By-Step mode)
+- Minor UX improvements to trimming tool
+- Removed ability to change input FPS as it caused problems and was confusing to some
+
+
+Flowframes 1.23.0 Changelog:
+- Added "Fast Mode" for RTX cards, uses less VRAM and is at least 20% faster (RIFE-CUDA)
+- Added support for keeping multiple audio tracks
+- Added trimming feature, allow you to selected start and end time for your interpolation
+- Added "Quick Settings" tab that allows you to change common settings faster
+- Several UX improvements to Step-By-Step mode
+- Peak output FPS is shown after interpolation (for benchmarking)
+- Increased max color amount for GIF output to 256 (GIF's maximum) instead of 128
+- Minor RIFE-CUDA optimization that should increase performance by an additional 3-5%
+- Optimized "generating frame order information" process, making it ~60x faster
+- Loading huge (>5gb) videos is now much faster and stable
+- If NVENC is enabled, Flowframes will run an NVENC compatibility check before starting
+- Flowframes now shows an error if someone tries to run it without unzipping (sigh...)
+- Fixed bug where the output video got deleted if one stream (e.g. audio) failed to encode
+- Fixed minor problems with transparent GIF encoding
+
+
 Flowframes 1.22.3 Changelog:
 - Added new RIFE-CUDA models: 2.1 and 2.2
 - Added new RIFE-NCNN model: 2.0
@@ -125,79 +180,3 @@ KNOWN ISSUES:
 - Exporting FPS-limited videos might not work correctly with formats other than MP4
 - The AutoEncode mode "Delete Frames Once Encoded" is currently disabled as it's unstable
 - RIFE-NCNN does not have the 1.7 model yet (Coming in 1.20.1)
-
-
-Flowframes 1.19.1 Changelog:
-- Fixed the UHD threshold option using the original (instead of scaled) resolution
-- Fixed Accurate De-Duplicaiton not working properly with Scene Detection
-- Improved Scene Detection to avoid issues with a very low threshold
-- Size of the image buffer for de-duplication is now dynamic based on the video resolution
-- The audio stream no longer gets re-encoded when converting the frame rate of a video
-
-
-Flowframes 1.19.0 Changelog:
-- Added RIFE's UHD Mode which works better on high-resolution content (CUDA Only)
-- Updated RIFE model to 1.6
-- Removed the video format whitelist, enabling support for Apple ProRes, 3GP, APNG, and more
-- Scene Detection now works for "Image Sequence" output mode
-- Image Sequence output folders now have a better name with a suffix, like the output videos
-- Fixed incorrect progress/FPS when running a chained interpolation (like 4x/8x RIFE-NCNN)
-- Fixed an encoding problem where some videos were too short or had duplicate frames
-- Fixed Auto-Encode mode with NCNN producing short or broken videos
-- Improved updater to show latest versions for both Patreon and Itch.io
-
-
-Flowframes 1.18.2 Changelog:
-- Fixed exporting with both loop and FPS limit not working correctly 
-- Fixed loop mode not working with JPEG mode
-
-
-Flowframes 1.18.1 Changelog:
-- Fixed last frame not being included in output video (Thanks @ChristianUndCo)
-- Reduced RIFE's buffer size which should decrease RAM usage a bit
-- Limited deduplication buffer to 750 frames to avoid freezes and extreme RAM usage
-- The highest preset for video size is now 4320p (8K), but you can still enter custom values
-- Fixed JPEG interpolation output mode
-- Fixed bug where files with uppercase extensions (like "video.MP4") were rejected
-- Fixed multi-GPU not working with NCNN AIs
-- Better error handling for Vulkan and Python errors
-
-KNOWN ISSUE: Scene detection might not work with de-duplication, a fix is in the works
-
-
-Flowframes 1.18.0 Changelog:
-- Added "Auto-Encoding" which will encode your video while interpolating (instead of afterwards)
-- Updated RIFE code which greatly reduces VRAM usage - Makes 4K on 8 GB VRAM possible
-- Updated the RIFE model to 1.5, resulting in a great quality boost
-- RIFE-NCNN has been updated and should now be about 5x as fast as before
-- GIF output now has correct timings again (handled by ffmpeg)
-- Dropping multiple files into the main view directly loads them into Batch Processing
-- When using Step-By-Step mode, you can now re-use a video's existing temp folder
-- Step-By-Step no longer generates 2x/4x/8x timecodes, now only for the selected factor
-- Several fixes regarding Step-By-Step mode and Batch Processing
-- Fixed the Video Conversion util's audio bitrate being 1000x too low
-- CAIN-NCNN has been removed as it is too buggy, please use RIFE-NCNN instead
-
-
-Flowframes v17 [RC1] Changelog:
-- Added Scene Detection - Avoids dirty interpolations of cuts
-- Added "Step-By-Step Mode", where you can run each processing step separately
-- Added 4x/8x support for RIFE-NCNN
-- Added support for Opus audio and WMV video
-- Fixed support for using a frame folder as input
-- Folder input now accepts any image format that's compatible with FFmpeg (JPG, etc)
-- Folder input now also works for non-consecutive filenames instead of a fixed format
-- Fixed image sequence output mode
-- The accurate de-duplication method is now up to 2x as fast
-- Looping the output video is now massively faster
-
-
-Flowframes v16 Changelog:
-- Added new timecode-based deduplication and encoding (can be configured in the Settings)
-- Added RIFE-NCNN, slower than the CUDA version but runs on AMD GPUs
-- Added support for Raw/PCM audio as well as MP2
-- Added new "landing page" with changelogs and Patreon supporters
-- Added new experimental options (NCNN threads, ffmpeg threads, ffmpeg preset)
-- Improved RIFE-CUDA error handling
-- Fixed freezes when loading a video that has a lot of metadata
-- Fixed JPEG frame mode not working
