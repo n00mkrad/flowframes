@@ -428,12 +428,12 @@ namespace Flowframes.Main
 
         public static Size GetOutputResolution(Size inputRes, bool print = false, bool returnZeroIfUnchanged = false)
         {
-            int maxHeight = RoundDiv2(Config.GetInt("maxVidHeight"));
+            int maxHeight = RoundDivisibleBy(Config.GetInt("maxVidHeight"), FfmpegCommands.GetPadding());
             if (inputRes.Height > maxHeight)
             {
                 float factor = (float)maxHeight / inputRes.Height;
                 Logger.Log($"Un-rounded downscaled size: {(inputRes.Width * factor).ToString("0.00")}x{Config.GetInt("maxVidHeight")}", true);
-                int width = RoundDiv2((inputRes.Width * factor).RoundToInt());
+                int width = RoundDivisibleBy((inputRes.Width * factor).RoundToInt(), FfmpegCommands.GetPadding());
                 if (print)
                     Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
                 return new Size(width, maxHeight);
@@ -448,11 +448,11 @@ namespace Flowframes.Main
             }
         }
 
-        public static int RoundDiv2(int n)     // Round to a number that's divisible by 2 (for h264 etc)
+        public static int RoundDivisibleBy(int number, int divisibleBy)     // Round to a number that's divisible by 2 (for h264 etc)
         {
-            int a = (n / 2) * 2;    // Smaller multiple
-            int b = a + 2;   // Larger multiple
-            return (n - a > b - n) ? b : a; // Return of closest of two
+            int a = (number / divisibleBy) * divisibleBy;    // Smaller multiple
+            int b = a + divisibleBy;   // Larger multiple
+            return (number - a > b - number) ? b : a; // Return of closest of two
         }
 
         public static bool CanUseAutoEnc(bool stepByStep, InterpSettings current)

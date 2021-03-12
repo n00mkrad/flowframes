@@ -22,10 +22,15 @@ namespace Flowframes
         public static string mpDecDef = "\"mpdecimate\"";
         public static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
 
+        public static int GetPadding ()
+        {
+            return (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
+        }
+
         public static string GetPadFilter ()
         {
-            int divisibleBy = (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
-            return $"pad=width=ceil(iw/{divisibleBy})*{divisibleBy}:height=ceil(ih/{divisibleBy})*{divisibleBy}:color=black@0";
+            int padPixels = GetPadding();
+            return $"pad=width=ceil(iw/{padPixels})*{padPixels}:height=ceil(ih/{padPixels})*{padPixels}:color=black@0";
         }
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
