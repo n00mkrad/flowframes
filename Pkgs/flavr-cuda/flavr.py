@@ -9,8 +9,6 @@ from PIL import Image
 import numpy as np
 import _thread
 from torchvision.io import read_video, write_video
-from dataset.transforms import ToTensorVideo, Resize
-
 import torch.nn.functional as F
 
 abspath = os.path.abspath(__file__)
@@ -19,6 +17,8 @@ print("Changing working dir to {0}".format(dname))
 os.chdir(os.path.dirname(dname))
 print("Added {0} to temporary PATH".format(dname))
 sys.path.append(dname)
+
+from dataset.transforms import ToTensorVideo, Resize
 
 import argparse
 
@@ -42,8 +42,6 @@ path = args.input
 base = os.path.basename(path)
 interp_input_path = os.path.join(dname, args.input)
 interp_output_path = os.path.join(dname, args.output)
-print("\interp_input_path: " + interp_input_path)
-print("\ninterp_output_path: " + interp_output_path)
 
 if  args.input.endswith("/"):
     video_name =  args.input.split("/")[-2].split(input_ext)[0]
