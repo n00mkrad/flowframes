@@ -14,6 +14,7 @@ using HTAlt.WinForms;
 using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using Flowframes.MiscUtils;
+using System.Threading.Tasks;
 
 namespace Flowframes
 {
@@ -53,20 +54,26 @@ namespace Flowframes
             InterpolateUtils.preview = previewPicturebox;
             UpdateStepByStepControls();
             Initialized();
-            Checks();
             HandleArguments();
-            Text = $"Flowframes {Updater.GetInstalledVer()}";
+            Text = $"Flowframes";
         }
 
-        void Checks()
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            Checks();
+        }
+
+        async Task Checks()
         {
             try
             {
-                GetWebInfo.LoadNews(newsLabel);
-                GetWebInfo.LoadPatronListCsv(patronsLabel);
-                Updater.AsyncUpdateCheck();
-                Updater.UpdateModelList();
-                Python.CheckCompression();
+                await Task.Delay(10);
+                Text = $"Flowframes " + Updater.GetInstalledVerStr();
+                await Updater.UpdateModelList();    // Update AI model list
+                await Updater.AsyncUpdateCheck();   // Check for Flowframes updates
+                await GetWebInfo.LoadNews(newsLabel);   // Loads news/MOTD
+                await GetWebInfo.LoadPatronListCsv(patronsLabel);   // Load patron list
+                await Python.CheckCompression();
             }
             catch (Exception e)
             {

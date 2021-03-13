@@ -14,6 +14,13 @@ namespace Flowframes.OS
         public enum VersionCompareResult { Older, Newer, Equal };
         public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/ver.ini";
 
+        public static string GetInstalledVerStr ()
+        {
+            Version ver = GetInstalledVer();
+            if (ver.Major == 0 && ver.Minor == 0 && ver.Minor == 0) return "";
+            return ver.ToString();
+        }
+
         public static Version GetInstalledVer()
         {
             try
