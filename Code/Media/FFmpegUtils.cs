@@ -200,8 +200,10 @@ namespace Flowframes.Media
             containerExt = containerExt.Remove(".");
             bool supported = (containerExt == "mp4" || containerExt == "mkv" || containerExt == "webm" || containerExt == "mov");
             Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
-            if (Config.GetBool("keepSubs") && !supported)
-                Logger.Log($"Warning: Subtitles are enabled, but {containerExt.ToUpper()} does not support them. MKV is recommended instead.");
+
+            if (showWarningIfNotSupported && Config.GetBool("keepSubs") && !supported)
+                Logger.Log($"Warning: Subtitle transfer is enabled, but {containerExt.ToUpper()} does not support subtitles properly. MKV is recommended instead.");
+           
             return supported;
         }
     }

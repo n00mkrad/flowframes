@@ -191,10 +191,13 @@ namespace Flowframes.Media
             bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(interpVideo));
             string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(I.current.outMode);
 
-            if (!Config.GetBool("keepAudio"))
+            bool enableAudio = Config.GetBool("keepAudio");
+            bool enableSubs = Config.GetBool("keepSubs");
+
+            if (!enableAudio)
                 audioArgs = "-an";
 
-            if (!Config.GetBool("keepSubs"))
+            if (!enableSubs || (enableSubs && Utils.ContainerSupportsSubs(containerExt)))
                 subArgs = "-sn";
 
             string mkvFix = I.current.outMode == I.OutMode.VidMkv ? "-max_interleave_delta 0" : ""; // https://www.reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
