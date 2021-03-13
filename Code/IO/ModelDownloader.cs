@@ -23,7 +23,7 @@ namespace Flowframes.IO
 
         static string GetMdlUrl (string ai, string model)
         {
-            string baseUrl = Config.Get("modelsBaseUrl");
+            string baseUrl = Config.Get("mdlBaseUrl");
             return Path.Combine(baseUrl, ai.ToLower(), model);
         }
 

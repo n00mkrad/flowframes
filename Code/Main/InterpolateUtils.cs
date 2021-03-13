@@ -440,7 +440,6 @@ namespace Flowframes.Main
             }
             else
             {
-                //return new Size(RoundDiv2(inputRes.Width), RoundDiv2(inputRes.Height));
                 if (returnZeroIfUnchanged)
                     return new Size();
                 else

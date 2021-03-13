@@ -134,6 +134,12 @@ The loop suffix gets added if the output gets looped. You can use the following 
 [LOOPS] for how many times it was looped
 [PLAYS] for how many times it plays (includes first play, so it's LOOPS+1)</value>
   </data>
+  <data name="pictureBox1.ToolTip" xml:space="preserve">
+    <value>Specify, which download mirror to use for to download the models from.
+
+dl.nmkd.de is most realiable.
+raw.githubusercontent.com only works for files smaller than 100 MB (so you can't download FLAVR model from this one).</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

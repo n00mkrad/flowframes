@@ -152,7 +152,7 @@
             this.audioSubTransferMode = new System.Windows.Forms.ComboBox();
             this.label70 = new System.Windows.Forms.Label();
             this.panel13 = new System.Windows.Forms.Panel();
-            this.modelsBaseUrl = new System.Windows.Forms.ComboBox();
+            this.mdlBaseUrl = new System.Windows.Forms.ComboBox();
             this.label42 = new System.Windows.Forms.Label();
             this.ffEncArgs = new System.Windows.Forms.TextBox();
             this.label56 = new System.Windows.Forms.Label();
@@ -175,6 +175,7 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -188,6 +189,7 @@
             this.vidExportTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
             this.debugTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -245,7 +247,7 @@
             this.exportNamePatternLoop.Location = new System.Drawing.Point(624, 127);
             this.exportNamePatternLoop.MinimumSize = new System.Drawing.Size(4, 21);
             this.exportNamePatternLoop.Name = "exportNamePatternLoop";
-            this.exportNamePatternLoop.Size = new System.Drawing.Size(100, 21);
+            this.exportNamePatternLoop.Size = new System.Drawing.Size(100, 20);
             this.exportNamePatternLoop.TabIndex = 85;
             // 
             // label69
@@ -286,7 +288,7 @@
             this.exportNamePattern.Location = new System.Drawing.Point(317, 127);
             this.exportNamePattern.MinimumSize = new System.Drawing.Size(4, 21);
             this.exportNamePattern.Name = "exportNamePattern";
-            this.exportNamePattern.Size = new System.Drawing.Size(232, 21);
+            this.exportNamePattern.Size = new System.Drawing.Size(232, 20);
             this.exportNamePattern.TabIndex = 81;
             // 
             // label67
@@ -1703,10 +1705,11 @@
             // debugTab
             // 
             this.debugTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.debugTab.Controls.Add(this.pictureBox1);
             this.debugTab.Controls.Add(this.audioSubTransferMode);
             this.debugTab.Controls.Add(this.label70);
             this.debugTab.Controls.Add(this.panel13);
-            this.debugTab.Controls.Add(this.modelsBaseUrl);
+            this.debugTab.Controls.Add(this.mdlBaseUrl);
             this.debugTab.Controls.Add(this.label42);
             this.debugTab.Controls.Add(this.ffEncArgs);
             this.debugTab.Controls.Add(this.label56);
@@ -1766,21 +1769,21 @@
             this.panel13.TabIndex = 61;
             this.toolTip1.SetToolTip(this.panel13, "Allows custom input.");
             // 
-            // modelsBaseUrl
+            // mdlBaseUrl
             // 
-            this.modelsBaseUrl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.modelsBaseUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.modelsBaseUrl.ForeColor = System.Drawing.Color.White;
-            this.modelsBaseUrl.FormattingEnabled = true;
-            this.modelsBaseUrl.Items.AddRange(new object[] {
-            "https://raw.githubusercontent.com/n00mkrad/flowframes/main/Models/",
+            this.mdlBaseUrl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.mdlBaseUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.mdlBaseUrl.ForeColor = System.Drawing.Color.White;
+            this.mdlBaseUrl.FormattingEnabled = true;
+            this.mdlBaseUrl.Items.AddRange(new object[] {
             "https://dl.nmkd.de/flowframes/mdl/",
             "http://45.132.246.240/dl/flowframes/mdl/",
+            "https://raw.githubusercontent.com/n00mkrad/flowframes/main/Models/",
             "http://104.225.145.33/models/"});
-            this.modelsBaseUrl.Location = new System.Drawing.Point(280, 97);
-            this.modelsBaseUrl.Name = "modelsBaseUrl";
-            this.modelsBaseUrl.Size = new System.Drawing.Size(250, 21);
-            this.modelsBaseUrl.TabIndex = 87;
+            this.mdlBaseUrl.Location = new System.Drawing.Point(280, 97);
+            this.mdlBaseUrl.Name = "mdlBaseUrl";
+            this.mdlBaseUrl.Size = new System.Drawing.Size(250, 21);
+            this.mdlBaseUrl.TabIndex = 87;
             // 
             // label42
             // 
@@ -2025,6 +2028,17 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox1.Location = new System.Drawing.Point(563, 97);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox1.TabIndex = 90;
+            this.pictureBox1.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2059,6 +2073,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2197,7 +2212,7 @@
         private System.Windows.Forms.ComboBox dainNcnnTilesize;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.ComboBox modelsBaseUrl;
+        private System.Windows.Forms.ComboBox mdlBaseUrl;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.Panel panel13;
         private System.Windows.Forms.CheckBox rifeCudaFp16;
@@ -2211,5 +2226,6 @@
         private System.Windows.Forms.Label label68;
         private System.Windows.Forms.Label label70;
         private System.Windows.Forms.ComboBox audioSubTransferMode;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
