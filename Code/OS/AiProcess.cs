@@ -138,6 +138,7 @@ namespace Flowframes
         public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
         {
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
+            Directory.CreateDirectory(outPath);
             string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt("rifeCudaBufferSize", 200)}";
@@ -158,7 +159,9 @@ namespace Flowframes
                 rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "rife-cuda-log"); };
                 rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-cuda-log", true); };
             }
+
             rifePy.Start();
+
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifePy.BeginOutputReadLine();
@@ -204,6 +207,7 @@ namespace Flowframes
         public static async Task RunFlavrCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdl)
         {
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
+            Directory.CreateDirectory(outPath);
             //string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
             //string wthreads = $"--wthreads {2 * (int)interpFactor}";
             //string rbuffer = $"--rbuffer {Config.GetInt("flavrCudaBufferSize", 200)}";
@@ -212,7 +216,7 @@ namespace Flowframes
             string args = $" --input {inPath.Wrap()} --output {outPath.Wrap()} --model {mdl}/{mdl}.pth --factor {interpFactor}";
 
             Process flavrPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(flavrPy, 4000);
+            AiStarted(flavrPy, 4500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             flavrPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.flavrCuda.pkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
@@ -224,7 +228,9 @@ namespace Flowframes
                 flavrPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "flavr-cuda-log"); };
                 flavrPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "flavr-cuda-log", true); };
             }
+
             flavrPy.Start();
+
             if (!OSUtils.ShowHiddenCmd())
             {
                 flavrPy.BeginOutputReadLine();
