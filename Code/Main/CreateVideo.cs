@@ -71,7 +71,7 @@ namespace Flowframes.Main
         {
             Program.mainForm.SetStatus("Copying output frames...");
             string copyPath = Path.Combine(I.current.outPath, folderName);
-            Logger.Log($"Moving output frames to '{copyPath}'");
+            Logger.Log($"Moving output frames from {framesPath} to '{copyPath}'");
             IOUtils.TryDeleteIfExists(copyPath);
             IOUtils.CreateDir(copyPath);
             Stopwatch sw = new Stopwatch();
@@ -83,7 +83,7 @@ namespace Flowframes.Main
             for (int idx = 1; idx <= vfrLines.Length; idx++)
             {
                 string line = vfrLines[idx-1];
-                string inFilename = line.Split('/').Last().Remove("'").RemoveComments();
+                string inFilename = line.RemoveComments().Split('/').Last().Remove("'").Trim();
                 string framePath = Path.Combine(framesPath, inFilename);
                 string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
 

@@ -138,8 +138,8 @@ namespace Flowframes.Main
                 if (Interpolate.canceled) return;
                 if (i >= frameFilesWithoutLast.Length) break;
 
-                if (debug && i == startIndex)
-                    fileContent += $"# NEW THREAD - {startIndex} to {startIndex + count}\n";
+                // if (debug && i == startIndex)
+                //     fileContent += $"# NEW THREAD - {startIndex} to {startIndex + count}\n";
 
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFilesWithoutLast[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
