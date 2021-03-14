@@ -1,3 +1,10 @@
+Flowframes 1.24.0 [PRE-RELEASE] Changelog:
+- Added experimental FLAVR integration
+- Fixed missing subtitle compatibility check when muxing audio/subs directly from input
+- Fixed bug that could break Image Sequence exports
+- Fixed flaw where certain online checks ran before the UI opens up instead of afterwards
+
+
 Flowframes 1.23.4 Changelog:
 - Scene detection now also works for Image Sequence inputs
 - Added a disk space check that will cancel the interpolation if disk space is too low
