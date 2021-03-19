@@ -14,11 +14,16 @@ namespace Flowframes.Magick
 {
     class Blend
     {
-        public static async Task BlendSceneChanges(string framesFilePath)
+        public static async Task BlendSceneChanges(string framesFilePath, bool setStatus = true)
         {
             Stopwatch sw = new Stopwatch();
             sw.Restart();
             int totalFrames = 0;
+
+            string oldStatus = Program.mainForm.GetStatus();
+
+            if(setStatus)
+                Program.mainForm.SetStatus("Blending scene transitions...");
 
             string keyword = "SCN:";
             string[] framesLines = IOUtils.ReadLines(framesFilePath);     // Array with frame filenames
@@ -40,8 +45,6 @@ namespace Flowframes.Magick
                         string ext = Path.GetExtension(firstOutputFrameName);
                         int firstOutputFrameNum = firstOutputFrameName.GetInt();
                         List<string> outputFilenames = new List<string>();
-                        //Logger.Log("BlendSceneChanges: 1 = " + img1, true);
-                        //Logger.Log("BlendSceneChanges: 2 = " + img2, true);
 
                         for (int blendFrameNum = 1; blendFrameNum <= amountOfBlendFrames; blendFrameNum++)
                         {
@@ -49,7 +52,6 @@ namespace Flowframes.Magick
                             string outputPath = Path.Combine(Interpolate.current.interpFolder, outputNum.ToString().PadLeft(Padding.interpFrames, '0'));
                             outputPath = Path.ChangeExtension(outputPath, ext);
                             outputFilenames.Add(outputPath);
-                            //Logger.Log("BlendSceneChanges: Added output path " + outputPath, true);
                         }
 
                         BlendImages(img1, img2, outputFilenames.ToArray());
@@ -63,6 +65,9 @@ namespace Flowframes.Magick
                     Logger.Log("Failed to blend scene changes: " + e.Message, true);
                 }
             }
+
+            if (setStatus)
+                Program.mainForm.SetStatus(oldStatus);
 
             Logger.Log($"Created {totalFrames} blend frames in {FormatUtils.TimeSw(sw)} ({(totalFrames / (sw.ElapsedMilliseconds / 1000f)).ToString("0.00")} FPS)", true);
         }

@@ -150,6 +150,11 @@ namespace Flowframes
             statusLabel.Text = str;
         }
 
+        public string GetStatus ()
+        {
+            return statusLabel.Text;
+        }
+
         public void SetProgress(int percent)
         {
             percent = percent.Clamp(0, 100);
