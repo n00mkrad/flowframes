@@ -234,6 +234,7 @@
     </Compile>
     <Compile Include="IO\ConfigParser.cs" />
     <Compile Include="IO\ModelDownloader.cs" />
+    <Compile Include="Magick\Blend.cs" />
     <Compile Include="Magick\SceneDetect.cs" />
     <Compile Include="Main\AutoEncode.cs" />
     <Compile Include="Main\BatchProcessing.cs" />

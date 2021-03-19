@@ -180,5 +180,10 @@ namespace Flowframes
             else
                 return f.ToString(format).Replace(",", ".");
         }
+
+        public static string[] Split(this string str, string trimStr)
+        {
+            return str.Split(new string[] { trimStr }, StringSplitOptions.None);
+        }
     }
 }

@@ -334,7 +334,7 @@ namespace Flowframes.Main
         public static void PathAsciiCheck(string path, string pathTitle)
         {
             if (IOUtils.HasBadChars(path) || OSUtils.HasNonAsciiChars(path))
-                ShowMessage($"Warning: Your {pathTitle} includes special characters. This might cause problems.");
+                ShowMessage($"Warning: Your {pathTitle} includes special characters. This might cause problems. If you get an error, try removing those symbols.");
         }
 
         public static bool CheckAiAvailable(AI ai)

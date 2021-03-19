@@ -61,6 +61,16 @@ namespace Flowframes
         private void Form1_Shown(object sender, EventArgs e)
         {
             Checks();
+
+            if (Debugger.IsAttached)
+            {
+                Logger.Log("Debugger is attached - Flowframes seems to be running within VS.");
+                scnDetectTestBtn.Visible = true;
+            }
+
+            // string path = @"F:\AI\Testing\RIFE\temp\ScnDetectTests\blendTest\";
+            // string[] blendImgs = new string[] { path + "1-blend1.png", path + "1-blend2.png", path + "1-blend3.png", path + "1-blend4.png", path + "1-blend5.png", path + "1-blend6.png", path + "1-blend7.png" };
+            // Magick.Blend.BlendImages(path + "1.png", path + "2.png", blendImgs);
         }
 
         async Task Checks()
@@ -526,5 +536,10 @@ namespace Flowframes
         }
 
         #endregion
+
+        private void scnDetectTestBtn_Click(object sender, EventArgs e)
+        {
+            Magick.SceneDetect.RunSceneDetection(inputTbox.Text.Trim());
+        }
     }
 }

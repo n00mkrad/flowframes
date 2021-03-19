@@ -124,6 +124,7 @@
             this.htButton1 = new HTAlt.WinForms.HTButton();
             this.runStepBtn = new System.Windows.Forms.Button();
             this.stepSelector = new System.Windows.Forms.ComboBox();
+            this.scnDetectTestBtn = new HTAlt.WinForms.HTButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -893,6 +894,7 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.scnDetectTestBtn);
             this.interpOptsTab.Controls.Add(this.inputInfo);
             this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
@@ -1430,6 +1432,21 @@
             this.stepSelector.Size = new System.Drawing.Size(203, 24);
             this.stepSelector.TabIndex = 73;
             // 
+            // scnDetectTestBtn
+            // 
+            this.scnDetectTestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scnDetectTestBtn.FlatAppearance.BorderSize = 0;
+            this.scnDetectTestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scnDetectTestBtn.ForeColor = System.Drawing.Color.White;
+            this.scnDetectTestBtn.Location = new System.Drawing.Point(692, 229);
+            this.scnDetectTestBtn.Name = "scnDetectTestBtn";
+            this.scnDetectTestBtn.Size = new System.Drawing.Size(206, 23);
+            this.scnDetectTestBtn.TabIndex = 38;
+            this.scnDetectTestBtn.Text = "Scn Detect Test";
+            this.scnDetectTestBtn.UseVisualStyleBackColor = false;
+            this.scnDetectTestBtn.Visible = false;
+            this.scnDetectTestBtn.Click += new System.EventHandler(this.scnDetectTestBtn_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1594,6 +1611,7 @@
         private System.Windows.Forms.Panel mpDedupePanel;
         private System.Windows.Forms.ComboBox mpdecimateMode;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private HTAlt.WinForms.HTButton scnDetectTestBtn;
     }
 }
 

@@ -43,13 +43,6 @@ base = os.path.basename(path)
 interp_input_path = os.path.join(dname, args.input)
 interp_output_path = os.path.join(dname, args.output)
 
-if  args.input.endswith("/"):
-    video_name =  args.input.split("/")[-2].split(input_ext)[0]
-else:
-    video_name =  args.input.split("/")[-1].split(input_ext)[0]
-
-output_video = os.path.join(video_name + f"_{args.factor}x" + str(args.output_ext))
-
 
 torch.set_grad_enabled(False)
 if torch.cuda.is_available():

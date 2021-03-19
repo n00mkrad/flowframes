@@ -46,13 +46,20 @@ namespace Flowframes
             {
                 if (busy)
                 {
-                    string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
-                    long mb = IOUtils.GetDiskSpace(Interpolate.current.tempFolder);
+                    try
+                    {
+                        string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
+                        long mb = IOUtils.GetDiskSpace(Interpolate.current.tempFolder);
 
-                    Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
+                        Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 
-                    if (!Interpolate.canceled && mb < (Config.GetInt("minDiskSpaceGb", 6) * 1024))
-                        Interpolate.Cancel("Running out of disk space!");
+                        if (!Interpolate.canceled && mb < (Config.GetInt("minDiskSpaceGb", 6) * 1024))
+                            Interpolate.Cancel("Running out of disk space!");
+                    }
+                    catch
+                    {
+                        // Disk space check failed, this is not critical and might just be caused by a null ref
+                    }
                 }
 
                 await Task.Delay(15000);

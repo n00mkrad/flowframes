@@ -45,19 +45,19 @@ namespace Flowframes.Main
 
         static Dictionary<string, int> dupesDict = new Dictionary<string, int>();
 
-        static void LoadDupesFile (string path)
+        static void LoadDupesFile(string path)
         {
             dupesDict.Clear();
             if (!File.Exists(path)) return;
             string[] dupesFileLines = IOUtils.ReadLines(path);
-            foreach(string line in dupesFileLines)
+            foreach (string line in dupesFileLines)
             {
                 string[] values = line.Split(':');
                 dupesDict.Add(values[0], values[1].GetInt());
             }
         }
 
-        public static async Task CreateEncFile (string framesPath, bool loopEnabled, float interpFactor, bool notFirstRun)
+        public static async Task CreateEncFile(string framesPath, bool loopEnabled, float interpFactor, bool notFirstRun)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating frame order information for {interpFactor}x...", false, true);
@@ -90,7 +90,7 @@ namespace Flowframes.Main
             int linesPerTask = 400 / (int)interpFactor;
             int num = 0;
 
-            for (int i = 0; i < frameFilesWithoutLast.Length; i+= linesPerTask)
+            for (int i = 0; i < frameFilesWithoutLast.Length; i += linesPerTask)
             {
                 tasks.Add(GenerateFrameLines(num, i, linesPerTask, (int)interpFactor, loopEnabled, sceneDetection, debug));
                 num++;
@@ -104,7 +104,7 @@ namespace Flowframes.Main
             lastOutFileCount++;
             fileContent += $"file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'";     // Last frame (source)
 
-            if(loop)
+            if (loop)
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
 
             File.WriteAllText(vfrFile, fileContent);
@@ -125,14 +125,14 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task GenerateFrameLines (int number, int startIndex, int count, int factor, bool loopEnabled, bool sceneDetection, bool debug)
+        static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool loopEnabled, bool sceneDetection, bool debug)
         {
             int totalFileCount = (startIndex) * factor;
             int interpFramesAmount = factor;
             string ext = InterpolateUtils.GetOutExt();
 
             string fileContent = "";
-            
+
             for (int i = startIndex; i < (startIndex + count); i++)
             {
                 if (Interpolate.canceled) return;
@@ -152,17 +152,30 @@ namespace Flowframes.Main
                 {
                     if (discardThisFrame)     // If frame is scene cut frame
                     {
-                        totalFileCount++;
-                        int lastNum = totalFileCount;
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}] [DiscardNext]");
+                        string frameBeforeScn = Path.GetFileName((frameFiles[i].Name.GetInt() + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0')) + frameFiles[i].Extension;
+                        string frameAfterScn = Path.GetFileName((frameFiles[i + 1].Name.GetInt() + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0')) + frameFiles[i + 1].Extension;
+                        string scnChangeNote = $"SCN:{frameBeforeScn}>{frameAfterScn}";
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]", scnChangeNote);
 
-                        for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
+                        if (Config.GetInt("sceneChangeFillMode") == 0)      // Duplicate last frame
                         {
                             totalFileCount++;
-                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
-                        }
+                            int lastNum = totalFileCount;
 
-                        frm = interpFramesAmount;
+                            for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
+                            {
+                                totalFileCount++;
+                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
+                            }
+
+                            frm = interpFramesAmount;
+                        }
+                        else
+                        {
+                            totalFileCount++;
+                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED - BLEND]");
+                            frm++;
+                        }
                     }
                     else
                     {
@@ -172,16 +185,16 @@ namespace Flowframes.Main
                 }
             }
 
-            if(totalFileCount > lastOutFileCount)
+            if (totalFileCount > lastOutFileCount)
                 lastOutFileCount = totalFileCount;
 
             frameFileContents[number] = fileContent;
         }
 
-        static string WriteFrameWithDupes (int dupesAmount, string fileContent, int frameNum, string ext, bool debug, string note = "")
+        static string WriteFrameWithDupes(int dupesAmount, string fileContent, int frameNum, string ext, bool debug, string debugNote = "", string forcedNote = "")
         {
             for (int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
-                fileContent += $"file '{Paths.interpDir}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'{(debug ? ($" # Dupe {(writtenDupes+1).ToString("000")} {note}").Replace("Dupe 000", "        ") : "" )}\n";
+                fileContent += $"file '{Paths.interpDir}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}' # {(debug ? ($"Dupe {(writtenDupes + 1).ToString("000")} {debugNote}").Replace("Dupe 000", "        ") : "")}{forcedNote}\n";
 
             return fileContent;
         }
