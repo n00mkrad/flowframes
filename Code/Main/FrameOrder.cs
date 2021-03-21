@@ -167,15 +167,17 @@ namespace Flowframes.Main
                                 totalFileCount++;
                                 fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
                             }
-
-                            frm = interpFramesAmount;
                         }
                         else
                         {
-                            totalFileCount++;
-                            fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED - BLEND]");
-                            frm++;
+                            for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
+                            {
+                                totalFileCount++;
+                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED - BLEND]");
+                            }
                         }
+
+                        frm = interpFramesAmount;
                     }
                     else
                     {

@@ -4,7 +4,6 @@ using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.UI;
 using Force.Crc32;
-using Microsoft.WindowsAPICodePack.Shell;
 using Standart.Hash.xxHash;
 using System;
 using System.Collections.Generic;
@@ -353,26 +352,17 @@ namespace Flowframes.IO
 		public static Size GetVideoRes (string path)
 		{
 			Size size = new Size(0, 0);
+
 			try
 			{
-				ShellFile shellFile = ShellFile.FromFilePath(path);
-				int w = (int)shellFile.Properties.System.Video.FrameWidth.Value;
-				int h = (int)shellFile.Properties.System.Video.FrameHeight.Value;
-				return new Size(w, h);
+				size = FfmpegCommands.GetSize(path);
+				Logger.Log($"Detected video size of {Path.GetFileName(path)} as {size.Width}x{size.Height}", true);
 			}
-			catch (Exception e)
+			catch
 			{
-				Logger.Log($"Failed to read video size ({e.Message}) - Trying alternative method...", true);
-				try
-				{
-					size = FfmpegCommands.GetSize(path);
-					Logger.Log($"Detected video size of {Path.GetFileName(path)} as {size.Width}x{size.Height}", true);
-				}
-				catch
-				{
-					Logger.Log("Failed to read video size!");
-				}
+				Logger.Log("Failed to read video size!");
 			}
+
 			return size;
 		}
 

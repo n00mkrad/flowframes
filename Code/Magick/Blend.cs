@@ -5,6 +5,7 @@ using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,10 @@ namespace Flowframes.Magick
             string keyword = "SCN:";
             string[] framesLines = IOUtils.ReadLines(framesFilePath);     // Array with frame filenames
             int amountOfBlendFrames = (int)Interpolate.current.interpFactor - 1;
-            //Logger.Log($"BlendSceneChanges: Blending with {amountOfBlendFrames} frames", true);
+
+            List<Task> runningTasks = new List<Task>();
+
+            int maxThreads = Environment.ProcessorCount * 2;
 
             foreach (string line in framesLines)
             {
@@ -40,12 +44,12 @@ namespace Flowframes.Magick
                         string[] inputFrameNames = trimmedLine.Split('>');
                         string img1 = Path.Combine(Interpolate.current.framesFolder, inputFrameNames[0]);
                         string img2 = Path.Combine(Interpolate.current.framesFolder, inputFrameNames[1]);
-
+            
                         string firstOutputFrameName = line.Split('/').Last().Remove("'").Split('#').First();
                         string ext = Path.GetExtension(firstOutputFrameName);
                         int firstOutputFrameNum = firstOutputFrameName.GetInt();
                         List<string> outputFilenames = new List<string>();
-
+            
                         for (int blendFrameNum = 1; blendFrameNum <= amountOfBlendFrames; blendFrameNum++)
                         {
                             int outputNum = firstOutputFrameNum + blendFrameNum + 1;
@@ -54,9 +58,20 @@ namespace Flowframes.Magick
                             outputFilenames.Add(outputPath);
                         }
 
-                        BlendImages(img1, img2, outputFilenames.ToArray());
-                        totalFrames += outputFilenames.Count;
+                        if (runningTasks.Count >= maxThreads)
+                        {
+                            do
+                            {
+                                await Task.Delay(10);
+                                RemoveCompletedTasks(runningTasks);
+                            } while (runningTasks.Count >= maxThreads);
+                        }
 
+                        Logger.Log($"Starting task for transition {inputFrameNames[0]} > {inputFrameNames[1]} ({runningTasks.Count}/{maxThreads} running)", true);
+                        Task newTask = Task.Run(() => BlendImages(img1, img2, outputFilenames.ToArray()));
+                        runningTasks.Add(newTask);
+                        totalFrames += outputFilenames.Count;
+            
                         await Task.Delay(1);
                     }
                 }
@@ -66,10 +81,29 @@ namespace Flowframes.Magick
                 }
             }
 
-            if (setStatus)
-                Program.mainForm.SetStatus(oldStatus);
+            while (true)
+            {
+                RemoveCompletedTasks(runningTasks);
+
+                if (runningTasks.Count < 1)
+                    break;
+
+                await Task.Delay(10);
+            }
 
             Logger.Log($"Created {totalFrames} blend frames in {FormatUtils.TimeSw(sw)} ({(totalFrames / (sw.ElapsedMilliseconds / 1000f)).ToString("0.00")} FPS)", true);
+
+            if (setStatus)
+                Program.mainForm.SetStatus(oldStatus);
+        }
+
+        static void RemoveCompletedTasks (List<Task> runningTasks)
+        {
+            foreach (Task task in new List<Task>(runningTasks))
+            {
+                if (task.IsCompleted)
+                    runningTasks.Remove(task);
+            }
         }
 
         public static void BlendImages(string img1Path, string img2Path, string imgOutPath)
@@ -84,27 +118,55 @@ namespace Flowframes.Magick
             img1.Write(imgOutPath);
         }
 
-        public static void BlendImages (string img1Path, string img2Path, string[] imgOutPaths)
+        public static async Task BlendImages (string img1Path, string img2Path, string[] imgOutPaths)
         {
-            MagickImage img1 = new MagickImage(img1Path);
-            MagickImage img2 = new MagickImage(img2Path);
-
-            int alphaFraction = (100f / (imgOutPaths.Length + 1)).RoundToInt();   // Alpha percentage per image
-            int currentAlpha = alphaFraction;
-
-            foreach (string imgOutPath in imgOutPaths)
+            try
             {
-                MagickImage img1Inst = new MagickImage(img1);
-                MagickImage img2Inst = new MagickImage(img2);
+                MagickImage img1 = new MagickImage(img1Path);
+                MagickImage img2 = new MagickImage(img2Path);
 
-                img2Inst.Alpha(AlphaOption.Opaque);
-                img2Inst.Evaluate(Channels.Alpha, EvaluateOperator.Set, new Percentage(currentAlpha));
-                currentAlpha += alphaFraction;
+                int alphaFraction = (100f / (imgOutPaths.Length + 1)).RoundToInt();   // Alpha percentage per image
+                int currentAlpha = alphaFraction;
 
-                img1Inst.Composite(img2Inst, Gravity.Center, CompositeOperator.Over);
-                img1Inst.Format = MagickFormat.Png24;
-                img1Inst.Quality = 10;
-                img1Inst.Write(imgOutPath);
+                foreach (string imgOutPath in imgOutPaths)
+                {
+                    string outPath = imgOutPath.Trim();
+
+                    MagickImage img1Inst = new MagickImage(img1);
+                    MagickImage img2Inst = new MagickImage(img2);
+
+                    img2Inst.Alpha(AlphaOption.Opaque);
+                    img2Inst.Evaluate(Channels.Alpha, EvaluateOperator.Set, new Percentage(currentAlpha));
+                    currentAlpha += alphaFraction;
+
+                    img1Inst.Composite(img2Inst, Gravity.Center, CompositeOperator.Over);
+                    img1Inst.Format = MagickFormat.Png24;
+                    img1Inst.Quality = 10;
+                    img1Inst.Write(outPath);
+                    //await WriteImageSafe(img1Inst, outPath);
+                    await Task.Delay(1);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("BlendImages Error: " + e.Message);
+            }
+        }
+
+        static async Task WriteImageSafe (MagickImage img, string path)
+        {
+            img.Write(path);
+
+            try
+            {
+                MagickImage imgRead = new MagickImage(path);
+                Size res = new Size(imgRead.Width, imgRead.Height);
+            }
+            catch(Exception e)
+            {
+                Logger.Log($"Failed to write '{path}' correctly, will retry. {e.Message}", true);
+                await Task.Delay(100);
+                await WriteImageSafe(img, path);
             }
         }
     }
