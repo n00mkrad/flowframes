@@ -181,7 +181,7 @@ namespace Flowframes.Main
             File.WriteAllLines(framesFileChunk, IOUtils.ReadLines(framesFileFull).Skip(firstFrameNum).Take(framesAmount));
 
             if (Config.GetInt("sceneChangeFillMode") == 1)
-                await Blend.BlendSceneChanges(framesFileChunk);
+                await Blend.BlendSceneChanges(framesFileChunk, false);
 
             float maxFps = Config.GetFloat("maxFps");
             bool fpsLimit = maxFps != 0 && I.current.outFps > maxFps;
