@@ -20,7 +20,6 @@ namespace Flowframes
         public static TaskType lastTask = TaskType.Other;
 
         public static string lastOutputFfmpeg;
-        public static string lastOutputGifski;
 
         public enum LogMode { Visible, OnlyLastLine, Hidden }
         static LogMode currentLogMode;
