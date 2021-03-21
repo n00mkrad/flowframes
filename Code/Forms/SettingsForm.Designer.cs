@@ -149,6 +149,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.audioSubTransferMode = new System.Windows.Forms.ComboBox();
             this.label70 = new System.Windows.Forms.Label();
             this.panel13 = new System.Windows.Forms.Panel();
@@ -175,7 +176,8 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label71 = new System.Windows.Forms.Label();
+            this.sceneChangeFillMode = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -543,6 +545,8 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.sceneChangeFillMode);
+            this.tabListPage2.Controls.Add(this.label71);
             this.tabListPage2.Controls.Add(this.label4);
             this.tabListPage2.Controls.Add(this.enableAlpha);
             this.tabListPage2.Controls.Add(this.label25);
@@ -644,7 +648,7 @@
             // sbsAllowAutoEnc
             // 
             this.sbsAllowAutoEnc.AutoSize = true;
-            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 220);
+            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 250);
             this.sbsAllowAutoEnc.Name = "sbsAllowAutoEnc";
             this.sbsAllowAutoEnc.Size = new System.Drawing.Size(15, 14);
             this.sbsAllowAutoEnc.TabIndex = 72;
@@ -663,7 +667,7 @@
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(10, 220);
+            this.label53.Location = new System.Drawing.Point(10, 250);
             this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label53.Name = "label53";
             this.label53.Size = new System.Drawing.Size(203, 13);
@@ -681,7 +685,7 @@
             "Disabled",
             "Enabled (Keep Interpolated Frames)",
             "Enabled (Delete Frames Once Encoded)"});
-            this.autoEncMode.Location = new System.Drawing.Point(280, 187);
+            this.autoEncMode.Location = new System.Drawing.Point(280, 217);
             this.autoEncMode.Name = "autoEncMode";
             this.autoEncMode.Size = new System.Drawing.Size(250, 21);
             this.autoEncMode.TabIndex = 70;
@@ -689,7 +693,7 @@
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(10, 190);
+            this.label49.Location = new System.Drawing.Point(10, 220);
             this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(206, 13);
@@ -1734,6 +1738,17 @@
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Debugging / Experimental";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox1.Location = new System.Drawing.Point(563, 97);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox1.TabIndex = 90;
+            this.pictureBox1.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            // 
             // audioSubTransferMode
             // 
             this.audioSubTransferMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -2028,16 +2043,30 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // pictureBox1
+            // label71
             // 
-            this.pictureBox1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(563, 97);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox1.TabIndex = 90;
-            this.pictureBox1.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(10, 190);
+            this.label71.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(124, 13);
+            this.label71.TabIndex = 79;
+            this.label71.Text = "Scene Change Fix Mode";
+            // 
+            // sceneChangeFillMode
+            // 
+            this.sceneChangeFillMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.sceneChangeFillMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sceneChangeFillMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sceneChangeFillMode.ForeColor = System.Drawing.Color.White;
+            this.sceneChangeFillMode.FormattingEnabled = true;
+            this.sceneChangeFillMode.Items.AddRange(new object[] {
+            "Basic (Duplicate Previous Frame)",
+            "Fancy (Blend To Next Scene)"});
+            this.sceneChangeFillMode.Location = new System.Drawing.Point(280, 187);
+            this.sceneChangeFillMode.Name = "sceneChangeFillMode";
+            this.sceneChangeFillMode.Size = new System.Drawing.Size(250, 21);
+            this.sceneChangeFillMode.TabIndex = 80;
             // 
             // SettingsForm
             // 
@@ -2227,5 +2256,7 @@
         private System.Windows.Forms.Label label70;
         private System.Windows.Forms.ComboBox audioSubTransferMode;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ComboBox sceneChangeFillMode;
+        private System.Windows.Forms.Label label71;
     }
 }

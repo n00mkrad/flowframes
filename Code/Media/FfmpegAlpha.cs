@@ -30,13 +30,12 @@ namespace Flowframes.Media
             Directory.CreateDirectory(outputDir);
             foreach (FileInfo file in IOUtils.GetFileInfosSorted(inputDir))
             {
-                string outFilename = Path.Combine(outputDir, "_" + file.Name);
-                Size res = IOUtils.GetImage(file.FullName).Size;
-                string args = $" -f lavfi -i color={fillColor}:s={res.Width}x{res.Height} -i {file.FullName.Wrap()} " +
-                    $"-filter_complex overlay=0:0:shortest=1 -pix_fmt rgb24 {outFilename.Wrap()}";
+                string outPath = Path.Combine(outputDir, "_" + file.Name);
+                Size s = IOUtils.GetImage(file.FullName).Size;
+                string args = $" -f lavfi -i color={fillColor}:s={s.Width}x{s.Height} -i {file.FullName.Wrap()} -filter_complex overlay=0:0:shortest=1 {outPath.Wrap()}";
                 await RunFfmpeg(args, LogMode.Hidden);
                 file.Delete();
-                File.Move(outFilename, file.FullName);
+                File.Move(outPath, file.FullName);
             }
         }
 
@@ -45,6 +44,7 @@ namespace Flowframes.Media
             string filter = "-filter_complex [0:v:0][1:v:0]alphamerge[out] -map [out]";
             string args = $"-i \"{rgbDir}/%{rgbPad}d.png\" -i \"{alphaDir}/%{aPad}d.png\" {filter} \"{rgbDir}/%{rgbPad}d.png\"";
             await RunFfmpeg(args, LogMode.Hidden);
+
             if (deleteAlphaDir)
                 IOUtils.TryDeleteIfExists(alphaDir);
         }
