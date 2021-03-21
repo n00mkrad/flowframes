@@ -1,4 +1,9 @@
-Flowframes 1.24.0 [PRE-RELEASE] Changelog:
+Flowframes 1.24.0 [PRE-RELEASE #2] Changelog:
+- Added optional blending for scene transitions (instead of duplicating the last frame of the previous scene)
+- Fixed a bug where the next-to-last frame can't get detected as a scene change even if there is one
+
+
+Flowframes 1.24.0 [PRE-RELEASE #1] Changelog:
 - Added experimental FLAVR integration
 - Fixed missing subtitle compatibility check when muxing audio/subs directly from input
 - Fixed bug that could break Image Sequence exports
