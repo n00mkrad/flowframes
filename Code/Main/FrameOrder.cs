@@ -170,6 +170,8 @@ namespace Flowframes.Main
                         }
                         else
                         {
+                            totalFileCount++;
+
                             for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                             {
                                 totalFileCount++;
