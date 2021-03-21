@@ -176,9 +176,12 @@ namespace Flowframes.Main
 
         public static async Task EncodeChunk(string outPath, I.OutMode mode, int firstFrameNum, int framesAmount)
         {
-            string vfrFileOriginal = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilename(I.current.interpFactor));
-            string vfrFile = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
-            File.WriteAllLines(vfrFile, IOUtils.ReadLines(vfrFileOriginal).Skip(firstFrameNum).Take(framesAmount));
+            string framesFileFull = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilename(I.current.interpFactor));
+            string framesFileChunk = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
+            File.WriteAllLines(framesFileChunk, IOUtils.ReadLines(framesFileFull).Skip(firstFrameNum).Take(framesAmount));
+
+            if (Config.GetInt("sceneChangeFillMode") == 1)
+                await Blend.BlendSceneChanges(framesFileChunk);
 
             float maxFps = Config.GetFloat("maxFps");
             bool fpsLimit = maxFps != 0 && I.current.outFps > maxFps;
@@ -186,14 +189,14 @@ namespace Flowframes.Main
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
             if (!dontEncodeFullFpsVid)
-                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, I.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
+                await FfmpegEncode.FramesToVideoConcat(framesFileChunk, outPath, mode, I.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
 
             if (fpsLimit)
             {
                 string filename = Path.GetFileName(outPath);
                 string newParentDir = outPath.GetParentDir() + Paths.fpsLimitSuffix;
                 outPath = Path.Combine(newParentDir, filename);
-                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, I.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                await FfmpegEncode.FramesToVideoConcat(framesFileChunk, outPath, mode, I.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
             }
         }
 

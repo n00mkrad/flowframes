@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.Magick
@@ -21,13 +20,22 @@ namespace Flowframes.Magick
             sw.Restart();
             int totalFrames = 0;
 
+            string keyword = "SCN:";
+            string fileContent = File.ReadAllText(framesFilePath);
+
+            if (!fileContent.Contains(keyword))
+            {
+                Logger.Log("Skipping BlendSceneChanges as there are no scene changes in this frames file.", true);
+                return;
+            }
+
+            string[] framesLines = fileContent.SplitIntoLines();     // Array with frame filenames
+
             string oldStatus = Program.mainForm.GetStatus();
 
-            if(setStatus)
+            if (setStatus)
                 Program.mainForm.SetStatus("Blending scene transitions...");
 
-            string keyword = "SCN:";
-            string[] framesLines = IOUtils.ReadLines(framesFilePath);     // Array with frame filenames
             int amountOfBlendFrames = (int)Interpolate.current.interpFactor - 1;
 
             List<Task> runningTasks = new List<Task>();
@@ -143,30 +151,12 @@ namespace Flowframes.Magick
                     img1Inst.Format = MagickFormat.Png24;
                     img1Inst.Quality = 10;
                     img1Inst.Write(outPath);
-                    //await WriteImageSafe(img1Inst, outPath);
                     await Task.Delay(1);
                 }
             }
             catch (Exception e)
             {
                 Logger.Log("BlendImages Error: " + e.Message);
-            }
-        }
-
-        static async Task WriteImageSafe (MagickImage img, string path)
-        {
-            img.Write(path);
-
-            try
-            {
-                MagickImage imgRead = new MagickImage(path);
-                Size res = new Size(imgRead.Width, imgRead.Height);
-            }
-            catch(Exception e)
-            {
-                Logger.Log($"Failed to write '{path}' correctly, will retry. {e.Message}", true);
-                await Task.Delay(100);
-                await WriteImageSafe(img, path);
             }
         }
     }

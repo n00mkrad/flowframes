@@ -70,8 +70,6 @@ namespace Flowframes.Main
                 {
                     if (Interpolate.canceled) return;
 
-                    Logger.Log($"AutoEnc Loop iteration runs. Paused: {paused}", true);
-
                     if (paused)
                     {
                         await Task.Delay(200);
