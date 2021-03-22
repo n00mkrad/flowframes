@@ -80,6 +80,9 @@ namespace Flowframes.Main
                 return;
             }
 
+            Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+            AiProcess.SetFilenameMap(renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value)), true);    // Save rel paths
+
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
             // TODO: Check if this works lol, remove if it does
@@ -92,8 +95,13 @@ namespace Flowframes.Main
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);
             await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
-            AiProcess.filenameMap.Clear();
+            AiProcess.SetFilenameMap(null, false);
             Program.mainForm.SetProgress(0);
+        }
+
+        void RenameFrames ()
+        {
+
         }
 
         public static async Task CreateOutputVid()

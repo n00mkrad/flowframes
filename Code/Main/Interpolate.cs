@@ -58,9 +58,16 @@ namespace Flowframes
             await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
             Program.mainForm.SetProgress(100);
+
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, false);
-            await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
+
+            if (Config.GetBool("keepTempFolder"))
+            {
+                await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
+                AiProcess.SetFilenameMap(null, false);
+            }
+
             AiProcess.filenameMap.Clear();
             await Cleanup();
             Program.mainForm.SetWorking(false);
@@ -151,17 +158,18 @@ namespace Flowframes
 
             if (canceled) return;
 
-            try
+            if (!stepByStep)
             {
-                Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
-                
-                if(stepByStep)
-                    AiProcess.filenameMap = renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value));    // Save rel paths
-            }
-            catch (Exception e)
-            {
-                Logger.Log($"Error renaming frame files: {e.Message}");
-                Cancel("Error renaming frame files. Check the log for details.");
+                try
+                {
+                    Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+                    AiProcess.SetFilenameMap(null, true);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"Error renaming frame files: {e.Message}");
+                    Cancel("Error renaming frame files. Check the log for details.");
+                }
             }
 
             if (current.alpha)

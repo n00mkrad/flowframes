@@ -36,6 +36,14 @@ namespace Flowframes.Magick
             if (setStatus)
                 Program.mainForm.SetStatus("Blending scene transitions...");
 
+            bool renameFramesFirst = !AiProcess.framesAreRenamed;
+
+            if (renameFramesFirst)
+            {
+                Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(Interpolate.current.framesFolder, "png", 1, Padding.inputFramesRenamed);
+                AiProcess.SetFilenameMap(renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value)), true);
+            }
+
             int amountOfBlendFrames = (int)Interpolate.current.interpFactor - 1;
 
             List<Task> runningTasks = new List<Task>();
@@ -52,12 +60,12 @@ namespace Flowframes.Magick
                         string[] inputFrameNames = trimmedLine.Split('>');
                         string img1 = Path.Combine(Interpolate.current.framesFolder, inputFrameNames[0]);
                         string img2 = Path.Combine(Interpolate.current.framesFolder, inputFrameNames[1]);
-            
+
                         string firstOutputFrameName = line.Split('/').Last().Remove("'").Split('#').First();
                         string ext = Path.GetExtension(firstOutputFrameName);
                         int firstOutputFrameNum = firstOutputFrameName.GetInt();
                         List<string> outputFilenames = new List<string>();
-            
+
                         for (int blendFrameNum = 1; blendFrameNum <= amountOfBlendFrames; blendFrameNum++)
                         {
                             int outputNum = firstOutputFrameNum + blendFrameNum;
@@ -79,7 +87,7 @@ namespace Flowframes.Magick
                         Task newTask = Task.Run(() => BlendImages(img1, img2, outputFilenames.ToArray()));
                         runningTasks.Add(newTask);
                         totalFrames += outputFilenames.Count;
-            
+
                         await Task.Delay(1);
                     }
                 }
@@ -101,11 +109,17 @@ namespace Flowframes.Magick
 
             Logger.Log($"Created {totalFrames} blend frames in {FormatUtils.TimeSw(sw)} ({(totalFrames / (sw.ElapsedMilliseconds / 1000f)).ToString("0.00")} FPS)", true);
 
+            if (renameFramesFirst)
+            {
+                await IOUtils.ReverseRenaming(Interpolate.current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
+                AiProcess.SetFilenameMap(null, false);
+            }
+
             if (setStatus)
                 Program.mainForm.SetStatus(oldStatus);
         }
 
-        static void RemoveCompletedTasks (List<Task> runningTasks)
+        static void RemoveCompletedTasks(List<Task> runningTasks)
         {
             foreach (Task task in new List<Task>(runningTasks))
             {
@@ -126,7 +140,7 @@ namespace Flowframes.Magick
             img1.Write(imgOutPath);
         }
 
-        public static async Task BlendImages (string img1Path, string img2Path, string[] imgOutPaths)
+        public static async Task BlendImages(string img1Path, string img2Path, string[] imgOutPaths)
         {
             try
             {
