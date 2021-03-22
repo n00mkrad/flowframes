@@ -155,11 +155,12 @@ namespace Flowframes.Main
                         string frameBeforeScn = Path.GetFileName((frameFiles[i].Name.GetInt() + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0')) + frameFiles[i].Extension;
                         string frameAfterScn = Path.GetFileName((frameFiles[i + 1].Name.GetInt() + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0')) + frameFiles[i + 1].Extension;
                         string scnChangeNote = $"SCN:{frameBeforeScn}>{frameAfterScn}";
+                        //bool last = i == (frameFilesWithoutLast.Length - 1);
+                        totalFileCount++;
                         fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]", scnChangeNote);
 
                         if (Config.GetInt("sceneChangeFillMode") == 0)      // Duplicate last frame
                         {
-                            totalFileCount++;
                             int lastNum = totalFileCount;
 
                             for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
@@ -170,12 +171,10 @@ namespace Flowframes.Main
                         }
                         else
                         {
-                            totalFileCount++;
-
                             for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                             {
                                 totalFileCount++;
-                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED - BLEND]");
+                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [BLEND FRAME]");
                             }
                         }
 

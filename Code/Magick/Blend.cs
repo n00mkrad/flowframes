@@ -60,7 +60,7 @@ namespace Flowframes.Magick
             
                         for (int blendFrameNum = 1; blendFrameNum <= amountOfBlendFrames; blendFrameNum++)
                         {
-                            int outputNum = firstOutputFrameNum + blendFrameNum + 1;
+                            int outputNum = firstOutputFrameNum + blendFrameNum;
                             string outputPath = Path.Combine(Interpolate.current.interpFolder, outputNum.ToString().PadLeft(Padding.interpFrames, '0'));
                             outputPath = Path.ChangeExtension(outputPath, ext);
                             outputFilenames.Add(outputPath);
