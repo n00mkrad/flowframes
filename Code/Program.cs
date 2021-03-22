@@ -48,6 +48,9 @@ namespace Flowframes
                 {
                     try
                     {
+                        if (Interpolate.current.tempFolder.Length < 3)
+                            return;
+
                         string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
                         long mb = IOUtils.GetDiskSpace(Interpolate.current.tempFolder);
 
