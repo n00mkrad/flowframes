@@ -69,13 +69,15 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(loglevel))
                 loglevel = defLogLevel;
 
+            string beforeArgs = $"-hide_banner -loglevel {loglevel} -y -stats";
+
             if(!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} -hide_banner -loglevel {loglevel} -y -stats {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -loglevel {loglevel} -y -stats {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe {beforeArgs} {args}";
             
             if (logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
-            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
+            Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
             ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
             ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
             ffmpeg.Start();
@@ -141,7 +143,7 @@ namespace Flowframes
             Process ffmpeg = OSUtils.NewProcess(true);
             lastAvProcess = ffmpeg;
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
-            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
+            Logger.Log($"ffmpeg {args}", true, false, "ffmpeg");
             ffmpeg.Start();
             ffmpeg.WaitForExit();
             string output = ffmpeg.StandardOutput.ReadToEnd();
@@ -159,7 +161,7 @@ namespace Flowframes
             Process ffmpeg = OSUtils.NewProcess(true);
             lastAvProcess = ffmpeg;
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
-            Logger.Log("cmd.exe " + ffmpeg.StartInfo.Arguments, true, false, "ffmpeg");
+            Logger.Log($"ffmpeg {args}", true, false, "ffmpeg");
             if (setBusy) Program.mainForm.SetWorking(true);
             ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandlerSilent);
             ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandlerSilent);
@@ -176,7 +178,7 @@ namespace Flowframes
         {
             Process ffprobe = OSUtils.NewProcess(true);
             ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
-            Logger.Log("cmd.exe " + ffprobe.StartInfo.Arguments, true, false, "ffmpeg");
+            Logger.Log($"ffprobe {args}", true, false, "ffmpeg");
             ffprobe.Start();
             ffprobe.WaitForExit();
             string output = ffprobe.StandardOutput.ReadToEnd();
