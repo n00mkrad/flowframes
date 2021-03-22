@@ -105,14 +105,19 @@ namespace Flowframes
 
         public static Size GetSize(string inputFile)
         {
+            Logger.Log($"GetSize('{inputFile}')", true, false, "ffmpeg");
             string args = $" -v panic -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
-            string output = GetFfprobeOutput(args);
+            string[] outputLines = GetFfprobeOutput(args).SplitIntoLines();
 
-            if (output.Length > 4 && output.Contains("x"))
+            foreach(string line in outputLines)
             {
-                string[] numbers = output.Split('x');
+                if (!line.Contains("x") || line.Trim().Length < 3)
+                    continue;
+
+                string[] numbers = line.Split('x');
                 return new Size(numbers[0].GetInt(), numbers[1].GetInt());
             }
+
             return new Size(0, 0);
         }
 
