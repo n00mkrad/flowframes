@@ -153,6 +153,7 @@
     <Compile Include="Media\FfmpegExtract.cs" />
     <Compile Include="Media\FFmpegUtils.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
+    <Compile Include="MiscUtils\ToastUtils.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Form1.cs">
