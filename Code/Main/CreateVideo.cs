@@ -1,11 +1,6 @@
-﻿using Flowframes;
-using Flowframes.IO;
+﻿using Flowframes.IO;
 using Flowframes.Magick;
-using Flowframes.Main;
-using Flowframes.OS;
-using Flowframes.UI;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -234,7 +229,7 @@ namespace Flowframes.Main
                 if (muxFromInput)
                     await FfmpegAudioAndMetadata.MergeStreamsFromInput(inputPath, outVideo, I.current.tempFolder);
                 else
-                    await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, I.current.tempFolder);        // Merge from audioFile into outVideo
+                    await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, I.current.tempFolder);
             }
             catch (Exception e)
             {
