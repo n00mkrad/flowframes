@@ -1,5 +1,5 @@
 Flowframes 1.24.0 [PRE-RELEASE #2] Changelog:
-- Added optional blending for scene transitions (instead of duplicating the last frame of the previous scene)
+- Added optional blending for scene transitions (instead of duplicating last frame of the scene)
 - Fixed a bug where the next-to-last frame can't get detected as a scene change even if there is one
 
 
