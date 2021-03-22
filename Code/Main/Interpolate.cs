@@ -43,7 +43,7 @@ namespace Flowframes
             currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
-
+            ToastUtils.ShowToast("Started Interpolation", $"Started interpolation of {Path.GetFileNameWithoutExtension(current.inPath)}");
             if (!ResumeUtils.resumeNextRun)
             {
                 await GetFrames();
@@ -64,8 +64,9 @@ namespace Flowframes
             AiProcess.filenameMap.Clear();
             await Cleanup();
             Program.mainForm.SetWorking(false);
-            Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
+            Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
+            ToastUtils.ShowToast("Interpolation Complete", $"Done interpolating (took {FormatUtils.Time(sw.Elapsed)})");
             Program.mainForm.SetStatus("Done interpolating!");
         }
 
