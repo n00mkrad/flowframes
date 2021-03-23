@@ -1,7 +1,13 @@
+Flowframes 1.24.0 [PRE-RELEASE #3] Changelog:
+- Added config option to allow custom input framerate (might break trimming and progress bars!)
+- Fixed scene change blending using the wrong frames
+- Fixed scene change blending not working in step-by-step mode
+- Fixed a problem in step-by-step mode that made manual deduplication impossible
+- Fixed a rare bug where the video resolution gets reported incorrectly (like 1920x10801920)
+
 Flowframes 1.24.0 [PRE-RELEASE #2] Changelog:
 - Added optional blending for scene transitions (instead of duplicating last frame of the scene)
 - Fixed a bug where the next-to-last frame can't get detected as a scene change even if there is one
-
 
 Flowframes 1.24.0 [PRE-RELEASE #1] Changelog:
 - Added experimental FLAVR integration
