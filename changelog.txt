@@ -1,19 +1,17 @@
-Flowframes 1.24.0 [PRE-RELEASE #3] Changelog:
-- Added config option to allow custom input framerate (might break trimming and progress bars!)
-- Fixed scene change blending using the wrong frames
-- Fixed scene change blending not working in step-by-step mode
-- Fixed a problem in step-by-step mode that made manual deduplication impossible
-- Fixed a rare bug where the video resolution gets reported incorrectly (like 1920x10801920)
-
-Flowframes 1.24.0 [PRE-RELEASE #2] Changelog:
-- Added optional blending for scene transitions (instead of duplicating last frame of the scene)
-- Fixed a bug where the next-to-last frame can't get detected as a scene change even if there is one
-
-Flowframes 1.24.0 [PRE-RELEASE #1] Changelog:
-- Added experimental FLAVR integration
-- Fixed missing subtitle compatibility check when muxing audio/subs directly from input
-- Fixed bug that could break Image Sequence exports
-- Fixed flaw where certain online checks ran before the UI opens up instead of afterwards
+Flowframes 1.24.0 (Pre-Releases 1/2/3 + Final) Changelog:
+- [PR1] Added experimental FLAVR integration
+- [PR1] Fixed missing subtitle compatibility check when muxing audio/subs directly from input
+- [PR1] Fixed bug that could break Image Sequence exports
+- [PR1] Fixed flaw where certain online checks ran before the UI opens up instead of afterwards
+- [PR2] Added optional blending for scene transitions (instead of duplicating previous frame)
+- [PR2] Fixed a bug where the next-to-last frame can't get detected as a scene change
+- [PR3] Added config option to allow custom input FPS (might break trimming and progress bars!)
+- [PR3] Fixed scene change blending using the wrong frames
+- [PR3] Fixed scene change blending not working in step-by-step mode
+- [PR3] Fixed a problem in step-by-step mode that made manual deduplication impossible
+- [PR3] Fixed a rare bug where the video resolution gets reported incorrectly
+- [FNL] Fixed audio fallback not working for incompatible audio codecs
+- [FNL] Added MP3 and WMA (v1/v2) lossless transfer (MKV output)
 
 
 Flowframes 1.23.4 Changelog:
