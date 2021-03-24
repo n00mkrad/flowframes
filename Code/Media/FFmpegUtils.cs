@@ -97,7 +97,10 @@ namespace Flowframes.Media
 
         public static bool ContainerSupportsAllAudioFormats (Interpolate.OutMode outMode, List<string> codecs)
         {
-            foreach(string format in codecs)
+            if(codecs.Count < 1)
+                Logger.Log($"Warning: ContainerSupportsAllAudioFormats() was called, but codec list has {codecs.Count} entries.", true, false, "ffmpeg");
+
+            foreach (string format in codecs)
             {
                 if (!ContainerSupportsAudioFormat(outMode, format))
                     return false;
@@ -108,7 +111,8 @@ namespace Flowframes.Media
 
         public static bool ContainerSupportsAudioFormat (Interpolate.OutMode outMode, string format)
         {
-            format = format.Remove(".");
+            string alias = GetAudioExt(format);
+            Logger.Log($"Checking if {outMode} supports audio format '{format}' (alias {alias})", true, false, "ffmpeg");
 
             string[] formatsMp4 = new string[] { "m4a", "ac3", "dts" };
             string[] formatsMkv = new string[] { "m4a", "ac3", "dts", "ogg", "mp2", "wav" };
@@ -118,11 +122,11 @@ namespace Flowframes.Media
 
             switch (outMode)
             {
-                case Interpolate.OutMode.VidMp4: return formatsMp4.Contains(format);
-                case Interpolate.OutMode.VidMkv: return formatsMkv.Contains(format);
-                case Interpolate.OutMode.VidWebm: return formatsWebm.Contains(format);
-                case Interpolate.OutMode.VidProRes: return formatsProres.Contains(format);
-                case Interpolate.OutMode.VidAvi: return formatsAvi.Contains(format);
+                case Interpolate.OutMode.VidMp4: return formatsMp4.Contains(alias);
+                case Interpolate.OutMode.VidMkv: return formatsMkv.Contains(alias);
+                case Interpolate.OutMode.VidWebm: return formatsWebm.Contains(alias);
+                case Interpolate.OutMode.VidProRes: return formatsProres.Contains(alias);
+                case Interpolate.OutMode.VidAvi: return formatsAvi.Contains(alias);
             }
 
             return false;
@@ -147,17 +151,29 @@ namespace Flowframes.Media
 
         public static string GetAudioExt(string videoFile, int streamIndex = -1)
         {
-            switch (FfmpegCommands.GetAudioCodec(videoFile, streamIndex))
+            return GetAudioExt(FfmpegCommands.GetAudioCodec(videoFile, streamIndex));
+        }
+
+        public static string GetAudioExt (string codec)
+        {
+            if (codec.StartsWith("pcm_"))
+                return "wav";
+
+            switch (codec)
             {
                 case "vorbis": return "ogg";
                 case "opus": return "ogg";
                 case "mp2": return "mp2";
+                case "mp3": return "mp3";
                 case "aac": return "m4a";
                 case "ac3": return "ac3";
                 case "eac3": return "ac3";
                 case "dts": return "dts";
-                default: return "wav";
+                case "alac": return "wav";
+                case "flac": return "wav";
             }
+
+            return "unsupported";
         }
 
         public static string GetAudioFallbackArgs (Interpolate.OutMode outMode)

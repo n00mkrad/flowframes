@@ -29,7 +29,7 @@ namespace Flowframes.Media
 
             foreach (AudioTrack track in audioTracks)
             {
-                if (Interpolate.canceled) break;
+                if (I.canceled) break;
 
                 string audioExt = Utils.GetAudioExt(inputFile, track.streamIndex);
                 string outPath = Path.Combine(outFolder, $"{track.streamIndex}_{track.metadata}_audio.{audioExt}");
@@ -37,15 +37,15 @@ namespace Flowframes.Media
                 string args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -map 0:{track.streamIndex} -vn -c:a copy {outPath.Wrap()}";
                 await RunFfmpeg(args, LogMode.Hidden, "panic");
 
-                if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
+                if (IOUtils.GetFilesize(outPath) < 512)
                 {
-                    Logger.Log($"Failed to extract audio stream #{track.streamIndex} losslessly! Trying to re-encode.");
+                    // Logger.Log($"Failed to extract audio stream #{track.streamIndex} losslessly! Trying to re-encode.");
                     File.Delete(outPath);
                     outPath = Path.ChangeExtension(outPath, Utils.GetAudioExtForContainer(Path.GetExtension(inputFile)));
-                    args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -vn {Utils.GetAudioFallbackArgs(Interpolate.current.outMode)} {outPath.Wrap()}";
+                    args = $"{trim[0]} -i {inputFile.Wrap()} {trim[1]} -vn {Utils.GetAudioFallbackArgs(I.current.outMode)} {outPath.Wrap()}";
                     await RunFfmpeg(args, LogMode.Hidden, "panic", TaskType.ExtractOther, true);
 
-                    if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 512)
+                    if (IOUtils.GetFilesize(outPath) < 512)
                     {
                         Logger.Log($"Failed to extract audio stream #{track.streamIndex}, even with re-encoding. Will be missing from output.");
                         IOUtils.TryDeleteIfExists(outPath);
@@ -73,7 +73,7 @@ namespace Flowframes.Media
                 string line = outputLines[i];
                 if (!line.Contains(" Audio: ")) continue;
 
-                int streamIndex = line.Remove("Stream #0:").Split(':')[0].GetInt();
+                int streamIndex = line.Remove("Stream #0:").Split(':')[0].Split('[')[0].GetInt();
 
                 string meta = "";
                 string codec = "";
@@ -171,6 +171,7 @@ namespace Flowframes.Media
 
         #endregion
 
+        #region Mux From Input
         public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder)
         {
             if (!File.Exists(inputVideo) && !I.current.inputIsFrames)
@@ -188,8 +189,11 @@ namespace Flowframes.Media
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
 
-            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(interpVideo));
+            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(inputVideo));
             string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(I.current.outMode);
+
+            if (!audioCompat)
+                Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
 
             bool enableAudio = Config.GetBool("keepAudio");
             bool enableSubs = Config.GetBool("keepSubs");
@@ -231,6 +235,10 @@ namespace Flowframes.Media
                 File.Move(tempPath, interpVideo);   // Muxing failed, move unmuxed video file back
             }
         }
+
+        #endregion
+
+        #region Mux From Extracted Streams
 
         public static async Task MergeAudioAndSubs(string interpVideo, string tempFolder)    // https://superuser.com/a/277667
         {
@@ -288,17 +296,17 @@ namespace Flowframes.Media
                 inputIndex++;
             }
 
-            bool allAudioCodecsSupported = true;
+            bool audioCompat = true;
 
             foreach (string audioTrack in audioTracks)
                 if (!Utils.ContainerSupportsAudioFormat(I.current.outMode, Path.GetExtension(audioTrack)))
-                    allAudioCodecsSupported = false;
+                    audioCompat = false;
 
-            if(!allAudioCodecsSupported)
-                Logger.Log("Warning: Input audio format(s) not fully supported in output container. Audio transfer will not be lossless.", false, false, "ffmpeg");
+            if(!audioCompat)
+                Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
-            string audioArgs = allAudioCodecsSupported ? "-c:a copy" : Utils.GetAudioFallbackArgs(I.current.outMode);
+            string audioArgs = audioCompat ? "-c:a copy" : Utils.GetAudioFallbackArgs(I.current.outMode);
 
             string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} {outName}";
 
@@ -336,5 +344,7 @@ namespace Flowframes.Media
                 File.Move(tempPath, interpVideo);
             }
         }
+
+        #endregion
     }
 }
