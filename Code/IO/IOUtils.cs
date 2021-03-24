@@ -453,20 +453,6 @@ namespace Flowframes.IO
             }
 		}
 
-		public static string GetAudioFile (string basePath)
-        {
-			string[] exts = new string[] { "m4a", "wav", "ogg", "mp2", "mp3" };
-
-			foreach(string ext in exts)
-            {
-				string filename = Path.ChangeExtension(basePath, ext);
-				if (File.Exists(filename))
-					return filename;
-			}
-
-			return null;
-		}
-
 		public static async Task<float> GetFpsFolderOrVideo(string path)
 		{
             try

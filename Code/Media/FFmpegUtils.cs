@@ -111,25 +111,26 @@ namespace Flowframes.Media
 
         public static bool ContainerSupportsAudioFormat (Interpolate.OutMode outMode, string format)
         {
+            bool supported = false;
             string alias = GetAudioExt(format);
-            Logger.Log($"Checking if {outMode} supports audio format '{format}' (alias {alias})", true, false, "ffmpeg");
 
             string[] formatsMp4 = new string[] { "m4a", "ac3", "dts" };
-            string[] formatsMkv = new string[] { "m4a", "ac3", "dts", "ogg", "mp2", "wav" };
+            string[] formatsMkv = new string[] { "m4a", "ac3", "dts", "ogg", "mp2", "mp3", "wav", "wma" };
             string[] formatsWebm = new string[] { "ogg" };
             string[] formatsProres = new string[] { "m4a", "ac3", "dts", "wav" };
             string[] formatsAvi = new string[] { "m4a", "ac3", "dts" };
 
             switch (outMode)
             {
-                case Interpolate.OutMode.VidMp4: return formatsMp4.Contains(alias);
-                case Interpolate.OutMode.VidMkv: return formatsMkv.Contains(alias);
-                case Interpolate.OutMode.VidWebm: return formatsWebm.Contains(alias);
-                case Interpolate.OutMode.VidProRes: return formatsProres.Contains(alias);
-                case Interpolate.OutMode.VidAvi: return formatsAvi.Contains(alias);
+                case Interpolate.OutMode.VidMp4: supported = formatsMp4.Contains(alias); break;
+                case Interpolate.OutMode.VidMkv: supported = formatsMkv.Contains(alias); break;
+                case Interpolate.OutMode.VidWebm: supported = formatsWebm.Contains(alias); break;
+                case Interpolate.OutMode.VidProRes: supported = formatsProres.Contains(alias); break;
+                case Interpolate.OutMode.VidAvi: supported = formatsAvi.Contains(alias); break;
             }
 
-            return false;
+            Logger.Log($"Checking if {outMode} supports audio format '{format}' ({alias}): {supported}", true, false, "ffmpeg");
+            return supported;
         }
 
         public static string GetExt(Interpolate.OutMode outMode, bool dot = true)
@@ -171,6 +172,8 @@ namespace Flowframes.Media
                 case "dts": return "dts";
                 case "alac": return "wav";
                 case "flac": return "wav";
+                case "wmav1": return "wma";
+                case "wmav2": return "wma";
             }
 
             return "unsupported";

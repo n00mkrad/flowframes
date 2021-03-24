@@ -16,8 +16,8 @@ namespace Flowframes.Main
     {
         static string interpFramesFolder;
         static string videoChunksFolder;
-        public static int chunkSize = 125;    // Encode every n frames
-        public static int safetyBufferFrames = 90;      // Ignore latest n frames to avoid using images that haven't been fully encoded yet
+        public static int chunkSize;    // Encode every n frames
+        public static int safetyBufferFrames;      // Ignore latest n frames to avoid using images that haven't been fully encoded yet
         public static string[] interpFramesLines;
         public static List<int> encodedFrameLines = new List<int>();
         public static List<int> unencodedFrameLines = new List<int>();
@@ -33,7 +33,7 @@ namespace Flowframes.Main
             safetyBufferFrames = 90;
 
             if (Interpolate.current.ai.aiName.ToUpper().Contains("NCNN"))
-                safetyBufferFrames = Config.GetInt("autoEncSafeBufferNcnn", 160);
+                safetyBufferFrames = Config.GetInt("autoEncSafeBufferNcnn", 150);
 
             if (Interpolate.current.ai.aiName == Networks.rifeCuda.aiName)
                 safetyBufferFrames = Config.GetInt("autoEncSafeBufferRifeCuda", 90);
