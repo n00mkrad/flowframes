@@ -4,7 +4,6 @@ using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.UI;
 using Force.Crc32;
-using Standart.Hash.xxHash;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -535,8 +534,8 @@ namespace Flowframes.IO
 			}
 		}
 
-		public enum Hash { MD5, CRC32, xxHash }
-		public static string GetHash (string path, Hash hashType, bool log = true, bool quick = true)
+		public enum Hash { MD5, CRC32 }
+		public static string GetHash (string path, Hash hashType, bool log = true)
 		{
 			Benchmarker.Start();
 			string hashStr = "";
@@ -563,13 +562,7 @@ namespace Flowframes.IO
 					hashStr = BitConverter.ToUInt32(crc32bytes, 0).ToString();
 				}
 
-				if (hashType == Hash.xxHash)
-				{
-					ulong xxh64 = xxHash64.ComputeHash(stream, 8192, (ulong)GetFilesize(path));
-					hashStr = xxh64.ToString();
-				}
-
-				stream.Close();
+                stream.Close();
 			}
 			catch (Exception e)
             {
@@ -584,7 +577,7 @@ namespace Flowframes.IO
 		public static async Task<string> GetHashAsync(string path, Hash hashType, bool log = true, bool quick = true)
 		{
 			await Task.Delay(1);
-			return GetHash(path, hashType, log, quick);
+			return GetHash(path, hashType, log);
 		}
 
 		public static bool CreateDir (string path)		// Returns whether the dir already existed
