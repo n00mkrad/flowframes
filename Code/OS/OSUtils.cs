@@ -25,12 +25,9 @@ namespace Flowframes.OS
                 WindowsPrincipal principal = new WindowsPrincipal(user);
                 isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception e)
             {
-                isAdmin = false;
-            }
-            catch (Exception ex)
-            {
+                Logger.Log("IsUserAdministrator() Error: " + e.Message);
                 isAdmin = false;
             }
             finally

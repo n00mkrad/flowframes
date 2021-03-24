@@ -98,8 +98,8 @@
     <Reference Include="HTAlt WinForms, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\HTAlt.WinForms.0.1.6\lib\net461\HTAlt WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="HTAlt.Standart, Version=0.1.6.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\HTAlt.Standart.0.1.6.4\lib\netstandard2.0\HTAlt.Standart.dll</HintPath>
+    <Reference Include="HTAlt.Standart, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\HTAlt.Standart.0.1.6\lib\netstandard2.0\HTAlt.Standart.dll</HintPath>
     </Reference>
     <Reference Include="Magick.NET-Q8-AnyCPU, Version=7.23.2.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
       <HintPath>packages\Magick.NET-Q8-AnyCPU.7.23.2.1\lib\net40\Magick.NET-Q8-AnyCPU.dll</HintPath>
