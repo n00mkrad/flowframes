@@ -35,6 +35,7 @@ namespace Flowframes
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
         {
+            Logger.Log($"ConcatVideos('{Path.GetFileName(concatFile)}', '{outPath}', {looptimes})", true, false, "ffmpeg");
             Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
