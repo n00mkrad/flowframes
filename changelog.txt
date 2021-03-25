@@ -1,3 +1,7 @@
+Flowframes 1.24.1 (Hotfix) Changelog:
+- Fixed a critical bug that would disable subtitle transfer, even when enabled & compatible
+
+
 Flowframes 1.24.0 (Pre-Releases 1/2/3 + Final) Changelog:
 - [PR1] Added experimental FLAVR integration
 - [PR1] Fixed missing subtitle compatibility check when muxing audio/subs directly from input
