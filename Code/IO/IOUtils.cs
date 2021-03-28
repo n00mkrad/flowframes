@@ -403,7 +403,8 @@ namespace Flowframes.IO
 
 			string pattern = Config.Get("exportNamePattern");
 			string inName = Interpolate.current.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
-			bool addSuffix = fpsLimit && (!pattern.Contains("[FPS]") && !pattern.Contains("[ROUNDFPS]"));
+            bool encodeBoth = Config.GetInt("maxFpsMode") == 0;
+			bool addSuffix = fpsLimit && (!pattern.Contains("[FPS]") && !pattern.Contains("[ROUNDFPS]")) && encodeBoth;
 			string filename = pattern;
 
 			filename = filename.Replace("[NAME]", inName);
