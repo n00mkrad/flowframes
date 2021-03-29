@@ -1,5 +1,5 @@
 Flowframes 1.24.1 (Hotfix) Changelog:
-- Fixed a critical bug that would disable subtitle transfer, even when enabled & compatible
+- Fixed a critical bug that would disable subtitle transfer, even when enabled and compatible
 
 
 Flowframes 1.24.0 (Pre-Releases 1/2/3 + Final) Changelog:
