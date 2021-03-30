@@ -67,16 +67,17 @@ namespace Flowframes.Media
         {
             if (showLog) Logger.Log("Importing images...");
             Logger.Log($"Importing images from {inpath} to {outpath}.", true);
+            Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size}", true, false, "ffmpeg");
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
             GetConcatFile(inpath, concatFile);
-
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
             string vf = alpha ? $"-filter_complex \"[0:v]{GetPadFilter()},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {GetPadFilter()}";
-            string args = $"-f concat -safe 0 -i {concatFile.Wrap()} {compr} {sizeStr} {pixFmt} -vsync 0 {vf} \"{outpath}/%{Padding.inputFrames}d.png\"";
+            string args = $"-f concat -safe 0 -i {concatFile.Wrap()} {compr} {sizeStr} {pixFmt} -vsync 0 -start_number 0 {vf} \"{outpath}/%{Padding.inputFrames}d.png\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
+
             if (delSrc)
                 DeleteSource(inpath);
         }
