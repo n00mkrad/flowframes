@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.Logging;
 
 namespace Flowframes.UI
 {
@@ -30,6 +31,7 @@ namespace Flowframes.UI
         {
             try
             {
+                Logger.Log("Parsing Patrons from CSV...", true);
                 List<string> goldPatrons = new List<string>();
                 List<string> silverPatrons = new List<string>();
                 string str = "Gold:\n";
@@ -39,16 +41,22 @@ namespace Flowframes.UI
                     string line = lines[i].Replace(";", ",");
                     string[] values = line.Split(',');
                     if (i == 0 || line.Length < 10 || values.Length < 5) continue;
-                    string name = values[0];
+                    string name = values[0].Trim();
+                    string status = values[4].Trim();
                     float amount = float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture);
-                    if (amount >= 4.5f)
+                    string tier = values[9].Trim();
+
+                    if (status.Contains("Active"))
                     {
-                        if (amount >= 11f)
+                        if (tier.Contains("Gold"))
                             goldPatrons.Add(name);
-                        else
+
+                        if (tier.Contains("Silver"))
                             silverPatrons.Add(name);
                     }
                 }
+
+                Logger.Log($"Found {goldPatrons.Count} Gold Patrons,  {silverPatrons.Count} Silver Patrons", true);
 
                 foreach (string pat in goldPatrons)
                     str += pat + "\n";
