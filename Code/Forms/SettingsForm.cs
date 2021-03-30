@@ -27,11 +27,13 @@ namespace Flowframes.Forms
         {
             LoadSettings();
             initialized = true;
-            CheckModelCacheSize();
+            Task.Run(() => CheckModelCacheSize());
         }
 
         public async Task CheckModelCacheSize ()
         {
+            await Task.Delay(200);
+
             long modelFoldersBytes = 0;
 
             foreach (string modelFolder in ModelDownloader.GetAllModelFolders())
@@ -92,6 +94,10 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(dainNcnnTilesize, ConfigParser.StringMode.Int);
             // Video Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
+            ConfigParser.SaveGuiElement(maxFps);
+            ConfigParser.SaveComboxIndex(maxFpsMode);
+            ConfigParser.SaveComboxIndex(loopMode);
+            ConfigParser.SaveGuiElement(fixOutputDuration);
             ConfigParser.SaveComboxIndex(mp4Enc);
             ConfigParser.SaveGuiElement(h264Crf);
             ConfigParser.SaveGuiElement(h265Crf);
@@ -100,9 +106,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(gifColors);
             ConfigParser.SaveGuiElement(aviCodec);
             ConfigParser.SaveGuiElement(aviColors);
-            ConfigParser.SaveGuiElement(maxFps);
-            ConfigParser.SaveComboxIndex(maxFpsMode);
-            ConfigParser.SaveComboxIndex(loopMode);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveGuiElement(autoDedupFrames);
@@ -148,6 +151,10 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(dainNcnnTilesize);
             // Video Export
             ConfigParser.LoadGuiElement(minOutVidLength);
+            ConfigParser.LoadGuiElement(maxFps);
+            ConfigParser.LoadComboxIndex(maxFpsMode);
+            ConfigParser.LoadComboxIndex(loopMode);
+            ConfigParser.LoadGuiElement(fixOutputDuration);
             ConfigParser.LoadComboxIndex(mp4Enc);
             ConfigParser.LoadGuiElement(h264Crf);
             ConfigParser.LoadGuiElement(h265Crf);
@@ -156,9 +163,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(gifColors);
             ConfigParser.LoadGuiElement(aviCodec);
             ConfigParser.LoadGuiElement(aviColors);
-            ConfigParser.LoadGuiElement(maxFps);
-            ConfigParser.LoadComboxIndex(maxFpsMode);
-            ConfigParser.LoadComboxIndex(loopMode);
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadGuiElement(autoDedupFrames);

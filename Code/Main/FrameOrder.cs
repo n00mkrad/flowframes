@@ -85,7 +85,6 @@ namespace Flowframes.Main
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
 
             bool debug = Config.GetBool("frameOrderDebug", false);
-            int interpFramesAmount = (int)interpFactor;     // TODO: This code won't work with fractional factors
             List<Task> tasks = new List<Task>();
             int linesPerTask = 400 / (int)interpFactor;
             int num = 0;
@@ -102,7 +101,10 @@ namespace Flowframes.Main
                 fileContent += frameFileContents[x];
 
             lastOutFileCount++;
-            fileContent += $"file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'";     // Last frame (source)
+            int lastFrameTimes = Config.GetBool("fixOutputDuration") ? (int)interpFactor : 1;
+
+            for(int i = 0; i < lastFrameTimes; i++)
+                fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'";     // Last frame (source)
 
             if (loop)
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));

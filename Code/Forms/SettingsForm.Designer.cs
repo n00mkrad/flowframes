@@ -60,6 +60,8 @@
             this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.sceneChangeFillMode = new System.Windows.Forms.ComboBox();
+            this.label71 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.enableAlpha = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
@@ -176,8 +178,9 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label71 = new System.Windows.Forms.Label();
-            this.sceneChangeFillMode = new System.Windows.Forms.ComboBox();
+            this.label72 = new System.Windows.Forms.Label();
+            this.fixOutputDuration = new System.Windows.Forms.CheckBox();
+            this.label73 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -574,6 +577,31 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // sceneChangeFillMode
+            // 
+            this.sceneChangeFillMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.sceneChangeFillMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sceneChangeFillMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sceneChangeFillMode.ForeColor = System.Drawing.Color.White;
+            this.sceneChangeFillMode.FormattingEnabled = true;
+            this.sceneChangeFillMode.Items.AddRange(new object[] {
+            "Basic (Duplicate Previous Frame)",
+            "Fancy (Blend To Next Scene)"});
+            this.sceneChangeFillMode.Location = new System.Drawing.Point(280, 187);
+            this.sceneChangeFillMode.Name = "sceneChangeFillMode";
+            this.sceneChangeFillMode.Size = new System.Drawing.Size(250, 21);
+            this.sceneChangeFillMode.TabIndex = 80;
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(10, 190);
+            this.label71.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(124, 13);
+            this.label71.TabIndex = 79;
+            this.label71.Text = "Scene Change Fix Mode";
             // 
             // label4
             // 
@@ -1213,7 +1241,11 @@
             // 
             // vidExportTab
             // 
+            this.vidExportTab.AutoScroll = true;
             this.vidExportTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.vidExportTab.Controls.Add(this.label73);
+            this.vidExportTab.Controls.Add(this.fixOutputDuration);
+            this.vidExportTab.Controls.Add(this.label72);
             this.vidExportTab.Controls.Add(this.minOutVidLength);
             this.vidExportTab.Controls.Add(this.aviColors);
             this.vidExportTab.Controls.Add(this.aviCodec);
@@ -1285,7 +1317,7 @@
             "yuv422p",
             "yuv444p",
             "rgb24"});
-            this.aviColors.Location = new System.Drawing.Point(486, 357);
+            this.aviColors.Location = new System.Drawing.Point(486, 387);
             this.aviColors.Name = "aviColors";
             this.aviColors.Size = new System.Drawing.Size(194, 21);
             this.aviColors.TabIndex = 71;
@@ -1301,7 +1333,7 @@
             "ffv1",
             "huffyuv",
             "rawvideo"});
-            this.aviCodec.Location = new System.Drawing.Point(280, 357);
+            this.aviCodec.Location = new System.Drawing.Point(280, 387);
             this.aviCodec.Name = "aviCodec";
             this.aviCodec.Size = new System.Drawing.Size(200, 21);
             this.aviCodec.TabIndex = 70;
@@ -1309,7 +1341,7 @@
             // label60
             // 
             this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(10, 360);
+            this.label60.Location = new System.Drawing.Point(10, 390);
             this.label60.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(130, 13);
@@ -1330,7 +1362,7 @@
             "3 (HQ)",
             "4 (4444)",
             "5 (4444xq)"});
-            this.proResProfile.Location = new System.Drawing.Point(280, 327);
+            this.proResProfile.Location = new System.Drawing.Point(280, 357);
             this.proResProfile.Name = "proResProfile";
             this.proResProfile.Size = new System.Drawing.Size(400, 21);
             this.proResProfile.TabIndex = 68;
@@ -1338,7 +1370,7 @@
             // label59
             // 
             this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(10, 330);
+            this.label59.Location = new System.Drawing.Point(10, 360);
             this.label59.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(139, 13);
@@ -1349,7 +1381,7 @@
             // 
             this.panel11.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel11.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel11.Location = new System.Drawing.Point(386, 297);
+            this.panel11.Location = new System.Drawing.Point(386, 327);
             this.panel11.Name = "panel11";
             this.panel11.Size = new System.Drawing.Size(21, 21);
             this.panel11.TabIndex = 66;
@@ -1359,7 +1391,7 @@
             // 
             this.label58.AutoSize = true;
             this.label58.ForeColor = System.Drawing.Color.Silver;
-            this.label58.Location = new System.Drawing.Point(420, 301);
+            this.label58.Location = new System.Drawing.Point(420, 331);
             this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(221, 13);
@@ -1379,7 +1411,7 @@
             "36",
             "40",
             "44"});
-            this.vp9Crf.Location = new System.Drawing.Point(280, 297);
+            this.vp9Crf.Location = new System.Drawing.Point(280, 327);
             this.vp9Crf.Name = "vp9Crf";
             this.vp9Crf.Size = new System.Drawing.Size(100, 21);
             this.vp9Crf.TabIndex = 64;
@@ -1387,7 +1419,7 @@
             // label57
             // 
             this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(10, 300);
+            this.label57.Location = new System.Drawing.Point(10, 330);
             this.label57.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(176, 13);
@@ -1443,7 +1475,7 @@
             // 
             this.panel5.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel5.Location = new System.Drawing.Point(386, 267);
+            this.panel5.Location = new System.Drawing.Point(386, 297);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(21, 21);
             this.panel5.TabIndex = 58;
@@ -1453,7 +1485,7 @@
             // 
             this.panel4.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel4.Location = new System.Drawing.Point(386, 237);
+            this.panel4.Location = new System.Drawing.Point(386, 267);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(21, 21);
             this.panel4.TabIndex = 57;
@@ -1491,9 +1523,9 @@
             this.label22.Location = new System.Drawing.Point(420, 101);
             this.label22.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(325, 13);
+            this.label22.Size = new System.Drawing.Size(269, 13);
             this.label22.TabIndex = 48;
-            this.label22.Text = "Limit the final output video to this frame rate (FPS). Use 0 to disable.";
+            this.label22.Text = "Limit the final output video to this FPS. Use 0 to disable.";
             // 
             // maxFps
             // 
@@ -1536,7 +1568,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(10, 180);
+            this.label19.Location = new System.Drawing.Point(10, 210);
             this.label19.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(130, 16);
@@ -1547,7 +1579,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.Color.Silver;
-            this.label18.Location = new System.Drawing.Point(393, 391);
+            this.label18.Location = new System.Drawing.Point(393, 421);
             this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(208, 13);
@@ -1567,7 +1599,7 @@
             "64 (Medium)",
             "32 (Low)",
             "16 (Very Low)"});
-            this.gifColors.Location = new System.Drawing.Point(280, 387);
+            this.gifColors.Location = new System.Drawing.Point(280, 417);
             this.gifColors.Name = "gifColors";
             this.gifColors.Size = new System.Drawing.Size(100, 21);
             this.gifColors.TabIndex = 41;
@@ -1575,7 +1607,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 390);
+            this.label17.Location = new System.Drawing.Point(10, 420);
             this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(154, 13);
@@ -1586,7 +1618,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.ForeColor = System.Drawing.Color.Silver;
-            this.label16.Location = new System.Drawing.Point(420, 271);
+            this.label16.Location = new System.Drawing.Point(420, 301);
             this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(224, 13);
@@ -1597,7 +1629,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.ForeColor = System.Drawing.Color.Silver;
-            this.label14.Location = new System.Drawing.Point(420, 241);
+            this.label14.Location = new System.Drawing.Point(420, 271);
             this.label14.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(82, 13);
@@ -1607,7 +1639,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(10, 270);
+            this.label13.Location = new System.Drawing.Point(10, 300);
             this.label13.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(168, 13);
@@ -1626,7 +1658,7 @@
             "28",
             "32",
             "36"});
-            this.h265Crf.Location = new System.Drawing.Point(280, 267);
+            this.h265Crf.Location = new System.Drawing.Point(280, 297);
             this.h265Crf.Name = "h265Crf";
             this.h265Crf.Size = new System.Drawing.Size(100, 21);
             this.h265Crf.TabIndex = 36;
@@ -1643,7 +1675,7 @@
             "24",
             "28",
             "32"});
-            this.h264Crf.Location = new System.Drawing.Point(280, 237);
+            this.h264Crf.Location = new System.Drawing.Point(280, 267);
             this.h264Crf.Name = "h264Crf";
             this.h264Crf.Size = new System.Drawing.Size(100, 21);
             this.h264Crf.TabIndex = 35;
@@ -1651,7 +1683,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(10, 240);
+            this.label12.Location = new System.Drawing.Point(10, 270);
             this.label12.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(168, 13);
@@ -1670,7 +1702,7 @@
             "h265 - Slower, mixed compatibility, very good quality per filesize",
             "h264 NVENC - Fast GPU-accelerated encoding, worse compression than h264",
             "h265 NVENC - Fast GPU-accelerated encoding, worse compression than h265"});
-            this.mp4Enc.Location = new System.Drawing.Point(280, 207);
+            this.mp4Enc.Location = new System.Drawing.Point(280, 237);
             this.mp4Enc.Name = "mp4Enc";
             this.mp4Enc.Size = new System.Drawing.Size(400, 21);
             this.mp4Enc.TabIndex = 33;
@@ -1678,7 +1710,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 210);
+            this.label10.Location = new System.Drawing.Point(10, 240);
             this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(96, 13);
@@ -1692,9 +1724,9 @@
             this.label9.Location = new System.Drawing.Point(420, 41);
             this.label9.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(328, 13);
+            this.label9.Size = new System.Drawing.Size(308, 13);
             this.label9.TabIndex = 31;
-            this.label9.Text = "The output will be looped until it meets the specified minimum length.";
+            this.label9.Text = "Output will be looped until it meets the specified minimum length.";
             // 
             // label8
             // 
@@ -2043,30 +2075,35 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label71
+            // label72
             // 
-            this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(10, 190);
-            this.label71.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(124, 13);
-            this.label71.TabIndex = 79;
-            this.label71.Text = "Scene Change Fix Mode";
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(10, 160);
+            this.label72.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(172, 13);
+            this.label72.TabIndex = 76;
+            this.label72.Text = "Make Output Match Input Duration";
             // 
-            // sceneChangeFillMode
+            // fixOutputDuration
             // 
-            this.sceneChangeFillMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sceneChangeFillMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sceneChangeFillMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sceneChangeFillMode.ForeColor = System.Drawing.Color.White;
-            this.sceneChangeFillMode.FormattingEnabled = true;
-            this.sceneChangeFillMode.Items.AddRange(new object[] {
-            "Basic (Duplicate Previous Frame)",
-            "Fancy (Blend To Next Scene)"});
-            this.sceneChangeFillMode.Location = new System.Drawing.Point(280, 187);
-            this.sceneChangeFillMode.Name = "sceneChangeFillMode";
-            this.sceneChangeFillMode.Size = new System.Drawing.Size(250, 21);
-            this.sceneChangeFillMode.TabIndex = 80;
+            this.fixOutputDuration.AutoSize = true;
+            this.fixOutputDuration.Location = new System.Drawing.Point(280, 160);
+            this.fixOutputDuration.Name = "fixOutputDuration";
+            this.fixOutputDuration.Size = new System.Drawing.Size(15, 14);
+            this.fixOutputDuration.TabIndex = 83;
+            this.fixOutputDuration.UseVisualStyleBackColor = true;
+            // 
+            // label73
+            // 
+            this.label73.AutoSize = true;
+            this.label73.ForeColor = System.Drawing.Color.Silver;
+            this.label73.Location = new System.Drawing.Point(308, 160);
+            this.label73.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(322, 13);
+            this.label73.TabIndex = 84;
+            this.label73.Text = "Repeats the last frame so the output is exactly as long as the input.";
             // 
             // SettingsForm
             // 
@@ -2258,5 +2295,8 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ComboBox sceneChangeFillMode;
         private System.Windows.Forms.Label label71;
+        private System.Windows.Forms.Label label73;
+        private System.Windows.Forms.CheckBox fixOutputDuration;
+        private System.Windows.Forms.Label label72;
     }
 }
