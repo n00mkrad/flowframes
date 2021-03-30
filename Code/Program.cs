@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+[assembly: System.Windows.Media.DisableDpiAwareness] // Disable Dpi awareness in the application assembly.
+
 namespace Flowframes
 {
     static class Program
