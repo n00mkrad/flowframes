@@ -199,6 +199,9 @@
             // 
             // settingsTabList
             // 
+            this.settingsTabList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.settingsTabList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.settingsTabList.Controls.Add(this.generalTab);
             this.settingsTabList.Controls.Add(this.tabListPage2);
@@ -2113,7 +2116,7 @@
             this.ClientSize = new System.Drawing.Size(944, 501);
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.settingsTabList);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "SettingsForm";

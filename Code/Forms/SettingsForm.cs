@@ -25,6 +25,9 @@ namespace Flowframes.Forms
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            MinimumSize = new Size(Width, Height);
+            MaximumSize = new Size(Width, (Height * 1.5f).RoundToInt());
+
             LoadSettings();
             initialized = true;
             Task.Run(() => CheckModelCacheSize());
