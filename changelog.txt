@@ -6,7 +6,7 @@ Flowframes 1.24.2 Changelog:
 - Fixed DPI scaling breaking when opening a file browser dialog
 - Other minor fixes and improvements
 
-Known Issue: Fancy scene transitions (blending) might not work correctly with deduplication or VFR inputs
+Known Issue: Blended scene transitions might not work correctly with deduplication or VFR inputs
 
 
 Flowframes 1.24.1 (Hotfix) Changelog:
