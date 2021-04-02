@@ -154,10 +154,10 @@ namespace Flowframes.Main
                 {
                     if (discardThisFrame)     // If frame is scene cut frame
                     {
-                        string frameBeforeScn = Path.GetFileName((frameFiles[i].Name.GetInt() + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0')) + frameFiles[i].Extension;
-                        string frameAfterScn = Path.GetFileName((frameFiles[i + 1].Name.GetInt() + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0')) + frameFiles[i + 1].Extension;
+                        string frameBeforeScn = (i + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0') + frameFiles[i].Extension;
+                        string frameAfterScn = (i + 2).ToString().PadLeft(Padding.inputFramesRenamed, '0') + frameFiles[i + 1].Extension;
                         string scnChangeNote = $"SCN:{frameBeforeScn}>{frameAfterScn}";
-                        //bool last = i == (frameFilesWithoutLast.Length - 1);
+
                         totalFileCount++;
                         fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]", scnChangeNote);
 
