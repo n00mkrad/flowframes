@@ -34,7 +34,7 @@ namespace Flowframes.OS
             }
             catch (Exception e)
             {
-                Logger.Log("No Nvidia GPU(s) detected. You will not be able to use CUDA implementations.");
+                Logger.Log("No Nvidia GPU(s) detected. You will not be able to use CUDA implementations on GPU.");
                 Logger.Log($"Failed to initialize NvApi: {e.Message}\nIgnore this if you don't have an Nvidia GPU.", true);
             }
         }
