@@ -166,12 +166,12 @@ namespace Flowframes
 
         static async Task<int> ReadFrameCountFfprobeAsync(string inputFile, bool readFramesSlow)
         {
-            string args = $" -v panic -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {inputFile.Wrap()}";
+            string args = $" -v panic -threads 0 -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {inputFile.Wrap()}";
             if (readFramesSlow)
             {
                 Logger.Log("Counting total frames using FFprobe. This can take a moment...");
                 await Task.Delay(10);
-                args = $" -v panic -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
+                args = $" -v panic -threads 0 -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
             }
             string info = GetFfprobeOutput(args);
             string[] entries = info.SplitIntoLines();
