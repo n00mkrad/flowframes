@@ -21,7 +21,7 @@ namespace Flowframes.UI
 
         public static async Task LoadPatronListCsv(Label patronsLabel)
         {
-            string url = $"http://dl.nmkd.de/flowframes/patrons.csv";
+            string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/patrons.csv";
             var client = new WebClient();
             var csvData = await client.DownloadStringTaskAsync(new Uri(url));
             patronsLabel.Text = ParsePatreonCsv(csvData);
