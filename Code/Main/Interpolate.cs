@@ -149,7 +149,7 @@ namespace Flowframes
             if(!Config.GetBool("enableLoop"))
                 await Utils.CopyLastFrame(currentInputFrameCount);
 
-            if (Config.GetInt("dedupMode") > 0)
+            // if (Config.GetInt("dedupMode") > 0)
                 await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);
 
             if (canceled) return;

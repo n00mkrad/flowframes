@@ -293,9 +293,9 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static async Task<float> GetVideoFramerate (string path)
+		public static async Task<Fraction> GetVideoFramerate (string path)
         {
-			float fps = 0;
+            Fraction fps = new Fraction();
 
 			try
 			{
@@ -310,17 +310,18 @@ namespace Flowframes.IO
 			return fps;
 		}
 
-		public static float GetVideoFramerateForDir(string path)
+		public static Fraction GetVideoFramerateForDir(string path)
 		{
-			float fps = 0;
+            Fraction fps = new Fraction();
+
             try
             {
 				string parentDir = path.GetParentDir();
 				string fpsFile = Path.Combine(parentDir, "fps.ini");
-				fps = float.Parse(ReadLines(fpsFile)[0]);
+                fps = new Fraction(float.Parse(ReadLines(fpsFile)[0]));
 				Logger.Log($"Got {fps} FPS from file: " + fpsFile);
 
-				float guiFps = Program.mainForm.GetCurrentSettings().inFps;
+				Fraction guiFps = Program.mainForm.GetCurrentSettings().inFps;
 
 				DialogResult dialogResult = MessageBox.Show("A frame rate file has been found in the parent directory.\n\n" +
 					$"Click \"Yes\" to use frame rate from the file ({fps}) or \"No\" to use current FPS set in GUI ({guiFps})", "Load Frame Rate From fps.ini?", MessageBoxButtons.YesNo);
@@ -399,7 +400,7 @@ namespace Flowframes.IO
 		public static string GetCurrentExportFilename(bool fpsLimit, bool withExt)
 		{
 			InterpSettings curr = Interpolate.current;
-			float fps = fpsLimit ? Config.GetFloat("maxFps") : curr.outFps;
+			float fps = fpsLimit ? Config.GetFloat("maxFps") : curr.outFps.GetFloat();
 
 			string pattern = Config.Get("exportNamePattern");
 			string inName = Interpolate.current.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
@@ -453,22 +454,22 @@ namespace Flowframes.IO
             }
 		}
 
-		public static async Task<float> GetFpsFolderOrVideo(string path)
+		public static async Task<Fraction> GetFpsFolderOrVideo(string path)
 		{
             try
             {
 				if (IsPathDirectory(path))
 				{
-					float dirFps = GetVideoFramerateForDir(path);
+                    Fraction dirFps = GetVideoFramerateForDir(path);
 
-					if (dirFps > 0)
+					if (dirFps.GetFloat() > 0)
 						return dirFps;
 				}
 				else
 				{
-					float vidFps = await GetVideoFramerate(path);
+                    Fraction vidFps = await GetVideoFramerate(path);
 
-					if (vidFps > 0)
+					if (vidFps.GetFloat() > 0)
 						return vidFps;
 				}
 			}
@@ -477,7 +478,7 @@ namespace Flowframes.IO
 				Logger.Log("GetFpsFolderOrVideo() Error: " + e.Message);
             }
 
-			return 0;
+			return new Fraction();
 		}
 
 		public enum ErrorMode { HiddenLog, VisibleLog, Messagebox }

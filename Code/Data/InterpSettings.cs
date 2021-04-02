@@ -18,8 +18,8 @@ namespace Flowframes
         public string inPath;
         public string outPath;
         public AI ai;
-        public float inFps;
-        public float outFps;
+        public Fraction inFps;
+        public Fraction outFps;
         public float interpFactor;
         public Interpolate.OutMode outMode;
         public string model;
@@ -34,7 +34,7 @@ namespace Flowframes
         public bool alpha;
         public bool stepByStep;
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, float inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
+        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -73,9 +73,9 @@ namespace Flowframes
             inPath = "";
             outPath = "";
             ai = Networks.networks[0];
-            inFps = 0;
+            inFps = new Fraction();
             interpFactor = 0;
-            outFps = 0;
+            outFps = new Fraction();
             outMode = Interpolate.OutMode.VidMp4;
             model = "";
             alpha = false;
@@ -99,8 +99,8 @@ namespace Flowframes
                     case "INPATH": inPath = entry.Value; break;
                     case "OUTPATH": outPath = entry.Value; break;
                     case "AI": ai = Networks.GetAi(entry.Value); break;
-                    case "INFPS": inFps = float.Parse(entry.Value); break;
-                    case "OUTFPS": outFps = float.Parse(entry.Value); break;
+                    case "INFPS": inFps = new Fraction(entry.Value); break;
+                    case "OUTFPS": outFps = new Fraction(entry.Value); break;
                     case "INTERPFACTOR": interpFactor = float.Parse(entry.Value); break;
                     case "OUTMODE": outMode = (Interpolate.OutMode)Enum.Parse(typeof(Interpolate.OutMode), entry.Value); break;
                     case "MODEL": model = entry.Value; break;
@@ -192,8 +192,8 @@ namespace Flowframes
             string s = $"INPATH|{inPath}\n";
             s += $"OUTPATH|{outPath}\n";
             s += $"AI|{ai.aiName}\n";
-            s += $"INFPS|{inFps.ToStringDot()}\n";
-            s += $"OUTFPS|{outFps.ToStringDot()}\n";
+            s += $"INFPS|{inFps}\n";
+            s += $"OUTFPS|{outFps}\n";
             s += $"INTERPFACTOR|{interpFactor}\n";
             s += $"OUTMODE|{outMode}\n";
             s += $"MODEL|{model}\n";

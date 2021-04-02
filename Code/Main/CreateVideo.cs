@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using I = Flowframes.Interpolate;
 using System.Diagnostics;
+using Flowframes.Data;
 using Flowframes.Media;
 
 namespace Flowframes.Main
@@ -51,7 +52,7 @@ namespace Flowframes.Main
             try
             {
                 float maxFps = Config.GetFloat("maxFps");
-                bool fpsLimit = maxFps != 0 && I.current.outFps > maxFps;
+                bool fpsLimit = maxFps != 0 && I.current.outFps.GetFloat() > maxFps;
 
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
@@ -102,12 +103,12 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Encode(I.OutMode mode, string framesPath, string outPath, float fps, float resampleFps = -1)
+        static async Task Encode(I.OutMode mode, string framesPath, string outPath, Fraction fps, float resampleFps = -1)
         {
             string currentOutFile = outPath;
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
+            string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
 
-            if (!File.Exists(vfrFile))
+            if (!File.Exists(framesFile))
             {
                 bool sbs = Config.GetInt("processingMode") == 1;
                 I.Cancel($"Frame order file for this interpolation factor not found!{(sbs ? "\n\nDid you run the interpolation step with the current factor?" : "")}");
@@ -116,11 +117,11 @@ namespace Flowframes.Main
 
             if (mode == I.OutMode.VidGif)
             {
-                await FfmpegEncode.FramesToGifConcat(vfrFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
+                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
             }
             else
             {
-                await FfmpegEncode.FramesToVideoConcat(vfrFile, outPath, mode, fps, resampleFps);
+                await FfmpegEncode.FramesToVideoConcat(framesFile, outPath, mode, fps, resampleFps);
                 await MuxOutputVideo(I.current.inPath, outPath);
                 await Loop(currentOutFile, GetLoopTimes());
             }
@@ -179,7 +180,7 @@ namespace Flowframes.Main
                 await Blend.BlendSceneChanges(framesFileChunk, false);
 
             float maxFps = Config.GetFloat("maxFps");
-            bool fpsLimit = maxFps != 0 && I.current.outFps > maxFps;
+            bool fpsLimit = maxFps != 0 && I.current.outFps.GetFloat() > maxFps;
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
@@ -206,9 +207,9 @@ namespace Flowframes.Main
         {
             int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
-            int minFrameCount = (minLength * I.current.outFps).RoundToInt();
+            int minFrameCount = (minLength * I.current.outFps.GetFloat()).RoundToInt();
             int outFrames = (I.currentInputFrameCount * I.current.interpFactor).RoundToInt();
-            if (outFrames / I.current.outFps < minLength)
+            if (outFrames / I.current.outFps.GetFloat() < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
             times--;    // Not counting the 1st play (0 loops)
             if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing

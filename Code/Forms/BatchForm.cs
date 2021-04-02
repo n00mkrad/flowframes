@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Flowframes.Data;
 
 namespace Flowframes.Forms
 {
@@ -129,7 +130,7 @@ namespace Flowframes.Forms
 
                 InterpSettings current = Program.mainForm.GetCurrentSettings();
                 current.UpdatePaths(path, path.GetParentDir());
-                current.inFps = await GetFramerate(path);
+                current.inFps = (await GetFramerate(path));
                 current.outFps = current.inFps * current.interpFactor;
                 Program.batchQueue.Enqueue(current);
                 RefreshGui();
@@ -137,11 +138,11 @@ namespace Flowframes.Forms
             }
         }
 
-        async Task<float> GetFramerate (string path)
+        async Task<Fraction> GetFramerate (string path)
         {
-            float fps = Interpolate.current.inFps;
-            float fpsFromFile = await IOUtils.GetFpsFolderOrVideo(path);
-            if (fpsFromFile > 0)
+            Fraction fps = Interpolate.current.inFps;
+            Fraction fpsFromFile = await IOUtils.GetFpsFolderOrVideo(path);
+            if (fpsFromFile.GetFloat() > 0)
                 return fpsFromFile;
 
             return fps;

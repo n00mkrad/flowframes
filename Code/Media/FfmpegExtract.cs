@@ -16,7 +16,7 @@ namespace Flowframes.Media
 {
     partial class FfmpegExtract : FfmpegCommands
     {
-        public static async Task ExtractSceneChanges(string inPath, string outDir, float rate, bool inputIsFrames = false)
+        public static async Task ExtractSceneChanges(string inPath, string outDir, Fraction rate, bool inputIsFrames = false)
         {
             Logger.Log("Extracting scene changes...");
             Directory.CreateDirectory(outDir);
@@ -31,8 +31,8 @@ namespace Flowframes.Media
             }
 
             string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"";
-            string rateArg = (rate > 0) ? $"-r {rate.ToStringDot()}" : "";
-            string args = $"{rateArg} -vsync 0 {GetTrimArg(true)} {inArg} {compr} {scnDetect} -frame_pts true -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d.png\"";
+            string rateArg = (rate.GetFloat() > 0) ? $"-r {rate}" : "";
+            string args = $"{rateArg} -vsync 0 {GetTrimArg(true)} {inArg} {compr} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d.png\"";
 
             LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", TaskType.ExtractFrames, true);
@@ -42,18 +42,17 @@ namespace Flowframes.Media
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
-        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, float rate, bool deDupe, bool delSrc, Size size)
+        public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, Fraction rate, bool deDupe, bool delSrc, Size size)
         {
             Logger.Log("Extracting video frames from input video...");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(framesDir);
-            string timecodeStr = /* timecodes ? $"-copyts -r {FrameOrder.timebase} -frame_pts true" : */ "-frame_pts true";
             string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
             string filters = FormatUtils.ConcatStrings(new string[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
-            string rateArg = (rate > 0) ? $" -r {rate.ToStringDot()}" : "";
+            string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
             string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";    // Use RGBA for GIF for alpha support
-            string args = $"{rateArg} {GetTrimArg(true)} -i {inputFile.Wrap()} {compr} -vsync 0 {pixFmt} {timecodeStr} {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d.png\"";
+            string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {compr} -vsync 0 {pixFmt} {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d.png\"";
             LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
             int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*.png");

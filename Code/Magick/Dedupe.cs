@@ -207,7 +207,7 @@ namespace Flowframes.Magick
 
         public static async Task CreateDupesFile (string framesPath, int lastFrameNum)
         {
-            string infoFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
+            string infoFile = Path.Combine(framesPath.GetParentDir(), "dupes.ini");
             string fileContent = "";
 
             FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, "*.png");

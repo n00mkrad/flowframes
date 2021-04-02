@@ -295,7 +295,7 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, float fpsOut, float factor, Interpolate.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, Fraction fpsOut, float factor, Interpolate.OutMode outMode)
         {
             bool passes = true;
 
@@ -316,12 +316,12 @@ namespace Flowframes.Main
                 ShowMessage("Interpolation factor is not valid!");
                 passes = false;
             }
-            if (passes && outMode == I.OutMode.VidGif && fpsOut > 50 && !(Config.GetFloat("maxFps") != 0 && Config.GetFloat("maxFps") <= 50))
+            if (passes && outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(Config.GetFloat("maxFps") != 0 && Config.GetFloat("maxFps") <= 50))
             {
                 ShowMessage("Invalid output frame rate!\nGIF does not properly support frame rates above 50 FPS.\nPlease use MP4, WEBM or another video format.");
                 passes = false;
             }
-            if (passes && fpsOut < 1 || fpsOut > 1000)
+            if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
             {
                 ShowMessage("Invalid output frame rate - Must be 1-1000.");
                 passes = false;

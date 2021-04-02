@@ -72,9 +72,9 @@ namespace Flowframes.Main
             frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
             frameFilesWithoutLast = frameFiles;
             Array.Resize(ref frameFilesWithoutLast, frameFilesWithoutLast.Length - 1);
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(interpFactor));
+            string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(interpFactor));
             string fileContent = "";
-            string dupesFile = Path.Combine(framesPath.GetParentDir(), $"dupes.ini");
+            string dupesFile = Path.Combine(framesPath.GetParentDir(), "dupes.ini");
             LoadDupesFile(dupesFile);
 
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
@@ -109,7 +109,7 @@ namespace Flowframes.Main
             if (loop)
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
 
-            File.WriteAllText(vfrFile, fileContent);
+            File.WriteAllText(framesFile, fileContent);
 
             if (notFirstRun) return;    // Skip all steps that only need to be done once
 

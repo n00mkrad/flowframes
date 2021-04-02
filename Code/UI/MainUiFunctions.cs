@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Flowframes.Data;
 
 namespace Flowframes.UI
 {
@@ -38,14 +39,14 @@ namespace Flowframes.UI
             Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
             int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
             string fpsStr = "Not Found";
-            float fps = await IOUtils.GetFpsFolderOrVideo(path);
-            fpsInTbox.Text = fps.ToString();
+            Fraction fps = (await IOUtils.GetFpsFolderOrVideo(path));
+            fpsInTbox.Text = fps.GetString();
 
-            if (fps > 0)
-                fpsStr = fps.ToString();
+            if (fps.GetFloat() > 0)
+                fpsStr = $"{fps} (~{fps.GetFloat()})";
 
             Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
-            Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps > 0 && !Config.GetBool("allowCustomInputRate", false));
+            Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.GetFloat() > 0 && !Config.GetBool("allowCustomInputRate", false));
             Program.mainForm.currInFps = fps;
             Program.mainForm.currInFrames = frameCount;
             Program.mainForm.UpdateInputInfo();
