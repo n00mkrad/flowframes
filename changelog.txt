@@ -1,3 +1,14 @@
+Flowframes 1.24.2 Changelog:
+- Fixed problems with image sequence inputs (broken scene detection, etc)
+- Added option to repeat the last frame, so the duration matches the input
+- Framerates are now handled as fractions (24000/1001 instead of 23.97...) to avoid timing problems
+- Fixed Variable Framerate (VFR) videos not being processed correctly
+- Fixed DPI scaling breaking when opening a file browser dialog
+- Other minor fixes and improvements
+
+Known Issue: Fancy scene transitions (blending) might not work correctly with deduplication or VFR inputs
+
+
 Flowframes 1.24.1 (Hotfix) Changelog:
 - Fixed a critical bug that would disable subtitle transfer, even when enabled and compatible
 
