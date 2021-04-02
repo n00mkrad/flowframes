@@ -111,20 +111,27 @@ namespace Flowframes.Data
             //Reduce the fraction to lowest terms
             Fraction modifiedFraction = this;
 
-            //While the numerator and denominator share a greatest common denominator,
-            //keep dividing both by it
-            int gcd = 0;
-            while (Math.Abs(gcd = getGCD(modifiedFraction.Numerator, modifiedFraction.Denominator)) != 1)
+            try
             {
-                modifiedFraction.Numerator /= gcd;
-                modifiedFraction.Denominator /= gcd;
-            }
+                //While the numerator and denominator share a greatest common denominator,
+                //keep dividing both by it
+                int gcd = 0;
+                while (Math.Abs(gcd = getGCD(modifiedFraction.Numerator, modifiedFraction.Denominator)) != 1)
+                {
+                    modifiedFraction.Numerator /= gcd;
+                    modifiedFraction.Denominator /= gcd;
+                }
 
-            //Make sure only a single negative sign is on the numerator
-            if (modifiedFraction.Denominator < 0)
+                //Make sure only a single negative sign is on the numerator
+                if (modifiedFraction.Denominator < 0)
+                {
+                    modifiedFraction.Numerator = -this.Numerator;
+                    modifiedFraction.Denominator = -this.Denominator;
+                }
+            }
+            catch (Exception e)
             {
-                modifiedFraction.Numerator = -this.Numerator;
-                modifiedFraction.Denominator = -this.Denominator;
+                Logger.Log($"Failed to reduce fraction ({modifiedFraction}): {e.Message}", true);
             }
 
             return modifiedFraction;
