@@ -32,7 +32,7 @@ namespace Flowframes.Media
 
             string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"";
             string rateArg = (rate.GetFloat() > 0) ? $"-r {rate}" : "";
-            string args = $"{rateArg} -vsync 0 {GetTrimArg(true)} {inArg} {compr} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d.png\"";
+            string args = $"-vsync 0 {GetTrimArg(true)} {inArg} {compr} {rateArg} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d.png\"";
 
             LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", TaskType.ExtractFrames, true);
