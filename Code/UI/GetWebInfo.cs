@@ -43,7 +43,7 @@ namespace Flowframes.UI
                     if (i == 0 || line.Length < 10 || values.Length < 5) continue;
                     string name = values[0].Trim();
                     string status = values[4].Trim();
-                    float amount = float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture);
+                    // float amount = float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture);
                     string tier = values[9].Trim();
 
                     if (status.Contains("Active"))
@@ -70,7 +70,7 @@ namespace Flowframes.UI
             }
             catch (Exception e)
             {
-                Logger.Log("Failed to parse Patreon CSV: " + e.Message, true);
+                Logger.Log($"Failed to parse Patreon CSV: {e.Message}\n{e.StackTrace}", true);
                 return "Failed to load patron list.";
             }
         }
