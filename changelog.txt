@@ -1,3 +1,11 @@
+Flowframes 1.24.3 Changelog:
+- Running CUDA AIs without a (detected) Nvidia GPU is now possible (for CPU or undetected cards)
+- Fixed scene detection using wrong frames
+- Fixed blended scene transitions not working with deduplication or VFR inputs
+- Fixed manual deduplication and scene transition choices being ignored (step-by-step mode)
+- FFprobe frame counting should now be multithreaded (-threads 0)
+
+
 Flowframes 1.24.2 Changelog:
 - Fixed problems with image sequence inputs (broken scene detection, etc)
 - Added option to repeat the last frame, so the duration matches the input
