@@ -772,24 +772,5 @@ namespace Flowframes.IO
 			}
 			return 0;
 		}
-
-        public static bool SymlinksAllowed()
-        {
-            string origFile = Paths.GetExe();
-            string linkPath = Paths.GetExe() + "linktest";
-            bool success = CreateSymbolicLink(linkPath, origFile, SymbolicLink.Unprivileged);
-
-            if (success)
-            {
-				File.Delete(linkPath);
-                return true;
-            }
-
-            return false;
-        }
-
-        public enum SymbolicLink { File = 0, Directory = 1, Unprivileged = 2 }
-		[DllImport("kernel32.dll")]
-        public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
     }
 }

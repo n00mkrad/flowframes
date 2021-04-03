@@ -31,11 +31,11 @@ namespace Flowframes.Media
             if (!isChunk) encArgs += $" -movflags +faststart";
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
 
-            if (Config.GetBool("allowSymlinkEncoding", true) && IOUtils.SymlinksAllowed())
+            if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
             {
                 string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
                 inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
-                MakeSymlinks(framesFile, linksDir, Padding.interpFrames);
+                await MakeSymlinks(framesFile, linksDir, Padding.interpFrames);
             }
 
             string rate = fps.ToString().Replace(",", ".");
@@ -46,7 +46,7 @@ namespace Flowframes.Media
             IOUtils.TryDeleteIfExists(Path.Combine(framesFile + Paths.symlinksSuffix));
         }
 
-        static void MakeSymlinks(string framesFile, string linksDir, int zPad = 8)
+        static async Task MakeSymlinks(string framesFile, string linksDir, int zPad = 8)
         {
             Directory.CreateDirectory(linksDir);
             Stopwatch sw = new Stopwatch(); sw.Restart();
@@ -54,16 +54,18 @@ namespace Flowframes.Media
 
             int counter = 0;
 
+            Dictionary<string, string> pathsLinkTarget = new Dictionary<string, string>();
+
             foreach (string line in File.ReadAllLines(framesFile))
             {
                 string relTargetPath = line.Remove("file '").Split('\'').FirstOrDefault();    // Relative path in frames file
                 string absTargetPath = Path.Combine(framesFile.GetParentDir(), relTargetPath);  // Full path to frame
                 string linkPath = Path.Combine(linksDir, counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
-                IOUtils.CreateSymbolicLink(linkPath, absTargetPath, IOUtils.SymbolicLink.Unprivileged);
+                pathsLinkTarget.Add(linkPath, absTargetPath);
                 counter++;
             }
 
-            Logger.Log($"Created {counter} symlinks in {FormatUtils.TimeSw(sw)}", true);
+            await Symlinks.CreateSymlinksParallel(pathsLinkTarget);
         }
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors = 64, float resampleFps = -1, LogMode logMode = LogMode.OnlyLastLine)
