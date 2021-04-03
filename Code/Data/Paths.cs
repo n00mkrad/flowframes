@@ -12,8 +12,9 @@ namespace Flowframes.IO
 		public const string resumeDir = "resumedata";
 		public const string scenesDir = "scenes";
 
+		public const string symlinksSuffix = "-symlinks";
 		public const string alphaSuffix = "-a";
-		public const string prevSuffix = "-previous";
+        public const string prevSuffix = "-previous";
 		public const string fpsLimitSuffix = "-fpsLimit";
 
 		public const string frameOrderPrefix = "frames";

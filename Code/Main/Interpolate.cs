@@ -180,7 +180,6 @@ namespace Flowframes
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
             if (canceled) return;
-
             await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor);
 
             Program.mainForm.SetStatus("Downloading models...");

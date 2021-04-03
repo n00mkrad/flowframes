@@ -79,25 +79,25 @@ namespace Flowframes.Main
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            string vfrFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
-            string[] vfrLines = IOUtils.ReadLines(vfrFile);
+            string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
+            string[] framesLines = IOUtils.ReadLines(framesFile);
 
-            for (int idx = 1; idx <= vfrLines.Length; idx++)
+            for (int idx = 1; idx <= framesLines.Length; idx++)
             {
-                string line = vfrLines[idx - 1];
+                string line = framesLines[idx - 1];
                 string inFilename = line.RemoveComments().Split('/').Last().Remove("'").Trim();
                 string framePath = Path.Combine(framesPath, inFilename);
                 string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
 
-                if (dontMove || ((idx < vfrLines.Length) && vfrLines[idx].Contains(inFilename)))   // If file is re-used in the next line, copy instead of move
+                if (dontMove || ((idx < framesLines.Length) && framesLines[idx].Contains(inFilename)))   // If file is re-used in the next line, copy instead of move
                     File.Copy(framePath, outFilename);
                 else
                     File.Move(framePath, outFilename);
 
-                if (sw.ElapsedMilliseconds >= 500 || idx == vfrLines.Length)
+                if (sw.ElapsedMilliseconds >= 500 || idx == framesLines.Length)
                 {
                     sw.Restart();
-                    Logger.Log($"Moving output frames to '{Path.GetFileName(copyPath)}' - {idx}/{vfrLines.Length}", false, true);
+                    Logger.Log($"Moving output frames to '{Path.GetFileName(copyPath)}' - {idx}/{framesLines.Length}", false, true);
                     await Task.Delay(1);
                 }
             }
@@ -121,7 +121,7 @@ namespace Flowframes.Main
             }
             else
             {
-                await FfmpegEncode.FramesToVideoConcat(framesFile, outPath, mode, fps, resampleFps);
+                await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps);
                 await MuxOutputVideo(I.current.inPath, outPath);
                 await Loop(currentOutFile, GetLoopTimes());
             }
@@ -192,7 +192,7 @@ namespace Flowframes.Main
                 string filename = Path.GetFileName(outPath);
                 string newParentDir = outPath.GetParentDir() + Paths.fpsLimitSuffix;
                 outPath = Path.Combine(newParentDir, filename);
-                await FfmpegEncode.FramesToVideoConcat(framesFileChunk, outPath, mode, I.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
             }
         }
 

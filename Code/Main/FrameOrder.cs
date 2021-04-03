@@ -18,7 +18,6 @@ namespace Flowframes.Main
         static FileInfo[] frameFiles;
         static FileInfo[] frameFilesWithoutLast;
         static List<string> sceneFrames = new List<string>();
-        static string currentFormat = "D8";
         static Dictionary<int, string> frameFileContents = new Dictionary<int, string>();
         static int lastOutFileCount = 0;
 
@@ -32,7 +31,6 @@ namespace Flowframes.Main
                     file.Delete();
 
                 benchmark.Restart();
-                currentFormat = $"D{Padding.interpFrames}";
                 await CreateEncFile(framesPath, loopEnabled, times, false);
                 Logger.Log($"Generating frame order information... Done.", false, true);
                 Logger.Log($"Generated frame order info file in {benchmark.ElapsedMilliseconds} ms", true);
