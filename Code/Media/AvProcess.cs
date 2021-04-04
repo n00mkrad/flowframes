@@ -78,8 +78,8 @@ namespace Flowframes
             
             if (logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
             Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
-            ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
-            ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandler);
+            ffmpeg.OutputDataReceived += FfmpegOutputHandler;
+            ffmpeg.ErrorDataReceived += FfmpegOutputHandler;
             ffmpeg.Start();
             ffmpeg.BeginOutputReadLine();
             ffmpeg.BeginErrorReadLine();
@@ -94,10 +94,16 @@ namespace Flowframes
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
         {
             timeSinceLastOutput.Restart();
+
             if (outLine == null || outLine.Data == null)
                 return;
+
             string line = outLine.Data;
             lastOutputFfmpeg = lastOutputFfmpeg + "\n" + line;
+
+            if (line.Contains("Using -vsync 0 and -r can produce invalid output files"))    // Do not print this msg
+                return;
+
             bool hidden = currentLogMode == LogMode.Hidden;
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
             string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
@@ -163,8 +169,8 @@ namespace Flowframes
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
             Logger.Log($"ffmpeg {args}", true, false, "ffmpeg");
             if (setBusy) Program.mainForm.SetWorking(true);
-            ffmpeg.OutputDataReceived += new DataReceivedEventHandler(FfmpegOutputHandlerSilent);
-            ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(FfmpegOutputHandlerSilent);
+            ffmpeg.OutputDataReceived += FfmpegOutputHandlerSilent;
+            ffmpeg.ErrorDataReceived += FfmpegOutputHandlerSilent;
             ffmpeg.Start();
             ffmpeg.BeginOutputReadLine();
             ffmpeg.BeginErrorReadLine();
