@@ -30,10 +30,10 @@ namespace Flowframes.Media
             string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
             if (!isChunk) encArgs += $" -movflags +faststart";
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
+            string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
 
             if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
             {
-                string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
                 inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
                 await MakeSymlinks(framesFile, linksDir, Padding.interpFrames);
             }
@@ -43,6 +43,7 @@ namespace Flowframes.Media
             string extraArgs = Config.Get("ffEncArgs");
             string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
+            IOUtils.TryDeleteIfExists(linksDir);
         }
 
         static async Task MakeSymlinks(string framesFile, string linksDir, int zPad = 8)
