@@ -28,17 +28,12 @@ namespace Flowframes
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             CheckForIllegalCrossThreadCalls = false;
             AutoScaleMode = AutoScaleMode.None;
 
-            if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().ToLower().Contains("temp"))
-            {
-                MessageBox.Show("You seem to be running Flowframes out of an archive.\nPlease extract the whole archive first!", "Error");
-                IOUtils.TryDeleteIfExists(Paths.GetDataPath());
-                Application.Exit();
-            }
+            StartupChecks.CheckOs();
 
             // Main Tab
             UIUtils.InitCombox(interpFactorCombox, 0);
@@ -74,7 +69,7 @@ namespace Flowframes
             try
             {
                 await Task.Delay(100);
-                Text = $"Flowframes " + Updater.GetInstalledVerStr();
+                await StartupChecks.SymlinksCheck();
                 await Updater.UpdateModelList();    // Update AI model list
                 await Updater.AsyncUpdateCheck();   // Check for Flowframes updates
                 await GetWebInfo.LoadNews(newsLabel);   // Loads news/MOTD

@@ -172,4 +172,7 @@
   <data name="flowframesIcoNew_512px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\flowframesIcoNew-512px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="devmode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\devmode.bat;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

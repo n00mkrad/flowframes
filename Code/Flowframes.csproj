@@ -392,6 +392,7 @@
     <Compile Include="OS\NvApi.cs" />
     <Compile Include="OS\OSUtils.cs" />
     <Compile Include="OS\Python.cs" />
+    <Compile Include="OS\StartupChecks.cs" />
     <Compile Include="OS\Updater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -456,6 +457,7 @@
   <ItemGroup>
     <Content Include="FlowFramesFunkyLogo1.ico" />
     <Content Include="FlowFramesFunkyLogo2.ico" />
+    <None Include="Resources\devmode.bat" />
     <None Include="Resources\flowframesIcoNew-512px.png" />
     <None Include="Resources\flowframesIcoNew.png" />
     <None Include="Resources\questmark-72px-bordeer.png" />

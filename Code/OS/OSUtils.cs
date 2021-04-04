@@ -3,7 +3,10 @@ using System.Text;
 using System.Security.Principal;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Management;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Flowframes.IO;
 using DiskDetector;
 using DiskDetector.Models;
@@ -131,6 +134,26 @@ namespace Flowframes.OS
             {
                 return 1000;
             }
+        }
+
+        public static string GetOs()
+        {
+            string info = "";
+
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
+            {
+                ManagementObjectCollection information = searcher.Get();
+
+                if (information != null)
+                {
+                    foreach (ManagementObject obj in information)
+                        info = $"{obj["Caption"]} | {obj["OSArchitecture"]}";
+                }
+
+                info = info.Replace("NT 5.1.2600", "XP").Replace("NT 5.2.3790", "Server 2003");
+            }
+
+            return info;
         }
     }
 }

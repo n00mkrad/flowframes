@@ -151,6 +151,18 @@ namespace Flowframes.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to @echo off
+        ///if not &quot;%1&quot;==&quot;am_admin&quot; (powershell start -verb runas &apos;%0&apos; am_admin &amp; exit /b)
+        ///
+        ///reg add &quot;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock&quot; /t REG_DWORD /f /v &quot;AllowDevelopmentWithoutDevLicense&quot; /d &quot;1&quot;.
+        /// </summary>
+        internal static string devmode {
+            get {
+                return ResourceManager.GetString("devmode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap discordIco {
