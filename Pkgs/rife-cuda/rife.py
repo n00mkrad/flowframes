@@ -1,4 +1,5 @@
 import sys
+import io
 import os
 import cv2
 import torch
@@ -68,7 +69,7 @@ model.device()
 path = args.input
 name = os.path.basename(path)
 interp_output_path = (args.output).join(path.rsplit(name, 1))
-print("\ninterp_output_path: " + interp_output_path)
+print("interp_output_path: " + interp_output_path)
 
 cnt = 1
 
@@ -78,7 +79,8 @@ for f in os.listdir(args.input):
         videogen.append(f)
 tot_frame = len(videogen)
 videogen.sort(key= lambda x:int(x[:-4]))
-lastframe = cv2.imread(os.path.join(args.input, videogen[0]))[:, :, ::-1].copy()
+img_path = os.path.join(args.input, videogen[0])
+lastframe = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED)[:, :, ::-1].copy()
 videogen = videogen[1:]    
 h, w, _ = lastframe.shape
 vid_out = None
@@ -87,6 +89,7 @@ if not os.path.exists(interp_output_path):
     
 
 def clear_write_buffer(user_args, write_buffer, thread_id):
+    os.chdir(interp_output_path)
     while True:
         item = write_buffer.get()
         if item is None:
@@ -96,12 +99,13 @@ def clear_write_buffer(user_args, write_buffer, thread_id):
         print('[T{}] => {:0>8d}.{}'.format(thread_id, frameNum, args.imgformat))
         #imgBytes = base64.b64encode(cv2.imencode(f'.{args.imgformat}', img[:, :, ::-1], [cv2.IMWRITE_PNG_COMPRESSION, 2])[1].tostring())
         #print(f"{frameNum:08}:"+ imgBytes.decode('utf-8') + "\n\n\n\n")
-        cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, frameNum, args.imgformat), img[:, :, ::-1], [cv2.IMWRITE_PNG_COMPRESSION, 2])
+        cv2.imwrite('{:0>8d}.{}'.format(frameNum, args.imgformat), img[:, :, ::-1], [cv2.IMWRITE_PNG_COMPRESSION, 2])
 
 def build_read_buffer(user_args, read_buffer, videogen):
     for frame in videogen:
         if not user_args.input is None:
-            frame = cv2.imread(os.path.join(user_args.input, frame))[:, :, ::-1].copy()
+            img_path = os.path.join(user_args.input, frame)
+            frame = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED)[:, :, ::-1].copy()
         read_buffer.put(frame)
     read_buffer.put(None)
 
@@ -162,6 +166,3 @@ import time
 while(not write_buffer.empty()):
     time.sleep(0.2)
 time.sleep(0.5)
-    
-    
-    

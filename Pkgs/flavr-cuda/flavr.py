@@ -120,11 +120,13 @@ model = model.eval()
 
 frame_num = 1
 
-def load_and_write_img (path_write, path_load):
-    cv2.imwrite(path_write, cv2.imread(path_load), [cv2.IMWRITE_PNG_COMPRESSION, 1])
+def load_and_write_img (writedir, writename, path_load):
+    os.chdir(writedir)
+    cv2.imwrite(writename, cv2.imdecode(np.fromfile(path_load, dtype=np.uint8), cv2.IMREAD_UNCHANGED), [cv2.IMWRITE_PNG_COMPRESSION, 1])
 
-def write_img (path_write, img):
-    cv2.imwrite(path_write, img, [cv2.IMWRITE_PNG_COMPRESSION, 1])
+def write_img (writedir, writename, img):
+    os.chdir(writedir)
+    cv2.imwrite(writename, img, [cv2.IMWRITE_PNG_COMPRESSION, 1])
 
 
 for i in (range(len(idxs))):
@@ -140,18 +142,17 @@ for i in (range(len(idxs))):
     
     print(f"Writing source frame {'{:0>8d}.{}'.format(frame_num, args.imgformat)}")
     input_frame_path = os.path.join(interp_input_path, in_files[i+1])
-    #cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, frame_num, args.imgformat), cv2.imread(input_frame_path), [cv2.IMWRITE_PNG_COMPRESSION, 2])
-    _thread.start_new_thread(load_and_write_img, ('{}/{:0>8d}.{}'.format(interp_output_path, frame_num, args.imgformat), input_frame_path))
+    _thread.start_new_thread(load_and_write_img, (interp_output_path, '{:0>8d}.{}'.format(frame_num, args.imgformat), input_frame_path))
     frame_num += 1
     
     for img in outputFrame:
         print(f"Writing interp frame {'{:0>8d}.{}'.format(frame_num, args.imgformat)}")
-        # cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, frame_num, args.imgformat), make_image(img), [cv2.IMWRITE_PNG_COMPRESSION, 2])
-        _thread.start_new_thread(write_img, ('{}/{:0>8d}.{}'.format(interp_output_path, frame_num, args.imgformat), make_image(img)))
+        _thread.start_new_thread(write_img, (interp_output_path, '{:0>8d}.{}'.format(frame_num, args.imgformat), make_image(img)))
         frame_num += 1
 
 print(f"Writing source frame {frame_num} [LAST]")
 input_frame_path = os.path.join(interp_input_path, in_files[-1])
-cv2.imwrite('{}/{:0>8d}.{}'.format(interp_output_path, frame_num, args.imgformat), cv2.imread(input_frame_path), [cv2.IMWRITE_PNG_COMPRESSION, 2])      # Last input frame
+os.chdir(interp_output_path)
+cv2.imwrite('{:0>8d}.{}'.format(frame_num, args.imgformat), cv2.imdecode(np.fromfile(input_frame_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED), [cv2.IMWRITE_PNG_COMPRESSION, 2])      # Last input frame
 
 time.sleep(0.5)
