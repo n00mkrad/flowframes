@@ -1,11 +1,9 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
-using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,7 +78,7 @@ namespace Flowframes.Main
             sceneFrames.Clear();
 
             if (Directory.Exists(scnFramesPath))
-                sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
+                sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => GetNameNoExt(file)).ToList();
 
             bool debug = Config.GetBool("frameOrderDebug", false);
             List<Task> tasks = new List<Task>();
@@ -123,10 +121,10 @@ namespace Flowframes.Main
                 if (Interpolate.canceled) return;
                 if (i >= frameFilesWithoutLast.Length) break;
 
-                string frameName = Path.GetFileNameWithoutExtension(frameFilesWithoutLast[i].Name);
-                string frameNameImport = Path.GetFileNameWithoutExtension(FrameRename.importFilenames[i]);
+                string frameName = GetNameNoExt(frameFilesWithoutLast[i].Name);
+                string frameNameImport = GetNameNoExt(FrameRename.importFilenames[i]);
                 int dupesAmount = dupesDict.ContainsKey(frameNameImport) ? dupesDict[frameNameImport] : 0;
-                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(frameNameImport));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[i + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
                 {
@@ -181,5 +179,7 @@ namespace Flowframes.Main
 
             return fileContent;
         }
+
+        static string GetNameNoExt (string path) { return Path.GetFileNameWithoutExtension(path); }
     }
 }
