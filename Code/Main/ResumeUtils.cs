@@ -55,7 +55,7 @@ namespace Flowframes.Main
             string fileContent = "";
             int counter = 0;
 
-            foreach (string file in FrameRename.originalFilenames)
+            foreach (string file in FrameRename.importFilenames)
             {
                 if (counter % 1000 == 0) await Task.Delay(1);
                 fileContent += $"{file}\n";
@@ -114,7 +114,7 @@ namespace Flowframes.Main
                 files.Add(line.Trim());
             }
 
-            FrameRename.originalFilenames = files.ToArray();
+            FrameRename.importFilenames = files.ToArray();
         }
     }
 }

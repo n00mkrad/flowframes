@@ -128,7 +128,7 @@ namespace Flowframes.Main
 
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFilesWithoutLast[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
-                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(FrameRename.importFilenames[i + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 // if (loopEnabled && i == (frameFiles.Length - 2))    // If loop is enabled, account for the extra frame for loop continuity
                 //     interpFramesAmount *= 2;
@@ -137,8 +137,8 @@ namespace Flowframes.Main
                 {
                     if (discardThisFrame)     // If frame is scene cut frame
                     {
-                        string frameBeforeScn = (i + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0') + frameFiles[i].Extension;
-                        string frameAfterScn = (i + 2).ToString().PadLeft(Padding.inputFramesRenamed, '0') + frameFiles[i + 1].Extension;
+                        string frameBeforeScn = i.ToString().PadLeft(Padding.inputFramesRenamed, '0') + Path.GetExtension(FrameRename.importFilenames[i]);
+                        string frameAfterScn = (i + 1).ToString().PadLeft(Padding.inputFramesRenamed, '0') + Path.GetExtension(FrameRename.importFilenames[i + 1]);
                         string scnChangeNote = $"SCN:{frameBeforeScn}>{frameAfterScn}";
 
                         totalFileCount++;

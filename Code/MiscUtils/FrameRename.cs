@@ -13,12 +13,21 @@ namespace Flowframes.MiscUtils
     class FrameRename
     {
         public static bool framesAreRenamed;
-        public static string[] originalFilenames;   // TODO: Store on disk instead for crashes?
+        public static string[] importFilenames;   // index=renamed, value=original TODO: Store on disk instead for crashes?
+        public static Dictionary<string, string> originalFilenamesReversed;
 
         public static async Task Rename()
         {
-            originalFilenames = IOUtils.GetFilesSorted(Interpolate.current.framesFolder).Select(x => Path.GetFileName(x)).ToArray();
+            importFilenames = IOUtils.GetFilesSorted(Interpolate.current.framesFolder).Select(x => Path.GetFileName(x)).ToArray();
+            //originalFilenamesReversed = new string[originalFilenames.Length];
             await IOUtils.RenameCounterDir(Interpolate.current.framesFolder, 0, Padding.inputFramesRenamed);
+
+            //for(int i = 0; i < originalFilenames.Length; i++)
+            //{
+            //    int idx = originalFilenames[i].GetInt();
+            //    originalFilenamesReversed[idx] = originalFilenames[i];
+            //}
+
             framesAreRenamed = true;
         }
 
@@ -31,7 +40,7 @@ namespace Flowframes.MiscUtils
 
             for (int i = 0; i < files.Length; i++)
             {
-                string movePath = Path.Combine(Interpolate.current.framesFolder, originalFilenames[i]);
+                string movePath = Path.Combine(Interpolate.current.framesFolder, importFilenames[i]);
                 File.Move(files[i], movePath);
 
                 if (sw.ElapsedMilliseconds > 100)
