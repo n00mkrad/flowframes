@@ -1,3 +1,10 @@
+Flowframes 1.24.4 Changelog:
+- Drastically improved ffmpeg encoding speed (+350% w/ NVENC, +55% w/ VP9 & h264, +35% w/ ProRes)
+- Added compatibility checks showing warnings if not running Windows 10 x64
+- Paths containing unicode chars now work with Pytorch implementations, removed warning
+- Fixed scene detection somehow being broken once again
+
+
 Flowframes 1.24.3 Changelog:
 - Running CUDA AIs without a (detected) Nvidia GPU is now possible (for CPU or undetected cards)
 - Fixed scene detection using wrong frames
