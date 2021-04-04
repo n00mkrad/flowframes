@@ -63,12 +63,8 @@ namespace Flowframes
                 await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, false);
 
             if (Config.GetBool("keepTempFolder"))
-            {
-                await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
-                AiProcess.SetFilenameMap(null, false);
-            }
+                await FrameRename.Unrename();
 
-            AiProcess.filenameMap.Clear();
             await Cleanup();
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
@@ -146,26 +142,30 @@ namespace Flowframes
             else
                 Dedupe.ClearCache();
 
-            if(!Config.GetBool("enableLoop"))
+            if (!Config.GetBool("enableLoop"))
+            {
                 await Utils.CopyLastFrame(currentInputFrameCount);
+            }
+            else
+            {
+                FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(current.framesFolder);
+                int lastFileNumber = frameFiles.Last().Name.GetInt() + 1;
+                string loopFrameTargetPath = Path.Combine(current.framesFolder, lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
+                if (File.Exists(loopFrameTargetPath))
+                {
+                    Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
+                    return;
+                }
+                File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
+                Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
+            }
 
             await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);     // Always
 
             if (canceled) return;
 
             if (!stepByStep)
-            {
-                try
-                {
-                    Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
-                    AiProcess.SetFilenameMap(null, true);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log($"Error renaming frame files: {e.Message}");
-                    Cancel("Error renaming frame files. Check the log for details.");
-                }
-            }
+                await FrameRename.Rename();
 
             if (current.alpha)
             {

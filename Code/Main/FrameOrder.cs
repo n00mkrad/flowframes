@@ -31,7 +31,7 @@ namespace Flowframes.Main
                     file.Delete();
 
                 benchmark.Restart();
-                await CreateEncFile(framesPath, loopEnabled, times, false);
+                await CreateEncFile(framesPath, loopEnabled, times);
                 Logger.Log($"Generating frame order information... Done.", false, true);
                 Logger.Log($"Generated frame order info file in {benchmark.ElapsedMilliseconds} ms", true);
             }
@@ -55,7 +55,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static async Task CreateEncFile(string framesPath, bool loopEnabled, float interpFactor, bool notFirstRun)
+        public static async Task CreateEncFile(string framesPath, bool loopEnabled, float interpFactor)
         {
             if (Interpolate.canceled) return;
             Logger.Log($"Generating frame order information for {interpFactor}x...", false, true);
@@ -108,21 +108,6 @@ namespace Flowframes.Main
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
 
             File.WriteAllText(framesFile, fileContent);
-
-            if (notFirstRun) return;    // Skip all steps that only need to be done once
-
-            if (loop)
-            {
-                int lastFileNumber = frameFiles.Last().Name.GetInt() + 1;
-                string loopFrameTargetPath = Path.Combine(frameFilesWithoutLast.First().FullName.GetParentDir(), lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + $".png");
-                if (File.Exists(loopFrameTargetPath))
-                {
-                    if (debug) Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
-                    return;
-                }
-                File.Copy(frameFilesWithoutLast.First().FullName, loopFrameTargetPath);
-                if (debug) Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
-            }
         }
 
         static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool loopEnabled, bool sceneDetection, bool debug)

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Flowframes.MiscUtils;
 
 namespace Flowframes.Main
 {
@@ -57,7 +58,6 @@ namespace Flowframes.Main
             }
 
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
-            AiProcess.filenameMap.Clear();
 
             await GetFrames();
             await PostProcessFrames(true);
@@ -80,8 +80,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(current.framesFolder, "png", 1, Padding.inputFramesRenamed);
-            AiProcess.SetFilenameMap(renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value)), true);    // Save rel paths
+            await FrameRename.Rename();
 
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
@@ -94,8 +93,7 @@ namespace Flowframes.Main
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);
-            await IOUtils.ReverseRenaming(current.framesFolder, AiProcess.filenameMap);   // Get timestamps back
-            AiProcess.SetFilenameMap(null, false);
+            await FrameRename.Unrename();   // Get timestamps back
             Program.mainForm.SetProgress(0);
         }
 

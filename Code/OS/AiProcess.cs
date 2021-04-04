@@ -29,9 +29,6 @@ namespace Flowframes
         public static int lastStartupTimeMs = 1000;
         static string lastInPath;
 
-        public static bool framesAreRenamed;
-        public static Dictionary<string, string> filenameMap = new Dictionary<string, string>();   // TODO: Store on disk instead for crashes?
-
         public static void Kill ()
         {
             if (lastAiProcess == null) return;
@@ -44,16 +41,6 @@ namespace Flowframes
             {
                 Logger.Log($"Failed to kill currentAiProcess process tree: {e.Message}", true);
             }
-        }
-
-        public static void SetFilenameMap (Dictionary<string, string> map, bool isRenamed)
-        {
-            if (map == null)
-                filenameMap.Clear();
-            else
-                filenameMap = map;
-
-            framesAreRenamed = isRenamed;
         }
 
         static void AiStarted (Process proc, int startupTimeMs, string inPath = "")

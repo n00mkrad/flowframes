@@ -217,21 +217,29 @@ namespace Flowframes.IO
 			return true;
 		}
 
-		public static void RenameCounterDir(string path, bool inverse = false)
+		public static async Task RenameCounterDir(string path, int startAt = 0, int zPad = 8, bool inverse = false)
 		{
-			int counter = 1;
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+			int counter = startAt;
 			DirectoryInfo d = new DirectoryInfo(path);
 			FileInfo[] files = d.GetFiles();
 			var filesSorted = files.OrderBy(n => n);
+
 			if (inverse)
 				filesSorted.Reverse();
+
 			foreach (FileInfo file in files)
 			{
 				string dir = new DirectoryInfo(file.FullName).Parent.FullName;
-				int filesDigits = (int)Math.Floor(Math.Log10((double)files.Length) + 1);
-				File.Move(file.FullName, Path.Combine(dir, counter.ToString().PadLeft(filesDigits, '0') + Path.GetExtension(file.FullName)));
+				File.Move(file.FullName, Path.Combine(dir, counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(file.FullName)));
 				counter++;
-				//if (counter % 100 == 0) Program.Print("Renamed " + counter + " files...");
+
+                if (sw.ElapsedMilliseconds > 100)
+                {
+                    await Task.Delay(1);
+                    sw.Restart();
+                }
 			}
 		}
 

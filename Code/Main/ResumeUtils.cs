@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Flowframes.MiscUtils;
 using I = Flowframes.Interpolate;
 
 namespace Flowframes.Main
@@ -54,10 +55,10 @@ namespace Flowframes.Main
             string fileContent = "";
             int counter = 0;
 
-            foreach (KeyValuePair<string, string> entry in AiProcess.filenameMap)
+            foreach (string file in FrameRename.originalFilenames)
             {
                 if (counter % 1000 == 0) await Task.Delay(1);
-                fileContent += $"{entry.Key}|{entry.Value}\n";
+                fileContent += $"{file}\n";
                 counter++;
             }
 
@@ -103,18 +104,17 @@ namespace Flowframes.Main
 
         static void LoadFilenameMap()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            List<string> files = new List<string>();
             string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
-            string[] dictLines = File.ReadAllLines(filePath);
+            string[] fileLines = File.ReadAllLines(filePath);
 
-            foreach (string line in dictLines)
+            foreach (string line in fileLines)
             {
-                if (line.Length < 5) continue;
-                string[] keyValuePair = line.Split('|');
-                dict.Add(keyValuePair[0].Trim(), keyValuePair[1].Trim());
+                if (line.Trim().Length < 3) continue;
+                files.Add(line.Trim());
             }
 
-            AiProcess.filenameMap = dict;
+            FrameRename.originalFilenames = files.ToArray();
         }
     }
 }
