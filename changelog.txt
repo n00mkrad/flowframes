@@ -1,5 +1,5 @@
 Flowframes 1.24.4 Changelog:
-- Drastically improved ffmpeg encoding speed (+350% w/ NVENC, +55% w/ VP9 & h264, +35% w/ ProRes)
+- Drastically improved ffmpeg encoding speed (+350% NVENC, +55% VP9/h264, +35% ProRes)
 - Added compatibility checks showing warnings if not running Windows 10 x64
 - Paths containing unicode chars now work with Pytorch implementations, removed warning
 - Fixed scene detection somehow being broken once again
