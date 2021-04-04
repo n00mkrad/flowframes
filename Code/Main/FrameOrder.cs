@@ -19,7 +19,7 @@ namespace Flowframes.Main
         static FileInfo[] frameFilesWithoutLast;
         static List<string> sceneFrames = new List<string>();
         static Dictionary<int, string> frameFileContents = new Dictionary<int, string>();
-        static int lastOutFileCount = 0;
+        static int lastOutFileCount;
 
         public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, float times)
         {
@@ -131,7 +131,7 @@ namespace Flowframes.Main
                 bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name)));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 if (loopEnabled && i == (frameFiles.Length - 2))    // If loop is enabled, account for the extra frame for loop continuity
-                    interpFramesAmount = interpFramesAmount * 2;
+                    interpFramesAmount *= 2;
 
                 for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
                 {

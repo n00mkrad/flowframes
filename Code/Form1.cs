@@ -199,27 +199,24 @@ namespace Flowframes
 
         private void browseInputBtn_Click(object sender, EventArgs e)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = inputTbox.Text.Trim();
-            dialog.IsFolderPicker = true;
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = inputTbox.Text.Trim(), IsFolderPicker = true };
+
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 DragDropHandler(new string[] { dialog.FileName });
         }
 
         private void browseInputFileBtn_Click(object sender, EventArgs e)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = inputTbox.Text.Trim();
-            dialog.IsFolderPicker = false;
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = inputTbox.Text.Trim(), IsFolderPicker = false };
+
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 DragDropHandler(new string[] { dialog.FileName });
         }
 
         private void browseOutBtn_Click(object sender, EventArgs e)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = inputTbox.Text.Trim();
-            dialog.IsFolderPicker = true;
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = inputTbox.Text.Trim(), IsFolderPicker = true };
+
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 outputTbox.Text = dialog.FileName;
         }

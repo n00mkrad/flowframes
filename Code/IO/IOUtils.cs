@@ -132,11 +132,13 @@ namespace Flowframes.IO
 		{
 			int counter = 1;
 			DirectoryInfo d = new DirectoryInfo(dir);
-			FileInfo[] files = null;
+			FileInfo[] files;
+
 			if (recursive)
 				files = d.GetFiles(wildcard, SearchOption.AllDirectories);
 			else
 				files = d.GetFiles(wildcard, SearchOption.TopDirectoryOnly);
+
 			foreach (FileInfo file in files)
 			{
 				ReplaceInFilename(file.FullName, textToFind, textToReplace);
@@ -192,7 +194,9 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
 			{
-				Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}, !showLog");
+				if(showLog)
+				    Logger.Log($"Failed to move '{source}' to '{target}' (Overwrite: {overwrite}): {e.Message}, !showLog");
+
 				return false;
 			}
 
@@ -345,7 +349,8 @@ namespace Flowframes.IO
 
 		public static async Task<Size> GetVideoOrFramesRes (string path)
         {
-			Size res = new Size();
+			Size res;
+
 			if (!IsPathDirectory(path))     // If path is video
 			{
 				res = GetVideoRes(path);
@@ -355,6 +360,7 @@ namespace Flowframes.IO
 				Image thumb = await MainUiFunctions.GetThumbnail(path);
 				res = new Size(thumb.Width, thumb.Height);
 			}
+
 			return res;
 		}
 
@@ -585,7 +591,7 @@ namespace Flowframes.IO
 			return hashStr;
 		}
 
-		public static async Task<string> GetHashAsync(string path, Hash hashType, bool log = true, bool quick = true)
+		public static async Task<string> GetHashAsync(string path, Hash hashType, bool log = true)
 		{
 			await Task.Delay(1);
 			return GetHash(path, hashType, log);

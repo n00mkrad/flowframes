@@ -97,11 +97,6 @@ namespace Flowframes.Main
             Program.mainForm.SetProgress(0);
         }
 
-        void RenameFrames ()
-        {
-
-        }
-
         public static async Task CreateOutputVid()
         {
             if (!Directory.Exists(current.interpFolder) || IOUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
