@@ -209,8 +209,8 @@
             "WEBM Video (Google VP9)",
             "MOV Video (Apple ProRes)",
             "AVI Video (ffv1, huffyuv, rawvideo)",
-            "Animated GIF (Not recommended for more than 40 FPS)",
-            "Image Sequence"});
+            "Animated GIF (Only supports up to 50 FPS)",
+            "Image Sequence (PNG)"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 157);
             this.outModeCombox.Name = "outModeCombox";
             this.outModeCombox.Size = new System.Drawing.Size(400, 23);

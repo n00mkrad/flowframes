@@ -123,15 +123,9 @@ namespace Flowframes.Main
                 if (Interpolate.canceled) return;
                 if (i >= frameFilesWithoutLast.Length) break;
 
-                // if (debug && i == startIndex)
-                //     fileContent += $"# NEW THREAD - {startIndex} to {startIndex + count}\n";
-
                 string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFilesWithoutLast[i].Name);
                 int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
                 bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(FrameRename.importFilenames[i + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
-
-                // if (loopEnabled && i == (frameFiles.Length - 2))    // If loop is enabled, account for the extra frame for loop continuity
-                //     interpFramesAmount *= 2;
 
                 for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
                 {
