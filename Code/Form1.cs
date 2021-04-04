@@ -288,6 +288,9 @@ namespace Flowframes
         {
             float fpsOut = fpsInTbox.GetFloat() * interpFactorCombox.GetFloat();
             fpsOutTbox.Text = fpsOut.ToString();
+
+            if (!fpsInTbox.ReadOnly)
+                currInFps = new Fraction(fpsInTbox.GetFloat());
         }
 
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)

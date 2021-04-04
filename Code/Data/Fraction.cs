@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Navigation;
 
 namespace Flowframes.Data
 {
@@ -42,9 +43,9 @@ namespace Flowframes.Data
 
         public Fraction(float value)
         {
-            int[] frac = value.ToFraction();
-            Numerator = frac[0];
-            Denominator = frac[1];
+            Numerator = (value * 10000f).RoundToInt();
+            Denominator = 10000;
+            this = GetReduced();
         }
 
         public Fraction(string text)

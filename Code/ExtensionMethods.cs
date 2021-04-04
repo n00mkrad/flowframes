@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Flowframes.Data;
 
 namespace Flowframes
 {
@@ -184,58 +185,6 @@ namespace Flowframes
         public static string[] Split(this string str, string trimStr)
         {
             return str.Split(new string[] { trimStr }, StringSplitOptions.None);
-        }
-
-        public static int[] ToFraction(this float value, double accuracy = 0.02)
-        {
-            int sign = Math.Sign(value);
-
-            if (sign == -1)
-                value = Math.Abs(value);
-
-            // Accuracy is the maximum relative error; convert to absolute maxError
-            double maxError = sign == 0 ? accuracy : value * accuracy;
-
-            int n = (int)Math.Floor(value);
-            value -= n;
-
-            if (value < maxError)
-                return new int[] { sign * n, 1 };
-
-            if (1 - maxError < value)
-                return new int[] { sign * (n + 1), 1 };
-
-            // The lower fraction is 0/1
-            int lower_n = 0;
-            int lower_d = 1;
-
-            // The upper fraction is 1/1
-            int upper_n = 1;
-            int upper_d = 1;
-
-            while (true)
-            {
-                // The middle fraction is (lower_n + upper_n) / (lower_d + upper_d)
-                int middle_n = lower_n + upper_n;
-                int middle_d = lower_d + upper_d;
-
-                if (middle_d * (value + maxError) < middle_n)
-                {
-                    // real + error < middle : middle is our new upper
-                    upper_n = middle_n;
-                    upper_d = middle_d;
-                }
-                else if (middle_n < (value - maxError) * middle_d)
-                {
-                    // middle < real - error : middle is our new lower
-                    lower_n = middle_n;
-                    lower_d = middle_d;
-                }
-                else
-                {
-                    return new int[] {(n * middle_d + middle_n) * sign, middle_d};
-                }
-            }
         }
     }
 }
