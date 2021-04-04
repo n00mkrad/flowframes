@@ -43,7 +43,6 @@ namespace Flowframes.Media
             string extraArgs = Config.Get("ffEncArgs");
             string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
-            IOUtils.TryDeleteIfExists(Path.Combine(framesFile + Paths.symlinksSuffix));
         }
 
         static async Task MakeSymlinks(string framesFile, string linksDir, int zPad = 8)
