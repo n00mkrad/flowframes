@@ -1,14 +1,13 @@
 ﻿using Flowframes.Data;
-using Flowframes.IO;
 using Flowframes.MiscUtils;
 using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Flowframes.IO;
 
 namespace Flowframes.Magick
 {
@@ -38,8 +37,9 @@ namespace Flowframes.Magick
 
             int amountOfBlendFrames = (int)Interpolate.current.interpFactor - 1;
 
-            List<Task> runningTasks = new List<Task>();
+            string[] frames = FrameRename.framesAreRenamed ? new string[0] : IOUtils.GetFilesSorted(Interpolate.current.framesFolder);
 
+            List<Task> runningTasks = new List<Task>();
             int maxThreads = Environment.ProcessorCount * 2;
 
             foreach (string line in framesLines)
@@ -50,8 +50,11 @@ namespace Flowframes.Magick
                     {
                         string trimmedLine = line.Split(keyword).Last();
                         string[] inputFrameNames = trimmedLine.Split('>');
-                        string img1 = Path.Combine(Interpolate.current.framesFolder, inputFrameNames[0]);
-                        string img2 = Path.Combine(Interpolate.current.framesFolder, inputFrameNames[1]);
+                        string frameFrom = FrameRename.framesAreRenamed ? inputFrameNames[0] : frames[inputFrameNames[0].GetInt()];
+                        string frameTo = FrameRename.framesAreRenamed ? inputFrameNames[1] : frames[inputFrameNames[1].GetInt()];
+
+                        string img1 = Path.Combine(Interpolate.current.framesFolder, frameFrom);
+                        string img2 = Path.Combine(Interpolate.current.framesFolder, frameTo);
 
                         string firstOutputFrameName = line.Split('/').Last().Remove("'").Split('#').First();
                         string ext = Path.GetExtension(firstOutputFrameName);
