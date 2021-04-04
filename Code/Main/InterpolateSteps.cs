@@ -69,7 +69,7 @@ namespace Flowframes.Main
 
             current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
 
-            if (!Directory.Exists(current.framesFolder) || IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png") < 2)
+            if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png") < 2)
             {
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
                 return;
@@ -99,7 +99,7 @@ namespace Flowframes.Main
 
         public static async Task CreateOutputVid()
         {
-            if (!Directory.Exists(current.interpFolder) || IOUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
+            if (IOUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
             {
                 Cancel($"There are no interpolated frames to encode!\n\nDid you delete the folder?");
                 return;

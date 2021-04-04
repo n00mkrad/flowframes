@@ -22,7 +22,6 @@ namespace Flowframes.UI
             Program.mainForm.SetTab("interpolate");
             Program.mainForm.ResetInputInfo();
             string path = inputTbox.Text.Trim();
-            InterpolateUtils.PathAsciiCheck(path, "input path");
 
             if (Config.GetBool("clearLogOnInput"))
                 Logger.ClearLogBox();

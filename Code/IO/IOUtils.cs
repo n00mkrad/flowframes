@@ -30,40 +30,35 @@ namespace Flowframes.IO
 		public static string[] ReadLines(string path)
 		{
 			List<string> lines = new List<string>();
-			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 0x1000, FileOptions.SequentialScan))
-			using (var sr = new StreamReader(fs, Encoding.UTF8))
+			using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 0x1000, FileOptions.SequentialScan))
+			
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
 			{
 				string line;
-				while ((line = sr.ReadLine()) != null)
+				while ((line = reader.ReadLine()) != null)
 					lines.Add(line);
 			}
+
 			return lines.ToArray();
 		}
 
 		public static bool IsPathDirectory(string path)
 		{
 			if (path == null)
-			{
 				throw new ArgumentNullException("path");
-			}
-			path = path.Trim();
+
+            path = path.Trim();
+
 			if (Directory.Exists(path))
-			{
 				return true;
-			}
-			if (File.Exists(path))
-			{
+
+            if (File.Exists(path))
 				return false;
-			}
-			if (new string[2]
-			{
-				"\\",
-				"/"
-			}.Any((string x) => path.EndsWith(x)))
-			{
+
+            if (new string[2] {"\\", "/"}.Any((string x) => path.EndsWith(x)))
 				return true;
-			}
-			return string.IsNullOrWhiteSpace(Path.GetExtension(path));
+
+            return string.IsNullOrWhiteSpace(Path.GetExtension(path));
 		}
 
 		public static bool IsFileValid(string path)
@@ -159,16 +154,7 @@ namespace Flowframes.IO
 			File.Move(path, targetPath);
 		}
 
-		public static int GetFilenameCounterLength(string file, string prefixToRemove = "")
-		{
-			string filenameNoExt = Path.GetFileNameWithoutExtension(file);
-			if (!string.IsNullOrEmpty(prefixToRemove))
-				filenameNoExt = filenameNoExt.Replace(prefixToRemove, "");
-			string onlyNumbersFilename = Regex.Replace(filenameNoExt, "[^.0-9]", "");
-			return onlyNumbersFilename.Length;
-		}
-
-		public static int GetAmountOfFiles (string path, bool recursive, string wildcard = "*")
+        public static int GetAmountOfFiles (string path, bool recursive, string wildcard = "*")
         {
             try
             {
@@ -646,9 +632,7 @@ namespace Flowframes.IO
             try
             {
 				Image img = GetImage(path);
-				if (img.Width > 1 && img.Height > 1)
-					return true;
-				return false;
+                return (img.Width > 0 && img.Height > 0);
             }
 			catch
             {
@@ -702,6 +686,7 @@ namespace Flowframes.IO
 			// Add file sizes.
 			string[] files;
 			StringComparison ignCase = StringComparison.OrdinalIgnoreCase;
+
 			if (includedExtensions == null)
 				files = Directory.GetFiles(path);
 			else
@@ -745,12 +730,7 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static bool HasBadChars(string str)
-		{
-			return str != str.StripBadChars();
-		}
-
-		public static void OverwriteFileWithText (string path, string text = "THIS IS A DUMMY FILE - DO NOT DELETE ME")
+        public static void OverwriteFileWithText (string path, string text = "THIS IS A DUMMY FILE - DO NOT DELETE ME")
         {
             try
             {
@@ -771,7 +751,7 @@ namespace Flowframes.IO
 
 				foreach (DriveInfo d in allDrives)
 				{
-					if (d.IsReady == true && d.Name.StartsWith(driveLetter))
+					if (d.IsReady && d.Name.StartsWith(driveLetter))
 					{
 						if (mbytes)
 							return (long)(d.AvailableFreeSpace / 1024f / 1000f);
@@ -784,6 +764,7 @@ namespace Flowframes.IO
 			{
 				Logger.Log("Error trying to get disk space: " + e.Message, true);
 			}
+
 			return 0;
 		}
     }
