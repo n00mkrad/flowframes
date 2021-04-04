@@ -14,20 +14,11 @@ namespace Flowframes.MiscUtils
     {
         public static bool framesAreRenamed;
         public static string[] importFilenames;   // index=renamed, value=original TODO: Store on disk instead for crashes?
-        public static Dictionary<string, string> originalFilenamesReversed;
 
         public static async Task Rename()
         {
             importFilenames = IOUtils.GetFilesSorted(Interpolate.current.framesFolder).Select(x => Path.GetFileName(x)).ToArray();
-            //originalFilenamesReversed = new string[originalFilenames.Length];
             await IOUtils.RenameCounterDir(Interpolate.current.framesFolder, 0, Padding.inputFramesRenamed);
-
-            //for(int i = 0; i < originalFilenames.Length; i++)
-            //{
-            //    int idx = originalFilenames[i].GetInt();
-            //    originalFilenamesReversed[idx] = originalFilenames[i];
-            //}
-
             framesAreRenamed = true;
         }
 

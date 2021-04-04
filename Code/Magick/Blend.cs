@@ -36,14 +36,6 @@ namespace Flowframes.Magick
             if (setStatus)
                 Program.mainForm.SetStatus("Blending scene transitions...");
 
-            // bool renameFramesFirst = !FrameRename.framesAreRenamed;
-            // 
-            // if (renameFramesFirst)
-            // {
-            //     Dictionary<string, string> renamedFilesDict = await IOUtils.RenameCounterDirReversibleAsync(Interpolate.current.framesFolder, "png", 1, Padding.inputFramesRenamed);
-            //     AiProcess.SetFilenameMap(renamedFilesDict.ToDictionary(x => Path.GetFileName(x.Key), x => Path.GetFileName(x.Value)), true);
-            // }
-
             int amountOfBlendFrames = (int)Interpolate.current.interpFactor - 1;
 
             List<Task> runningTasks = new List<Task>();
@@ -108,12 +100,6 @@ namespace Flowframes.Magick
             }
 
             Logger.Log($"Created {totalFrames} blend frames in {FormatUtils.TimeSw(sw)} ({(totalFrames / (sw.ElapsedMilliseconds / 1000f)).ToString("0.00")} FPS)", true);
-
-            // if (renameFramesFirst)
-            // {
-            //     await IOUtils.ReverseRenaming(Interpolate.current.framesFolder, FrameRename.filenameMap);   // Get timestamps back
-            //     AiProcess.SetFilenameMap(null, false);
-            // }
 
             if (setStatus)
                 Program.mainForm.SetStatus(oldStatus);

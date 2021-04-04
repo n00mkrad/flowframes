@@ -123,9 +123,10 @@ namespace Flowframes.Main
                 if (Interpolate.canceled) return;
                 if (i >= frameFilesWithoutLast.Length) break;
 
-                string inputFilenameNoExt = Path.GetFileNameWithoutExtension(frameFilesWithoutLast[i].Name);
-                int dupesAmount = dupesDict.ContainsKey(inputFilenameNoExt) ? dupesDict[inputFilenameNoExt] : 0;
-                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(Path.GetFileNameWithoutExtension(FrameRename.importFilenames[i + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+                string frameName = Path.GetFileNameWithoutExtension(frameFilesWithoutLast[i].Name);
+                string frameNameImport = Path.GetFileNameWithoutExtension(FrameRename.importFilenames[i]);
+                int dupesAmount = dupesDict.ContainsKey(frameNameImport) ? dupesDict[frameNameImport] : 0;
+                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(frameNameImport));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
                 {
@@ -136,7 +137,7 @@ namespace Flowframes.Main
                         string scnChangeNote = $"SCN:{frameBeforeScn}>{frameAfterScn}";
 
                         totalFileCount++;
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]", scnChangeNote);
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {frameName}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]", scnChangeNote);
 
                         if (Config.GetInt("sceneChangeFillMode") == 0)      // Duplicate last frame
                         {
@@ -145,7 +146,7 @@ namespace Flowframes.Main
                             for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                             {
                                 totalFileCount++;
-                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, ext, debug, $"[In: {inputFilenameNoExt}] [DISCARDED]");
+                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, lastNum, ext, debug, $"[In: {frameName}] [DISCARDED]");
                             }
                         }
                         else
@@ -153,7 +154,7 @@ namespace Flowframes.Main
                             for (int dupeCount = 1; dupeCount < interpFramesAmount; dupeCount++)
                             {
                                 totalFileCount++;
-                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [BLEND FRAME]");
+                                fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {frameName}] [BLEND FRAME]");
                             }
                         }
 
@@ -162,7 +163,7 @@ namespace Flowframes.Main
                     else
                     {
                         totalFileCount++;
-                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {inputFilenameNoExt}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]");
+                        fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {frameName}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]");
                     }
                 }
             }

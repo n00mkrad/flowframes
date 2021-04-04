@@ -211,11 +211,6 @@ namespace Flowframes
         {
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             Directory.CreateDirectory(outPath);
-            //string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
-            //string wthreads = $"--wthreads {2 * (int)interpFactor}";
-            //string rbuffer = $"--rbuffer {Config.GetInt("flavrCudaBufferSize", 200)}";
-            //string scale = $"--scale {Config.GetFloat("flavrCudaScale", 1.0f).ToStringDot()}";
-            // string prec = Config.GetBool("flavrCudaFp16") ? "--fp16" : "";
             string args = $" --input {inPath.Wrap()} --output {outPath.Wrap()} --model {mdl}/{mdl}.pth --factor {interpFactor}";
 
             Process flavrPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
