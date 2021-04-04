@@ -56,7 +56,7 @@ namespace Flowframes.OS
 
             string ver = Updater.GetInstalledVer().ToString();
 
-            if (!Symlinks.SymlinksAllowed() /* && Config.Get("askedForDevModeVersion") != ver */)
+            if (!Symlinks.SymlinksAllowed() && Config.Get("askedForDevModeVersion") != ver)
             {
                 MessageBox.Show("Flowframes will now enable Windows' Developer Mode which is required for video encoding improvements.\n\n" +
                                 "This requires administrator privileges once.", "Message");
