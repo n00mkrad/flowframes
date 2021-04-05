@@ -195,16 +195,19 @@ namespace Flowframes.Media
             if (!audioCompat)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
 
-            bool enableAudio = Config.GetBool("keepAudio");
-            bool enableSubs = Config.GetBool("keepSubs");
+            bool audio = Config.GetBool("keepAudio");
+            bool subs = Config.GetBool("keepSubs");
+            bool meta = Config.GetBool("keepMeta");
 
-            if (!enableAudio)
+            if (!audio)
                 audioArgs = "-an";
 
-            if (!enableSubs || (enableSubs && !Utils.ContainerSupportsSubs(containerExt)))
+            if (!subs || (subs && !Utils.ContainerSupportsSubs(containerExt)))
                 subArgs = "-sn";
 
-            string mkvFix = I.current.outMode == I.OutMode.VidMkv ? "-max_interleave_delta 0" : ""; // https://www.reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
+            bool isMkv = I.current.outMode == I.OutMode.VidMkv;
+            string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
+            string metaArg = (isMkv && meta) ? "-map 1:t" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
 
             if (QuickSettingsTab.trimEnabled)
             {
@@ -214,14 +217,14 @@ namespace Flowframes.Media
                 string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -vn -map 0 -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
                 await RunFfmpeg(args1, tempFolder, LogMode.Hidden);
 
-                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {mkvFix} {outName}"; // Merge interp + trimmed original
+                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {outName}"; // Merge interp + trimmed original
                 await RunFfmpeg(args2, tempFolder, LogMode.Hidden);
 
                 IOUtils.TryDeleteIfExists(Path.Combine(tempFolder, otherStreamsName));
             }
             else   // If trimming is disabled we can pull the streams directly from the input file
             {
-                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? -c copy {audioArgs} {subArgs} {mkvFix} {outName}";
+                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {outName}";
                 await RunFfmpeg(args, tempFolder, LogMode.Hidden);
             }
 

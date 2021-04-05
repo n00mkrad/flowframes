@@ -40,8 +40,6 @@
             this.label67 = new System.Windows.Forms.Label();
             this.clearModelCacheBtn = new HTAlt.WinForms.HTButton();
             this.label64 = new System.Windows.Forms.Label();
-            this.modelSuffix = new System.Windows.Forms.CheckBox();
-            this.label63 = new System.Windows.Forms.Label();
             this.label62 = new System.Windows.Forms.Label();
             this.clearLogOnInput = new System.Windows.Forms.CheckBox();
             this.label61 = new System.Windows.Forms.Label();
@@ -181,6 +179,7 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.keepMeta = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -225,8 +224,6 @@
             this.generalTab.Controls.Add(this.label67);
             this.generalTab.Controls.Add(this.clearModelCacheBtn);
             this.generalTab.Controls.Add(this.label64);
-            this.generalTab.Controls.Add(this.modelSuffix);
-            this.generalTab.Controls.Add(this.label63);
             this.generalTab.Controls.Add(this.label62);
             this.generalTab.Controls.Add(this.clearLogOnInput);
             this.generalTab.Controls.Add(this.label61);
@@ -315,7 +312,7 @@
             this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
             this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
-            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 246);
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 216);
             this.clearModelCacheBtn.Name = "clearModelCacheBtn";
             this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
             this.clearModelCacheBtn.TabIndex = 79;
@@ -326,31 +323,12 @@
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(10, 251);
+            this.label64.Location = new System.Drawing.Point(10, 221);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(157, 13);
             this.label64.TabIndex = 78;
             this.label64.Text = "Delete Downloaded Model Files";
-            // 
-            // modelSuffix
-            // 
-            this.modelSuffix.AutoSize = true;
-            this.modelSuffix.Location = new System.Drawing.Point(280, 221);
-            this.modelSuffix.Name = "modelSuffix";
-            this.modelSuffix.Size = new System.Drawing.Size(15, 14);
-            this.modelSuffix.TabIndex = 77;
-            this.modelSuffix.UseVisualStyleBackColor = true;
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(10, 221);
-            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(210, 13);
-            this.label63.TabIndex = 76;
-            this.label63.Text = "Include AI Model Name In Output Filename";
             // 
             // label62
             // 
@@ -551,6 +529,7 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.keepMeta);
             this.tabListPage2.Controls.Add(this.sceneChangeFillMode);
             this.tabListPage2.Controls.Add(this.label71);
             this.tabListPage2.Controls.Add(this.label4);
@@ -2113,6 +2092,16 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // keepMeta
+            // 
+            this.keepMeta.AutoSize = true;
+            this.keepMeta.Location = new System.Drawing.Point(467, 39);
+            this.keepMeta.Name = "keepMeta";
+            this.keepMeta.Size = new System.Drawing.Size(131, 17);
+            this.keepMeta.TabIndex = 81;
+            this.keepMeta.Text = "Keep Metadata (MKV)";
+            this.keepMeta.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2268,8 +2257,6 @@
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.CheckBox clearLogOnInput;
         private System.Windows.Forms.Label label61;
-        private System.Windows.Forms.CheckBox modelSuffix;
-        private System.Windows.Forms.Label label63;
         private System.Windows.Forms.Label label64;
         private HTAlt.WinForms.HTButton clearModelCacheBtn;
         private System.Windows.Forms.NumericUpDown scnDetectValue;
@@ -2306,5 +2293,6 @@
         private System.Windows.Forms.CheckBox fixOutputDuration;
         private System.Windows.Forms.Label label72;
         private System.Windows.Forms.ComboBox gifDitherType;
+        private System.Windows.Forms.CheckBox keepMeta;
     }
 }
