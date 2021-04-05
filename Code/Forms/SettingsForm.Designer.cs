@@ -114,6 +114,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
+            this.gifDitherType = new System.Windows.Forms.ComboBox();
             this.label73 = new System.Windows.Forms.Label();
             this.fixOutputDuration = new System.Windows.Forms.CheckBox();
             this.label72 = new System.Windows.Forms.Label();
@@ -180,7 +181,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.gifDitherType = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -1289,6 +1289,22 @@
             this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Video Export";
             // 
+            // gifDitherType
+            // 
+            this.gifDitherType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.gifDitherType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gifDitherType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gifDitherType.ForeColor = System.Drawing.Color.White;
+            this.gifDitherType.FormattingEnabled = true;
+            this.gifDitherType.Items.AddRange(new object[] {
+            "bayer (Recommended)",
+            "floyd_steinberg (Might cause problems with transparency)",
+            "none (Strong banding, but better for flat colors)"});
+            this.gifDitherType.Location = new System.Drawing.Point(386, 417);
+            this.gifDitherType.Name = "gifDitherType";
+            this.gifDitherType.Size = new System.Drawing.Size(294, 21);
+            this.gifDitherType.TabIndex = 85;
+            // 
             // label73
             // 
             this.label73.AutoSize = true;
@@ -1632,9 +1648,9 @@
             this.label17.Location = new System.Drawing.Point(10, 420);
             this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(186, 13);
+            this.label17.Size = new System.Drawing.Size(173, 13);
             this.label17.TabIndex = 40;
-            this.label17.Text = "GIF: Color Amount and Dithering Type";
+            this.label17.Text = "GIF: Color Amount / Dithering Type";
             // 
             // label16
             // 
@@ -2096,22 +2112,6 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
-            // 
-            // gifDitherType
-            // 
-            this.gifDitherType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.gifDitherType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gifDitherType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.gifDitherType.ForeColor = System.Drawing.Color.White;
-            this.gifDitherType.FormattingEnabled = true;
-            this.gifDitherType.Items.AddRange(new object[] {
-            "bayer (Recommended)",
-            "floyd_steinberg (Might cause problems with transparency)",
-            "none (Strong banding, but better for flat colors)"});
-            this.gifDitherType.Location = new System.Drawing.Point(386, 417);
-            this.gifDitherType.Name = "gifDitherType";
-            this.gifDitherType.Size = new System.Drawing.Size(294, 21);
-            this.gifDitherType.TabIndex = 85;
             // 
             // SettingsForm
             // 
