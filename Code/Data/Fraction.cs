@@ -219,6 +219,9 @@ namespace Flowframes.Data
 
         public float GetFloat()
         {
+            if (Denominator < 1)    // Avoid div by zero
+                return 0f;
+
             return (float)Numerator / (float)Denominator;
         }
 

@@ -280,22 +280,34 @@ namespace Flowframes
 
         private void fpsInTbox_TextChanged(object sender, EventArgs e)
         {
-            fpsInTbox.Text = fpsInTbox.Text.TrimNumbers(true);
-            UpdateOutputFPS();
+            UpdateUiFps();
         }
 
-        public void UpdateOutputFPS()
+        public void UpdateUiFps()
         {
-            float fpsOut = fpsInTbox.GetFloat() * interpFactorCombox.GetFloat();
-            fpsOutTbox.Text = fpsOut.ToString();
+            if (fpsInTbox.Text.Contains("/"))   // Parse fraction
+            {
+                string[] split = fpsInTbox.Text.Split('/');
+                Fraction frac = new Fraction(split[0].GetInt(), split[1].GetInt());
+                fpsInTbox.Text = frac.ToString();
+                fpsOutTbox.Text = (frac * interpFactorCombox.GetFloat()).ToString();
 
-            if (!fpsInTbox.ReadOnly)
-                currInFps = new Fraction(fpsInTbox.GetFloat());
+                if (!fpsInTbox.ReadOnly)
+                    currInFps = frac;
+            }
+            else    // Parse float
+            {
+                fpsInTbox.Text = fpsInTbox.Text.TrimNumbers(true);
+                fpsOutTbox.Text = (fpsInTbox.GetFloat() * interpFactorCombox.GetFloat()).ToString();
+
+                if (!fpsInTbox.ReadOnly)
+                    currInFps = new Fraction(fpsInTbox.GetFloat());
+            }
         }
 
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateOutputFPS();
+            UpdateUiFps();
             int guiInterpFactor = interpFactorCombox.GetInt();
             if (!initialized)
                 return;

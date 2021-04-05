@@ -323,7 +323,7 @@ namespace Flowframes.Main
             }
             if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
             {
-                ShowMessage("Invalid output frame rate - Must be 1-1000.");
+                ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.");
                 passes = false;
             }
             if (!passes)

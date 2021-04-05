@@ -218,6 +218,12 @@ namespace Flowframes.Main
 
         public static async Task MuxOutputVideo(string inputPath, string outVideo)
         {
+            if (!File.Exists(outVideo))
+            {
+                I.Cancel($"No video was encoded!\n\nFFmpeg Output:\n{AvProcess.lastOutputFfmpeg}");
+                return;
+            }
+
             if (!Config.GetBool("keepAudio") && !Config.GetBool("keepAudio"))
                 return;
 
