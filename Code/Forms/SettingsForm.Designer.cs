@@ -114,6 +114,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
+            this.label73 = new System.Windows.Forms.Label();
+            this.fixOutputDuration = new System.Windows.Forms.CheckBox();
+            this.label72 = new System.Windows.Forms.Label();
             this.minOutVidLength = new System.Windows.Forms.NumericUpDown();
             this.aviColors = new System.Windows.Forms.ComboBox();
             this.aviCodec = new System.Windows.Forms.ComboBox();
@@ -137,7 +140,6 @@
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
             this.gifColors = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -178,9 +180,7 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label72 = new System.Windows.Forms.Label();
-            this.fixOutputDuration = new System.Windows.Forms.CheckBox();
-            this.label73 = new System.Windows.Forms.Label();
+            this.gifDitherType = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -1246,6 +1246,7 @@
             // 
             this.vidExportTab.AutoScroll = true;
             this.vidExportTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.vidExportTab.Controls.Add(this.gifDitherType);
             this.vidExportTab.Controls.Add(this.label73);
             this.vidExportTab.Controls.Add(this.fixOutputDuration);
             this.vidExportTab.Controls.Add(this.label72);
@@ -1272,7 +1273,6 @@
             this.vidExportTab.Controls.Add(this.label20);
             this.vidExportTab.Controls.Add(this.label21);
             this.vidExportTab.Controls.Add(this.label19);
-            this.vidExportTab.Controls.Add(this.label18);
             this.vidExportTab.Controls.Add(this.gifColors);
             this.vidExportTab.Controls.Add(this.label17);
             this.vidExportTab.Controls.Add(this.label16);
@@ -1288,6 +1288,36 @@
             this.vidExportTab.Name = "vidExportTab";
             this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Video Export";
+            // 
+            // label73
+            // 
+            this.label73.AutoSize = true;
+            this.label73.ForeColor = System.Drawing.Color.Silver;
+            this.label73.Location = new System.Drawing.Point(308, 160);
+            this.label73.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(322, 13);
+            this.label73.TabIndex = 84;
+            this.label73.Text = "Repeats the last frame so the output is exactly as long as the input.";
+            // 
+            // fixOutputDuration
+            // 
+            this.fixOutputDuration.AutoSize = true;
+            this.fixOutputDuration.Location = new System.Drawing.Point(280, 160);
+            this.fixOutputDuration.Name = "fixOutputDuration";
+            this.fixOutputDuration.Size = new System.Drawing.Size(15, 14);
+            this.fixOutputDuration.TabIndex = 83;
+            this.fixOutputDuration.UseVisualStyleBackColor = true;
+            // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(10, 160);
+            this.label72.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(172, 13);
+            this.label72.TabIndex = 76;
+            this.label72.Text = "Make Output Match Input Duration";
             // 
             // minOutVidLength
             // 
@@ -1578,17 +1608,6 @@
             this.label19.TabIndex = 43;
             this.label19.Text = "Encoding Options";
             // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.ForeColor = System.Drawing.Color.Silver;
-            this.label18.Location = new System.Drawing.Point(393, 421);
-            this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(208, 13);
-            this.label18.TabIndex = 42;
-            this.label18.Text = "More colors increase the file size noticably.";
-            // 
             // gifColors
             // 
             this.gifColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -1613,9 +1632,9 @@
             this.label17.Location = new System.Drawing.Point(10, 420);
             this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(154, 13);
+            this.label17.Size = new System.Drawing.Size(186, 13);
             this.label17.TabIndex = 40;
-            this.label17.Text = "GIF: Color Quality (Palette Size)";
+            this.label17.Text = "GIF: Color Amount and Dithering Type";
             // 
             // label16
             // 
@@ -2078,35 +2097,21 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label72
+            // gifDitherType
             // 
-            this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(10, 160);
-            this.label72.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(172, 13);
-            this.label72.TabIndex = 76;
-            this.label72.Text = "Make Output Match Input Duration";
-            // 
-            // fixOutputDuration
-            // 
-            this.fixOutputDuration.AutoSize = true;
-            this.fixOutputDuration.Location = new System.Drawing.Point(280, 160);
-            this.fixOutputDuration.Name = "fixOutputDuration";
-            this.fixOutputDuration.Size = new System.Drawing.Size(15, 14);
-            this.fixOutputDuration.TabIndex = 83;
-            this.fixOutputDuration.UseVisualStyleBackColor = true;
-            // 
-            // label73
-            // 
-            this.label73.AutoSize = true;
-            this.label73.ForeColor = System.Drawing.Color.Silver;
-            this.label73.Location = new System.Drawing.Point(308, 160);
-            this.label73.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(322, 13);
-            this.label73.TabIndex = 84;
-            this.label73.Text = "Repeats the last frame so the output is exactly as long as the input.";
+            this.gifDitherType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.gifDitherType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.gifDitherType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gifDitherType.ForeColor = System.Drawing.Color.White;
+            this.gifDitherType.FormattingEnabled = true;
+            this.gifDitherType.Items.AddRange(new object[] {
+            "bayer (Recommended)",
+            "floyd_steinberg (Might cause problems with transparency)",
+            "none (Strong banding, but better for flat colors)"});
+            this.gifDitherType.Location = new System.Drawing.Point(386, 417);
+            this.gifDitherType.Name = "gifDitherType";
+            this.gifDitherType.Size = new System.Drawing.Size(294, 21);
+            this.gifDitherType.TabIndex = 85;
             // 
             // SettingsForm
             // 
@@ -2173,7 +2178,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox mp4Enc;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label18;
         private System.Windows.Forms.ComboBox gifColors;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label16;
@@ -2301,5 +2305,6 @@
         private System.Windows.Forms.Label label73;
         private System.Windows.Forms.CheckBox fixOutputDuration;
         private System.Windows.Forms.Label label72;
+        private System.Windows.Forms.ComboBox gifDitherType;
     }
 }

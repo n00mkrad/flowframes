@@ -73,7 +73,8 @@ namespace Flowframes.Media
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
             string vfrFilename = Path.GetFileName(framesFile);
-            string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither=bayer:bayer_scale=2\"" : "";
+            string dither = Config.Get("gifDitherType").Split(' ').First();
+            string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"" : "";
             string fpsFilter = (resampleFps <= 0) ? "" : $"fps=fps={resampleFps.ToStringDot()}";
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
             string args = $"-f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";

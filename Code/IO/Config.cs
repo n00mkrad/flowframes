@@ -157,6 +157,7 @@ namespace Flowframes.IO
             if (key == "aviCodec")          return WriteDefault(key, "ffv1");
             if (key == "aviColors")         return WriteDefault(key, "yuv420p");
             if (key == "gifColors")         return WriteDefault(key, "128 (High)");
+            if (key == "gifDitherType")     return WriteDefault(key, "bayer (Recommended)");
             if (key == "minVidLength")      return WriteDefault(key, "2");
             // AI
             if (key == "uhdThresh")         return WriteDefault(key, "1600");
