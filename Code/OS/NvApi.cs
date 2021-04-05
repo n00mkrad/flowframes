@@ -82,15 +82,23 @@ namespace Flowframes.OS
 
         public static bool HasTensorCores (int gpu = 0)
         {
-            if (gpuList == null)
-                Init();
+            try
+            {
+                if (gpuList == null)
+                    Init();
 
-            if (gpuList == null)
+                if (gpuList == null)
+                    return false;
+
+                string gpuName = gpuList[gpu].FullName;
+
+                return (gpuName.Contains("RTX ") || gpuName.Contains("Tesla V") || gpuName.Contains("Tesla T"));
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"HasTensorCores({gpu}) Error: {e.Message}", true);
                 return false;
-
-            string gpuName = gpuList[gpu].FullName;
-
-            return (gpuName.Contains("RTX ") || gpuName.Contains("Tesla V") || gpuName.Contains("Tesla T"));
+            }
         }
     }
 }
