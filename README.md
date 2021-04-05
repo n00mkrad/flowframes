@@ -1,18 +1,20 @@
 # Flowframes - Windows GUI for Video Interpolation
-Flowframes Windows GUI for video interpolation - Supports DAIN NCNN as well as RIFE Pytorch and NCNN implementations.
 
-Flowframes is **open-source donationware**. Builds are released for free on itch after an early-access period on Patreon. This repo's code is complete and does not "paywall" experienced users who want to compile the program themselves.
+## [itch.io (Free Builds)](https://nmkd.itch.io/flowframes) | [Patreon (Latest Builds)](https://www.patreon.com/n00mkrad) | [Discord](https://discord.com/invite/eJHD2NSJRe)
 
-However, **I do not provide support for self-built versions** as I can't guarantee that the code of this repo is stable at any given moment. Refer to the releases if you want to get the most stable source code.
+Flowframes Windows GUI for video interpolation - Supports RIFE (Pytorch & NCNN), DAIN (NCNN), and FLAVR (Pytorch) implementations.
+
+Flowframes is **open-source donationware**. Builds are released for free on itch after an early-access period on Patreon. This repo's code is complete and does not "paywall" experienced users who want to compile the program themselves or want to contribute to the development.
+
+However, **I do not provide support for self-built versions** as I can't guarantee that the code of this repo is stable at any given moment.
 
 ![img](https://i.imgur.com/HHZxUYo.png)
 
-## Installation
+## Quick Installation
 
 * Download on [itch](https://nmkd.itch.io/flowframes) or, for the most recent beta versions, on [Patreon](https://www.patreon.com/n00mkrad). This repo does not provide builds.
+* Extract the 7z archive (7-zip or similar software required!) to any folder
 * Run Flowframes.exe
-
-Starting with 1.18, the installer has been removed, and Flowframes is instead distributed as an all-in-one archive. Download the "Full" file if you are using a Maxwell/Pascal/Turing GPU and want to use embedded Pytorch, or "Full-RTX3000" if you have an Ampere GPU. Use "NoPython"/"Slim" if you run an AMD GPU or want to use your system Python/Pytorch installation.
 
 
 
