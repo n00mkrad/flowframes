@@ -10,6 +10,7 @@ using I = Flowframes.Interpolate;
 using System.Diagnostics;
 using Flowframes.Data;
 using Flowframes.Media;
+using Microsoft.VisualBasic.Logging;
 
 namespace Flowframes.Main
 {
@@ -230,6 +231,12 @@ namespace Flowframes.Main
             Program.mainForm.SetStatus("Muxing audio/subtitles into video...");
 
             bool muxFromInput = Config.GetInt("audioSubTransferMode") == 0;
+
+            if (muxFromInput && I.current.inputIsFrames)
+            {
+                Logger.Log("Skipping muxing from input step as there is no input video, only frames.", true);
+                return;
+            }
 
             try
             {

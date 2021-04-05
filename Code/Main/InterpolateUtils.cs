@@ -170,7 +170,7 @@ namespace Flowframes.Main
             }
             catch (Exception e)
             {
-                Logger.Log("Error updating preview: " + e.Message, true);
+                //Logger.Log("Error updating preview: " + e.Message, true);
             }
         }
 
@@ -295,7 +295,7 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, Fraction fpsOut, float factor, Interpolate.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, Fraction fpsOut, float factor, I.OutMode outMode)
         {
             bool passes = true;
 
