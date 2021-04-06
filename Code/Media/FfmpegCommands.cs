@@ -84,8 +84,7 @@ namespace Flowframes
             {
                 try
                 {
-                    string ffprobeArgs =
-                        $"-v panic -select_streams v:0 -show_entries stream=r_frame_rate {inputFile.Wrap()}";
+                    string ffprobeArgs = $"-v panic -select_streams v:0 -show_entries stream=r_frame_rate {inputFile.Wrap()}";
                     string ffprobeOutput = GetFfprobeOutput(ffprobeArgs);
                     string fpsStr = ffprobeOutput.SplitIntoLines().Where(x => x.Contains("r_frame_rate")).First();
                     string[] numbers = fpsStr.Split('=')[1].Split('/');

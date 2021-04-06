@@ -66,12 +66,14 @@ namespace Flowframes.Media
 
             if (codec == Codec.NVENC264)
             {
-                args += $"-cq {Config.GetInt("h264Crf")} -preset slow -pix_fmt yuv420p";
+                int crf = Config.GetInt("h264Crf");
+                args += $"-b:v 0 {(crf > 0 ? $"-qp {crf} -preset slow" : "-preset lossless")} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.NVENC265)
             {
-                args += $"-cq {Config.GetInt("h265Crf")} -preset slow -pix_fmt yuv420p";
+                int crf = Config.GetInt("h264Crf");
+                args += $"-b:v 0 {(crf > 0 ? $"-qp {crf} -preset slow" : "-preset lossless")} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
