@@ -54,12 +54,16 @@ namespace Flowframes.OS
             if (!IsWin10())
                 return;
 
+            bool silent = Config.GetBool("silentDevmodeCheck", true);
             string ver = Updater.GetInstalledVer().ToString();
 
             if (!Symlinks.SymlinksAllowed() && Config.Get("askedForDevModeVersion") != ver)
             {
-                MessageBox.Show("Flowframes will now enable Windows' Developer Mode which is required for video encoding improvements.\n\n" +
-                                "This requires administrator privileges once.", "Message");
+                if (!silent)
+                {
+                    MessageBox.Show("Flowframes will now enable Windows' Developer Mode which is required for video encoding improvements.\n\n" +
+                                    "This requires administrator privileges once.", "Message");
+                }
 
                 string devmodeBatchPath = Path.Combine(Paths.GetDataPath(), "devmode.bat");
                 File.WriteAllText(devmodeBatchPath, Properties.Resources.devmode);
@@ -78,19 +82,23 @@ namespace Flowframes.OS
                     if(symlinksWorksNow)
                         break;
 
-                    await Task.Delay(250);
+                    await Task.Delay(500);
                 }
 
                 if (!symlinksWorksNow)
                 {
-                    MessageBox.Show("Failed to enable developer mode - Perhaps you do not have sufficient privileges.\n\n" +
-                                    "Without Developer Mode, video encoding will be noticably slower.\n\nYou can still try enabling " +
-                                    "it manually in the Windows 10 Settings:\nSettings -> Update & security -> For developers -> Developer mode.", "Message");
+                    if (!silent)
+                    {
+                        MessageBox.Show("Failed to enable developer mode - Perhaps you do not have sufficient privileges.\n\n" +
+                                        "Without Developer Mode, video encoding will be noticably slower.\n\nYou can still try enabling " +
+                                        "it manually in the Windows 10 Settings:\nSettings -> Update & security -> For developers -> Developer mode.", "Message");
+                    }
+
                     Config.Set("askedForDevModeVersion", ver);
                 }
                 else
                 {
-                    Logger.Log("Windows Developer Mode is enabled.");
+                    Logger.Log("Enabled Windows Developer Mode.", silent);
                 }
 
                 IOUtils.TryDeleteIfExists(devmodeBatchPath);
