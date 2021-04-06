@@ -159,12 +159,7 @@ namespace Flowframes
                 Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
             }
 
-            await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);     // Always
-
             if (canceled) return;
-
-            if (!stepByStep)
-                await FrameRename.Rename();
 
             if (current.alpha)
             {
@@ -179,6 +174,8 @@ namespace Flowframes
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
             if (canceled) return;
+            await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount);
+            await FrameRename.Rename();
             await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor);
 
             Program.mainForm.SetStatus("Downloading models...");

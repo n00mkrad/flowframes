@@ -80,8 +80,6 @@ namespace Flowframes.Main
                 return;
             }
 
-            await FrameRename.Rename();
-
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
             // TODO: Check if this works lol, remove if it does

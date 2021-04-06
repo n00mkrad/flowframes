@@ -35,10 +35,11 @@ namespace Flowframes.UI
                 List<string> goldPatrons = new List<string>();
                 List<string> silverPatrons = new List<string>();
                 string str = "Gold:\n";
-                string[] lines = csvData.SplitIntoLines();
+                string[] lines = csvData.SplitIntoLines().Select(x => x.Replace(";", ",")).ToArray();
+
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    string line = lines[i].Replace(";", ",");
+                    string line = lines[i];
                     string[] values = line.Split(',');
                     if (i == 0 || line.Length < 10 || values.Length < 5) continue;
                     string name = values[0].Trim();
