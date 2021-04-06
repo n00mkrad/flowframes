@@ -5,6 +5,7 @@ Flowframes 1.24.5 Changelog:
 - Manual FPS input now accepts both floats ("23.97") and fractions ("24000/1001")
 - Fixed manual FPS input (for image sequences etc) not working
 - Several under-the-hood improvements and better error handling
+- Fixed manual deduplication being ignored (Hotfix 1)
 
 
 Flowframes 1.24.4 Changelog:
