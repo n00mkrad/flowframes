@@ -1,3 +1,12 @@
+Flowframes 1.24.5 Changelog:
+- Added option to choose dithering type for GIF encoding (Bayer/Floyd-Steinberg/None)
+- Added option to preserve video metadata (for embedded fonts in MKV, etc)
+- NVENC Improvements: CRF is more accurate, CRF 0 is now lossless
+- Manual FPS input now accepts both floats ("23.97") and fractions ("24000/1001")
+- Fixed manual FPS input (for image sequences etc) not working
+- Several under-the-hood improvements and better error handling
+
+
 Flowframes 1.24.4 Changelog:
 - Drastically improved ffmpeg encoding speed (+350% NVENC, +55% VP9/h264, +35% ProRes)
 - Added compatibility checks showing warnings if not running Windows 10 x64
