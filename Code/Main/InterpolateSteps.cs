@@ -82,10 +82,6 @@ namespace Flowframes.Main
 
             currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
 
-            // TODO: Check if this works lol, remove if it does
-            //if (Config.GetBool("sbsAllowAutoEnc"))
-            //    nextOutPath = Path.Combine(currentOutPath, Path.GetFileNameWithoutExtension(current.inPath) + IOUtils.GetAiSuffix(current.ai, current.interpFactor) + InterpolateUtils.GetExt(current.outMode));
-
             if (Config.GetBool("sbsAllowAutoEnc") && !(await InterpolateUtils.CheckEncoderValid())) return;
 
             if (canceled) return;

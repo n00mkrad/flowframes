@@ -207,7 +207,7 @@ namespace Flowframes.Media
 
             bool isMkv = I.current.outMode == I.OutMode.VidMkv;
             string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
-            string metaArg = (isMkv && meta) ? "-map 1:t" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
+            string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
 
             if (QuickSettingsTab.trimEnabled)
             {
