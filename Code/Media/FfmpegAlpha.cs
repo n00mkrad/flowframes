@@ -13,14 +13,14 @@ using static Flowframes.AvProcess;
 
 namespace Flowframes.Media
 {
-    class FfmpegAlpha
+    partial class FfmpegAlpha : FfmpegCommands
     {
         public static async Task ExtractAlphaDir(string rgbDir, string alphaDir)
         {
             Directory.CreateDirectory(alphaDir);
             foreach (FileInfo file in IOUtils.GetFileInfosSorted(rgbDir))
             {
-                string args = $"-i {file.FullName.Wrap()} -vf format=yuva444p16le,alphaextract,format=yuv420p {Path.Combine(alphaDir, file.Name).Wrap()}";
+                string args = $"-i {file.FullName.Wrap()} -vf \"format=yuva444p16le,alphaextract,format=yuv420p,{GetPadFilter()}\" {Path.Combine(alphaDir, file.Name).Wrap()}";
                 await RunFfmpeg(args, LogMode.Hidden);
             }
         }
