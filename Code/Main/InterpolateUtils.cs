@@ -340,8 +340,12 @@ namespace Flowframes.Main
             if (I.current.ai.aiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
             {
                 ShowMessage("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", "Error");
-                //I.Cancel("No CUDA-capable graphics card available.", true);
-                return false;
+                
+                if (!Config.GetBool("allowCudaWithoutDetectedGpu", true))
+                {
+                    I.Cancel("No CUDA-capable graphics card available.", true);
+                    return false;
+                }
             }
 
             return true;
