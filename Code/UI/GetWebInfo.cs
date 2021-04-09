@@ -13,18 +13,32 @@ namespace Flowframes.UI
     {
         public static async Task LoadNews (Label newsLabel)
         {
-            string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/changelog.txt";
-            var client = new WebClient();
-            var str = await client.DownloadStringTaskAsync(new Uri(url));
-            newsLabel.Text = str;
+            try
+            {
+                string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/changelog.txt";
+                var client = new WebClient();
+                var str = await client.DownloadStringTaskAsync(new Uri(url));
+                newsLabel.Text = str;
+            }
+            catch(Exception e)
+            {
+                Logger.Log($"Failed to load news: {e.Message}");
+            }
         }
 
         public static async Task LoadPatronListCsv(Label patronsLabel)
         {
-            string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/patrons.csv";
-            var client = new WebClient();
-            var csvData = await client.DownloadStringTaskAsync(new Uri(url));
-            patronsLabel.Text = ParsePatreonCsv(csvData);
+            try
+            {
+                string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/patrons.csv";
+                var client = new WebClient();
+                var csvData = await client.DownloadStringTaskAsync(new Uri(url));
+                patronsLabel.Text = ParsePatreonCsv(csvData);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to load patreon CSV: {e.Message}");
+            }
         }
 
         public static string ParsePatreonCsv(string csvData)
