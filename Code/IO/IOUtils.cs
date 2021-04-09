@@ -403,6 +403,9 @@ namespace Flowframes.IO
 			InterpSettings curr = Interpolate.current;
 			float fps = fpsLimit ? Config.GetFloat("maxFps") : curr.outFps.GetFloat();
 
+            if (curr.outMode == Interpolate.OutMode.VidGif && fps > 50f)
+                fps = 50f;
+
 			string pattern = Config.Get("exportNamePattern");
 			string inName = Interpolate.current.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
             bool encodeBoth = Config.GetInt("maxFpsMode") == 0;

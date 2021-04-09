@@ -306,28 +306,25 @@ namespace Flowframes.Main
                 ShowMessage("Input path is not valid!");
                 passes = false;
             }
+
             if (passes && !IOUtils.IsDirValid(outDir))
             {
                 ShowMessage("Output path is not valid!");
                 passes = false;
             }
-            if (passes && /*factor != 2 && factor != 4 && factor != 8*/ factor > 16)
-            {
-                ShowMessage("Interpolation factor is not valid!");
-                passes = false;
-            }
-            if (passes && outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(Config.GetFloat("maxFps") != 0 && Config.GetFloat("maxFps") <= 50))
-            {
-                ShowMessage("Invalid output frame rate!\nGIF does not properly support frame rates above 50 FPS.\nPlease use MP4, WEBM or another video format.");
-                passes = false;
-            }
+
             if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
             {
                 ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.");
                 passes = false;
             }
+
+            if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(Config.GetFloat("maxFps") != 0 && Config.GetFloat("maxFps") <= 50))
+                Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut.GetFloat()} as the format doesn't support frame rates that high.");
+
             if (!passes)
                 I.Cancel("Invalid settings detected.", true);
+
             return passes;
         }
 
