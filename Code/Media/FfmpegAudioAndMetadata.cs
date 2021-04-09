@@ -214,7 +214,7 @@ namespace Flowframes.Media
                 string otherStreamsName = $"otherStreams{containerExt}";
 
                 string[] trim = FfmpegExtract.GetTrimArgs();
-                string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -vn -map 0 -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
+                string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -map 0 -map -0:v -map -0:d -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
                 await RunFfmpeg(args1, tempFolder, LogMode.Hidden);
 
                 string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {outName}"; // Merge interp + trimmed original
