@@ -289,7 +289,6 @@ namespace Flowframes
             {
                 string[] split = fpsInTbox.Text.Split('/');
                 Fraction frac = new Fraction(split[0].GetInt(), split[1].GetInt());
-                fpsInTbox.Text = frac.ToString();
                 fpsOutTbox.Text = (frac * interpFactorCombox.GetFloat()).ToString();
 
                 if (!fpsInTbox.ReadOnly)
