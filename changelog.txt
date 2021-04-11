@@ -1,3 +1,11 @@
+Flowframes 1.24.6 Changelog:
+- GIF encoding framerate will now automatically be downsampled to 50 if it's higher
+- Fixed CUDA AIs not actually starting on undetected GPUs or CPU
+- Fixed muxing not working if metadata transfer was enabled but input has no metadata (MKV)
+- Fixed audio/subtitle transfer sometimes breaking missing when using trim feature
+- Fixed transparency interpolation not working if input resolution is not divisible by 2
+- Fixed cursor skipping when entering fractions in the FPS input box
+
 Flowframes 1.24.5 Changelog:
 - Added option to choose dithering type for GIF encoding (Bayer/Floyd-Steinberg/None)
 - Added option to preserve video metadata (for embedded fonts in MKV, etc)
