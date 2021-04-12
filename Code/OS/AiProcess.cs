@@ -438,6 +438,19 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
             }
 
+            if (!hasShownError && line.ToLower().Contains("illegal memory access"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"Your GPU appears to be unstable! If you have an overclock enabled, please disable it!\n\n{line}", "Error");
+            }
+
+            if (!hasShownError && line.ToLower().Contains("error(s) in loading state_dict"))
+            {
+                hasShownError = true;
+                string msg = (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
+                InterpolateUtils.ShowMessage($"Error loading the AI model!\n\n{line}{msg}", "Error");
+            }
+
             if (!hasShownError && err && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
             {
                 hasShownError = true;
