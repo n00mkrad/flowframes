@@ -58,6 +58,7 @@
             this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.keepMeta = new System.Windows.Forms.CheckBox();
             this.sceneChangeFillMode = new System.Windows.Forms.ComboBox();
             this.label71 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -179,7 +180,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.keepMeta = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -559,6 +559,16 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // keepMeta
+            // 
+            this.keepMeta.AutoSize = true;
+            this.keepMeta.Location = new System.Drawing.Point(467, 39);
+            this.keepMeta.Name = "keepMeta";
+            this.keepMeta.Size = new System.Drawing.Size(131, 17);
+            this.keepMeta.TabIndex = 81;
+            this.keepMeta.Text = "Keep Metadata (MKV)";
+            this.keepMeta.UseVisualStyleBackColor = true;
             // 
             // sceneChangeFillMode
             // 
@@ -1659,9 +1669,9 @@
             this.label13.Location = new System.Drawing.Point(10, 300);
             this.label13.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(168, 13);
+            this.label13.Size = new System.Drawing.Size(196, 13);
             this.label13.TabIndex = 37;
-            this.label13.Text = "MP4: Quality Level (CRF) for h265";
+            this.label13.Text = "MP4/MKV: Quality Level (CRF) for h265";
             // 
             // h265Crf
             // 
@@ -1703,9 +1713,9 @@
             this.label12.Location = new System.Drawing.Point(10, 270);
             this.label12.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(168, 13);
+            this.label12.Size = new System.Drawing.Size(196, 13);
             this.label12.TabIndex = 34;
-            this.label12.Text = "MP4: Quality Level (CRF) for h264";
+            this.label12.Text = "MP4/MKV: Quality Level (CRF) for h264";
             // 
             // mp4Enc
             // 
@@ -1730,9 +1740,9 @@
             this.label10.Location = new System.Drawing.Point(10, 240);
             this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(96, 13);
+            this.label10.Size = new System.Drawing.Size(124, 13);
             this.label10.TabIndex = 32;
-            this.label10.Text = "MP4: Video Codec";
+            this.label10.Text = "MP4/MKV: Video Codec";
             // 
             // label9
             // 
@@ -2091,16 +2101,6 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
-            // 
-            // keepMeta
-            // 
-            this.keepMeta.AutoSize = true;
-            this.keepMeta.Location = new System.Drawing.Point(467, 39);
-            this.keepMeta.Name = "keepMeta";
-            this.keepMeta.Size = new System.Drawing.Size(131, 17);
-            this.keepMeta.TabIndex = 81;
-            this.keepMeta.Text = "Keep Metadata (MKV)";
-            this.keepMeta.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
