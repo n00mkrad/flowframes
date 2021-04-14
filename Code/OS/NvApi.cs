@@ -9,6 +9,7 @@ namespace Flowframes.OS
 {
     class NvApi
     {
+        public enum Architecture { Undetected, Fermi, Kepler, Maxwell, Pascal, Turing, Ampere };
         public static List<PhysicalGPU> gpuList = new List<PhysicalGPU>();
 
         public static void Init()
@@ -80,6 +81,33 @@ namespace Flowframes.OS
             }
         }
 
+        public static bool HasAmpereOrNewer()
+        {
+            foreach (PhysicalGPU gpu in gpuList)
+            {
+                Architecture arch = GetArch(gpu);
+
+                if (arch == Architecture.Ampere || arch == Architecture.Undetected)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static Architecture GetArch(PhysicalGPU gpu)
+        {
+            string gpuCode = gpu.ArchitectInformation.ShortName;
+
+            if (gpuCode.Trim().StartsWith("GF")) return Architecture.Fermi;
+            if (gpuCode.Trim().StartsWith("GK")) return Architecture.Kepler;
+            if (gpuCode.Trim().StartsWith("GM")) return Architecture.Maxwell;
+            if (gpuCode.Trim().StartsWith("GP")) return Architecture.Pascal;
+            if (gpuCode.Trim().StartsWith("TU")) return Architecture.Turing;
+            if (gpuCode.Trim().StartsWith("GA")) return Architecture.Ampere;
+
+            return Architecture.Undetected;
+        }
+
         public static bool HasTensorCores (int gpu = 0)
         {
             try
@@ -90,9 +118,8 @@ namespace Flowframes.OS
                 if (gpuList == null)
                     return false;
 
-                string gpuName = gpuList[gpu].FullName;
-
-                return (gpuName.Contains("RTX ") || gpuName.Contains("Tesla V") || gpuName.Contains("Tesla T"));
+                Architecture arch = GetArch(gpuList[gpu]);
+                return arch == Architecture.Turing || arch == Architecture.Ampere;
             }
             catch (Exception e)
             {
