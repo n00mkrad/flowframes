@@ -123,12 +123,14 @@
   <data name="info1.ToolTip" xml:space="preserve">
     <value>Set the filename patterns using placeholders:
 [NAME] for the input filename
-[NAMEWITHEXT] for the input filename with extension
+[FULLNAME] for the input filename with extension
 [FACTOR] for the interpolation factor
 [AI] for the interpolation AI used
 [MODEL] for the AI model used
 [FPS] for the exact output frame rate
 [ROUNDFPS] for the rounded output frame rate
+[RES] for the resolution (e.g. 1920x1080)
+[H] for the height (e.g. 1080p)
 
 The loop suffix gets added if the output gets looped. You can use the following placeholders:
 [LOOPS] for how many times it was looped

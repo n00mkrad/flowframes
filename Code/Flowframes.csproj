@@ -317,6 +317,7 @@
     <Reference Include="WinFormAnimation, Version=1.6.0.4, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
       <HintPath>packages\WinFormAnimation.1.6.0.4\lib\net40\WinFormAnimation.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management.Automation" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\AI.cs" />
@@ -371,6 +372,8 @@
     <Compile Include="Media\FfmpegEncode.cs" />
     <Compile Include="Media\FfmpegExtract.cs" />
     <Compile Include="Media\FFmpegUtils.cs" />
+    <Compile Include="Media\GetFrameCountCached.cs" />
+    <Compile Include="Media\GetMediaResolutionCached.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
     <Compile Include="OS\AiProcess.cs" />
@@ -414,6 +417,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\UpdaterForm.resx">
       <DependentUpon>UpdaterForm.cs</DependentUpon>

@@ -142,7 +142,7 @@ namespace Flowframes
         {
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             Directory.CreateDirectory(outPath);
-            string uhdStr = await InterpolateUtils.UseUHD() ? "--UHD" : "";
+            string uhdStr = await InterpolateUtils.UseUhd() ? "--UHD" : "";
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt("rifeCudaBufferSize", 200)}";
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
@@ -154,7 +154,7 @@ namespace Flowframes
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeCuda.pkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
-            Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
+            Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
             if (!OSUtils.ShowHiddenCmd())
@@ -244,7 +244,7 @@ namespace Flowframes
 
             try
             {
-                Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUHD() ? " (UHD Mode)" : "")}...", false);
+                Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
                 await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
 
@@ -301,7 +301,7 @@ namespace Flowframes
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, 2);
 
-            string uhdStr = await InterpolateUtils.UseUHD() ? "-u" : "";
+            string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool("rifeNcnnUseTta", false) ? "-x" : "";
 
             string oldMdlName = mdl;

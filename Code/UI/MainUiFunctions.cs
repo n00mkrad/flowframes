@@ -36,7 +36,7 @@ namespace Flowframes.UI
             Logger.Log("Loading metadata...");
             Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
             Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
-            int frameCount = await InterpolateUtils.GetInputFrameCountAsync(path);
+            int frameCount = await GetFrameCountCached.GetFrameCountAsync(path);
             string fpsStr = "Not Found";
             Fraction fps = (await IOUtils.GetFpsFolderOrVideo(path));
             fpsInTbox.Text = fps.GetString();
@@ -87,7 +87,7 @@ namespace Flowframes.UI
             if(path == Interpolate.current.inPath)
                 res = await Interpolate.current.GetInputRes();
             else
-                res = await IOUtils.GetVideoOrFramesRes(path);
+                res = await GetMediaResolutionCached.GetSizeAsync(path);
 
             if (res.Width > 1 && res.Height > 1)
                 Logger.Log($"Input Resolution: {res.Width}x{res.Height}");

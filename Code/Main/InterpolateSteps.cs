@@ -57,7 +57,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
+            currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
 
             await GetFrames();
             await PostProcessFrames(true);
@@ -80,7 +80,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            currentInputFrameCount = await InterpolateUtils.GetInputFrameCountAsync(current.inPath);
+            currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
 
             if (Config.GetBool("sbsAllowAutoEnc") && !(await InterpolateUtils.CheckEncoderValid())) return;
 

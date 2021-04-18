@@ -144,7 +144,6 @@ namespace Flowframes.Main
             Logger.Log("[AutoEnc] Starting DeleteOldFramesAsync.", true, false, "ffmpeg");
             Stopwatch sw = new Stopwatch();
             sw.Restart();
-            int counter = 0;
 
             foreach (int frame in frameLinesToEncode)
             {
@@ -153,11 +152,6 @@ namespace Flowframes.Main
                     string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
                     IOUtils.OverwriteFileWithText(framePath);    // Overwrite to save space without breaking progress counter
                 }
-
-                if(counter % 1000 == 0)
-                    await Task.Delay(1);
-
-                counter++;
             }
 
             Logger.Log("[AutoEnc] DeleteOldFramesAsync finished in " + FormatUtils.TimeSw(sw), true, false, "ffmpeg");

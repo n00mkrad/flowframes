@@ -39,7 +39,7 @@ namespace Flowframes
             if (!ResumeUtils.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             if (!(await Utils.CheckEncoderValid())) return;           // Check NVENC compat
-            currentInputFrameCount = await Utils.GetInputFrameCountAsync(current.inPath);
+            currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
 
@@ -84,7 +84,7 @@ namespace Flowframes
             if (!current.inputIsFrames)        // Extract if input is video, import if image sequence
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
-                await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, await Utils.GetOutputResolution(current.inPath, true, true));
+                await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, (await current.GetScaledRes()));
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha)

@@ -204,53 +204,6 @@ namespace Flowframes.Main
                 bigPreviewForm.SetImage(img);
         }
 
-        public static Dictionary<PseudoUniqueFile, int> frameCountCache = new Dictionary<PseudoUniqueFile, int>();
-        public static async Task<int> GetInputFrameCountAsync(string path)
-        {
-            long filesize = IOUtils.GetFilesize(path);
-            PseudoUniqueFile hash = new PseudoUniqueFile(path, filesize);
-
-            if (filesize > 0 && FrameCountCacheContains(hash))
-            {
-                Logger.Log($"FrameCountCache contains this hash, using cached frame count.", true);
-                return GetFrameCountFromCache(hash);
-            }
-            else
-            {
-                Logger.Log($"Hash not cached, reading frame count.", true);
-            }
-
-            int frameCount;
-
-            if (IOUtils.IsPathDirectory(path))
-                frameCount = IOUtils.GetAmountOfFiles(path, false);
-            else
-                frameCount = await FfmpegCommands.GetFrameCountAsync(path);
-
-            Logger.Log($"Adding hash with frame count {frameCount} to cache.", true);
-            frameCountCache.Add(hash, frameCount);
-
-            return frameCount;
-        }
-
-        private static bool FrameCountCacheContains (PseudoUniqueFile hash)
-        {
-            foreach(KeyValuePair<PseudoUniqueFile, int> entry in frameCountCache)
-                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
-                    return true;
-
-            return false;
-        }
-
-        private static int GetFrameCountFromCache(PseudoUniqueFile hash)
-        {
-            foreach (KeyValuePair<PseudoUniqueFile, int> entry in frameCountCache)
-                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
-                    return entry.Value;
-
-            return 0;
-        }
-
         public static int GetProgressWaitTime(int numFrames)
         {
             float hddMultiplier = !Program.lastInputPathIsSsd ? 2f : 1f;
@@ -417,7 +370,7 @@ namespace Flowframes.Main
 
         public static async Task<Size> GetOutputResolution(string inputPath, bool print, bool returnZeroIfUnchanged = false)
         {
-            Size resolution = await IOUtils.GetVideoOrFramesRes(inputPath);
+            Size resolution = await GetMediaResolutionCached.GetSizeAsync(inputPath);
             return GetOutputResolution(resolution, print, returnZeroIfUnchanged);
         }
 
@@ -487,7 +440,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> UseUHD()
+        public static async Task<bool> UseUhd()
         {
             return (await GetOutputResolution(I.current.inPath, false)).Height >= Config.GetInt("uhdThresh");
         }

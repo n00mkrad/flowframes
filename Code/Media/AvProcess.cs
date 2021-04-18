@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Flowframes.MiscUtils;
+using Microsoft.VisualBasic;
 
 namespace Flowframes
 {
@@ -101,10 +102,11 @@ namespace Flowframes
             string line = outLine.Data;
             lastOutputFfmpeg = lastOutputFfmpeg + "\n" + line;
 
-            if (line.Contains("Using -vsync 0 and -r can produce invalid output files"))    // Do not print this msg
-                return;
-
             bool hidden = currentLogMode == LogMode.Hidden;
+
+            if (line.MatchesWildcard("*can produce invalid output*")) // Don't print this kind of warning
+                hidden = true;
+
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
             string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
             Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");

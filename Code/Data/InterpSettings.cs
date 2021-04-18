@@ -154,8 +154,8 @@ namespace Flowframes
         {
             if (inputResolution.IsEmpty || scaledResolution.IsEmpty)
             {
-                inputResolution = await IOUtils.GetVideoOrFramesRes(inPath);
-                scaledResolution = InterpolateUtils.GetOutputResolution(inputResolution, false);
+                inputResolution = await GetMediaResolutionCached.GetSizeAsync(inPath);
+                scaledResolution = InterpolateUtils.GetOutputResolution(inputResolution, false, true);
             }
         }
 

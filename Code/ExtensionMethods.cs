@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.Data;
+using System.Management.Automation;
 
 namespace Flowframes
 {
@@ -185,6 +186,12 @@ namespace Flowframes
         public static string[] Split(this string str, string trimStr)
         {
             return str.Split(new string[] { trimStr }, StringSplitOptions.None);
+        }
+
+        public static bool MatchesWildcard(this string str, string wildcard)
+        {
+            WildcardPattern pattern = new WildcardPattern(wildcard);
+            return pattern.IsMatch(str);
         }
     }
 }

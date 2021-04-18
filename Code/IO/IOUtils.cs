@@ -396,7 +396,7 @@ namespace Flowframes.IO
 			return false;
         }
 
-		public static string GetCurrentExportFilename(bool fpsLimit, bool withExt)
+		public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool withExt)
 		{
 			InterpSettings curr = Interpolate.current;
 			float fps = fpsLimit ? Config.GetFloat("maxFps") : curr.outFps.GetFloat();
@@ -404,6 +404,7 @@ namespace Flowframes.IO
             if (curr.outMode == Interpolate.OutMode.VidGif && fps > 50f)
                 fps = 50f;
 
+            Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, false, false);
 			string pattern = Config.Get("exportNamePattern");
 			string inName = Interpolate.current.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
             bool encodeBoth = Config.GetInt("maxFpsMode") == 0;
@@ -411,14 +412,16 @@ namespace Flowframes.IO
 			string filename = pattern;
 
 			filename = filename.Replace("[NAME]", inName);
-			filename = filename.Replace("[NAMEWITHEXT]", Path.GetFileName(curr.inPath));
-			filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
+			filename = filename.Replace("[FULLNAME]", Path.GetFileName(curr.inPath));
+            filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
 			filename = filename.Replace("[AI]", curr.ai.aiNameShort.ToUpper());
 			filename = filename.Replace("[MODEL]", curr.model);
 			filename = filename.Replace("[FPS]", fps.ToStringDot());
-			filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
+            filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
+			filename = filename.Replace("[RES]", $"{outRes.Width}x{outRes.Height}");
+			filename = filename.Replace("[H]", $"{outRes.Height}p");
 
-			if (addSuffix)
+            if (addSuffix)
 				filename += Paths.fpsLimitSuffix;
 
 			if (withExt)

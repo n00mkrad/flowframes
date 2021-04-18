@@ -30,7 +30,7 @@ namespace Flowframes.Main
             {
                 try
                 {
-                    string folder = Path.Combine(outFolder, IOUtils.GetCurrentExportFilename(false, false));
+                    string folder = Path.Combine(outFolder, (await IOUtils.GetCurrentExportFilename(false, false)));
                     await CopyOutputFrames(path, folder, stepByStep);
                 }
                 catch (Exception e)
@@ -58,10 +58,10 @@ namespace Flowframes.Main
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
                 if (!dontEncodeFullFpsVid)
-                    await Encode(mode, path, Path.Combine(outFolder, IOUtils.GetCurrentExportFilename(false, true)), I.current.outFps);
+                    await Encode(mode, path, Path.Combine(outFolder, await IOUtils.GetCurrentExportFilename(false, true)), I.current.outFps);
 
                 if (fpsLimit)
-                    await Encode(mode, path, Path.Combine(outFolder, IOUtils.GetCurrentExportFilename(true, true)), I.current.outFps, maxFps);
+                    await Encode(mode, path, Path.Combine(outFolder, await IOUtils.GetCurrentExportFilename(true, true)), I.current.outFps, maxFps);
             }
             catch (Exception e)
             {
@@ -153,7 +153,7 @@ namespace Flowframes.Main
                     File.WriteAllText(tempConcatFile, concatFileContent);
                     Logger.Log($"CreateVideo: Running MergeChunks() for frames file '{Path.GetFileName(tempConcatFile)}'", true);
                     bool fpsLimit = dir.Name.Contains(Paths.fpsLimitSuffix);
-                    string outPath = Path.Combine(baseOutPath, IOUtils.GetCurrentExportFilename(fpsLimit, true));
+                    string outPath = Path.Combine(baseOutPath, await IOUtils.GetCurrentExportFilename(fpsLimit, true));
                     await MergeChunks(tempConcatFile, outPath);
                 }
             }
