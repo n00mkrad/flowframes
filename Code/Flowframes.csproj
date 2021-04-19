@@ -459,8 +459,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FlowFramesFunkyLogo1.ico" />
-    <Content Include="FlowFramesFunkyLogo2.ico" />
     <None Include="Resources\devmode.bat" />
     <None Include="Resources\flowframesIcoNew-512px.png" />
     <None Include="Resources\flowframesIcoNew.png" />
