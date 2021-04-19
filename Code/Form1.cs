@@ -123,7 +123,7 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFps, interpFactorCombox.GetInt(), GetOutMode(), GetModel());
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetInt(), GetOutMode(), GetModel());
         }
 
         public void LoadBatchEntry(InterpSettings entry)
@@ -155,6 +155,7 @@ namespace Flowframes
         }
 
         public Size currInRes;
+        public Fraction currInFpsDetected;
         public Fraction currInFps;
         public int currInFrames;
         public long currInDuration;
@@ -163,7 +164,7 @@ namespace Flowframes
         public void UpdateInputInfo ()
         {
             string str = $"Size: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
-            str += $"Rate: {(currInFps.GetFloat() > 0f ? $"{currInFps} ({currInFps.GetFloat()})" : "Unknown")} - ";
+            str += $"Rate: {(currInFpsDetected.GetFloat() > 0f ? $"{currInFpsDetected} ({currInFpsDetected.GetFloat()})" : "Unknown")} - ";
             str += $"Frames: {(currInFrames > 0 ? $"{currInFrames}" : "Unknown")} - ";
             str += $"Duration: {(currInDuration > 0 ? FormatUtils.MsToTimestamp(currInDuration) : "Unknown")}";
             inputInfo.Text = str;
@@ -172,6 +173,7 @@ namespace Flowframes
         public void ResetInputInfo ()
         {
             currInRes = new Size();
+            currInFpsDetected = new Fraction();
             currInFps = new Fraction();
             currInFrames = 0;
             currInDuration = 0;

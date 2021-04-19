@@ -19,6 +19,7 @@ namespace Flowframes
         public string outPath;
         public AI ai;
         public Fraction inFps;
+        public Fraction inFpsDetected;
         public Fraction outFps;
         public float interpFactor;
         public Interpolate.OutMode outMode;
@@ -34,11 +35,12 @@ namespace Flowframes
         public bool alpha;
         public bool stepByStep;
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
+        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
             ai = aiArg;
+            inFpsDetected = inFpsDetectedArg;
             inFps = inFpsArg;
             interpFactor = interpFactorArg;
             outFps = inFpsArg * interpFactorArg;
@@ -73,6 +75,7 @@ namespace Flowframes
             inPath = "";
             outPath = "";
             ai = Networks.networks[0];
+            inFpsDetected = new Fraction();
             inFps = new Fraction();
             interpFactor = 0;
             outFps = new Fraction();
@@ -99,6 +102,7 @@ namespace Flowframes
                     case "INPATH": inPath = entry.Value; break;
                     case "OUTPATH": outPath = entry.Value; break;
                     case "AI": ai = Networks.GetAi(entry.Value); break;
+                    case "INFPSDETECTED": inFpsDetected = new Fraction(entry.Value); break;
                     case "INFPS": inFps = new Fraction(entry.Value); break;
                     case "OUTFPS": outFps = new Fraction(entry.Value); break;
                     case "INTERPFACTOR": interpFactor = float.Parse(entry.Value); break;
@@ -192,6 +196,7 @@ namespace Flowframes
             string s = $"INPATH|{inPath}\n";
             s += $"OUTPATH|{outPath}\n";
             s += $"AI|{ai.aiName}\n";
+            s += $"INFPSDETECTED|{inFpsDetected}\n";
             s += $"INFPS|{inFps}\n";
             s += $"OUTFPS|{outFps}\n";
             s += $"INTERPFACTOR|{interpFactor}\n";

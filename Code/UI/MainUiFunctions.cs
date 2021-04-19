@@ -39,6 +39,7 @@ namespace Flowframes.UI
             int frameCount = await GetFrameCountCached.GetFrameCountAsync(path);
             string fpsStr = "Not Found";
             Fraction fps = (await IOUtils.GetFpsFolderOrVideo(path));
+            Program.mainForm.currInFpsDetected = fps;
             fpsInTbox.Text = fps.GetString();
 
             if (fps.GetFloat() > 0)

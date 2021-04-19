@@ -78,7 +78,7 @@ namespace Flowframes
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FfmpegExtract.ExtractSceneChanges(current.inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFps, current.inputIsFrames);
+                await FfmpegExtract.ExtractSceneChanges(current.inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFpsDetected, current.inputIsFrames);
             }
 
             if (!current.inputIsFrames)        // Extract if input is video, import if image sequence
@@ -92,7 +92,7 @@ namespace Flowframes
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
-            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFps, mpdecimate, false, await Utils.GetOutputResolution(inPath, true, true));
+            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFpsDetected, mpdecimate, false, await Utils.GetOutputResolution(inPath, true, true));
 
             if (mpdecimate)
             {
