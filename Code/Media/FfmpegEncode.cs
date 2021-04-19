@@ -34,8 +34,12 @@ namespace Flowframes.Media
 
             if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
             {
-                inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
                 await MakeSymlinks(framesFile, linksDir, Padding.interpFrames);
+
+                if(IOUtils.GetAmountOfFiles(linksDir, false) > 1)
+                    inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
+                else
+                    Logger.Log("Symlink creation seems to have failed even though SymlinksAllowed was true! Encoding ini with concat demuxer instead.", true);
             }
 
             string rate = fps.ToString().Replace(",", ".");
@@ -48,24 +52,34 @@ namespace Flowframes.Media
 
         static async Task MakeSymlinks(string framesFile, string linksDir, int zPad = 8)
         {
-            Directory.CreateDirectory(linksDir);
-            Stopwatch sw = new Stopwatch(); sw.Restart();
-            Logger.Log($"Creating symlinks for '{framesFile}'", true);
-
-            int counter = 0;
-
-            Dictionary<string, string> pathsLinkTarget = new Dictionary<string, string>();
-
-            foreach (string line in File.ReadAllLines(framesFile))
+            try
             {
-                string relTargetPath = line.Remove("file '").Split('\'').FirstOrDefault();    // Relative path in frames file
-                string absTargetPath = Path.Combine(framesFile.GetParentDir(), relTargetPath);  // Full path to frame
-                string linkPath = Path.Combine(linksDir, counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
-                pathsLinkTarget.Add(linkPath, absTargetPath);
-                counter++;
-            }
+                Directory.CreateDirectory(linksDir);
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+                Logger.Log($"Creating symlinks for '{framesFile}' in '{linksDir} with zPadding {zPad}'", true);
 
-            await Symlinks.CreateSymlinksParallel(pathsLinkTarget);
+                int counter = 0;
+
+                Dictionary<string, string> pathsLinkTarget = new Dictionary<string, string>();
+
+                foreach (string line in File.ReadAllLines(framesFile))
+                {
+                    string relTargetPath =
+                        line.Remove("file '").Split('\'').FirstOrDefault(); // Relative path in frames file
+                    string absTargetPath = Path.Combine(framesFile.GetParentDir(), relTargetPath); // Full path to frame
+                    string linkPath = Path.Combine(linksDir,
+                        counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
+                    pathsLinkTarget.Add(linkPath, absTargetPath);
+                    counter++;
+                }
+
+                await Symlinks.CreateSymlinksParallel(pathsLinkTarget);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("MakeSymlinks Exception: " + e.Message);
+            }
         }
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors = 64, float resampleFps = -1, LogMode logMode = LogMode.OnlyLastLine)

@@ -56,14 +56,18 @@ namespace Flowframes.OS
 
             bool silent = Config.GetBool("silentDevmodeCheck", true);
             string ver = Updater.GetInstalledVer().ToString();
+            bool symlinksAllowed = Symlinks.SymlinksAllowed();
+            Logger.Log($"SymlinksAllowed: {symlinksAllowed}", true);
 
-            if (!Symlinks.SymlinksAllowed() && Config.Get("askedForDevModeVersion") != ver)
+            if (!symlinksAllowed && Config.Get("askedForDevModeVersion") != ver)
             {
                 if (!silent)
                 {
                     MessageBox.Show("Flowframes will now enable Windows' Developer Mode which is required for video encoding improvements.\n\n" +
                                     "This requires administrator privileges once.", "Message");
                 }
+
+                Logger.Log($"Trying to enable dev mode.", true);
 
                 string devmodeBatchPath = Path.Combine(Paths.GetDataPath(), "devmode.bat");
                 File.WriteAllText(devmodeBatchPath, Properties.Resources.devmode);
@@ -94,6 +98,7 @@ namespace Flowframes.OS
                                         "it manually in the Windows 10 Settings:\nSettings -> Update & security -> For developers -> Developer mode.", "Message");
                     }
 
+                    Logger.Log("Failed to enable dev mode.", true);
                     Config.Set("askedForDevModeVersion", ver);
                 }
                 else
