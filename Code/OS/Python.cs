@@ -40,7 +40,7 @@ namespace Flowframes.OS
                         await Task.Delay(500);
                         if(sw.ElapsedMilliseconds > 10000)
                         {
-                            Logger.Log($"This can take up to a few minutes... (Elapsed: {FormatUtils.Time(sw.Elapsed)})", false, shownPatienceMsg);
+                            Logger.Log($"This can take up to a few minutes, but only needs to be done once. (Elapsed: {FormatUtils.Time(sw.Elapsed)})", false, shownPatienceMsg);
                             shownPatienceMsg = true;
                             await Task.Delay(500);
                         }
