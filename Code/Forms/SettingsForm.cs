@@ -68,7 +68,6 @@ namespace Flowframes.Forms
             // General
             ConfigParser.SaveComboxIndex(processingMode);
             ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
-            ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
             ConfigParser.SaveGuiElement(exportNamePattern);
@@ -79,6 +78,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(keepAudio);
             ConfigParser.SaveGuiElement(keepSubs);
             ConfigParser.SaveGuiElement(keepMeta);
+            ConfigParser.SaveGuiElement(enableAlpha);
+            ConfigParser.SaveGuiElement(jpegFrames);
             ConfigParser.SaveComboxIndex(dedupMode);
             ConfigParser.SaveComboxIndex(mpdecimateMode);
             ConfigParser.SaveGuiElement(dedupThresh);
@@ -118,7 +119,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(ffEncThreads, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffEncArgs);
-            ConfigParser.SaveGuiElement(ffprobeCountFrames);
         }
 
         void LoadSettings()
@@ -126,7 +126,6 @@ namespace Flowframes.Forms
             // General
             ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
-            ConfigParser.LoadGuiElement(enableAlpha);
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
             ConfigParser.LoadGuiElement(delLogsOnStartup);
             ConfigParser.LoadGuiElement(keepTempFolder);
@@ -137,6 +136,8 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(keepAudio);
             ConfigParser.LoadGuiElement(keepSubs);
             ConfigParser.LoadGuiElement(keepMeta);
+            ConfigParser.LoadGuiElement(enableAlpha);
+            ConfigParser.LoadGuiElement(jpegFrames);
             ConfigParser.LoadComboxIndex(dedupMode);
             ConfigParser.LoadComboxIndex(mpdecimateMode);
             ConfigParser.LoadGuiElement(dedupThresh);
@@ -176,7 +177,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffEncArgs);
-            ConfigParser.LoadGuiElement(ffprobeCountFrames);
         }
 
         private void tempFolderLoc_SelectedIndexChanged(object sender, EventArgs e)

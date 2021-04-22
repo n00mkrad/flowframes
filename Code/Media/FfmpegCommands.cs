@@ -142,9 +142,8 @@ namespace Flowframes
         public static async Task<int> GetFrameCountAsync(string inputFile)
         {
             Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe first.", true, false, "ffmpeg");
-            int frames = 0;
 
-            frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool("ffprobeCountFrames"));      // Try reading frame count with ffprobe
+            int frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool("ffprobeFrameCount"));      // Try reading frame count with ffprobe
             if (frames > 0) return frames;
 
             Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Trying to read with ffmpeg.", true, false, "ffmpeg");
