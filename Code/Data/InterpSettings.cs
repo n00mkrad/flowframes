@@ -198,7 +198,13 @@ namespace Flowframes
 
         public void RefreshExtensions()
         {
-            if (alpha)
+            bool pngOutput = outMode == Interpolate.OutMode.ImgPng;
+            bool aviHqChroma = outMode == Interpolate.OutMode.VidAvi && Config.Get("aviColors") != "yuv420p";
+            bool proresHqChroma = outMode == Interpolate.OutMode.VidProRes && Config.GetInt("proResProfile") > 3;
+
+            bool forceHqChroma = pngOutput || aviHqChroma || proresHqChroma;
+
+            if (alpha || forceHqChroma)     // Force PNG if alpha is enabled, or output is not 4:2:0 subsampled
             {
                 framesExt = ".png";
                 interpExt = ".png";
