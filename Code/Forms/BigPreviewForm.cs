@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Flowframes.UI;
 
 namespace Flowframes.Forms
 {
@@ -30,7 +31,7 @@ namespace Flowframes.Forms
 
         private void BigPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            InterpolateUtils.bigPreviewForm = null;
+            InterpolationProgress.bigPreviewForm = null;
         }
     }
 }

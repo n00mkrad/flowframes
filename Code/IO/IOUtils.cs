@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.Logging;
 
 namespace Flowframes.IO
 {
@@ -156,12 +157,14 @@ namespace Flowframes.IO
         {
             try
             {
-				DirectoryInfo d = new DirectoryInfo(path);
+                DirectoryInfo d = new DirectoryInfo(path);
 				FileInfo[] files = null;
+
 				if (recursive)
 					files = d.GetFiles(wildcard, SearchOption.AllDirectories);
 				else
 					files = d.GetFiles(wildcard, SearchOption.TopDirectoryOnly);
+
 				return files.Length;
 			}
 			catch

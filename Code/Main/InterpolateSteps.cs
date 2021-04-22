@@ -69,7 +69,7 @@ namespace Flowframes.Main
 
             current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
 
-            if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png") < 2)
+            if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*" + current.framesExt) < 2)
             {
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
                 return;
@@ -101,7 +101,7 @@ namespace Flowframes.Main
 
             if (!(await InterpolateUtils.CheckEncoderValid())) return;
 
-            string[] outFrames = IOUtils.GetFilesSorted(current.interpFolder, $"*.{InterpolateUtils.GetOutExt()}");
+            string[] outFrames = IOUtils.GetFilesSorted(current.interpFolder, current.interpExt);
 
             if (outFrames.Length > 0 && !IOUtils.CheckImageValid(outFrames[0]))
             {

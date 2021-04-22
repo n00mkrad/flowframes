@@ -402,6 +402,7 @@
     <Compile Include="MiscUtils\FormatUtils.cs" />
     <Compile Include="UI\ControlExtensions.cs" />
     <Compile Include="UI\GetWebInfo.cs" />
+    <Compile Include="UI\InterpolationProgress.cs" />
     <Compile Include="UI\MainUiFunctions.cs" />
     <Compile Include="UI\UIUtils.cs" />
     <Compile Include="UI\QuickSettingsTab.cs" />

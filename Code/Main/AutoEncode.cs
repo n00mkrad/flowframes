@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Win32Interop.Structs;
 
 namespace Flowframes.Main
 {
@@ -28,7 +29,7 @@ namespace Flowframes.Main
 
         public static void UpdateChunkAndBufferSizes ()
         {
-            chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*.png") * Interpolate.current.interpFactor).RoundToInt());
+            chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*" + Interpolate.current.interpExt) * Interpolate.current.interpFactor).RoundToInt());
 
             safetyBufferFrames = 90;
 
@@ -182,7 +183,7 @@ namespace Flowframes.Main
 
         static int GetInterpFramesAmount()
         {
-            return IOUtils.GetAmountOfFiles(interpFramesFolder, false, $"*.{InterpolateUtils.GetOutExt()}");
+            return IOUtils.GetAmountOfFiles(interpFramesFolder, false, "*" + Interpolate.current.interpExt);
         }
     }
 }

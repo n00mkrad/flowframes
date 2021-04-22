@@ -41,7 +41,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (IOUtils.GetAmountOfFiles(path, false, $"*.{InterpolateUtils.GetOutExt()}") <= 1)
+            if (IOUtils.GetAmountOfFiles(path, false, "*" + I.current.interpExt) <= 1)
             {
                 I.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
@@ -130,7 +130,7 @@ namespace Flowframes.Main
 
         public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath)
         {
-            if (IOUtils.GetAmountOfFiles(chunksFolder, true, $"*{FFmpegUtils.GetExt(I.current.outMode)}") < 1)
+            if (IOUtils.GetAmountOfFiles(chunksFolder, true, "*" + FFmpegUtils.GetExt(I.current.outMode)) < 1)
             {
                 I.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
                 return;

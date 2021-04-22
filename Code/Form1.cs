@@ -46,7 +46,7 @@ namespace Flowframes
             Logger.textbox = logBox;
             NvApi.Init();
             InitAis();
-            InterpolateUtils.preview = previewPicturebox;
+            InterpolationProgress.preview = previewPicturebox;
             UpdateStepByStepControls();
             Initialized();
             HandleArguments();
@@ -438,11 +438,11 @@ namespace Flowframes
 
         private void previewPicturebox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (InterpolateUtils.bigPreviewForm == null)
+            if (InterpolationProgress.bigPreviewForm == null)
             {
-                InterpolateUtils.bigPreviewForm = new BigPreviewForm();
-                InterpolateUtils.bigPreviewForm.Show();
-                InterpolateUtils.bigPreviewForm.SetImage(previewPicturebox.Image);
+                InterpolationProgress.bigPreviewForm = new BigPreviewForm();
+                InterpolationProgress.bigPreviewForm.Show();
+                InterpolationProgress.bigPreviewForm.SetImage(previewPicturebox.Image);
             }
         }
 

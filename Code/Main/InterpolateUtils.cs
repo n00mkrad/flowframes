@@ -21,9 +21,6 @@ namespace Flowframes.Main
 {
     class InterpolateUtils
     {
-        public static PictureBox preview;
-        public static BigPreviewForm bigPreviewForm;
-
         public static async Task CopyLastFrame(int lastFrameNum)
         {
             if (I.canceled) return;
@@ -32,7 +29,7 @@ namespace Flowframes.Main
             {
                 lastFrameNum--;     // We have to do this as extracted frames start at 0, not 1
                 bool frameFolderInput = IOUtils.IsPathDirectory(I.current.inPath);
-                string targetPath = Path.Combine(I.current.framesFolder, lastFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
+                string targetPath = Path.Combine(I.current.framesFolder, lastFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + I.current.framesExt);
                 if (File.Exists(targetPath)) return;
 
                 Size res = IOUtils.GetImage(IOUtils.GetFilesSorted(I.current.framesFolder, false).First()).Size;
@@ -51,157 +48,6 @@ namespace Flowframes.Main
             {
                 Logger.Log("CopyLastFrame Error: " + e.Message);
             }
-        }
-
-        public static string GetOutExt(bool withDot = false)
-        {
-            string dotStr = withDot ? "." : "";
-            if (Config.GetBool("jpegInterp"))
-                return dotStr + "jpg";
-            return dotStr + "png";
-        }
-
-        public static int lastFrame;
-        public static int targetFrames;
-        public static string currentOutdir;
-        public static float currentFactor;
-        public static bool progressPaused = false;
-        public static bool progCheckRunning = false;
-
-        public static async void GetProgressByFrameAmount(string outdir, int target)
-        {
-            progCheckRunning = true;
-            targetFrames = target;
-            currentOutdir = outdir;
-            Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
-            bool firstProgUpd = true;
-            Program.mainForm.SetProgress(0);
-            lastFrame = 0;
-            peakFpsOut = 0f;
-
-            while (Program.busy)
-            {
-                if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
-                {
-                    if (firstProgUpd && Program.mainForm.IsInFocus())
-                        Program.mainForm.SetTab("preview");
-
-                    firstProgUpd = false;
-                    string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + $".{GetOutExt()}";
-
-                    if (lastFrame > 1)
-                        UpdateInterpProgress(lastFrame, targetFrames, lastFramePath);
-
-                    await Task.Delay((target < 1000) ? 100 : 200);  // Update 10x/sec if interpolating <1k frames, otherwise 5x/sec
-
-                    if (lastFrame >= targetFrames)
-                        break;
-                }
-                else
-                {
-                    await Task.Delay(100);
-                }
-            }
-
-            progCheckRunning = false;
-
-            if (I.canceled)
-                Program.mainForm.SetProgress(0);
-        }
-
-        public static void UpdateLastFrameFromInterpOutput(string output)
-        {
-            try
-            {
-                string ncnnStr = I.current.ai.aiName.Contains("NCNN") ? " done" : "";
-                Regex frameRegex = new Regex($@"(?<=.)\d*(?=.{GetOutExt()}{ncnnStr})");
-                if (!frameRegex.IsMatch(output)) return;
-                lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
-            }
-            catch
-            {
-                Logger.Log($"UpdateLastFrameFromInterpOutput: Failed to get progress from '{output}' even though Regex matched!");
-            }
-        }
-
-        public static int interpolatedInputFramesCount;
-        public static float peakFpsOut;
-
-        public static int previewUpdateRateMs = 200;
-
-        public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
-        {
-            if (I.canceled) return;
-            interpolatedInputFramesCount = ((frames / I.current.interpFactor).RoundToInt() - 1);
-            ResumeUtils.Save();
-            frames = frames.Clamp(0, target);
-            int percent = (int)Math.Round(((float)frames / target) * 100f);
-            Program.mainForm.SetProgress(percent);
-
-            float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
-            float fps = (float)frames / generousTime;
-            string fpsIn = (fps / currentFactor).ToString("0.00");
-            string fpsOut = fps.ToString("0.00");
-
-            if (fps > peakFpsOut)
-                peakFpsOut = fps;
-
-            float secondsPerFrame = generousTime / (float)frames;
-            int framesLeft = target - frames;
-            float eta = framesLeft * secondsPerFrame;
-            string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()), false);
-
-            bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
-
-            string logStr = $"Interpolated {frames}/{target} Frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
-            logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
-            if (AutoEncode.busy) logStr += " - Encoding...";
-            Logger.Log(logStr, false, replaceLine);
-
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > currentFactor)
-                {
-                    if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
-                    if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
-                    Image img = IOUtils.GetImage(latestFramePath);
-                    SetPreviewImg(img);
-                }
-            }
-            catch (Exception e)
-            {
-                //Logger.Log("Error updating preview: " + e.Message, true);
-            }
-        }
-
-        public static async Task DeleteInterpolatedInputFrames()
-        {
-            interpolatedInputFramesCount = 0;
-            string[] inputFrames = IOUtils.GetFilesSorted(I.current.framesFolder);
-
-            for (int i = 0; i < inputFrames.Length; i++)
-            {
-                while (Program.busy && (i + 10) > interpolatedInputFramesCount) await Task.Delay(1000);
-                if (!Program.busy) break;
-                if (i != 0 && i != inputFrames.Length - 1)
-                    IOUtils.OverwriteFileWithText(inputFrames[i]);
-                if (i % 10 == 0) await Task.Delay(10);
-            }
-        }
-
-        public static Stopwatch timeSinceLastPreviewUpdate = new Stopwatch();
-
-        public static void SetPreviewImg(Image img)
-        {
-            if (img == null)
-                return;
-
-            timeSinceLastPreviewUpdate.Restart();
-
-            preview.Image = img;
-
-            if (bigPreviewForm != null)
-                bigPreviewForm.SetImage(img);
         }
 
         public static int GetProgressWaitTime(int numFrames)
@@ -469,7 +315,7 @@ namespace Flowframes.Main
             }
 
             foreach (string frame in sceneFramesToDelete)
-                IOUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + ".png"));
+                IOUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + I.current.framesExt));
         }
     }
 }

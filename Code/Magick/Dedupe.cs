@@ -165,7 +165,7 @@ namespace Flowframes.Magick
 
             if (Interpolate.canceled) return;
 
-            int framesLeft = IOUtils.GetAmountOfFiles(path, false, $"*.png");
+            int framesLeft = IOUtils.GetAmountOfFiles(path, false, "*" + Interpolate.current.framesExt);
             int framesDeleted = framePaths.Length - framesLeft;
             float percentDeleted = ((float)framesDeleted / framePaths.Length) * 100f;
             string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";

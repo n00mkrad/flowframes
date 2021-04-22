@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Flowframes.MiscUtils;
+using Flowframes.UI;
 using I = Flowframes.Interpolate;
 
 namespace Flowframes.Main
@@ -29,7 +30,7 @@ namespace Flowframes.Main
         public static void Save ()
         {
             if (timeSinceLastSave.IsRunning && timeSinceLastSave.ElapsedMilliseconds < (timeBetweenSaves * 1000f).RoundToInt()) return;
-            int frames = (int)Math.Round((float)InterpolateUtils.interpolatedInputFramesCount / I.current.interpFactor) - safetyDelayFrames;
+            int frames = (int)Math.Round((float)InterpolationProgress.interpolatedInputFramesCount / I.current.interpFactor) - safetyDelayFrames;
             if (frames < 1) return;
             timeSinceLastSave.Restart();
             Directory.CreateDirectory(Path.Combine(I.current.tempFolder, Paths.resumeDir));

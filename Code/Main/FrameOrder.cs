@@ -35,7 +35,7 @@ namespace Flowframes.Main
             }
             catch (Exception e)
             {
-                Logger.Log($"Error generating frame order information: {e.Message}");
+                Logger.Log($"Error generating frame order information: {e.Message}\n{e.StackTrace}");
             }
         }
 
@@ -60,12 +60,12 @@ namespace Flowframes.Main
 
             bool loop = Config.GetBool("enableLoop");
             bool sceneDetection = true;
-            string ext = InterpolateUtils.GetOutExt();
+            string ext = Interpolate.current.interpExt;
 
             frameFileContents.Clear();
             lastOutFileCount = 0;
 
-            frameFiles = new DirectoryInfo(framesPath).GetFiles($"*.png");
+            frameFiles = new DirectoryInfo(framesPath).GetFiles("*" + Interpolate.current.framesExt);
             frameFilesWithoutLast = frameFiles;
             Array.Resize(ref frameFilesWithoutLast, frameFilesWithoutLast.Length - 1);
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(interpFactor));
@@ -100,7 +100,7 @@ namespace Flowframes.Main
             int lastFrameTimes = Config.GetBool("fixOutputDuration") ? (int)interpFactor : 1;
 
             for(int i = 0; i < lastFrameTimes; i++)
-                fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}'";     // Last frame (source)
+                fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}{ext}'";     // Last frame (source)
 
             if (loop)
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
@@ -112,7 +112,7 @@ namespace Flowframes.Main
         {
             int totalFileCount = (startIndex) * factor;
             int interpFramesAmount = factor;
-            string ext = InterpolateUtils.GetOutExt();
+            string ext = Interpolate.current.interpExt;
 
             string fileContent = "";
 
@@ -175,7 +175,7 @@ namespace Flowframes.Main
         static string WriteFrameWithDupes(int dupesAmount, string fileContent, int frameNum, string ext, bool debug, string debugNote = "", string forcedNote = "")
         {
             for (int writtenDupes = -1; writtenDupes < dupesAmount; writtenDupes++)      // Write duplicates
-                fileContent += $"file '{Paths.interpDir}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}.{ext}' # {(debug ? ($"Dupe {(writtenDupes + 1).ToString("000")} {debugNote}").Replace("Dupe 000", "        ") : "")}{forcedNote}\n";
+                fileContent += $"file '{Paths.interpDir}/{frameNum.ToString().PadLeft(Padding.interpFrames, '0')}{ext}' # {(debug ? ($"Dupe {(writtenDupes + 1).ToString("000")} {debugNote}").Replace("Dupe 000", "        ") : "")}{forcedNote}\n";
 
             return fileContent;
         }

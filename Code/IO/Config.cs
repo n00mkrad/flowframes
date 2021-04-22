@@ -150,6 +150,7 @@ namespace Flowframes.IO
             if (key == "scnDetectValue")        return WriteDefault(key, "0.2");
             if (key == "sceneChangeFillMode")   return WriteDefault(key, "1");
             if (key == "autoEncMode")           return WriteDefault(key, "2");
+            if (key == "jpegFrames")            return WriteDefault(key, "True");
             // Video Export
             if (key == "minOutVidLength")   return WriteDefault(key, "5");
             if (key == "h264Crf")           return WriteDefault(key, "20");

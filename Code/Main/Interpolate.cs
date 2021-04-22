@@ -10,10 +10,12 @@ using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Win32Interop.Structs;
 using Padding = Flowframes.Data.Padding;
 using Utils = Flowframes.Main.InterpolateUtils;
 
@@ -78,13 +80,13 @@ namespace Flowframes
             if (Config.GetBool("scnDetect"))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FfmpegExtract.ExtractSceneChanges(current.inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFpsDetected, current.inputIsFrames);
+                await FfmpegExtract.ExtractSceneChanges(current.inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFpsDetected, current.inputIsFrames, current.framesExt);
             }
 
             if (!current.inputIsFrames)        // Extract if input is video, import if image sequence
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
-                await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, (await current.GetScaledRes()));
+                await FfmpegExtract.ImportImages(current.inPath, current.framesFolder, current.alpha, (await current.GetScaledRes()), true, current.framesExt);
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha)
@@ -92,11 +94,12 @@ namespace Flowframes
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting frames from video...");
             bool mpdecimate = Config.GetInt("dedupMode") == 2;
-            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFpsDetected, mpdecimate, false, await Utils.GetOutputResolution(inPath, true, true));
+            Size res = await Utils.GetOutputResolution(inPath, true, true);
+            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFpsDetected, mpdecimate, false, res, current.framesExt);
 
             if (mpdecimate)
             {
-                int framesLeft = IOUtils.GetAmountOfFiles(outPath, false, $"*.png");
+                int framesLeft = IOUtils.GetAmountOfFiles(outPath, false, "*" + current.framesExt);
                 int framesDeleted = currentInputFrameCount - framesLeft;
                 float percentDeleted = ((float)framesDeleted / currentInputFrameCount) * 100f;
                 string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
@@ -131,7 +134,7 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            int extractedFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*.png");
+            int extractedFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*" + current.framesExt);
             if (!Directory.Exists(current.framesFolder) || currentInputFrameCount <= 0 || extractedFrames < 2)
             {
                 if(extractedFrames == 1)

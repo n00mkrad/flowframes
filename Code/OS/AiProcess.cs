@@ -54,23 +54,23 @@ namespace Flowframes
 
         static void SetProgressCheck(string interpPath, float factor)
         {
-            int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.png");
+            int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.*");
             int target = ((frames * factor) - (factor - 1)).RoundToInt();
-            InterpolateUtils.progressPaused = false;
-            InterpolateUtils.currentFactor = factor;
+            InterpolationProgress.progressPaused = false;
+            InterpolationProgress.currentFactor = factor;
 
-            if (InterpolateUtils.progCheckRunning)
-                InterpolateUtils.targetFrames = target;
+            if (InterpolationProgress.progCheckRunning)
+                InterpolationProgress.targetFrames = target;
             else
-                InterpolateUtils.GetProgressByFrameAmount(interpPath, target);
+                InterpolationProgress.GetProgressByFrameAmount(interpPath, target);
         }
 
         static async Task AiFinished(string aiName)
         {
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
-            InterpolateUtils.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*.png"), InterpolateUtils.targetFrames);
-            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolateUtils.peakFpsOut.ToString("0.00")}";
+            InterpolationProgress.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt), InterpolationProgress.targetFrames);
+            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
             
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
             {
@@ -125,7 +125,7 @@ namespace Flowframes
 
                 if (!Interpolate.canceled && Interpolate.current.alpha)
                 {
-                    InterpolateUtils.progressPaused = true;
+                    InterpolationProgress.progressPaused = true;
                     Logger.Log("Interpolating alpha channel...");
                     await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
                 }
@@ -194,7 +194,7 @@ namespace Flowframes
 
                 if (!Interpolate.canceled && Interpolate.current.alpha)
                 {
-                    InterpolateUtils.progressPaused = true;
+                    InterpolationProgress.progressPaused = true;
                     Logger.Log("Interpolating alpha channel...");
                     await RunFlavrCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
                 }
@@ -250,7 +250,7 @@ namespace Flowframes
 
                 if (!Interpolate.canceled && Interpolate.current.alpha)
                 {
-                    InterpolateUtils.progressPaused = true;
+                    InterpolationProgress.progressPaused = true;
                     Logger.Log("Interpolating alpha channel...");
                     await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
                 }
@@ -341,7 +341,7 @@ namespace Flowframes
 
                 if (!Interpolate.canceled && Interpolate.current.alpha)
                 {
-                    InterpolateUtils.progressPaused = true;
+                    InterpolationProgress.progressPaused = true;
                     Logger.Log("Interpolating alpha channel...");
                     await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
                 }
@@ -361,7 +361,7 @@ namespace Flowframes
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
-            int targetFrames = ((IOUtils.GetAmountOfFiles(lastInPath, false, "*.png") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Won't work with fractional factors
+            int targetFrames = ((IOUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Won't work with fractional factors
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
                 $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j 2:1:2";
@@ -481,12 +481,12 @@ namespace Flowframes
             if (hasShownError)
                 Interpolate.Cancel();
 
-            InterpolateUtils.UpdateLastFrameFromInterpOutput(line);
+            InterpolationProgress.UpdateLastFrameFromInterpOutput(line);
         }
 
         static string GetNcnnPattern ()
         {
-            return $"%0{Padding.interpFrames}d.{InterpolateUtils.GetOutExt()}";
+            return $"%0{Padding.interpFrames}d{Interpolate.current.interpExt}";
         }
 
         static string GetNcnnTilesize(int tilesize)

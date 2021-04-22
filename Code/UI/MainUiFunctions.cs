@@ -55,7 +55,7 @@ namespace Flowframes.UI
             await PrintResolution(path);
             Dedupe.ClearCache();
             await Task.Delay(10);
-            InterpolateUtils.SetPreviewImg(await GetThumbnail(path));
+            InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
         }
 
         static void CheckExistingFolder (string inpath, string outpath)
@@ -64,9 +64,9 @@ namespace Flowframes.UI
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
             if (Directory.Exists(tmpFolder))
             {
-                int scnFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.scenesDir), false, "*.png");
+                int scnFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.scenesDir), false, "*" + Interpolate.current.interpExt);  // TODO: Make this work if the frames extension was changed
                 string scnFrames = scnFrmAmount > 0 ? $"{scnFrmAmount} scene frames" : "no scene frames";
-                int srcFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.framesDir), false, "*.png");
+                int srcFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.framesDir), false, "*" + Interpolate.current.interpExt);
                 string srcFrames = srcFrmAmount > 1 ? $"{srcFrmAmount} source frames" : "no source frames";
                 int interpFrmAmount = IOUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.interpDir), false);
                 string interpFrames = interpFrmAmount > 2 ? $"{interpFrmAmount} interpolated frames" : "no interpolated frames";
