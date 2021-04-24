@@ -208,7 +208,7 @@
             "MKV Video (h264, h265) (Best Audio/Subtitles Support)",
             "WEBM Video (Google VP9)",
             "MOV Video (Apple ProRes)",
-            "AVI Video (ffv1, huffyuv, rawvideo)",
+            "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
             "Animated GIF (Only supports up to 50 FPS)",
             "Image Sequence (PNG)"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 157);

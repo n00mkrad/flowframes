@@ -1375,6 +1375,7 @@
             this.aviCodec.Items.AddRange(new object[] {
             "ffv1",
             "huffyuv",
+            "magicyuv",
             "rawvideo"});
             this.aviCodec.Location = new System.Drawing.Point(280, 387);
             this.aviCodec.Name = "aviCodec";
