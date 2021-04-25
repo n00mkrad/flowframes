@@ -90,6 +90,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.scnDetectTestBtn = new HTAlt.WinForms.HTButton();
             this.inputInfo = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
@@ -124,7 +125,6 @@
             this.htButton1 = new HTAlt.WinForms.HTButton();
             this.runStepBtn = new System.Windows.Forms.Button();
             this.stepSelector = new System.Windows.Forms.ComboBox();
-            this.scnDetectTestBtn = new HTAlt.WinForms.HTButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -931,6 +931,21 @@
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
+            // scnDetectTestBtn
+            // 
+            this.scnDetectTestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scnDetectTestBtn.FlatAppearance.BorderSize = 0;
+            this.scnDetectTestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.scnDetectTestBtn.ForeColor = System.Drawing.Color.White;
+            this.scnDetectTestBtn.Location = new System.Drawing.Point(692, 229);
+            this.scnDetectTestBtn.Name = "scnDetectTestBtn";
+            this.scnDetectTestBtn.Size = new System.Drawing.Size(206, 23);
+            this.scnDetectTestBtn.TabIndex = 38;
+            this.scnDetectTestBtn.Text = "Scn Detect Test";
+            this.scnDetectTestBtn.UseVisualStyleBackColor = false;
+            this.scnDetectTestBtn.Visible = false;
+            this.scnDetectTestBtn.Click += new System.EventHandler(this.scnDetectTestBtn_Click);
+            // 
             // inputInfo
             // 
             this.inputInfo.AutoSize = true;
@@ -1431,21 +1446,6 @@
             this.stepSelector.Name = "stepSelector";
             this.stepSelector.Size = new System.Drawing.Size(203, 24);
             this.stepSelector.TabIndex = 73;
-            // 
-            // scnDetectTestBtn
-            // 
-            this.scnDetectTestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scnDetectTestBtn.FlatAppearance.BorderSize = 0;
-            this.scnDetectTestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.scnDetectTestBtn.ForeColor = System.Drawing.Color.White;
-            this.scnDetectTestBtn.Location = new System.Drawing.Point(692, 229);
-            this.scnDetectTestBtn.Name = "scnDetectTestBtn";
-            this.scnDetectTestBtn.Size = new System.Drawing.Size(206, 23);
-            this.scnDetectTestBtn.TabIndex = 38;
-            this.scnDetectTestBtn.Text = "Scn Detect Test";
-            this.scnDetectTestBtn.UseVisualStyleBackColor = false;
-            this.scnDetectTestBtn.Visible = false;
-            this.scnDetectTestBtn.Click += new System.EventHandler(this.scnDetectTestBtn_Click);
             // 
             // Form1
             // 

@@ -51,7 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>flowframesIcoNew.ico</ApplicationIcon>
+    <ApplicationIcon>FlowframesLogo2021.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -460,6 +460,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FlowframesLogo2021.ico" />
     <None Include="Resources\devmode.bat" />
     <None Include="Resources\flowframesIcoNew-512px.png" />
     <None Include="Resources\flowframesIcoNew.png" />
