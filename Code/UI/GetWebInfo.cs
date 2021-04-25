@@ -64,10 +64,10 @@ namespace Flowframes.UI
                     if (status.Contains("Active"))
                     {
                         if (tier.Contains("Gold"))
-                            goldPatrons.Add(name);
+                            goldPatrons.Add(name.Trunc(30));
 
                         if (tier.Contains("Silver"))
-                            silverPatrons.Add(name);
+                            silverPatrons.Add(name.Trunc(30));
                     }
                 }
 
