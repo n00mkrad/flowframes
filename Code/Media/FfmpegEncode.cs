@@ -25,7 +25,8 @@ namespace Flowframes.Media
         public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, float resampleFps, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
-                Logger.Log((resampleFps <= 0) ? $"Encoding video..." : $"Encoding video resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
+                Logger.Log((resampleFps <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
+            
             Directory.CreateDirectory(outPath.GetParentDir());
             string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
             if (!isChunk) encArgs += $" -movflags +faststart";
@@ -34,12 +35,8 @@ namespace Flowframes.Media
 
             if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
             {
-                await MakeSymlinks(framesFile, linksDir, Padding.interpFrames);
-
-                if(IOUtils.GetAmountOfFiles(linksDir, false) > 1)
+                if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
                     inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
-                else
-                    Logger.Log("Symlink creation seems to have failed even though SymlinksAllowed was true! Encoding ini with concat demuxer instead.", true);
             }
 
             string rate = fps.ToString().Replace(",", ".");
@@ -50,36 +47,27 @@ namespace Flowframes.Media
             IOUtils.TryDeleteIfExists(linksDir);
         }
 
-        static async Task MakeSymlinks(string framesFile, string linksDir, int zPad = 8)
+        public static async Task FramesToFrames(string framesFile, string outDir, Fraction fps, float resampleFps, string format = "png", LogMode logMode = LogMode.OnlyLastLine)
         {
-            try
+            if (logMode != LogMode.Hidden)
+                Logger.Log((resampleFps <= 0) ? "Exporting frames..." : $"Exporting frames resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
+
+            Directory.CreateDirectory(outDir);
+            string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
+            string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
+
+            if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
             {
-                Directory.CreateDirectory(linksDir);
-                Stopwatch sw = new Stopwatch();
-                sw.Restart();
-                Logger.Log($"Creating symlinks for '{framesFile}' in '{linksDir} with zPadding {zPad}'", true);
-
-                int counter = 0;
-
-                Dictionary<string, string> pathsLinkTarget = new Dictionary<string, string>();
-
-                foreach (string line in File.ReadAllLines(framesFile))
-                {
-                    string relTargetPath =
-                        line.Remove("file '").Split('\'').FirstOrDefault(); // Relative path in frames file
-                    string absTargetPath = Path.Combine(framesFile.GetParentDir(), relTargetPath); // Full path to frame
-                    string linkPath = Path.Combine(linksDir,
-                        counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
-                    pathsLinkTarget.Add(linkPath, absTargetPath);
-                    counter++;
-                }
-
-                await Symlinks.CreateSymlinksParallel(pathsLinkTarget);
+                if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
+                    inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
             }
-            catch (Exception e)
-            {
-                Logger.Log("MakeSymlinks Exception: " + e.Message);
-            }
+
+            string rate = fps.ToString().Replace(",", ".");
+            string vf = (resampleFps <= 0) ? "" : $"-vf fps=fps={resampleFps.ToStringDot()}";
+            string compression = format == "png" ? pngCompr : "-q:v 1";
+            string args = $"-vsync 0 -r {rate} {inArg} {compression} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
+            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, true);
+            IOUtils.TryDeleteIfExists(linksDir);
         }
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors = 64, float resampleFps = -1, LogMode logMode = LogMode.OnlyLastLine)

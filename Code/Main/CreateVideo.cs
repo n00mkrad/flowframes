@@ -30,12 +30,13 @@ namespace Flowframes.Main
             {
                 try
                 {
-                    string folder = Path.Combine(outFolder, (await IOUtils.GetCurrentExportFilename(false, false)));
-                    await CopyOutputFrames(path, folder, stepByStep);
+                    //string folder = Path.Combine(outFolder, (await IOUtils.GetCurrentExportFilename(false, false)));
+                    await ExportFrames(path, stepByStep);
+                    //await CopyOutputFrames(path, folder, stepByStep);
                 }
                 catch (Exception e)
                 {
-                    Logger.Log("Failed to move interp frames folder: " + e.Message);
+                    Logger.Log("Failed to move interpolated frames: " + e.Message);
                 }
 
                 return;
@@ -70,17 +71,41 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task CopyOutputFrames(string framesPath, string folderName, bool dontMove)
+        static async Task ExportFrames (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");
-            string copyPath = Path.Combine(I.current.outPath, folderName);
-            Logger.Log($"Moving output frames from {framesPath} to '{copyPath}'");
-            IOUtils.TryDeleteIfExists(copyPath);
-            IOUtils.CreateDir(copyPath);
+            float maxFps = Config.GetFloat("maxFps");
+            bool fpsLimit = maxFps != 0 && I.current.outFps.GetFloat() > maxFps;
+            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
+            string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
+            
+
+            if (!dontEncodeFullFpsVid)
+            {
+                string outputFolderPath = Path.Combine(I.current.outPath, await IOUtils.GetCurrentExportFilename(false, false));
+                //Logger.Log($"Moving output frames from {framesPath} to '{outputFolderPath}'");
+                await CopyOutputFrames(framesPath, framesFile, outputFolderPath, fpsLimit);
+            }
+            
+            if (fpsLimit)
+            {
+                string outputFolderPath = Path.Combine(I.current.outPath, await IOUtils.GetCurrentExportFilename(true, false));
+                Logger.Log($"Moving output frames to '{Path.GetFileName(outputFolderPath)}' (Resampled to {maxFps} FPS)");
+                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, I.current.outFps, maxFps, "png", AvProcess.LogMode.Hidden);
+            }
+
+            if (!stepByStep)
+                IOUtils.DeleteContentsOfDir(I.current.interpFolder);
+        }
+
+        static async Task CopyOutputFrames(string framesPath, string framesFile, string outputFolderPath, bool dontMove)
+        {
+            IOUtils.TryDeleteIfExists(outputFolderPath);
+            IOUtils.CreateDir(outputFolderPath);
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
+            //string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
             string[] framesLines = IOUtils.ReadLines(framesFile);
 
             for (int idx = 1; idx <= framesLines.Length; idx++)
@@ -88,7 +113,7 @@ namespace Flowframes.Main
                 string line = framesLines[idx - 1];
                 string inFilename = line.RemoveComments().Split('/').Last().Remove("'").Trim();
                 string framePath = Path.Combine(framesPath, inFilename);
-                string outFilename = Path.Combine(copyPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
+                string outFilename = Path.Combine(outputFolderPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
 
                 if (dontMove || ((idx < framesLines.Length) && framesLines[idx].Contains(inFilename)))   // If file is re-used in the next line, copy instead of move
                     File.Copy(framePath, outFilename);
@@ -98,7 +123,7 @@ namespace Flowframes.Main
                 if (sw.ElapsedMilliseconds >= 500 || idx == framesLines.Length)
                 {
                     sw.Restart();
-                    Logger.Log($"Moving output frames to '{Path.GetFileName(copyPath)}' - {idx}/{framesLines.Length}", false, true);
+                    Logger.Log($"Moving output frames to '{Path.GetFileName(outputFolderPath)}' - {idx}/{framesLines.Length}", false, true);
                     await Task.Delay(1);
                 }
             }

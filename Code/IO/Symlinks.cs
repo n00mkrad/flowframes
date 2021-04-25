@@ -46,5 +46,49 @@ namespace Flowframes.IO
             while (!forEach.IsCompleted) await Task.Delay(1);
             Logger.Log($"Created {pathsLinkTarget.Count} symlinks in {FormatUtils.TimeSw(sw)}", true);
         }
+
+        public static async Task<bool> MakeSymlinksForEncode(string framesFile, string linksDir, int zPad = 8)
+        {
+            try
+            {
+                Directory.CreateDirectory(linksDir);
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+                Logger.Log($"Creating symlinks for '{framesFile}' in '{linksDir} with zPadding {zPad}'", true);
+
+                int counter = 0;
+
+                Dictionary<string, string> pathsLinkTarget = new Dictionary<string, string>();
+
+                foreach (string line in File.ReadAllLines(framesFile))
+                {
+                    string relTargetPath =
+                        line.Remove("file '").Split('\'').FirstOrDefault(); // Relative path in frames file
+                    string absTargetPath = Path.Combine(framesFile.GetParentDir(), relTargetPath); // Full path to frame
+                    string linkPath = Path.Combine(linksDir,
+                        counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
+                    pathsLinkTarget.Add(linkPath, absTargetPath);
+                    counter++;
+                }
+
+                await CreateSymlinksParallel(pathsLinkTarget);
+
+                if (IOUtils.GetAmountOfFiles(linksDir, false) > 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    Logger.Log("Symlink creation seems to have failed even though SymlinksAllowed was true! Encoding ini with concat demuxer instead.", true);
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("MakeSymlinks Exception: " + e.Message);
+            }
+
+            return false;
+        }
     }
 }
