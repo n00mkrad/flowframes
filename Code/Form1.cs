@@ -382,7 +382,7 @@ namespace Flowframes
             else
             {
                 SetTab("interpolation");
-                Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]));
+                Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]), true);
                 inputTbox.Text = files[0];
 
                 bool resume = (IOUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0);

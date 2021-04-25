@@ -30,7 +30,8 @@ namespace Flowframes
                 if (replaceLastLine)
                 {
                     textbox.Suspend();
-                    textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine));
+                    string[] lines = textbox.Text.SplitIntoLines();
+                    textbox.Text = string.Join(Environment.NewLine, lines.Take(lines.Count() - 1).ToArray());
                 }
             }
             catch { }
@@ -40,7 +41,14 @@ namespace Flowframes
             if (!hidden && textbox != null)
                 textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + s);
 
-            textbox.Resume();
+            if (replaceLastLine)
+            {
+                textbox.Resume();
+                s = "[REPL] " + s;
+            }
+
+            if (!hidden)
+                s = "[UI] " + s;
 
             LogToFile(s, false, filename);
         }

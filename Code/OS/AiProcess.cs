@@ -413,7 +413,7 @@ namespace Flowframes
                 return;
             }
 
-            Logger.LogToFile(line, false, logFilename);
+            Logger.Log(line, true, false, logFilename);
 
             if (line.Contains("ff:nocuda-cpu"))
                 Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
