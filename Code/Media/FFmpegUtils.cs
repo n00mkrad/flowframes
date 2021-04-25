@@ -79,7 +79,7 @@ namespace Flowframes.Media
             if (codec == Codec.VP9)
             {
                 int crf = Config.GetInt("vp9Crf");
-                string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
+                string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
                 string cpuUsed = Config.GetInt("vp9Speed", 3).ToString();
                 args += $"{qualityStr} -cpu-used {cpuUsed} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
             }
