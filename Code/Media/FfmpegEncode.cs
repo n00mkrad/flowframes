@@ -95,7 +95,7 @@ namespace Flowframes.Media
             string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"" : "";
             string fpsFilter = (resampleFps <= 0) ? "" : $"fps=fps={resampleFps.ToStringDot()}";
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
-            string args = $"-f concat -r {rate} -i {vfrFilename.Wrap()} -f gif {vf} {outPath.Wrap()}";
+            string args = $"-f concat -r {rate} -i {vfrFilename.Wrap()} {vf} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, "error", TaskType.Encode);
         }
     }
