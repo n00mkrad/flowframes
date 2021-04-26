@@ -30,9 +30,7 @@ namespace Flowframes.Main
             {
                 try
                 {
-                    //string folder = Path.Combine(outFolder, (await IOUtils.GetCurrentExportFilename(false, false)));
                     await ExportFrames(path, stepByStep);
-                    //await CopyOutputFrames(path, folder, stepByStep);
                 }
                 catch (Exception e)
                 {
@@ -53,13 +51,13 @@ namespace Flowframes.Main
 
             try
             {
-                float maxFps = Config.GetFloat("maxFps");
-                bool fpsLimit = maxFps != 0 && I.current.outFps.GetFloat() > maxFps;
-
+                string max = Config.Get("maxFps");
+                Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
+                bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
                 if (!dontEncodeFullFpsVid)
-                    await Encode(mode, path, Path.Combine(outFolder, await IOUtils.GetCurrentExportFilename(false, true)), I.current.outFps);
+                    await Encode(mode, path, Path.Combine(outFolder, await IOUtils.GetCurrentExportFilename(false, true)), I.current.outFps, new Fraction());
 
                 if (fpsLimit)
                     await Encode(mode, path, Path.Combine(outFolder, await IOUtils.GetCurrentExportFilename(true, true)), I.current.outFps, maxFps);
@@ -74,8 +72,9 @@ namespace Flowframes.Main
         static async Task ExportFrames (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");
-            float maxFps = Config.GetFloat("maxFps");
-            bool fpsLimit = maxFps != 0 && I.current.outFps.GetFloat() > maxFps;
+            string max = Config.Get("maxFps");
+            Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
+            bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
             
@@ -129,7 +128,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Encode(I.OutMode mode, string framesPath, string outPath, Fraction fps, float resampleFps = -1)
+        static async Task Encode(I.OutMode mode, string framesPath, string outPath, Fraction fps, Fraction resampleFps)
         {
             string currentOutFile = outPath;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
@@ -205,8 +204,9 @@ namespace Flowframes.Main
             if (Config.GetInt("sceneChangeFillMode") == 1)
                 await Blend.BlendSceneChanges(framesFileChunk, false);
 
-            float maxFps = Config.GetFloat("maxFps");
-            bool fpsLimit = maxFps != 0 && I.current.outFps.GetFloat() > maxFps;
+            string max = Config.Get("maxFps");
+            Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
+            bool fpsLimit = maxFps.GetFloat() != 0 && I.current.outFps.GetFloat() > maxFps.GetFloat();
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 

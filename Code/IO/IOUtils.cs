@@ -402,7 +402,9 @@ namespace Flowframes.IO
 		public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool withExt)
 		{
 			InterpSettings curr = Interpolate.current;
-			float fps = fpsLimit ? Config.GetFloat("maxFps") : curr.outFps.GetFloat();
+			string max = Config.Get("maxFps");
+			Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
+			float fps = fpsLimit ? maxFps.GetFloat() : curr.outFps.GetFloat();
 
             if (curr.outMode == Interpolate.OutMode.VidGif && fps > 50f)
                 fps = 50f;
