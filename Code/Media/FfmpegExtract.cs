@@ -54,7 +54,7 @@ namespace Flowframes.Media
 
             if (extension.Contains("jpg"))
             {
-                string pixFmt = "-pix_fmt yuvj420p";
+                string pixFmt = "-pix_fmt yuv420p";
                 return $"-q:v 1 {pixFmt}";
             }
 

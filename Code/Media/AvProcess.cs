@@ -104,7 +104,7 @@ namespace Flowframes
 
             bool hidden = currentLogMode == LogMode.Hidden;
 
-            if (line.MatchesWildcard("*can produce invalid output*")) // Don't print this kind of warning
+            if (HideMessage(line)) // Don't print certain warnings 
                 hidden = true;
 
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
@@ -125,6 +125,17 @@ namespace Flowframes
                 Regex timeRegex = new Regex("(?<=time=).*(?= )");
                 UpdateFfmpegProgress(timeRegex.Match(line).Value);
             }
+        }
+
+        static bool HideMessage (string msg)
+        {
+            string[] hiddenMsgs = new string[] { "can produce invalid output", "deprecated pixel format" };
+
+            foreach (string str in hiddenMsgs)
+                if (msg.MatchesWildcard($"*{str}*"))
+                    return true;
+
+            return false;
         }
 
         static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)

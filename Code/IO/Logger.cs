@@ -27,7 +27,7 @@ namespace Flowframes
 
             try
             {
-                if (replaceLastLine)
+                if (!hidden && replaceLastLine)
                 {
                     textbox.Suspend();
                     string[] lines = textbox.Text.SplitIntoLines();
