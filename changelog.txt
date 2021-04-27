@@ -1,3 +1,18 @@
+Flowframes 1.25.0 Changelog:
+- Added support for FPS limiting (resampling) on Image Sequence outputs
+- Added MagicYUV codec for AVI exports (super fast, better compression than huffyuv)
+- Added option to import frames as JPEG for YUV420 content (almost lossless)
+- Added [RES] (resolution) and [H] (height) variables for export filename pattern
+- Added support for fractional input for "Maximum Output Frame Rate" option
+- Encoding Speed option in Developer Options now also affects VP9
+- Updated icon to a new colorful variant (same as FF Installer)
+- Updated FFmpeg build (Release 4.4)
+- Changed GIF encoding flags to fix potential transparency problems
+- Better error messages for overclocking bugs and model load errors
+- Fixed changing speed by adjusting input FPS not working correctly (allowCustomInputRate)
+- Fixed encoding failing on non-NTFS drives
+
+
 Flowframes 1.24.6 Changelog:
 - GIF encoding framerate will now automatically be downsampled to 50 if it's higher
 - Fixed CUDA AIs not actually starting on undetected GPUs or CPU
