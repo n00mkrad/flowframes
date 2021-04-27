@@ -75,7 +75,7 @@ cnt = 1
 
 videogen = []
 for f in os.listdir(args.input):
-    if 'png' in f:
+    if 'png' in f or 'jpg' in f:
         videogen.append(f)
 tot_frame = len(videogen)
 videogen.sort(key= lambda x:int(x[:-4]))
