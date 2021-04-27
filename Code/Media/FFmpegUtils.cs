@@ -56,12 +56,14 @@ namespace Flowframes.Media
 
             if(codec == Codec.H264)
             {
-                args += $"-crf {Config.GetInt("h264Crf")} -preset {Config.Get("ffEncPreset")} -pix_fmt yuv420p";
+                string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
+                args += $"-crf {Config.GetInt("h264Crf")} -preset {preset} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.H265)
             {
-                args += $"-crf {Config.GetInt("h265Crf")} -preset {Config.Get("ffEncPreset")} -pix_fmt yuv420p";
+                string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
+                args += $"-crf {Config.GetInt("h265Crf")} -preset {preset} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.NVENC264)
@@ -80,8 +82,7 @@ namespace Flowframes.Media
             {
                 int crf = Config.GetInt("vp9Crf");
                 string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
-                string cpuUsed = Config.GetInt("vp9Speed", 3).ToString();
-                args += $"{qualityStr} -cpu-used {cpuUsed} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
+                args += $"{qualityStr} {GetVp9Speed()} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
             }
 
             if(codec == Codec.ProRes)
@@ -95,6 +96,22 @@ namespace Flowframes.Media
             }
 
             return args;
+        }
+
+        static string GetVp9Speed ()
+        {
+            string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
+            string arg = "";
+
+            if (preset == "veryslow") arg = "0";
+            if (preset == "slower") arg = "1";
+            if (preset == "slow") arg = "2";
+            if (preset == "medium") arg = "3";
+            if (preset == "fast") arg = "4";
+            if (preset == "faster") arg = "5";
+            if (preset == "veryfast") arg = "4 -deadline realtime";
+
+            return $"-cpu-used {arg}";
         }
 
         public static bool ContainerSupportsAllAudioFormats (Interpolate.OutMode outMode, List<string> codecs)

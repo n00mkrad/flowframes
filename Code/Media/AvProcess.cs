@@ -70,14 +70,14 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(loglevel))
                 loglevel = defLogLevel;
 
-            string beforeArgs = $"-hide_banner -loglevel {loglevel} -y -stats";
+            string beforeArgs = $"-hide_banner -stats -loglevel {loglevel} -y";
 
             if(!string.IsNullOrWhiteSpace(workingDir))
                 ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
             else
                 ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe {beforeArgs} {args}";
             
-            if (logMode != LogMode.Hidden) Logger.Log("Running ffmpeg...", false);
+            if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
             Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
             ffmpeg.OutputDataReceived += FfmpegOutputHandler;
             ffmpeg.ErrorDataReceived += FfmpegOutputHandler;
@@ -108,8 +108,15 @@ namespace Flowframes
                 hidden = true;
 
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
-            string trimmedLine = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").TrimWhitespaces();
-            Logger.Log(trimmedLine, hidden, replaceLastLine, "ffmpeg");
+
+            if (line.StartsWith("frame="))  // Format stats
+            {
+                line = line.Remove("q=-0.0").Remove("size=N/A").Remove("bitrate=N/A").Replace("frame=", "Frame: ")
+                    .Replace("fps=", "FPS: ").Replace("q=", "QP: ").Replace("time=", "Time: ").Replace("speed=", "Relative Speed: ")
+                    .Replace("bitrate=", "Bitrate: ").Replace("Lsize=", "Size: ").Replace("size=", "Size: ").TrimWhitespaces();
+            }
+            
+            Logger.Log(line, hidden, replaceLastLine, "ffmpeg");
 
             if (line.Contains(".srt: Invalid data found"))
                 Logger.Log($"Warning: Failed to encode subtitle track {line.Split(':')[2]}. This track will be missing in the output file.");
@@ -117,7 +124,7 @@ namespace Flowframes
             if (line.Contains("Could not open file"))
                 Interpolate.Cancel($"FFmpeg Error: {line}");
 
-            if (line.Contains("No NVENC capable devices found") || line.Contains("Cannot load nvcuda.dll"))
+            if (line.Contains("No NVENC capable devices found") || line.MatchesWildcard("*nvcuda.dll*"))
                 Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
 
             if (!hidden && showProgressBar && line.Contains("time="))
@@ -129,7 +136,7 @@ namespace Flowframes
 
         static bool HideMessage (string msg)
         {
-            string[] hiddenMsgs = new string[] { "can produce invalid output", "deprecated pixel format" };
+            string[] hiddenMsgs = new string[] { "can produce invalid output", "pixel format" };
 
             foreach (string str in hiddenMsgs)
                 if (msg.MatchesWildcard($"*{str}*"))

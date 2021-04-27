@@ -58,6 +58,10 @@
             this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.label74 = new System.Windows.Forms.Label();
+            this.jpegFrames = new System.Windows.Forms.CheckBox();
+            this.label63 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             this.keepMeta = new System.Windows.Forms.CheckBox();
             this.sceneChangeFillMode = new System.Windows.Forms.ComboBox();
             this.label71 = new System.Windows.Forms.Label();
@@ -177,10 +181,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label18 = new System.Windows.Forms.Label();
-            this.jpegFrames = new System.Windows.Forms.CheckBox();
-            this.label63 = new System.Windows.Forms.Label();
-            this.label74 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -564,6 +564,48 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // label74
+            // 
+            this.label74.AutoSize = true;
+            this.label74.ForeColor = System.Drawing.Color.Silver;
+            this.label74.Location = new System.Drawing.Point(308, 100);
+            this.label74.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(433, 13);
+            this.label74.TabIndex = 86;
+            this.label74.Text = "Makes frame extraction faster and take up less disk space with no visible quality" +
+    " reduction.";
+            // 
+            // jpegFrames
+            // 
+            this.jpegFrames.AutoSize = true;
+            this.jpegFrames.Location = new System.Drawing.Point(280, 100);
+            this.jpegFrames.Name = "jpegFrames";
+            this.jpegFrames.Size = new System.Drawing.Size(15, 14);
+            this.jpegFrames.TabIndex = 85;
+            this.jpegFrames.UseVisualStyleBackColor = true;
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(10, 100);
+            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(170, 13);
+            this.label63.TabIndex = 84;
+            this.label63.Text = "Import HQ JPEGs instead of PNGs";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(10, 150);
+            this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(153, 16);
+            this.label18.TabIndex = 82;
+            this.label18.Text = "Interpolation Helpers";
             // 
             // keepMeta
             // 
@@ -1879,7 +1921,7 @@
             this.ffEncArgs.Location = new System.Drawing.Point(280, 270);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
@@ -1922,13 +1964,13 @@
             this.ffEncPreset.ForeColor = System.Drawing.Color.White;
             this.ffEncPreset.FormattingEnabled = true;
             this.ffEncPreset.Items.AddRange(new object[] {
-            "veryfast",
-            "faster",
-            "fast",
-            "medium",
-            "slow",
-            "slower",
-            "veryslow"});
+            "Very Fast",
+            "Faster",
+            "Fast",
+            "Medium",
+            "Slow",
+            "Slower",
+            "Very Slow"});
             this.ffEncPreset.Location = new System.Drawing.Point(280, 240);
             this.ffEncPreset.Name = "ffEncPreset";
             this.ffEncPreset.Size = new System.Drawing.Size(250, 21);
@@ -1940,9 +1982,9 @@
             this.label47.Location = new System.Drawing.Point(10, 243);
             this.label47.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(145, 13);
+            this.label47.Size = new System.Drawing.Size(174, 13);
             this.label47.TabIndex = 77;
-            this.label47.Text = "H264/H265 Encoding Preset";
+            this.label47.Text = "Encoding Preset (Speed vs Quality)";
             // 
             // label46
             // 
@@ -2073,48 +2115,6 @@
             this.titleLabel.Size = new System.Drawing.Size(119, 40);
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label18.Location = new System.Drawing.Point(10, 150);
-            this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(153, 16);
-            this.label18.TabIndex = 82;
-            this.label18.Text = "Interpolation Helpers";
-            // 
-            // jpegFrames
-            // 
-            this.jpegFrames.AutoSize = true;
-            this.jpegFrames.Location = new System.Drawing.Point(280, 100);
-            this.jpegFrames.Name = "jpegFrames";
-            this.jpegFrames.Size = new System.Drawing.Size(15, 14);
-            this.jpegFrames.TabIndex = 85;
-            this.jpegFrames.UseVisualStyleBackColor = true;
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(10, 100);
-            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(170, 13);
-            this.label63.TabIndex = 84;
-            this.label63.Text = "Import HQ JPEGs instead of PNGs";
-            // 
-            // label74
-            // 
-            this.label74.AutoSize = true;
-            this.label74.ForeColor = System.Drawing.Color.Silver;
-            this.label74.Location = new System.Drawing.Point(308, 100);
-            this.label74.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(433, 13);
-            this.label74.TabIndex = 86;
-            this.label74.Text = "Makes frame extraction faster and take up less disk space with no visible quality" +
-    " reduction.";
             // 
             // SettingsForm
             // 
