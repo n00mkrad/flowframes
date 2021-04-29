@@ -33,7 +33,7 @@ namespace Flowframes.Magick
             Logger.Log("Running accurate frame de-duplication...");
 
             if (currentMode == Mode.Enabled || currentMode == Mode.Auto)
-                await RemoveDupeFrames(path, currentThreshold, "png", testRun, false, (currentMode == Mode.Auto));
+                await RemoveDupeFrames(path, currentThreshold, "*", testRun, false, (currentMode == Mode.Auto));
         }
 
         public static Dictionary<string, MagickImage> imageCache = new Dictionary<string, MagickImage>();
