@@ -42,23 +42,34 @@ namespace Flowframes.Media
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
 
-        static string GetImgArgs(string extension, bool alpha = false)
+        static string GetImgArgs(string extension, bool includePixFmt = true, bool alpha = false)
         {
             extension = extension.ToLower().Remove(".").Replace("jpeg", "jpg");
+            string pixFmt = "-pix_fmt rgb24";
+            string args = "";
 
-            if(extension.Contains("png"))
+            if (extension.Contains("png"))
             {
-                string pixFmt = alpha ? "-pix_fmt rgba" : "-pix_fmt rgb24";
-                return $"{pngCompr} {pixFmt}";
+                pixFmt = alpha ? "rgba" : "rgb24";
+                args = $"{pngCompr}";
             }
 
             if (extension.Contains("jpg"))
             {
-                string pixFmt = "-pix_fmt yuv420p";
-                return $"-q:v 1 {pixFmt}";
+                pixFmt = "yuv420p";
+                args = $"-q:v 1";
             }
 
-            return "-pix_fmt rgb24";
+            if (extension.Contains("webp"))
+            {
+                pixFmt = "yuv420p";
+                args = $"-q:v 100";
+            }
+
+            if (includePixFmt)
+                args += $" -pix_fmt {pixFmt}";
+
+            return args;
         }
 
         public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, Fraction rate, bool deDupe, bool delSrc, Size size, string format)
@@ -71,7 +82,7 @@ namespace Flowframes.Media
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
-            string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, alpha)} -vsync 0 {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
+            string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} -vsync 0 {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
             int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*" + format);
@@ -91,7 +102,7 @@ namespace Flowframes.Media
             GetConcatFile(inpath, concatFile);
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string vf = alpha ? $"-filter_complex \"[0:v]{GetPadFilter()},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {GetPadFilter()}";
-            string args = $"-f concat -safe 0 -i {concatFile.Wrap()} {GetImgArgs(format, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outpath}/%{Padding.inputFrames}d{format}\"";
+            string args = $"-f concat -safe 0 -i {concatFile.Wrap()} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outpath}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
         }

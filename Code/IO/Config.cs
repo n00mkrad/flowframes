@@ -158,6 +158,7 @@ namespace Flowframes.IO
             if (key == "vp9Crf")            return WriteDefault(key, "32");
             if (key == "proResProfile")     return WriteDefault(key, "2");
             if (key == "aviCodec")          return WriteDefault(key, "ffv1");
+            if (key == "imgSeqFormat")      return WriteDefault(key, "PNG");
             if (key == "aviColors")         return WriteDefault(key, "yuv420p");
             if (key == "gifColors")         return WriteDefault(key, "128 (High)");
             if (key == "gifDitherType")     return WriteDefault(key, "bayer (Recommended)");

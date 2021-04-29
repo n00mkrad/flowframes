@@ -72,6 +72,8 @@ namespace Flowframes.Main
         static async Task ExportFrames (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");
+            string desiredFormat = Config.Get("imgSeqFormat").ToLower();
+            string availableFormat = Path.GetExtension(IOUtils.GetFilesSorted(framesPath)[0].Remove(".").ToLower());
             string max = Config.Get("maxFps");
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
@@ -82,15 +84,19 @@ namespace Flowframes.Main
             if (!dontEncodeFullFpsVid)
             {
                 string outputFolderPath = Path.Combine(I.current.outPath, await IOUtils.GetCurrentExportFilename(false, false));
-                //Logger.Log($"Moving output frames from {framesPath} to '{outputFolderPath}'");
-                await CopyOutputFrames(framesPath, framesFile, outputFolderPath, fpsLimit);
+                Logger.Log($"Exporting {desiredFormat.ToUpper()} frames to '{Path.GetFileName(outputFolderPath)}'...");
+
+                if (desiredFormat == availableFormat)   // Move as the frames are already in the desired format
+                    await CopyOutputFrames(framesPath, framesFile, outputFolderPath, fpsLimit);
+                else    // Encode with ffmpeg
+                    await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, I.current.outFps, new Fraction(), desiredFormat);
             }
             
             if (fpsLimit)
             {
                 string outputFolderPath = Path.Combine(I.current.outPath, await IOUtils.GetCurrentExportFilename(true, false));
-                Logger.Log($"Moving output frames to '{Path.GetFileName(outputFolderPath)}' (Resampled to {maxFps} FPS)");
-                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, I.current.outFps, maxFps, "png", AvProcess.LogMode.Hidden);
+                Logger.Log($"Exporting {desiredFormat.ToUpper()} frames to '{Path.GetFileName(outputFolderPath)}' (Resampled to {maxFps} FPS)...");
+                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, I.current.outFps, maxFps, desiredFormat);
             }
 
             if (!stepByStep)
@@ -104,7 +110,6 @@ namespace Flowframes.Main
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            //string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
             string[] framesLines = IOUtils.ReadLines(framesFile);
 
             for (int idx = 1; idx <= framesLines.Length; idx++)
@@ -122,7 +127,7 @@ namespace Flowframes.Main
                 if (sw.ElapsedMilliseconds >= 500 || idx == framesLines.Length)
                 {
                     sw.Restart();
-                    Logger.Log($"Moving output frames to '{Path.GetFileName(outputFolderPath)}' - {idx}/{framesLines.Length}", false, true);
+                    Logger.Log($"Moving output frames... {idx}/{framesLines.Length}", false, true);
                     await Task.Delay(1);
                 }
             }

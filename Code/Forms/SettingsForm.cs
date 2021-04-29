@@ -91,21 +91,23 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(uhdThresh);
             ConfigParser.SaveGuiElement(rifeCudaFp16);
             ConfigParser.SaveGuiElement(dainNcnnTilesize, ConfigParser.StringMode.Int);
-            // Video Export
+            // Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(maxFps);
             ConfigParser.SaveComboxIndex(maxFpsMode);
             ConfigParser.SaveComboxIndex(loopMode);
             ConfigParser.SaveGuiElement(fixOutputDuration);
+            // Encoding
             ConfigParser.SaveComboxIndex(mp4Enc);
             ConfigParser.SaveGuiElement(h264Crf);
             ConfigParser.SaveGuiElement(h265Crf);
             ConfigParser.SaveGuiElement(vp9Crf);
             ConfigParser.SaveComboxIndex(proResProfile);
-            ConfigParser.SaveGuiElement(gifColors);
-            ConfigParser.SaveGuiElement(gifDitherType);
             ConfigParser.SaveGuiElement(aviCodec);
             ConfigParser.SaveGuiElement(aviColors);
+            ConfigParser.SaveGuiElement(gifColors);
+            ConfigParser.SaveGuiElement(gifDitherType);
+            ConfigParser.SaveGuiElement(imgSeqFormat);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveGuiElement(autoDedupFrames);
@@ -149,21 +151,23 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(uhdThresh);
             ConfigParser.LoadGuiElement(rifeCudaFp16);
             ConfigParser.LoadGuiElement(dainNcnnTilesize);
-            // Video Export
+            // Export
             ConfigParser.LoadGuiElement(minOutVidLength);
             ConfigParser.LoadGuiElement(maxFps);
             ConfigParser.LoadComboxIndex(maxFpsMode);
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
+            // Encoding
             ConfigParser.LoadComboxIndex(mp4Enc);
             ConfigParser.LoadGuiElement(h264Crf);
             ConfigParser.LoadGuiElement(h265Crf);
             ConfigParser.LoadGuiElement(vp9Crf);
             ConfigParser.LoadComboxIndex(proResProfile);
-            ConfigParser.LoadGuiElement(gifColors);
-            ConfigParser.LoadGuiElement(gifDitherType);
             ConfigParser.LoadGuiElement(aviCodec);
             ConfigParser.LoadGuiElement(aviColors);
+            ConfigParser.LoadGuiElement(gifColors);
+            ConfigParser.LoadGuiElement(gifDitherType);
+            ConfigParser.LoadGuiElement(imgSeqFormat);
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadGuiElement(autoDedupFrames);

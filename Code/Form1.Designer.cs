@@ -210,7 +210,7 @@
             "MOV Video (Apple ProRes)",
             "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
             "Animated GIF (Only supports up to 50 FPS)",
-            "Image Sequence (PNG)"});
+            "Image Sequence (PNG, JPG, WEBP)"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 157);
             this.outModeCombox.Name = "outModeCombox";
             this.outModeCombox.Size = new System.Drawing.Size(400, 23);
