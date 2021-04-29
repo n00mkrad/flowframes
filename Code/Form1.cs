@@ -68,13 +68,14 @@ namespace Flowframes
         {
             try
             {
-                await Task.Delay(100);
-                await StartupChecks.SymlinksCheck();
-                await Updater.UpdateModelList();    // Update AI model list
-                await Updater.AsyncUpdateCheck();   // Check for Flowframes updates
-                await GetWebInfo.LoadNews(newsLabel);   // Loads news/MOTD
-                await GetWebInfo.LoadPatronListCsv(patronsLabel);   // Load patron list
+                //await Task.Delay(100);
+                Task.Run(() => Updater.UpdateModelList());
+                Task.Run(() => Updater.AsyncUpdateCheck());
+                Task.Run(() => GetWebInfo.LoadNews(newsLabel));
+                Task.Run(() => GetWebInfo.LoadPatronListCsv(patronsLabel));
                 await Python.CheckCompression();
+                await StartupChecks.SymlinksCheck();
+
             }
             catch (Exception e)
             {
@@ -106,6 +107,7 @@ namespace Flowframes
 
         public HTTabControl GetMainTabControl() { return mainTabControl; }
         public TextBox GetInputFpsTextbox () { return fpsInTbox; }
+        public Button GetPauseBtn() { return pauseBtn; }
 
         public bool IsInFocus() { return (ActiveForm == this); }
 
@@ -223,6 +225,7 @@ namespace Flowframes
             if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
                 Interpolate.current = GetCurrentSettings();
 
+            AiProcessSuspend.Reset();
             Interpolate.Start();
         }
 
@@ -324,12 +327,15 @@ namespace Flowframes
             Control[] controlsToDisable = new Control[] { runBtn, runStepBtn, stepSelector, settingsBtn };
             Control[] controlsToHide = new Control[] { runBtn, runStepBtn, stepSelector };
             progressCircle.Visible = state;
-            cancelBtn.Visible = state;
+            busyControlsPanel.Visible = state;
+
             foreach (Control c in controlsToDisable)
                 c.Enabled = !state;
+
             foreach (Control c in controlsToHide)
                 c.Visible = !state;
-            cancelBtn.Enabled = allowCancel;
+
+            busyControlsPanel.Enabled = allowCancel;
             Program.busy = state;
             Program.mainForm.UpdateStepByStepControls();
         }
@@ -399,8 +405,13 @@ namespace Flowframes
 
         private void cancelBtn_Click(object sender, EventArgs e)
         {
-            SetTab("interpolation");
-            Interpolate.Cancel();
+            DialogResult dialog = MessageBox.Show($"Are you sure you want to cancel the interpolation?", "Are you sure?", MessageBoxButtons.YesNo);
+            
+            if (dialog == DialogResult.Yes)
+            {
+                SetTab("interpolation");
+                Interpolate.Cancel();
+            }
         }
 
         private void discordBtn_Click(object sender, EventArgs e)
@@ -549,6 +560,11 @@ namespace Flowframes
         private void scnDetectTestBtn_Click(object sender, EventArgs e)
         {
             Magick.SceneDetect.RunSceneDetection(inputTbox.Text.Trim());
+        }
+
+        private void pauseBtn_Click(object sender, EventArgs e)
+        {
+            AiProcessSuspend.SuspendResumeAi(!AiProcessSuspend.aiProcFrozen);
         }
     }
 }

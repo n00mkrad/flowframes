@@ -1,20 +1,15 @@
 ﻿using Flowframes.IO;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using Flowframes.OS;
 using Flowframes.UI;
 using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
-using Flowframes.Magick;
 using Flowframes.Media;
-using System.Drawing;
 
 namespace Flowframes
 {
@@ -35,6 +30,7 @@ namespace Flowframes
 
             try
             {
+                AiProcessSuspend.SetRunning(false);
                 OSUtils.KillProcessTree(lastAiProcess.Id);
             }
             catch (Exception e)
@@ -48,13 +44,14 @@ namespace Flowframes
             lastStartupTimeMs = startupTimeMs;
             processTime.Restart();
             lastAiProcess = proc;
+            AiProcessSuspend.SetRunning(true);
             lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.current.framesFolder : inPath;
             hasShownError = false;
         }
 
         static void SetProgressCheck(string interpPath, float factor)
         {
-            int frames = IOUtils.GetAmountOfFiles(lastInPath, false, "*.*");
+            int frames = IOUtils.GetAmountOfFiles(lastInPath, false);
             int target = ((frames * factor) - (factor - 1)).RoundToInt();
             InterpolationProgress.progressPaused = false;
             InterpolationProgress.currentFactor = factor;
@@ -69,6 +66,7 @@ namespace Flowframes
         {
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
+            AiProcessSuspend.SetRunning(false);
             InterpolationProgress.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt), InterpolationProgress.targetFrames);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
             
@@ -164,7 +162,7 @@ namespace Flowframes
             }
 
             rifePy.Start();
-
+            
             if (!OSUtils.ShowHiddenCmd())
             {
                 rifePy.BeginOutputReadLine();

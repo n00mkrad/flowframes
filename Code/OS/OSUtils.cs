@@ -11,6 +11,7 @@ using Flowframes.IO;
 using DiskDetector;
 using DiskDetector.Models;
 using Microsoft.VisualBasic.Devices;
+using Flowframes.Extensions;
 
 namespace Flowframes.OS
 {
@@ -124,7 +125,7 @@ namespace Flowframes.OS
             return (Encoding.UTF8.GetByteCount(str) != str.Length);
         }
 
-        public static int GetFreeRamMb ()
+        public static int GetFreeRamMb()
         {
             try
             {
@@ -154,6 +155,19 @@ namespace Flowframes.OS
             }
 
             return info;
+        }
+
+        public static IEnumerable<Process> GetChildProcesses(Process process)
+        {
+            List<Process> children = new List<Process>();
+            ManagementObjectSearcher mos = new ManagementObjectSearcher(String.Format("Select * From Win32_Process Where ParentProcessID={0}", process.Id));
+
+            foreach (ManagementObject mo in mos.Get())
+            {
+                children.Add(Process.GetProcessById(Convert.ToInt32(mo["ProcessID"])));
+            }
+
+            return children;
         }
     }
 }

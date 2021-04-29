@@ -329,6 +329,7 @@
     <Compile Include="Data\PseudoUniqueFile.cs" />
     <Compile Include="Data\ResumeState.cs" />
     <Compile Include="Data\SubtitleTrack.cs" />
+    <Compile Include="Extensions\ProcessExtensions.cs" />
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -377,7 +378,7 @@
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
     <Compile Include="OS\AiProcess.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -392,6 +393,7 @@
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Magick\Converter.cs" />
     <Compile Include="Magick\Dedupe.cs" />
+    <Compile Include="OS\AiProcessSuspend.cs" />
     <Compile Include="OS\NvApi.cs" />
     <Compile Include="OS\OSUtils.cs" />
     <Compile Include="OS\Python.cs" />
@@ -461,6 +463,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlowframesLogo2021.ico" />
+    <None Include="Resources\baseline_play_arrow_white_48dp.png" />
+    <None Include="Resources\baseline_pause_white_48dp.png" />
+    <None Include="Resources\baseline_stop_white_48dp.png" />
     <None Include="Resources\devmode.bat" />
     <None Include="Resources\flowframesIcoNew-512px.png" />
     <None Include="Resources\flowframesIcoNew.png" />

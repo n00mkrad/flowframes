@@ -747,7 +747,7 @@ namespace Flowframes.IO
 			}
 			catch (Exception e)
             {
-				Logger.Log($"OverwriteWithText failed for '{path}': {e.Message}");
+				Logger.Log($"OverwriteWithText failed for '{path}': {e.Message}", true);
             }
 		}
 

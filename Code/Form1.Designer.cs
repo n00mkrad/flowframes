@@ -78,7 +78,6 @@
             this.panel14 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
-            this.cancelBtn = new System.Windows.Forms.Button();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
             this.welcomeTab = new System.Windows.Forms.TabPage();
             this.welcomeLabel2 = new System.Windows.Forms.Label();
@@ -125,6 +124,10 @@
             this.htButton1 = new HTAlt.WinForms.HTButton();
             this.runStepBtn = new System.Windows.Forms.Button();
             this.stepSelector = new System.Windows.Forms.ComboBox();
+            this.busyControlsPanel = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cancelBtn = new System.Windows.Forms.Button();
+            this.pauseBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -145,6 +148,8 @@
             this.previewTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).BeginInit();
             this.abtTab.SuspendLayout();
+            this.busyControlsPanel.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -733,21 +738,6 @@
             this.longProgBar.Name = "longProgBar";
             this.longProgBar.Size = new System.Drawing.Size(700, 15);
             this.longProgBar.TabIndex = 33;
-            // 
-            // cancelBtn
-            // 
-            this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cancelBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelBtn.ForeColor = System.Drawing.Color.LightCoral;
-            this.cancelBtn.Location = new System.Drawing.Point(12, 418);
-            this.cancelBtn.Name = "cancelBtn";
-            this.cancelBtn.Size = new System.Drawing.Size(203, 71);
-            this.cancelBtn.TabIndex = 34;
-            this.cancelBtn.Text = "Cancel";
-            this.cancelBtn.UseVisualStyleBackColor = false;
-            this.cancelBtn.Visible = false;
-            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
             // mainTabControl
             // 
@@ -1447,6 +1437,62 @@
             this.stepSelector.Size = new System.Drawing.Size(203, 24);
             this.stepSelector.TabIndex = 73;
             // 
+            // busyControlsPanel
+            // 
+            this.busyControlsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.busyControlsPanel.Controls.Add(this.tableLayoutPanel1);
+            this.busyControlsPanel.Location = new System.Drawing.Point(12, 418);
+            this.busyControlsPanel.Name = "busyControlsPanel";
+            this.busyControlsPanel.Size = new System.Drawing.Size(203, 71);
+            this.busyControlsPanel.TabIndex = 74;
+            this.busyControlsPanel.Visible = false;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51F));
+            this.tableLayoutPanel1.Controls.Add(this.pauseBtn, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cancelBtn, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(203, 71);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // cancelBtn
+            // 
+            this.cancelBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cancelBtn.BackgroundImage = global::Flowframes.Properties.Resources.baseline_stop_white_48dp;
+            this.cancelBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.cancelBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Firebrick;
+            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cancelBtn.ForeColor = System.Drawing.Color.Firebrick;
+            this.cancelBtn.Location = new System.Drawing.Point(24, 10);
+            this.cancelBtn.Name = "cancelBtn";
+            this.cancelBtn.Size = new System.Drawing.Size(50, 50);
+            this.cancelBtn.TabIndex = 0;
+            this.cancelBtn.UseVisualStyleBackColor = true;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
+            // 
+            // pauseBtn
+            // 
+            this.pauseBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pauseBtn.BackgroundImage = global::Flowframes.Properties.Resources.baseline_pause_white_48dp;
+            this.pauseBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pauseBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkOrange;
+            this.pauseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pauseBtn.ForeColor = System.Drawing.Color.DarkOrange;
+            this.pauseBtn.Location = new System.Drawing.Point(126, 10);
+            this.pauseBtn.Name = "pauseBtn";
+            this.pauseBtn.Size = new System.Drawing.Size(50, 50);
+            this.pauseBtn.TabIndex = 1;
+            this.pauseBtn.UseVisualStyleBackColor = true;
+            this.pauseBtn.Visible = false;
+            this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1454,7 +1500,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(934, 501);
-            this.Controls.Add(this.cancelBtn);
+            this.Controls.Add(this.busyControlsPanel);
             this.Controls.Add(this.runBtn);
             this.Controls.Add(this.stepSelector);
             this.Controls.Add(this.runStepBtn);
@@ -1510,6 +1556,8 @@
             this.previewTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).EndInit();
             this.abtTab.ResumeLayout(false);
+            this.busyControlsPanel.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1556,7 +1604,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label23;
         private HTAlt.WinForms.HTProgressBar longProgBar;
-        private System.Windows.Forms.Button cancelBtn;
         private HTAlt.WinForms.HTButton discordBtn;
         private HTAlt.WinForms.HTButton paypalBtn;
         private HTAlt.WinForms.HTButton patreonBtn;
@@ -1612,6 +1659,10 @@
         private System.Windows.Forms.ComboBox mpdecimateMode;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private HTAlt.WinForms.HTButton scnDetectTestBtn;
+        private System.Windows.Forms.Panel busyControlsPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button pauseBtn;
+        private System.Windows.Forms.Button cancelBtn;
     }
 }
 

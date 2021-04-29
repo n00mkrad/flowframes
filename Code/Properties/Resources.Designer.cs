@@ -123,6 +123,26 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap baseline_pause_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("baseline_pause_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_play_arrow_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("baseline_play_arrow_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap baseline_queue_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_queue_white_48dp", resourceCulture);
@@ -136,6 +156,16 @@ namespace Flowframes.Properties {
         internal static System.Drawing.Bitmap baseline_settings_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_settings_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_stop_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("baseline_stop_white_48dp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
