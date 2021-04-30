@@ -127,9 +127,9 @@ namespace Flowframes
             if (line.Contains("No NVENC capable devices found") || line.MatchesWildcard("*nvcuda.dll*"))
                 Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
 
-            if (!hidden && showProgressBar && line.Contains("time="))
+            if (!hidden && showProgressBar && line.Contains("Time:"))
             {
-                Regex timeRegex = new Regex("(?<=time=).*(?= )");
+                Regex timeRegex = new Regex("(?<=Time:).*(?= )");
                 UpdateFfmpegProgress(timeRegex.Match(line).Value);
             }
         }

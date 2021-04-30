@@ -2,14 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.Media
 {
     class FFmpegUtils
     {
-        public enum Codec { H264, H265, NVENC264, NVENC265, VP9, ProRes, AviRaw }
+        public enum Codec { H264, H265, H264NVENC, H265NVENC, AV1, VP9, ProRes, AviRaw }
 
 
         public static Codec GetCodec(Interpolate.OutMode mode)
@@ -19,8 +17,9 @@ namespace Flowframes.Media
                 int mp4Enc = Config.GetInt("mp4Enc");
                 if (mp4Enc == 0) return Codec.H264;
                 if (mp4Enc == 1) return Codec.H265;
-                if (mp4Enc == 2) return Codec.NVENC264;
-                if (mp4Enc == 3) return Codec.NVENC265;
+                if (mp4Enc == 2) return Codec.H264NVENC;
+                if (mp4Enc == 3) return Codec.H265NVENC;
+                if (mp4Enc == 4) return Codec.AV1;
             }
 
             if (mode == Interpolate.OutMode.VidWebm)
@@ -41,8 +40,9 @@ namespace Flowframes.Media
             {
                 case Codec.H264: return "libx264";
                 case Codec.H265: return "libx265";
-                case Codec.NVENC264: return "h264_nvenc";
-                case Codec.NVENC265: return "hevc_nvenc";
+                case Codec.H264NVENC: return "h264_nvenc";
+                case Codec.H265NVENC: return "hevc_nvenc";
+                case Codec.AV1: return "libsvtav1";
                 case Codec.VP9: return "libvpx-vp9";
                 case Codec.ProRes: return "prores_ks";
                 case Codec.AviRaw: return Config.Get("aviCodec");
@@ -66,16 +66,22 @@ namespace Flowframes.Media
                 args += $"-crf {Config.GetInt("h265Crf")} -preset {preset} -pix_fmt yuv420p";
             }
 
-            if (codec == Codec.NVENC264)
+            if (codec == Codec.H264NVENC)
             {
                 int cq = (Config.GetInt("h264Crf") * 1.1f).RoundToInt();
                 args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt yuv420p";
             }
 
-            if (codec == Codec.NVENC265)
+            if (codec == Codec.H265NVENC)
             {
                 int cq = (Config.GetInt("h265Crf") * 1.1f).RoundToInt();
                 args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt yuv420p";
+            }
+
+            if (codec == Codec.AV1)
+            {
+                int cq = (Config.GetInt("av1Crf") * 1.0f).RoundToInt();
+                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
@@ -112,6 +118,22 @@ namespace Flowframes.Media
             if (preset == "veryfast") arg = "4 -deadline realtime";
 
             return $"-cpu-used {arg}";
+        }
+
+        static string GetSvtAv1Speed()
+        {
+            string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
+            string arg = "";
+
+            if (preset == "veryslow") arg = "2";
+            if (preset == "slower") arg = "3";
+            if (preset == "slow") arg = "4";
+            if (preset == "medium") arg = "5";
+            if (preset == "fast") arg = "6";
+            if (preset == "faster") arg = "7";
+            if (preset == "veryfast") arg = "8";
+
+            return $"-preset {arg}";
         }
 
         public static bool ContainerSupportsAllAudioFormats (Interpolate.OutMode outMode, List<string> codecs)

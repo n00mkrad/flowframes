@@ -1,4 +1,5 @@
 ﻿using Flowframes.IO;
+using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
@@ -53,9 +54,8 @@ namespace Flowframes.Forms
         void SaveSettings ()
         {
             // Clamp...
-            h264Crf.Text = h264Crf.GetInt().Clamp(0, 51).ToString();
-            h265Crf.Text = h265Crf.GetInt().Clamp(0, 51).ToString();
-            vp9Crf.Text = vp9Crf.GetInt().Clamp(0, 63).ToString();
+            mp4Crf.Text = ((int)mp4Crf.Value).Clamp(0, 50).ToString();
+            vp9Crf.Text = ((int)vp9Crf.Value).Clamp(0, 63).ToString();
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
@@ -99,8 +99,9 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(fixOutputDuration);
             // Encoding
             ConfigParser.SaveComboxIndex(mp4Enc);
-            ConfigParser.SaveGuiElement(h264Crf);
-            ConfigParser.SaveGuiElement(h265Crf);
+            Config.Set(mp4CrfConfigKey, mp4Crf.Value.ToString());
+            //ConfigParser.SaveGuiElement(h264Crf);
+            //ConfigParser.SaveGuiElement(h265Crf);
             ConfigParser.SaveGuiElement(vp9Crf);
             ConfigParser.SaveComboxIndex(proResProfile);
             ConfigParser.SaveGuiElement(aviCodec);
@@ -153,14 +154,14 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(dainNcnnTilesize);
             // Export
             ConfigParser.LoadGuiElement(minOutVidLength);
-            ConfigParser.LoadGuiElement(maxFps);
+            ConfigParser.LoadGuiElement(maxFps); 
             ConfigParser.LoadComboxIndex(maxFpsMode);
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
             // Encoding
             ConfigParser.LoadComboxIndex(mp4Enc);
-            ConfigParser.LoadGuiElement(h264Crf);
-            ConfigParser.LoadGuiElement(h265Crf);
+            //ConfigParser.LoadGuiElement(h264Crf);
+            //ConfigParser.LoadGuiElement(h265Crf);
             ConfigParser.LoadGuiElement(vp9Crf);
             ConfigParser.LoadComboxIndex(proResProfile);
             ConfigParser.LoadGuiElement(aviCodec);
@@ -213,6 +214,24 @@ namespace Flowframes.Forms
             ModelDownloader.DeleteAllModels();
             clearModelCacheBtn.Text = "Clear Model Cache";
             CheckModelCacheSize();
+        }
+
+        string mp4CrfConfigKey;
+
+        private void mp4Enc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string text = mp4Enc.Text.ToUpper().Remove(" ");
+
+            if (text.Contains(FFmpegUtils.Codec.H264.ToString().ToUpper()))
+                mp4CrfConfigKey = "h264Crf";
+
+            if (text.Contains(FFmpegUtils.Codec.H265.ToString().ToUpper()))
+                mp4CrfConfigKey = "h265Crf";
+
+            if (text.Contains(FFmpegUtils.Codec.AV1.ToString().ToUpper()))
+                mp4CrfConfigKey = "av1Crf";
+
+            mp4Crf.Value = Config.GetInt(mp4CrfConfigKey);
         }
     }
 }

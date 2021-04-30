@@ -126,8 +126,8 @@
             this.stepSelector = new System.Windows.Forms.ComboBox();
             this.busyControlsPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.cancelBtn = new System.Windows.Forms.Button();
             this.pauseBtn = new System.Windows.Forms.Button();
+            this.cancelBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -209,8 +209,8 @@
             this.outModeCombox.ForeColor = System.Drawing.Color.White;
             this.outModeCombox.FormattingEnabled = true;
             this.outModeCombox.Items.AddRange(new object[] {
-            "MP4 Video (h264, h265)",
-            "MKV Video (h264, h265) (Best Audio/Subtitles Support)",
+            "MP4 Video (h264, h265, AV1)",
+            "MKV Video (h264, h265, AV1) (Best Audio/Subtitles Support)",
             "WEBM Video (Google VP9)",
             "MOV Video (Apple ProRes)",
             "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
@@ -1462,21 +1462,6 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(203, 71);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // cancelBtn
-            // 
-            this.cancelBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.cancelBtn.BackgroundImage = global::Flowframes.Properties.Resources.baseline_stop_white_48dp;
-            this.cancelBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.cancelBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Firebrick;
-            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelBtn.ForeColor = System.Drawing.Color.Firebrick;
-            this.cancelBtn.Location = new System.Drawing.Point(24, 10);
-            this.cancelBtn.Name = "cancelBtn";
-            this.cancelBtn.Size = new System.Drawing.Size(50, 50);
-            this.cancelBtn.TabIndex = 0;
-            this.cancelBtn.UseVisualStyleBackColor = true;
-            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
-            // 
             // pauseBtn
             // 
             this.pauseBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -1492,6 +1477,21 @@
             this.pauseBtn.UseVisualStyleBackColor = true;
             this.pauseBtn.Visible = false;
             this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
+            // 
+            // cancelBtn
+            // 
+            this.cancelBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cancelBtn.BackgroundImage = global::Flowframes.Properties.Resources.baseline_stop_white_48dp;
+            this.cancelBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.cancelBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Firebrick;
+            this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cancelBtn.ForeColor = System.Drawing.Color.Firebrick;
+            this.cancelBtn.Location = new System.Drawing.Point(24, 10);
+            this.cancelBtn.Name = "cancelBtn";
+            this.cancelBtn.Size = new System.Drawing.Size(50, 50);
+            this.cancelBtn.TabIndex = 0;
+            this.cancelBtn.UseVisualStyleBackColor = true;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
             // Form1
             // 
