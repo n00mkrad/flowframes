@@ -67,7 +67,8 @@ namespace Flowframes
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             AiProcessSuspend.SetRunning(false);
-            InterpolationProgress.UpdateInterpProgress(IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt), InterpolationProgress.targetFrames);
+            int interpolatedFrames = IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt);
+            InterpolationProgress.UpdateInterpProgress(interpolatedFrames, InterpolationProgress.targetFrames);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
             
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
@@ -78,6 +79,13 @@ namespace Flowframes
 
             Logger.Log(logStr);
             processTime.Stop();
+
+            if(interpolatedFrames < 3)
+            {
+                string amount = interpolatedFrames > 0 ? $"Only {interpolatedFrames}" : "No";
+                Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.");
+                return;
+            }
 
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
