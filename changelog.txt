@@ -1,3 +1,11 @@
+Flowframes 1.25.1 Changelog:
+- Added a button to pause/resume the interpolation
+- Added AV1 codec support for MP4/MKV output
+- Added support for JPG or WEBP image sequence output instead of only PNG
+- NVENC encoding is now slightly more efficient (P7 Preset)
+- Fixed accurate deduplication not working with JPEG frames
+
+
 Flowframes 1.25.0 Changelog:
 - Added support for FPS limiting (resampling) on Image Sequence outputs
 - Added MagicYUV codec for AVI exports (super fast, better compression than huffyuv)
