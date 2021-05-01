@@ -135,6 +135,9 @@ namespace Flowframes.OS
             Version latestFree = GetLatestVer(false);
 
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
+
+            if (installed.Major != 0 && installed.Minor != 0)
+                Program.mainForm.Text = "Flowframes " + installed.ToString();
         }
 
         public static async Task UpdateModelList()
