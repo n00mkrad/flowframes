@@ -100,8 +100,6 @@ namespace Flowframes.Forms
             // Encoding
             ConfigParser.SaveComboxIndex(mp4Enc);
             Config.Set(mp4CrfConfigKey, mp4Crf.Value.ToString());
-            //ConfigParser.SaveGuiElement(h264Crf);
-            //ConfigParser.SaveGuiElement(h265Crf);
             ConfigParser.SaveGuiElement(vp9Crf);
             ConfigParser.SaveComboxIndex(proResProfile);
             ConfigParser.SaveGuiElement(aviCodec);
@@ -160,8 +158,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(fixOutputDuration);
             // Encoding
             ConfigParser.LoadComboxIndex(mp4Enc);
-            //ConfigParser.LoadGuiElement(h264Crf);
-            //ConfigParser.LoadGuiElement(h265Crf);
             ConfigParser.LoadGuiElement(vp9Crf);
             ConfigParser.LoadComboxIndex(proResProfile);
             ConfigParser.LoadGuiElement(aviCodec);
