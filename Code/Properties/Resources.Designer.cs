@@ -123,6 +123,16 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap baseline_list_alt_white_48dp {
+            get {
+                object obj = ResourceManager.GetObject("baseline_list_alt_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap baseline_pause_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_pause_white_48dp", resourceCulture);

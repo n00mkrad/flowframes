@@ -128,6 +128,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.debugBtn = new HTAlt.WinForms.HTButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -632,7 +633,7 @@
             this.patreonBtn.ForeColor = System.Drawing.Color.White;
             this.patreonBtn.ImageIndex = 0;
             this.patreonBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.patreonBtn.Location = new System.Drawing.Point(652, 12);
+            this.patreonBtn.Location = new System.Drawing.Point(606, 12);
             this.patreonBtn.Name = "patreonBtn";
             this.patreonBtn.Size = new System.Drawing.Size(40, 40);
             this.patreonBtn.TabIndex = 37;
@@ -650,7 +651,7 @@
             this.paypalBtn.ForeColor = System.Drawing.Color.White;
             this.paypalBtn.ImageIndex = 0;
             this.paypalBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.paypalBtn.Location = new System.Drawing.Point(605, 12);
+            this.paypalBtn.Location = new System.Drawing.Point(559, 12);
             this.paypalBtn.Name = "paypalBtn";
             this.paypalBtn.Size = new System.Drawing.Size(40, 40);
             this.paypalBtn.TabIndex = 36;
@@ -668,7 +669,7 @@
             this.discordBtn.ForeColor = System.Drawing.Color.White;
             this.discordBtn.ImageIndex = 0;
             this.discordBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.discordBtn.Location = new System.Drawing.Point(698, 12);
+            this.discordBtn.Location = new System.Drawing.Point(652, 12);
             this.discordBtn.Name = "discordBtn";
             this.discordBtn.Size = new System.Drawing.Size(40, 40);
             this.discordBtn.TabIndex = 35;
@@ -1397,7 +1398,7 @@
             this.htButton1.ForeColor = System.Drawing.Color.White;
             this.htButton1.ImageIndex = 0;
             this.htButton1.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.htButton1.Location = new System.Drawing.Point(744, 12);
+            this.htButton1.Location = new System.Drawing.Point(698, 9);
             this.htButton1.Name = "htButton1";
             this.htButton1.Size = new System.Drawing.Size(40, 40);
             this.htButton1.TabIndex = 40;
@@ -1493,6 +1494,24 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // debugBtn
+            // 
+            this.debugBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.debugBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_list_alt_white_48dp;
+            this.debugBtn.DrawImage = true;
+            this.debugBtn.FlatAppearance.BorderSize = 0;
+            this.debugBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugBtn.ForeColor = System.Drawing.Color.White;
+            this.debugBtn.ImageIndex = 0;
+            this.debugBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
+            this.debugBtn.Location = new System.Drawing.Point(744, 12);
+            this.debugBtn.Name = "debugBtn";
+            this.debugBtn.Size = new System.Drawing.Size(40, 40);
+            this.debugBtn.TabIndex = 75;
+            this.toolTip1.SetToolTip(this.debugBtn, "Debug Tools");
+            this.debugBtn.UseVisualStyleBackColor = false;
+            this.debugBtn.Click += new System.EventHandler(this.debugBtn_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1500,6 +1519,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(934, 501);
+            this.Controls.Add(this.debugBtn);
             this.Controls.Add(this.busyControlsPanel);
             this.Controls.Add(this.runBtn);
             this.Controls.Add(this.stepSelector);
@@ -1663,6 +1683,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button pauseBtn;
         private System.Windows.Forms.Button cancelBtn;
+        private HTAlt.WinForms.HTButton debugBtn;
     }
 }
 

@@ -12,7 +12,7 @@ namespace Flowframes.IO
     {
         private static string configPath;
 
-        private static string[] cachedLines;
+        public static string[] cachedLines;
 
         public static void Init()
         {

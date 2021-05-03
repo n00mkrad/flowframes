@@ -81,6 +81,9 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\AdamsLair.WinForms.1.1.18\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="CircularProgressBar, Version=2.8.0.16, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
       <HintPath>packages\CircularProgressBar.2.8.0.16\lib\net40\CircularProgressBar.dll</HintPath>
     </Reference>
@@ -126,6 +129,9 @@
     </Reference>
     <Reference Include="PagedControl, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\PagedControl.2.2.0\lib\net35\PagedControl.dll</HintPath>
+    </Reference>
+    <Reference Include="PopupControl, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\AdamsLair.WinForms.PopupControl.1.0.1\lib\net40\PopupControl.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -342,6 +348,12 @@
     <Compile Include="Forms\BigPreviewForm.Designer.cs">
       <DependentUpon>BigPreviewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\DebugForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DebugForm.Designer.cs">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -418,6 +430,9 @@
     <EmbeddedResource Include="Forms\BigPreviewForm.resx">
       <DependentUpon>BigPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DebugForm.resx">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -463,6 +478,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlowframesLogo2021.ico" />
+    <None Include="Resources\baseline_list_alt_white_48dp.png" />
     <None Include="Resources\baseline_play_arrow_white_48dp.png" />
     <None Include="Resources\baseline_pause_white_48dp.png" />
     <None Include="Resources\baseline_stop_white_48dp.png" />

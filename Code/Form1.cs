@@ -566,5 +566,10 @@ namespace Flowframes
         {
             AiProcessSuspend.SuspendResumeAi(!AiProcessSuspend.aiProcFrozen);
         }
+
+        private void debugBtn_Click(object sender, EventArgs e)
+        {
+            new DebugForm().ShowDialog();
+        }
     }
 }
