@@ -2,6 +2,7 @@
 using Flowframes.IO;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -35,8 +36,38 @@ namespace Flowframes
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Add the event handler for handling UI thread exceptions to the event.
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+
+            // Set the unhandled exception mode to force all Windows Forms errors to go through our handler.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+
+            // Add the event handler for handling non-UI thread exceptions to the event. 
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             mainForm = new Form1();
             Application.Run(mainForm);
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            string text = $"Unhandled Thread Exception!\n\n{e.Exception.Message}\n\nStack Trace:\n{e.Exception.StackTrace}\n\n" +
+                $"The error has been copied to the clipboard. Please inform the developer about this.";
+            ShowUnhandledError(text);
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.ExceptionObject as Exception;
+            string text = $"Unhandled UI Exception!\n\n{ex.Message}\n\nStack Trace:\n{ex.StackTrace}\n\n" +
+                $"The error has been copied to the clipboard. Please inform the developer about this.";
+            ShowUnhandledError(text);
+        }
+
+        static void ShowUnhandledError (string text)
+        {
+            MessageBox.Show(text, "Unhandled Error");
+            Clipboard.SetText(text);
         }
 
         static async Task DiskSpaceCheckLoop ()
