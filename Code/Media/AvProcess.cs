@@ -96,7 +96,7 @@ namespace Flowframes
         {
             timeSinceLastOutput.Restart();
 
-            if (outLine == null || outLine.Data == null)
+            if (Interpolate.canceled || outLine == null || outLine.Data == null)
                 return;
 
             string line = outLine.Data;
@@ -148,12 +148,15 @@ namespace Flowframes
         static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
         {
             timeSinceLastOutput.Restart();
+
             if (outLine == null || outLine.Data == null || outLine.Data.Trim().Length < 2)
                 return;
+
             string line = outLine.Data;
 
             if (!string.IsNullOrWhiteSpace(lastOutputFfmpeg))
                 lastOutputFfmpeg += "\n";
+
             lastOutputFfmpeg = lastOutputFfmpeg + line;
             Logger.Log(line, true, false, "ffmpeg");
 
