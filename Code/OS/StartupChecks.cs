@@ -10,21 +10,32 @@ namespace Flowframes.OS
 {
     class StartupChecks
     {
-        static bool IsWin10 ()
+        static bool IsWin10()
         {
-            string[] osInfo = OSUtils.GetOs().Split(" | ");
+            string osInfoStr = OSUtils.TryGetOs();
+
+            if (string.IsNullOrWhiteSpace(osInfoStr))
+                return true;    // If it fails, assume we are on Win10
+
+            string[] osInfo = osInfoStr.Split(" | ");
             string version = osInfo[0].Remove("Microsoft").Trim();
+
             return version.ToLower().Contains("windows 10");
         }
 
-        static bool Is32Bit ()
+        static bool Is32Bit()
         {
-            string[] osInfo = OSUtils.GetOs().Split(" | ");
+            string osInfoStr = OSUtils.TryGetOs();
+
+            if (string.IsNullOrWhiteSpace(osInfoStr))
+                return false;    // If it fails, assume we are on 64bit
+
+            string[] osInfo = osInfoStr.Split(" | ");
             string arch = osInfo[1].Trim();
             return arch.Contains("32");
         }
 
-        public static void CheckOs ()
+        public static void CheckOs()
         {
             if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().ToLower().Contains("temp"))
             {
@@ -33,7 +44,7 @@ namespace Flowframes.OS
                 Application.Exit();
             }
 
-            string[] osInfo = OSUtils.GetOs().Split(" | ");
+            string[] osInfo = OSUtils.TryGetOs().Split(" | ");
             string version = osInfo[0].Remove("Microsoft").Trim();
 
             if (Is32Bit() && !Config.GetBool("allow32Bit", false))
@@ -41,6 +52,9 @@ namespace Flowframes.OS
                 MessageBox.Show("This application is not compatible with 32 bit operating systems!", "Error");
                 Application.Exit();
             }
+
+            if (string.IsNullOrWhiteSpace(version))
+                return;
 
             if (!version.ToLower().Contains("windows 10") && !Config.GetBool("ignoreIncompatibleOs", false))
             {
@@ -83,7 +97,7 @@ namespace Flowframes.OS
                 {
                     symlinksWorksNow = Symlinks.SymlinksAllowed();
 
-                    if(symlinksWorksNow)
+                    if (symlinksWorksNow)
                         break;
 
                     await Task.Delay(500);

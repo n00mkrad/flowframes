@@ -137,21 +137,28 @@ namespace Flowframes.OS
             }
         }
 
-        public static string GetOs()
+        public static string TryGetOs()
         {
             string info = "";
 
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
+            try
             {
-                ManagementObjectCollection information = searcher.Get();
-
-                if (information != null)
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
                 {
-                    foreach (ManagementObject obj in information)
-                        info = $"{obj["Caption"]} | {obj["OSArchitecture"]}";
-                }
+                    ManagementObjectCollection information = searcher.Get();
 
-                info = info.Replace("NT 5.1.2600", "XP").Replace("NT 5.2.3790", "Server 2003");
+                    if (information != null)
+                    {
+                        foreach (ManagementObject obj in information)
+                            info = $"{obj["Caption"]} | {obj["OSArchitecture"]}";
+                    }
+
+                    info = info.Replace("NT 5.1.2600", "XP").Replace("NT 5.2.3790", "Server 2003");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("TryGetOs Error: " + e.Message, true);
             }
 
             return info;
