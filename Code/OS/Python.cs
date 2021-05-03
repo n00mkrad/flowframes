@@ -77,7 +77,7 @@ namespace Flowframes.OS
                 }
                 else
                 {
-                    MessageBox.Show("Neither the Flowframes Python Runtime nor System Python installation could be found!\nEither download the \"Full\" Flowframes package or install Python/Pytorch yourself.");
+                    MessageBox.Show("Neither the Flowframes Python Runtime nor System Python installation could be found!\nEither redownload Flowframes with the embedded Python runtime enabled or install Python/Pytorch yourself.");
                     Interpolate.Cancel("Neither the Flowframes Python Runtime nor System Python installation could be found!");
                 }
             }

@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Win32Interop.Structs;
+using Flowframes.UI;
 
 namespace Flowframes.Main
 {
@@ -79,8 +79,16 @@ namespace Flowframes.Main
 
                     unencodedFrameLines.Clear();
 
-                    for (int vfrLine = lastEncodedFrameNum; vfrLine < interpFramesLines.Length; vfrLine++)
-                            unencodedFrameLines.Add(vfrLine);
+                    //for (int frameLineNum = lastEncodedFrameNum; frameLineNum < interpFramesLines.Length; frameLineNum++)
+                    //        unencodedFrameLines.Add(frameLineNum);
+
+                    for (int frameLineNum = lastEncodedFrameNum; frameLineNum < interpFramesLines.Length; frameLineNum++)
+                    {
+                        if (interpFramesLines[frameLineNum].Contains(InterpolationProgress.lastFrame.ToString().PadLeft(Padding.interpFrames, '0')))
+                            break;
+
+                        unencodedFrameLines.Add(frameLineNum);
+                    }
 
                     bool aiRunning = !AiProcess.lastAiProcess.HasExited;
 
