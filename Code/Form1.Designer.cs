@@ -77,6 +77,7 @@
             this.panel10 = new System.Windows.Forms.Panel();
             this.panel14 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.debugBtn = new HTAlt.WinForms.HTButton();
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
             this.welcomeTab = new System.Windows.Forms.TabPage();
@@ -128,7 +129,6 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
-            this.debugBtn = new HTAlt.WinForms.HTButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -730,6 +730,24 @@
             this.panel3.Size = new System.Drawing.Size(21, 21);
             this.panel3.TabIndex = 57;
             this.toolTip1.SetToolTip(this.panel3, "Allows custom input.");
+            // 
+            // debugBtn
+            // 
+            this.debugBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.debugBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_list_alt_white_48dp;
+            this.debugBtn.DrawImage = true;
+            this.debugBtn.FlatAppearance.BorderSize = 0;
+            this.debugBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.debugBtn.ForeColor = System.Drawing.Color.White;
+            this.debugBtn.ImageIndex = 0;
+            this.debugBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
+            this.debugBtn.Location = new System.Drawing.Point(744, 12);
+            this.debugBtn.Name = "debugBtn";
+            this.debugBtn.Size = new System.Drawing.Size(40, 40);
+            this.debugBtn.TabIndex = 75;
+            this.toolTip1.SetToolTip(this.debugBtn, "Debug Tools");
+            this.debugBtn.UseVisualStyleBackColor = false;
+            this.debugBtn.Click += new System.EventHandler(this.debugBtn_Click);
             // 
             // longProgBar
             // 
@@ -1493,24 +1511,6 @@
             this.cancelBtn.TabIndex = 0;
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
-            // 
-            // debugBtn
-            // 
-            this.debugBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.debugBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_list_alt_white_48dp;
-            this.debugBtn.DrawImage = true;
-            this.debugBtn.FlatAppearance.BorderSize = 0;
-            this.debugBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.debugBtn.ForeColor = System.Drawing.Color.White;
-            this.debugBtn.ImageIndex = 0;
-            this.debugBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.debugBtn.Location = new System.Drawing.Point(744, 12);
-            this.debugBtn.Name = "debugBtn";
-            this.debugBtn.Size = new System.Drawing.Size(40, 40);
-            this.debugBtn.TabIndex = 75;
-            this.toolTip1.SetToolTip(this.debugBtn, "Debug Tools");
-            this.debugBtn.UseVisualStyleBackColor = false;
-            this.debugBtn.Click += new System.EventHandler(this.debugBtn_Click);
             // 
             // Form1
             // 

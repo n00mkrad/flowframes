@@ -1,9 +1,12 @@
 ﻿using Flowframes.IO;
+using Flowframes.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,73 +16,96 @@ namespace Flowframes.Forms
 {
     public partial class DebugForm : Form
     {
-        public bool changed;
+        public bool configGridChanged;
 
         public DebugForm()
         {
             InitializeComponent();
         }
 
-        private void DebugForm_Load(object sender, EventArgs e)
+        private void DebugForm_Shown(object sender, EventArgs e)
         {
-            Dictionary<string, string> configDict = new Dictionary<string, string>();
-
-            configDataGrid.Columns.Add("keys", "Key Name");
-            configDataGrid.Columns.Add("vals", "Saved Value");
-
-            foreach (string entry in Config.cachedLines)
-            {
-                string[] data = entry.Split('|');
-                configDict.Add(data[0], data[1]);
-                configDataGrid.Rows.Add(data[0], data[1]);
-            }
-
-            configDataGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            configDataGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            changed = false;
+            configDataGrid.Font = new Font("Consolas", 9f);
+            RefreshLogs();
         }
 
-        void Save ()
+        void RefreshLogs ()
         {
-            foreach(DataGridViewRow row in configDataGrid.Rows)
-            {
-                string key = row.Cells[0].Value?.ToString();
-                string val = row.Cells[1].Value?.ToString();
+            DebugFormHelper.FillLogDropdown(logFilesDropdown);
 
-                if (key == null || val == null || string.IsNullOrWhiteSpace(key.Trim()) || string.IsNullOrWhiteSpace(val.Trim()))
-                    continue;
-
-                Config.Set(key, val);
-                Logger.Log($"Config Editor: Saved Key '{key}' with value '{val}'", true);
-            }
+            if (logFilesDropdown.Items.Count > 0)
+                logFilesDropdown.SelectedIndex = 0;
         }
 
         private void DebugForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!changed)
+            if (!configGridChanged)
                 return;
 
             DialogResult dialogResult = MessageBox.Show($"Save the modified configuration file?", "Save Configuration?", MessageBoxButtons.YesNo);
             
             if (dialogResult == DialogResult.Yes)
-                Save();
+                DebugFormHelper.SaveGrid(configDataGrid);
         }
 
         private void configDataGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex > -1)
-                changed = true;
+                configGridChanged = true;
         }
 
         private void configDataGrid_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            changed = true;
+            configGridChanged = true;
         }
 
         private void configDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            changed = true;
+            configGridChanged = true;
+        }
+
+        private void logFilesDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            logBox.Text = File.ReadAllText(Path.Combine(Paths.GetLogPath(), logFilesDropdown.Text)).Trim('\r', '\n');
+        }
+
+        private void textWrapBtn_Click(object sender, EventArgs e)
+        {
+            logBox.WordWrap = !logBox.WordWrap;
+        }
+
+        private void openLogFolderBtn_Click(object sender, EventArgs e)
+        {
+            Process.Start("explorer.exe", Paths.GetLogPath());
+        }
+
+        private void clearLogsBtn_Click(object sender, EventArgs e)
+        {
+            foreach (string str in logFilesDropdown.Items)
+                File.WriteAllText(Path.Combine(Paths.GetLogPath(), str), "");
+
+            logFilesDropdown_SelectedIndexChanged(null, null);
+        }
+
+        private void refreshBtn_Click(object sender, EventArgs e)
+        {
+            RefreshLogs();
+        }
+
+        private void monospaceBtn_Click(object sender, EventArgs e)
+        {
+            DebugFormHelper.ToggleMonospace(logBox);
+        }
+
+        private void copyTextClipboardBtn_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(logBox.Text);
+        }
+
+        private void tabPage2_Enter(object sender, EventArgs e)
+        {
+            DebugFormHelper.LoadGrid(configDataGrid);
+            configGridChanged = false;
         }
     }
 }
