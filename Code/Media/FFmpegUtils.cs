@@ -63,7 +63,8 @@ namespace Flowframes.Media
             if (codec == Codec.H265)
             {
                 string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
-                args += $"-crf {Config.GetInt("h265Crf")} -preset {preset} -pix_fmt yuv420p";
+                int crf = Config.GetInt("h265Crf");
+                args += $"-crf {(crf > 0 ? crf.ToString() : "-x265-params lossless=1")} -preset {preset} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.H264NVENC)
