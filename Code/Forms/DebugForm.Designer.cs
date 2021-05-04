@@ -32,12 +32,17 @@ namespace Flowframes.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugForm));
             this.titleLabel = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.configDataGrid = new System.Windows.Forms.DataGridView();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.htTabControl1 = new HTAlt.WinForms.HTTabControl();
-            this.configDataGrid = new System.Windows.Forms.DataGridView();
             this.tabPage2.SuspendLayout();
-            this.htTabControl1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.configDataGrid)).BeginInit();
+            this.htTabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -55,7 +60,8 @@ namespace Flowframes.Forms
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.tabPage2.Controls.Add(this.configDataGrid);
+            this.tabPage2.Controls.Add(this.panel2);
+            this.tabPage2.Controls.Add(this.panel1);
             this.tabPage2.Location = new System.Drawing.Point(4, 27);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -63,13 +69,57 @@ namespace Flowframes.Forms
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Config Editor";
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Location = new System.Drawing.Point(6, 6);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(900, 79);
+            this.panel2.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.SystemColors.Control;
+            this.label1.Location = new System.Drawing.Point(3, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(415, 60);
+            this.label1.TabIndex = 0;
+            this.label1.Text = resources.GetString("label1.Text");
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.configDataGrid);
+            this.panel1.Location = new System.Drawing.Point(6, 91);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(900, 299);
+            this.panel1.TabIndex = 4;
+            // 
+            // configDataGrid
+            // 
+            this.configDataGrid.AllowUserToResizeColumns = false;
+            this.configDataGrid.AllowUserToResizeRows = false;
+            this.configDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.configDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.configDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            this.configDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.configDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.configDataGrid.Location = new System.Drawing.Point(0, 0);
+            this.configDataGrid.MultiSelect = false;
+            this.configDataGrid.Name = "configDataGrid";
+            this.configDataGrid.Size = new System.Drawing.Size(900, 299);
+            this.configDataGrid.TabIndex = 0;
+            this.configDataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.configDataGrid_CellValueChanged);
+            this.configDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.configDataGrid_RowsAdded);
+            this.configDataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.configDataGrid_RowsRemoved);
+            // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.tabPage1.Location = new System.Drawing.Point(4, 27);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(768, 345);
+            this.tabPage1.Size = new System.Drawing.Size(912, 396);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Log Viewer";
             // 
@@ -101,21 +151,6 @@ namespace Flowframes.Forms
             this.htTabControl1.UpDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.htTabControl1.UpDownTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(112)))));
             // 
-            // configDataGrid
-            // 
-            this.configDataGrid.AllowUserToResizeColumns = false;
-            this.configDataGrid.AllowUserToResizeRows = false;
-            this.configDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.configDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.configDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            this.configDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.configDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.configDataGrid.Location = new System.Drawing.Point(3, 3);
-            this.configDataGrid.MultiSelect = false;
-            this.configDataGrid.Name = "configDataGrid";
-            this.configDataGrid.Size = new System.Drawing.Size(906, 390);
-            this.configDataGrid.TabIndex = 0;
-            // 
             // DebugForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -132,8 +167,11 @@ namespace Flowframes.Forms
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DebugForm_FormClosing);
             this.Load += new System.EventHandler(this.DebugForm_Load);
             this.tabPage2.ResumeLayout(false);
-            this.htTabControl1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.configDataGrid)).EndInit();
+            this.htTabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -146,5 +184,8 @@ namespace Flowframes.Forms
         private System.Windows.Forms.TabPage tabPage1;
         private HTAlt.WinForms.HTTabControl htTabControl1;
         private System.Windows.Forms.DataGridView configDataGrid;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel panel1;
     }
 }

@@ -13,6 +13,8 @@ namespace Flowframes.Forms
 {
     public partial class DebugForm : Form
     {
+        public bool changed;
+
         public DebugForm()
         {
             InitializeComponent();
@@ -34,6 +36,8 @@ namespace Flowframes.Forms
 
             configDataGrid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             configDataGrid.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            changed = false;
         }
 
         void Save ()
@@ -53,7 +57,29 @@ namespace Flowframes.Forms
 
         private void DebugForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Save();
+            if (!changed)
+                return;
+
+            DialogResult dialogResult = MessageBox.Show($"Save the modified configuration file?", "Save Configuration?", MessageBoxButtons.YesNo);
+            
+            if (dialogResult == DialogResult.Yes)
+                Save();
+        }
+
+        private void configDataGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > -1)
+                changed = true;
+        }
+
+        private void configDataGrid_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            changed = true;
+        }
+
+        private void configDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            changed = true;
         }
     }
 }
