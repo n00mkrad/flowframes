@@ -478,6 +478,12 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"Vulkan ran out of memory!\n\n{line}{msg}", "Error");
             }
 
+            if (!hasShownError && err && line.Contains("vkCreateInstance failed"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.", "Error");
+            }
+
             if (!hasShownError && err && line.Contains("invalid gpu device"))
             {
                 hasShownError = true;

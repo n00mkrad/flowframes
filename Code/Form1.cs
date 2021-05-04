@@ -68,7 +68,6 @@ namespace Flowframes
         {
             try
             {
-                //await Task.Delay(100);
                 Task.Run(() => Updater.UpdateModelList());
                 Task.Run(() => Updater.AsyncUpdateCheck());
                 Task.Run(() => GetWebInfo.LoadNews(newsLabel));
