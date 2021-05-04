@@ -14,7 +14,7 @@ namespace Flowframes.UI
     {
         #region Log Viewer
 
-        public static void FillLogDropdown (ComboBox dd)
+        public static void FillLogDropdown(ComboBox dd)
         {
             dd.Items.Clear();
 
@@ -22,6 +22,16 @@ namespace Flowframes.UI
 
             foreach (FileInfo file in logFiles)
                 dd.Items.Add(file.Name);
+        }
+
+        public static void RefreshLogBox(TextBox logBox, string logFilename)
+        {
+            bool wrap = logBox.WordWrap;
+            logBox.WordWrap = true;
+            logBox.Text = File.ReadAllText(Path.Combine(Paths.GetLogPath(), logFilename)).Trim('\r', '\n');
+            logBox.SelectionStart = logBox.Text.Length;
+            logBox.ScrollToCaret();
+            logBox.WordWrap = wrap;
         }
 
         public static void ToggleMonospace(TextBox logBox)
@@ -34,7 +44,7 @@ namespace Flowframes.UI
                 logBox.Font = new System.Drawing.Font("Consolas", 8.0f);
         }
 
-        public static void CopyLogToClipboard (string logFilename)
+        public static void CopyLogToClipboard(string logFilename)
         {
             StringCollection paths = new StringCollection();
             string path = Path.Combine(Paths.GetLogPath(), logFilename);
@@ -46,11 +56,11 @@ namespace Flowframes.UI
 
         #region Config Editor Grid
 
-        public static void LoadGrid (DataGridView grid)
+        public static void LoadGrid(DataGridView grid)
         {
             Dictionary<string, string> configDict = new Dictionary<string, string>();
 
-            if(grid.Columns.Count < 2)
+            if (grid.Columns.Count < 2)
             {
                 grid.Columns.Add("keys", "Key Name");
                 grid.Columns.Add("vals", "Saved Value");
@@ -71,7 +81,7 @@ namespace Flowframes.UI
             grid.Columns[1].FillWeight = 50;
         }
 
-        public static void SaveGrid (DataGridView grid)
+        public static void SaveGrid(DataGridView grid)
         {
             foreach (DataGridViewRow row in grid.Rows)
             {

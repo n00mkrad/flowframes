@@ -66,7 +66,7 @@ namespace Flowframes.Forms
 
         private void logFilesDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logBox.AppendText(File.ReadAllText(Path.Combine(Paths.GetLogPath(), logFilesDropdown.Text)).Trim('\r', '\n'));
+            DebugFormHelper.RefreshLogBox(logBox, logFilesDropdown.Text);
         }
 
         private void textWrapBtn_Click(object sender, EventArgs e)
