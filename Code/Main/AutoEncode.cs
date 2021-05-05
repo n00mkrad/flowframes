@@ -23,8 +23,8 @@ namespace Flowframes.Main
         public static List<int> encodedFrameLines = new List<int>();
         public static List<int> unencodedFrameLines = new List<int>();
 
+        public static bool debug;
         public static bool busy;
-
         public static bool paused;
 
         public static void UpdateChunkAndBufferSizes ()
@@ -45,6 +45,8 @@ namespace Flowframes.Main
 
         public static async Task MainLoop(string interpFramesPath)
         {
+            debug = Config.GetBool("autoEncDebug", false);
+
             try
             {
                 UpdateChunkAndBufferSizes();
@@ -82,15 +84,15 @@ namespace Flowframes.Main
                     //for (int frameLineNum = lastEncodedFrameNum; frameLineNum < interpFramesLines.Length; frameLineNum++)
                     //        unencodedFrameLines.Add(frameLineNum);
 
+                    bool aiRunning = !AiProcess.lastAiProcess.HasExited;
+
                     for (int frameLineNum = lastEncodedFrameNum; frameLineNum < interpFramesLines.Length; frameLineNum++)
                     {
-                        if (interpFramesLines[frameLineNum].Contains(InterpolationProgress.lastFrame.ToString().PadLeft(Padding.interpFrames, '0')))
+                        if (aiRunning && interpFramesLines[frameLineNum].Contains(InterpolationProgress.lastFrame.ToString().PadLeft(Padding.interpFrames, '0')))
                             break;
 
                         unencodedFrameLines.Add(frameLineNum);
                     }
-
-                    bool aiRunning = !AiProcess.lastAiProcess.HasExited;
 
                     if (unencodedFrameLines.Count > 0 && (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning))     // Encode every n frames, or after process has exited
                     {
@@ -176,7 +178,10 @@ namespace Flowframes.Main
         public static bool HasWorkToDo ()
         {
             if (Interpolate.canceled || interpFramesFolder == null) return false;
-            // Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.currentAiProcess != null && !AiProcess.currentAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
+
+            if(debug)
+                Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
+            
             return ((AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) || encodedFrameLines.Count < interpFramesLines.Length);
         }
 
