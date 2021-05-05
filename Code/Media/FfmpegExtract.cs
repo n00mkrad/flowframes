@@ -92,22 +92,102 @@ namespace Flowframes.Media
                 DeleteSource(inputFile);
         }
 
+        public static async Task ImportImagesCheckCompat(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
+        {
+            if (!alpha && AreImagesCompatible(inpath, size))
+            {
+                if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
+                await Task.Run(async () => { IOUtils.CopyDir(inpath, outpath); });
+            }
+            else
+            {
+                await ImportImages(inpath, outpath, alpha, size, showLog, format);
+            }
+        }
+
+        static bool AreImagesCompatible (string inpath, Size maxSize)
+        {
+            string[] validExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+            FileInfo[] files = IOUtils.GetFileInfosSorted(inpath);
+
+            if (files.Length < 1)
+            {
+                Logger.Log("[AreImagesCompatible] Sequence not compatible: No files found.", true);
+                return false;
+            }
+
+            bool allSameExtension = files.All(x => x.Extension == files.First().Extension);
+
+            if (!allSameExtension)
+            {
+                Logger.Log("[AreImagesCompatible] Sequence not compatible: Not all files have the same extension.", true);
+                return false;
+            }
+
+            bool allValidExtension = files.All(x => validExtensions.Contains(x.Extension));
+
+            if (!allValidExtension)
+            {
+                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Not all files have a valid extension ({string.Join(", ", validExtensions)}).", true);
+                return false;
+            }
+
+            Image[] randomSamples = files.OrderBy(arg => Guid.NewGuid()).Take(5).Select(x => IOUtils.GetImage(x.FullName)).ToArray();
+
+            bool allSameSize = randomSamples.All(i => i.Size == randomSamples.First().Size);
+
+            if (!allSameSize)
+            {
+                Logger.Log("[AreImagesCompatible] Sequence not compatible: Not all images have the same dimensions.", true);
+                return false;
+            }
+
+            int div = GetPadding();
+            bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
+
+            if (!allDivBy2)
+            {
+                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
+                return false;
+            }
+
+            bool allSmallEnough = randomSamples.All(i => (i.Width <= maxSize.Width) && (i.Height <= maxSize.Height));
+
+            if (!allDivBy2)
+            {
+                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Image dimensions above max size.", true);
+                return false;
+            }
+
+            Interpolate.current.framesExt = files.First().Extension;
+            return true;
+        }
+
         public static async Task ImportImages(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
         {
-            if (showLog) Logger.Log("Importing images...");
-            Logger.Log($"Importing images from {inpath} to {outpath}.", true);
+            if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
             Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size}", true, false, "ffmpeg");
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
             GetConcatFile(inpath, concatFile);
+
+            string inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
+            string linksDir = Path.Combine(concatFile + Paths.symlinksSuffix);
+
+            if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
+            {
+                if (await Symlinks.MakeSymlinksForEncode(concatFile, linksDir, Padding.interpFrames))
+                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d.png\"";
+            }
+
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string vf = alpha ? $"-filter_complex \"[0:v]{GetPadFilter()},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {GetPadFilter()}";
-            string args = $"-f concat -safe 0 -i {concatFile.Wrap()} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outpath}/%{Padding.inputFrames}d{format}\"";
+            string args = $"-r 25 {inArg} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outpath}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
         }
 
-        public static void GetConcatFile (string inputFilesDir, string concatFilePath)
+        public static void GetConcatFile(string inputFilesDir, string concatFilePath)
         {
             string concatFileContent = "";
             string[] files = IOUtils.GetFilesSorted(inputFilesDir);
@@ -123,7 +203,7 @@ namespace Flowframes.Media
             return new string[] { GetTrimArg(true), GetTrimArg(false) };
         }
 
-        public static string GetTrimArg (bool input)
+        public static string GetTrimArg(bool input)
         {
             if (!QuickSettingsTab.trimEnabled)
                 return "";
@@ -141,7 +221,7 @@ namespace Flowframes.Media
             }
             else
             {
-                if(fastSeek)
+                if (fastSeek)
                 {
                     arg += $"-ss {fastSeekThresh}";
 

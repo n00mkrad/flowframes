@@ -49,9 +49,6 @@ namespace Flowframes.Media
 
         public static async Task FramesToFrames(string framesFile, string outDir, Fraction fps, Fraction resampleFps, string format = "png", LogMode logMode = LogMode.OnlyLastLine)
         {
-            //if (logMode != LogMode.Hidden)
-            //    Logger.Log((resampleFps.GetFloat() <= 0) ? "Exporting frames..." : $"Exporting frames resampled to {resampleFps.GetString()} FPS...");
-
             Directory.CreateDirectory(outDir);
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
