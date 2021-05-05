@@ -29,7 +29,7 @@ namespace Flowframes.Media
             
             Directory.CreateDirectory(outPath.GetParentDir());
             string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
-            if (!isChunk) encArgs += $" -movflags +faststart";
+            if (!isChunk && outMode == Interpolate.OutMode.VidMp4) encArgs += $" -movflags +faststart";
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
 
