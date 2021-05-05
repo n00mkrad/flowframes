@@ -205,12 +205,12 @@ namespace Flowframes.Magick
             return bufferSize;
         }
 
-        public static async Task CreateDupesFile (string framesPath, int lastFrameNum)
+        public static async Task CreateDupesFile (string framesPath, int lastFrameNum, string ext)
         {
             string infoFile = Path.Combine(framesPath.GetParentDir(), "dupes.ini");
             string fileContent = "";
 
-            FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, "*.png");
+            FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, $"*{ext}");
 
             for(int i = 0; i < frameFiles.Length; i++)
             {
