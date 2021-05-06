@@ -167,20 +167,6 @@ namespace Flowframes
             }
         }
 
-        public static string GetFfmpegOutput (string args)
-        {
-            Process ffmpeg = OSUtils.NewProcess(true);
-            lastAvProcess = ffmpeg;
-            ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
-            Logger.Log($"ffmpeg {args}", true, false, "ffmpeg");
-            ffmpeg.Start();
-            ffmpeg.WaitForExit();
-            string output = ffmpeg.StandardOutput.ReadToEnd();
-            string err = ffmpeg.StandardError.ReadToEnd();
-            if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
-            return output;
-        }
-
         public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false, bool progressBar = false)
         {
             timeSinceLastOutput.Restart();
@@ -192,11 +178,7 @@ namespace Flowframes
             ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
             Logger.Log($"ffmpeg {args}", true, false, "ffmpeg");
             if (setBusy) Program.mainForm.SetWorking(true);
-            ffmpeg.OutputDataReceived += FfmpegOutputHandlerSilent;
-            ffmpeg.ErrorDataReceived += FfmpegOutputHandlerSilent;
-            ffmpeg.Start();
-            ffmpeg.BeginOutputReadLine();
-            ffmpeg.BeginErrorReadLine();
+            lastOutputFfmpeg = await OSUtils.GetOutputAsync(ffmpeg);
             while (!ffmpeg.HasExited) await Task.Delay(50);
             while(timeSinceLastOutput.ElapsedMilliseconds < 200) await Task.Delay(50);
             if (setBusy) Program.mainForm.SetWorking(false);

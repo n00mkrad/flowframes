@@ -328,6 +328,7 @@
   <ItemGroup>
     <Compile Include="Data\AI.cs" />
     <Compile Include="Data\AudioTrack.cs" />
+    <Compile Include="Data\ColorInfo.cs" />
     <Compile Include="Data\Fraction.cs" />
     <Compile Include="Data\InterpSettings.cs" />
     <Compile Include="Data\Networks.cs" />
@@ -387,8 +388,10 @@
     <Compile Include="Media\FFmpegUtils.cs" />
     <Compile Include="Media\GetFrameCountCached.cs" />
     <Compile Include="Media\GetMediaResolutionCached.cs" />
+    <Compile Include="Media\GetVideoInfoCached.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
+    <Compile Include="MiscUtils\NmkdStopwatch.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Form1.cs">

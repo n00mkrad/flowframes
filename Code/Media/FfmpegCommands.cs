@@ -10,7 +10,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic.Logging;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FFmpegUtils;
 
@@ -97,9 +96,7 @@ namespace Flowframes
                     Logger.Log("GetFramerate ffprobe Error: " + ffprobeEx.Message, true, false);
                 }
 
-
-                string ffmpegArgs = $" -i {inputFile.Wrap()}";
-                string ffmpegOutput = await GetFfmpegOutputAsync(ffmpegArgs);
+                string ffmpegOutput = await GetVideoInfoCached.GetFfmpegInfoAsync(inputFile);
                 string[] entries = ffmpegOutput.Split(',');
 
                 foreach (string entry in entries)
@@ -190,7 +187,7 @@ namespace Flowframes
 
         static async Task<int> ReadFrameCountFfmpegAsync (string inputFile)
         {
-            string args = $" -loglevel panic -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
+            string args = $" -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
             string info = await GetFfmpegOutputAsync(args, true, true);
             try
             {
@@ -202,6 +199,14 @@ namespace Flowframes
             {
                 return -1;
             }
+        }
+
+        public static async Task<ColorInfo> GetColorInfo(string inputFile)
+        {
+            string ffprobeOutput = await GetVideoInfoCached.GetFfprobeInfoAsync(inputFile, "color");
+            ColorInfo colorInfo = new ColorInfo(ffprobeOutput);
+            Logger.Log($"Created ColorInfo - Range: {colorInfo.colorRange} - Space: {colorInfo.colorSpace} - Transer: {colorInfo.colorTransfer} - Primaries: {colorInfo.colorPrimaries}", true, false, "ffmpeg");
+            return colorInfo;
         }
 
         public static async Task<bool> IsEncoderCompatible(string enc)

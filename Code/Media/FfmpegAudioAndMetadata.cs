@@ -64,9 +64,8 @@ namespace Flowframes.Media
         public static async Task<List<AudioTrack>> GetAudioTracks(string inputFile)
         {
             List<AudioTrack> audioTracks = new List<AudioTrack>();
-            string args = $"-i {inputFile.Wrap()}";
             Logger.Log("GetAudioTracks()", true, false, "ffmpeg");
-            string[] outputLines = (await GetFfmpegOutputAsync(args)).SplitIntoLines();
+            string[] outputLines = (await GetVideoInfoCached.GetFfmpegInfoAsync(inputFile)).SplitIntoLines();
 
             for (int i = 0; i < outputLines.Length; i++)
             {
@@ -142,9 +141,8 @@ namespace Flowframes.Media
         public static async Task<List<SubtitleTrack>> GetSubtitleTracks(string inputFile)
         {
             List<SubtitleTrack> subtitleTracks = new List<SubtitleTrack>();
-            string args = $"-i {inputFile.Wrap()}";
             Logger.Log("GetSubtitleTracks()", true, false, "ffmpeg");
-            string[] outputLines = (await GetFfmpegOutputAsync(args)).SplitIntoLines();
+            string[] outputLines = (await GetVideoInfoCached.GetFfmpegInfoAsync(inputFile)).SplitIntoLines();
 
             for (int i = 0; i < outputLines.Length; i++)
             {

@@ -151,7 +151,8 @@ namespace Flowframes.Main
             }
             else
             {
-                await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps);
+                ColorInfo colorInfo = await FfmpegCommands.GetColorInfo(I.current.inPath);
+                await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps, colorInfo);
                 await MuxOutputVideo(I.current.inPath, outPath);
                 await Loop(currentOutFile, GetLoopTimes());
             }
@@ -212,18 +213,19 @@ namespace Flowframes.Main
             string max = Config.Get("maxFps");
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() != 0 && I.current.outFps.GetFloat() > maxFps.GetFloat();
+            ColorInfo colorInfo = await FfmpegCommands.GetColorInfo(I.current.inPath);
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
 
             if (!dontEncodeFullFpsVid)
-                await FfmpegEncode.FramesToVideoConcat(framesFileChunk, outPath, mode, I.current.outFps, AvProcess.LogMode.Hidden, true);     // Encode
+                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, new Fraction(), colorInfo, AvProcess.LogMode.Hidden, true);     // Encode
 
             if (fpsLimit)
             {
                 string filename = Path.GetFileName(outPath);
                 string newParentDir = outPath.GetParentDir() + Paths.fpsLimitSuffix;
                 outPath = Path.Combine(newParentDir, filename);
-                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, maxFps, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, maxFps, colorInfo, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
             }
         }
 

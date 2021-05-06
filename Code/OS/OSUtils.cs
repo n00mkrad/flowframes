@@ -12,6 +12,9 @@ using DiskDetector;
 using DiskDetector.Models;
 using Microsoft.VisualBasic.Devices;
 using Flowframes.Extensions;
+using Flowframes.MiscUtils;
+using System.Threading;
+using System.Linq;
 
 namespace Flowframes.OS
 {
@@ -175,6 +178,33 @@ namespace Flowframes.OS
             }
 
             return children;
+        }
+
+        public static async Task<string> GetOutputAsync(Process process, bool onlyLastLine = false)
+        {
+            Logger.Log($"Getting output for {process.StartInfo.FileName} {process.StartInfo.Arguments}", true);
+            NmkdStopwatch sw = new NmkdStopwatch();
+
+            Stopwatch timeSinceLastOutput = new Stopwatch();
+            timeSinceLastOutput.Restart();
+
+            string output = "";
+
+            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => output += $"{e.Data}\n";
+            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => output += $"{e.Data}\n";
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            while (!process.HasExited) await Task.Delay(50);
+            while (timeSinceLastOutput.ElapsedMilliseconds < 100) await Task.Delay(50);
+            output = output.Trim('\r', '\n');
+
+            Logger.Log($"Output (after {sw.GetElapsedStr()}): " + output.Replace("\r", " / ").Replace("\n", " / "), true);
+
+            if (onlyLastLine)
+                output = output.SplitIntoLines().LastOrDefault();
+            
+            return output;
         }
     }
 }

@@ -17,12 +17,7 @@ namespace Flowframes.Media
 {
     partial class FfmpegEncode : FfmpegCommands
     {
-        public static async Task FramesToVideoConcat(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
-        {
-            await FramesToVideo(framesFile, outPath, outMode, fps, new Fraction(), logMode, isChunk);
-        }
-
-        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
+        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, ColorInfo colors, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
@@ -39,9 +34,22 @@ namespace Flowframes.Media
                     inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
             }
 
-            string rate = fps.ToString().Replace(",", ".");
-            string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
             string extraArgs = Config.Get("ffEncArgs");
+            string rate = fps.ToString().Replace(",", ".");
+
+            List<string> filters = new List<string>();
+
+            if (resampleFps.GetFloat() >= 0.1f)
+                filters.Add($"fps=fps={resampleFps}");
+
+            if (colors.HasAllValues())
+            {
+                Logger.Log($"Applying color transfer ({colors.colorSpace}).", true, false, "ffmpeg");
+                filters.Add($"scale=out_color_matrix={colors.colorSpace}");
+                extraArgs += $" -colorspace {colors.colorSpace} -color_primaries {colors.colorPrimaries} -color_trc {colors.colorTransfer} -color_range:v \"{colors.colorRange}\"";
+            }
+
+            string vf = filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "";
             string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
             IOUtils.TryDeleteIfExists(linksDir);

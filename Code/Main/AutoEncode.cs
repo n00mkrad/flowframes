@@ -81,9 +81,6 @@ namespace Flowframes.Main
 
                     unencodedFrameLines.Clear();
 
-                    //for (int frameLineNum = lastEncodedFrameNum; frameLineNum < interpFramesLines.Length; frameLineNum++)
-                    //        unencodedFrameLines.Add(frameLineNum);
-
                     bool aiRunning = !AiProcess.lastAiProcess.HasExited;
 
                     for (int frameLineNum = lastEncodedFrameNum; frameLineNum < interpFramesLines.Length; frameLineNum++)
@@ -103,7 +100,9 @@ namespace Flowframes.Main
 
                             if (!File.Exists(lastOfChunk))
                             {
-                                Logger.Log($"[AutoEnc] Last frame of chunk doesn't exist; skipping loop iteration ({lastOfChunk})", true);
+                                if(debug)
+                                    Logger.Log($"[AutoEnc] Last frame of chunk doesn't exist; skipping loop iteration ({lastOfChunk})", true);
+
                                 await Task.Delay(500);
                                 continue;
                             }
@@ -152,7 +151,9 @@ namespace Flowframes.Main
 
         static async Task DeleteOldFramesAsync (string interpFramesPath, List<int> frameLinesToEncode)
         {
-            Logger.Log("[AutoEnc] Starting DeleteOldFramesAsync.", true, false, "ffmpeg");
+            if(debug)
+                Logger.Log("[AutoEnc] Starting DeleteOldFramesAsync.", true, false, "ffmpeg");
+
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
@@ -165,7 +166,8 @@ namespace Flowframes.Main
                 }
             }
 
-            Logger.Log("[AutoEnc] DeleteOldFramesAsync finished in " + FormatUtils.TimeSw(sw), true, false, "ffmpeg");
+            if (debug)
+                Logger.Log("[AutoEnc] DeleteOldFramesAsync finished in " + FormatUtils.TimeSw(sw), true, false, "ffmpeg");
         }
 
         static bool FrameIsStillNeeded (string frameName, int frameIndex)
@@ -180,7 +182,7 @@ namespace Flowframes.Main
             if (Interpolate.canceled || interpFramesFolder == null) return false;
 
             if(debug)
-                Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}");
+                Logger.Log($"HasWorkToDo - Process Running: {(AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited)} - encodedFrameLines.Count: {encodedFrameLines.Count} - interpFramesLines.Length: {interpFramesLines.Length}", true);
             
             return ((AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) || encodedFrameLines.Count < interpFramesLines.Length);
         }
