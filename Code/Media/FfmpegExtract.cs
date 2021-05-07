@@ -153,7 +153,7 @@ namespace Flowframes.Media
 
             bool allSmallEnough = randomSamples.All(i => (i.Width <= maxSize.Width) && (i.Height <= maxSize.Height));
 
-            if (!allDivBy2)
+            if (!allSmallEnough)
             {
                 Logger.Log($"[AreImagesCompatible] Sequence not compatible: Image dimensions above max size.", true);
                 return false;
