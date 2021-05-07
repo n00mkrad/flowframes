@@ -4,14 +4,18 @@ using System.Linq;
 
 namespace Flowframes.Data
 {
-    class ColorInfo
+    class VidExtraData
     {
+        // Color
         public string colorSpace = "";
         public string colorRange = "";
         public string colorTransfer = "";
         public string colorPrimaries = "";
 
-        public ColorInfo(string ffprobeOutput)
+        // Aspect Ratio
+        public string displayRatio = "";
+
+        public VidExtraData(string ffprobeOutput)
         {
             string[] lines = ffprobeOutput.SplitIntoLines();
 
@@ -38,6 +42,12 @@ namespace Flowframes.Data
                 if (line.Contains("color_primaries"))
                 {
                     colorPrimaries = line.Split('=').LastOrDefault();
+                    continue;
+                }
+
+                if (line.Contains("display_aspect_ratio"))
+                {
+                    displayRatio = line.Split('=').LastOrDefault();
                     continue;
                 }
             }

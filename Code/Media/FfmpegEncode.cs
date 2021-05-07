@@ -17,7 +17,7 @@ namespace Flowframes.Media
 {
     partial class FfmpegEncode : FfmpegCommands
     {
-        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, ColorInfo colors, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
+        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
@@ -42,17 +42,25 @@ namespace Flowframes.Media
             if (resampleFps.GetFloat() >= 0.1f)
                 filters.Add($"fps=fps={resampleFps}");
 
-            if (colors.HasAllValues())
+            if (extraData.HasAllValues())
             {
-                Logger.Log($"Applying color transfer ({colors.colorSpace}).", true, false, "ffmpeg");
-                filters.Add($"scale=out_color_matrix={colors.colorSpace}");
-                extraArgs += $" -colorspace {colors.colorSpace} -color_primaries {colors.colorPrimaries} -color_trc {colors.colorTransfer} -color_range:v \"{colors.colorRange}\"";
+                Logger.Log($"Applying color transfer ({extraData.colorSpace}).", true, false, "ffmpeg");
+                filters.Add($"scale=out_color_matrix={extraData.colorSpace}");
+                extraArgs += $" -colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v \"{extraData.colorRange}\"";
             }
 
             string vf = filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "";
-            string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
+            string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
             IOUtils.TryDeleteIfExists(linksDir);
+        }
+
+        static string GetAspectArg (VidExtraData extraData)
+        {
+            if (!string.IsNullOrWhiteSpace(extraData.displayRatio))
+                return $"-aspect {extraData.displayRatio}";
+            else
+                return "";
         }
 
         public static async Task FramesToFrames(string framesFile, string outDir, Fraction fps, Fraction resampleFps, string format = "png", LogMode logMode = LogMode.OnlyLastLine)
