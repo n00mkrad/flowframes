@@ -14,7 +14,7 @@ using Microsoft.VisualBasic.Logging;
 
 namespace Flowframes
 {
-    public struct InterpSettings
+    public class InterpSettings
     {
         public string inPath;
         public string outPath;

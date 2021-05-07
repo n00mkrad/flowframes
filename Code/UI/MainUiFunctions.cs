@@ -60,7 +60,7 @@ namespace Flowframes.UI
 
         static void CheckExistingFolder (string inpath, string outpath)
         {
-            if (!Interpolate.current.stepByStep) return;
+            if (Interpolate.current == null || !Interpolate.current.stepByStep) return;
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
             if (Directory.Exists(tmpFolder))
             {
@@ -85,7 +85,7 @@ namespace Flowframes.UI
         {
             Size res = new Size();
 
-            if(path == Interpolate.current.inPath)
+            if(path == Interpolate.current?.inPath)
                 res = await Interpolate.current.GetInputRes();
             else
                 res = await GetMediaResolutionCached.GetSizeAsync(path);

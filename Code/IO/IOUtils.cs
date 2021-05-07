@@ -82,6 +82,17 @@ namespace Flowframes.IO
 			return true;
 		}
 
+		public static bool IsPathValid(string path)
+		{
+			if (path == null)
+				return false;
+
+			if (IsPathDirectory(path))
+				return IsDirValid(path);
+			else
+				return IsFileValid(path);
+		}
+
 		public static void CopyDir(string sourceDirectoryName, string targetDirectoryName, bool move = false)
 		{
 			Directory.CreateDirectory(targetDirectoryName);

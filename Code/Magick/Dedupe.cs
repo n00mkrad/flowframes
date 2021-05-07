@@ -207,10 +207,14 @@ namespace Flowframes.Magick
 
         public static async Task CreateDupesFile (string framesPath, int lastFrameNum, string ext)
         {
+            bool debug = Config.GetBool("dupeScanDebug", false);
             string infoFile = Path.Combine(framesPath.GetParentDir(), "dupes.ini");
             string fileContent = "";
 
-            FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, $"*{ext}");
+            FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(framesPath, false, "*" + ext);
+
+            if (debug)
+                Logger.Log($"Running CreateDupesFile for '{framesPath}' ({frameFiles.Length} files), lastFrameNum = {lastFrameNum}, ext = {ext}.", true, false, "dupes");
 
             for(int i = 0; i < frameFiles.Length; i++)
             {
@@ -221,6 +225,9 @@ namespace Flowframes.Magick
 
                 int diff = frameNum2 - frameNum1;
                 int dupes = diff - 1;
+
+                if(debug)
+                    Logger.Log($"{(isLastItem ? "[isLastItem] " : "")}frameNum1 (frameFiles[{i}]) = {frameNum1}, frameNum2 (frameFiles[{i+1}]) = {frameNum2} => dupes = {dupes}", true, false, "dupes");
 
                 //if (File.Exists(Path.Combine(framesPath.GetParentDir(), Paths.scenesDir, frameFiles[i].Name)))
                 //    dupes = 0;

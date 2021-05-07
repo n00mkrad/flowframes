@@ -1,14 +1,10 @@
 ﻿using Flowframes.Media;
-using Flowframes.Data;
 using Flowframes.IO;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Flowframes.MiscUtils;
+using System.Windows.Forms;
 
 namespace Flowframes.Main
 {
@@ -22,7 +18,18 @@ namespace Flowframes.Main
             Logger.Log($"[SBS] Running step '{step}'", true);
             canceled = false;
             Program.mainForm.SetWorking(true);
-            current = Program.mainForm.GetCurrentSettings();
+
+            if(current == null)
+            {
+                Logger.Log($"[SBS] Getting new current settings", true);
+                current = Program.mainForm.GetCurrentSettings();
+            }
+            else
+            {
+                Logger.Log($"[SBS] Updating current settings", true);
+                current = Program.mainForm.UpdateCurrentSettings(current);
+            }
+
             current.RefreshAlpha();
             current.stepByStep = true;
 
@@ -69,7 +76,7 @@ namespace Flowframes.Main
 
             current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
 
-            if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*" + current.framesExt) < 2)
+            if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*") < 2)
             {
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
                 return;
@@ -115,7 +122,10 @@ namespace Flowframes.Main
 
         public static async Task Reset()
         {
-            await Cleanup(true);
+            DialogResult dialog = MessageBox.Show($"Are you sure you want to remove all temporary files?", "Are you sure?", MessageBoxButtons.YesNo);
+
+            if (dialog == DialogResult.Yes)
+                await Cleanup(true);
         }
     }
 }

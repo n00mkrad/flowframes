@@ -127,6 +127,29 @@ namespace Flowframes
             return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetInt(), GetOutMode(), GetModel());
         }
 
+        public InterpSettings UpdateCurrentSettings(InterpSettings settings)
+        {
+            SetTab("interpolate");
+            string inPath = inputTbox.Text.Trim();
+
+            if (settings.inPath != inPath)     // If path changed, get new instance
+            {
+                Logger.Log($"settings.inPath ({settings.inPath}) mismatches GUI inPath ({settings.inPath} - Returning fresh instance", true);
+                return GetCurrentSettings();
+            }
+
+            settings.inPath = inPath;
+            settings.ai = GetAi();
+            settings.inFpsDetected = currInFpsDetected;
+            settings.inFps = currInFps;
+            settings.interpFactor = interpFactorCombox.GetInt();
+            settings.outFps = settings.inFps * settings.interpFactor;
+            settings.outMode = GetOutMode();
+            settings.model = GetModel();
+
+            return settings;
+        }
+
         public void LoadBatchEntry(InterpSettings entry)
         {
             inputTbox.Text = entry.inPath;

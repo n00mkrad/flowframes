@@ -34,10 +34,10 @@ namespace Flowframes.Media
             string rateArg = (rate.GetFloat() > 0) ? $"-r {rate}" : "";
             string args = $"-vsync 0 {GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
 
-            LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
+            LogMode logMode = await Interpolate.GetCurrentInputFrameCount() > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", TaskType.ExtractFrames, true);
 
-            bool hiddenLog = Interpolate.currentInputFrameCount <= 50;
+            bool hiddenLog = await Interpolate.GetCurrentInputFrameCount() <= 50;
             int amount = IOUtils.GetAmountOfFiles(outDir, false);
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
@@ -83,7 +83,7 @@ namespace Flowframes.Media
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
             string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} -vsync 0 {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
-            LogMode logMode = Interpolate.currentInputFrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
+            LogMode logMode = await Interpolate.GetCurrentInputFrameCount()  > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
             int amount = IOUtils.GetAmountOfFiles(framesDir, false, "*" + format);
             Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
@@ -94,10 +94,19 @@ namespace Flowframes.Media
 
         public static async Task ImportImagesCheckCompat(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
         {
-            if (!alpha && AreImagesCompatible(inpath, size))
+            if (!alpha && AreImagesCompatible(inpath, Config.GetInt("maxVidHeight")))
             {
                 if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
-                await Task.Run(async () => { IOUtils.CopyDir(inpath, outpath); });
+                Directory.CreateDirectory(outpath);
+
+                await Task.Run(async () => {
+                    foreach (FileInfo file in IOUtils.GetFileInfosSorted(inpath))
+                    {
+                        string newFilename = Path.GetFileNameWithoutExtension(file.FullName).PadLeft(Padding.inputFrames, '0') + file.Extension;
+                        File.Copy(file.FullName, Path.Combine(outpath, newFilename));
+                    }
+                });
+
             }
             else
             {
@@ -105,7 +114,7 @@ namespace Flowframes.Media
             }
         }
 
-        static bool AreImagesCompatible (string inpath, Size maxSize)
+        static bool AreImagesCompatible (string inpath, int maxHeight)
         {
             string[] validExtensions = new string[] { ".jpg", ".jpeg", ".png" };
             FileInfo[] files = IOUtils.GetFileInfosSorted(inpath);
@@ -151,7 +160,7 @@ namespace Flowframes.Media
                 return false;
             }
 
-            bool allSmallEnough = randomSamples.All(i => (i.Width <= maxSize.Width) && (i.Height <= maxSize.Height));
+            bool allSmallEnough = randomSamples.All(i => (i.Height <= maxHeight));
 
             if (!allSmallEnough)
             {
@@ -165,7 +174,7 @@ namespace Flowframes.Media
 
         public static async Task ImportImages(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
         {
-            if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
+            if (showLog) Logger.Log($"Importing images from {new DirectoryInfo(inpath).Name}...");
             Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size}", true, false, "ffmpeg");
             IOUtils.CreateDir(outpath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");

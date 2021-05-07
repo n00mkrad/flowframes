@@ -73,6 +73,14 @@ namespace Flowframes
             Program.mainForm.SetStatus("Done interpolating!");
         }
 
+        public static async Task<int> GetCurrentInputFrameCount ()
+        {
+            if (currentInputFrameCount < 2)
+                currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
+
+            return currentInputFrameCount;
+        }
+
         public static async Task GetFrames ()
         {
             current.RefreshAlpha();

@@ -154,7 +154,7 @@ namespace Flowframes.Main
                 ColorInfo colorInfo = await FfmpegCommands.GetColorInfo(I.current.inPath);
                 await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps, colorInfo);
                 await MuxOutputVideo(I.current.inPath, outPath);
-                await Loop(currentOutFile, GetLoopTimes());
+                await Loop(currentOutFile, await GetLoopTimes());
             }
         }
 
@@ -198,7 +198,7 @@ namespace Flowframes.Main
         {
             await FfmpegCommands.ConcatVideos(vfrFile, outPath, -1);
             await MuxOutputVideo(I.current.inPath, outPath);
-            await Loop(outPath, GetLoopTimes());
+            await Loop(outPath, await GetLoopTimes());
         }
 
         public static async Task EncodeChunk(string outPath, I.OutMode mode, int firstFrameNum, int framesAmount)
@@ -236,12 +236,12 @@ namespace Flowframes.Main
             await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
         }
 
-        static int GetLoopTimes()
+        static async Task<int> GetLoopTimes()
         {
             int times = -1;
             int minLength = Config.GetInt("minOutVidLength");
             int minFrameCount = (minLength * I.current.outFps.GetFloat()).RoundToInt();
-            int outFrames = (I.currentInputFrameCount * I.current.interpFactor).RoundToInt();
+            int outFrames = ((await I.GetCurrentInputFrameCount()) * I.current.interpFactor).RoundToInt();
             if (outFrames / I.current.outFps.GetFloat() < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
             times--;    // Not counting the 1st play (0 loops)

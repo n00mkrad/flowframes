@@ -6,10 +6,10 @@ namespace Flowframes.Data
 {
     class ColorInfo
     {
-        public string colorSpace;
-        public string colorRange;
-        public string colorTransfer;
-        public string colorPrimaries;
+        public string colorSpace = "";
+        public string colorRange = "";
+        public string colorTransfer = "";
+        public string colorPrimaries = "";
 
         public ColorInfo(string ffprobeOutput)
         {
