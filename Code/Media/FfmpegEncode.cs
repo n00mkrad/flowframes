@@ -57,7 +57,7 @@ namespace Flowframes.Media
 
         static string GetAspectArg (VidExtraData extraData)
         {
-            if (!string.IsNullOrWhiteSpace(extraData.displayRatio))
+            if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
                 return $"-aspect {extraData.displayRatio}";
             else
                 return "";
