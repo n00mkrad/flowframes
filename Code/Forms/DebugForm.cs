@@ -32,9 +32,6 @@ namespace Flowframes.Forms
         void RefreshLogs ()
         {
             DebugFormHelper.FillLogDropdown(logFilesDropdown);
-
-            if (logFilesDropdown.Items.Count > 0)
-                logFilesDropdown.SelectedIndex = 0;
         }
 
         private void DebugForm_FormClosing(object sender, FormClosingEventArgs e)

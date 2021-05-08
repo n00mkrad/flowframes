@@ -22,6 +22,15 @@ namespace Flowframes.UI
 
             foreach (FileInfo file in logFiles)
                 dd.Items.Add(file.Name);
+
+            if (dd.Items.Count > 0)
+                dd.SelectedIndex = 0;
+
+            for(int i = 0; i < dd.Items.Count; i++)
+            {
+                if (((string)dd.Items[i]).Split('.').FirstOrDefault() == Logger.defaultLogName)
+                    dd.SelectedIndex = i;
+            }
         }
 
         public static void RefreshLogBox(TextBox logBox, string logFilename)
