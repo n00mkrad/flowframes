@@ -35,12 +35,12 @@ namespace Flowframes.UI
 
         public static void RefreshLogBox(TextBox logBox, string logFilename)
         {
-            bool wrap = logBox.WordWrap;
-            logBox.WordWrap = true;
+            //bool wrap = logBox.WordWrap;
+            //logBox.WordWrap = true;
             logBox.Text = File.ReadAllText(Path.Combine(Paths.GetLogPath(), logFilename)).Trim('\r', '\n');
             logBox.SelectionStart = logBox.Text.Length;
             logBox.ScrollToCaret();
-            logBox.WordWrap = wrap;
+            //logBox.WordWrap = wrap;
         }
 
         public static void ToggleMonospace(TextBox logBox)
