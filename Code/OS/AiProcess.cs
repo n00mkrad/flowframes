@@ -291,7 +291,7 @@ namespace Flowframes
                     string lastInterpPath = outPath + $"-run{iteration - 1}";
                     Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
                     await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
-                    IOUtils.TryDeleteIfExists(lastInterpPath);
+                    await IOUtils.TryDeleteIfExistsAsync(lastInterpPath);
                 }
                 else
                 {

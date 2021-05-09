@@ -242,11 +242,11 @@ namespace Flowframes
                 {
                     DialogResult dialogResult = MessageBox.Show($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
-                        IOUtils.TryDeleteIfExists(current.tempFolder);
+                        Task.Run(async () => { await IOUtils.TryDeleteIfExistsAsync(current.tempFolder); });
                 }
                 else
                 {
-                    IOUtils.TryDeleteIfExists(current.tempFolder);
+                    Task.Run(async () => { await IOUtils.TryDeleteIfExistsAsync(current.tempFolder); });
                 }
             }
 
@@ -266,7 +266,7 @@ namespace Flowframes
                 Logger.Log("Deleting temporary files...");
             try
             {
-                Directory.Delete(current.tempFolder, true);
+                await Task.Run(async () => { Directory.Delete(current.tempFolder, true); });
             }
             catch (Exception e)
             {

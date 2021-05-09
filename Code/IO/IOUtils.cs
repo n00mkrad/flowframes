@@ -118,19 +118,30 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static void DeleteContentsOfDir(string path)
+		/// <summary>
+		/// Async version of DeleteContentsOfDir, won't block main thread.
+		/// </summary>
+		public static async Task<bool> DeleteContentsOfDirAsync(string path)
 		{
-			DirectoryInfo directoryInfo = new DirectoryInfo(path);
-			FileInfo[] files = directoryInfo.GetFiles();
-			foreach (FileInfo fileInfo in files)
-			{
-				fileInfo.Delete();
+			return await Task.Run(async () => { return DeleteContentsOfDir(path); });  // Delete in background thread
+		}
+
+		/// <summary>
+		/// Delete everything inside a directory except the dir itself.
+		/// </summary>
+		public static bool DeleteContentsOfDir(string path)
+		{
+            try
+            {
+				DeleteIfExists(path);
+				Directory.CreateDirectory(path);
+				return true;
 			}
-			DirectoryInfo[] directories = directoryInfo.GetDirectories();
-			foreach (DirectoryInfo directoryInfo2 in directories)
-			{
-				directoryInfo2.Delete(recursive: true);
-			}
+			catch(Exception e)
+            {
+				Logger.Log("DeleteContentsOfDir Error: " + e.Message, true);
+				return false;
+            }
 		}
 
 		public static void ReplaceInFilenamesDir(string dir, string textToFind, string textToReplace, bool recursive = true, string wildcard = "*")
@@ -245,36 +256,6 @@ namespace Flowframes.IO
 			}
 		}
 
-		public static async Task<Dictionary<string, string>> RenameCounterDirReversibleAsync(string path, string ext, int startAt, int padding = 0)
-		{
-			Stopwatch sw = new Stopwatch();
-			sw.Restart();
-			Dictionary<string, string> oldNewNamesMap = new Dictionary<string, string>();
-
-			int counter = startAt;
-			FileInfo[] files = new DirectoryInfo(path).GetFiles($"*.{ext}", SearchOption.TopDirectoryOnly);
-			var filesSorted = files.OrderBy(n => n);
-
-			foreach (FileInfo file in files)
-			{
-				string dir = new DirectoryInfo(file.FullName).Parent.FullName;
-				int filesDigits = (int)Math.Floor(Math.Log10((double)files.Length) + 1);
-				string newFilename = (padding > 0) ? counter.ToString().PadLeft(padding, '0') : counter.ToString();
-				string outpath = outpath = Path.Combine(dir, newFilename + Path.GetExtension(file.FullName));
-				File.Move(file.FullName, outpath);
-				oldNewNamesMap.Add(file.FullName, outpath);
-				counter++;
-
-				if(sw.ElapsedMilliseconds > 100)
-                {
-					await Task.Delay(1);
-					sw.Restart();
-                }
-			}
-
-			return oldNewNamesMap;
-		}
-
 		public static async Task ReverseRenaming(string basePath, Dictionary<string, string> oldNewMap)	// Relative -> absolute paths
 		{
 			Dictionary<string, string> absPaths = oldNewMap.ToDictionary(x => Path.Combine(basePath, x.Key), x => Path.Combine(basePath, x.Value));
@@ -347,17 +328,24 @@ namespace Flowframes.IO
 
 		public static async Task<Size> GetVideoOrFramesRes (string path)
         {
-			Size res;
+			Size res = new Size();
 
-			if (!IsPathDirectory(path))     // If path is video
-			{
-				res = GetVideoRes(path);
+            try
+            {
+				if (!IsPathDirectory(path))     // If path is video
+				{
+					res = GetVideoRes(path);
+				}
+				else     // Path is frame folder
+				{
+					Image thumb = await MainUiFunctions.GetThumbnail(path);
+					res = new Size(thumb.Width, thumb.Height);
+				}
 			}
-			else     // Path is frame folder
-			{
-				Image thumb = await MainUiFunctions.GetThumbnail(path);
-				res = new Size(thumb.Width, thumb.Height);
-			}
+			catch (Exception e)
+            {
+				Logger.Log("GetVideoOrFramesRes Error: " + e.Message);
+            }
 
 			return res;
 		}
@@ -379,12 +367,30 @@ namespace Flowframes.IO
 			return size;
 		}
 
+		/// <summary>
+		/// Async (background thread) version of TryDeleteIfExists. Safe to run without awaiting.
+		/// </summary>
+		public static async Task<bool> TryDeleteIfExistsAsync(string path)
+		{
+			string renamedPath = path;
+
+			while (Directory.Exists(renamedPath))	// Keep adding a "_" to the end if there is still an undeleted dir (unlikely)
+				renamedPath += "_";
+
+			Directory.Move(path, renamedPath);  // Move/rename, so a new folder can be created without waiting this one's deletion
+			return await Task.Run(async () => { return TryDeleteIfExists(renamedPath); });	// Delete in background thread
+		}
+
+		/// <summary>
+		/// Delete a path if it exists. Works for files and directories. Returns success status.
+		/// </summary>
 		public static bool TryDeleteIfExists(string path)      // Returns true if no exception occurs
 		{
             try
             {
 				if (path == null)
 					return false;
+
 				DeleteIfExists(path);
 				return true;
 			}
@@ -397,16 +403,20 @@ namespace Flowframes.IO
 
 		public static bool DeleteIfExists (string path)		// Returns true if the file/dir exists
         {
-            if (!IsPathDirectory(path) && File.Exists(path))
+			Logger.Log($"DeleteIfExists({path})", true);
+
+			if (!IsPathDirectory(path) && File.Exists(path))
             {
 				File.Delete(path);
 				return true;
             }
+
 			if (IsPathDirectory(path) && Directory.Exists(path))
 			{
 				Directory.Delete(path, true);
 				return true;
 			}
+
 			return false;
         }
 

@@ -48,7 +48,7 @@ namespace Flowframes.Media
                     if (IOUtils.GetFilesize(outPath) < 512)
                     {
                         Logger.Log($"Failed to extract audio stream #{track.streamIndex}, even with re-encoding. Will be missing from output.");
-                        IOUtils.TryDeleteIfExists(outPath);
+                        await IOUtils.TryDeleteIfExistsAsync(outPath);
                         return;
                     }
 
@@ -120,7 +120,7 @@ namespace Flowframes.Media
                     }
                     else
                     {
-                        IOUtils.TryDeleteIfExists(outPath);     // Delete if encode was not successful
+                        await IOUtils.TryDeleteIfExistsAsync(outPath);     // Delete if encode was not successful
                     }
                 }
 
@@ -312,28 +312,6 @@ namespace Flowframes.Media
             string args = $" -i {inName} {trackInputArgs} -map 0:v {trackMapArgs} -c:v copy {audioArgs} {subArgs} {trackMetaArgs} {outName}";
 
             await RunFfmpeg(args, tempFolder, LogMode.Hidden);
-
-
-            // if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
-            // {
-            //     Logger.Log("Failed to merge audio losslessly! Trying to re-encode.", false, false, "ffmpeg");
-            // 
-            //     args = $" -i {inName} -stream_loop {looptimes} -i {audioName.Wrap()}" +
-            //     $"{trackInputArgs} -map 0:v -map 1:a {trackMapArgs} -c:v copy {Utils.GetAudioFallbackArgs(Path.GetExtension(inputFile))} -c:s {subCodec} {trackMetaArgs} -shortest {outName}";
-            // 
-            //     await RunFfmpeg(args, tempFolder, LogMode.Hidden);
-            // 
-            //     if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) < 1024)
-            //     {
-            //         Logger.Log("Failed to merge audio, even with re-encoding. Output will not have audio.", false, false, "ffmpeg");
-            //         IOUtils.TryMove(tempPath, inputFile);   // Move temp file back
-            //         IOUtils.TryDeleteIfExists(tempPath);
-            //         return;
-            //     }
-            // 
-            //     string audioExt = Path.GetExtension(audioPath).Remove(".").ToUpper();
-            //     Logger.Log($"Source audio ({audioExt}) has been re-encoded to fit into the target container ({containerExt.Remove(".").ToUpper()}). This may decrease the quality slightly.", false, true, "ffmpeg");
-            // }
 
             if (File.Exists(outPath) && IOUtils.GetFilesize(outPath) > 512)
             {

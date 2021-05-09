@@ -58,7 +58,7 @@ namespace Flowframes.Main
             // if (Config.GetBool("scnDetect") && !current.inputIsFrames)        // Input is video - extract frames first
             //     await ExtractSceneChanges();
 
-            if (!IOUtils.TryDeleteIfExists(current.framesFolder))
+            if (!(await IOUtils.TryDeleteIfExistsAsync(current.framesFolder)))
             {
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
                 return;
@@ -81,7 +81,7 @@ namespace Flowframes.Main
                 InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
                 return;
             }
-            if (!IOUtils.TryDeleteIfExists(current.interpFolder))
+            if (!(await IOUtils.TryDeleteIfExistsAsync(current.interpFolder)))
             {
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
                 return;

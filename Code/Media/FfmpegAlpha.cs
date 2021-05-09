@@ -46,7 +46,7 @@ namespace Flowframes.Media
             await RunFfmpeg(args, LogMode.Hidden);
 
             if (deleteAlphaDir)
-                IOUtils.TryDeleteIfExists(alphaDir);
+                await IOUtils.TryDeleteIfExistsAsync(alphaDir);
         }
     }
 }

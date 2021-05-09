@@ -100,12 +100,12 @@ namespace Flowframes.Main
             }
 
             if (!stepByStep)
-                IOUtils.DeleteContentsOfDir(I.current.interpFolder);
+                await IOUtils.DeleteContentsOfDirAsync(I.current.interpFolder);
         }
 
         static async Task CopyOutputFrames(string framesPath, string framesFile, string outputFolderPath, bool dontMove)
         {
-            IOUtils.TryDeleteIfExists(outputFolderPath);
+            await IOUtils.TryDeleteIfExistsAsync(outputFolderPath);
             IOUtils.CreateDir(outputFolderPath);
             Stopwatch sw = new Stopwatch();
             sw.Restart();
