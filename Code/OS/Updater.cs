@@ -136,7 +136,7 @@ namespace Flowframes.OS
 
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
 
-            if (installed.Major != 0 && installed.Minor != 0)
+            if (installed.ToString() != "0.0.0")
                 Program.mainForm.Text = "Flowframes " + installed.ToString();
         }
 
