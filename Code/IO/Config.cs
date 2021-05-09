@@ -147,6 +147,7 @@ namespace Flowframes.IO
             if (key == "keepSubs")              return WriteDefault(key, "True");
             if (key == "keepMeta")              return WriteDefault(key, "True");
             if (key == "autoDedupFrames")       return WriteDefault(key, "100");
+            if (key == "scnDetect")             return WriteDefault(key, "True");
             if (key == "scnDetectValue")        return WriteDefault(key, "0.2");
             if (key == "sceneChangeFillMode")   return WriteDefault(key, "1");
             if (key == "autoEncMode")           return WriteDefault(key, "2");
