@@ -94,7 +94,7 @@ namespace Flowframes.UI
         {
             if (I.canceled) return;
             interpolatedInputFramesCount = ((frames / I.current.interpFactor).RoundToInt() - 1);
-            ResumeUtils.Save();
+            //ResumeUtils.Save();
             frames = frames.Clamp(0, target);
             int percent = (int)Math.Round(((float)frames / target) * 100f);
             Program.mainForm.SetProgress(percent);
