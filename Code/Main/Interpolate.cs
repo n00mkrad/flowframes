@@ -64,7 +64,7 @@ namespace Flowframes
                 await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, false);
 
             if (Config.GetBool("keepTempFolder"))
-                await FrameRename.Unrename();
+                await Task.Run(async () => { await FrameRename.Unrename(); });
 
             await Cleanup();
             Program.mainForm.SetWorking(false);
@@ -142,6 +142,8 @@ namespace Flowframes
         {
             if (canceled) return;
 
+            Program.mainForm.SetStatus("Processing frames...");
+
             int extractedFrames = IOUtils.GetAmountOfFiles(current.framesFolder, false, "*" + current.framesExt);
             if (!Directory.Exists(current.framesFolder) || currentInputFrameCount <= 0 || extractedFrames < 2)
             {
@@ -189,9 +191,10 @@ namespace Flowframes
         public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
         {
             if (canceled) return;
-            await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt);
-            await FrameRename.Rename();
-            await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor);
+
+            await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
+            await Task.Run(async () => { await FrameRename.Rename(); });
+            await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor); });
 
             Program.mainForm.SetStatus("Downloading models...");
             await ModelDownloader.DownloadModelFiles(ai.pkgDir, current.model);

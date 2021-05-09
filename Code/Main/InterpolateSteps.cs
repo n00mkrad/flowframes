@@ -94,7 +94,7 @@ namespace Flowframes.Main
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
             await RunAi(current.interpFolder, current.ai, true);
-            await FrameRename.Unrename();   // Get timestamps back
+            await Task.Run(async () => { await FrameRename.Unrename(); });   // Get timestamps back
             Program.mainForm.SetProgress(0);
         }
 

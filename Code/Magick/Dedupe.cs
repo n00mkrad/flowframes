@@ -229,9 +229,6 @@ namespace Flowframes.Magick
                 if(debug)
                     Logger.Log($"{(isLastItem ? "[isLastItem] " : "")}frameNum1 (frameFiles[{i}]) = {frameNum1}, frameNum2 (frameFiles[{i+1}]) = {frameNum2} => dupes = {dupes}", true, false, "dupes");
 
-                //if (File.Exists(Path.Combine(framesPath.GetParentDir(), Paths.scenesDir, frameFiles[i].Name)))
-                //    dupes = 0;
-
                 fileContent += $"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)}:{dupes}\n";
             }
 
