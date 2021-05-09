@@ -29,7 +29,7 @@ namespace Flowframes.Main
 
         public static void UpdateChunkAndBufferSizes ()
         {
-            chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*" + Interpolate.current.interpExt) * Interpolate.current.interpFactor).RoundToInt());
+            chunkSize = GetChunkSize((IOUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*" + Interpolate.current.framesExt) * Interpolate.current.interpFactor).RoundToInt());
 
             safetyBufferFrames = 90;
 
@@ -189,6 +189,7 @@ namespace Flowframes.Main
 
         static int GetChunkSize(int targetFramesAmount)
         {
+            if (targetFramesAmount > 100000) return 4800;
             if (targetFramesAmount > 50000) return 2400;
             if (targetFramesAmount > 20000) return 1200;
             if (targetFramesAmount > 5000) return 600;
