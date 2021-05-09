@@ -134,6 +134,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.tabListPage1 = new Cyotek.Windows.Forms.TabListPage();
+            this.label13 = new System.Windows.Forms.Label();
+            this.vp9Crf = new System.Windows.Forms.NumericUpDown();
+            this.mp4Crf = new System.Windows.Forms.NumericUpDown();
             this.imgSeqFormat = new System.Windows.Forms.ComboBox();
             this.label40 = new System.Windows.Forms.Label();
             this.gifDitherType = new System.Windows.Forms.ComboBox();
@@ -175,9 +178,6 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.mp4Crf = new System.Windows.Forms.NumericUpDown();
-            this.vp9Crf = new System.Windows.Forms.NumericUpDown();
-            this.label13 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -191,10 +191,10 @@
             this.vidExportTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
             this.tabListPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.vp9Crf)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).BeginInit();
             this.debugTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vp9Crf)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -1429,9 +1429,9 @@
             this.label22.Location = new System.Drawing.Point(420, 101);
             this.label22.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(269, 13);
+            this.label22.Size = new System.Drawing.Size(302, 13);
             this.label22.TabIndex = 48;
-            this.label22.Text = "Limit the final output video to this FPS. Use 0 to disable.";
+            this.label22.Text = "Limit the final output video to this FPS. Leave empty to disable.";
             // 
             // maxFps
             // 
@@ -1515,6 +1515,55 @@
             this.tabListPage1.Name = "tabListPage1";
             this.tabListPage1.Size = new System.Drawing.Size(762, 419);
             this.tabListPage1.Text = "Encoding Settings";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.Color.Silver;
+            this.label13.Location = new System.Drawing.Point(393, 101);
+            this.label13.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(225, 13);
+            this.label13.TabIndex = 113;
+            this.label13.Text = "Lower means higher quality and bigger filesize.";
+            // 
+            // vp9Crf
+            // 
+            this.vp9Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.vp9Crf.ForeColor = System.Drawing.Color.White;
+            this.vp9Crf.Location = new System.Drawing.Point(280, 98);
+            this.vp9Crf.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.vp9Crf.Name = "vp9Crf";
+            this.vp9Crf.Size = new System.Drawing.Size(100, 20);
+            this.vp9Crf.TabIndex = 112;
+            this.vp9Crf.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            // 
+            // mp4Crf
+            // 
+            this.mp4Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.mp4Crf.ForeColor = System.Drawing.Color.White;
+            this.mp4Crf.Location = new System.Drawing.Point(280, 68);
+            this.mp4Crf.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.mp4Crf.Name = "mp4Crf";
+            this.mp4Crf.Size = new System.Drawing.Size(100, 20);
+            this.mp4Crf.TabIndex = 111;
+            this.mp4Crf.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
             // 
             // imgSeqFormat
             // 
@@ -2033,55 +2082,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // mp4Crf
-            // 
-            this.mp4Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.mp4Crf.ForeColor = System.Drawing.Color.White;
-            this.mp4Crf.Location = new System.Drawing.Point(280, 68);
-            this.mp4Crf.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.mp4Crf.Name = "mp4Crf";
-            this.mp4Crf.Size = new System.Drawing.Size(100, 20);
-            this.mp4Crf.TabIndex = 111;
-            this.mp4Crf.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            // 
-            // vp9Crf
-            // 
-            this.vp9Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.vp9Crf.ForeColor = System.Drawing.Color.White;
-            this.vp9Crf.Location = new System.Drawing.Point(280, 98);
-            this.vp9Crf.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.vp9Crf.Name = "vp9Crf";
-            this.vp9Crf.Size = new System.Drawing.Size(100, 20);
-            this.vp9Crf.TabIndex = 112;
-            this.vp9Crf.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.ForeColor = System.Drawing.Color.Silver;
-            this.label13.Location = new System.Drawing.Point(393, 101);
-            this.label13.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(225, 13);
-            this.label13.TabIndex = 113;
-            this.label13.Text = "Lower means higher quality and bigger filesize.";
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2116,11 +2116,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
             this.tabListPage1.ResumeLayout(false);
             this.tabListPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.vp9Crf)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).EndInit();
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vp9Crf)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
