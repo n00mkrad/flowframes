@@ -435,6 +435,54 @@ namespace Flowframes.IO
 			return false;
         }
 
+		/// <summary>
+		/// Add ".old" suffix to existing files to avoid them being overwritten. If one already exists, it will be ".old.old" etc.
+		/// </summary>
+		public static void RenameExistingFile(string path)
+		{
+			if (!File.Exists(path))
+				return;
+
+            try
+            {
+				string ext = Path.GetExtension(path);
+				string renamedPath = path;
+
+				while (File.Exists(renamedPath))
+					renamedPath = Path.ChangeExtension(renamedPath, null) + ".old" + ext;
+
+				File.Move(path, renamedPath);
+			}
+			catch(Exception e)
+            {
+				Logger.Log($"RenameExistingFile: Failed to rename '{path}': {e.Message}", true);
+			}
+		}
+
+		/// <summary>
+		/// Easily rename a file without needing to specify the full move path
+		/// </summary>
+		public static bool RenameFile (string path, string newName, bool alsoRenameExtension = false)
+        {
+            try
+            {
+				string dir = Path.GetDirectoryName(path);
+				string ext = Path.GetExtension(path);
+				string movePath = Path.Combine(dir, newName);
+
+				if (!alsoRenameExtension)
+					movePath += ext;
+
+				File.Move(path, movePath);
+				return true;
+            }
+			catch(Exception e)
+            {
+				Logger.Log($"Failed to rename '{path}' to '{newName}': {e.Message}", true);
+				return false;
+            }
+        }
+
 		public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool withExt)
 		{
 			InterpSettings curr = Interpolate.current;

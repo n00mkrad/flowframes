@@ -21,7 +21,8 @@ namespace Flowframes.Media
         {
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
-            
+
+            IOUtils.RenameExistingFile(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
             string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
             if (!isChunk && outMode == Interpolate.OutMode.VidMp4) encArgs += $" -movflags +faststart";

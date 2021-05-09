@@ -38,6 +38,8 @@ namespace Flowframes
         {
             Logger.Log($"ConcatVideos('{Path.GetFileName(concatFile)}', '{outPath}', {looptimes})", true, false, "ffmpeg");
             Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
+
+            IOUtils.RenameExistingFile(outPath);
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
             string args = $" {loopStr} -vsync 1 -f concat -i {vfrFilename} -c copy -movflags +faststart -fflags +genpts {outPath.Wrap()}";
