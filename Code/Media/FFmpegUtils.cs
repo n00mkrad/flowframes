@@ -83,7 +83,7 @@ namespace Flowframes.Media
             if (codec == Codec.AV1)
             {
                 int cq = (Config.GetInt("av1Crf") * 1.0f).RoundToInt();
-                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -pix_fmt yuv420p";
+                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -tile_rows 2 -tile_columns 2 -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
