@@ -1,10 +1,10 @@
 ﻿using Flowframes.IO;
 using Flowframes.UI;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DT = System.DateTime;
@@ -18,16 +18,53 @@ namespace Flowframes
         public const string defaultLogName = "sessionlog";
         public static long id;
 
-        public static void Log(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
+        public struct LogEntry
         {
-            if (string.IsNullOrWhiteSpace(s))
+            public string logMessage;
+            public bool hidden;
+            public bool replaceLastLine;
+            public string filename;
+
+            public LogEntry(string logMessageArg, bool hiddenArg = false, bool replaceLastLineArg = false, string filenameArg = "")
+            {
+                logMessage = logMessageArg;
+                hidden = hiddenArg;
+                replaceLastLine = replaceLastLineArg;
+                filename = filenameArg;
+            }
+        }
+
+        private static ConcurrentQueue<LogEntry> logQueue = new ConcurrentQueue<LogEntry>();
+
+        public static void Log(string msg, bool hidden = false, bool replaceLastLine = false, string filename = "")
+        {
+            logQueue.Enqueue(new LogEntry(msg, hidden, replaceLastLine, filename));
+        }
+
+        public static async Task Run()
+        {
+            while (true)
+            {
+                if (!logQueue.IsEmpty)
+                {
+                    LogEntry entry;
+
+                    if (logQueue.TryDequeue(out entry))
+                        Show(entry);
+                }
+            }
+        }
+
+        public static void Show(LogEntry entry)
+        {
+            if (string.IsNullOrWhiteSpace(entry.logMessage))
                 return;
 
-            Console.WriteLine(s);
+            Console.WriteLine(entry.logMessage);
 
             try
             {
-                if (!hidden && replaceLastLine)
+                if (!entry.hidden && entry.replaceLastLine)
                 {
                     textbox.Suspend();
                     string[] lines = textbox.Text.SplitIntoLines();
@@ -36,21 +73,21 @@ namespace Flowframes
             }
             catch { }
 
-            s = s.Replace("\n", Environment.NewLine);
+            entry.logMessage = entry.logMessage.Replace("\n", Environment.NewLine);
 
-            if (!hidden && textbox != null)
-                textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + s);
+            if (!entry.hidden && textbox != null)
+                textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + entry.logMessage);
 
-            if (replaceLastLine)
+            if (entry.replaceLastLine)
             {
                 textbox.Resume();
-                s = "[REPL] " + s;
+                entry.logMessage = "[REPL] " + entry.logMessage;
             }
 
-            if (!hidden)
-                s = "[UI] " + s;
+            if (!entry.hidden)
+                entry.logMessage = "[UI] " + entry.logMessage;
 
-            LogToFile(s, false, filename);
+            LogToFile(entry.logMessage, false, entry.filename);
         }
 
         public static void LogToFile(string logStr, bool noLineBreak, string filename)
