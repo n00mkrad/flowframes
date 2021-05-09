@@ -1,5 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
+using Flowframes.OS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,6 +60,8 @@ namespace Flowframes.UI
 
 				if (combox.SelectedIndex < 0)
 					combox.SelectedIndex = 0;
+
+				SelectNcnnIfNoCudaAvail(combox);
 			}
             catch (Exception e)
             {
@@ -67,5 +70,17 @@ namespace Flowframes.UI
 
 			return combox;
 		}
+
+		static void SelectNcnnIfNoCudaAvail (ComboBox combox)
+        {
+			if(NvApi.gpuList.Count < 1)
+            {
+				for(int i = 0; i < combox.Items.Count; i++)
+                {
+					if (((string)combox.Items[i]).ToUpper().Contains("NCNN"))
+						combox.SelectedIndex = i;
+                }
+            }
+        }
 	}
 }
