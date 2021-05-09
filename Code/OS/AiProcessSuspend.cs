@@ -26,6 +26,18 @@ namespace Flowframes.OS
             Program.mainForm.GetPauseBtn().Visible = running;
         }
 
+        public static void SuspendIfRunning ()
+        {
+            if(!aiProcFrozen)
+                SuspendResumeAi(true);
+        }
+
+        public static void ResumeIfPaused()
+        {
+            if (aiProcFrozen)
+                SuspendResumeAi(false);
+        }
+
         public static void SuspendResumeAi(bool freeze, bool excludeCmd = true)
         {
             if (AiProcess.lastAiProcess == null || AiProcess.lastAiProcess.HasExited)

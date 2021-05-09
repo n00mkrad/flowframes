@@ -1,5 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
+using Flowframes.OS;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -73,7 +74,7 @@ namespace Flowframes
                 {
                     try
                     {
-                        if (Interpolate.current.tempFolder.Length < 3)
+                        if (Interpolate.current == null || Interpolate.current.tempFolder.Length < 3)
                             return;
 
                         string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
@@ -81,12 +82,27 @@ namespace Flowframes
 
                         Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 
-                        if (!Interpolate.canceled && mb < (Config.GetInt("minDiskSpaceGb", 5) * 1024))
-                            Interpolate.Cancel("Running out of disk space!");
+                        bool lowDiskSpace = mb < (Config.GetInt("lowDiskSpacePauseGb", 5) * 1024 * 1000);
+                        bool tooLowDiskSpace = mb < (Config.GetInt("lowDiskSpaceCancelGb", 2) * 1024);
+                        string spaceGb = (mb / 1024f).ToString("0.0");
+
+                        if (!Interpolate.canceled && (AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) && lowDiskSpace)
+                        {
+                            if (tooLowDiskSpace)
+                            {
+                                Interpolate.Cancel($"Not enough disk space on '{drivePath}/' ({spaceGb} GB)!");
+                            }
+                            else
+                            {
+                                AiProcessSuspend.SuspendIfRunning();
+                                MessageBox.Show($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
+                                    $"Please either clear up some disk space or cancel the interpolation.", "Warning");
+                            }
+                        }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        // Disk space check failed, this is not critical and might just be caused by a null ref
+                        Logger.Log($"Disk space check failed: {e.Message}", true);
                     }
                 }
 
