@@ -374,11 +374,26 @@ namespace Flowframes.IO
 		{
 			string renamedPath = path;
 
-			while (Directory.Exists(renamedPath))	// Keep adding a "_" to the end if there is still an undeleted dir (unlikely)
-				renamedPath += "_";
+			if (IsPathDirectory(path))
+            {
+				while (Directory.Exists(renamedPath))
+					renamedPath += "_";
 
-			Directory.Move(path, renamedPath);  // Move/rename, so a new folder can be created without waiting this one's deletion
-			return await Task.Run(async () => { return TryDeleteIfExists(renamedPath); });	// Delete in background thread
+				if (path != renamedPath)
+					Directory.Move(path, renamedPath);
+			}
+            else
+            {
+				while (File.Exists(renamedPath))
+					renamedPath += "_";
+
+				if (path != renamedPath)
+					File.Move(path, renamedPath);
+			}
+
+			path = renamedPath;
+
+			return await Task.Run(async () => { return TryDeleteIfExists(path); });	// Delete in background thread
 		}
 
 		/// <summary>
