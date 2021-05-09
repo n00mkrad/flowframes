@@ -82,7 +82,7 @@ namespace Flowframes
 
                         Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 
-                        bool lowDiskSpace = mb < (Config.GetInt("lowDiskSpacePauseGb", 5) * 1024 * 1000);
+                        bool lowDiskSpace = mb < (Config.GetInt("lowDiskSpacePauseGb", 5) * 1024);
                         bool tooLowDiskSpace = mb < (Config.GetInt("lowDiskSpaceCancelGb", 2) * 1024);
                         string spaceGb = (mb / 1024f).ToString("0.0");
 
