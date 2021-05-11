@@ -168,6 +168,14 @@ namespace Flowframes.Media
                 return false;
             }
 
+            bool all24Bit = randomSamples.All(i => (i.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb));
+
+            if (!all24Bit)
+            {
+                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Some images are not 24-bit (8bpp).", true);
+                return false;
+            }
+
             Interpolate.current.framesExt = files.First().Extension;
             return true;
         }
