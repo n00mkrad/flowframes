@@ -140,8 +140,9 @@ namespace Flowframes.Forms
 
         async Task<Fraction> GetFramerate (string path)
         {
-            Fraction fps = Interpolate.current.inFps;
+            Fraction fps = (Interpolate.current != null) ? Interpolate.current.inFps : new Fraction();
             Fraction fpsFromFile = await IOUtils.GetFpsFolderOrVideo(path);
+
             if (fpsFromFile.GetFloat() > 0)
                 return fpsFromFile;
 
