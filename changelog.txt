@@ -1,3 +1,17 @@
+Flowframes 1.25.2 Changelog:
+- Image Sequence will now be copied instead of re-encoded if they are compatible
+- Color space (and transfer function) will now be retained from the input video
+- Aspect ratio of input video will now be preserved (for non-square pixel videos)
+- Added "Debug Tools" window with a log viewer and a config editor tab
+- Interpolation will now pause, not cancel, when disk space is low
+- Existing output files now get renamed instead of overwritten if they already exist
+- Several processing functions now run in the background, so the UI no longer freezes
+- Fixed h265 CRF 0 not being lossless
+- Fixed critical bug where Auto-Encode ran too early, causing FFmpeg errors
+- Fixed bug where deduplicated videos would play too fast if JPEG frames are used
+- Fixed some cases where the program wouldn't launch because of undhandled errors
+
+
 Flowframes 1.25.1 Changelog:
 - Added a button to pause/resume the interpolation
 - Added AV1 codec support for MP4/MKV output

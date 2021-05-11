@@ -463,11 +463,10 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"A python error occured during interpolation!\nCheck {logFilename} for details.\n\n{line}", "Error");
             }
 
-            if (!hasShownError && err && line.Contains("vk") && line.Contains(" failed"))
+            if (!hasShownError && err && line.MatchesWildcard("vk*Instance* failed"))
             {
                 hasShownError = true;
-                string dain = (Interpolate.current.ai.aiName == Networks.dainNcnn.aiName) ? "\n\nTry reducing the tile size in the AI settings." : "";
-                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}{dain}", "Error");
+                InterpolateUtils.ShowMessage($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.", "Error");
             }
 
             if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
@@ -478,16 +477,16 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"Vulkan ran out of memory!\n\n{line}{msg}", "Error");
             }
 
-            if (!hasShownError && err && line.Contains("vkCreateInstance failed"))
-            {
-                hasShownError = true;
-                InterpolateUtils.ShowMessage($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.", "Error");
-            }
-
             if (!hasShownError && err && line.Contains("invalid gpu device"))
             {
                 hasShownError = true;
                 InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?", "Error");
+            }
+
+            if (!hasShownError && err && line.MatchesWildcard("vk* failed"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}", "Error");
             }
 
             if (hasShownError)
