@@ -100,10 +100,12 @@ namespace Flowframes.Media
                 Directory.CreateDirectory(outpath);
 
                 await Task.Run(async () => {
+                    int counter = 0;
                     foreach (FileInfo file in IOUtils.GetFileInfosSorted(inpath))
                     {
-                        string newFilename = Path.GetFileNameWithoutExtension(file.FullName).PadLeft(Padding.inputFrames, '0') + file.Extension;
+                        string newFilename = counter.ToString().PadLeft(Padding.inputFrames, '0') + file.Extension;
                         File.Copy(file.FullName, Path.Combine(outpath, newFilename));
+                        counter++;
                     }
                 });
 
