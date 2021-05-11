@@ -51,6 +51,7 @@ namespace Flowframes.IO
         {
             try
             {
+                IOUtils.DeleteIfExists(linksDir);
                 Directory.CreateDirectory(linksDir);
                 Stopwatch sw = new Stopwatch();
                 sw.Restart();
