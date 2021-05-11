@@ -15,6 +15,9 @@ namespace Flowframes.Data
         // Aspect Ratio
         public string displayRatio = "";
 
+        private readonly string[] validColorSpaces = new string[] { "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100",
+            "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", "arib-std-b67" };
+
         public VidExtraData(string ffprobeOutput)
         {
             string[] lines = ffprobeOutput.SplitIntoLines();
@@ -52,17 +55,31 @@ namespace Flowframes.Data
                 }
             }
 
-            if (colorSpace.Trim() == "unknown")
+            if (!validColorSpaces.Contains(colorSpace.Trim()))
+            {
+                Logger.Log($"Warning: Color Space '{colorSpace.Trim()}' not valid.", true, false, "ffmpeg");
                 colorSpace = "";
+            }
 
             if (colorRange.Trim() == "unknown")
                 colorRange = "";
 
-            if (colorTransfer.Trim() == "unknown")
+            if (!validColorSpaces.Contains(colorTransfer.Trim()))
+            {
+                Logger.Log($"Warning: Color Transfer '{colorTransfer.Trim()}' not valid.", true, false, "ffmpeg");
                 colorTransfer = "";
+            }
+            else
+            {
+                Logger.Log($"Warning: Using 'gamma28' instead of '{colorTransfer.Trim()}'.", true, false, "ffmpeg");
+                colorTransfer = colorTransfer.Replace("bt470bg", "gamma28");    // https://forum.videohelp.com/threads/394596-Color-Matrix
+            }
 
-            if (colorPrimaries.Trim() == "unknown")
+            if (!validColorSpaces.Contains(colorPrimaries.Trim()))
+            {
+                Logger.Log($"Warning: Color Primaries '{colorPrimaries.Trim()}' not valid.", true, false, "ffmpeg");
                 colorPrimaries = "";
+            }  
         }
 
         public bool HasAnyValues ()
