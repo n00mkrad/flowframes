@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flowframes.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,9 @@ namespace Flowframes.Data
         public VidExtraData(string ffprobeOutput)
         {
             string[] lines = ffprobeOutput.SplitIntoLines();
+
+            if (!Config.GetBool("keepColorSpace", true))
+                return;
 
             foreach (string line in lines)
             {
@@ -48,7 +52,7 @@ namespace Flowframes.Data
                     continue;
                 }
 
-                if (line.Contains("display_aspect_ratio"))
+                if (line.Contains("display_aspect_ratio") && Config.GetBool("keepAspectRatio", true))
                 {
                     displayRatio = line.Split('=').LastOrDefault();
                     continue;
