@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Flowframes.MiscUtils
 {
@@ -14,7 +12,6 @@ namespace Flowframes.MiscUtils
             Logger.Log($"Ran {methodName} in {sw.GetElapsedStr()}", true);
             return returnVal;
         }
-
 
         // Benchmark a void method (via Action)
         public static void BenchmarkMethod(string methodName, Action method, params object[] args)
