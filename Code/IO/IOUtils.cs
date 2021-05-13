@@ -633,8 +633,8 @@ namespace Flowframes.IO
 		public enum Hash { MD5, CRC32 }
 		public static string GetHash (string path, Hash hashType, bool log = true)
 		{
-			Benchmarker.Start();
 			string hashStr = "";
+
             if (IsPathDirectory(path))
             {
 				Logger.Log($"Path '{path}' is directory! Returning empty hash.", true);
@@ -665,8 +665,10 @@ namespace Flowframes.IO
 				Logger.Log($"Error getting file hash for {Path.GetFileName(path)}: {e.Message}", true);
 				return "";
             }
+
 			if (log)
-				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}) in {Benchmarker.GetTimeStr(true)}: {hashStr}", true);
+				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}): {hashStr}", true);
+			
 			return hashStr;
 		}
 

@@ -1,43 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.MiscUtils
 {
     class Benchmarker
     {
-        static Stopwatch sw = new Stopwatch();
-
-        public static void Start ()
+        // Benchmark a method with return type (via Delegate/Func)
+        public static object BenchmarkMethod(string methodName, Delegate method, params object[] args)
         {
-            sw.Restart();
+            NmkdStopwatch sw = new NmkdStopwatch();
+            var returnVal =  method.DynamicInvoke(args);
+            Logger.Log($"Ran {methodName} in {sw.GetElapsedStr()}", true);
+            return returnVal;
         }
 
-        public static string GetTimeStr (bool stop)
+
+        // Benchmark a void method (via Action)
+        public static void BenchmarkMethod(string methodName, Action method, params object[] args)
         {
-            if (stop)
-                sw.Stop();
-
-            return FormatUtils.TimeSw(sw);
-        }
-
-        public static TimeSpan GetTime(bool stop)
-        {
-            if (stop)
-                sw.Stop();
-
-            return sw.Elapsed;
-        }
-
-        public static long GetTimeMs(bool stop)
-        {
-            if (stop)
-                sw.Stop();
-
-            return sw.ElapsedMilliseconds;
+            NmkdStopwatch sw = new NmkdStopwatch();
+            method.DynamicInvoke(args);
+            Logger.Log($"Ran {methodName} in {sw.GetElapsedStr()}", true);
         }
     }
 }
