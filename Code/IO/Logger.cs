@@ -39,20 +39,15 @@ namespace Flowframes
         public static void Log(string msg, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
             logQueue.Enqueue(new LogEntry(msg, hidden, replaceLastLine, filename));
+            ShowNext();
         }
 
-        public static async Task Run()
+        public static void ShowNext ()
         {
-            while (true)
-            {
-                if (!logQueue.IsEmpty)
-                {
-                    LogEntry entry;
+            LogEntry entry;
 
-                    if (logQueue.TryDequeue(out entry))
-                        Show(entry);
-                }
-            }
+            if (logQueue.TryDequeue(out entry))
+                Show(entry);
         }
 
         public static void Show(LogEntry entry)

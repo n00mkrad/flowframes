@@ -31,7 +31,6 @@ namespace Flowframes
                 IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs from previous session
 
             Networks.Init();
-            Task.Run(() => Logger.Run());
             Task.Run(() => DiskSpaceCheckLoop());
 
             Application.EnableVisualStyles();
