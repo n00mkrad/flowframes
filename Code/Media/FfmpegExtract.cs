@@ -134,7 +134,7 @@ namespace Flowframes.Media
 
             if (!allSameExtension)
             {
-                Logger.Log("Sequence not compatible: Not all files have the same extension [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Not all files have the same extension.", true);
                 return false;
             }
 
@@ -142,7 +142,7 @@ namespace Flowframes.Media
 
             if (!allValidExtension)
             {
-                Logger.Log($"Sequence not compatible: Not all files have a valid extension ({string.Join(", ", validExtensions)}) [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Not all files have a valid extension ({string.Join(", ", validExtensions)}).", true);
                 return false;
             }
 
@@ -152,7 +152,7 @@ namespace Flowframes.Media
 
             if (!allSameSize)
             {
-                Logger.Log("Sequence not compatible: Not all images have the same dimensions [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Not all images have the same dimensions [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
