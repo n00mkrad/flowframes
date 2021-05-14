@@ -94,7 +94,9 @@ namespace Flowframes.Media
 
         public static async Task ImportImagesCheckCompat(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
         {
-            if (!alpha && AreImagesCompatible(inpath, Config.GetInt("maxVidHeight")))
+            bool compatible = await Task.Run(async () => { return AreImagesCompatible(inpath, Config.GetInt("maxVidHeight")); });
+
+            if (!alpha && compatible)
             {
                 if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
                 Directory.CreateDirectory(outpath);
@@ -118,6 +120,7 @@ namespace Flowframes.Media
 
         static bool AreImagesCompatible (string inpath, int maxHeight)
         {
+            NmkdStopwatch sw = new NmkdStopwatch();
             string[] validExtensions = new string[] { ".jpg", ".jpeg", ".png" };
             FileInfo[] files = IOUtils.GetFileInfosSorted(inpath);
 
@@ -131,7 +134,7 @@ namespace Flowframes.Media
 
             if (!allSameExtension)
             {
-                Logger.Log("[AreImagesCompatible] Sequence not compatible: Not all files have the same extension.", true);
+                Logger.Log("Sequence not compatible: Not all files have the same extension [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
@@ -139,17 +142,17 @@ namespace Flowframes.Media
 
             if (!allValidExtension)
             {
-                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Not all files have a valid extension ({string.Join(", ", validExtensions)}).", true);
+                Logger.Log($"Sequence not compatible: Not all files have a valid extension ({string.Join(", ", validExtensions)}) [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
-            Image[] randomSamples = files.OrderBy(arg => Guid.NewGuid()).Take(5).Select(x => IOUtils.GetImage(x.FullName)).ToArray();
+            Image[] randomSamples = files.OrderBy(arg => Guid.NewGuid()).Take(10).Select(x => IOUtils.GetImage(x.FullName)).ToArray();
 
             bool allSameSize = randomSamples.All(i => i.Size == randomSamples.First().Size);
 
             if (!allSameSize)
             {
-                Logger.Log("[AreImagesCompatible] Sequence not compatible: Not all images have the same dimensions.", true);
+                Logger.Log("Sequence not compatible: Not all images have the same dimensions [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
@@ -158,7 +161,7 @@ namespace Flowframes.Media
 
             if (!allDivBy2)
             {
-                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
+                Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div} [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
@@ -166,7 +169,7 @@ namespace Flowframes.Media
 
             if (!allSmallEnough)
             {
-                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Image dimensions above max size.", true);
+                Logger.Log($"Sequence not compatible: Image dimensions above max size [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
@@ -174,11 +177,12 @@ namespace Flowframes.Media
 
             if (!all24Bit)
             {
-                Logger.Log($"[AreImagesCompatible] Sequence not compatible: Some images are not 24-bit (8bpp).", true);
+                Logger.Log($"Sequence not compatible: Some images are not 24-bit (8bpp) [{sw.GetElapsedStr()}].", true);
                 return false;
             }
 
             Interpolate.current.framesExt = files.First().Extension;
+            Logger.Log($"Sequence compatible! [{sw.GetElapsedStr()}]", true);
             return true;
         }
 
