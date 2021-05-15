@@ -1,4 +1,12 @@
-Flowframes 1.25.2 Changelog:
+Flowframes 1.26.1 Changelog:
+- Fixed image sequence copying not working correctly in some cases
+- Fixed loop not working correctly when using JPEG frames
+- Fixed batch queue not working correctly
+- Fixed encoding failing for videos with bt470bg color space
+- Fixed encoding failing when using lossless h265
+
+
+Flowframes 1.26.0 Changelog:
 - Image Sequence will now be copied instead of re-encoded if they are compatible
 - Color space (and transfer function) will now be retained from the input video
 - Aspect ratio of input video will now be preserved (for non-square pixel videos)
