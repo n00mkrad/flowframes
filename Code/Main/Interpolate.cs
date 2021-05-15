@@ -165,14 +165,10 @@ namespace Flowframes
             else
             {
                 FileInfo[] frameFiles = IOUtils.GetFileInfosSorted(current.framesFolder);
-                int lastFileNumber = frameFiles.Last().Name.GetInt() + 1;
-                string loopFrameTargetPath = Path.Combine(current.framesFolder, lastFileNumber.ToString().PadLeft(Padding.inputFrames, '0') + ".png");
-                if (File.Exists(loopFrameTargetPath))
-                {
-                    Logger.Log($"Won't copy loop frame - {Path.GetFileName(loopFrameTargetPath)} already exists.", true);
-                    return;
-                }
-                File.Copy(frameFiles.First().FullName, loopFrameTargetPath);
+                string ext = frameFiles.First().Extension;
+                int lastNum = frameFiles.Last().Name.GetInt() + 1;
+                string loopFrameTargetPath = Path.Combine(current.framesFolder, lastNum.ToString().PadLeft(Padding.inputFrames, '0') + ext);
+                File.Copy(frameFiles.First().FullName, loopFrameTargetPath, true);
                 Logger.Log($"Copied loop frame to {loopFrameTargetPath}.", true);
             }
 
