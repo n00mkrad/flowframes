@@ -16,6 +16,7 @@ namespace Flowframes.UI
 
         public static void FillLogDropdown(ComboBox dd)
         {
+            bool initial = dd.SelectedIndex < 0;
             dd.Items.Clear();
 
             FileInfo[] logFiles = IOUtils.GetFileInfosSorted(Paths.GetLogPath(), false, "*.txt");
@@ -26,10 +27,13 @@ namespace Flowframes.UI
             if (dd.Items.Count > 0)
                 dd.SelectedIndex = 0;
 
-            for(int i = 0; i < dd.Items.Count; i++)
+            if (initial)
             {
-                if (((string)dd.Items[i]).Split('.').FirstOrDefault() == Logger.defaultLogName)
-                    dd.SelectedIndex = i;
+                for (int i = 0; i < dd.Items.Count; i++)
+                {
+                    if (((string)dd.Items[i]).Split('.').FirstOrDefault() == Logger.defaultLogName)
+                        dd.SelectedIndex = i;
+                }
             }
         }
 
