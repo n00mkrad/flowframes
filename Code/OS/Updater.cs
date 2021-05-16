@@ -142,6 +142,9 @@ namespace Flowframes.OS
 
         public static async Task UpdateModelList()
         {
+            if (!Config.GetBool("fetchModelsFromRepo", false))
+                return;
+
             foreach (AI ai in Networks.networks)
             {
                 try
