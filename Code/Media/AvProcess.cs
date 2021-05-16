@@ -109,12 +109,8 @@ namespace Flowframes
 
             bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
 
-            if (line.StartsWith("frame="))  // Format stats
-            {
-                line = line.Remove("q=-0.0").Remove("q=-1.0").Remove("size=N/A").Remove("bitrate=N/A").Replace("frame=", "Frame: ")
-                    .Replace("fps=", "FPS: ").Replace("q=", "QP: ").Replace("time=", "Time: ").Replace("speed=", "Relative Speed: ")
-                    .Replace("bitrate=", "Bitrate: ").Replace("Lsize=", "Size: ").Replace("size=", "Size: ").TrimWhitespaces();
-            }
+            if (line.StartsWith("frame="))
+                line = FormatUtils.BeautifyFfmpegStats(line);
             
             Logger.Log(line, hidden, replaceLastLine, "ffmpeg");
 

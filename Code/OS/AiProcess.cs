@@ -92,10 +92,10 @@ namespace Flowframes
                 if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
                 {
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
-                    Logger.Log(lastLine.Trim().TrimWhitespaces(), false, Logger.GetLastLine().Contains("frame"));
+                    Logger.Log(FormatUtils.BeautifyFfmpegStats(lastLine), false, Logger.GetLastLine().ToLower().Contains("frame"));
                 }
 
-                if (AvProcess.timeSinceLastOutput.IsRunning && AvProcess.timeSinceLastOutput.ElapsedMilliseconds > 2500)
+                if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
                     break;
 
                 await Task.Delay(500);
