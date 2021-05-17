@@ -181,6 +181,7 @@ namespace Flowframes.Media
             string containerExt = Path.GetExtension(interpVideo);
             string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
             string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
+            IOUtils.TryDeleteIfExists(tempPath);
             File.Move(interpVideo, tempPath);
             string inName = Path.GetFileName(tempPath);
             string outName = Path.GetFileName(outPath);
