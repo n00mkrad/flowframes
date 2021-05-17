@@ -1,0 +1,8 @@
+[
+{
+	"name": "Default",
+	"desc": "Official Pretrained Model",
+	"dir": "best",
+	"isDefault": "true"
+}
+]

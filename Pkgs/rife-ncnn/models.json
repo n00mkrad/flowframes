@@ -1,0 +1,18 @@
+[
+{
+	"name": "RIFE 1.8",
+	"desc": "Old 2D Animation Model",
+	"dir": "rife-anime"
+},
+{
+	"name": "RIFE 2.4",
+	"desc": "Updated General Model",
+	"dir": "rife-v2.4"
+},
+{
+	"name": "RIFE 3.0",
+	"desc": "Latest General Model",
+	"dir": "rife-v3.0",
+	"isDefault": "true"
+}
+]

@@ -35,26 +35,26 @@ namespace Flowframes.UI
 			return true;
 		}
 
-		public static ComboBox FillAiModelsCombox (ComboBox combox, AI ai)
+		public static ComboBox LoadAiModelsIntoGui (ComboBox combox, AI ai)
         {
 			combox.Items.Clear();
 
             try
             {
 				string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
-				string modelsFile = Path.Combine(pkgPath, "models.txt");
-				string[] modelsWithDec = IOUtils.ReadLines(modelsFile);
+				string modelsFile = Path.Combine(pkgPath, "models.json");
+				ModelCollection modelCollection = new ModelCollection(ai, modelsFile);
 
-				for (int i = 0; i < modelsWithDec.Length; i++)
+				for (int i = 0; i < modelCollection.models.Count; i++)
 				{
-					string model = modelsWithDec[i];
+					ModelCollection.ModelInfo modelInfo = modelCollection.models[i];
 
-					if (string.IsNullOrWhiteSpace(model))
+					if (string.IsNullOrWhiteSpace(modelInfo.name))
 						continue;
 
-					combox.Items.Add(model);
+					combox.Items.Add(modelInfo.GetUiString());
 
-					if (model.Contains("Recommended") || model.Contains("Default"))
+					if (modelInfo.isDefault)
 						combox.SelectedIndex = i;
 				}
 
@@ -66,6 +66,7 @@ namespace Flowframes.UI
             catch (Exception e)
             {
 				Logger.Log($"Failed to load available AI models for {ai.aiName}! {e.Message}");
+				Logger.Log($"Stack Trace: {e.StackTrace}", true);
             }
 
 			return combox;

@@ -92,7 +92,7 @@ namespace Flowframes
                     string ffprobeOutput = GetFfprobeOutput(ffprobeArgs);
                     string fpsStr = ffprobeOutput.SplitIntoLines().Where(x => x.Contains("r_frame_rate")).First();
                     string[] numbers = fpsStr.Split('=')[1].Split('/');
-                    Logger.Log($"Accurate FPS: {numbers[0]}/{numbers[1]} = {((float)numbers[0].GetInt() / numbers[1].GetInt())}", true, false, "ffmpeg");
+                    Logger.Log($"Fractional FPS from ffprobe: {numbers[0]}/{numbers[1]} = {((float)numbers[0].GetInt() / numbers[1].GetInt())}", true, false, "ffmpeg");
                     return new Fraction(numbers[0].GetInt(), numbers[1].GetInt());
                 }
                 catch (Exception ffprobeEx)

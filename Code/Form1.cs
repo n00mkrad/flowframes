@@ -377,7 +377,7 @@ namespace Flowframes
 
         public void UpdateAiModelCombox ()
         {
-            aiModel = UIUtils.FillAiModelsCombox(aiModel, GetAi());
+            aiModel = UIUtils.LoadAiModelsIntoGui(aiModel, GetAi());
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
