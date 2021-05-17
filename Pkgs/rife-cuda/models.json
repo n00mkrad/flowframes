@@ -18,6 +18,11 @@
 	"name": "RIFE 3.0",
 	"desc": "Latest General Model",
 	"dir": "RIFE30",
+},
+{
+	"name": "RIFE 3.1",
+	"desc": "Latest General Model",
+	"dir": "RIFE31",
 	"isDefault": "true"
 }
 ]

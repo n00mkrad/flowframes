@@ -36,7 +36,6 @@ parser.add_argument('--exp', dest='exp', type=int, default=1)
 args = parser.parse_args()
 assert (not args.input is None)
 
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.set_grad_enabled(False)
 if torch.cuda.is_available():
@@ -56,13 +55,21 @@ except:
     print("Failed to get hardware info!")
 
 try:
+    try:
+        from model.RIFE_HDv2 import Model
+        model = Model()
+        model.load_model(os.path.join(dname, args.model), -1)
+        print("Loaded v2.x HD model.")
+    except:
+        from model.RIFE_HDv3 import Model
+        model = Model()
+        model.load_model(os.path.join(dname, args.model), -1)
+        print("Loaded v3.x HD model.")
+except:
     from model.RIFE_HD import Model
     model = Model()
     model.load_model(os.path.join(dname, args.model), -1)
-except:
-    from model.RIFE_HDv2 import Model
-    model = Model()
-    model.load_model(os.path.join(dname, args.model), -1)
+    print("Loaded v1.x HD model")
 model.eval()
 model.device()
 
