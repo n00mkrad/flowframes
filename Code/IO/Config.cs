@@ -1,4 +1,5 @@
 ﻿using Flowframes.OS;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,54 +12,53 @@ namespace Flowframes.IO
     internal class Config
     {
         private static string configPath;
-
-        public static string[] cachedLines;
+        public static Dictionary<string, string> cachedValues = new Dictionary<string, string>();
 
         public static void Init()
         {
-            configPath = Path.Combine(Paths.GetDataPath(), "config.ini");
+            configPath = Path.Combine(Paths.GetDataPath(), "config.json");
             IOUtils.CreateFileIfNotExists(configPath);
             Reload();
         }
 
         public static void Set(string key, string value)
         {
-            string[] lines = new string[1];
+            Reload();
+            cachedValues[key] = value;
+            WriteConfig();
+        }
 
+        public static void Set(Dictionary<string, string> keyValuePairs)
+        {
+            Reload();
+
+            foreach(KeyValuePair<string, string> entry in keyValuePairs)
+                cachedValues[entry.Key] = entry.Value;
+
+            WriteConfig();
+        }
+
+        private static void WriteConfig()
+        {
+            File.WriteAllText(configPath, JsonConvert.SerializeObject(cachedValues, Formatting.Indented));
+        }
+
+        private static void Reload()
+        {
             try
             {
-                lines = File.ReadAllLines(configPath);
+                Dictionary<string, string> newDict = new Dictionary<string, string>();
+                Dictionary<string, string> deserializedConfig = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(configPath));
+
+                foreach (KeyValuePair<string, string> entry in deserializedConfig)
+                    newDict.Add(entry.Key, entry.Value);
+
+                cachedValues = newDict; // Use temp dict and only copy it back if no exception was thrown
             }
-            catch
+            catch (Exception e)
             {
-                MessageBox.Show("Failed to read config file!\nFlowframes will try to re-create the file if it does not exist.", "Error");
-
-                if(!File.Exists(configPath))
-                    Init();
+                Logger.Log($"Failed to reload config! {e.Message}");
             }
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                if (lines[i].Split('|')[0] == key)
-                {
-                    lines[i] = key + "|" + value;
-                    File.WriteAllLines(configPath, lines);
-                    cachedLines = lines;
-                    return;
-                }
-            }
-
-            List<string> list = lines.ToList();
-            list.Add(key + "|" + value);
-            list = list.OrderBy(p => p).ToList();
-
-            string newFileContent = "";
-            foreach(string line in list)
-                newFileContent += line + "\n";
-
-            File.WriteAllText(configPath, newFileContent.Trim());
-
-            cachedLines = list.ToArray();
         }
 
         public static string Get(string key, string defaultVal)
@@ -71,18 +71,16 @@ namespace Flowframes.IO
         {
             try
             {
-                for (int i = 0; i < cachedLines.Length; i++)
-                {
-                    string[] keyValuePair = cachedLines[i].Split('|');
-                    if (keyValuePair[0] == key && !string.IsNullOrWhiteSpace(keyValuePair[1]))
-                        return keyValuePair[1];
-                }
+                if (cachedValues.ContainsKey(key))
+                    return cachedValues[key];
+
                 return WriteDefaultValIfExists(key, type);
             }
             catch (Exception e)
             {
                 Logger.Log($"Failed to get {key.Wrap()} from config! {e.Message}");
             }
+
             return null;
         }
 
@@ -126,9 +124,9 @@ namespace Flowframes.IO
 
         static void WriteIfDoesntExist (string key, string val)
         {
-            foreach (string line in cachedLines)
-                if (line.Contains(key + "|"))
-                    return;
+            if (cachedValues.ContainsKey(key))
+                return;
+
             Set(key, val);
         }
 
@@ -185,18 +183,6 @@ namespace Flowframes.IO
         {
             Set(key, def);
             return def;
-        }
-
-        private static void Reload()
-        {
-            List<string> validLines = new List<string>();
-            string[] lines = File.ReadAllLines(configPath);
-            foreach (string line in lines)
-            {
-                if(line != null && !string.IsNullOrWhiteSpace(line) && line.Length > 3)
-                    validLines.Add(line);
-            }
-            cachedLines = validLines.ToArray();
         }
     }
 }

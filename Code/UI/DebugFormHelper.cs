@@ -1,4 +1,5 @@
 ﻿using Flowframes.IO;
+using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -71,8 +72,6 @@ namespace Flowframes.UI
 
         public static void LoadGrid(DataGridView grid)
         {
-            Dictionary<string, string> configDict = new Dictionary<string, string>();
-
             if (grid.Columns.Count < 2)
             {
                 grid.Columns.Add("keys", "Key Name");
@@ -81,11 +80,9 @@ namespace Flowframes.UI
 
             grid.Rows.Clear();
 
-            foreach (string entry in Config.cachedLines)
+            foreach (KeyValuePair<string, string> keyValuePair in Config.cachedValues)
             {
-                string[] data = entry.Split('|');
-                configDict.Add(data[0], data[1]);
-                grid.Rows.Add(data[0], data[1]);
+                grid.Rows.Add(keyValuePair.Key, keyValuePair.Value);
             }
 
             grid.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -96,6 +93,9 @@ namespace Flowframes.UI
 
         public static void SaveGrid(DataGridView grid)
         {
+            NmkdStopwatch sw = new NmkdStopwatch();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+
             foreach (DataGridViewRow row in grid.Rows)
             {
                 string key = row.Cells[0].Value?.ToString();
@@ -104,9 +104,11 @@ namespace Flowframes.UI
                 if (key == null || val == null || string.IsNullOrWhiteSpace(key.Trim()) || string.IsNullOrWhiteSpace(val.Trim()))
                     continue;
 
-                Config.Set(key, val);
-                Logger.Log($"Config Editor: Saved Key '{key}' with value '{val}'", true);
+                dict.Add(key, val);
             }
+
+            Config.Set(dict);
+            Logger.Log($"Config Editor: Saved {grid.Rows.Count} config keys in {sw.GetElapsedStr()}", true);
         }
 
         #endregion
