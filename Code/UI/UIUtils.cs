@@ -1,5 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
+using Flowframes.Main;
 using Flowframes.OS;
 using System;
 using System.Collections.Generic;
@@ -41,9 +42,7 @@ namespace Flowframes.UI
 
             try
             {
-				string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
-				string modelsFile = Path.Combine(pkgPath, "models.json");
-				ModelCollection modelCollection = new ModelCollection(ai, modelsFile);
+				ModelCollection modelCollection = AiModels.GetModels(ai);
 
 				for (int i = 0; i < modelCollection.models.Count; i++)
 				{

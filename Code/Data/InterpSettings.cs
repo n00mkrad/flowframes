@@ -24,7 +24,7 @@ namespace Flowframes
         public Fraction outFps;
         public float interpFactor;
         public Interpolate.OutMode outMode;
-        public string model;
+        public ModelCollection.ModelInfo model;
 
         public string tempFolder;
         public string framesFolder;
@@ -39,7 +39,7 @@ namespace Flowframes
         public string framesExt;
         public string interpExt;
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, string modelArg)
+        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, ModelCollection.ModelInfo modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -89,7 +89,7 @@ namespace Flowframes
             interpFactor = 0;
             outFps = new Fraction();
             outMode = Interpolate.OutMode.VidMp4;
-            model = "";
+            model = null;
             alpha = false;
             stepByStep = false;
             inputResolution = new Size(0, 0);
@@ -118,7 +118,7 @@ namespace Flowframes
                     case "OUTFPS": outFps = new Fraction(entry.Value); break;
                     case "INTERPFACTOR": interpFactor = float.Parse(entry.Value); break;
                     case "OUTMODE": outMode = (Interpolate.OutMode)Enum.Parse(typeof(Interpolate.OutMode), entry.Value); break;
-                    case "MODEL": model = entry.Value; break;
+                    case "MODEL": model = AiModels.GetModelByName(ai, entry.Value); break;
                     case "INPUTRES": inputResolution = FormatUtils.ParseSize(entry.Value); break;
                     case "OUTPUTRES": scaledResolution = FormatUtils.ParseSize(entry.Value); break;
                     case "ALPHA": alpha = bool.Parse(entry.Value); break;
@@ -228,7 +228,7 @@ namespace Flowframes
             s += $"OUTFPS|{outFps}\n";
             s += $"INTERPFACTOR|{interpFactor}\n";
             s += $"OUTMODE|{outMode}\n";
-            s += $"MODEL|{model}\n";
+            s += $"MODEL|{model.name}\n";
             s += $"INPUTRES|{inputResolution.Width}x{inputResolution.Height}\n";
             s += $"OUTPUTRES|{scaledResolution.Width}x{scaledResolution.Height}\n";
             s += $"ALPHA|{alpha}\n";

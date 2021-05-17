@@ -376,6 +376,7 @@
     <Compile Include="IO\Symlinks.cs" />
     <Compile Include="Magick\Blend.cs" />
     <Compile Include="Magick\SceneDetect.cs" />
+    <Compile Include="Main\AiModels.cs" />
     <Compile Include="Main\AutoEncode.cs" />
     <Compile Include="Main\BatchProcessing.cs" />
     <Compile Include="Main\CreateVideo.cs" />
@@ -393,6 +394,7 @@
     <Compile Include="Media\GetFrameCountCached.cs" />
     <Compile Include="Media\GetMediaResolutionCached.cs" />
     <Compile Include="Media\GetVideoInfoCached.cs" />
+    <Compile Include="MiscUtils\BackgroundTaskManager.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
     <Compile Include="MiscUtils\NmkdStopwatch.cs" />

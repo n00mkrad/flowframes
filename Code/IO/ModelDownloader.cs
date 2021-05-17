@@ -1,4 +1,5 @@
 ﻿using Flowframes.Data;
+using Flowframes.Main;
 using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
@@ -89,27 +90,27 @@ namespace Flowframes.IO
             Logger.Log($"Downloaded '{Path.GetFileName(url)}' ({IOUtils.GetFilesize(savePath) / 1024} KB)", true);
         }
 
-        public static async Task DownloadModelFiles (string ai, string model)
+        public static async Task DownloadModelFiles (AI ai, string modelDir)
         {
-            model = model.ToUpper();
-            Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {model})", true);
+            string aiDir = ai.pkgDir;
+            Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {modelDir})", true);
 
             try
             {
-                string mdlDir = GetLocalPath(ai, model);
+                string mdlDir = GetLocalPath(aiDir, modelDir);
 
-                if (AreFilesValid(ai, model))
+                if (AreFilesValid(aiDir, modelDir))
                     return;
 
-                Logger.Log($"Downloading '{model}' model files...");
+                Logger.Log($"Downloading '{modelDir}' model files...");
                 Directory.CreateDirectory(mdlDir);
-                await DownloadTo(GetMdlFileUrl(ai, model, "md5.txt"), mdlDir);
-                Dictionary<string, string> fileList = await GetFilelist(ai, model);
+                await DownloadTo(GetMdlFileUrl(aiDir, modelDir, "md5.txt"), mdlDir);
+                Dictionary<string, string> fileList = await GetFilelist(aiDir, modelDir);
 
                 foreach (KeyValuePair<string, string> modelFile in fileList)
-                    await DownloadTo(GetMdlFileUrl(ai, model, modelFile.Key), mdlDir);
+                    await DownloadTo(GetMdlFileUrl(aiDir, modelDir, modelFile.Key), mdlDir);
  
-                Logger.Log($"Downloaded \"{model}\" model files.", false, true);
+                Logger.Log($"Downloaded \"{modelDir}\" model files.", false, true);
             }
             catch (Exception e)
             {
@@ -135,15 +136,14 @@ namespace Flowframes.IO
             foreach (AI ai in Networks.networks)
             {
                 string aiPkgFolder = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
-                string modelsFile = Path.Combine(aiPkgFolder, "models.txt");
-                if (!File.Exists(modelsFile)) continue;
+                ModelCollection aiModels = AiModels.GetModels(ai);
 
-                foreach (string mdl in IOUtils.ReadLines(modelsFile))
+                foreach(ModelCollection.ModelInfo model in aiModels.models)
                 {
-                    string modelName = mdl.Split('-')[0].Remove(" ").Remove(".");
-                    string mdlFolder = Path.Combine(aiPkgFolder, modelName);
-                    if (!Directory.Exists(mdlFolder)) continue;
-                    modelPaths.Add(mdlFolder);
+                    string mdlFolder = Path.Combine(aiPkgFolder, model.dir);
+
+                    if (Directory.Exists(mdlFolder))
+                        modelPaths.Add(mdlFolder);
                 }
             }
 

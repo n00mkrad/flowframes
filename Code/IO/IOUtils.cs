@@ -122,7 +122,10 @@ namespace Flowframes.IO
 		/// </summary>
 		public static async Task<bool> DeleteContentsOfDirAsync(string path)
 		{
-			return await Task.Run(async () => { return DeleteContentsOfDir(path); });  // Delete in background thread
+			ulong taskId = BackgroundTaskManager.Add($"DeleteContentsOfDirAsync {path}");
+			bool returnVal = await Task.Run(async () => { return DeleteContentsOfDir(path); });
+			BackgroundTaskManager.Remove(taskId);
+			return returnVal;
 		}
 
 		/// <summary>
@@ -392,7 +395,10 @@ namespace Flowframes.IO
 
 			path = renamedPath;
 
-			return await Task.Run(async () => { return TryDeleteIfExists(path); });	// Delete in background thread
+			ulong taskId = BackgroundTaskManager.Add($"TryDeleteIfExistsAsync {path}");
+			bool returnVal = await Task.Run(async () => { return TryDeleteIfExists(path); });
+			BackgroundTaskManager.Remove(taskId);
+			return returnVal;
 		}
 
 		/// <summary>
@@ -503,7 +509,7 @@ namespace Flowframes.IO
 			filename = filename.Replace("[FULLNAME]", Path.GetFileName(curr.inPath));
             filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
 			filename = filename.Replace("[AI]", curr.ai.aiNameShort.ToUpper());
-			filename = filename.Replace("[MODEL]", curr.model);
+			filename = filename.Replace("[MODEL]", curr.model.name.Remove(" "));
 			filename = filename.Replace("[FPS]", fps.ToStringDot());
             filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
 			filename = filename.Replace("[RES]", $"{outRes.Width}x{outRes.Height}");

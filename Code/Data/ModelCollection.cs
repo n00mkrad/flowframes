@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Flowframes.Data
 {
-    class ModelCollection
+    public class ModelCollection
     {
         public AI ai;
         public List<ModelInfo> models;
@@ -53,8 +53,6 @@ namespace Flowframes.Data
                 bool.TryParse((string)item.isDefault, out def);
                 models.Add(new ModelInfo(ai, (string)item.name, (string)item.desc, (string)item.dir, def));
             }
-
-            Logger.Log($"Loaded {models.Count} {ai.aiName} models from JSON.", true);
         }
     }
 }

@@ -124,7 +124,7 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetInt(), GetOutMode(), GetModel());
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetInt(), GetOutMode(), GetModel(GetAi()));
         }
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
@@ -145,7 +145,7 @@ namespace Flowframes
             settings.interpFactor = interpFactorCombox.GetInt();
             settings.outFps = settings.inFps * settings.interpFactor;
             settings.outMode = GetOutMode();
-            settings.model = GetModel();
+            settings.model = GetModel(GetAi());
 
             return settings;
         }
@@ -251,9 +251,10 @@ namespace Flowframes
             Interpolate.Start();
         }
 
-        public string GetModel()
+        public ModelCollection.ModelInfo GetModel(AI currentAi)
         {
-            return aiModel.Text.Split('-')[0].Remove(" ").Remove(".");
+            //return aiModel.Text.Split('-')[0].Remove(" ").Remove(".");
+            return AiModels.GetModels(currentAi).models[aiModel.SelectedIndex];
         }
 
         Interpolate.OutMode GetOutMode()
@@ -382,7 +383,21 @@ namespace Flowframes
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Logger.Log("Closing main form.", true);
+            if (!Program.busy && !BackgroundTaskManager.IsBusy())
+                return;
+
+            string reason = "";
+
+            if (BackgroundTaskManager.IsBusy())
+                reason = "Some background tasks have not finished yet.";
+
+            if (Program.busy)
+                reason = "The program is still busy.";
+
+            DialogResult dialog = MessageBox.Show($"Are you sure you want to exit the program?\n\n{reason}", "Are you sure?", MessageBoxButtons.YesNo);
+
+            if (dialog == DialogResult.No)
+                e.Cancel = true;
         }
 
         private void licenseBtn_Click(object sender, EventArgs e)

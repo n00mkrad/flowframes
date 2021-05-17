@@ -35,6 +35,7 @@ namespace Flowframes.Main
                 catch (Exception e)
                 {
                     Logger.Log("Failed to move interpolated frames: " + e.Message);
+                    Logger.Log("Stack Trace:\n " + e.StackTrace, true);
                 }
 
                 return;

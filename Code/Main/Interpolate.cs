@@ -193,7 +193,7 @@ namespace Flowframes
             await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor); });
 
             Program.mainForm.SetStatus("Downloading models...");
-            await ModelDownloader.DownloadModelFiles(ai.pkgDir, current.model);
+            await ModelDownloader.DownloadModelFiles(ai, current.model.dir);
             if (canceled) return;
 
             currentlyUsingAutoEnc = Utils.CanUseAutoEnc(stepByStep, current);
@@ -203,16 +203,16 @@ namespace Flowframes
             List<Task> tasks = new List<Task>();
 
             if (ai.aiName == Networks.rifeCuda.aiName)
-                tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model));
+                tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model.dir));
 
             if (ai.aiName == Networks.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, (int)current.interpFactor, current.model));
+                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, (int)current.interpFactor, current.model.dir));
 
             if (ai.aiName == Networks.flavrCuda.aiName)
-                tasks.Add(AiProcess.RunFlavrCuda(current.framesFolder, current.interpFactor, current.model));
+                tasks.Add(AiProcess.RunFlavrCuda(current.framesFolder, current.interpFactor, current.model.dir));
 
             if (ai.aiName == Networks.dainNcnn.aiName)
-                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model, Config.GetInt("dainNcnnTilesize", 512)));
+                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model.dir, Config.GetInt("dainNcnnTilesize", 512)));
 
             if (currentlyUsingAutoEnc)
             {
