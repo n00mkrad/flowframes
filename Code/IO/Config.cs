@@ -40,7 +40,8 @@ namespace Flowframes.IO
 
         private static void WriteConfig()
         {
-            File.WriteAllText(configPath, JsonConvert.SerializeObject(cachedValues, Formatting.Indented));
+            SortedDictionary<string, string> cachedValuesSorted = new SortedDictionary<string, string>(cachedValues);
+            File.WriteAllText(configPath, JsonConvert.SerializeObject(cachedValuesSorted, Formatting.Indented));
         }
 
         private static void Reload()
@@ -49,6 +50,9 @@ namespace Flowframes.IO
             {
                 Dictionary<string, string> newDict = new Dictionary<string, string>();
                 Dictionary<string, string> deserializedConfig = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(configPath));
+
+                if (deserializedConfig == null)
+                    deserializedConfig = new Dictionary<string, string>();
 
                 foreach (KeyValuePair<string, string> entry in deserializedConfig)
                     newDict.Add(entry.Key, entry.Value);
