@@ -441,7 +441,7 @@ namespace Flowframes.IO
         }
 
 		/// <summary>
-		/// Add ".old" suffix to existing files to avoid them being overwritten. If one already exists, it will be ".old.old" etc.
+		/// Add ".old" suffix to an existing file to avoid it getting overwritten. If one already exists, it will be ".old.old" etc.
 		/// </summary>
 		public static void RenameExistingFile(string path)
 		{
@@ -461,6 +461,29 @@ namespace Flowframes.IO
 			catch(Exception e)
             {
 				Logger.Log($"RenameExistingFile: Failed to rename '{path}': {e.Message}", true);
+			}
+		}
+
+		/// <summary>
+		/// Add ".old" suffix to an existing folder to avoid it getting overwritten. If one already exists, it will be ".old.old" etc.
+		/// </summary>
+		public static void RenameExistingFolder(string path)
+		{
+			if (!Directory.Exists(path))
+				return;
+
+			try
+			{
+				string renamedPath = path;
+
+				while (Directory.Exists(renamedPath))
+					renamedPath += ".old";
+
+				Directory.Move(path, renamedPath);
+			}
+			catch (Exception e)
+			{
+				Logger.Log($"RenameExistingFolder: Failed to rename '{path}': {e.Message}", true);
 			}
 		}
 
