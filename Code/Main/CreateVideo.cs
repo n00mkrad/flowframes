@@ -73,8 +73,8 @@ namespace Flowframes.Main
         static async Task ExportFrames (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");
-            string desiredFormat = Config.Get("imgSeqFormat").ToLower();
-            string availableFormat = Path.GetExtension(IOUtils.GetFilesSorted(framesPath)[0].Remove(".").ToLower());
+            string desiredFormat = Config.Get("imgSeqFormat").ToUpper();
+            string availableFormat = Path.GetExtension(IOUtils.GetFilesSorted(framesPath)[0]).Remove(".").ToUpper();
             string max = Config.Get("maxFps");
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
@@ -85,9 +85,10 @@ namespace Flowframes.Main
             if (!dontEncodeFullFpsVid)
             {
                 string outputFolderPath = Path.Combine(I.current.outPath, await IOUtils.GetCurrentExportFilename(false, false));
+                IOUtils.RenameExistingFolder(outputFolderPath);
                 Logger.Log($"Exporting {desiredFormat.ToUpper()} frames to '{Path.GetFileName(outputFolderPath)}'...");
 
-                if (desiredFormat == availableFormat)   // Move as the frames are already in the desired format
+                if (desiredFormat.ToUpper() == availableFormat.ToUpper())   // Move as the frames are already in the desired format
                     await CopyOutputFrames(framesPath, framesFile, outputFolderPath, fpsLimit);
                 else    // Encode with ffmpeg
                     await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, I.current.outFps, new Fraction(), desiredFormat);
