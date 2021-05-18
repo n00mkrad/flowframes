@@ -1008,9 +1008,10 @@
             this.label66.Location = new System.Drawing.Point(308, 211);
             this.label66.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(290, 13);
+            this.label66.Size = new System.Drawing.Size(448, 13);
             this.label66.TabIndex = 83;
-            this.label66.Text = "Only recommended for GeForce RTX or recent Tesla GPUs.";
+            this.label66.Text = "Faster, uses less VRAM, but can cause glitches and flickering, especially on RIFE" +
+    " 3.x models.";
             // 
             // rifeCudaFp16
             // 
@@ -1027,9 +1028,9 @@
             this.label65.Location = new System.Drawing.Point(11, 210);
             this.label65.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(120, 13);
+            this.label65.Size = new System.Drawing.Size(165, 13);
             this.label65.TabIndex = 81;
-            this.label65.Text = "Fast Mode (CUDA Only)";
+            this.label65.Text = "Half-Precision Mode (CUDA Only)";
             // 
             // label35
             // 

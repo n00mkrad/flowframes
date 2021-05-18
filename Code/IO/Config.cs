@@ -169,7 +169,6 @@ namespace Flowframes.IO
             if (key == "minVidLength")      return WriteDefault(key, "5");
             // AI
             if (key == "uhdThresh")         return WriteDefault(key, "1600");
-            if (key == "rifeCudaFp16")      return WriteDefault(key, NvApi.HasTensorCores().ToString());
             if (key == "torchGpus")         return WriteDefault(key, "0");
             if (key == "ncnnGpus")          return WriteDefault(key, "0");
             if (key == "ncnnThreads")       return WriteDefault(key, "1");
