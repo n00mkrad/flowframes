@@ -86,11 +86,13 @@ namespace Flowframes.Media
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors, Fraction resampleFps, LogMode logMode = LogMode.OnlyLastLine)
         {
-            if (rate.GetFloat() > 50f && resampleFps.GetFloat() < 50f)
+            Logger.Log($"GIF Rate: {rate} (Float: {rate.GetFloat()}) - Resample Rate: {resampleFps} (Float: {resampleFps.GetFloat()})");
+
+            if (rate.GetFloat() > 50f && (resampleFps.GetFloat() > 50f || resampleFps.GetFloat() < 1))
                 resampleFps = new Fraction(50, 1);  // Force limit framerate as encoding above 50 will cause problems
 
             if (logMode != LogMode.Hidden)
-                Logger.Log((resampleFps.GetFloat() <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
+                Logger.Log((resampleFps.GetFloat() <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.GetFloat().ToString().Replace(",", ".")} FPS...");
             
             string framesFilename = Path.GetFileName(framesFile);
             string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();

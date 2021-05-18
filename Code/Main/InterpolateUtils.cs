@@ -120,9 +120,10 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                Fraction fpsLimit = new Fraction(Config.Get(Config.Key.maxFps));
+                string fpsLimitValue = Config.Get(Config.Key.maxFps);
+                float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(Config.Get(Config.Key.maxFps)).GetFloat() : fpsLimitValue.GetFloat());
 
-                if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(fpsLimit.GetFloat() > 0 && fpsLimit.GetFloat() <= 50))
+                if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(fpsLimit > 0 && fpsLimit <= 50))
                     Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut.GetFloat()} as the format doesn't support frame rates that high.");
 
                 if (!passes)
