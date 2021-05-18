@@ -23,7 +23,7 @@ namespace Flowframes.Data
         {
             string[] lines = ffprobeOutput.SplitIntoLines();
 
-            if (!Config.GetBool("keepColorSpace", true))
+            if (!Config.GetBool(Config.Key.keepColorSpace, true))
                 return;
 
             foreach (string line in lines)
@@ -52,7 +52,7 @@ namespace Flowframes.Data
                     continue;
                 }
 
-                if (line.Contains("display_aspect_ratio") && Config.GetBool("keepAspectRatio", true))
+                if (line.Contains("display_aspect_ratio") && Config.GetBool(Config.Key.keepAspectRatio, true))
                 {
                     displayRatio = line.Split('=').LastOrDefault();
                     continue;

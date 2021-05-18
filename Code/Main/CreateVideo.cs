@@ -20,7 +20,7 @@ namespace Flowframes.Main
 
         public static async Task Export(string path, string outFolder, I.OutMode mode, bool stepByStep)
         {
-            if(Config.GetInt("sceneChangeFillMode") == 1)
+            if(Config.GetInt(Config.Key.sceneChangeFillMode) == 1)
             {
                 string frameFile = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilename(I.current.interpFactor));
                 await Blend.BlendSceneChanges(frameFile);
@@ -52,10 +52,10 @@ namespace Flowframes.Main
 
             try
             {
-                string max = Config.Get("maxFps");
+                string max = Config.Get(Config.Key.maxFps);
                 Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
                 bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
-                bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
+                bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
                 if (!dontEncodeFullFpsVid)
                     await Encode(mode, path, Path.Combine(outFolder, await IOUtils.GetCurrentExportFilename(false, true)), I.current.outFps, new Fraction());
@@ -73,12 +73,12 @@ namespace Flowframes.Main
         static async Task ExportFrames (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");
-            string desiredFormat = Config.Get("imgSeqFormat").ToUpper();
+            string desiredFormat = Config.Get(Config.Key.imgSeqFormat).ToUpper();
             string availableFormat = Path.GetExtension(IOUtils.GetFilesSorted(framesPath)[0]).Remove(".").ToUpper();
-            string max = Config.Get("maxFps");
+            string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
-            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
+            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
             
 
@@ -142,14 +142,14 @@ namespace Flowframes.Main
 
             if (!File.Exists(framesFile))
             {
-                bool sbs = Config.GetInt("processingMode") == 1;
+                bool sbs = Config.GetInt(Config.Key.processingMode) == 1;
                 I.Cancel($"Frame order file for this interpolation factor not found!{(sbs ? "\n\nDid you run the interpolation step with the current factor?" : "")}");
                 return;
             }
 
             if (mode == I.OutMode.VidGif)
             {
-                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt("gifColors"), resampleFps);
+                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt(Config.Key.gifColors), resampleFps);
             }
             else
             {
@@ -209,15 +209,15 @@ namespace Flowframes.Main
             string framesFileChunk = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
             File.WriteAllLines(framesFileChunk, IOUtils.ReadLines(framesFileFull).Skip(firstFrameNum).Take(framesAmount));
 
-            if (Config.GetInt("sceneChangeFillMode") == 1)
+            if (Config.GetInt(Config.Key.sceneChangeFillMode) == 1)
                 await Blend.BlendSceneChanges(framesFileChunk, false);
 
-            string max = Config.Get("maxFps");
+            string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() != 0 && I.current.outFps.GetFloat() > maxFps.GetFloat();
             VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.current.inPath);
 
-            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt("maxFpsMode") == 0;
+            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
             if (!dontEncodeFullFpsVid)
                 await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, new Fraction(), extraData, AvProcess.LogMode.Hidden, true);     // Encode
@@ -233,15 +233,15 @@ namespace Flowframes.Main
 
         static async Task Loop(string outPath, int looptimes)
         {
-            if (looptimes < 1 || !Config.GetBool("enableLoop")) return;
-            Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt("minOutVidLength")}s...");
-            await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt("loopMode") == 0);
+            if (looptimes < 1 || !Config.GetBool(Config.Key.enableLoop)) return;
+            Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt(Config.Key.minOutVidLength)}s...");
+            await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt(Config.Key.loopMode) == 0);
         }
 
         static async Task<int> GetLoopTimes()
         {
             int times = -1;
-            int minLength = Config.GetInt("minOutVidLength");
+            int minLength = Config.GetInt(Config.Key.minOutVidLength);
             int minFrameCount = (minLength * I.current.outFps.GetFloat()).RoundToInt();
             int outFrames = ((await I.GetCurrentInputFrameCount()) * I.current.interpFactor).RoundToInt();
             if (outFrames / I.current.outFps.GetFloat() < minLength)
@@ -259,12 +259,12 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (!Config.GetBool("keepAudio") && !Config.GetBool("keepAudio"))
+            if (!Config.GetBool(Config.Key.keepAudio) && !Config.GetBool(Config.Key.keepAudio))
                 return;
 
             Program.mainForm.SetStatus("Muxing audio/subtitles into video...");
 
-            bool muxFromInput = Config.GetInt("audioSubTransferMode") == 0;
+            bool muxFromInput = Config.GetInt(Config.Key.audioSubTransferMode) == 0;
 
             if (muxFromInput && I.current.inputIsFrames)
             {

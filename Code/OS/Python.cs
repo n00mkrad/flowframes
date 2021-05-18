@@ -18,7 +18,7 @@ namespace Flowframes.OS
 
         public static async Task CheckCompression ()
         {
-            if(HasEmbeddedPyFolder() && (Config.Get("compressedPyVersion") != Updater.GetInstalledVer().ToString()))
+            if(HasEmbeddedPyFolder() && (Config.Get(Config.Key.compressedPyVersion) != Updater.GetInstalledVer().ToString()))
             {
                 Program.mainForm.SetWorking(true, false);
                 Stopwatch sw = new Stopwatch();

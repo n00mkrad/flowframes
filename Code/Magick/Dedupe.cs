@@ -29,7 +29,7 @@ namespace Flowframes.Magick
             if(setStatus)
                 Program.mainForm.SetStatus("Running frame de-duplication");
 
-            currentThreshold = Config.GetFloat("dedupThresh");
+            currentThreshold = Config.GetFloat(Config.Key.dedupThresh);
             Logger.Log("Running accurate frame de-duplication...");
 
             if (currentMode == Mode.Enabled || currentMode == Mode.Auto)
@@ -72,7 +72,7 @@ namespace Flowframes.Magick
             int statsFramesKept = 0;
             int statsFramesDeleted = 0;
 
-            int skipAfterNoDupesFrames = Config.GetInt("autoDedupFrames");
+            int skipAfterNoDupesFrames = Config.GetInt(Config.Key.autoDedupFrames);
             bool hasEncounteredAnyDupes = false;
             bool skipped = false;
 

@@ -30,7 +30,7 @@ namespace Flowframes.Media
                 inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
             }
 
-            string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString("scnDetectValue")})'\"";
+            string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString(Config.Key.scnDetectValue)})'\"";
             string rateArg = (rate.GetFloat() > 0) ? $"-r {rate}" : "";
             string args = $"-vsync 0 {GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
 
@@ -78,7 +78,7 @@ namespace Flowframes.Media
             Logger.Log($"VideoToFrames() - Alpha: {alpha} - Size: {size}", true, false, "ffmpeg");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(framesDir);
-            string mpStr = deDupe ? ((Config.GetInt("mpdecimateMode") == 0) ? mpDecDef : mpDecAggr) : "";
+            string mpStr = deDupe ? ((Config.GetInt(Config.Key.mpdecimateMode) == 0) ? mpDecDef : mpDecAggr) : "";
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
@@ -94,7 +94,7 @@ namespace Flowframes.Media
 
         public static async Task ImportImagesCheckCompat(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
         {
-            bool compatible = await Task.Run(async () => { return AreImagesCompatible(inpath, Config.GetInt("maxVidHeight")); });
+            bool compatible = await Task.Run(async () => { return AreImagesCompatible(inpath, Config.GetInt(Config.Key.maxVidHeight)); });
 
             if (!alpha && compatible)
             {

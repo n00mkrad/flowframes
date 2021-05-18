@@ -89,7 +89,7 @@ namespace Flowframes.Main
 
             currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
 
-            if (Config.GetBool("sbsAllowAutoEnc") && !(await InterpolateUtils.CheckEncoderValid())) return;
+            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid())) return;
 
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");

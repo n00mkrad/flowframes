@@ -182,7 +182,7 @@ namespace Flowframes
         {
             try
             {
-                bool alphaEnabled = Config.GetBool("enableAlpha", false);
+                bool alphaEnabled = Config.GetBool(Config.Key.enableAlpha, false);
                 bool outputSupportsAlpha = (outMode == Interpolate.OutMode.ImgPng || outMode == Interpolate.OutMode.VidGif);
                 string ext = inputIsFrames ? Path.GetExtension(IOUtils.GetFilesSorted(inPath).First()).ToLower() : Path.GetExtension(inPath).ToLower();
                 alpha = (alphaEnabled && outputSupportsAlpha && (ext == ".gif" || ext == ".png" || ext == ".apng"));
@@ -199,8 +199,8 @@ namespace Flowframes
         public void RefreshExtensions()
         {
             bool pngOutput = outMode == Interpolate.OutMode.ImgPng;
-            bool aviHqChroma = outMode == Interpolate.OutMode.VidAvi && Config.Get("aviColors") != "yuv420p";
-            bool proresHqChroma = outMode == Interpolate.OutMode.VidProRes && Config.GetInt("proResProfile") > 3;
+            bool aviHqChroma = outMode == Interpolate.OutMode.VidAvi && Config.Get(Config.Key.aviColors) != "yuv420p";
+            bool proresHqChroma = outMode == Interpolate.OutMode.VidProRes && Config.GetInt(Config.Key.proResProfile) > 3;
 
             bool forceHqChroma = pngOutput || aviHqChroma || proresHqChroma;
 
@@ -211,8 +211,8 @@ namespace Flowframes
             }
             else
             {
-                framesExt = (Config.GetBool("jpegFrames") ? ".jpg" : ".png");
-                interpExt = (Config.GetBool("jpegInterp") ? ".jpg" : ".png");
+                framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".png");
+                interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
             }
 
             Logger.Log($"RefreshExtensions - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);

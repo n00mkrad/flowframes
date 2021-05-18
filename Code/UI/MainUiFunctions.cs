@@ -23,7 +23,7 @@ namespace Flowframes.UI
             Program.mainForm.ResetInputInfo();
             string path = inputTbox.Text.Trim();
 
-            if (Config.GetBool("clearLogOnInput"))
+            if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 
             outputTbox.Text = inputTbox.Text.Trim().GetParentDir();

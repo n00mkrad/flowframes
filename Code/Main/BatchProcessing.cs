@@ -18,7 +18,7 @@ namespace Flowframes.Main
 
         public static async void Start()
         {
-            if (Config.GetBool("clearLogOnInput"))
+            if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 
             stopped = false;

@@ -75,18 +75,18 @@ namespace Flowframes.Main
         {
             string basePath = inPath.GetParentDir();
 
-            if (Config.GetInt("tempFolderLoc") == 1)
+            if (Config.GetInt(Config.Key.tempFolderLoc) == 1)
                 basePath = outPath.GetParentDir();
 
-            if (Config.GetInt("tempFolderLoc") == 2)
+            if (Config.GetInt(Config.Key.tempFolderLoc) == 2)
                 basePath = outPath;
 
-            if (Config.GetInt("tempFolderLoc") == 3)
+            if (Config.GetInt(Config.Key.tempFolderLoc) == 3)
                 basePath = Paths.GetExeDir();
 
-            if (Config.GetInt("tempFolderLoc") == 4)
+            if (Config.GetInt(Config.Key.tempFolderLoc) == 4)
             {
-                string custPath = Config.Get("tempDirCustom");
+                string custPath = Config.Get(Config.Key.tempDirCustom);
                 if (IOUtils.IsDirValid(custPath))
                     basePath = custPath;
             }
@@ -118,7 +118,9 @@ namespace Flowframes.Main
                 passes = false;
             }
 
-            if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(Config.GetFloat("maxFps") != 0 && Config.GetFloat("maxFps") <= 50))
+            Fraction fpsLimit = new Fraction(Config.Get(Config.Key.maxFps));
+
+            if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(fpsLimit.GetFloat() > 0 && fpsLimit.GetFloat() <= 50))
                 Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut.GetFloat()} as the format doesn't support frame rates that high.");
 
             if (!passes)
@@ -222,11 +224,13 @@ namespace Flowframes.Main
 
         public static Size GetOutputResolution(Size inputRes, bool print = false, bool returnZeroIfUnchanged = false)
         {
-            int maxHeight = RoundDivisibleBy(Config.GetInt("maxVidHeight"), FfmpegCommands.GetPadding());
+            int maxHeightValue = Config.GetInt(Config.Key.maxVidHeight);
+            int maxHeight = RoundDivisibleBy(maxHeightValue, FfmpegCommands.GetPadding());
+
             if (inputRes.Height > maxHeight)
             {
                 float factor = (float)maxHeight / inputRes.Height;
-                Logger.Log($"Un-rounded downscaled size: {(inputRes.Width * factor).ToString("0.00")}x{Config.GetInt("maxVidHeight")}", true);
+                Logger.Log($"Un-rounded downscaled size: {(inputRes.Width * factor).ToString("0.00")}x{maxHeightValue}", true);
                 int width = RoundDivisibleBy((inputRes.Width * factor).RoundToInt(), FfmpegCommands.GetPadding());
                 if (print)
                     Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
@@ -264,13 +268,13 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (stepByStep && !Config.GetBool("sbsAllowAutoEnc"))
+            if (stepByStep && !Config.GetBool(Config.Key.sbsAllowAutoEnc))
             {
                 Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false.", true);
                 return false;
             }
 
-            if (!stepByStep && Config.GetInt("autoEncMode") == 0)
+            if (!stepByStep && Config.GetInt(Config.Key.autoEncMode) == 0)
             {
                 Logger.Log($"Not Using AutoEnc: 'autoEncMode' is 0.", true);
                 return false;
@@ -288,7 +292,7 @@ namespace Flowframes.Main
 
         public static async Task<bool> UseUhd()
         {
-            return (await GetOutputResolution(I.current.inPath, false)).Height >= Config.GetInt("uhdThresh");
+            return (await GetOutputResolution(I.current.inPath, false)).Height >= Config.GetInt(Config.Key.uhdThresh);
         }
 
         public static void FixConsecutiveSceneFrames(string sceneFramesPath, string sourceFramesPath)

@@ -339,7 +339,7 @@ namespace Flowframes
             if (!initialized)
                 return;
             string aiName = GetAi().aiName.Replace("_", "-");
-            if (!Program.busy && guiInterpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt("autoEncMode") > 0 && !Logger.GetLastLine().Contains(aiName))
+            if (!Program.busy && guiInterpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt(Config.Key.autoEncMode) > 0 && !Logger.GetLastLine().Contains(aiName))
                 Logger.Log($"Warning: {aiName} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
         }
 
@@ -509,7 +509,7 @@ namespace Flowframes
             if(stepSelector.SelectedIndex < 0)
                 stepSelector.SelectedIndex = 0;
 
-            bool stepByStep = Config.GetInt("processingMode") == 1;
+            bool stepByStep = Config.GetInt(Config.Key.processingMode) == 1;
             runBtn.Visible = !stepByStep && !Program.busy;
         }
 

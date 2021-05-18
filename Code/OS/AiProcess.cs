@@ -150,16 +150,16 @@ namespace Flowframes
             Directory.CreateDirectory(outPath);
             string uhdStr = await InterpolateUtils.UseUhd() ? "--UHD" : "";
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
-            string rbuffer = $"--rbuffer {Config.GetInt("rifeCudaBufferSize", 200)}";
+            string rbuffer = $"--rbuffer {Config.GetInt(Config.Key.rifeCudaBufferSize, 200)}";
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
-            string prec = Config.GetBool("rifeCudaFp16") ? "--fp16" : "";
+            string prec = Config.GetBool(Config.Key.rifeCudaFp16) ? "--fp16" : "";
             string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} {wthreads} {rbuffer} {prec}";
 
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeCuda.pkgDir).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
@@ -223,7 +223,7 @@ namespace Flowframes
             AiStarted(flavrPy, 4500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             flavrPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.flavrCuda.pkgDir).Wrap()} & " +
-                $"set CUDA_VISIBLE_DEVICES={Config.Get("torchGpus")} & {Python.GetPyCmd()} {script} {args}";
+                $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running FLAVR (CUDA)...", false);
             Logger.Log("cmd.exe " + flavrPy.StartInfo.Arguments, true);
 
@@ -308,10 +308,10 @@ namespace Flowframes
             SetProgressCheck(outPath, 2);
 
             string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
-            string ttaStr = Config.GetBool("rifeNcnnUseTta", false) ? "-x" : "";
+            string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
             
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
            
@@ -366,7 +366,7 @@ namespace Flowframes
             int targetFrames = ((IOUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Won't work with fractional factors
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
-                $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get("ncnnGpus")} -f {GetNcnnPattern()} -j 2:1:2";
+                $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j 2:1:2";
 
             dain.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
             Logger.Log("Running DAIN...", false);
@@ -498,7 +498,7 @@ namespace Flowframes
 
         static string GetNcnnTilesize(int tilesize)
         {
-            int gpusAmount = Config.Get("ncnnGpus").Split(',').Length;
+            int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
             string tilesizeStr = $"{tilesize}";
 
             for (int i = 1; i < gpusAmount; i++)
@@ -509,8 +509,8 @@ namespace Flowframes
 
         static string GetNcnnThreads ()
         {
-            int gpusAmount = Config.Get("ncnnGpus").Split(',').Length;
-            int procThreads = Config.GetInt("ncnnThreads");
+            int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
+            int procThreads = Config.GetInt(Config.Key.ncnnThreads);
             string progThreadsStr = $"{procThreads}";
 
             for (int i = 1; i < gpusAmount; i++)

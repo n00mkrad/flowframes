@@ -50,7 +50,7 @@ namespace Flowframes
         {
             string pathNoExt = Path.ChangeExtension(inputFile, null);
             string ext = Path.GetExtension(inputFile);
-            string loopSuffix = Config.Get("exportNamePatternLoop").Replace("[LOOPS]", $"{times}").Replace("[PLAYS]", $"{times + 1}");
+            string loopSuffix = Config.Get(Config.Key.exportNamePatternLoop).Replace("[LOOPS]", $"{times}").Replace("[PLAYS]", $"{times + 1}");
             string outpath = $"{pathNoExt}{loopSuffix}{ext}";
             IOUtils.RenameExistingFile(outpath);
             string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy {outpath.Wrap()}";
@@ -144,7 +144,7 @@ namespace Flowframes
         {
             Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe first.", true, false, "ffmpeg");
 
-            int frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool("ffprobeFrameCount"));      // Try reading frame count with ffprobe
+            int frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool(Config.Key.ffprobeFrameCount));      // Try reading frame count with ffprobe
             if (frames > 0) return frames;
 
             Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Trying to read with ffmpeg.", true, false, "ffmpeg");

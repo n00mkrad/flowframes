@@ -29,13 +29,13 @@ namespace Flowframes.Media
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
 
-            if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
+            if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
                     inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
             }
 
-            string extraArgs = Config.Get("ffEncArgs");
+            string extraArgs = Config.Get(Config.Key.ffEncArgs);
             string rate = fps.ToString().Replace(",", ".");
 
             List<string> filters = new List<string>();
@@ -51,7 +51,7 @@ namespace Flowframes.Media
             }
 
             string vf = filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "";
-            string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt("ffEncThreads")} {outPath.Wrap()}";
+            string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
             IOUtils.TryDeleteIfExists(linksDir);
         }
@@ -70,7 +70,7 @@ namespace Flowframes.Media
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
 
-            if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
+            if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
                     inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
@@ -93,7 +93,7 @@ namespace Flowframes.Media
                 Logger.Log((resampleFps.GetFloat() <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.ToString().Replace(",", ".")} FPS...");
             
             string framesFilename = Path.GetFileName(framesFile);
-            string dither = Config.Get("gifDitherType").Split(' ').First();
+            string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();
             string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"" : "";
             string fpsFilter = (resampleFps.GetFloat() <= 0) ? "" : $"fps=fps={resampleFps}";
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });

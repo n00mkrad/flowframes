@@ -58,7 +58,7 @@ namespace Flowframes.Main
             if (Interpolate.canceled) return;
             Logger.Log($"Generating frame order information for {interpFactor}x...", false, true);
 
-            bool loop = Config.GetBool("enableLoop");
+            bool loop = Config.GetBool(Config.Key.enableLoop);
             bool sceneDetection = true;
             string ext = Interpolate.current.interpExt;
 
@@ -97,7 +97,7 @@ namespace Flowframes.Main
                 fileContent += frameFileContents[x];
 
             lastOutFileCount++;
-            int lastFrameTimes = Config.GetBool("fixOutputDuration") ? (int)interpFactor : 1;
+            int lastFrameTimes = Config.GetBool(Config.Key.fixOutputDuration) ? (int)interpFactor : 1;
 
             for(int i = 0; i < lastFrameTimes; i++)
                 fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}{ext}'";     // Last frame (source)
@@ -137,7 +137,7 @@ namespace Flowframes.Main
                         totalFileCount++;
                         fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {frameName}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]", scnChangeNote);
 
-                        if (Config.GetInt("sceneChangeFillMode") == 0)      // Duplicate last frame
+                        if (Config.GetInt(Config.Key.sceneChangeFillMode) == 0)      // Duplicate last frame
                         {
                             int lastNum = totalFileCount;
 

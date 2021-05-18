@@ -63,7 +63,7 @@ namespace Flowframes
             if(!currentlyUsingAutoEnc)
                 await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, false);
 
-            if (Config.GetBool("keepTempFolder"))
+            if (Config.GetBool(Config.Key.keepTempFolder))
                 await Task.Run(async () => { await FrameRename.Unrename(); });
 
             await Cleanup();
@@ -85,7 +85,7 @@ namespace Flowframes
         {
             current.RefreshAlpha();
 
-            if (Config.GetBool("scnDetect"))
+            if (Config.GetBool(Config.Key.scnDetect))
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
                 await FfmpegExtract.ExtractSceneChanges(current.inPath, Path.Combine(current.tempFolder, Paths.scenesDir), current.inFpsDetected, current.inputIsFrames, current.framesExt);
@@ -101,7 +101,7 @@ namespace Flowframes
         {
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting frames from video...");
-            bool mpdecimate = Config.GetInt("dedupMode") == 2;
+            bool mpdecimate = Config.GetInt(Config.Key.dedupMode) == 2;
             Size res = await Utils.GetOutputResolution(inPath, true, true);
             await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFpsDetected, mpdecimate, false, res, current.framesExt);
 
@@ -123,7 +123,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            if (Config.GetBool("keepAudio") && Config.GetInt("audioSubTransferMode") == 1)
+            if (Config.GetBool(Config.Key.keepAudio) && Config.GetInt(Config.Key.audioSubTransferMode) == 1)
             {
                 Program.mainForm.SetStatus("Extracting audio from video...");
                 await FfmpegAudioAndMetadata.ExtractAudioTracks(inPath, current.tempFolder);
@@ -131,7 +131,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            if (Config.GetBool("keepSubs") && Config.GetInt("audioSubTransferMode") == 1)
+            if (Config.GetBool(Config.Key.keepSubs) && Config.GetInt(Config.Key.audioSubTransferMode) == 1)
             {
                 Program.mainForm.SetStatus("Extracting subtitles from video...");
                 await FfmpegAudioAndMetadata.ExtractSubtitles(inPath, current.tempFolder, current.outMode);
@@ -153,12 +153,12 @@ namespace Flowframes
                     Cancel("Frame extraction failed!\n\nYour input file might be incompatible.");
             }  
 
-            if (Config.GetInt("dedupMode") == 1)
+            if (Config.GetInt(Config.Key.dedupMode) == 1)
                 await Dedupe.Run(current.framesFolder);
             else
                 Dedupe.ClearCache();
 
-            if (!Config.GetBool("enableLoop"))
+            if (!Config.GetBool(Config.Key.enableLoop))
             {
                 await Utils.CopyLastFrame(currentInputFrameCount);
             }
@@ -190,7 +190,7 @@ namespace Flowframes
 
             await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
             await Task.Run(async () => { await FrameRename.Rename(); });
-            await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool("enableLoop"), current.interpFactor); });
+            await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool(Config.Key.enableLoop), current.interpFactor); });
 
             Program.mainForm.SetStatus("Downloading models...");
             await ModelDownloader.DownloadModelFiles(ai, current.model.dir);
@@ -212,7 +212,7 @@ namespace Flowframes
                 tasks.Add(AiProcess.RunFlavrCuda(current.framesFolder, current.interpFactor, current.model.dir));
 
             if (ai.aiName == Networks.dainNcnn.aiName)
-                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model.dir, Config.GetInt("dainNcnnTilesize", 512)));
+                tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model.dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
 
             if (currentlyUsingAutoEnc)
             {
@@ -232,7 +232,7 @@ namespace Flowframes
             AiProcess.Kill();
             AvProcess.Kill();
 
-            if (!current.stepByStep && !Config.GetBool("keepTempFolder"))
+            if (!current.stepByStep && !Config.GetBool(Config.Key.keepTempFolder))
             {
                 if(false /* IOUtils.GetAmountOfFiles(Path.Combine(current.tempFolder, Paths.resumeDir), true) > 0 */)   // TODO: Uncomment for 1.23
                 {
@@ -257,7 +257,7 @@ namespace Flowframes
 
         public static async Task Cleanup(bool ignoreKeepSetting = false, int retriesLeft = 3, bool isRetry = false)
         {
-            if ((!ignoreKeepSetting && Config.GetBool("keepTempFolder")) || !Program.busy) return;
+            if ((!ignoreKeepSetting && Config.GetBool(Config.Key.keepTempFolder)) || !Program.busy) return;
             if (!isRetry)
                 Logger.Log("Deleting temporary files...");
             try

@@ -88,7 +88,7 @@ namespace Flowframes.OS
 
         public static string GetCmdArg()
         {
-            bool stayOpen = Config.GetInt("cmdDebugMode") == 2;
+            bool stayOpen = Config.GetInt(Config.Key.cmdDebugMode) == 2;
             if (stayOpen)
                 return "/K";
             else
@@ -97,7 +97,7 @@ namespace Flowframes.OS
 
         public static bool ShowHiddenCmd()
         {
-            return Config.GetInt("cmdDebugMode") > 0;
+            return Config.GetInt(Config.Key.cmdDebugMode) > 0;
         }
 
         public static bool DriveIsSSD(string path)

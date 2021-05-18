@@ -34,13 +34,13 @@ namespace Flowframes.Main
             safetyBufferFrames = 90;
 
             if (Interpolate.current.ai.aiName.ToUpper().Contains("NCNN"))
-                safetyBufferFrames = Config.GetInt("autoEncSafeBufferNcnn", 150);
+                safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferNcnn, 150);
 
             if (Interpolate.current.ai.aiName == Networks.rifeCuda.aiName)
-                safetyBufferFrames = Config.GetInt("autoEncSafeBufferRifeCuda", 90);
+                safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferRifeCuda, 90);
 
             if (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName)
-                safetyBufferFrames = Config.GetInt("autoEncSafeBufferFlavrCuda", 90);
+                safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferFlavrCuda, 90);
         }
 
         public static async Task MainLoop(string interpFramesPath)
@@ -117,7 +117,7 @@ namespace Flowframes.Main
 
                             if (Interpolate.canceled) return;
 
-                            if (aiRunning && Config.GetInt("autoEncMode") == 2)
+                            if (aiRunning && Config.GetInt(Config.Key.autoEncMode) == 2)
                                 Task.Run(() => DeleteOldFramesAsync(interpFramesPath, frameLinesToEncode));
 
                             if (Interpolate.canceled) return;

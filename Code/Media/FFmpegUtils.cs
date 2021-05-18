@@ -15,7 +15,7 @@ namespace Flowframes.Media
         {
             if (mode == Interpolate.OutMode.VidMp4 || mode == Interpolate.OutMode.VidMkv)
             {
-                int mp4Enc = Config.GetInt("mp4Enc");
+                int mp4Enc = Config.GetInt(Config.Key.mp4Enc);
                 if (mp4Enc == 0) return Codec.H264;
                 if (mp4Enc == 1) return Codec.H265;
                 if (mp4Enc == 2) return Codec.H264NVENC;
@@ -46,7 +46,7 @@ namespace Flowframes.Media
                 case Codec.AV1: return "libsvtav1";
                 case Codec.VP9: return "libvpx-vp9";
                 case Codec.ProRes: return "prores_ks";
-                case Codec.AviRaw: return Config.Get("aviCodec");
+                case Codec.AviRaw: return Config.Get(Config.Key.aviCodec);
             }
             return "libx264";
         }
@@ -57,50 +57,50 @@ namespace Flowframes.Media
 
             if(codec == Codec.H264)
             {
-                string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
-                args += $"-crf {Config.GetInt("h264Crf")} -preset {preset} -pix_fmt yuv420p";
+                string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
+                args += $"-crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.H265)
             {
-                string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
-                int crf = Config.GetInt("h265Crf");
+                string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
+                int crf = Config.GetInt(Config.Key.h265Crf);
                 args += $"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.H264NVENC)
             {
-                int cq = (Config.GetInt("h264Crf") * 1.1f).RoundToInt();
+                int cq = (Config.GetInt(Config.Key.h264Crf) * 1.1f).RoundToInt();
                 args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.H265NVENC)
             {
-                int cq = (Config.GetInt("h265Crf") * 1.1f).RoundToInt();
+                int cq = (Config.GetInt(Config.Key.h265Crf) * 1.1f).RoundToInt();
                 args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.AV1)
             {
-                int cq = (Config.GetInt("av1Crf") * 1.0f).RoundToInt();
+                int cq = (Config.GetInt(Config.Key.av1Crf) * 1.0f).RoundToInt();
                 args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -tile_rows 2 -tile_columns 2 -pix_fmt yuv420p";
             }
 
             if (codec == Codec.VP9)
             {
-                int crf = Config.GetInt("vp9Crf");
+                int crf = Config.GetInt(Config.Key.vp9Crf);
                 string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
                 args += $"{qualityStr} {GetVp9Speed()} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
             }
 
             if(codec == Codec.ProRes)
             {
-                args += $"-profile:v {Config.GetInt("proResProfile")} -pix_fmt yuv420p";
+                args += $"-profile:v {Config.GetInt(Config.Key.proResProfile)} -pix_fmt yuv420p";
             }
 
             if (codec == Codec.AviRaw)
             {
-                args += $"-pix_fmt {Config.Get("aviColors")}";
+                args += $"-pix_fmt {Config.Get(Config.Key.aviColors)}";
             }
 
             return args;
@@ -108,7 +108,7 @@ namespace Flowframes.Media
 
         static string GetVp9Speed ()
         {
-            string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
+            string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
             string arg = "";
 
             if (preset == "veryslow") arg = "0";
@@ -124,7 +124,7 @@ namespace Flowframes.Media
 
         static string GetSvtAv1Speed()
         {
-            string preset = Config.Get("ffEncPreset").ToLower().Remove(" ");
+            string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
             string arg = "";
 
             if (preset == "veryslow") arg = "2";
@@ -225,12 +225,12 @@ namespace Flowframes.Media
         public static string GetAudioFallbackArgs (Interpolate.OutMode outMode)
         {
             string codec = "aac";
-            string bitrate = $"{Config.GetInt("aacBitrate", 160)}";
+            string bitrate = $"{Config.GetInt(Config.Key.aacBitrate, 160)}";
 
             if(outMode == Interpolate.OutMode.VidMkv || outMode == Interpolate.OutMode.VidWebm)
             {
                 codec = "libopus";
-                bitrate = $"{Config.GetInt("opusBitrate", 128)}";
+                bitrate = $"{Config.GetInt(Config.Key.opusBitrate, 128)}";
             }
 
             return $"-c:a {codec} -b:a {bitrate}k -ac 2";
@@ -263,7 +263,7 @@ namespace Flowframes.Media
             bool supported = (containerExt == "mp4" || containerExt == "mkv" || containerExt == "webm" || containerExt == "mov");
             Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
 
-            if (showWarningIfNotSupported && Config.GetBool("keepSubs") && !supported)
+            if (showWarningIfNotSupported && Config.GetBool(Config.Key.keepSubs) && !supported)
                 Logger.Log($"Warning: Subtitle transfer is enabled, but {containerExt.ToUpper()} does not support subtitles properly. MKV is recommended instead.");
            
             return supported;

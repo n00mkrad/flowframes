@@ -514,7 +514,7 @@ namespace Flowframes.IO
 		public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool withExt)
 		{
 			InterpSettings curr = Interpolate.current;
-			string max = Config.Get("maxFps");
+			string max = Config.Get(Config.Key.maxFps);
 			Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
 			float fps = fpsLimit ? maxFps.GetFloat() : curr.outFps.GetFloat();
 
@@ -522,9 +522,9 @@ namespace Flowframes.IO
                 fps = 50f;
 
             Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, false, false);
-			string pattern = Config.Get("exportNamePattern");
+			string pattern = Config.Get(Config.Key.exportNamePattern);
 			string inName = Interpolate.current.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
-            bool encodeBoth = Config.GetInt("maxFpsMode") == 0;
+            bool encodeBoth = Config.GetInt(Config.Key.maxFpsMode) == 0;
 			bool addSuffix = fpsLimit && (!pattern.Contains("[FPS]") && !pattern.Contains("[ROUNDFPS]")) && encodeBoth;
 			string filename = pattern;
 

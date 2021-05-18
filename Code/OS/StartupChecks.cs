@@ -73,7 +73,7 @@ namespace Flowframes.OS
             bool symlinksAllowed = Symlinks.SymlinksAllowed();
             Logger.Log($"SymlinksAllowed: {symlinksAllowed}", true);
 
-            if (!symlinksAllowed && Config.Get("askedForDevModeVersion") != ver)
+            if (!symlinksAllowed && Config.Get(Config.Key.askedForDevModeVersion) != ver)
             {
                 if (!silent)
                 {

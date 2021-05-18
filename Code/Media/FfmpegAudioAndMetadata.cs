@@ -194,9 +194,9 @@ namespace Flowframes.Media
             if (!audioCompat)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
 
-            bool audio = Config.GetBool("keepAudio");
-            bool subs = Config.GetBool("keepSubs");
-            bool meta = Config.GetBool("keepMeta");
+            bool audio = Config.GetBool(Config.Key.keepAudio);
+            bool subs = Config.GetBool(Config.Key.keepSubs);
+            bool meta = Config.GetBool(Config.Key.keepMeta);
 
             if (!audio)
                 audioArgs = "-an";
@@ -251,8 +251,8 @@ namespace Flowframes.Media
             string inName = Path.GetFileName(tempPath);
             string outName = Path.GetFileName(outPath);
 
-            bool audio = Config.GetBool("keepAudio");
-            bool subs = Config.GetBool("keepSubs") && Utils.ContainerSupportsSubs(containerExt, false);
+            bool audio = Config.GetBool(Config.Key.keepAudio);
+            bool subs = Config.GetBool(Config.Key.keepSubs) && Utils.ContainerSupportsSubs(containerExt, false);
 
             string[] audioTracks = audio ? IOUtils.GetFilesSorted(tempFolder, false, "*_audio.*") : new string[0];     // Find audio files
             string[] subTracks = subs ? IOUtils.GetFilesSorted(tempFolder, false, "*.srt") : new string[0];     // Find subtitle files

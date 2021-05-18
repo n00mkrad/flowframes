@@ -28,7 +28,7 @@ namespace Flowframes
         {
             Config.Init();
 
-            if (Config.GetBool("delLogsOnStartup"))
+            if (Config.GetBool(Config.Key.delLogsOnStartup))
                 IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs from previous session
 
             Networks.Init();
@@ -82,8 +82,8 @@ namespace Flowframes
 
                         Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 
-                        bool lowDiskSpace = mb < (Config.GetInt("lowDiskSpacePauseGb", 5) * 1024);
-                        bool tooLowDiskSpace = mb < (Config.GetInt("lowDiskSpaceCancelGb", 2) * 1024);
+                        bool lowDiskSpace = mb < (Config.GetInt(Config.Key.lowDiskSpacePauseGb, 5) * 1024);
+                        bool tooLowDiskSpace = mb < (Config.GetInt(Config.Key.lowDiskSpaceCancelGb, 2) * 1024);
                         string spaceGb = (mb / 1024f).ToString("0.0");
 
                         if (!Interpolate.canceled && (AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) && lowDiskSpace)
