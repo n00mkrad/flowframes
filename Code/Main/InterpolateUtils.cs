@@ -96,37 +96,45 @@ namespace Flowframes.Main
 
         public static bool InputIsValid(string inDir, string outDir, Fraction fpsOut, float factor, I.OutMode outMode)
         {
-            bool passes = true;
-
-            bool isFile = !IOUtils.IsPathDirectory(inDir);
-
-            if ((passes && isFile && !IOUtils.IsFileValid(inDir)) || (!isFile && !IOUtils.IsDirValid(inDir)))
+            try
             {
-                ShowMessage("Input path is not valid!");
-                passes = false;
-            }
+                bool passes = true;
 
-            if (passes && !IOUtils.IsDirValid(outDir))
+                bool isFile = !IOUtils.IsPathDirectory(inDir);
+
+                if ((passes && isFile && !IOUtils.IsFileValid(inDir)) || (!isFile && !IOUtils.IsDirValid(inDir)))
+                {
+                    ShowMessage("Input path is not valid!");
+                    passes = false;
+                }
+
+                if (passes && !IOUtils.IsDirValid(outDir))
+                {
+                    ShowMessage("Output path is not valid!");
+                    passes = false;
+                }
+
+                if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
+                {
+                    ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.");
+                    passes = false;
+                }
+
+                Fraction fpsLimit = new Fraction(Config.Get(Config.Key.maxFps));
+
+                if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(fpsLimit.GetFloat() > 0 && fpsLimit.GetFloat() <= 50))
+                    Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut.GetFloat()} as the format doesn't support frame rates that high.");
+
+                if (!passes)
+                    I.Cancel("Invalid settings detected.", true);
+
+                return passes;
+            }
+            catch(Exception e)
             {
-                ShowMessage("Output path is not valid!");
-                passes = false;
+                Logger.Log($"Failed to run InputIsValid: {e.Message}\n{e.StackTrace}", true);
+                return false;
             }
-
-            if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
-            {
-                ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.");
-                passes = false;
-            }
-
-            Fraction fpsLimit = new Fraction(Config.Get(Config.Key.maxFps));
-
-            if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(fpsLimit.GetFloat() > 0 && fpsLimit.GetFloat() <= 50))
-                Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut.GetFloat()} as the format doesn't support frame rates that high.");
-
-            if (!passes)
-                I.Cancel("Invalid settings detected.", true);
-
-            return passes;
         }
 
         public static bool CheckAiAvailable(AI ai)

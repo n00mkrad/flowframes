@@ -50,9 +50,27 @@ namespace Flowframes.Data
 
         public Fraction(string text)
         {
-            string[] numbers = text.Split('/');
-            Numerator = numbers[0].GetInt();
-            Denominator = numbers[1].GetInt();
+            try
+            {
+                string[] numbers = text.Split('/');
+                Numerator = numbers[0].GetInt();
+                Denominator = numbers[1].GetInt();
+            }
+            catch
+            {
+                try
+                {
+                    Numerator = text.GetFloat().RoundToInt();
+                    Denominator = 1;
+                }
+                catch
+                {
+                    Numerator = 0;
+                    Denominator = 0;
+                }
+            }
+
+            Logger.Log($"Fraction from String: Fraction(\"{text}\") => {Numerator}/{Denominator}", true);
         }
 
         private static int getGCD(int a, int b)
