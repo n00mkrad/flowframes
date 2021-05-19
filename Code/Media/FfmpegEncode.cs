@@ -32,7 +32,10 @@ namespace Flowframes.Media
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
-                    inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
+                {
+                    string ext = Path.GetExtension(File.ReadAllLines(framesFile).FirstOrDefault()).Remove("'");
+                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{ext}\"";
+                }
             }
 
             string extraArgs = Config.Get(Config.Key.ffEncArgs);

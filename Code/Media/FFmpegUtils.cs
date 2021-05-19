@@ -1,6 +1,7 @@
 ﻿using Flowframes.IO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -267,6 +268,22 @@ namespace Flowframes.Media
                 Logger.Log($"Warning: Subtitle transfer is enabled, but {containerExt.ToUpper()} does not support subtitles properly. MKV is recommended instead.");
            
             return supported;
+        }
+
+        public static void CreateConcatFile (string inputFilesDir, string outputPath, string[] validExtensions = null)
+        {
+            string concatFileContent = "";
+            string[] files = IOUtils.GetFilesSorted(inputFilesDir);
+
+            foreach (string file in files)
+            {
+                if (validExtensions != null && !validExtensions.Contains(Path.GetExtension(file).ToLower()))
+                    continue;
+
+                concatFileContent += $"file '{file.Replace(@"\", "/")}'\n";
+            }
+
+            File.WriteAllText(outputPath, concatFileContent);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Flowframes.Media
             if (inputIsFrames)
             {
                 string concatFile = Path.Combine(Paths.GetDataPath(), "png-scndetect-concat-temp.ini");
-                GetConcatFile(inPath, concatFile);
+                FFmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat);
                 inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
             }
 
@@ -186,39 +186,31 @@ namespace Flowframes.Media
             return true;
         }
 
-        public static async Task ImportImages(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
+        public static async Task ImportImages(string inPath, string outPath, bool alpha, Size size, bool showLog, string format)
         {
-            if (showLog) Logger.Log($"Importing images from {new DirectoryInfo(inpath).Name}...");
-            Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size}", true, false, "ffmpeg");
-            IOUtils.CreateDir(outpath);
-            string concatFile = Path.Combine(Paths.GetDataPath(), "png-concat-temp.ini");
-            GetConcatFile(inpath, concatFile);
+            if (showLog) Logger.Log($"Importing images from {new DirectoryInfo(inPath).Name}...");
+            Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size} - Format: {format}", true, false, "ffmpeg");
+            IOUtils.CreateDir(outPath);
+            string concatFile = Path.Combine(Paths.GetDataPath(), "import-concat-temp.ini");
+            FFmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat);
 
             string inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
             string linksDir = Path.Combine(concatFile + Paths.symlinksSuffix);
 
-            if (Config.GetBool("allowSymlinkEncoding", true) && Symlinks.SymlinksAllowed())
+            if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(concatFile, linksDir, Padding.interpFrames))
-                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d.png\"";
+                {
+                    string ext = Path.GetExtension(File.ReadAllLines(concatFile).FirstOrDefault()).Remove("'");
+                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{ext}\"";
+                }
             }
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string vf = alpha ? $"-filter_complex \"[0:v]{GetPadFilter()},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {GetPadFilter()}";
-            string args = $"-r 25 {inArg} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outpath}/%{Padding.inputFrames}d{format}\"";
-            LogMode logMode = IOUtils.GetAmountOfFiles(inpath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
+            string args = $"-r 25 {inArg} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outPath}/%{Padding.inputFrames}d{format}\"";
+            LogMode logMode = IOUtils.GetAmountOfFiles(inPath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
-        }
-
-        public static void GetConcatFile(string inputFilesDir, string concatFilePath)
-        {
-            string concatFileContent = "";
-            string[] files = IOUtils.GetFilesSorted(inputFilesDir);
-
-            foreach (string img in files)
-                concatFileContent += $"file '{img.Replace(@"\", "/")}'\n";
-
-            File.WriteAllText(concatFilePath, concatFileContent);
         }
 
         public static string[] GetTrimArgs()
