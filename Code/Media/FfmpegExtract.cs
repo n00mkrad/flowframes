@@ -121,7 +121,7 @@ namespace Flowframes.Media
         static bool AreImagesCompatible (string inpath, int maxHeight)
         {
             NmkdStopwatch sw = new NmkdStopwatch();
-            string[] validExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+            string[] validExtensions = Filetypes.imagesInterpCompat; // = new string[] { ".jpg", ".jpeg", ".png" };
             FileInfo[] files = IOUtils.GetFileInfosSorted(inpath);
 
             if (files.Length < 1)

@@ -1,9 +1,11 @@
 ﻿using Flowframes.Data;
+using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.UI;
 using Force.Crc32;
+using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,8 +23,26 @@ namespace Flowframes.IO
     {
 		public static Image GetImage(string path)
 		{
-			using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
-				return Image.FromStream(stream);
+            try
+            {
+				using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+					return Image.FromStream(stream);
+			}
+			catch
+            {
+                try
+                {
+					MagickImage img = new MagickImage(path);
+					Bitmap bitmap = img.ToBitmap();
+					Logger.Log($"GetImage: Native image reading for '{Path.GetFileName(path)}' failed - Using Magick.NET fallback instead.", true);
+					return bitmap;
+				}
+				catch (Exception e)
+                {
+					Logger.Log($"GetImage failed: {e.Message}", true);
+					return null;
+                }
+            }
 		}
 
 		public static string[] ReadLines(string path)

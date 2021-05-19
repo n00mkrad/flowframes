@@ -376,6 +376,7 @@
     <Compile Include="IO\ModelDownloader.cs" />
     <Compile Include="IO\Symlinks.cs" />
     <Compile Include="Magick\Blend.cs" />
+    <Compile Include="Magick\MagickExtensions.cs" />
     <Compile Include="Magick\SceneDetect.cs" />
     <Compile Include="Main\AiModels.cs" />
     <Compile Include="Main\AutoEncode.cs" />
