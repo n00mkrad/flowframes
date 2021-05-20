@@ -200,10 +200,7 @@ namespace Flowframes.Media
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(concatFile, linksDir, Padding.interpFrames))
-                {
-                    string ext = Path.GetExtension(File.ReadAllLines(concatFile).FirstOrDefault()).Remove("'");
-                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{ext}\"";
-                }
+                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{FfmpegEncode.GetConcatFileExt(concatFile)}\"";
             }
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";

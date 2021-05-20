@@ -1,6 +1,7 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,10 +28,7 @@ namespace Flowframes.Media
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
-                {
-                    string ext = Path.GetExtension(File.ReadAllLines(framesFile).FirstOrDefault()).Remove("'");
-                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{ext}\"";
-                }
+                    inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{GetConcatFileExt(framesFile)}\"";
             }
 
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
@@ -54,6 +52,11 @@ namespace Flowframes.Media
             IOUtils.TryDeleteIfExists(linksDir);
         }
 
+        public static string GetConcatFileExt (string concatFilePath)
+        {
+            return Path.GetExtension(File.ReadAllLines(concatFilePath).FirstOrDefault().Split('\'')[1]);
+        }
+
         static string GetAspectArg (VidExtraData extraData)
         {
             if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
@@ -71,7 +74,7 @@ namespace Flowframes.Media
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
                 if (await Symlinks.MakeSymlinksForEncode(framesFile, linksDir, Padding.interpFrames))
-                    inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d.png";
+                    inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d{GetConcatFileExt(framesFile)}";
             }
 
             string rate = fps.ToString().Replace(",", ".");
