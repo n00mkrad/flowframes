@@ -1862,10 +1862,8 @@
             this.mdlBaseUrl.ForeColor = System.Drawing.Color.White;
             this.mdlBaseUrl.FormattingEnabled = true;
             this.mdlBaseUrl.Items.AddRange(new object[] {
-            "https://dl.nmkd.de/flowframes/mdl/",
-            "http://45.132.246.240/dl/flowframes/mdl/",
-            "https://raw.githubusercontent.com/n00mkrad/flowframes/main/Models/",
-            "http://104.225.145.33/models/"});
+            "https://dl.nmkd-hz.de/flowframes/mdl/",
+            "https://dl.nmkd.de/flowframes/mdl/"});
             this.mdlBaseUrl.Location = new System.Drawing.Point(280, 97);
             this.mdlBaseUrl.Name = "mdlBaseUrl";
             this.mdlBaseUrl.Size = new System.Drawing.Size(250, 21);

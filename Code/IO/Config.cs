@@ -254,7 +254,7 @@ namespace Flowframes.IO
             if (key == Key.ncnnThreads)       return WriteDefault(key, "1");
             if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
             // Debug / Other / Experimental
-            if (key == Key.mdlBaseUrl)    return WriteDefault(key, "https://dl.nmkd.de/flowframes/mdl/");
+            if (key == Key.mdlBaseUrl)    return WriteDefault(key, "https://dl.nmkd-hz.de/flowframes/mdl/");
             if (key == Key.ffEncPreset)   return WriteDefault(key, "medium");
 
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
