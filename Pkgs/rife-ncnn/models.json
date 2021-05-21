@@ -11,8 +11,13 @@
 },
 {
 	"name": "RIFE 3.0",
-	"desc": "Latest General Model",
+	"desc": "Updated General Model",
 	"dir": "rife-v3.0",
+},
+{
+	"name": "RIFE 3.1",
+	"desc": "Latest General Model",
+	"dir": "rife-v3.1",
 	"isDefault": "true"
 }
 ]
