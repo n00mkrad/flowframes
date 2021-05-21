@@ -354,3 +354,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# AI Model Files (Too big for repo)
+*.pkl
+*.bin
+*.param
