@@ -4,6 +4,7 @@ using Flowframes.MiscUtils;
 using Flowframes.OS;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,6 +31,9 @@ namespace Flowframes
 
             if (Config.GetBool(Config.Key.delLogsOnStartup))
                 IOUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs from previous session
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             Networks.Init();
             Task.Run(() => DiskSpaceCheckLoop());
