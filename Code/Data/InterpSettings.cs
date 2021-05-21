@@ -196,7 +196,9 @@ namespace Flowframes
             }
         }
 
-        public void RefreshExtensions()
+        public enum FrameType { Import, Interp, Both };
+
+        public void RefreshExtensions(FrameType type = FrameType.Both)
         {
             bool pngOutput = outMode == Interpolate.OutMode.ImgPng;
             bool aviHqChroma = outMode == Interpolate.OutMode.VidAvi && Config.Get(Config.Key.aviColors) != "yuv420p";
@@ -206,16 +208,22 @@ namespace Flowframes
 
             if (alpha || forceHqChroma)     // Force PNG if alpha is enabled, or output is not 4:2:0 subsampled
             {
-                framesExt = ".png";
-                interpExt = ".png";
+                if(type == FrameType.Both || type == FrameType.Import)
+                    framesExt = ".png";
+
+                if (type == FrameType.Both || type == FrameType.Interp)
+                    interpExt = ".png";
             }
             else
             {
-                framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".png");
-                interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
+                if (type == FrameType.Both || type == FrameType.Import)
+                    framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".png");
+
+                if (type == FrameType.Both || type == FrameType.Interp)
+                    interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
             }
 
-            Logger.Log($"RefreshExtensions - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
+            Logger.Log($"RefreshExtensions({type}) - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
         }
 
         public string Serialize ()

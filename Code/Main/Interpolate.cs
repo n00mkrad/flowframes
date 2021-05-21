@@ -101,6 +101,7 @@ namespace Flowframes
         {
             if (canceled) return;
             Program.mainForm.SetStatus("Extracting frames from video...");
+            current.RefreshExtensions(InterpSettings.FrameType.Import);
             bool mpdecimate = Config.GetInt(Config.Key.dedupMode) == 2;
             Size res = await Utils.GetOutputResolution(inPath, true, true);
             await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, current.inFpsDetected, mpdecimate, false, res, current.framesExt);
