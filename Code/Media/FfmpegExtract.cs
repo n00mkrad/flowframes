@@ -222,7 +222,7 @@ namespace Flowframes.Media
             }
 
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            string vf = alpha ? $"-filter_complex \"[0:v]{GetPadFilter()},split[a][b];[a]palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p]paletteuse\"" : $"-vf {GetPadFilter()}";
+            string vf = $"-vf {GetPadFilter()}";
             string args = $"-r 25 {inArg} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outPath}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = IOUtils.GetAmountOfFiles(inPath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
