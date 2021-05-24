@@ -80,26 +80,27 @@ namespace Flowframes
             return FormatUtils.TimestampToMs(output);
         }
 
-        public static async Task<Fraction> GetFramerate(string inputFile)
+        public static async Task<Fraction> GetFramerate(string inputFile, bool preferFfmpeg = false)
         {
-            Logger.Log($"GetFramerate('{inputFile}')", true, false, "ffmpeg");
+            Logger.Log($"GetFramerate(inputFile = '{inputFile}', preferFfmpeg = {preferFfmpeg})", true, false, "ffmpeg");
+            Fraction ffprobeFps = new Fraction(0, 1);
+            Fraction ffmpegFps = new Fraction(0, 1);
 
             try
             {
-                try
-                {
-                    string ffprobeArgs = $"-v panic -select_streams v:0 -show_entries stream=r_frame_rate {inputFile.Wrap()}";
-                    string ffprobeOutput = GetFfprobeOutput(ffprobeArgs);
-                    string fpsStr = ffprobeOutput.SplitIntoLines().Where(x => x.Contains("r_frame_rate")).First();
-                    string[] numbers = fpsStr.Split('=')[1].Split('/');
-                    Logger.Log($"Fractional FPS from ffprobe: {numbers[0]}/{numbers[1]} = {((float)numbers[0].GetInt() / numbers[1].GetInt())}", true, false, "ffmpeg");
-                    return new Fraction(numbers[0].GetInt(), numbers[1].GetInt());
-                }
-                catch (Exception ffprobeEx)
-                {
-                    Logger.Log("GetFramerate ffprobe Error: " + ffprobeEx.Message, true, false);
-                }
+                string ffprobeOutput = await GetVideoInfoCached.GetFfprobeInfoAsync(inputFile, "r_frame_rate");
+                string fpsStr = ffprobeOutput.SplitIntoLines().First();
+                string[] numbers = fpsStr.Split('=')[1].Split('/');
+                Logger.Log($"Fractional FPS from ffprobe: {numbers[0]}/{numbers[1]} = {((float)numbers[0].GetInt() / numbers[1].GetInt())}", true, false, "ffmpeg");
+                ffprobeFps = new Fraction(numbers[0].GetInt(), numbers[1].GetInt());
+            }
+            catch (Exception ffprobeEx)
+            {
+                Logger.Log("GetFramerate ffprobe Error: " + ffprobeEx.Message, true, false);
+            }
 
+            try
+            {
                 string ffmpegOutput = await GetVideoInfoCached.GetFfmpegInfoAsync(inputFile);
                 string[] entries = ffmpegOutput.Split(',');
 
@@ -108,9 +109,7 @@ namespace Flowframes
                     if (entry.Contains(" fps") && !entry.Contains("Input "))    // Avoid reading FPS from the filename, in case filename contains "fps"
                     {
                         string num = entry.Replace(" fps", "").Trim().Replace(",", ".");
-                        float value;
-                        float.TryParse(num, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
-                        return new Fraction(value);
+                        ffmpegFps = new Fraction(num.GetFloat());
                     }
                 }
             }
@@ -118,8 +117,21 @@ namespace Flowframes
             {
                 Logger.Log("GetFramerate ffmpeg Error: " + ffmpegEx.Message, true, false);
             }
-            
-            return new Fraction(0, 1);
+
+            if(preferFfmpeg)
+            {
+                if (ffmpegFps.GetFloat() > 0)
+                    return ffmpegFps;
+                else
+                    return ffprobeFps;
+            }
+            else
+            {
+                if (ffprobeFps.GetFloat() > 0)
+                    return ffprobeFps;
+                else
+                    return ffmpegFps;
+            }
         }
 
         public static Size GetSize(string inputFile)

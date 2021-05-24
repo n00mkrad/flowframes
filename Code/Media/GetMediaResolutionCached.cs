@@ -29,7 +29,6 @@ namespace Flowframes.Media
             }
 
             Size size;
-
             size = await IOUtils.GetVideoOrFramesRes(path);
 
             Logger.Log($"Adding hash with value {size} to cache.", true);

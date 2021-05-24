@@ -309,11 +309,14 @@ namespace Flowframes.IO
 
 		public static async Task<Fraction> GetVideoFramerate (string path)
         {
+			string[] preferFfmpegReadoutFormats = new string[] { ".gif", ".png", ".apng", ".webp" };
+			bool preferFfmpegReadout = preferFfmpegReadoutFormats.Contains(Path.GetExtension(path).ToLower());
+
             Fraction fps = new Fraction();
 
 			try
 			{
-				fps = await FfmpegCommands.GetFramerate(path);
+				fps = await FfmpegCommands.GetFramerate(path, preferFfmpegReadout);
 				Logger.Log("Detected FPS of " + Path.GetFileName(path) + " as " + fps + " FPS", true);
 			}
 			catch
