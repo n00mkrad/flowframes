@@ -206,6 +206,8 @@ namespace Flowframes
 
             bool forceHqChroma = pngOutput || aviHqChroma || proresHqChroma;
 
+            Logger.Log($"RefreshExtensions({type}) - alpha = {alpha} pngOutput = {pngOutput} aviHqChroma = {aviHqChroma} proresHqChroma = {proresHqChroma}", true);
+
             if (alpha || forceHqChroma)     // Force PNG if alpha is enabled, or output is not 4:2:0 subsampled
             {
                 if(type == FrameType.Both || type == FrameType.Import)
@@ -223,7 +225,7 @@ namespace Flowframes
                     interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
             }
 
-            Logger.Log($"RefreshExtensions({type}) - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
+            Logger.Log($"RefreshExtensions - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
         }
 
         public string Serialize ()

@@ -84,6 +84,7 @@ namespace Flowframes
         public static async Task GetFrames ()
         {
             current.RefreshAlpha();
+            current.RefreshExtensions(InterpSettings.FrameType.Import);
 
             if (Config.GetBool(Config.Key.scnDetect))
             {
