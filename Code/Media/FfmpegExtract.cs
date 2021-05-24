@@ -92,29 +92,47 @@ namespace Flowframes.Media
                 DeleteSource(inputFile);
         }
 
-        public static async Task ImportImagesCheckCompat(string inpath, string outpath, bool alpha, Size size, bool showLog, string format)
+        public static async Task ImportImagesCheckCompat(string inPath, string outPath, bool alpha, Size size, bool showLog, string format)
         {
-            bool compatible = await Task.Run(async () => { return AreImagesCompatible(inpath, Config.GetInt(Config.Key.maxVidHeight)); });
+            bool compatible = await Task.Run(async () => { return AreImagesCompatible(inPath, Config.GetInt(Config.Key.maxVidHeight)); });
 
             if (!alpha && compatible)
             {
-                if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
-                Directory.CreateDirectory(outpath);
-
-                await Task.Run(async () => {
-                    int counter = 0;
-                    foreach (FileInfo file in IOUtils.GetFileInfosSorted(inpath))
-                    {
-                        string newFilename = counter.ToString().PadLeft(Padding.inputFrames, '0') + file.Extension;
-                        File.Copy(file.FullName, Path.Combine(outpath, newFilename));
-                        counter++;
-                    }
-                });
+                await CopyImages(inPath, outPath, showLog);
 
             }
             else
             {
-                await ImportImages(inpath, outpath, alpha, size, showLog, format);
+                await ImportImages(inPath, outPath, alpha, size, showLog, format);
+            }
+        }
+
+        public static async Task CopyImages (string inpath, string outpath, bool showLog)
+        {
+            if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
+            Directory.CreateDirectory(outpath);
+
+            Dictionary<string, string> moveFromTo = new Dictionary<string, string>();
+            int counter = 0;
+
+            foreach (FileInfo file in IOUtils.GetFileInfosSorted(inpath))
+            {
+                string newFilename = counter.ToString().PadLeft(Padding.inputFrames, '0') + file.Extension;
+                moveFromTo.Add(file.FullName, Path.Combine(outpath, newFilename));
+                counter++;
+            }
+
+            if (Config.GetBool(Config.Key.allowSymlinkEncoding) && Config.GetBool(Config.Key.allowSymlinkImport, true))
+            {
+                Dictionary<string, string> moveFromToSwapped = moveFromTo.ToDictionary(x => x.Value, x => x.Key);   // From/To => To/From (Link/Target)
+                await Symlinks.CreateSymlinksParallel(moveFromToSwapped);
+            }
+            else
+            {
+                await Task.Run(async () => {
+                    foreach (KeyValuePair<string, string> moveFromToPair in moveFromTo)
+                        File.Copy(moveFromToPair.Key, moveFromToPair.Value);
+                });
             }
         }
 

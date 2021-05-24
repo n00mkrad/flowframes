@@ -32,7 +32,7 @@ namespace Flowframes.IO
             return false;
         }
 
-        public static async Task CreateSymlinksParallel(Dictionary<string, string> pathsLinkTarget, int maxThreads = 150)
+        public static async Task CreateSymlinksParallel(Dictionary<string, string> pathsLinkTarget, bool debug = false, int maxThreads = 150)
         {
             Stopwatch sw = new Stopwatch();
             sw.Restart();
@@ -40,7 +40,10 @@ namespace Flowframes.IO
 
             Task forEach = Task.Run(async () => Parallel.ForEach(pathsLinkTarget, opts, pair =>
             {
-                CreateSymbolicLink(pair.Key, pair.Value, Flag.Unprivileged);
+                bool success = CreateSymbolicLink(pair.Key, pair.Value, Flag.Unprivileged);
+
+                if (debug)
+                    Logger.Log($"Created Symlink - Source: '{pair.Key}' - Target: '{pair.Value}' - Sucess: {success}", true);
             }));
 
             while (!forEach.IsCompleted) await Task.Delay(1);

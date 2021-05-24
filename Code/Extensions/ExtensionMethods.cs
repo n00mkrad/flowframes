@@ -59,6 +59,7 @@ namespace Flowframes
         {
             if (str.Length < 1 || str == null)
                 return 0f;
+
             string num = str.TrimNumbers(true).Replace(",", ".");
             float value;
             float.TryParse(num, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
