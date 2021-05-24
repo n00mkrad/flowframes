@@ -1,3 +1,19 @@
+Flowframes 1.27.0 Changelog:
+- Updated RIFE-CUDA to v3 - Better quality and up to 25% faster!
+- Updated RIFE-NCNN to v3
+- Added new RIFE models 3.0 and 3.1 (both CUDA and NCNN)
+- AV1 encoding is now up to 35% faster (updated to SVT-AV1 0.8.7)
+- Renaming existing files to ".old" now also works for looped outputs and folders
+- Added image sequence copy support for BMP and WEBP (no PNG conversion on import)
+- Invalid (non-image) files now get ignored when loading an image sequence folder
+- New model files hoster, should make model downloading more reliable
+- Fixed the encoding log sometimes stopping, even if ffmpeg is still running
+- Fixed PNG image sequence outputs getting re-encoded unnecessarily
+- Fixed some problems regarding the FPS limit feature
+- Fixed problem where toggling JPEG frames wouldn't get applied
+- Internal data handling improvements (JSON for config files)
+
+
 Flowframes 1.26.1 Changelog:
 - Fixed image sequence copying not working correctly in some cases
 - Fixed loop not working correctly when using JPEG frames
