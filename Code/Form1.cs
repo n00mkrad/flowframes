@@ -563,6 +563,7 @@ namespace Flowframes
             ConfigParser.SaveGuiElement(enableLoop);
             ConfigParser.SaveGuiElement(scnDetect);
             ConfigParser.SaveGuiElement(scnDetectValue);
+            ConfigParser.SaveGuiElement(maxFps);
         }
 
         public void LoadQuickSettings (object sender = null, EventArgs e = null)
@@ -574,6 +575,7 @@ namespace Flowframes
             ConfigParser.LoadGuiElement(enableLoop);
             ConfigParser.LoadGuiElement(scnDetect);
             ConfigParser.LoadGuiElement(scnDetectValue);
+            ConfigParser.LoadGuiElement(maxFps);
 
             quickSettingsInitialized = true;
         }

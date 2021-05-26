@@ -129,6 +129,10 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label20 = new System.Windows.Forms.Label();
+            this.maxFps = new System.Windows.Forms.ComboBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -715,7 +719,7 @@
             // 
             this.panel14.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel14.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel14.Location = new System.Drawing.Point(481, 130);
+            this.panel14.Location = new System.Drawing.Point(481, 129);
             this.panel14.Name = "panel14";
             this.panel14.Size = new System.Drawing.Size(21, 21);
             this.panel14.TabIndex = 79;
@@ -1023,6 +1027,10 @@
             // quickSettingsTab
             // 
             this.quickSettingsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.quickSettingsTab.Controls.Add(this.panel2);
+            this.quickSettingsTab.Controls.Add(this.label20);
+            this.quickSettingsTab.Controls.Add(this.maxFps);
+            this.quickSettingsTab.Controls.Add(this.label24);
             this.quickSettingsTab.Controls.Add(this.linkLabel1);
             this.quickSettingsTab.Controls.Add(this.mpDedupePanel);
             this.quickSettingsTab.Controls.Add(this.magickDedupePanel);
@@ -1059,10 +1067,10 @@
             this.linkLabel1.LinkColor = System.Drawing.Color.DodgerBlue;
             this.linkLabel1.Location = new System.Drawing.Point(6, 237);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(243, 15);
+            this.linkLabel1.Size = new System.Drawing.Size(227, 15);
             this.linkLabel1.TabIndex = 86;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Open the Settings Window for more options.";
+            this.linkLabel1.Text = "Open the Settings Window for all options.";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // mpDedupePanel
@@ -1512,6 +1520,55 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // panel2
+            // 
+            this.panel2.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel2.Location = new System.Drawing.Point(382, 159);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(21, 21);
+            this.panel2.TabIndex = 90;
+            this.toolTip1.SetToolTip(this.panel2, "Allows custom input.");
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.Color.Silver;
+            this.label20.Location = new System.Drawing.Point(416, 161);
+            this.label20.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(339, 15);
+            this.label20.TabIndex = 89;
+            this.label20.Text = "Limit the final output video to this FPS. Leave empty to disable.";
+            // 
+            // maxFps
+            // 
+            this.maxFps.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.maxFps.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.maxFps.ForeColor = System.Drawing.Color.White;
+            this.maxFps.FormattingEnabled = true;
+            this.maxFps.Items.AddRange(new object[] {
+            "0",
+            "30",
+            "60",
+            "120"});
+            this.maxFps.Location = new System.Drawing.Point(276, 157);
+            this.maxFps.Name = "maxFps";
+            this.maxFps.Size = new System.Drawing.Size(100, 23);
+            this.maxFps.TabIndex = 88;
+            this.maxFps.SelectedIndexChanged += new System.EventHandler(this.SaveQuickSettings);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.ForeColor = System.Drawing.Color.White;
+            this.label24.Location = new System.Drawing.Point(6, 160);
+            this.label24.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(165, 15);
+            this.label24.TabIndex = 87;
+            this.label24.Text = "Maximum Output Frame Rate";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1684,6 +1741,10 @@
         private System.Windows.Forms.Button pauseBtn;
         private System.Windows.Forms.Button cancelBtn;
         private HTAlt.WinForms.HTButton debugBtn;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox maxFps;
+        private System.Windows.Forms.Label label24;
     }
 }
 
