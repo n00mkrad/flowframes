@@ -166,7 +166,7 @@ namespace Flowframes.Forms
             this.monospaceBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.monospaceBtn.ForeColor = System.Drawing.Color.White;
             this.monospaceBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.monospaceBtn.Location = new System.Drawing.Point(317, 6);
+            this.monospaceBtn.Location = new System.Drawing.Point(241, 6);
             this.monospaceBtn.Name = "monospaceBtn";
             this.monospaceBtn.Size = new System.Drawing.Size(23, 23);
             this.monospaceBtn.TabIndex = 79;
@@ -183,7 +183,7 @@ namespace Flowframes.Forms
             this.refreshBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.refreshBtn.ForeColor = System.Drawing.Color.White;
             this.refreshBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.refreshBtn.Location = new System.Drawing.Point(288, 6);
+            this.refreshBtn.Location = new System.Drawing.Point(212, 6);
             this.refreshBtn.Name = "refreshBtn";
             this.refreshBtn.Size = new System.Drawing.Size(23, 23);
             this.refreshBtn.TabIndex = 78;
@@ -200,7 +200,7 @@ namespace Flowframes.Forms
             this.textWrapBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.textWrapBtn.ForeColor = System.Drawing.Color.White;
             this.textWrapBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.textWrapBtn.Location = new System.Drawing.Point(346, 5);
+            this.textWrapBtn.Location = new System.Drawing.Point(270, 5);
             this.textWrapBtn.Name = "textWrapBtn";
             this.textWrapBtn.Size = new System.Drawing.Size(23, 23);
             this.textWrapBtn.TabIndex = 77;
@@ -245,7 +245,7 @@ namespace Flowframes.Forms
             this.logFilesDropdown.FormattingEnabled = true;
             this.logFilesDropdown.Location = new System.Drawing.Point(6, 6);
             this.logFilesDropdown.Name = "logFilesDropdown";
-            this.logFilesDropdown.Size = new System.Drawing.Size(276, 23);
+            this.logFilesDropdown.Size = new System.Drawing.Size(200, 23);
             this.logFilesDropdown.TabIndex = 73;
             this.logFilesDropdown.SelectedIndexChanged += new System.EventHandler(this.logFilesDropdown_SelectedIndexChanged);
             // 
