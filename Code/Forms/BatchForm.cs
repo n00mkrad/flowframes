@@ -1,7 +1,6 @@
 ﻿using Flowframes.IO;
 using Flowframes.Main;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,12 +28,13 @@ namespace Flowframes.Forms
         public void RefreshGui ()
         {
             taskList.Items.Clear();
-            string nl = Environment.NewLine;
+
             for (int i = 0; i < Program.batchQueue.Count; i++)
             {
                 InterpSettings entry = Program.batchQueue.ElementAt(i);
-                string niceOutMode = entry.outMode.ToString().ToUpper().Replace("VID", "").Replace("IMG", "");
-                string str = $"#{i}: {Path.GetFileName(entry.inPath).Trunc(45)} - {entry.inFps} FPS => {entry.interpFactor}x{nl} {entry.ai.aiNameShort} => {niceOutMode}";
+                string niceOutMode = entry.outMode.ToString().ToUpper().Remove("VID").Remove("IMG");
+                string str = $"#{i}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => " +
+                    $"{entry.interpFactor}x {entry.ai.aiNameShort} ({entry.model.name}) => {niceOutMode}";
                 taskList.Items.Add(str);
             }
         }
@@ -58,7 +58,6 @@ namespace Flowframes.Forms
         {
             stopBtn.Enabled = true;
             BatchProcessing.Start();
-            //WindowState = FormWindowState.Minimized;
             Program.mainForm.WindowState = FormWindowState.Normal;
             Program.mainForm.BringToFront();
         }
@@ -120,33 +119,18 @@ namespace Flowframes.Forms
         {                
             foreach (string path in droppedPaths)
             {
-                Logger.Log($"Dropped file: '{path}'", true);
-                string frame1 = Path.Combine(path, "00000001.png");
-                if (IOUtils.IsPathDirectory(path) && !File.Exists(frame1))
-                {
-                    InterpolateUtils.ShowMessage($"Can't find frames in this folder:\n\n{frame1} does not exist.", "Error");
-                    continue;
-                }
+                Logger.Log($"BatchForm: Dropped path: '{path}'", true);
 
                 InterpSettings current = Program.mainForm.GetCurrentSettings();
                 current.UpdatePaths(path, path.GetParentDir());
-                current.inFps = (await GetFramerate(path));
+
+                current.inFpsDetected = await IOUtils.GetFpsFolderOrVideo(path);
+                current.inFps = current.inFpsDetected;
                 current.outFps = current.inFps * current.interpFactor;
+
                 Program.batchQueue.Enqueue(current);
                 RefreshGui();
-                await Task.Delay(100);
             }
-        }
-
-        async Task<Fraction> GetFramerate (string path)
-        {
-            Fraction fps = (Interpolate.current != null) ? Interpolate.current.inFps : new Fraction();
-            Fraction fpsFromFile = await IOUtils.GetFpsFolderOrVideo(path);
-
-            if (fpsFromFile.GetFloat() > 0)
-                return fpsFromFile;
-
-            return fps;
         }
     }
 }

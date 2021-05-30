@@ -29,10 +29,18 @@ namespace Flowframes.Main
             {
                 if (!stopped && Program.batchQueue.Count > 0)
                 {
-                    Logger.Log($"[Queue] Running queue task {i + 1}/{initTaskCount}, {Program.batchQueue.Count} tasks left.");
-                    await RunEntry(Program.batchQueue.Peek());
-                    if (currentBatchForm != null)
-                        currentBatchForm.RefreshGui();
+                    try
+                    {
+                        Logger.Log($"[Queue] Running queue task {i + 1}/{initTaskCount}, {Program.batchQueue.Count} tasks left.");
+                        await RunEntry(Program.batchQueue.Peek());
+
+                        if (currentBatchForm != null)
+                            currentBatchForm.RefreshGui();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log($"Failed to run batch queue entry. If this happened after force stopping the queue, it's non-critical. {e.Message}", true);
+                    }
                 }
                 await Task.Delay(1000);
             }
@@ -54,6 +62,8 @@ namespace Flowframes.Main
                 Program.batchQueue.Dequeue();
                 return;
             }
+
+            Logger.Log($"ENTRY DET FPS: " + entry.inFpsDetected);
 
             string fname = Path.GetFileName(entry.inPath);
             if (IOUtils.IsPathDirectory(entry.inPath)) fname = Path.GetDirectoryName(entry.inPath);

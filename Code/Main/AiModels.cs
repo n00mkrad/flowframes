@@ -21,12 +21,24 @@ namespace Flowframes.Main
 
         public static ModelCollection.ModelInfo GetModelByName(AI ai, string modelName)
         {
-            Logger.Log($"looking for model '{modelName}'");
             ModelCollection modelCollection = GetModels(ai);
 
             foreach(ModelCollection.ModelInfo model in modelCollection.models)
             {
                 if (model.name == modelName)
+                    return model;
+            }
+
+            return null;
+        }
+
+        public static ModelCollection.ModelInfo GetModelByDir(AI ai, string dirName)
+        {
+            ModelCollection modelCollection = GetModels(ai);
+
+            foreach (ModelCollection.ModelInfo model in modelCollection.models)
+            {
+                if (model.dir == dirName)
                     return model;
             }
 

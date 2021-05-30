@@ -109,6 +109,7 @@ namespace Flowframes
                     if (entry.Contains(" fps") && !entry.Contains("Input "))    // Avoid reading FPS from the filename, in case filename contains "fps"
                     {
                         string num = entry.Replace(" fps", "").Trim().Replace(",", ".");
+                        Logger.Log($"Float FPS from ffmpeg: {num.GetFloat()}", true, false, "ffmpeg");
                         ffmpegFps = new Fraction(num.GetFloat());
                     }
                 }
@@ -118,10 +119,14 @@ namespace Flowframes
                 Logger.Log("GetFramerate ffmpeg Error: " + ffmpegEx.Message, true, false);
             }
 
-            if(preferFfmpeg)
+            Logger.Log($"ffmpegFps.GetFloat() = {ffmpegFps.GetFloat()}", true, false, "ffmpeg");
+
+            if (preferFfmpeg)
             {
+                Logger.Log($"preferring ffmpeg");
+
                 if (ffmpegFps.GetFloat() > 0)
-                    return ffmpegFps;
+                { Logger.Log($"returning {ffmpegFps}"); return ffmpegFps; }
                 else
                     return ffprobeFps;
             }

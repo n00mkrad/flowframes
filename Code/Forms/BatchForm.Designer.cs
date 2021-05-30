@@ -78,7 +78,7 @@
             this.runBtn.ForeColor = System.Drawing.Color.White;
             this.runBtn.Location = new System.Drawing.Point(682, 443);
             this.runBtn.Name = "runBtn";
-            this.runBtn.Size = new System.Drawing.Size(250, 40);
+            this.runBtn.Size = new System.Drawing.Size(250, 42);
             this.runBtn.TabIndex = 36;
             this.runBtn.Text = "Start";
             this.runBtn.UseVisualStyleBackColor = false;
@@ -132,13 +132,13 @@
             // 
             this.taskList.AllowDrop = true;
             this.taskList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.taskList.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.taskList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.taskList.ForeColor = System.Drawing.Color.White;
             this.taskList.FormattingEnabled = true;
-            this.taskList.ItemHeight = 18;
+            this.taskList.ItemHeight = 16;
             this.taskList.Location = new System.Drawing.Point(12, 65);
             this.taskList.Name = "taskList";
-            this.taskList.Size = new System.Drawing.Size(664, 418);
+            this.taskList.Size = new System.Drawing.Size(664, 420);
             this.taskList.TabIndex = 43;
             this.taskList.SelectedIndexChanged += new System.EventHandler(this.taskList_SelectedIndexChanged);
             this.taskList.DragDrop += new System.Windows.Forms.DragEventHandler(this.taskList_DragDrop);

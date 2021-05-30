@@ -75,7 +75,7 @@ namespace Flowframes.Media
         public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, Fraction rate, bool deDupe, bool delSrc, Size size, string format)
         {
             Logger.Log("Extracting video frames from input video...");
-            Logger.Log($"VideoToFrames() - Alpha: {alpha} - Size: {size}", true, false, "ffmpeg");
+            Logger.Log($"VideoToFrames() - Alpha: {alpha} - Rate: {rate} - Size: {size} - Format: {format}", true, false, "ffmpeg");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IOUtils.CreateDir(framesDir);
             string mpStr = deDupe ? ((Config.GetInt(Config.Key.mpdecimateMode) == 0) ? mpDecDef : mpDecAggr) : "";
