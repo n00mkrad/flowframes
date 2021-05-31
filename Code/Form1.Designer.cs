@@ -1074,7 +1074,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.Color.Silver;
-            this.label20.Location = new System.Drawing.Point(416, 161);
+            this.label20.Location = new System.Drawing.Point(420, 161);
             this.label20.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(339, 15);
@@ -1092,7 +1092,7 @@
             "30",
             "60",
             "120"});
-            this.maxFps.Location = new System.Drawing.Point(276, 157);
+            this.maxFps.Location = new System.Drawing.Point(280, 157);
             this.maxFps.Name = "maxFps";
             this.maxFps.Size = new System.Drawing.Size(100, 23);
             this.maxFps.TabIndex = 88;
