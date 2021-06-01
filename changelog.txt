@@ -1,3 +1,12 @@
+Flowframes 1.27.1 Changelog:
+- Image sequence inputs can now be used without any importing/copying (if compatible)
+- Added the FPS limit ("Maximum Output Framerate") to Quick Settings tab
+- Batch Processing: AI Model name is now shown in queue
+- Batch Processing: Fixed problems where GIFs/videos would play too slow
+- Fixed problem where GIF/APNG interpolations would have unnecessary dupe frames
+- Fixed problems with alpha interpolation when JPEG frames are enabled
+
+
 Flowframes 1.27.0 Changelog:
 - Updated RIFE-CUDA to v3 - Better quality and up to 25% faster!
 - Updated RIFE-NCNN to v3
