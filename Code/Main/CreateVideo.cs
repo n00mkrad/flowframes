@@ -264,9 +264,7 @@ namespace Flowframes.Main
 
             Program.mainForm.SetStatus("Muxing audio/subtitles into video...");
 
-            bool muxFromInput = Config.GetInt(Config.Key.audioSubTransferMode) == 0;
-
-            if (muxFromInput && I.current.inputIsFrames)
+            if (I.current.inputIsFrames)
             {
                 Logger.Log("Skipping muxing from input step as there is no input video, only frames.", true);
                 return;
@@ -274,10 +272,7 @@ namespace Flowframes.Main
 
             try
             {
-                if (muxFromInput)
-                    await FfmpegAudioAndMetadata.MergeStreamsFromInput(inputPath, outVideo, I.current.tempFolder);
-                else
-                    await FfmpegAudioAndMetadata.MergeAudioAndSubs(outVideo, I.current.tempFolder);
+                await FfmpegAudioAndMetadata.MergeStreamsFromInput(inputPath, outVideo, I.current.tempFolder);
             }
             catch (Exception e)
             {

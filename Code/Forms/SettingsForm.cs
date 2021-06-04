@@ -111,7 +111,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveGuiElement(autoDedupFrames);
             ConfigParser.SaveGuiElement(mdlBaseUrl);
-            ConfigParser.SaveComboxIndex(audioSubTransferMode);
             ConfigParser.SaveGuiElement(ffEncThreads, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffEncArgs);
@@ -169,7 +168,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadGuiElement(autoDedupFrames);
             ConfigParser.LoadGuiElement(mdlBaseUrl);
-            ConfigParser.LoadComboxIndex(audioSubTransferMode);
             ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffEncArgs);

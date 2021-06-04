@@ -283,7 +283,6 @@ namespace Flowframes.IO
             allowCustomInputRate,
             allowSymlinkEncoding,
             allowSymlinkImport,
-            audioSubTransferMode,
             autoDedupFrames,
             autoEncDebug,
             autoEncMode,

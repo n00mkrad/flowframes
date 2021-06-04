@@ -155,8 +155,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.audioSubTransferMode = new System.Windows.Forms.ComboBox();
-            this.label70 = new System.Windows.Forms.Label();
             this.panel13 = new System.Windows.Forms.Panel();
             this.mdlBaseUrl = new System.Windows.Forms.ComboBox();
             this.label42 = new System.Windows.Forms.Label();
@@ -1784,8 +1782,6 @@
             // 
             this.debugTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.debugTab.Controls.Add(this.pictureBox1);
-            this.debugTab.Controls.Add(this.audioSubTransferMode);
-            this.debugTab.Controls.Add(this.label70);
             this.debugTab.Controls.Add(this.panel13);
             this.debugTab.Controls.Add(this.mdlBaseUrl);
             this.debugTab.Controls.Add(this.label42);
@@ -1819,31 +1815,6 @@
             this.pictureBox1.TabIndex = 90;
             this.pictureBox1.TabStop = false;
             this.toolTip1.SetToolTip(this.pictureBox1, resources.GetString("pictureBox1.ToolTip"));
-            // 
-            // audioSubTransferMode
-            // 
-            this.audioSubTransferMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.audioSubTransferMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.audioSubTransferMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.audioSubTransferMode.ForeColor = System.Drawing.Color.White;
-            this.audioSubTransferMode.FormattingEnabled = true;
-            this.audioSubTransferMode.Items.AddRange(new object[] {
-            "Copy Streams Directly From Input Video",
-            "Extract, Interpolate, Then Merge (Works even if input video was deleted)"});
-            this.audioSubTransferMode.Location = new System.Drawing.Point(280, 179);
-            this.audioSubTransferMode.Name = "audioSubTransferMode";
-            this.audioSubTransferMode.Size = new System.Drawing.Size(400, 21);
-            this.audioSubTransferMode.TabIndex = 89;
-            // 
-            // label70
-            // 
-            this.label70.AutoSize = true;
-            this.label70.Location = new System.Drawing.Point(10, 182);
-            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(165, 13);
-            this.label70.TabIndex = 88;
-            this.label70.Text = "Audio And Subtitle Merging Mode";
             // 
             // panel13
             // 
@@ -1883,16 +1854,16 @@
             // 
             this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ffEncArgs.ForeColor = System.Drawing.Color.White;
-            this.ffEncArgs.Location = new System.Drawing.Point(280, 270);
+            this.ffEncArgs.Location = new System.Drawing.Point(280, 240);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(10, 273);
+            this.label56.Location = new System.Drawing.Point(10, 243);
             this.label56.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(147, 13);
@@ -1914,7 +1885,7 @@
             // 
             this.label54.AutoSize = true;
             this.label54.ForeColor = System.Drawing.Color.Silver;
-            this.label54.Location = new System.Drawing.Point(543, 244);
+            this.label54.Location = new System.Drawing.Point(543, 214);
             this.label54.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(118, 13);
@@ -1936,7 +1907,7 @@
             "Slow",
             "Slower",
             "Very Slow"});
-            this.ffEncPreset.Location = new System.Drawing.Point(280, 240);
+            this.ffEncPreset.Location = new System.Drawing.Point(280, 210);
             this.ffEncPreset.Name = "ffEncPreset";
             this.ffEncPreset.Size = new System.Drawing.Size(250, 21);
             this.ffEncPreset.TabIndex = 78;
@@ -1944,7 +1915,7 @@
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(10, 243);
+            this.label47.Location = new System.Drawing.Point(10, 213);
             this.label47.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(174, 13);
@@ -1977,7 +1948,7 @@
             // 
             this.label38.AutoSize = true;
             this.label38.ForeColor = System.Drawing.Color.Silver;
-            this.label38.Location = new System.Drawing.Point(543, 216);
+            this.label38.Location = new System.Drawing.Point(543, 186);
             this.label38.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(131, 13);
@@ -1988,16 +1959,16 @@
             // 
             this.ffEncThreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ffEncThreads.ForeColor = System.Drawing.Color.White;
-            this.ffEncThreads.Location = new System.Drawing.Point(280, 210);
+            this.ffEncThreads.Location = new System.Drawing.Point(280, 180);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(10, 213);
+            this.label37.Location = new System.Drawing.Point(10, 183);
             this.label37.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(204, 13);
@@ -2242,8 +2213,6 @@
         private System.Windows.Forms.TextBox exportNamePatternLoop;
         private System.Windows.Forms.Label label69;
         private System.Windows.Forms.Label label68;
-        private System.Windows.Forms.Label label70;
-        private System.Windows.Forms.ComboBox audioSubTransferMode;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ComboBox sceneChangeFillMode;
         private System.Windows.Forms.Label label71;
