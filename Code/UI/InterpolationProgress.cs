@@ -1,7 +1,5 @@
 ﻿using Flowframes.IO;
 using Flowframes.MiscUtils;
-using Flowframes.OS;
-using Flowframes.UI;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -13,7 +11,6 @@ using System.Windows.Forms;
 using Flowframes.Forms;
 using Flowframes.Main;
 using I = Flowframes.Interpolate;
-using Padding = Flowframes.Data.Padding;
 
 namespace Flowframes.UI
 {
@@ -125,7 +122,7 @@ namespace Flowframes.UI
                 {
                     if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
-                    Image img = IOUtils.GetImage(latestFramePath);
+                    Image img = IOUtils.GetImage(latestFramePath, false, false);
                     SetPreviewImg(img);
                 }
             }

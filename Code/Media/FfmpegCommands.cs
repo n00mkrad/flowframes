@@ -34,10 +34,12 @@ namespace Flowframes
             return $"pad=width=ceil(iw/{padPixels})*{padPixels}:height=ceil(ih/{padPixels})*{padPixels}:color=black@0";
         }
 
-        public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1)
+        public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1, bool showLog = true)
         {
             Logger.Log($"ConcatVideos('{Path.GetFileName(concatFile)}', '{outPath}', {looptimes})", true, false, "ffmpeg");
-            Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
+
+            if(showLog)
+                Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
 
             IOUtils.RenameExistingFile(outPath);
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";

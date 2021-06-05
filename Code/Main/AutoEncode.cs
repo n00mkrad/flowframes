@@ -128,6 +128,7 @@ namespace Flowframes.Main
                             lastEncodedFrameNum = (frameLinesToEncode.Last() + 1);
 
                             videoIndex++;
+                            await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true);
                             busy = false;
                         }
                         catch (Exception e)

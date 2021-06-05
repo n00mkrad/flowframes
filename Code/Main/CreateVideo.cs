@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Flowframes.Data;
 using Flowframes.Media;
 using Microsoft.VisualBasic.Logging;
+using Flowframes.MiscUtils;
 
 namespace Flowframes.Main
 {
@@ -160,7 +161,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath)
+        public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath, bool isBackup = false)
         {
             if (IOUtils.GetAmountOfFiles(chunksFolder, true, "*" + FFmpegUtils.GetExt(I.current.outMode)) < 1)
             {
@@ -168,8 +169,11 @@ namespace Flowframes.Main
                 return;
             }
 
-            await Task.Delay(10);
-            Program.mainForm.SetStatus("Merging video chunks...");
+            NmkdStopwatch sw = new NmkdStopwatch(); 
+
+            if(!isBackup)
+                Program.mainForm.SetStatus("Merging video chunks...");
+
             try
             {
                 DirectoryInfo chunksDir = new DirectoryInfo(chunksFolder);
@@ -186,21 +190,33 @@ namespace Flowframes.Main
                     Logger.Log($"CreateVideo: Running MergeChunks() for frames file '{Path.GetFileName(tempConcatFile)}'", true);
                     bool fpsLimit = dir.Name.Contains(Paths.fpsLimitSuffix);
                     string outPath = Path.Combine(baseOutPath, await IOUtils.GetCurrentExportFilename(fpsLimit, true));
-                    await MergeChunks(tempConcatFile, outPath);
+                    await MergeChunks(tempConcatFile, outPath, isBackup);
                 }
             }
             catch (Exception e)
             {
-                Logger.Log("ChunksToVideo Error: " + e.Message, false);
-                MessageBox.Show("An error occured while trying to merge the video chunks.\nCheck the log for details.");
+                Logger.Log("ChunksToVideo Error: " + e.Message, isBackup);
+
+                if (!isBackup)
+                    MessageBox.Show("An error occured while trying to merge the video chunks.\nCheck the log for details.");
             }
+
+            Logger.Log($"Merged video chunks in {sw.GetElapsedStr()}", true);
         }
 
-        static async Task MergeChunks(string vfrFile, string outPath)
+        static async Task MergeChunks(string framesFile, string outPath, bool isIncomplete = false)
         {
-            await FfmpegCommands.ConcatVideos(vfrFile, outPath, -1);
-            await MuxOutputVideo(I.current.inPath, outPath);
-            await Loop(outPath, await GetLoopTimes());
+            if (isIncomplete)
+            {
+                outPath = IOUtils.FilenameSuffix(outPath, ".bak");
+                await IOUtils.TryDeleteIfExistsAsync(outPath);
+            } 
+
+            await FfmpegCommands.ConcatVideos(framesFile, outPath, -1, !isIncomplete);
+            await MuxOutputVideo(I.current.inPath, outPath, isIncomplete, !isIncomplete);
+
+            if(!isIncomplete)
+                await Loop(outPath, await GetLoopTimes());
         }
 
         public static async Task EncodeChunk(string outPath, I.OutMode mode, int firstFrameNum, int framesAmount)
@@ -251,7 +267,7 @@ namespace Flowframes.Main
             return times;
         }
 
-        public static async Task MuxOutputVideo(string inputPath, string outVideo)
+        public static async Task MuxOutputVideo(string inputPath, string outVideo, bool shortest = false, bool showLog = true)
         {
             if (!File.Exists(outVideo))
             {
@@ -262,7 +278,8 @@ namespace Flowframes.Main
             if (!Config.GetBool(Config.Key.keepAudio) && !Config.GetBool(Config.Key.keepAudio))
                 return;
 
-            Program.mainForm.SetStatus("Muxing audio/subtitles into video...");
+            if(showLog)
+                Program.mainForm.SetStatus("Muxing audio/subtitles into video...");
 
             if (I.current.inputIsFrames)
             {
@@ -272,11 +289,11 @@ namespace Flowframes.Main
 
             try
             {
-                await FfmpegAudioAndMetadata.MergeStreamsFromInput(inputPath, outVideo, I.current.tempFolder);
+                await FfmpegAudioAndMetadata.MergeStreamsFromInput(inputPath, outVideo, I.current.tempFolder, shortest);
             }
             catch (Exception e)
             {
-                Logger.Log("Failed to merge audio/subtitles with output video!");
+                Logger.Log("Failed to merge audio/subtitles with output video!", !showLog);
                 Logger.Log("MergeAudio() Exception: " + e.Message, true);
             }
         }

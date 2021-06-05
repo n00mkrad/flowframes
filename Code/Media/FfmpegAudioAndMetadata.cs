@@ -11,7 +11,8 @@ namespace Flowframes.Media
     partial class FfmpegAudioAndMetadata : FfmpegCommands
     {
         #region Mux From Input
-        public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder)
+
+        public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder, bool shortest)
         {
             if (!File.Exists(inputVideo) && !I.current.inputIsFrames)
             {
@@ -48,6 +49,7 @@ namespace Flowframes.Media
             bool isMkv = I.current.outMode == I.OutMode.VidMkv;
             string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
             string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
+            string shortestArg = shortest ? "-shortest" : "";
 
             if (QuickSettingsTab.trimEnabled)
             {
@@ -57,14 +59,14 @@ namespace Flowframes.Media
                 string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -map 0 -map -0:v -map -0:d -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
                 await RunFfmpeg(args1, tempFolder, LogMode.Hidden);
 
-                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {outName}"; // Merge interp + trimmed original
+                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {shortestArg} {outName}"; // Merge interp + trimmed original
                 await RunFfmpeg(args2, tempFolder, LogMode.Hidden);
 
                 IOUtils.TryDeleteIfExists(Path.Combine(tempFolder, otherStreamsName));
             }
             else   // If trimming is disabled we can pull the streams directly from the input file
             {
-                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {outName}";
+                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {shortestArg} {outName}";
                 await RunFfmpeg(args, tempFolder, LogMode.Hidden);
             }
 

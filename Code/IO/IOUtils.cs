@@ -21,7 +21,7 @@ namespace Flowframes.IO
 {
     class IOUtils
     {
-		public static Image GetImage(string path)
+		public static Image GetImage(string path, bool allowMagickFallback = true, bool log = true)
 		{
             try
             {
@@ -34,12 +34,17 @@ namespace Flowframes.IO
                 {
 					MagickImage img = new MagickImage(path);
 					Bitmap bitmap = img.ToBitmap();
-					Logger.Log($"GetImage: Native image reading for '{Path.GetFileName(path)}' failed - Using Magick.NET fallback instead.", true);
+
+					if(log)
+						Logger.Log($"GetImage: Native image reading for '{Path.GetFileName(path)}' failed - Using Magick.NET fallback instead.", true);
+					
 					return bitmap;
 				}
 				catch (Exception e)
                 {
-					Logger.Log($"GetImage failed: {e.Message}", true);
+					if (log)
+						Logger.Log($"GetImage failed: {e.Message}", true);
+
 					return null;
                 }
             }
