@@ -98,9 +98,14 @@ namespace Flowframes
                             }
                             else
                             {
+                                bool showMsg = !AiProcessSuspend.aiProcFrozen;
                                 AiProcessSuspend.SuspendIfRunning();
-                                MessageBox.Show($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
+
+                                if (showMsg)
+                                {
+                                    MessageBox.Show($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
                                     $"Please either clear up some disk space or cancel the interpolation.", "Warning");
+                                }
                             }
                         }
                     }
