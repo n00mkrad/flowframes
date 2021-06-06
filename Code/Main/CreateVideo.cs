@@ -191,6 +191,9 @@ namespace Flowframes.Main
                     bool fpsLimit = dir.Name.Contains(Paths.fpsLimitSuffix);
                     string outPath = Path.Combine(baseOutPath, await IOUtils.GetCurrentExportFilename(fpsLimit, true));
                     await MergeChunks(tempConcatFile, outPath, isBackup);
+
+                    if (!isBackup)
+                        IOUtils.DeleteIfExists(IOUtils.FilenameSuffix(outPath, Paths.backupSuffix));
                 }
             }
             catch (Exception e)
@@ -208,7 +211,7 @@ namespace Flowframes.Main
         {
             if (isIncomplete)
             {
-                outPath = IOUtils.FilenameSuffix(outPath, ".bak");
+                outPath = IOUtils.FilenameSuffix(outPath, Paths.backupSuffix);
                 await IOUtils.TryDeleteIfExistsAsync(outPath);
             } 
 
