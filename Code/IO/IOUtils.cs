@@ -400,33 +400,51 @@ namespace Flowframes.IO
 		/// <summary>
 		/// Async (background thread) version of TryDeleteIfExists. Safe to run without awaiting.
 		/// </summary>
-		public static async Task<bool> TryDeleteIfExistsAsync(string path)
+		public static async Task<bool> TryDeleteIfExistsAsync(string path, int retries = 10)
 		{
 			string renamedPath = path;
 
-			if (IsPathDirectory(path))
+			try
             {
-				while (Directory.Exists(renamedPath))
-					renamedPath += "_";
+				if (IsPathDirectory(path))
+				{
+					while (Directory.Exists(renamedPath))
+						renamedPath += "_";
 
-				if (path != renamedPath)
-					Directory.Move(path, renamedPath);
+					if (path != renamedPath)
+						Directory.Move(path, renamedPath);
+				}
+				else
+				{
+					while (File.Exists(renamedPath))
+						renamedPath += "_";
+
+					if (path != renamedPath)
+						File.Move(path, renamedPath);
+				}
+
+				path = renamedPath;
+
+				ulong taskId = BackgroundTaskManager.Add($"TryDeleteIfExistsAsync {path}");
+				bool returnVal = await Task.Run(async () => { return TryDeleteIfExists(path); });
+				BackgroundTaskManager.Remove(taskId);
+				return returnVal;
 			}
-            else
+			catch (Exception e)
             {
-				while (File.Exists(renamedPath))
-					renamedPath += "_";
+				Logger.Log($"TryDeleteIfExistsAsync Move Exception: {e.Message} [{retries} retries left]", true);
 
-				if (path != renamedPath)
-					File.Move(path, renamedPath);
+				if (retries > 0)
+                {
+					await Task.Delay(2000);
+					retries -= 1;
+					return await TryDeleteIfExistsAsync(path, retries);
+				}
+                else
+                {
+					return false;
+				}
 			}
-
-			path = renamedPath;
-
-			ulong taskId = BackgroundTaskManager.Add($"TryDeleteIfExistsAsync {path}");
-			bool returnVal = await Task.Run(async () => { return TryDeleteIfExists(path); });
-			BackgroundTaskManager.Remove(taskId);
-			return returnVal;
 		}
 
 		/// <summary>
