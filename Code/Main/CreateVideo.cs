@@ -138,7 +138,6 @@ namespace Flowframes.Main
 
         static async Task Encode(I.OutMode mode, string framesPath, string outPath, Fraction fps, Fraction resampleFps)
         {
-            string currentOutFile = outPath;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
 
             if (!File.Exists(framesFile))
@@ -157,15 +156,12 @@ namespace Flowframes.Main
                 VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.current.inPath);
                 await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps, extraData);
                 await MuxOutputVideo(I.current.inPath, outPath);
-                await Loop(currentOutFile, await GetLoopTimes());
+                await Loop(outPath, await GetLoopTimes());
             }
         }
 
         public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath, bool isBackup = false)
         {
-            if (isBackup && !Config.GetBool(Config.Key.autoEncBackup))
-                return;
-
             if (IOUtils.GetAmountOfFiles(chunksFolder, true, "*" + FFmpegUtils.GetExt(I.current.outMode)) < 1)
             {
                 I.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
@@ -210,18 +206,20 @@ namespace Flowframes.Main
             Logger.Log($"Merged video chunks in {sw.GetElapsedStr()}", true);
         }
 
-        static async Task MergeChunks(string framesFile, string outPath, bool isIncomplete = false)
+        static async Task MergeChunks(string framesFile, string outPath, bool isBackup = false)
         {
-            if (isIncomplete)
+            if (isBackup)
             {
                 outPath = IOUtils.FilenameSuffix(outPath, Paths.backupSuffix);
                 await IOUtils.TryDeleteIfExistsAsync(outPath);
             } 
 
-            await FfmpegCommands.ConcatVideos(framesFile, outPath, -1, !isIncomplete);
-            await MuxOutputVideo(I.current.inPath, outPath, isIncomplete, !isIncomplete);
+            await FfmpegCommands.ConcatVideos(framesFile, outPath, -1, !isBackup);
 
-            if(!isIncomplete)
+            if(!isBackup || (isBackup && Config.GetInt(Config.Key.autoEncBackupMode) == 2))     // Mux if no backup, or if backup AND muxing is enabled for backups
+                await MuxOutputVideo(I.current.inPath, outPath, isBackup, !isBackup);
+
+            if(!isBackup)
                 await Loop(outPath, await GetLoopTimes());
         }
 

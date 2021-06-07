@@ -83,6 +83,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(scnDetectValue);
             ConfigParser.SaveComboxIndex(sceneChangeFillMode);
             ConfigParser.SaveComboxIndex(autoEncMode);
+            ConfigParser.SaveComboxIndex(autoEncBackupMode);
             ConfigParser.SaveGuiElement(sbsAllowAutoEnc);
             // AI
             ConfigParser.SaveGuiElement(torchGpus);
@@ -141,6 +142,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(scnDetectValue);
             ConfigParser.LoadComboxIndex(sceneChangeFillMode);
             ConfigParser.LoadComboxIndex(autoEncMode);
+            ConfigParser.LoadComboxIndex(autoEncBackupMode);
             ConfigParser.LoadGuiElement(sbsAllowAutoEnc);
             // AI
             ConfigParser.LoadGuiElement(torchGpus);

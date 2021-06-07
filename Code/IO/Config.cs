@@ -284,7 +284,7 @@ namespace Flowframes.IO
             allowSymlinkEncoding,
             allowSymlinkImport,
             autoDedupFrames,
-            autoEncBackup,
+            autoEncBackupMode,
             autoEncDebug,
             autoEncMode,
             autoEncSafeBufferFlavrCuda,

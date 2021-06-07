@@ -136,6 +136,10 @@ The loop suffix gets added if the output gets looped. You can use the following 
 [LOOPS] for how many times it was looped
 [PLAYS] for how many times it plays (includes first play, so it's LOOPS+1)</value>
   </data>
+  <data name="pictureBox2.ToolTip" xml:space="preserve">
+    <value>If this is enabled together with Auto-Encode, a backup video will be created from already encoded chunks, after each chunk has finished encoding.
+This causes a minimal CPU load but requires lots of storage bandwidth - It's only recommended to use this on SSDs for longer videos.</value>
+  </data>
   <data name="pictureBox1.ToolTip" xml:space="preserve">
     <value>Specify, which download mirror to use for to download the models from.
 

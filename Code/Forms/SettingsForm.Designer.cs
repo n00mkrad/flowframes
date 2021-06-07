@@ -176,6 +176,10 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label16 = new System.Windows.Forms.Label();
+            this.autoEncBackupMode = new System.Windows.Forms.ComboBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -193,6 +197,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).BeginInit();
             this.debugTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -529,6 +534,10 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.pictureBox2);
+            this.tabListPage2.Controls.Add(this.label41);
+            this.tabListPage2.Controls.Add(this.autoEncBackupMode);
+            this.tabListPage2.Controls.Add(this.label16);
             this.tabListPage2.Controls.Add(this.label74);
             this.tabListPage2.Controls.Add(this.jpegFrames);
             this.tabListPage2.Controls.Add(this.label63);
@@ -1857,7 +1866,7 @@
             this.ffEncArgs.Location = new System.Drawing.Point(280, 240);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
@@ -1962,7 +1971,7 @@
             this.ffEncThreads.Location = new System.Drawing.Point(280, 180);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
@@ -2052,6 +2061,54 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(10, 360);
+            this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(114, 13);
+            this.label16.TabIndex = 87;
+            this.label16.Text = "Auto-Encode Backups";
+            // 
+            // autoEncBackupMode
+            // 
+            this.autoEncBackupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.autoEncBackupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.autoEncBackupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.autoEncBackupMode.ForeColor = System.Drawing.Color.White;
+            this.autoEncBackupMode.FormattingEnabled = true;
+            this.autoEncBackupMode.Items.AddRange(new object[] {
+            "Disabled",
+            "Enabled (Only Video)",
+            "Enabled (Complete - With Audio, Subtitles)"});
+            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 357);
+            this.autoEncBackupMode.Name = "autoEncBackupMode";
+            this.autoEncBackupMode.Size = new System.Drawing.Size(250, 21);
+            this.autoEncBackupMode.TabIndex = 88;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.ForeColor = System.Drawing.Color.Silver;
+            this.label41.Location = new System.Drawing.Point(578, 360);
+            this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(158, 13);
+            this.label41.TabIndex = 89;
+            this.label41.Text = "Can cause slowdown on HDDs!";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(536, 357);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox2.TabIndex = 90;
+            this.pictureBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2091,6 +2148,7 @@
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2244,5 +2302,9 @@
         private System.Windows.Forms.NumericUpDown mp4Crf;
         private System.Windows.Forms.NumericUpDown vp9Crf;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.ComboBox autoEncBackupMode;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }

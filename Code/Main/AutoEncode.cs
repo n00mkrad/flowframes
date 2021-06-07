@@ -131,10 +131,13 @@ namespace Flowframes.Main
 
                             videoIndex++;
 
-                            if(aiRunning && (currentMuxTask == null || (currentMuxTask != null && currentMuxTask.IsCompleted)))
-                                currentMuxTask = Task.Run(() => CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
-                            else
-                                Logger.Log($"[AE] Skipping backup because {(!aiRunning ? "this is the final chunk" : "previous mux task has not finished yet")}!", true, false, "ffmpeg");
+                            if(Config.GetInt(Config.Key.autoEncBackupMode) > 0)
+                            {
+                                if (aiRunning && (currentMuxTask == null || (currentMuxTask != null && currentMuxTask.IsCompleted)))
+                                    currentMuxTask = Task.Run(() => CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
+                                else
+                                    Logger.Log($"[AE] Skipping backup because {(!aiRunning ? "this is the final chunk" : "previous mux task has not finished yet")}!", true, false, "ffmpeg");
+                            }
                             
                             busy = false;
                         }
