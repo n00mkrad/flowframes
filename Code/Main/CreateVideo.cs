@@ -163,6 +163,9 @@ namespace Flowframes.Main
 
         public static async Task ChunksToVideos(string tempFolder, string chunksFolder, string baseOutPath, bool isBackup = false)
         {
+            if (isBackup && !Config.GetBool(Config.Key.autoEncBackup))
+                return;
+
             if (IOUtils.GetAmountOfFiles(chunksFolder, true, "*" + FFmpegUtils.GetExt(I.current.outMode)) < 1)
             {
                 I.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
