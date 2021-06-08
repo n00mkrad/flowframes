@@ -153,6 +153,9 @@ namespace Flowframes.IO
 
         public static bool AreFilesValid (string ai, string model)
         {
+            if (Debugger.IsAttached)    // Disable MD5 check in dev environment
+                return true;
+
             string mdlDir = GetLocalPath(ai, model);
 
             if (!Directory.Exists(mdlDir))
