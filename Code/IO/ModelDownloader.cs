@@ -153,9 +153,6 @@ namespace Flowframes.IO
 
         public static bool AreFilesValid (string ai, string model)
         {
-            if (Debugger.IsAttached)    // Disable MD5 check in dev environment
-                return true;
-
             string mdlDir = GetLocalPath(ai, model);
 
             if (!Directory.Exists(mdlDir))
@@ -163,6 +160,9 @@ namespace Flowframes.IO
                 Logger.Log($"Files for model {model} not valid: {mdlDir} does not exist.", true);
                 return false;
             }
+
+            if (Debugger.IsAttached)    // Disable MD5 check in dev environment
+                return true;
 
             string md5FilePath = Path.Combine(mdlDir, "md5.txt");
 

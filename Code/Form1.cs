@@ -253,7 +253,6 @@ namespace Flowframes
 
         public ModelCollection.ModelInfo GetModel(AI currentAi)
         {
-            //return aiModel.Text.Split('-')[0].Remove(" ").Remove(".");
             return AiModels.GetModels(currentAi).models[aiModel.SelectedIndex];
         }
 
