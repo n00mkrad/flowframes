@@ -1,3 +1,10 @@
+Flowframes 1.27.2 Changelog:
+- Added Backup option - Will save an incomplete video after every chunk encode
+- Custom FFmpeg args now also get applied for GIF encoding, not just videos
+- Fixed low disk space warning popping up even if interpolation is already paused
+- Fixed certain temp files not being deleted correctly
+
+
 Flowframes 1.27.1 Changelog:
 - Image sequence inputs can now be used without any importing/copying (if compatible)
 - Added the FPS limit ("Maximum Output Framerate") to Quick Settings tab
