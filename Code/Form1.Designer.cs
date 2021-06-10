@@ -709,7 +709,7 @@
             // 
             this.panel10.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel10.Location = new System.Drawing.Point(378, 37);
+            this.panel10.Location = new System.Drawing.Point(373, 39);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(21, 21);
             this.panel10.TabIndex = 67;
@@ -719,7 +719,7 @@
             // 
             this.panel14.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel14.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel14.Location = new System.Drawing.Point(481, 129);
+            this.panel14.Location = new System.Drawing.Point(476, 130);
             this.panel14.Name = "panel14";
             this.panel14.Size = new System.Drawing.Size(21, 21);
             this.panel14.TabIndex = 79;
@@ -757,7 +757,7 @@
             // 
             this.panel2.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel2.Location = new System.Drawing.Point(382, 159);
+            this.panel2.Location = new System.Drawing.Point(386, 159);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(21, 21);
             this.panel2.TabIndex = 90;
@@ -1074,7 +1074,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.Color.Silver;
-            this.label20.Location = new System.Drawing.Point(420, 161);
+            this.label20.Location = new System.Drawing.Point(420, 162);
             this.label20.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(339, 15);
@@ -1254,7 +1254,7 @@
             // 
             this.label52.AutoSize = true;
             this.label52.ForeColor = System.Drawing.Color.Silver;
-            this.label52.Location = new System.Drawing.Point(515, 131);
+            this.label52.Location = new System.Drawing.Point(510, 133);
             this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(246, 15);
@@ -1296,7 +1296,7 @@
             // 
             this.label34.AutoSize = true;
             this.label34.ForeColor = System.Drawing.Color.Silver;
-            this.label34.Location = new System.Drawing.Point(412, 41);
+            this.label34.Location = new System.Drawing.Point(407, 42);
             this.label34.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(308, 15);
@@ -1318,7 +1318,6 @@
             "540",
             "360"});
             this.maxVidHeight.Location = new System.Drawing.Point(280, 37);
-            this.maxVidHeight.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
             this.maxVidHeight.Name = "maxVidHeight";
             this.maxVidHeight.Size = new System.Drawing.Size(87, 23);
             this.maxVidHeight.TabIndex = 68;
