@@ -35,6 +35,9 @@ parser.add_argument('--scale', dest='scale', type=float, default=1.0, help='Try 
 parser.add_argument('--exp', dest='exp', type=int, default=1)
 args = parser.parse_args()
 assert (not args.input is None)
+if args.UHD and args.scale==1.0:
+    args.scale = 0.5
+assert args.scale in [0.25, 0.5, 1.0, 2.0, 4.0]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.set_grad_enabled(False)
@@ -56,20 +59,31 @@ except:
 
 try:
     try:
-        from model.RIFE_HDv2 import Model
-        model = Model()
-        model.load_model(os.path.join(dname, args.model), -1)
-        print("Loaded v2.x HD model.")
-    except:
+        print(f"Trying to load v3 (new) model from {os.path.join(dname, args.model)}")
         from model.RIFE_HDv3 import Model
         model = Model()
         model.load_model(os.path.join(dname, args.model), -1)
         print("Loaded v3.x HD model.")
+    except:
+        try:
+            print(f"Trying to load v3 (legacy) model from {os.path.join(dname, args.model)}")
+            from model_v3_legacy.RIFE_HDv3 import Model
+            model = Model()
+            model.load_model(os.path.join(dname, args.model), -1)
+            print("Loaded v3.x HD model.")
+        except:
+            print(f"Trying to load v2 model from {os.path.join(dname, args.model)}")
+            from model.RIFE_HDv2 import Model
+            model = Model()
+            model.load_model(os.path.join(dname, args.model), -1)
+            print("Loaded v2.x HD model.")
 except:
+    print(f"Trying to load v1 model from {os.path.join(dname, args.model)}")
     from model.RIFE_HD import Model
     model = Model()
     model.load_model(os.path.join(dname, args.model), -1)
     print("Loaded v1.x HD model")
+
 model.eval()
 model.device()
 
@@ -118,7 +132,7 @@ def build_read_buffer(user_args, read_buffer, videogen):
 
 def make_inference(I0, I1, exp):
     global model
-    middle = model.inference(I0, I1, args.UHD)
+    middle = model.inference(I0, I1, args.scale)
     if exp == 1:
         return [middle]
     first_half = make_inference(I0, middle, exp=exp - 1)

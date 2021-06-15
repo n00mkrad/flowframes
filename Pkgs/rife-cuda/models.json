@@ -6,23 +6,33 @@
 },
 {
 	"name": "RIFE 2.3",
-	"desc": "Updated General Model",
+	"desc": "General Model",
 	"dir": "RIFE23"
 },
 {
 	"name": "RIFE 2.4",
-	"desc": "Updated General Model (Sometimes worse than 2.3)",
+	"desc": "Latest v2 General Model (Sometimes worse than 2.3)",
 	"dir": "RIFE24"
 },
 {
 	"name": "RIFE 3.0",
-	"desc": "Updated General Model",
+	"desc": "v3 General Model",
 	"dir": "RIFE30",
 },
 {
 	"name": "RIFE 3.1",
-	"desc": "Latest General Model",
-	"dir": "RIFE31",
+	"desc": "Updated v3 General Model",
+	"dir": "RIFE31"
+},
+{
+	"name": "RIFE 3.4",
+	"desc": "Updated v3 General/Animation Model",
+	"dir": "RIFE34"
+},
+{
+	"name": "RIFE 3.5",
+	"desc": "Latest v3 General/Animation Model",
+	"dir": "RIFE35",
 	"isDefault": "true"
 }
 ]
