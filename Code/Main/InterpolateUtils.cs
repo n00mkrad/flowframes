@@ -265,12 +265,6 @@ namespace Flowframes.Main
         {
             AutoEncode.UpdateChunkAndBufferSizes();
 
-            if (current.alpha)
-            {
-                Logger.Log($"Not Using AutoEnc: Alpha mode is enabled.", true);
-                return false;
-            }
-
             if (!current.outMode.ToString().ToLower().Contains("vid") || current.outMode.ToString().ToLower().Contains("gif"))
             {
                 Logger.Log($"Not Using AutoEnc: Out Mode is not video ({current.outMode.ToString()})", true);

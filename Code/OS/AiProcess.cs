@@ -100,15 +100,6 @@ namespace Flowframes
 
                 await Task.Delay(500);
             }
-
-            if (!Interpolate.canceled && Interpolate.current.alpha)
-            {
-                Logger.Log("Processing alpha...");
-                string rgbInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir);
-                string alphaInterpDir = Path.Combine(Interpolate.current.tempFolder, Paths.interpDir + Paths.alphaSuffix);
-                if (!Directory.Exists(alphaInterpDir)) return;
-                await FfmpegAlpha.MergeAlphaIntoRgb(rgbInterpDir, Padding.interpFrames, alphaInterpDir, Padding.interpFrames, false);
-            }
         }
 
         public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
@@ -128,13 +119,6 @@ namespace Flowframes
                 }
 
                 await RunRifeCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
-
-                if (!Interpolate.canceled && Interpolate.current.alpha)
-                {
-                    InterpolationProgress.progressPaused = true;
-                    Logger.Log("Interpolating alpha channel...");
-                    await RunRifeCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
-                }
             }
             catch (Exception e)
             {
@@ -197,13 +181,6 @@ namespace Flowframes
                 }
 
                 await RunFlavrCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
-
-                if (!Interpolate.canceled && Interpolate.current.alpha)
-                {
-                    InterpolationProgress.progressPaused = true;
-                    Logger.Log("Interpolating alpha channel...");
-                    await RunFlavrCudaProcess(framesPath + Paths.alphaSuffix, Paths.interpDir + Paths.alphaSuffix, script, interpFactor, mdl);
-                }
             }
             catch (Exception e)
             {
@@ -253,13 +230,6 @@ namespace Flowframes
                 Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
                 await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
-
-                if (!Interpolate.canceled && Interpolate.current.alpha)
-                {
-                    InterpolationProgress.progressPaused = true;
-                    Logger.Log("Interpolating alpha channel...");
-                    await RunRifeNcnnMulti(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl);
-                }
             }
             catch (Exception e)
             {
@@ -340,13 +310,6 @@ namespace Flowframes
             try
             {
                 await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
-
-                if (!Interpolate.canceled && Interpolate.current.alpha)
-                {
-                    InterpolationProgress.progressPaused = true;
-                    Logger.Log("Interpolating alpha channel...");
-                    await RunDainNcnnProcess(framesPath + Paths.alphaSuffix, outPath + Paths.alphaSuffix, factor, mdl, tilesize);
-                }
             }
             catch (Exception e)
             {

@@ -300,7 +300,6 @@ namespace Flowframes.IO
             dedupThresh,
             delLogsOnStartup,
             dupeScanDebug,
-            enableAlpha,
             enableLoop,
             exportNamePattern,
             exportNamePatternLoop,

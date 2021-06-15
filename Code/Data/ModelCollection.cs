@@ -1,6 +1,5 @@
 ﻿using Flowframes.IO;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -17,14 +16,16 @@ namespace Flowframes.Data
             public string name;
             public string desc;
             public string dir;
+            public bool supportsAlpha;
             public bool isDefault;
 
-            public ModelInfo(AI ai, string name, string desc, string dir, bool isDefault)
+            public ModelInfo(AI ai, string name, string desc, string dir, bool supportsAlpha, bool isDefault)
             {
                 this.ai = ai;
                 this.name = name;
                 this.desc = desc;
                 this.dir = dir;
+                this.supportsAlpha = supportsAlpha;
                 this.isDefault = isDefault;
             }
 
@@ -49,9 +50,13 @@ namespace Flowframes.Data
 
             foreach (var item in data)
             {
+                bool alpha = false;
+                bool.TryParse((string)item.supportsAlpha, out alpha);
+
                 bool def = false;
                 bool.TryParse((string)item.isDefault, out def);
-                models.Add(new ModelInfo(ai, (string)item.name, (string)item.desc, (string)item.dir, def));
+
+                models.Add(new ModelInfo(ai, (string)item.name, (string)item.desc, (string)item.dir, alpha, def));
             }
         }
     }
