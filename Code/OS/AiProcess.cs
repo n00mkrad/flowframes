@@ -416,6 +416,12 @@ namespace Flowframes
                 InterpolateUtils.ShowMessage($"Error loading the AI model!\n\n{line}{msg}", "Error");
             }
 
+            if (!hasShownError && line.ToLower().Contains("unicodeencodeerror"))
+            {
+                hasShownError = true;
+                InterpolateUtils.ShowMessage($"It looks like your path contains invalid characters - remove them and try again!\n\n{line}", "Error");
+            }
+
             if (!hasShownError && err && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
             {
                 hasShownError = true;
