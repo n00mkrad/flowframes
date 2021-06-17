@@ -87,8 +87,6 @@ namespace Flowframes.Media
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors, Fraction resampleFps, LogMode logMode = LogMode.OnlyLastLine)
         {
-            Logger.Log($"GIF Rate: {rate} (Float: {rate.GetFloat()}) - Resample Rate: {resampleFps} (Float: {resampleFps.GetFloat()})");
-
             if (rate.GetFloat() > 50f && (resampleFps.GetFloat() > 50f || resampleFps.GetFloat() < 1))
                 resampleFps = new Fraction(50, 1);  // Force limit framerate as encoding above 50 will cause problems
 
