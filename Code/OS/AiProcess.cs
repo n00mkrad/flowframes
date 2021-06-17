@@ -118,6 +118,16 @@ namespace Flowframes
                     return;
                 }
 
+                string archFilesDir = Path.Combine(rifeDir, "arch");
+                string archFilesDirModel = Path.Combine(rifeDir, mdl, "arch");
+
+                if (Directory.Exists(archFilesDirModel))
+                {
+                    Logger.Log($"Model {mdl} has architecture python files - copying to arch.", true);
+                    IOUtils.DeleteContentsOfDir(archFilesDir);
+                    IOUtils.CopyDir(archFilesDirModel, archFilesDir);
+                }
+
                 await RunRifeCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
             }
             catch (Exception e)
