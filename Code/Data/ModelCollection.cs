@@ -31,12 +31,12 @@ namespace Flowframes.Data
 
             public string GetUiString()
             {
-                return $"{name} - {desc}{(isDefault ? " (Recommended)" : "")}";
+                return $"{name} - {desc}{(supportsAlpha ? " (Supports Transparency)" : "")}{(isDefault ? " (Recommended)" : "")}";
             }
 
             public override string ToString()
             {
-                return $"{name} - {desc} ({dir}){(isDefault ? " (Recommended)" : "")}";
+                return $"{name} - {desc} ({dir}){(supportsAlpha ? " (Supports Transparency)" : "")}{(isDefault ? " (Recommended)" : "")}";
             }
         }
 
