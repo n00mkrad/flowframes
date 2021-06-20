@@ -144,7 +144,7 @@ namespace Flowframes.IO
                 string jsonPath = Path.Combine(mdlDir, "files.json");
                 List<ModelFile> modelFiles = GetModelFilesFromJson(File.ReadAllText(jsonPath));
 
-                if (IOUtils.GetFilesize(jsonPath) < 32)
+                if (!File.Exists(jsonPath) || IOUtils.GetFilesize(jsonPath) < 32)
                 {
                     Interpolate.Cancel($"Error: Failed to download index file. Please try again.");
                     return;
