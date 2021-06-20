@@ -141,11 +141,18 @@ namespace Flowframes.IO
 
                 await DownloadTo(GetMdlFileUrl(aiDir, modelDir, "files.json"), mdlDir);
 
-                List<ModelFile> modelFiles = GetModelFilesFromJson(File.ReadAllText(Path.Combine(mdlDir, "files.json")));
+                string jsonPath = Path.Combine(mdlDir, "files.json");
+                List<ModelFile> modelFiles = GetModelFilesFromJson(File.ReadAllText(jsonPath));
+
+                if (IOUtils.GetFilesize(jsonPath) < 32)
+                {
+                    Interpolate.Cancel($"Error: Failed to download index file. Please try again.");
+                    return;
+                }
 
                 if (modelFiles.Count < 1)
                 {
-                    Interpolate.Cancel($"Error: Can't download model files because no entries were loaded from files.json. Please try again.");
+                    Interpolate.Cancel($"Error: Can't download model files because no entries were loaded from the index file. Please try again.");
                     return;
                 }
 
