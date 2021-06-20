@@ -256,6 +256,7 @@ namespace Flowframes.IO
             // Debug / Other / Experimental
             if (key == Key.mdlBaseUrl)    return WriteDefault(key, "https://dl.nmkd-hz.de/flowframes/mdl/");
             if (key == Key.ffEncPreset)   return WriteDefault(key, "medium");
+            if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "true");
 
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)
@@ -344,6 +345,7 @@ namespace Flowframes.IO
             rifeCudaFp16,
             rifeNcnnUseTta,
             sbsAllowAutoEnc,
+            sbsRunPreviousStepIfNeeded,
             sceneChangeFillMode,
             scnDetect,
             scnDetectValue,

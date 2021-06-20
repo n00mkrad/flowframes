@@ -40,7 +40,7 @@ namespace Flowframes.Main
                 await ExtractFramesStep();
 
             if (step.Contains("Run Interpolation"))
-                await DoInterpolate();
+                await InterpolateStep();
 
             if (step.Contains("Export"))
                 await CreateOutputVid();
@@ -55,9 +55,6 @@ namespace Flowframes.Main
 
         public static async Task ExtractFramesStep()
         {
-            // if (Config.GetBool("scnDetect") && !current.inputIsFrames)        // Input is video - extract frames first
-            //     await ExtractSceneChanges();
-
             if (!(await IOUtils.TryDeleteIfExistsAsync(current.framesFolder)))
             {
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
@@ -70,7 +67,7 @@ namespace Flowframes.Main
             await PostProcessFrames(true);
         }
 
-        public static async Task DoInterpolate()
+        public static async Task InterpolateStep()
         {
             if (!InterpolateUtils.CheckAiAvailable(current.ai)) return;
 
@@ -78,9 +75,19 @@ namespace Flowframes.Main
 
             if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*") < 2)
             {
-                InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
-                return;
+                if (Config.GetBool(Config.Key.sbsRunPreviousStepIfNeeded))
+                {
+                    Logger.Log($"There are no extracted frames to interpolate - Running extract step first...");
+                    await ExtractFramesStep();
+                }
+
+                if (IOUtils.GetAmountOfFiles(current.framesFolder, false, "*") < 2)
+                {
+                    InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
+                    return;
+                }
             }
+
             if (!(await IOUtils.TryDeleteIfExistsAsync(current.interpFolder)))
             {
                 InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
@@ -102,8 +109,17 @@ namespace Flowframes.Main
         {
             if (IOUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
             {
-                Cancel($"There are no interpolated frames to encode!\n\nDid you delete the folder?");
-                return;
+                if (Config.GetBool(Config.Key.sbsRunPreviousStepIfNeeded))
+                {
+                    Logger.Log($"There are no interpolated frames to export - Running interpolation step first...");
+                    await InterpolateStep();
+                }
+
+                if (IOUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
+                {
+                    Cancel($"There are no interpolated frames to encode!\n\nDid you delete the folder?");
+                    return;
+                }
             }
 
             if (!(await InterpolateUtils.CheckEncoderValid())) return;
