@@ -22,7 +22,7 @@ namespace Flowframes.UI
             }
             catch(Exception e)
             {
-                Logger.Log($"Failed to load news: {e.Message}");
+                Logger.Log($"Failed to load news: {e.Message}", true);
             }
         }
 
@@ -37,7 +37,7 @@ namespace Flowframes.UI
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to load patreon CSV: {e.Message}");
+                Logger.Log($"Failed to load patreon CSV: {e.Message}", true);
             }
         }
 

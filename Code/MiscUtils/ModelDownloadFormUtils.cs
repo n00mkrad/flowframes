@@ -4,8 +4,6 @@ using Flowframes.IO;
 using Flowframes.Main;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.MiscUtils
@@ -15,7 +13,7 @@ namespace Flowframes.MiscUtils
 		public static ModelDownloadForm form;
 		static int taskCounter = 0;
 		static int tasksToDo = 0;
-		public static bool canceled = false;
+		static bool canceled = false;
 
 		public static async Task DownloadAll ()
         {
@@ -48,6 +46,12 @@ namespace Flowframes.MiscUtils
 				taskCounter++;
 				form.SetProgress((((float)taskCounter / tasksToDo) * 100f).RoundToInt());
 			}
+		}
+
+		public static void Cancel ()
+		{
+			canceled = true;
+			ModelDownloader.canceled = true;
 		}
 
 		public static int GetTaskCount (AI[] ais)

@@ -6,15 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.IO
 {
     class ModelDownloader
     {
+        public static bool canceled = false;
 
         static string GetMdlUrl (string ai, string relPath)
         {
@@ -34,6 +33,7 @@ namespace Flowframes.IO
 
         static async Task DownloadTo (string url, string saveDirOrPath, bool log = true, int retries = 3)
         {
+            canceled = false;
             string savePath = saveDirOrPath;
 
             if (IOUtils.IsPathDirectory(saveDirOrPath))
@@ -68,12 +68,13 @@ namespace Flowframes.IO
 
             while (!completed)
             {
-                if (Interpolate.canceled)
+                if (canceled || Interpolate.canceled)
                 {
                     client.CancelAsync();
                     client.Dispose();
                     return;
                 }
+
                 if (sw.ElapsedMilliseconds > 6000)
                 {
                     client.CancelAsync();
@@ -87,6 +88,7 @@ namespace Flowframes.IO
                         return;
                     }
                 }
+
                 await Task.Delay(500);
             }
 

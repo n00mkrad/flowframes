@@ -63,11 +63,12 @@ namespace Flowframes.Forms
 
         private void cancelBtn_Click(object sender, EventArgs e)
         {
-            ModelDownloadFormUtils.canceled = true;
+            ModelDownloadFormUtils.Cancel();
         }
 
         private void closeBtn_Click(object sender, EventArgs e)
         {
+            ModelDownloadFormUtils.Cancel();
             Close();
         }
     }
