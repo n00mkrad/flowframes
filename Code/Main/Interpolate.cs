@@ -201,6 +201,9 @@ namespace Flowframes
 
         public static void Cancel(string reason = "", bool noMsgBox = false)
         {
+            if (current == null)
+                return;
+
             canceled = true;
             Program.mainForm.SetStatus("Canceled.");
             Program.mainForm.SetProgress(0);

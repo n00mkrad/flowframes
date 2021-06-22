@@ -360,6 +360,12 @@
     <Compile Include="Forms\DebugForm.Designer.cs">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ModelDownloadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ModelDownloadForm.Designer.cs">
+      <DependentUpon>ModelDownloadForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -399,6 +405,7 @@
     <Compile Include="MiscUtils\BackgroundTaskManager.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
+    <Compile Include="MiscUtils\ModelDownloadFormUtils.cs" />
     <Compile Include="MiscUtils\NmkdStopwatch.cs" />
     <Compile Include="OS\AiProcess.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
@@ -444,6 +451,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DebugForm.resx">
       <DependentUpon>DebugForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ModelDownloadForm.resx">
+      <DependentUpon>ModelDownloadForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.modelDownloaderBtn = new HTAlt.WinForms.HTButton();
             this.exportNamePatternLoop = new System.Windows.Forms.TextBox();
             this.label69 = new System.Windows.Forms.Label();
             this.label68 = new System.Windows.Forms.Label();
@@ -58,6 +59,10 @@
             this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.autoEncBackupMode = new System.Windows.Forms.ComboBox();
+            this.label16 = new System.Windows.Forms.Label();
             this.label74 = new System.Windows.Forms.Label();
             this.jpegFrames = new System.Windows.Forms.CheckBox();
             this.label63 = new System.Windows.Forms.Label();
@@ -176,14 +181,11 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.label16 = new System.Windows.Forms.Label();
-            this.autoEncBackupMode = new System.Windows.Forms.ComboBox();
-            this.label41 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             this.tabListPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).BeginInit();
             this.mpDedupePanel.SuspendLayout();
             this.magickDedupePanel.SuspendLayout();
@@ -197,7 +199,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).BeginInit();
             this.debugTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -221,6 +222,7 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.modelDownloaderBtn);
             this.generalTab.Controls.Add(this.exportNamePatternLoop);
             this.generalTab.Controls.Add(this.label69);
             this.generalTab.Controls.Add(this.label68);
@@ -249,6 +251,20 @@
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "Application";
+            // 
+            // modelDownloaderBtn
+            // 
+            this.modelDownloaderBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.modelDownloaderBtn.FlatAppearance.BorderSize = 0;
+            this.modelDownloaderBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.modelDownloaderBtn.ForeColor = System.Drawing.Color.White;
+            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 216);
+            this.modelDownloaderBtn.Name = "modelDownloaderBtn";
+            this.modelDownloaderBtn.Size = new System.Drawing.Size(206, 23);
+            this.modelDownloaderBtn.TabIndex = 86;
+            this.modelDownloaderBtn.Text = "Open Model Downloader";
+            this.modelDownloaderBtn.UseVisualStyleBackColor = false;
+            this.modelDownloaderBtn.Click += new System.EventHandler(this.modelDownloaderBtn_Click);
             // 
             // exportNamePatternLoop
             // 
@@ -331,9 +347,9 @@
             this.label64.Location = new System.Drawing.Point(10, 221);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(157, 13);
+            this.label64.Size = new System.Drawing.Size(165, 13);
             this.label64.TabIndex = 78;
-            this.label64.Text = "Delete Downloaded Model Files";
+            this.label64.Text = "Manage Downloaded Model Files";
             // 
             // label62
             // 
@@ -572,6 +588,54 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(536, 357);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox2.TabIndex = 90;
+            this.pictureBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.ForeColor = System.Drawing.Color.Silver;
+            this.label41.Location = new System.Drawing.Point(578, 360);
+            this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(158, 13);
+            this.label41.TabIndex = 89;
+            this.label41.Text = "Can cause slowdown on HDDs!";
+            // 
+            // autoEncBackupMode
+            // 
+            this.autoEncBackupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.autoEncBackupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.autoEncBackupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.autoEncBackupMode.ForeColor = System.Drawing.Color.White;
+            this.autoEncBackupMode.FormattingEnabled = true;
+            this.autoEncBackupMode.Items.AddRange(new object[] {
+            "Disabled",
+            "Enabled (Only Video)",
+            "Enabled (Complete - With Audio, Subtitles)"});
+            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 357);
+            this.autoEncBackupMode.Name = "autoEncBackupMode";
+            this.autoEncBackupMode.Size = new System.Drawing.Size(250, 21);
+            this.autoEncBackupMode.TabIndex = 88;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(10, 360);
+            this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(114, 13);
+            this.label16.TabIndex = 87;
+            this.label16.Text = "Auto-Encode Backups";
             // 
             // label74
             // 
@@ -2061,54 +2125,6 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(10, 360);
-            this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(114, 13);
-            this.label16.TabIndex = 87;
-            this.label16.Text = "Auto-Encode Backups";
-            // 
-            // autoEncBackupMode
-            // 
-            this.autoEncBackupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.autoEncBackupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.autoEncBackupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.autoEncBackupMode.ForeColor = System.Drawing.Color.White;
-            this.autoEncBackupMode.FormattingEnabled = true;
-            this.autoEncBackupMode.Items.AddRange(new object[] {
-            "Disabled",
-            "Enabled (Only Video)",
-            "Enabled (Complete - With Audio, Subtitles)"});
-            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 357);
-            this.autoEncBackupMode.Name = "autoEncBackupMode";
-            this.autoEncBackupMode.Size = new System.Drawing.Size(250, 21);
-            this.autoEncBackupMode.TabIndex = 88;
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.ForeColor = System.Drawing.Color.Silver;
-            this.label41.Location = new System.Drawing.Point(578, 360);
-            this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(158, 13);
-            this.label41.TabIndex = 89;
-            this.label41.Text = "Can cause slowdown on HDDs!";
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox2.Location = new System.Drawing.Point(536, 357);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox2.TabIndex = 90;
-            this.pictureBox2.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
-            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2131,6 +2147,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             this.tabListPage2.ResumeLayout(false);
             this.tabListPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).EndInit();
             this.mpDedupePanel.ResumeLayout(false);
             this.magickDedupePanel.ResumeLayout(false);
@@ -2148,7 +2165,6 @@
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2306,5 +2322,6 @@
         private System.Windows.Forms.ComboBox autoEncBackupMode;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private HTAlt.WinForms.HTButton modelDownloaderBtn;
     }
 }

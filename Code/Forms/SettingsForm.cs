@@ -229,5 +229,10 @@ namespace Flowframes.Forms
 
             mp4Crf.Value = Config.GetInt(mp4CrfConfigKey);
         }
+
+        private void modelDownloaderBtn_Click(object sender, EventArgs e)
+        {
+            new ModelDownloadForm().ShowDialog();
+        }
     }
 }

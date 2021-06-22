@@ -32,7 +32,7 @@ namespace Flowframes.IO
             return Path.Combine(Paths.GetPkgPath(), ai, model);
         }
 
-        static async Task DownloadTo (string url, string saveDirOrPath, int retries = 3)
+        static async Task DownloadTo (string url, string saveDirOrPath, bool log = true, int retries = 3)
         {
             string savePath = saveDirOrPath;
 
@@ -54,13 +54,13 @@ namespace Flowframes.IO
                 {
                     sw.Restart();
                     lastProgPercentage = args.ProgressPercentage;
-                    Logger.Log($"Downloading model file '{Path.GetFileName(url)}'... {args.ProgressPercentage}%", false, true);
+                    Logger.Log($"Downloading model file '{Path.GetFileName(url)}'... {args.ProgressPercentage}%", !log, true);
                 }
             };
             client.DownloadFileCompleted += (sender, args) =>
             {
                 if (args.Error != null)
-                    Logger.Log("Download failed: " + args.Error.Message);
+                    Logger.Log("Download failed: " + args.Error.Message, !log);
                 completed = true;
             };
 
@@ -79,7 +79,7 @@ namespace Flowframes.IO
                     client.CancelAsync();
                     if(retries > 0)
                     {
-                        await DownloadTo(url, saveDirOrPath, retries--);
+                        await DownloadTo(url, saveDirOrPath, log, retries--);
                     }
                     else
                     {
@@ -89,6 +89,7 @@ namespace Flowframes.IO
                 }
                 await Task.Delay(500);
             }
+
             Logger.Log($"Downloaded '{Path.GetFileName(url)}' ({IOUtils.GetFilesize(savePath) / 1024} KB)", true);
         }
 
@@ -124,7 +125,7 @@ namespace Flowframes.IO
             return modelFiles;
         }
 
-        public static async Task DownloadModelFiles (AI ai, string modelDir)
+        public static async Task DownloadModelFiles (AI ai, string modelDir, bool log = true)
         {
             string aiDir = ai.pkgDir;
             Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {modelDir})", true);
@@ -136,10 +137,10 @@ namespace Flowframes.IO
                 if (AreFilesValid(aiDir, modelDir))
                     return;
 
-                Logger.Log($"Downloading '{modelDir}' model files...");
+                Logger.Log($"Downloading '{modelDir}' model files...", !log);
                 Directory.CreateDirectory(mdlDir);
 
-                await DownloadTo(GetMdlFileUrl(aiDir, modelDir, "files.json"), mdlDir);
+                await DownloadTo(GetMdlFileUrl(aiDir, modelDir, "files.json"), mdlDir, false);
 
                 string jsonPath = Path.Combine(mdlDir, "files.json");
                 List<ModelFile> modelFiles = GetModelFilesFromJson(File.ReadAllText(jsonPath));
@@ -159,17 +160,17 @@ namespace Flowframes.IO
                 foreach (ModelFile mf in modelFiles)
                 {
                     string relPath = Path.Combine(mf.dir, mf.filename).Replace("\\", "/");
-                    await DownloadTo(GetMdlFileUrl(aiDir, modelDir, relPath), Path.Combine(mdlDir, relPath));
+                    await DownloadTo(GetMdlFileUrl(aiDir, modelDir, relPath), Path.Combine(mdlDir, relPath), false);
                 }
 
-                Logger.Log($"Downloaded \"{modelDir}\" model files.", false, true);
+                Logger.Log($"Downloaded \"{modelDir}\" model files.", !log, true);
 
                 if (!AreFilesValid(aiDir, modelDir))
                     Interpolate.Cancel($"Model files are invalid! Please try again.");
             }
             catch (Exception e)
             {
-                Logger.Log($"DownloadModelFiles Error: {e.Message}\nStack Trace:\n{e.StackTrace}");
+                Logger.Log($"DownloadModelFiles Error: {e.Message}\nStack Trace:\n{e.StackTrace}", !log);
                 Interpolate.Cancel($"Error downloading model files: {e.Message}");
             }
         }
@@ -215,10 +216,6 @@ namespace Flowframes.IO
                 return false;
             }
 
-            // TODO UNCOMMENT
-            //if (Debugger.IsAttached)    // Disable MD5 check in dev environment
-            //    return true;
-
             string md5FilePath = Path.Combine(mdlDir, "files.json");
 
             if (!File.Exists(md5FilePath) || IOUtils.GetFilesize(md5FilePath) < 32)
@@ -237,6 +234,21 @@ namespace Flowframes.IO
 
             foreach (ModelFile mf in modelFiles)
             {
+                string filePath = Path.Combine(mdlDir, mf.dir, mf.filename);
+                long fileSize = IOUtils.GetFilesize(filePath);
+
+                if (fileSize != mf.size)
+                {
+                    Logger.Log($"Files for model {model} not valid: Filesize of {mf.filename} ({fileSize}) does not equal validation size ({mf.size}).", true);
+                    return false;
+                }
+
+                if(fileSize > 100 * 1024 * 1024)    // Skip hash calculation if file is very large, filesize check should be enough anyway
+                {
+                    Logger.Log($"Skipped CRC32 check for {mf.filename} because it's too big ({fileSize / 1024 / 1024} MB)", true);
+                    return true;
+                }
+
                 string crc = IOUtils.GetHash(Path.Combine(mdlDir, mf.dir, mf.filename), IOUtils.Hash.CRC32);
 
                 if (crc.Trim() != mf.crc32.Trim())

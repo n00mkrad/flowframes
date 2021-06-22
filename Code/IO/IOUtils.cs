@@ -708,8 +708,9 @@ namespace Flowframes.IO
 		public static string GetHash (string path, Hash hashType, bool log = true)
 		{
 			string hashStr = "";
+			NmkdStopwatch sw = new NmkdStopwatch();
 
-            if (IsPathDirectory(path))
+			if (IsPathDirectory(path))
             {
 				Logger.Log($"Path '{path}' is directory! Returning empty hash.", true);
 				return hashStr;
@@ -741,7 +742,7 @@ namespace Flowframes.IO
             }
 
 			if (log)
-				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}): {hashStr}", true);
+				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}): {hashStr} ({sw.GetElapsedStr()})", true);
 			
 			return hashStr;
 		}
