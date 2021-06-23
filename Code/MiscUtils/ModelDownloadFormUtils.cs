@@ -17,6 +17,7 @@ namespace Flowframes.MiscUtils
 
 		public static async Task DownloadModels (bool rifeC, bool rifeN, bool dainN, bool flavrC)
         {
+			form.SetDownloadBtnEnabled(true);
 			canceled = false;
 			List<AI> ais = new List<AI>();
 
@@ -28,16 +29,18 @@ namespace Flowframes.MiscUtils
 			if (ais.Count < 1)
 				return;
 
-			taskCounter = 0;
-			tasksToDo = GetTaskCount(ais);
+			taskCounter = 1;
+			tasksToDo = GetTaskCount(ais) + 1;
 			form.SetWorking(true);
 			await Task.Delay(10);
+			UpdateProgressBar();
 
-			foreach(AI ai in ais)
+			foreach (AI ai in ais)
 				await DownloadForAi(ai);
 
 			form.SetWorking(false);
 			form.SetStatus($"Done.");
+			form.SetDownloadBtnEnabled(false);
 		}
 
         public static async Task DownloadForAi(AI ai)
@@ -53,8 +56,13 @@ namespace Flowframes.MiscUtils
 				form.SetStatus($"Downloading files for {modelInfo.ai.aiName.Replace("_", "-")}...");
 				await ModelDownloader.DownloadModelFiles(ai, modelInfo.dir, false);
 				taskCounter++;
-				form.SetProgress((((float)taskCounter / tasksToDo) * 100f).RoundToInt());
+				UpdateProgressBar();
 			}
+		}
+
+		static void UpdateProgressBar ()
+        {
+			form.SetProgress((((float)taskCounter / tasksToDo) * 100f).RoundToInt());
 		}
 
 		public static void Cancel ()

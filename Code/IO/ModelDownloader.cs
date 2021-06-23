@@ -136,7 +136,7 @@ namespace Flowframes.IO
             {
                 string mdlDir = GetLocalPath(aiDir, modelDir);
 
-                if (AreFilesValid(aiDir, modelDir))
+                if (await AreFilesValid(aiDir, modelDir))
                     return;
 
                 Logger.Log($"Downloading '{modelDir}' model files...", !log);
@@ -167,7 +167,7 @@ namespace Flowframes.IO
 
                 Logger.Log($"Downloaded \"{modelDir}\" model files.", !log, true);
 
-                if (!AreFilesValid(aiDir, modelDir))
+                if (!(await AreFilesValid(aiDir, modelDir)))
                     Interpolate.Cancel($"Model files are invalid! Please try again.");
             }
             catch (Exception e)
@@ -208,7 +208,7 @@ namespace Flowframes.IO
             return modelPaths;
         }
 
-        public static bool AreFilesValid (string ai, string model)
+        public static async Task<bool> AreFilesValid (string ai, string model)
         {
             string mdlDir = GetLocalPath(ai, model);
 
@@ -251,7 +251,7 @@ namespace Flowframes.IO
                     return true;
                 }
 
-                string crc = IOUtils.GetHash(Path.Combine(mdlDir, mf.dir, mf.filename), IOUtils.Hash.CRC32);
+                string crc = await IOUtils.GetHashAsync(Path.Combine(mdlDir, mf.dir, mf.filename), IOUtils.Hash.CRC32);
 
                 if (crc.Trim() != mf.crc32.Trim())
                 {

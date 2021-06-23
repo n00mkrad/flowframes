@@ -55,6 +55,11 @@ namespace Flowframes.Forms
             statusLabel.Text = status;
         }
 
+        public void SetDownloadBtnEnabled(bool state)
+        {
+            downloadModelsBtn.Enabled = state;
+        }
+
         private void downloadModelsBtn_Click(object sender, EventArgs e)
         {
             ModelDownloadFormUtils.form = this;
