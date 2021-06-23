@@ -37,11 +37,27 @@ namespace Flowframes
         {
             if (str.Length < 1 || str == null)
                 return 0;
-            try { return int.Parse(str.TrimNumbers()); }
+
+            try
+            {
+                return int.Parse(str.TrimNumbers());
+            }
             catch (Exception e)
             {
                 Logger.Log("Failed to parse \"" + str + "\" to int: " + e.Message, true);
                 return 0;
+            }
+        }
+
+        public static bool GetBool(this string str)
+        {
+            try
+            {
+                return bool.Parse(str);
+            }
+            catch
+            {
+                return false;
             }
         }
 

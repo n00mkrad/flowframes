@@ -111,18 +111,20 @@ namespace Flowframes.IO
 
         public static bool GetBool(Key key)
         {
-            return bool.Parse(Get(key, Type.Bool));
+            return Get(key, Type.Bool).GetBool();
         }
 
-        public static bool GetBool(Key key, bool defaultVal)
+        public static bool GetBool(Key key, bool defaultVal = false)
         {
             WriteIfDoesntExist(key.ToString(), (defaultVal ? "True" : "False"));
-            return bool.Parse(Get(key, Type.Bool));
+            return Get(key, Type.Bool).GetBool();
         }
 
         public static bool GetBool(string key)
         {
-            return bool.Parse(Get(key, Type.Bool));
+            WriteIfDoesntExist(key.ToString(), false.ToString());
+            string str = Get(key, Type.Bool);
+            return str.GetBool();
         }
 
         public static bool GetBool(string key, bool defaultVal)
