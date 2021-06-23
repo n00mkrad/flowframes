@@ -130,7 +130,7 @@ namespace Flowframes.IO
         public static async Task DownloadModelFiles (AI ai, string modelDir, bool log = true)
         {
             string aiDir = ai.pkgDir;
-            Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {modelDir})", true);
+            Logger.Log($"DownloadModelFiles(string ai = {ai}, string model = {modelDir}, bool log = {log})", true);
 
             try
             {
@@ -162,7 +162,7 @@ namespace Flowframes.IO
                 foreach (ModelFile mf in modelFiles)
                 {
                     string relPath = Path.Combine(mf.dir, mf.filename).Replace("\\", "/");
-                    await DownloadTo(GetMdlFileUrl(aiDir, modelDir, relPath), Path.Combine(mdlDir, relPath), false);
+                    await DownloadTo(GetMdlFileUrl(aiDir, modelDir, relPath), Path.Combine(mdlDir, relPath), log);
                 }
 
                 Logger.Log($"Downloaded \"{modelDir}\" model files.", !log, true);
