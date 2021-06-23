@@ -39,9 +39,14 @@ namespace Flowframes.Forms
                 modelFoldersBytes += IOUtils.GetDirSize(modelFolder, true);
 
             if (modelFoldersBytes > 1024 * 1024)
+            {
+                clearModelCacheBtn.Enabled = true;
                 clearModelCacheBtn.Text = $"Clear Model Cache ({FormatUtils.Bytes(modelFoldersBytes)})";
+            }
             else
+            {
                 clearModelCacheBtn.Enabled = false;
+            }
         }
 
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -233,6 +238,7 @@ namespace Flowframes.Forms
         private void modelDownloaderBtn_Click(object sender, EventArgs e)
         {
             new ModelDownloadForm().ShowDialog();
+            CheckModelCacheSize();
         }
     }
 }

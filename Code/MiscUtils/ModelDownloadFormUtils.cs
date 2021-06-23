@@ -15,10 +15,19 @@ namespace Flowframes.MiscUtils
 		static int tasksToDo = 0;
 		static bool canceled = false;
 
-		public static async Task DownloadAll ()
+		public static async Task DownloadModels (bool rifeC, bool rifeN, bool dainN, bool flavrC)
         {
 			canceled = false;
-			AI[] ais = new AI[] { Networks.rifeCuda, Networks.rifeNcnn, Networks.dainNcnn, Networks.flavrCuda };
+			List<AI> ais = new List<AI>();
+
+			if (rifeC) ais.Add(Networks.rifeCuda);
+			if (rifeN) ais.Add(Networks.rifeNcnn);
+			if (dainN) ais.Add(Networks.dainNcnn);
+			if (flavrC) ais.Add(Networks.flavrCuda);
+
+			if (ais.Count < 1)
+				return;
+
 			taskCounter = 0;
 			tasksToDo = GetTaskCount(ais);
 			form.SetWorking(true);
@@ -54,7 +63,7 @@ namespace Flowframes.MiscUtils
 			ModelDownloader.canceled = true;
 		}
 
-		public static int GetTaskCount (AI[] ais)
+		public static int GetTaskCount (List<AI> ais)
         {
 			int count = 0;
 

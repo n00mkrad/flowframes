@@ -38,28 +38,34 @@ namespace Flowframes.Forms
             this.closeBtn = new HTAlt.WinForms.HTButton();
             this.cancelBtn = new HTAlt.WinForms.HTButton();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.rifeCuda = new System.Windows.Forms.CheckBox();
+            this.rifeNcnn = new System.Windows.Forms.CheckBox();
+            this.dainNcnn = new System.Windows.Forms.CheckBox();
+            this.flavrCuda = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // longProgBar
             // 
+            this.longProgBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.longProgBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.longProgBar.BorderThickness = 0;
-            this.longProgBar.Location = new System.Drawing.Point(12, 254);
+            this.longProgBar.Location = new System.Drawing.Point(12, 274);
             this.longProgBar.Name = "longProgBar";
             this.longProgBar.Size = new System.Drawing.Size(600, 15);
             this.longProgBar.TabIndex = 34;
             // 
             // downloadModelsBtn
             // 
+            this.downloadModelsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.downloadModelsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.downloadModelsBtn.FlatAppearance.BorderSize = 0;
             this.downloadModelsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadModelsBtn.ForeColor = System.Drawing.Color.White;
-            this.downloadModelsBtn.Location = new System.Drawing.Point(12, 219);
+            this.downloadModelsBtn.Location = new System.Drawing.Point(12, 239);
             this.downloadModelsBtn.Name = "downloadModelsBtn";
             this.downloadModelsBtn.Size = new System.Drawing.Size(150, 23);
             this.downloadModelsBtn.TabIndex = 87;
-            this.downloadModelsBtn.Text = "Download All Model Files";
+            this.downloadModelsBtn.Text = "Download Model Files";
             this.downloadModelsBtn.UseVisualStyleBackColor = false;
             this.downloadModelsBtn.Click += new System.EventHandler(this.downloadModelsBtn_Click);
             // 
@@ -119,11 +125,12 @@ namespace Flowframes.Forms
             // 
             // closeBtn
             // 
+            this.closeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.closeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.closeBtn.FlatAppearance.BorderSize = 0;
             this.closeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.closeBtn.ForeColor = System.Drawing.Color.White;
-            this.closeBtn.Location = new System.Drawing.Point(168, 219);
+            this.closeBtn.Location = new System.Drawing.Point(168, 239);
             this.closeBtn.Name = "closeBtn";
             this.closeBtn.Size = new System.Drawing.Size(150, 23);
             this.closeBtn.TabIndex = 92;
@@ -133,11 +140,12 @@ namespace Flowframes.Forms
             // 
             // cancelBtn
             // 
+            this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cancelBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.cancelBtn.FlatAppearance.BorderSize = 0;
             this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancelBtn.ForeColor = System.Drawing.Color.White;
-            this.cancelBtn.Location = new System.Drawing.Point(168, 219);
+            this.cancelBtn.Location = new System.Drawing.Point(168, 239);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(150, 23);
             this.cancelBtn.TabIndex = 93;
@@ -155,12 +163,68 @@ namespace Flowframes.Forms
             this.statusLabel.Size = new System.Drawing.Size(0, 13);
             this.statusLabel.TabIndex = 94;
             // 
+            // rifeCuda
+            // 
+            this.rifeCuda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.rifeCuda.AutoSize = true;
+            this.rifeCuda.Checked = true;
+            this.rifeCuda.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.rifeCuda.Location = new System.Drawing.Point(12, 203);
+            this.rifeCuda.Name = "rifeCuda";
+            this.rifeCuda.Size = new System.Drawing.Size(83, 17);
+            this.rifeCuda.TabIndex = 95;
+            this.rifeCuda.Text = "RIFE CUDA";
+            this.rifeCuda.UseVisualStyleBackColor = true;
+            // 
+            // rifeNcnn
+            // 
+            this.rifeNcnn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.rifeNcnn.AutoSize = true;
+            this.rifeNcnn.Checked = true;
+            this.rifeNcnn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.rifeNcnn.Location = new System.Drawing.Point(101, 203);
+            this.rifeNcnn.Name = "rifeNcnn";
+            this.rifeNcnn.Size = new System.Drawing.Size(84, 17);
+            this.rifeNcnn.TabIndex = 96;
+            this.rifeNcnn.Text = "RIFE NCNN";
+            this.rifeNcnn.UseVisualStyleBackColor = true;
+            // 
+            // dainNcnn
+            // 
+            this.dainNcnn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.dainNcnn.AutoSize = true;
+            this.dainNcnn.Checked = true;
+            this.dainNcnn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.dainNcnn.Location = new System.Drawing.Point(191, 203);
+            this.dainNcnn.Name = "dainNcnn";
+            this.dainNcnn.Size = new System.Drawing.Size(86, 17);
+            this.dainNcnn.TabIndex = 97;
+            this.dainNcnn.Text = "DAIN NCNN";
+            this.dainNcnn.UseVisualStyleBackColor = true;
+            // 
+            // flavrCuda
+            // 
+            this.flavrCuda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.flavrCuda.AutoSize = true;
+            this.flavrCuda.Checked = true;
+            this.flavrCuda.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.flavrCuda.Location = new System.Drawing.Point(283, 203);
+            this.flavrCuda.Name = "flavrCuda";
+            this.flavrCuda.Size = new System.Drawing.Size(93, 17);
+            this.flavrCuda.TabIndex = 98;
+            this.flavrCuda.Text = "FLAVR CUDA";
+            this.flavrCuda.UseVisualStyleBackColor = true;
+            // 
             // ModelDownloadForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.ClientSize = new System.Drawing.Size(624, 281);
+            this.ClientSize = new System.Drawing.Size(624, 301);
+            this.Controls.Add(this.flavrCuda);
+            this.Controls.Add(this.dainNcnn);
+            this.Controls.Add(this.rifeNcnn);
+            this.Controls.Add(this.rifeCuda);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.cancelBtn);
@@ -191,5 +255,9 @@ namespace Flowframes.Forms
         private HTAlt.WinForms.HTButton closeBtn;
         private HTAlt.WinForms.HTButton cancelBtn;
         private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.CheckBox rifeCuda;
+        private System.Windows.Forms.CheckBox rifeNcnn;
+        private System.Windows.Forms.CheckBox dainNcnn;
+        private System.Windows.Forms.CheckBox flavrCuda;
     }
 }

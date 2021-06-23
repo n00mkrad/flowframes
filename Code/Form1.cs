@@ -15,6 +15,7 @@ using Flowframes.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using Flowframes.MiscUtils;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Flowframes
 {
@@ -49,8 +50,11 @@ namespace Flowframes
             InterpolationProgress.preview = previewPicturebox;
             UpdateStepByStepControls();
             Initialized();
-            HandleArguments();
+            HandleFileArgs();
             Text = $"Flowframes";
+
+            if (Program.args.Contains("show-model-downloader"))
+                new ModelDownloadForm().ShowDialog();
         }
 
         private async void Form1_Shown(object sender, EventArgs e)
@@ -83,14 +87,13 @@ namespace Flowframes
             }
         }
 
-        void HandleArguments()
+        void HandleFileArgs()
         {
             try
             {
-                string[] args = Environment.GetCommandLineArgs();
                 List<string> files = new List<string>();
 
-                foreach (string arg in args)
+                foreach (string arg in Program.args)
                     if (Path.GetExtension(arg) != ".exe" && IOUtils.IsFileValid(arg)) 
                         files.Add(arg);
 
@@ -99,7 +102,7 @@ namespace Flowframes
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to load input from given launch arguments.");
+                Logger.Log($"Failed to load input from given launch arguments.", true);
                 Logger.Log($"{e.Message}\n{e.StackTrace}", true);
             }
         }

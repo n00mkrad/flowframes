@@ -1,9 +1,11 @@
 ﻿using Flowframes.Data;
+using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.OS;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +17,7 @@ namespace Flowframes
 {
     static class Program
     {
+        public static string[] args = new string[0];
         public static Form1 mainForm;
 
         public static bool busy = false;
@@ -37,7 +40,14 @@ namespace Flowframes
 
             Networks.Init();
             Task.Run(() => DiskSpaceCheckLoop());
+            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
+            Logger.Log($"Args: {(args.Length > 0 ? string.Join(", -", args) : "None")}", false);
 
+            LaunchMainForm();
+        }
+
+        static void LaunchMainForm()
+        {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -64,13 +74,13 @@ namespace Flowframes
             ShowUnhandledError(text);
         }
 
-        static void ShowUnhandledError (string text)
+        static void ShowUnhandledError(string text)
         {
             MessageBox.Show(text, "Unhandled Error");
             Clipboard.SetText(text);
         }
 
-        static async Task DiskSpaceCheckLoop ()
+        static async Task DiskSpaceCheckLoop()
         {
             while (true)
             {
