@@ -1,3 +1,12 @@
+Flowframes 1.28.0 Changelog:
+- Updated RIFE CUDA to 3.8 (Skipped previous models)
+- Added native transparency support with RIFE CUDA 3.8
+- Added model downloader to pre-download all models at once
+- Added support for loading custom AI models
+- Improved model loading (faster file validation and lots of internal changes)
+- Step-by-step mode: Previous steps now run automatically if needed
+
+
 Flowframes 1.27.2 Changelog:
 - Added Backup option - Will save an incomplete video after every chunk encode
 - Custom FFmpeg args now also get applied for GIF encoding, not just videos
