@@ -59,15 +59,15 @@ except:
 
 try:
     try:
-        print(f"Trying to load v3 (new) model from {os.path.join(dname, args.model)}")
-        from model.RIFE_HDv3 import Model
+        print(f"Trying to load v3 (new) model using arch files from {os.path.join(dname, args.model)}")
+        from arch.RIFE_HDv3 import Model
         model = Model()
         model.load_model(os.path.join(dname, args.model), -1)
         print("Loaded v3.x HD model.")
     except:
         try:
             print(f"Trying to load v3 (legacy) model from {os.path.join(dname, args.model)}")
-            from model_v3_legacy.RIFE_HDv3 import Model
+            from model.RIFE_HDv3 import Model
             model = Model()
             model.load_model(os.path.join(dname, args.model), -1)
             print("Loaded v3.x HD model.")

@@ -26,15 +26,15 @@
 {
 	"name": "RIFE 3.1",
 	"desc": "Updated v3 General Model",
-	"supportsAlpha": "false",
 	"dir": "RIFE31",
+	"supportsAlpha": "false",
 	"isDefault": "true"
 },
 {
-	"name": "RIFE 3.5",
-	"desc": "Updated v3 General Model (Alpha Support) (Experimental)",
-	"dir": "RIFE35",
+	"name": "RIFE 3.8",
+	"desc": "Updated v3 General Model",
+	"dir": "RIFE38",
 	"supportsAlpha": "true",
 	"isDefault": "false"
-}
+},
 ]
