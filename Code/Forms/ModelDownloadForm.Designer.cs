@@ -157,7 +157,7 @@ namespace Flowframes.Forms
             // 
             this.statusLabel.AutoSize = true;
             this.statusLabel.ForeColor = System.Drawing.Color.White;
-            this.statusLabel.Location = new System.Drawing.Point(329, 224);
+            this.statusLabel.Location = new System.Drawing.Point(329, 244);
             this.statusLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(0, 13);
