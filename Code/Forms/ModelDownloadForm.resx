@@ -119,7 +119,7 @@
   </resheader>
   <data name="label39.Text" xml:space="preserve">
     <value>Normally, Flowframes will download AI model files only when you need them in order to save disk space.
-This means that each model gets downloaded if you use it for the first time - afterwards it gets loaded from disk.
+This means that each model gets downloaded when you use it for the first time - afterwards it gets loaded from disk.
 
 However, if you want to use all models offline (or if you are going to copy Flowframes to a machine without internet connection), you can pre-download all model files here.
 

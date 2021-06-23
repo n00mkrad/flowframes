@@ -37,7 +37,7 @@ namespace Flowframes.MiscUtils
 				await DownloadForAi(ai);
 
 			form.SetWorking(false);
-			form.SetStatus($"");
+			form.SetStatus($"Done.");
 		}
 
         public static async Task DownloadForAi(AI ai)
