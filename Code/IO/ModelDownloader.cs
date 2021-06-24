@@ -136,7 +136,7 @@ namespace Flowframes.IO
             {
                 string mdlDir = GetLocalPath(aiDir, modelDir);
 
-                if (await AreFilesValid(aiDir, modelDir))
+                if (modelDir.EndsWith("_custom") || await AreFilesValid(aiDir, modelDir))
                     return;
 
                 Logger.Log($"Downloading '{modelDir}' model files...", !log);
