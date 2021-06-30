@@ -854,25 +854,34 @@ namespace Flowframes.IO
 		public static long GetDirSize(string path, bool recursive, string[] includedExtensions = null)
 		{
 			long size = 0;
-			// Add file sizes.
-			string[] files;
-			StringComparison ignCase = StringComparison.OrdinalIgnoreCase;
 
-			if (includedExtensions == null)
-				files = Directory.GetFiles(path);
-			else
-				files = Directory.GetFiles(path).Where(file => includedExtensions.Any(x => file.EndsWith(x, ignCase))).ToArray();
+			try
+            {
+				string[] files;
+				StringComparison ignCase = StringComparison.OrdinalIgnoreCase;
 
-			foreach (string file in files)
-				size += new FileInfo(file).Length;
+				if (includedExtensions == null)
+					files = Directory.GetFiles(path);
+				else
+					files = Directory.GetFiles(path).Where(file => includedExtensions.Any(x => file.EndsWith(x, ignCase))).ToArray();
 
-			if (!recursive)
-				return size;
+				foreach (string file in files)
+				{
+					try { size += new FileInfo(file).Length; } catch { size += 0; }
+				}
 
-			// Add subdirectory sizes.
-			DirectoryInfo[] dis = new DirectoryInfo(path).GetDirectories();
-			foreach (DirectoryInfo di in dis)
-				size += GetDirSize(di.FullName, true, includedExtensions);
+				if (!recursive)
+					return size;
+
+				// Add subdirectory sizes.
+				DirectoryInfo[] dis = new DirectoryInfo(path).GetDirectories();
+				foreach (DirectoryInfo di in dis)
+					size += GetDirSize(di.FullName, true, includedExtensions);
+			}
+			catch(Exception e)
+            {
+				Logger.Log($"GetDirSize Error: {e.Message}\n{e.StackTrace}", true);
+            }
 
 			return size;
 		}
