@@ -177,7 +177,9 @@ namespace Flowframes.Main
                 if (!FrameIsStillNeeded(interpFramesLines[frame], frame))    // Make sure frames are no longer needed (for dupes) before deleting!
                 {
                     string framePath = Path.Combine(interpFramesPath, interpFramesLines[frame]);
-                    IOUtils.OverwriteFileWithText(framePath);    // Overwrite to save space without breaking progress counter
+                    //IOUtils.OverwriteFileWithText(framePath);    // Overwrite to save space without breaking progress counter
+                    IOUtils.TryDeleteIfExists(framePath);
+                    InterpolationProgress.deletedFramesCount++;
                 }
             }
 

@@ -67,8 +67,9 @@ namespace Flowframes
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             AiProcessSuspend.SetRunning(false);
-            int interpolatedFrames = IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt);
-            InterpolationProgress.UpdateInterpProgress(interpolatedFrames, InterpolationProgress.targetFrames);
+            int interpFramesFiles = IOUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt);
+            int interpFramesCount = interpFramesFiles + InterpolationProgress.deletedFramesCount;
+            InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
             
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
@@ -80,9 +81,9 @@ namespace Flowframes
             Logger.Log(logStr);
             processTime.Stop();
 
-            if(interpolatedFrames < 3)
+            if(interpFramesCount < 3)
             {
-                string amount = interpolatedFrames > 0 ? $"Only {interpolatedFrames}" : "No";
+                string amount = interpFramesCount > 0 ? $"Only {interpFramesCount}" : "No";
                 Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.");
                 return;
             }
@@ -448,7 +449,7 @@ namespace Flowframes
             {
                 hasShownError = true;
                 bool usingDain = (Interpolate.current.ai.aiName == Networks.dainNcnn.aiName);
-                string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "Try a lower resolution (Settings -> Max Video Size).";
+                string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
                 InterpolateUtils.ShowMessage($"Vulkan ran out of memory!\n\n{line}{msg}", "Error");
             }
 

@@ -16,6 +16,7 @@ namespace Flowframes.UI
 {
     class InterpolationProgress
     {
+        public static int deletedFramesCount;
         public static int lastFrame;
         public static int targetFrames;
         public static string currentOutdir;
@@ -34,6 +35,7 @@ namespace Flowframes.UI
             Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
             bool firstProgUpd = true;
             Program.mainForm.SetProgress(0);
+            deletedFramesCount = 0;
             lastFrame = 0;
             peakFpsOut = 0f;
 
@@ -141,8 +143,10 @@ namespace Flowframes.UI
             {
                 while (Program.busy && (i + 10) > interpolatedInputFramesCount) await Task.Delay(1000);
                 if (!Program.busy) break;
+
                 if (i != 0 && i != inputFrames.Length - 1)
                     IOUtils.OverwriteFileWithText(inputFrames[i]);
+
                 if (i % 10 == 0) await Task.Delay(10);
             }
         }

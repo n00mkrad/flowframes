@@ -467,9 +467,10 @@ namespace Flowframes.IO
             }
 		}
 
-		public static bool DeleteIfExists (string path)		// Returns true if the file/dir exists
+		public static bool DeleteIfExists (string path, bool log = false)		// Returns true if the file/dir exists
         {
-			Logger.Log($"DeleteIfExists({path})", true);
+			if(log)
+				Logger.Log($"DeleteIfExists({path})", true);
 
 			if (!IsPathDirectory(path) && File.Exists(path))
             {

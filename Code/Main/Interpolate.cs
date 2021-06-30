@@ -15,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Win32Interop.Structs;
 using Padding = Flowframes.Data.Padding;
 using Utils = Flowframes.Main.InterpolateUtils;
 
