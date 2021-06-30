@@ -181,6 +181,10 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.alwaysWaitForAutoEnc = new System.Windows.Forms.CheckBox();
+            this.label58 = new System.Windows.Forms.Label();
+            this.label70 = new System.Windows.Forms.Label();
+            this.autoEncBlockPanel = new System.Windows.Forms.Panel();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -550,6 +554,10 @@
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.autoEncBlockPanel);
+            this.tabListPage2.Controls.Add(this.label70);
+            this.tabListPage2.Controls.Add(this.alwaysWaitForAutoEnc);
+            this.tabListPage2.Controls.Add(this.label58);
             this.tabListPage2.Controls.Add(this.pictureBox2);
             this.tabListPage2.Controls.Add(this.label41);
             this.tabListPage2.Controls.Add(this.autoEncBackupMode);
@@ -828,6 +836,7 @@
             this.autoEncMode.Name = "autoEncMode";
             this.autoEncMode.Size = new System.Drawing.Size(250, 21);
             this.autoEncMode.TabIndex = 70;
+            this.autoEncMode.SelectedIndexChanged += new System.EventHandler(this.autoEncMode_SelectedIndexChanged);
             // 
             // label49
             // 
@@ -2125,6 +2134,44 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
+            // alwaysWaitForAutoEnc
+            // 
+            this.alwaysWaitForAutoEnc.AutoSize = true;
+            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 390);
+            this.alwaysWaitForAutoEnc.Name = "alwaysWaitForAutoEnc";
+            this.alwaysWaitForAutoEnc.Size = new System.Drawing.Size(15, 14);
+            this.alwaysWaitForAutoEnc.TabIndex = 92;
+            this.alwaysWaitForAutoEnc.UseVisualStyleBackColor = true;
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.Location = new System.Drawing.Point(10, 390);
+            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(229, 13);
+            this.label58.TabIndex = 91;
+            this.label58.Text = "Low Disk Space Mode (Wait For Auto-Encode)";
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.ForeColor = System.Drawing.Color.Silver;
+            this.label70.Location = new System.Drawing.Point(308, 390);
+            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(443, 13);
+            this.label70.TabIndex = 93;
+            this.label70.Text = "Avoids filling up your hard drive by temporarily pausing interpolation if encodin" +
+    "g can\'t keep up";
+            // 
+            // autoEncBlockPanel
+            // 
+            this.autoEncBlockPanel.Location = new System.Drawing.Point(4, 330);
+            this.autoEncBlockPanel.Name = "autoEncBlockPanel";
+            this.autoEncBlockPanel.Size = new System.Drawing.Size(755, 86);
+            this.autoEncBlockPanel.TabIndex = 94;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2323,5 +2370,9 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.PictureBox pictureBox2;
         private HTAlt.WinForms.HTButton modelDownloaderBtn;
+        private System.Windows.Forms.Label label70;
+        private System.Windows.Forms.CheckBox alwaysWaitForAutoEnc;
+        private System.Windows.Forms.Label label58;
+        private System.Windows.Forms.Panel autoEncBlockPanel;
     }
 }

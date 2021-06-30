@@ -90,6 +90,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(autoEncMode);
             ConfigParser.SaveComboxIndex(autoEncBackupMode);
             ConfigParser.SaveGuiElement(sbsAllowAutoEnc);
+            ConfigParser.SaveGuiElement(alwaysWaitForAutoEnc);
             // AI
             ConfigParser.SaveGuiElement(torchGpus);
             ConfigParser.SaveGuiElement(ncnnGpus);
@@ -149,6 +150,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(autoEncMode);
             ConfigParser.LoadComboxIndex(autoEncBackupMode);
             ConfigParser.LoadGuiElement(sbsAllowAutoEnc);
+            ConfigParser.LoadGuiElement(alwaysWaitForAutoEnc);
             // AI
             ConfigParser.LoadGuiElement(torchGpus);
             ConfigParser.LoadGuiElement(ncnnGpus);
@@ -239,6 +241,11 @@ namespace Flowframes.Forms
         {
             new ModelDownloadForm().ShowDialog();
             CheckModelCacheSize();
+        }
+
+        private void autoEncMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            autoEncBlockPanel.Visible = autoEncMode.SelectedIndex == 0;
         }
     }
 }

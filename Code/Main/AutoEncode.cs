@@ -94,7 +94,7 @@ namespace Flowframes.Main
                         unencodedFrameLines.Add(frameLineNum);
                     }
 
-                    if (true /* config getbool etc */)
+                    if (Config.GetBool(Config.Key.alwaysWaitForAutoEnc))
                     {
                         int maxFrames = chunkSize + (0.5f * chunkSize).RoundToInt() + safetyBufferFrames;
                         bool overwhelmed = unencodedFrameLines.Count > maxFrames;
