@@ -141,28 +141,6 @@ namespace Flowframes
             return false;
         }
 
-        static void FfmpegOutputHandlerSilent (object sendingProcess, DataReceivedEventArgs outLine)
-        {
-            timeSinceLastOutput.Restart();
-
-            if (outLine == null || outLine.Data == null || outLine.Data.Trim().Length < 2)
-                return;
-
-            string line = outLine.Data;
-
-            if (!string.IsNullOrWhiteSpace(lastOutputFfmpeg))
-                lastOutputFfmpeg += "\n";
-
-            lastOutputFfmpeg = lastOutputFfmpeg + line;
-            Logger.Log(line, true, false, "ffmpeg");
-
-            if (showProgressBar && line.Contains("time="))
-            {
-                Regex timeRegex = new Regex("(?<=time=).*(?= )");
-                UpdateFfmpegProgress(timeRegex.Match(line).Value);
-            }
-        }
-
         public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false, bool progressBar = false)
         {
             timeSinceLastOutput.Restart();
