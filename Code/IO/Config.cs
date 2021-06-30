@@ -1,10 +1,8 @@
-﻿using Flowframes.OS;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 
 namespace Flowframes.IO
 {
@@ -286,6 +284,7 @@ namespace Flowframes.IO
             allowCustomInputRate,
             allowSymlinkEncoding,
             allowSymlinkImport,
+            alwaysWaitForAutoEnc,
             autoDedupFrames,
             autoEncBackupMode,
             autoEncDebug,

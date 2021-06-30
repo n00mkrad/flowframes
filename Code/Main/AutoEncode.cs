@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Flowframes.UI;
+using Flowframes.OS;
 
 namespace Flowframes.Main
 {
@@ -93,6 +94,23 @@ namespace Flowframes.Main
                         unencodedFrameLines.Add(frameLineNum);
                     }
 
+                    if (true /* config getbool etc */)
+                    {
+                        int maxFrames = chunkSize + (0.5f * chunkSize).RoundToInt() + safetyBufferFrames;
+                        bool overwhelmed = unencodedFrameLines.Count > maxFrames;
+                        
+                        if(overwhelmed && !AiProcessSuspend.aiProcFrozen)
+                        {
+                            string dirSize = FormatUtils.Bytes(IOUtils.GetDirSize(Interpolate.current.interpFolder, true));
+                            Logger.Log($"AutoEnc is overwhelmed! ({unencodedFrameLines.Count} unencoded frames > {maxFrames}) - Pausing.", true);
+                            AiProcessSuspend.SuspendResumeAi(true);
+                        }
+                        else if (!overwhelmed && AiProcessSuspend.aiProcFrozen)
+                        {
+                            AiProcessSuspend.SuspendResumeAi(false);
+                        }
+                    }
+
                     if (unencodedFrameLines.Count > 0 && (unencodedFrameLines.Count >= (chunkSize + safetyBufferFrames) || !aiRunning))     // Encode every n frames, or after process has exited
                     {
                         try
@@ -147,6 +165,7 @@ namespace Flowframes.Main
                             Interpolate.Cancel("Auto-Encode encountered an error.");
                         }
                     }
+
                     await Task.Delay(50);
                 }
 
