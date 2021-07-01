@@ -1,3 +1,9 @@
+Flowframes 1.28.1 Changelog:
+- Added option to auto-pause interpolation if auto-encode can't keep up
+- Auto-Encode: Old frames now get deleted instead of being replaced by dummy files
+- Fixed speed regression on RIFE 3.x (up to ~1.5x as fast as in 1.28.0)
+
+
 Flowframes 1.28.0 Changelog:
 - Updated RIFE CUDA to 3.8 (Skipped previous models)
 - Added native transparency support with RIFE CUDA 3.8
