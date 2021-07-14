@@ -1,5 +1,6 @@
 Warning: A copyright troll is currently around.
-If your video gets taken down by "flowframesinterpolation@gmail.com", please report that account, it's fake!
+If your video gets taken down by "flowframesinterpolation@gmail.com",
+please report that account, it's fake!
 
 Flowframes 1.28.1 Changelog:
 - Added option to auto-pause interpolation if auto-encode can't keep up
