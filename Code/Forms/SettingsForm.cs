@@ -13,10 +13,11 @@ namespace Flowframes.Forms
     {
         bool initialized = false;
 
-        public SettingsForm()
+        public SettingsForm(int index = 0)
         {
             AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
+            settingsTabList.SelectedIndex = index;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)

@@ -612,5 +612,10 @@ namespace Flowframes
         {
             new DebugForm().ShowDialog();
         }
+
+        private void encodingSettingsBtn_Click(object sender, EventArgs e)
+        {
+            new SettingsForm(4).ShowDialog();
+        }
     }
 }

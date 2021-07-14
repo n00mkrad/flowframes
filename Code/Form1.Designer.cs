@@ -91,6 +91,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.encodingSettingsBtn = new HTAlt.WinForms.HTButton();
             this.scnDetectTestBtn = new HTAlt.WinForms.HTButton();
             this.inputInfo = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -917,6 +918,7 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.encodingSettingsBtn);
             this.interpOptsTab.Controls.Add(this.scnDetectTestBtn);
             this.interpOptsTab.Controls.Add(this.inputInfo);
             this.interpOptsTab.Controls.Add(this.label1);
@@ -953,6 +955,20 @@
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // encodingSettingsBtn
+            // 
+            this.encodingSettingsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.encodingSettingsBtn.FlatAppearance.BorderSize = 0;
+            this.encodingSettingsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.encodingSettingsBtn.ForeColor = System.Drawing.Color.White;
+            this.encodingSettingsBtn.Location = new System.Drawing.Point(689, 157);
+            this.encodingSettingsBtn.Name = "encodingSettingsBtn";
+            this.encodingSettingsBtn.Size = new System.Drawing.Size(206, 23);
+            this.encodingSettingsBtn.TabIndex = 39;
+            this.encodingSettingsBtn.Text = "Encoding Settings";
+            this.encodingSettingsBtn.UseVisualStyleBackColor = false;
+            this.encodingSettingsBtn.Click += new System.EventHandler(this.encodingSettingsBtn_Click);
             // 
             // scnDetectTestBtn
             // 
@@ -1745,6 +1761,7 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.ComboBox maxFps;
         private System.Windows.Forms.Label label24;
+        private HTAlt.WinForms.HTButton encodingSettingsBtn;
     }
 }
 
