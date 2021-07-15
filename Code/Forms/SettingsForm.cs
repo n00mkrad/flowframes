@@ -248,5 +248,16 @@ namespace Flowframes.Forms
         {
             autoEncBlockPanel.Visible = autoEncMode.SelectedIndex == 0;
         }
+
+        private async void resetBtn_Click(object sender, EventArgs e)
+        {
+            DialogResult dialog = MessageBox.Show($"Are you sure you want to reset the configuration?", "Are you sure?", MessageBoxButtons.YesNo);
+
+            if (dialog == DialogResult.No)
+                return;
+
+            await Config.Reset(3, this);
+            SettingsForm_Load(null, null);
+        }
     }
 }

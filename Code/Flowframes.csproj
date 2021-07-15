@@ -500,6 +500,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlowframesLogo2021.ico" />
+    <None Include="Resources\baseline_restart_alt_white_48dp.png" />
     <None Include="Resources\baseline_format_size_white_48dp.png" />
     <None Include="Resources\baseline_wrap_text_white_48dp.png" />
     <None Include="Resources\baseline_refresh_white_48dp.png" />

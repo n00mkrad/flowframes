@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Flowframes.Forms;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Flowframes.IO
 {
@@ -16,6 +18,30 @@ namespace Flowframes.IO
             configPath = Path.Combine(Paths.GetDataPath(), "config.json");
             IOUtils.CreateFileIfNotExists(configPath);
             Reload();
+        }
+
+        public static async Task Reset(int retries = 3, SettingsForm settingsForm = null)
+        {
+            try
+            {
+                if (settingsForm != null)
+                    settingsForm.Enabled = false;
+
+                File.Delete(configPath);
+                await Task.Delay(100);
+                cachedValues.Clear();
+                await Task.Delay(100);
+
+                if (settingsForm != null)
+                    settingsForm.Enabled = true;
+            }
+            catch(Exception e)
+            {
+                retries -= 1;
+                Logger.Log($"Failed to reset config: {e.Message}. Retrying ({retries} attempts left).");
+                await Task.Delay(500);
+                await Reset(retries, settingsForm);
+            }
         }
 
         public static void Set(Key key, string value)
@@ -63,7 +89,7 @@ namespace Flowframes.IO
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to reload config! {e.Message}");
+                Logger.Log($"Failed to reload config! {e.Message}", true);
             }
         }
 

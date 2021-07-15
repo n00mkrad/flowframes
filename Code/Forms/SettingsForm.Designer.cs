@@ -59,6 +59,10 @@
             this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.autoEncBlockPanel = new System.Windows.Forms.Panel();
+            this.label70 = new System.Windows.Forms.Label();
+            this.alwaysWaitForAutoEnc = new System.Windows.Forms.CheckBox();
+            this.label58 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label41 = new System.Windows.Forms.Label();
             this.autoEncBackupMode = new System.Windows.Forms.ComboBox();
@@ -181,10 +185,7 @@
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.alwaysWaitForAutoEnc = new System.Windows.Forms.CheckBox();
-            this.label58 = new System.Windows.Forms.Label();
-            this.label70 = new System.Windows.Forms.Label();
-            this.autoEncBlockPanel = new System.Windows.Forms.Panel();
+            this.resetBtn = new HTAlt.WinForms.HTButton();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -596,6 +597,44 @@
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // autoEncBlockPanel
+            // 
+            this.autoEncBlockPanel.Location = new System.Drawing.Point(4, 330);
+            this.autoEncBlockPanel.Name = "autoEncBlockPanel";
+            this.autoEncBlockPanel.Size = new System.Drawing.Size(755, 86);
+            this.autoEncBlockPanel.TabIndex = 94;
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.ForeColor = System.Drawing.Color.Silver;
+            this.label70.Location = new System.Drawing.Point(308, 390);
+            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(443, 13);
+            this.label70.TabIndex = 93;
+            this.label70.Text = "Avoids filling up your hard drive by temporarily pausing interpolation if encodin" +
+    "g can\'t keep up";
+            // 
+            // alwaysWaitForAutoEnc
+            // 
+            this.alwaysWaitForAutoEnc.AutoSize = true;
+            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 390);
+            this.alwaysWaitForAutoEnc.Name = "alwaysWaitForAutoEnc";
+            this.alwaysWaitForAutoEnc.Size = new System.Drawing.Size(15, 14);
+            this.alwaysWaitForAutoEnc.TabIndex = 92;
+            this.alwaysWaitForAutoEnc.UseVisualStyleBackColor = true;
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.Location = new System.Drawing.Point(10, 390);
+            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(229, 13);
+            this.label58.TabIndex = 91;
+            this.label58.Text = "Low Disk Space Mode (Wait For Auto-Encode)";
             // 
             // pictureBox2
             // 
@@ -2134,43 +2173,23 @@
             this.titleLabel.TabIndex = 1;
             this.titleLabel.Text = "Settings";
             // 
-            // alwaysWaitForAutoEnc
+            // resetBtn
             // 
-            this.alwaysWaitForAutoEnc.AutoSize = true;
-            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 390);
-            this.alwaysWaitForAutoEnc.Name = "alwaysWaitForAutoEnc";
-            this.alwaysWaitForAutoEnc.Size = new System.Drawing.Size(15, 14);
-            this.alwaysWaitForAutoEnc.TabIndex = 92;
-            this.alwaysWaitForAutoEnc.UseVisualStyleBackColor = true;
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(10, 390);
-            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(229, 13);
-            this.label58.TabIndex = 91;
-            this.label58.Text = "Low Disk Space Mode (Wait For Auto-Encode)";
-            // 
-            // label70
-            // 
-            this.label70.AutoSize = true;
-            this.label70.ForeColor = System.Drawing.Color.Silver;
-            this.label70.Location = new System.Drawing.Point(308, 390);
-            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(443, 13);
-            this.label70.TabIndex = 93;
-            this.label70.Text = "Avoids filling up your hard drive by temporarily pausing interpolation if encodin" +
-    "g can\'t keep up";
-            // 
-            // autoEncBlockPanel
-            // 
-            this.autoEncBlockPanel.Location = new System.Drawing.Point(4, 330);
-            this.autoEncBlockPanel.Name = "autoEncBlockPanel";
-            this.autoEncBlockPanel.Size = new System.Drawing.Size(755, 86);
-            this.autoEncBlockPanel.TabIndex = 94;
+            this.resetBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.resetBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_restart_alt_white_48dp;
+            this.resetBtn.DrawImage = true;
+            this.resetBtn.FlatAppearance.BorderSize = 0;
+            this.resetBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.resetBtn.ForeColor = System.Drawing.Color.White;
+            this.resetBtn.ImageIndex = 0;
+            this.resetBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
+            this.resetBtn.Location = new System.Drawing.Point(889, 12);
+            this.resetBtn.Name = "resetBtn";
+            this.resetBtn.Size = new System.Drawing.Size(40, 40);
+            this.resetBtn.TabIndex = 39;
+            this.toolTip1.SetToolTip(this.resetBtn, "Reset To Default");
+            this.resetBtn.UseVisualStyleBackColor = false;
+            this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
             // SettingsForm
             // 
@@ -2178,6 +2197,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(944, 501);
+            this.Controls.Add(this.resetBtn);
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.settingsTabList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -2374,5 +2394,6 @@
         private System.Windows.Forms.CheckBox alwaysWaitForAutoEnc;
         private System.Windows.Forms.Label label58;
         private System.Windows.Forms.Panel autoEncBlockPanel;
+        private HTAlt.WinForms.HTButton resetBtn;
     }
 }
