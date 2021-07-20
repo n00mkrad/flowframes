@@ -186,6 +186,8 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
+            this.label75 = new System.Windows.Forms.Label();
+            this.mp4Colors = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -1613,6 +1615,8 @@
             // 
             // tabListPage1
             // 
+            this.tabListPage1.Controls.Add(this.mp4Colors);
+            this.tabListPage1.Controls.Add(this.label75);
             this.tabListPage1.Controls.Add(this.label13);
             this.tabListPage1.Controls.Add(this.vp9Crf);
             this.tabListPage1.Controls.Add(this.mp4Crf);
@@ -1640,7 +1644,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.ForeColor = System.Drawing.Color.Silver;
-            this.label13.Location = new System.Drawing.Point(393, 101);
+            this.label13.Location = new System.Drawing.Point(393, 131);
             this.label13.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(225, 13);
@@ -1651,7 +1655,7 @@
             // 
             this.vp9Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.vp9Crf.ForeColor = System.Drawing.Color.White;
-            this.vp9Crf.Location = new System.Drawing.Point(280, 98);
+            this.vp9Crf.Location = new System.Drawing.Point(280, 128);
             this.vp9Crf.Maximum = new decimal(new int[] {
             60,
             0,
@@ -1670,7 +1674,7 @@
             // 
             this.mp4Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.mp4Crf.ForeColor = System.Drawing.Color.White;
-            this.mp4Crf.Location = new System.Drawing.Point(280, 68);
+            this.mp4Crf.Location = new System.Drawing.Point(280, 98);
             this.mp4Crf.Maximum = new decimal(new int[] {
             60,
             0,
@@ -1696,7 +1700,7 @@
             "PNG",
             "JPG",
             "WEBP"});
-            this.imgSeqFormat.Location = new System.Drawing.Point(280, 217);
+            this.imgSeqFormat.Location = new System.Drawing.Point(280, 247);
             this.imgSeqFormat.Name = "imgSeqFormat";
             this.imgSeqFormat.Size = new System.Drawing.Size(200, 21);
             this.imgSeqFormat.TabIndex = 110;
@@ -1704,7 +1708,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(10, 220);
+            this.label40.Location = new System.Drawing.Point(10, 250);
             this.label40.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(158, 13);
@@ -1722,7 +1726,7 @@
             "bayer (Recommended)",
             "floyd_steinberg (Might cause problems with transparency)",
             "none (Strong banding, but better for flat colors)"});
-            this.gifDitherType.Location = new System.Drawing.Point(386, 187);
+            this.gifDitherType.Location = new System.Drawing.Point(386, 217);
             this.gifDitherType.Name = "gifDitherType";
             this.gifDitherType.Size = new System.Drawing.Size(294, 21);
             this.gifDitherType.TabIndex = 108;
@@ -1739,7 +1743,7 @@
             "yuv422p",
             "yuv444p",
             "rgb24"});
-            this.aviColors.Location = new System.Drawing.Point(486, 157);
+            this.aviColors.Location = new System.Drawing.Point(486, 187);
             this.aviColors.Name = "aviColors";
             this.aviColors.Size = new System.Drawing.Size(194, 21);
             this.aviColors.TabIndex = 107;
@@ -1756,7 +1760,7 @@
             "huffyuv",
             "magicyuv",
             "rawvideo"});
-            this.aviCodec.Location = new System.Drawing.Point(280, 157);
+            this.aviCodec.Location = new System.Drawing.Point(280, 187);
             this.aviCodec.Name = "aviCodec";
             this.aviCodec.Size = new System.Drawing.Size(200, 21);
             this.aviCodec.TabIndex = 106;
@@ -1764,12 +1768,12 @@
             // label60
             // 
             this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(10, 160);
+            this.label60.Location = new System.Drawing.Point(10, 190);
             this.label60.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(130, 13);
+            this.label60.Size = new System.Drawing.Size(131, 13);
             this.label60.TabIndex = 105;
-            this.label60.Text = "AVI: Codec / Color Space";
+            this.label60.Text = "AVI: Codec / Color Format";
             // 
             // proResProfile
             // 
@@ -1785,7 +1789,7 @@
             "3 (HQ)",
             "4 (4444)",
             "5 (4444xq)"});
-            this.proResProfile.Location = new System.Drawing.Point(280, 127);
+            this.proResProfile.Location = new System.Drawing.Point(280, 157);
             this.proResProfile.Name = "proResProfile";
             this.proResProfile.Size = new System.Drawing.Size(400, 21);
             this.proResProfile.TabIndex = 104;
@@ -1793,7 +1797,7 @@
             // label59
             // 
             this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(10, 130);
+            this.label59.Location = new System.Drawing.Point(10, 160);
             this.label59.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(139, 13);
@@ -1803,7 +1807,7 @@
             // label57
             // 
             this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(10, 100);
+            this.label57.Location = new System.Drawing.Point(10, 130);
             this.label57.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(176, 13);
@@ -1834,7 +1838,7 @@
             "64 (Medium)",
             "32 (Low)",
             "16 (Very Low)"});
-            this.gifColors.Location = new System.Drawing.Point(280, 187);
+            this.gifColors.Location = new System.Drawing.Point(280, 217);
             this.gifColors.Name = "gifColors";
             this.gifColors.Size = new System.Drawing.Size(100, 21);
             this.gifColors.TabIndex = 95;
@@ -1842,7 +1846,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 190);
+            this.label17.Location = new System.Drawing.Point(10, 220);
             this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(173, 13);
@@ -1853,7 +1857,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.ForeColor = System.Drawing.Color.Silver;
-            this.label14.Location = new System.Drawing.Point(393, 71);
+            this.label14.Location = new System.Drawing.Point(393, 101);
             this.label14.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(225, 13);
@@ -1863,12 +1867,12 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(10, 70);
+            this.label12.Location = new System.Drawing.Point(10, 100);
             this.label12.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(251, 13);
+            this.label12.Size = new System.Drawing.Size(260, 13);
             this.label12.TabIndex = 88;
-            this.label12.Text = "MP4/MKV: Quality Level (CRF) For Selected Codec";
+            this.label12.Text = "MP4/MKV: Quality Level (CRF) For Selected Encoder";
             // 
             // mp4Enc
             // 
@@ -1895,9 +1899,9 @@
             this.label10.Location = new System.Drawing.Point(10, 40);
             this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(124, 13);
+            this.label10.Size = new System.Drawing.Size(133, 13);
             this.label10.TabIndex = 86;
-            this.label10.Text = "MP4/MKV: Video Codec";
+            this.label10.Text = "MP4/MKV: Video Encoder";
             // 
             // debugTab
             // 
@@ -2191,6 +2195,32 @@
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(10, 70);
+            this.label75.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(122, 13);
+            this.label75.TabIndex = 114;
+            this.label75.Text = "MP4/MKV: Color Format";
+            // 
+            // mp4Colors
+            // 
+            this.mp4Colors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.mp4Colors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mp4Colors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.mp4Colors.ForeColor = System.Drawing.Color.White;
+            this.mp4Colors.FormattingEnabled = true;
+            this.mp4Colors.Items.AddRange(new object[] {
+            "yuv420p (8-Bit Color, 4:2:0 Sampling)",
+            "yuv444p (8-Bit Color, 4:4:4 Sampling - May not work with some encoders!)",
+            "yuv420p10le (10-Bit Color, 4:2:0 Sampling - May not work with some encoders!)"});
+            this.mp4Colors.Location = new System.Drawing.Point(280, 67);
+            this.mp4Colors.Name = "mp4Colors";
+            this.mp4Colors.Size = new System.Drawing.Size(400, 21);
+            this.mp4Colors.TabIndex = 115;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2395,5 +2425,7 @@
         private System.Windows.Forms.Label label58;
         private System.Windows.Forms.Panel autoEncBlockPanel;
         private HTAlt.WinForms.HTButton resetBtn;
+        private System.Windows.Forms.ComboBox mp4Colors;
+        private System.Windows.Forms.Label label75;
     }
 }
