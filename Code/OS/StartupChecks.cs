@@ -10,7 +10,7 @@ namespace Flowframes.OS
 {
     class StartupChecks
     {
-        static bool IsWin10()
+        static bool IsWin10Or11()
         {
             string osInfoStr = OSUtils.TryGetOs();
 
@@ -20,7 +20,7 @@ namespace Flowframes.OS
             string[] osInfo = osInfoStr.Split(" | ");
             string version = osInfo[0].Remove("Microsoft").Trim();
 
-            return version.ToLower().Contains("windows 10");
+            return (version.ToLower().Contains("windows 10") || version.ToLower().Contains("windows 11"));
         }
 
         static bool Is32Bit()
@@ -56,16 +56,16 @@ namespace Flowframes.OS
             if (string.IsNullOrWhiteSpace(version))
                 return;
 
-            if (!version.ToLower().Contains("windows 10") && !Config.GetBool("ignoreIncompatibleOs", false))
+            if (!version.ToLower().Contains("windows 10") && !version.ToLower().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
             {
-                MessageBox.Show($"This application was made for Windows 10 and is not officially compatible with {version}.\n\n" +
+                MessageBox.Show($"This application was made for Windows 10/11 and is not officially compatible with {version}.\n\n" +
                                 $"Use it at your own risk and do NOT ask for support as long as your are on {version}.", "Warning");
             }
         }
 
         public static async Task SymlinksCheck()
         {
-            if (!IsWin10())
+            if (!IsWin10Or11())
                 return;
 
             bool silent = Config.GetBool("silentDevmodeCheck", true);
