@@ -54,49 +54,49 @@ namespace Flowframes.Media
 
         public static string GetEncArgs (Codec codec)
         {
-            string args = $"-c:v { GetEnc(codec)} ";
+            string args = $"-c:v {GetEnc(codec)} ";
 
             if(codec == Codec.H264)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
-                args += $"-crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} -pix_fmt yuv420p";
+                args += $"-crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.H265)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
                 int crf = Config.GetInt(Config.Key.h265Crf);
-                args += $"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} -pix_fmt yuv420p";
+                args += $"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.H264NVENC)
             {
                 int cq = (Config.GetInt(Config.Key.h264Crf) * 1.1f).RoundToInt();
-                args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt yuv420p";
+                args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.H265NVENC)
             {
                 int cq = (Config.GetInt(Config.Key.h265Crf) * 1.1f).RoundToInt();
-                args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt yuv420p";
+                args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.AV1)
             {
                 int cq = (Config.GetInt(Config.Key.av1Crf) * 1.0f).RoundToInt();
-                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -tile_rows 2 -tile_columns 2 -pix_fmt yuv420p";
+                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -tile_rows 2 -tile_columns 2 -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.VP9)
             {
                 int crf = Config.GetInt(Config.Key.vp9Crf);
                 string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
-                args += $"{qualityStr} {GetVp9Speed()} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt yuv420p";
+                args += $"{qualityStr} {GetVp9Speed()} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt {GetPixFmt()}";
             }
 
             if(codec == Codec.ProRes)
             {
-                args += $"-profile:v {Config.GetInt(Config.Key.proResProfile)} -pix_fmt yuv420p";
+                args += $"-profile:v {Config.GetInt(Config.Key.proResProfile)} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.AviRaw)
@@ -137,6 +137,18 @@ namespace Flowframes.Media
             if (preset == "veryfast") arg = "8";
 
             return $"-preset {arg}";
+        }
+
+        static string GetPixFmt ()
+        {
+            switch (Config.GetInt(Config.Key.pixFmt))
+            {
+                case 0: return "yuv420p";
+                case 1: return "yuv444p";
+                case 2: return "yuv420p10le";
+            }
+
+            return "yuv420p";
         }
 
         public static bool ContainerSupportsAllAudioFormats (Interpolate.OutMode outMode, List<string> codecs)

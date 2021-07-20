@@ -362,6 +362,7 @@ namespace Flowframes.IO
             minOutVidLength,
             minVidLength,
             mp4Enc,
+            pixFmt,
             mpdecimateMode,
             ncnnGpus,
             ncnnThreads,

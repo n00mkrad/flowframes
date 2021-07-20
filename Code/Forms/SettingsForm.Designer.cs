@@ -187,7 +187,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
             this.label75 = new System.Windows.Forms.Label();
-            this.mp4Colors = new System.Windows.Forms.ComboBox();
+            this.pixFmt = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -1615,7 +1615,7 @@
             // 
             // tabListPage1
             // 
-            this.tabListPage1.Controls.Add(this.mp4Colors);
+            this.tabListPage1.Controls.Add(this.pixFmt);
             this.tabListPage1.Controls.Add(this.label75);
             this.tabListPage1.Controls.Add(this.label13);
             this.tabListPage1.Controls.Add(this.vp9Crf);
@@ -1644,7 +1644,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.ForeColor = System.Drawing.Color.Silver;
-            this.label13.Location = new System.Drawing.Point(393, 131);
+            this.label13.Location = new System.Drawing.Point(393, 101);
             this.label13.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(225, 13);
@@ -1655,7 +1655,7 @@
             // 
             this.vp9Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.vp9Crf.ForeColor = System.Drawing.Color.White;
-            this.vp9Crf.Location = new System.Drawing.Point(280, 128);
+            this.vp9Crf.Location = new System.Drawing.Point(280, 98);
             this.vp9Crf.Maximum = new decimal(new int[] {
             60,
             0,
@@ -1674,7 +1674,7 @@
             // 
             this.mp4Crf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.mp4Crf.ForeColor = System.Drawing.Color.White;
-            this.mp4Crf.Location = new System.Drawing.Point(280, 98);
+            this.mp4Crf.Location = new System.Drawing.Point(280, 68);
             this.mp4Crf.Maximum = new decimal(new int[] {
             60,
             0,
@@ -1807,7 +1807,7 @@
             // label57
             // 
             this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(10, 130);
+            this.label57.Location = new System.Drawing.Point(10, 100);
             this.label57.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label57.Name = "label57";
             this.label57.Size = new System.Drawing.Size(176, 13);
@@ -1857,7 +1857,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.ForeColor = System.Drawing.Color.Silver;
-            this.label14.Location = new System.Drawing.Point(393, 101);
+            this.label14.Location = new System.Drawing.Point(393, 71);
             this.label14.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(225, 13);
@@ -1867,7 +1867,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(10, 100);
+            this.label12.Location = new System.Drawing.Point(10, 70);
             this.label12.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(260, 13);
@@ -2198,28 +2198,29 @@
             // label75
             // 
             this.label75.AutoSize = true;
-            this.label75.Location = new System.Drawing.Point(10, 70);
+            this.label75.Location = new System.Drawing.Point(10, 130);
             this.label75.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(122, 13);
+            this.label75.Size = new System.Drawing.Size(190, 13);
             this.label75.TabIndex = 114;
-            this.label75.Text = "MP4/MKV: Color Format";
+            this.label75.Text = "MP4/MKV/WEBM/MOV: Color Format";
             // 
-            // mp4Colors
+            // pixFmt
             // 
-            this.mp4Colors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.mp4Colors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.mp4Colors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.mp4Colors.ForeColor = System.Drawing.Color.White;
-            this.mp4Colors.FormattingEnabled = true;
-            this.mp4Colors.Items.AddRange(new object[] {
-            "yuv420p (8-Bit Color, 4:2:0 Sampling)",
+            this.pixFmt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.pixFmt.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pixFmt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pixFmt.ForeColor = System.Drawing.Color.White;
+            this.pixFmt.FormattingEnabled = true;
+            this.pixFmt.Items.AddRange(new object[] {
+            "yuv420p (8-Bit Color, 4:2:0 Sampling - Recommended)",
             "yuv444p (8-Bit Color, 4:4:4 Sampling - May not work with some encoders!)",
-            "yuv420p10le (10-Bit Color, 4:2:0 Sampling - May not work with some encoders!)"});
-            this.mp4Colors.Location = new System.Drawing.Point(280, 67);
-            this.mp4Colors.Name = "mp4Colors";
-            this.mp4Colors.Size = new System.Drawing.Size(400, 21);
-            this.mp4Colors.TabIndex = 115;
+            "yuv420p10le (10-Bit Color, 4:2:0 Sampling - May not work with some encoders!)",
+            "yuv444p10le (10-Bit Color, 4:4:4 Sampling - May not work with some encoders!)"});
+            this.pixFmt.Location = new System.Drawing.Point(280, 127);
+            this.pixFmt.Name = "pixFmt";
+            this.pixFmt.Size = new System.Drawing.Size(400, 21);
+            this.pixFmt.TabIndex = 115;
             // 
             // SettingsForm
             // 
@@ -2425,7 +2426,7 @@
         private System.Windows.Forms.Label label58;
         private System.Windows.Forms.Panel autoEncBlockPanel;
         private HTAlt.WinForms.HTButton resetBtn;
-        private System.Windows.Forms.ComboBox mp4Colors;
+        private System.Windows.Forms.ComboBox pixFmt;
         private System.Windows.Forms.Label label75;
     }
 }
