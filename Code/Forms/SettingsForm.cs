@@ -75,6 +75,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(exportNamePatternLoop);
             ConfigParser.SaveGuiElement(delLogsOnStartup);
             ConfigParser.SaveGuiElement(clearLogOnInput);
+            ConfigParser.SaveGuiElement(disablePreview);
             // Interpolation
             ConfigParser.SaveGuiElement(keepAudio);
             ConfigParser.SaveGuiElement(keepSubs);
@@ -136,6 +137,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(exportNamePattern);
             ConfigParser.LoadGuiElement(exportNamePatternLoop);
             ConfigParser.LoadGuiElement(clearLogOnInput);
+            ConfigParser.LoadGuiElement(disablePreview);
             // Interpolation
             ConfigParser.LoadGuiElement(keepAudio);
             ConfigParser.LoadGuiElement(keepSubs);

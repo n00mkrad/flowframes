@@ -143,6 +143,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.tabListPage1 = new Cyotek.Windows.Forms.TabListPage();
+            this.pixFmt = new System.Windows.Forms.ComboBox();
+            this.label75 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.vp9Crf = new System.Windows.Forms.NumericUpDown();
             this.mp4Crf = new System.Windows.Forms.NumericUpDown();
@@ -186,8 +188,9 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.label75 = new System.Windows.Forms.Label();
-            this.pixFmt = new System.Windows.Forms.ComboBox();
+            this.label76 = new System.Windows.Forms.Label();
+            this.disablePreview = new System.Windows.Forms.CheckBox();
+            this.label77 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -229,6 +232,9 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.label77);
+            this.generalTab.Controls.Add(this.disablePreview);
+            this.generalTab.Controls.Add(this.label76);
             this.generalTab.Controls.Add(this.modelDownloaderBtn);
             this.generalTab.Controls.Add(this.exportNamePatternLoop);
             this.generalTab.Controls.Add(this.label69);
@@ -265,7 +271,7 @@
             this.modelDownloaderBtn.FlatAppearance.BorderSize = 0;
             this.modelDownloaderBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modelDownloaderBtn.ForeColor = System.Drawing.Color.White;
-            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 216);
+            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 245);
             this.modelDownloaderBtn.Name = "modelDownloaderBtn";
             this.modelDownloaderBtn.Size = new System.Drawing.Size(206, 23);
             this.modelDownloaderBtn.TabIndex = 86;
@@ -340,7 +346,7 @@
             this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
             this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
-            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 216);
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 245);
             this.clearModelCacheBtn.Name = "clearModelCacheBtn";
             this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
             this.clearModelCacheBtn.TabIndex = 79;
@@ -351,7 +357,7 @@
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(10, 221);
+            this.label64.Location = new System.Drawing.Point(10, 250);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(165, 13);
@@ -362,7 +368,7 @@
             // 
             this.label62.AutoSize = true;
             this.label62.ForeColor = System.Drawing.Color.Silver;
-            this.label62.Location = new System.Drawing.Point(308, 191);
+            this.label62.Location = new System.Drawing.Point(308, 190);
             this.label62.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label62.Name = "label62";
             this.label62.Size = new System.Drawing.Size(249, 13);
@@ -372,7 +378,7 @@
             // clearLogOnInput
             // 
             this.clearLogOnInput.AutoSize = true;
-            this.clearLogOnInput.Location = new System.Drawing.Point(280, 191);
+            this.clearLogOnInput.Location = new System.Drawing.Point(280, 190);
             this.clearLogOnInput.Name = "clearLogOnInput";
             this.clearLogOnInput.Size = new System.Drawing.Size(15, 14);
             this.clearLogOnInput.TabIndex = 74;
@@ -381,7 +387,7 @@
             // label61
             // 
             this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(10, 191);
+            this.label61.Location = new System.Drawing.Point(10, 190);
             this.label61.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(181, 13);
@@ -1640,6 +1646,33 @@
             this.tabListPage1.Size = new System.Drawing.Size(762, 419);
             this.tabListPage1.Text = "Encoding Settings";
             // 
+            // pixFmt
+            // 
+            this.pixFmt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.pixFmt.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.pixFmt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pixFmt.ForeColor = System.Drawing.Color.White;
+            this.pixFmt.FormattingEnabled = true;
+            this.pixFmt.Items.AddRange(new object[] {
+            "yuv420p (8-Bit Color, 4:2:0 Sampling - Recommended)",
+            "yuv444p (8-Bit Color, 4:4:4 Sampling - May not work with some encoders!)",
+            "yuv420p10le (10-Bit Color, 4:2:0 Sampling - May not work with some encoders!)",
+            "yuv444p10le (10-Bit Color, 4:4:4 Sampling - May not work with some encoders!)"});
+            this.pixFmt.Location = new System.Drawing.Point(280, 127);
+            this.pixFmt.Name = "pixFmt";
+            this.pixFmt.Size = new System.Drawing.Size(400, 21);
+            this.pixFmt.TabIndex = 115;
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(10, 130);
+            this.label75.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(190, 13);
+            this.label75.TabIndex = 114;
+            this.label75.Text = "MP4/MKV/WEBM/MOV: Color Format";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -2195,32 +2228,35 @@
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
-            // label75
+            // label76
             // 
-            this.label75.AutoSize = true;
-            this.label75.Location = new System.Drawing.Point(10, 130);
-            this.label75.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(190, 13);
-            this.label75.TabIndex = 114;
-            this.label75.Text = "MP4/MKV/WEBM/MOV: Color Format";
+            this.label76.AutoSize = true;
+            this.label76.Location = new System.Drawing.Point(10, 220);
+            this.label76.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(105, 13);
+            this.label76.TabIndex = 87;
+            this.label76.Text = "Disable Preview Tab";
             // 
-            // pixFmt
+            // disablePreview
             // 
-            this.pixFmt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.pixFmt.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.pixFmt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pixFmt.ForeColor = System.Drawing.Color.White;
-            this.pixFmt.FormattingEnabled = true;
-            this.pixFmt.Items.AddRange(new object[] {
-            "yuv420p (8-Bit Color, 4:2:0 Sampling - Recommended)",
-            "yuv444p (8-Bit Color, 4:4:4 Sampling - May not work with some encoders!)",
-            "yuv420p10le (10-Bit Color, 4:2:0 Sampling - May not work with some encoders!)",
-            "yuv444p10le (10-Bit Color, 4:4:4 Sampling - May not work with some encoders!)"});
-            this.pixFmt.Location = new System.Drawing.Point(280, 127);
-            this.pixFmt.Name = "pixFmt";
-            this.pixFmt.Size = new System.Drawing.Size(400, 21);
-            this.pixFmt.TabIndex = 115;
+            this.disablePreview.AutoSize = true;
+            this.disablePreview.Location = new System.Drawing.Point(280, 220);
+            this.disablePreview.Name = "disablePreview";
+            this.disablePreview.Size = new System.Drawing.Size(15, 14);
+            this.disablePreview.TabIndex = 88;
+            this.disablePreview.UseVisualStyleBackColor = true;
+            // 
+            // label77
+            // 
+            this.label77.AutoSize = true;
+            this.label77.ForeColor = System.Drawing.Color.Silver;
+            this.label77.Location = new System.Drawing.Point(308, 220);
+            this.label77.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(270, 13);
+            this.label77.TabIndex = 89;
+            this.label77.Text = "You need to restart the application to apply this change.";
             // 
             // SettingsForm
             // 
@@ -2428,5 +2464,8 @@
         private HTAlt.WinForms.HTButton resetBtn;
         private System.Windows.Forms.ComboBox pixFmt;
         private System.Windows.Forms.Label label75;
+        private System.Windows.Forms.CheckBox disablePreview;
+        private System.Windows.Forms.Label label76;
+        private System.Windows.Forms.Label label77;
     }
 }

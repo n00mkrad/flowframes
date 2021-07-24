@@ -327,6 +327,7 @@ namespace Flowframes.IO
             dedupMode,
             dedupThresh,
             delLogsOnStartup,
+            disablePreview,
             dupeScanDebug,
             enableLoop,
             exportNamePattern,

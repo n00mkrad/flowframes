@@ -48,6 +48,7 @@ namespace Flowframes
             NvApi.Init();
             InitAis();
             InterpolationProgress.preview = previewPicturebox;
+            RemovePreviewIfDisabled();
             UpdateStepByStepControls();
             Initialized();
             HandleFileArgs();
@@ -78,7 +79,6 @@ namespace Flowframes
                 Task.Run(() => GetWebInfo.LoadPatronListCsv(patronsLabel));
                 await Python.CheckCompression();
                 await StartupChecks.SymlinksCheck();
-
             }
             catch (Exception e)
             {
@@ -107,6 +107,18 @@ namespace Flowframes
             }
         }
 
+        void RemovePreviewIfDisabled ()
+        {
+            if (!Config.GetBool(Config.Key.disablePreview))
+                return;
+
+            foreach (TabPage tab in mainTabControl.TabPages)
+            {
+                if (tab.Text.Trim() == "Preview")
+                    mainTabControl.TabPages.Remove(tab);
+            }
+        }
+
         public HTTabControl GetMainTabControl() { return mainTabControl; }
         public TextBox GetInputFpsTextbox () { return fpsInTbox; }
         public Button GetPauseBtn() { return pauseBtn; }
@@ -120,6 +132,7 @@ namespace Flowframes
                 if (tab.Text.ToLower() == tabName.ToLower())
                     mainTabControl.SelectedTab = tab;
             }
+
             mainTabControl.Refresh();
             mainTabControl.Update();
         }
