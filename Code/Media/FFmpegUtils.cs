@@ -146,6 +146,7 @@ namespace Flowframes.Media
                 case 0: return "yuv420p";
                 case 1: return "yuv444p";
                 case 2: return "yuv420p10le";
+                case 3: return "yuv444p10le";
             }
 
             return "yuv420p";
