@@ -39,7 +39,7 @@ namespace Flowframes.Media
             if (resampleFps.GetFloat() >= 0.1f)
                 filters.Add($"fps=fps={resampleFps}");
 
-            if (extraData.HasAllValues())
+            if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllValues())
             {
                 Logger.Log($"Applying color transfer ({extraData.colorSpace}).", true, false, "ffmpeg");
                 filters.Add($"scale=out_color_matrix={extraData.colorSpace}");

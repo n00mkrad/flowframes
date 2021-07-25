@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#pragma warning disable IDE1006
+
 namespace Flowframes.Forms
 {
     public partial class SettingsForm : Form
@@ -195,9 +197,8 @@ namespace Flowframes.Forms
 
         private void tempDirBrowseBtn_Click(object sender, EventArgs e)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = tempDirCustom.Text.Trim();
-            dialog.IsFolderPicker = true;
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = tempDirCustom.Text.Trim(), IsFolderPicker = true };
+            
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 tempDirCustom.Text = dialog.FileName;
 

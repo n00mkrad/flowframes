@@ -17,6 +17,8 @@ using Flowframes.MiscUtils;
 using System.Threading.Tasks;
 using System.Linq;
 
+#pragma warning disable IDE1006
+
 namespace Flowframes
 {
     public partial class Form1 : Form

@@ -75,8 +75,7 @@ namespace Flowframes.Data
             }
             else
             {
-                Logger.Log($"Warning: Using 'gamma28' instead of '{colorTransfer.Trim()}'.", true, false, "ffmpeg");
-                colorTransfer = colorTransfer.Replace("bt470bg", "gamma28");    // https://forum.videohelp.com/threads/394596-Color-Matrix
+                colorTransfer = colorTransfer.Replace("bt470bg", "gamma28").Replace("bt470m", "gamma28");    // https://forum.videohelp.com/threads/394596-Color-Matrix
             }
 
             if (!validColorSpaces.Contains(colorPrimaries.Trim()))
