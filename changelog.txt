@@ -2,6 +2,16 @@ Warning: A copyright troll is currently around.
 If your video gets taken down by "flowframesinterpolation@gmail.com",
 please report that account, it's fake!
 
+
+Flowframes 1.29.0 Changelog:
+- Added option to change the color space for most codecs (e.g. for 10-bit encoding)
+- Added a button in the settings to reset the config to default
+- Added a shortcut button to the Encoding Settings on the main tab
+- Added option to disable Preview tab
+- Fixed problem where videos with BT470M color format would fail to encode
+- Removed compatibility warning when Flowframes is run on Windows 11
+
+
 Flowframes 1.28.1 Changelog:
 - Added option to auto-pause interpolation if auto-encode can't keep up
 - Auto-Encode: Old frames now get deleted instead of being replaced by dummy files
