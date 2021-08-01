@@ -225,10 +225,22 @@ namespace Flowframes.OS
             Application.SetSuspendState(PowerState.Suspend, true, true);
         }
 
-        public void ShowNotification (string title, string text)
+        public static void ShowNotification(string title, string text)
         {
             var popupNotifier = new PopupNotifier { TitleText = title, ContentText = text, IsRightToLeft = false };
+            popupNotifier.BodyColor = System.Drawing.ColorTranslator.FromHtml("#323232");
+            popupNotifier.ContentColor = System.Drawing.Color.White;
+            popupNotifier.TitleColor = System.Drawing.Color.LightGray;
+            popupNotifier.GradientPower = 0;
             popupNotifier.Popup();
+        }
+
+        public static void ShowNotificationIfInBackground (string title, string text)
+        {
+            if (Program.mainForm.IsInFocus())
+                return;
+
+            ShowNotification(title, text);
         }
     }
 }

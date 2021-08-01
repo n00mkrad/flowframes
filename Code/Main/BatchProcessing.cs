@@ -1,5 +1,6 @@
 ﻿using Flowframes.Forms;
 using Flowframes.IO;
+using Flowframes.OS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,6 +46,7 @@ namespace Flowframes.Main
                 await Task.Delay(1000);
             }
             Logger.Log("Queue: Finished queue processing.");
+            OSUtils.ShowNotificationIfInBackground("Flowframes Queue", "Finished queue processing.");
             SetBusy(false);
             Program.mainForm.SetTab("interpolation");
             Program.mainForm.CompletionAction();
