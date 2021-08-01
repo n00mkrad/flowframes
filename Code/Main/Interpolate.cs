@@ -69,7 +69,7 @@ namespace Flowframes
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
-            Program.mainForm.SetStatus("Done interpolating!");
+            Program.mainForm.InterpolationDone();
         }
 
         public static async Task<int> GetCurrentInputFrameCount ()

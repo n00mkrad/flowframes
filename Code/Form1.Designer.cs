@@ -134,6 +134,9 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.completionAction = new System.Windows.Forms.ComboBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.completionActionPanel = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -156,6 +159,7 @@
             this.abtTab.SuspendLayout();
             this.busyControlsPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.completionActionPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -918,6 +922,7 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.completionActionPanel);
             this.interpOptsTab.Controls.Add(this.encodingSettingsBtn);
             this.interpOptsTab.Controls.Add(this.scnDetectTestBtn);
             this.interpOptsTab.Controls.Add(this.inputInfo);
@@ -976,7 +981,7 @@
             this.scnDetectTestBtn.FlatAppearance.BorderSize = 0;
             this.scnDetectTestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.scnDetectTestBtn.ForeColor = System.Drawing.Color.White;
-            this.scnDetectTestBtn.Location = new System.Drawing.Point(692, 229);
+            this.scnDetectTestBtn.Location = new System.Drawing.Point(689, 185);
             this.scnDetectTestBtn.Name = "scnDetectTestBtn";
             this.scnDetectTestBtn.Size = new System.Drawing.Size(206, 23);
             this.scnDetectTestBtn.TabIndex = 38;
@@ -1585,6 +1590,47 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // completionAction
+            // 
+            this.completionAction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.completionAction.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.completionAction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.completionAction.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.completionAction.ForeColor = System.Drawing.Color.White;
+            this.completionAction.FormattingEnabled = true;
+            this.completionAction.Items.AddRange(new object[] {
+            "Do Nothing",
+            "Sleep",
+            "Hibernate",
+            "Shutdown"});
+            this.completionAction.Location = new System.Drawing.Point(84, 11);
+            this.completionAction.Name = "completionAction";
+            this.completionAction.Size = new System.Drawing.Size(130, 23);
+            this.completionAction.TabIndex = 40;
+            // 
+            // label25
+            // 
+            this.label25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label25.ForeColor = System.Drawing.Color.Silver;
+            this.label25.Location = new System.Drawing.Point(10, 15);
+            this.label25.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(68, 13);
+            this.label25.TabIndex = 41;
+            this.label25.Text = "When Done:";
+            // 
+            // completionActionPanel
+            // 
+            this.completionActionPanel.Controls.Add(this.completionAction);
+            this.completionActionPanel.Controls.Add(this.label25);
+            this.completionActionPanel.Location = new System.Drawing.Point(681, 218);
+            this.completionActionPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.completionActionPanel.Name = "completionActionPanel";
+            this.completionActionPanel.Size = new System.Drawing.Size(220, 40);
+            this.completionActionPanel.TabIndex = 42;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1651,6 +1697,8 @@
             this.abtTab.ResumeLayout(false);
             this.busyControlsPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.completionActionPanel.ResumeLayout(false);
+            this.completionActionPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1762,6 +1810,9 @@
         private System.Windows.Forms.ComboBox maxFps;
         private System.Windows.Forms.Label label24;
         private HTAlt.WinForms.HTButton encodingSettingsBtn;
+        private System.Windows.Forms.Panel completionActionPanel;
+        private System.Windows.Forms.ComboBox completionAction;
+        private System.Windows.Forms.Label label25;
     }
 }
 

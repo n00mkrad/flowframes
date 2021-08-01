@@ -68,6 +68,7 @@ namespace Flowframes
                 scnDetectTestBtn.Visible = true;
             }
 
+            completionAction.SelectedIndex = 0;
             await Checks();
         }
 
@@ -210,6 +211,26 @@ namespace Flowframes
             str += $"Frames: {(currInFrames > 0 ? $"{currInFrames}" : "Unknown")} - ";
             str += $"Duration: {(currInDuration > 0 ? FormatUtils.MsToTimestamp(currInDuration) : "Unknown")}";
             inputInfo.Text = str;
+        }
+
+        public void InterpolationDone ()
+        {
+            SetStatus("Done interpolating!");
+
+            if (!BatchProcessing.busy)
+                CompletionAction();
+        }
+
+        public void CompletionAction ()
+        {
+            if (completionAction.SelectedIndex == 1)
+                new TimeoutForm(completionAction.Text, OSUtils.Sleep).ShowDialog();
+
+            if (completionAction.SelectedIndex == 2)
+                new TimeoutForm(completionAction.Text, OSUtils.Hibernate).ShowDialog();
+
+            if (completionAction.SelectedIndex == 3)
+                new TimeoutForm(completionAction.Text, OSUtils.Shutdown).ShowDialog();
         }
 
         public void ResetInputInfo ()

@@ -31,7 +31,7 @@ namespace Flowframes.Main
                 {
                     try
                     {
-                        Logger.Log($"[Queue] Running queue task {i + 1}/{initTaskCount}, {Program.batchQueue.Count} tasks left.");
+                        Logger.Log($"Queue: Running queue task {i + 1}/{initTaskCount}, {Program.batchQueue.Count} tasks left.");
                         await RunEntry(Program.batchQueue.Peek());
 
                         if (currentBatchForm != null)
@@ -44,9 +44,10 @@ namespace Flowframes.Main
                 }
                 await Task.Delay(1000);
             }
-            Logger.Log("[Queue] Finished queue processing.");
+            Logger.Log("Queue: Finished queue processing.");
             SetBusy(false);
             Program.mainForm.SetTab("interpolation");
+            Program.mainForm.CompletionAction();
         }
 
         public static void Stop()
@@ -58,16 +59,14 @@ namespace Flowframes.Main
         {
             if (!EntryIsValid(entry))
             {
-                Logger.Log("[Queue] Skipping entry because it's invalid.");
+                Logger.Log("Queue: Skipping entry because it's invalid.");
                 Program.batchQueue.Dequeue();
                 return;
             }
 
-            Logger.Log($"ENTRY DET FPS: " + entry.inFpsDetected);
-
             string fname = Path.GetFileName(entry.inPath);
             if (IOUtils.IsPathDirectory(entry.inPath)) fname = Path.GetDirectoryName(entry.inPath);
-            Logger.Log($"[Queue] Processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
+            Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
 
             SetBusy(true);
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
@@ -81,7 +80,7 @@ namespace Flowframes.Main
             SetBusy(false);
 
             Program.batchQueue.Dequeue();
-            Logger.Log($"[Queue] Done processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
+            Logger.Log($"Queue: Done processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
         }
 
         static void SetBusy(bool state)
@@ -98,19 +97,19 @@ namespace Flowframes.Main
 
             if (entry.inPath == null || (IOUtils.IsPathDirectory(entry.inPath) && !Directory.Exists(entry.inPath)) || (!IOUtils.IsPathDirectory(entry.inPath) && !File.Exists(entry.inPath)))
             {
-                Logger.Log("[Queue] Can't process queue entry: Input path is invalid.");
+                Logger.Log("Queue: Can't process queue entry: Input path is invalid.");
                 return false;
             }
 
             if (entry.outPath == null || !Directory.Exists(entry.outPath))
             {
-                Logger.Log("[Queue] Can't process queue entry: Output path is invalid.");
+                Logger.Log("Queue: Can't process queue entry: Output path is invalid.");
                 return false;
             }
 
             if (IOUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), entry.ai.pkgDir), true) < 1)
             {
-                Logger.Log("[Queue] Can't process queue entry: Selected AI is not available.");
+                Logger.Log("Queue: Can't process queue entry: Selected AI is not available.");
                 return false;
             }
 

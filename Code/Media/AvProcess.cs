@@ -26,7 +26,7 @@ namespace Flowframes
         static LogMode currentLogMode;
         static bool showProgressBar;
 
-        static string defLogLevel = "warning";
+        static readonly string defLogLevel = "warning";
 
         public static void Kill()
         {

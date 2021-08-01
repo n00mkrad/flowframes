@@ -15,6 +15,7 @@ using Flowframes.Extensions;
 using Flowframes.MiscUtils;
 using System.Threading;
 using System.Linq;
+using Tulpep.NotificationWindow;
 
 namespace Flowframes.OS
 {
@@ -117,7 +118,7 @@ namespace Flowframes.OS
             }
             catch (Exception e)
             {
-                Logger.Log("Failed to detect drive type: " + e.Message);
+                Logger.Log("Failed to detect drive type: " + e.Message, true);
                 return true;    // Default to SSD on fail
             }
             return false;
@@ -205,6 +206,29 @@ namespace Flowframes.OS
                 output = output.SplitIntoLines().LastOrDefault();
             
             return output;
+        }
+
+        public static void Shutdown ()
+        {
+            Process proc = NewProcess(true);
+            proc.StartInfo.Arguments = "/C shutdown -s -t 0";
+            proc.Start();
+        }
+
+        public static void Hibernate()
+        {
+            Application.SetSuspendState(PowerState.Hibernate, true, true);
+        }
+
+        public static void Sleep()
+        {
+            Application.SetSuspendState(PowerState.Suspend, true, true);
+        }
+
+        public void ShowNotification (string title, string text)
+        {
+            var popupNotifier = new PopupNotifier { TitleText = title, ContentText = text, IsRightToLeft = false };
+            popupNotifier.Popup();
         }
     }
 }
