@@ -39,6 +39,8 @@
             this.clearSelectedBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.moveDownBtn = new System.Windows.Forms.Button();
+            this.moveUpBtn = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -181,12 +183,48 @@
             this.panel1.Size = new System.Drawing.Size(250, 142);
             this.panel1.TabIndex = 46;
             // 
+            // moveDownBtn
+            // 
+            this.moveDownBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.moveDownBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.moveDownBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.moveDownBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.moveDownBtn.ForeColor = System.Drawing.Color.White;
+            this.moveDownBtn.Location = new System.Drawing.Point(637, 446);
+            this.moveDownBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.moveDownBtn.Name = "moveDownBtn";
+            this.moveDownBtn.Size = new System.Drawing.Size(35, 35);
+            this.moveDownBtn.TabIndex = 47;
+            this.moveDownBtn.Text = "↓";
+            this.moveDownBtn.UseVisualStyleBackColor = false;
+            this.moveDownBtn.Visible = false;
+            this.moveDownBtn.Click += new System.EventHandler(this.moveDownBtn_Click);
+            // 
+            // moveUpBtn
+            // 
+            this.moveUpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.moveUpBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.moveUpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.moveUpBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.moveUpBtn.ForeColor = System.Drawing.Color.White;
+            this.moveUpBtn.Location = new System.Drawing.Point(598, 446);
+            this.moveUpBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.moveUpBtn.Name = "moveUpBtn";
+            this.moveUpBtn.Size = new System.Drawing.Size(35, 35);
+            this.moveUpBtn.TabIndex = 48;
+            this.moveUpBtn.Text = "↑";
+            this.moveUpBtn.UseVisualStyleBackColor = false;
+            this.moveUpBtn.Visible = false;
+            this.moveUpBtn.Click += new System.EventHandler(this.moveUpBtn_Click);
+            // 
             // BatchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(944, 501);
+            this.Controls.Add(this.moveUpBtn);
+            this.Controls.Add(this.moveDownBtn);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.clearSelectedBtn);
             this.Controls.Add(this.taskList);
@@ -222,5 +260,7 @@
         private System.Windows.Forms.Button clearSelectedBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button moveDownBtn;
+        private System.Windows.Forms.Button moveUpBtn;
     }
 }

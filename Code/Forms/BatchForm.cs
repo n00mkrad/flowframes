@@ -33,9 +33,19 @@ namespace Flowframes.Forms
             {
                 InterpSettings entry = Program.batchQueue.ElementAt(i);
                 string niceOutMode = entry.outMode.ToString().ToUpper().Remove("VID").Remove("IMG");
-                string str = $"#{i}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => " +
+                string str = $"#{i+1}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => " +
                     $"{entry.interpFactor}x {entry.ai.aiNameShort} ({entry.model.name}) => {niceOutMode}";
                 taskList.Items.Add(str);
+            }
+        }
+
+        private void RefreshIndex ()
+        {
+            for(int i = 0; i < taskList.Items.Count; i++)
+            {
+                string[] split = taskList.Items[i].ToString().Split(':');
+                split[0] = $"#{i+1}";
+                taskList.Items[i] = string.Join(":", split);
             }
         }
 
@@ -52,6 +62,24 @@ namespace Flowframes.Forms
         {
             SetWorking(BatchProcessing.busy);
             RefreshGui();
+        }
+
+        private void MoveListItem(int direction)
+        {
+            if (taskList.SelectedItem == null || taskList.SelectedIndex < 0)
+                return;
+
+            int newIndex = taskList.SelectedIndex + direction;
+
+            if (newIndex < 0 || newIndex >= taskList.Items.Count)
+                return; // Index out of range - nothing to do
+
+            object selected = taskList.SelectedItem;
+
+            taskList.Items.Remove(selected);
+            taskList.Items.Insert(newIndex, selected);
+            RefreshIndex();
+            taskList.SetSelected(newIndex, true);
         }
 
         private void runBtn_Click(object sender, EventArgs e)
@@ -104,7 +132,10 @@ namespace Flowframes.Forms
 
         private void taskList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            clearSelectedBtn.Enabled = taskList.SelectedItem != null;
+            bool sel = taskList.SelectedItem != null;
+            clearSelectedBtn.Enabled = sel;
+            moveUpBtn.Visible = sel;
+            moveDownBtn.Visible = sel;
         }
 
         private void taskList_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -134,6 +165,16 @@ namespace Flowframes.Forms
 
             if (start)
                 runBtn_Click(null, null);
+        }
+
+        private void moveUpBtn_Click(object sender, EventArgs e)
+        {
+            MoveListItem(-1);
+        }
+
+        private void moveDownBtn_Click(object sender, EventArgs e)
+        {
+            MoveListItem(1);
         }
     }
 }
