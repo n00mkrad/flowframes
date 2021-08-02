@@ -224,12 +224,15 @@ namespace Flowframes
         public void CompletionAction ()
         {
             if (completionAction.SelectedIndex == 1)
-                new TimeoutForm(completionAction.Text, OSUtils.Sleep).ShowDialog();
+                new TimeoutForm(completionAction.Text, Application.Exit).ShowDialog();
 
             if (completionAction.SelectedIndex == 2)
-                new TimeoutForm(completionAction.Text, OSUtils.Hibernate).ShowDialog();
+                new TimeoutForm(completionAction.Text, OSUtils.Sleep).ShowDialog();
 
             if (completionAction.SelectedIndex == 3)
+                new TimeoutForm(completionAction.Text, OSUtils.Hibernate).ShowDialog();
+
+            if (completionAction.SelectedIndex == 4)
                 new TimeoutForm(completionAction.Text, OSUtils.Shutdown).ShowDialog();
         }
 
