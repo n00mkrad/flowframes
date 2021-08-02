@@ -17,7 +17,7 @@ namespace Flowframes.UI
 {
     class MainUiFunctions
     {
-        public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox)
+        public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox, bool start = false)
         {
             Program.mainForm.SetTab("interpolate");
             Program.mainForm.ResetInputInfo();
@@ -60,6 +60,10 @@ namespace Flowframes.UI
             Dedupe.ClearCache();
             await Task.Delay(10);
             InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
+
+            if (start)
+                Program.mainForm.runBtn_Click(null, null);
+                
         }
 
         static void CheckExistingFolder (string inpath, string outpath)

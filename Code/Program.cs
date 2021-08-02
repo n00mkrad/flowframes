@@ -5,6 +5,7 @@ using Flowframes.MiscUtils;
 using Flowframes.OS;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -17,7 +18,9 @@ namespace Flowframes
 {
     static class Program
     {
+        public static string[] fileArgs = new string[0];
         public static string[] args = new string[0];
+        public static bool initialRun = true;
         public static Form1 mainForm;
 
         public static bool busy = false;
@@ -40,8 +43,11 @@ namespace Flowframes
 
             Networks.Init();
             Task.Run(() => DiskSpaceCheckLoop());
+            fileArgs = Environment.GetCommandLineArgs().Where(a => a[0] != '-' && File.Exists(a)).ToList().Skip(1).ToArray();
             args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
-            Logger.Log($"Args: {(args.Length > 0 ? string.Join(", -", args) : "None")}", false);
+            Logger.Log($"Command Line: {Environment.CommandLine}", true);
+            Logger.Log($"Files: {(fileArgs.Length > 0 ? string.Join(", ", fileArgs) : "None")}", true);
+            Logger.Log($"Args: {(args.Length > 0 ? string.Join(", ", args) : "None")}", true);
 
             LaunchMainForm();
         }

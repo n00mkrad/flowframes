@@ -115,7 +115,7 @@ namespace Flowframes.Forms
             await LoadDroppedPaths(droppedPaths);
         }
 
-        public async Task LoadDroppedPaths (string[] droppedPaths)
+        public async Task LoadDroppedPaths (string[] droppedPaths, bool start = false)
         {                
             foreach (string path in droppedPaths)
             {
@@ -131,6 +131,9 @@ namespace Flowframes.Forms
                 Program.batchQueue.Enqueue(current);
                 RefreshGui();
             }
+
+            if (start)
+                runBtn_Click(null, null);
         }
     }
 }

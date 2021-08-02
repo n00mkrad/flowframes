@@ -53,7 +53,7 @@ namespace Flowframes
             RemovePreviewIfDisabled();
             UpdateStepByStepControls();
             Initialized();
-            HandleFileArgs();
+            HandleArgs();
             Text = $"Flowframes";
 
             if (Program.args.Contains("show-model-downloader"))
@@ -90,24 +90,31 @@ namespace Flowframes
             }
         }
 
-        void HandleFileArgs()
+        void HandleArgs()
         {
-            try
+            foreach(string arg in Program.args)
             {
-                List<string> files = new List<string>();
+                if (arg.StartsWith("factor="))
+                {
+                    int factor = arg.Split('=').Last().GetInt();
+                    if (factor == 2) interpFactorCombox.SelectedIndex = 0;
+                    if (factor == 4) interpFactorCombox.SelectedIndex = 1;
+                    if (factor == 8) interpFactorCombox.SelectedIndex = 2;
+                }
 
-                foreach (string arg in Program.args)
-                    if (Path.GetExtension(arg) != ".exe" && IOUtils.IsFileValid(arg)) 
-                        files.Add(arg);
+                if (arg.StartsWith("ai="))
+                    aiCombox.SelectedIndex = arg.Split('=').Last().GetInt();
 
-                if(files.Count > 0)
-                    DragDropHandler(files.ToArray());
+                if (arg.StartsWith("model="))
+                    aiModel.SelectedIndex = arg.Split('=').Last().GetInt();
+
+                if (arg.StartsWith("output-mode="))
+                    outModeCombox.SelectedIndex = arg.Split('=').Last().GetInt();
             }
-            catch (Exception e)
-            {
-                Logger.Log($"Failed to load input from given launch arguments.", true);
-                Logger.Log($"{e.Message}\n{e.StackTrace}", true);
-            }
+
+            if (Program.fileArgs.Length > 0)
+                DragDropHandler(Program.fileArgs.Where(x => IOUtils.IsFileValid(x)).ToArray());
+
         }
 
         void RemovePreviewIfDisabled ()
@@ -223,6 +230,9 @@ namespace Flowframes
 
         public void CompletionAction ()
         {
+            if (Program.args.Contains("quit-when-done"))
+                Application.Exit();
+
             if (completionAction.SelectedIndex == 1)
                 new TimeoutForm(completionAction.Text, Application.Exit).ShowDialog();
 
@@ -457,11 +467,13 @@ namespace Flowframes
         {
             if (Program.busy) return;
 
-            if (files.Length > 1)
+            bool start = Program.initialRun && Program.args.Contains("start");
+
+                if (files.Length > 1)
             {
                 queueBtn_Click(null, null);
                 if (BatchProcessing.currentBatchForm != null)
-                    BatchProcessing.currentBatchForm.LoadDroppedPaths(files);
+                    BatchProcessing.currentBatchForm.LoadDroppedPaths(files, start);
             }
             else
             {
@@ -477,7 +489,7 @@ namespace Flowframes
 
                 trimCombox.SelectedIndex = 0;
 
-                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox);
+                MainUiFunctions.InitInput(outputTbox, inputTbox, fpsInTbox, start);
             }
         }
 

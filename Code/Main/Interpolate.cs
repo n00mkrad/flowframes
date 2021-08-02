@@ -34,6 +34,7 @@ namespace Flowframes
         {
             if (!BatchProcessing.busy && Program.busy) return;
             canceled = false;
+            Program.initialRun = false;
             Program.mainForm.SetWorking(true);
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
