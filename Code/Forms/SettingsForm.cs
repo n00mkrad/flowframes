@@ -72,6 +72,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(processingMode);
             ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
+            ConfigParser.SaveComboxIndex(outFolderLoc);
             ConfigParser.SaveGuiElement(keepTempFolder);
             ConfigParser.SaveGuiElement(exportNamePattern);
             ConfigParser.SaveGuiElement(exportNamePatternLoop);
@@ -134,6 +135,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
+            ConfigParser.LoadComboxIndex(outFolderLoc); ConfigParser.LoadGuiElement(custOutDir);
             ConfigParser.LoadGuiElement(delLogsOnStartup);
             ConfigParser.LoadGuiElement(keepTempFolder);
             ConfigParser.LoadGuiElement(exportNamePattern);
@@ -195,6 +197,12 @@ namespace Flowframes.Forms
             tempDirCustom.Visible = tempFolderLoc.SelectedIndex == 4;
         }
 
+        private void outFolderLoc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            custOutDirBrowseBtn.Visible = outFolderLoc.SelectedIndex == 1;
+            custOutDir.Visible = outFolderLoc.SelectedIndex == 1;
+        }
+
         private void tempDirBrowseBtn_Click(object sender, EventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = tempDirCustom.Text.Trim(), IsFolderPicker = true };
@@ -203,6 +211,16 @@ namespace Flowframes.Forms
                 tempDirCustom.Text = dialog.FileName;
 
             ConfigParser.SaveGuiElement(tempDirCustom);
+        }
+
+        private void custOutDirBrowseBtn_Click(object sender, EventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = custOutDir.Text.Trim(), IsFolderPicker = true };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                custOutDir.Text = dialog.FileName;
+
+            ConfigParser.SaveGuiElement(custOutDir);
         }
 
         private void cmdDebugMode_SelectedIndexChanged(object sender, EventArgs e)
