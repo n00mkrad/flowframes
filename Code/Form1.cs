@@ -94,6 +94,9 @@ namespace Flowframes
         {
             foreach(string arg in Program.args)
             {
+                if (arg.StartsWith("out="))
+                    outputTbox.Text = arg.Split('=').Last().Trim();
+
                 if (arg.StartsWith("factor="))
                 {
                     int factor = arg.Split('=').Last().GetInt();
@@ -322,18 +325,20 @@ namespace Flowframes
 
         public void SetOutMode(Interpolate.OutMode mode)
         {
-            int theIndex = 0;
+            int targetIndex = 0;
+
             for(int i = 0; i < outModeCombox.Items.Count; i++)
             {
                 string currentItem = outModeCombox.Items[i].ToString().ToLower();
-                if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) theIndex = i;
-                if (mode == Interpolate.OutMode.VidWebm && currentItem.Contains("webm")) theIndex = i;
-                if (mode == Interpolate.OutMode.VidProRes && currentItem.Contains("prores")) theIndex = i;
-                if (mode == Interpolate.OutMode.VidAvi && currentItem.Contains("avi")) theIndex = i;
-                if (mode == Interpolate.OutMode.VidGif && currentItem.Contains("gif")) theIndex = i;
-                if (mode == Interpolate.OutMode.ImgPng && currentItem.Contains("image")) theIndex = i;
+                if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) targetIndex = i;
+                if (mode == Interpolate.OutMode.VidWebm && currentItem.Contains("webm")) targetIndex = i;
+                if (mode == Interpolate.OutMode.VidProRes && currentItem.Contains("prores")) targetIndex = i;
+                if (mode == Interpolate.OutMode.VidAvi && currentItem.Contains("avi")) targetIndex = i;
+                if (mode == Interpolate.OutMode.VidGif && currentItem.Contains("gif")) targetIndex = i;
+                if (mode == Interpolate.OutMode.ImgPng && currentItem.Contains("image")) targetIndex = i;
             }
-            outModeCombox.SelectedIndex = theIndex;
+
+            outModeCombox.SelectedIndex = targetIndex;
         }
 
         AI GetAi()
