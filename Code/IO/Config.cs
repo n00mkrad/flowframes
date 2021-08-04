@@ -146,9 +146,7 @@ namespace Flowframes.IO
 
         public static bool GetBool(string key)
         {
-            WriteIfDoesntExist(key.ToString(), false.ToString());
-            string str = Get(key, Type.Bool);
-            return str.GetBool();
+            return Get(key, Type.Bool).GetBool();
         }
 
         public static bool GetBool(string key, bool defaultVal)

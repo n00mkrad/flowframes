@@ -190,7 +190,7 @@
             this.moveDownBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.moveDownBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.moveDownBtn.ForeColor = System.Drawing.Color.White;
-            this.moveDownBtn.Location = new System.Drawing.Point(637, 446);
+            this.moveDownBtn.Location = new System.Drawing.Point(636, 445);
             this.moveDownBtn.Margin = new System.Windows.Forms.Padding(0);
             this.moveDownBtn.Name = "moveDownBtn";
             this.moveDownBtn.Size = new System.Drawing.Size(35, 35);
@@ -207,7 +207,7 @@
             this.moveUpBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.moveUpBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.moveUpBtn.ForeColor = System.Drawing.Color.White;
-            this.moveUpBtn.Location = new System.Drawing.Point(598, 446);
+            this.moveUpBtn.Location = new System.Drawing.Point(597, 445);
             this.moveUpBtn.Margin = new System.Windows.Forms.Padding(0);
             this.moveUpBtn.Name = "moveUpBtn";
             this.moveUpBtn.Size = new System.Drawing.Size(35, 35);
