@@ -3,6 +3,15 @@ If your video gets taken down by "flowframesinterpolation@gmail.com",
 please report that account, it's fake!
 
 
+Flowframes 1.30.0 Changelog:
+- Added the option to Close/Sleep/Hibernate/Shutdown after interpolation
+- Added notifications that will show if an interpolation finished in the background
+- Added option to change default output directory (same as input or custom)
+- Added basic command line arguments to automate Flowframes interpolation
+- Added move up/down buttons to batch processing queue
+- Fixed a bug that would set incorrect default values for certain settings
+
+
 Flowframes 1.29.0 Changelog:
 - Added option to change the color space for most codecs (e.g. for 10-bit encoding)
 - Added a button in the settings to reset the config to default
