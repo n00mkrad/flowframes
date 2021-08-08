@@ -153,7 +153,8 @@ namespace Flowframes.Forms
                 Logger.Log($"BatchForm: Dropped path: '{path}'", true);
 
                 InterpSettings current = Program.mainForm.GetCurrentSettings();
-                current.UpdatePaths(path, path.GetParentDir());
+                string outDir = (Config.GetInt("outFolderLoc") == 0) ? path.GetParentDir() : Config.Get("custOutDir").Trim();
+                current.UpdatePaths(path, outDir);
 
                 current.inFpsDetected = await IOUtils.GetFpsFolderOrVideo(path);
                 current.inFps = current.inFpsDetected;

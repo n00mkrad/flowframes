@@ -26,10 +26,7 @@ namespace Flowframes.UI
             if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 
-            if(Config.GetInt("outFolderLoc") == 0)
-                outputTbox.Text = inputTbox.Text.Trim().GetParentDir();
-            else
-                outputTbox.Text = Config.Get("custOutDir").Trim();
+            outputTbox.Text = (Config.GetInt("outFolderLoc") == 0) ? inputTbox.Text.Trim().GetParentDir() : Config.Get("custOutDir").Trim();
 
             Program.lastInputPath = path;
             Program.lastInputPathIsSsd = OSUtils.DriveIsSSD(path);
