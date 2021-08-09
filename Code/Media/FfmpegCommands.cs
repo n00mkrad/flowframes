@@ -121,14 +121,10 @@ namespace Flowframes
                 Logger.Log("GetFramerate ffmpeg Error: " + ffmpegEx.Message, true, false);
             }
 
-            Logger.Log($"ffmpegFps.GetFloat() = {ffmpegFps.GetFloat()}", true, false, "ffmpeg");
-
             if (preferFfmpeg)
             {
-                Logger.Log($"preferring ffmpeg");
-
                 if (ffmpegFps.GetFloat() > 0)
-                { Logger.Log($"returning {ffmpegFps}"); return ffmpegFps; }
+                    return ffmpegFps;
                 else
                     return ffprobeFps;
             }
