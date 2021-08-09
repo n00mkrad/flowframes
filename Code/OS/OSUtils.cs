@@ -242,5 +242,26 @@ namespace Flowframes.OS
 
             ShowNotification(title, text);
         }
+
+        public static string GetGpus ()
+        {
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DisplayConfiguration");
+
+            List<string> gpus = new List<string>();
+
+            foreach (ManagementObject mo in searcher.Get())
+            {
+                foreach (PropertyData property in mo.Properties)
+                {
+                    if (property.Name == "Description")
+                    {
+                        gpus.Add(property.Value.ToString());
+                        Logger.Log("[GetGpus] Found GPU: " + gpus, true);
+                    }
+                }
+            }
+
+            return string.Join(", ", gpus);
+        }
     }
 }

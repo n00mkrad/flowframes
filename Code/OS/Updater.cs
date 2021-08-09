@@ -137,7 +137,7 @@ namespace Flowframes.OS
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
 
             if (installed.ToString() != "0.0.0")
-                Program.mainForm.Text = "Flowframes " + installed.ToString();
+                Program.mainForm.Text = $"Flowframes {installed} [GPU: {OSUtils.GetGpus().Remove("NVIDIA ").Remove("AMD ").Remove("Intel ")}]";
         }
 
         public static async Task UpdateModelList()
