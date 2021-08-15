@@ -208,7 +208,7 @@ namespace Flowframes
             string args = $" --input {inPath.Wrap()} --output {outPath.Wrap()} --model {mdl}/{mdl}.pth --factor {interpFactor}";
 
             Process flavrPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(flavrPy, 4500);
+            AiStarted(flavrPy, 4000);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             flavrPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.pkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
@@ -362,6 +362,67 @@ namespace Flowframes
 
             while (!dain.HasExited)
                 await Task.Delay(100);
+        }
+
+        public static async Task RunXvfiCuda(string framesPath, float interpFactor, string mdl)
+        {
+            if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
+                AutoEncode.paused = false;
+
+            try
+            {
+                string xvfiDir = Path.Combine(Paths.GetPkgPath(), Implementations.xvfiCuda.pkgDir);
+                string script = "main.py";
+
+                if (!File.Exists(Path.Combine(xvfiDir, script)))
+                {
+                    Interpolate.Cancel("XVFI script not found! Make sure you didn't modify any files.");
+                    return;
+                }
+
+                await RunXvfiCudaProcess(framesPath, Paths.interpDir, script, interpFactor, mdl);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error running XVFI-CUDA: " + e.Message);
+            }
+
+            await AiFinished("XVFI");
+        }
+
+        public static async Task RunXvfiCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdlDir)
+        {
+            string pkgPath = Path.Combine(Paths.GetPkgPath(), Implementations.xvfiCuda.pkgDir);
+            string basePath = inPath.GetParentDir();
+            string outPath = Path.Combine(basePath, outDir);
+            Directory.CreateDirectory(outPath);
+            string mdlArgs = File.ReadAllText(Path.Combine(pkgPath, mdlDir, "args.txt"));
+            string args = $" --custom_path {basePath} --input {inPath.Wrap()} --output {outPath.Wrap()} --mdl_dir {mdlDir}" +
+                $" --multiple {interpFactor} --gpu 0 {mdlArgs}";
+
+            Process xvfiPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
+            AiStarted(xvfiPy, 4500);
+            SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
+            xvfiPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {pkgPath.Wrap()} & " +
+                $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
+            Logger.Log($"Running XVFI (CUDA)...", false);
+            Logger.Log("cmd.exe " + xvfiPy.StartInfo.Arguments, true);
+
+            if (!OSUtils.ShowHiddenCmd())
+            {
+                xvfiPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, "xvfi-cuda-log"); };
+                xvfiPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "xvfi-cuda-log", true); };
+            }
+
+            xvfiPy.Start();
+
+            if (!OSUtils.ShowHiddenCmd())
+            {
+                xvfiPy.BeginOutputReadLine();
+                xvfiPy.BeginErrorReadLine();
+            }
+
+            while (!xvfiPy.HasExited) await Task.Delay(1);
         }
 
         static void LogOutput (string line, string logFilename, bool err = false)

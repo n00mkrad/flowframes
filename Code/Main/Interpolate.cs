@@ -190,6 +190,9 @@ namespace Flowframes
             if (ai.aiName == Implementations.dainNcnn.aiName)
                 tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model.dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
 
+            if (ai.aiName == Implementations.xvfiCuda.aiName)
+                tasks.Add(AiProcess.RunXvfiCuda(current.framesFolder, current.interpFactor, current.model.dir));
+
             if (currentlyUsingAutoEnc)
             {
                 Logger.Log($"{Logger.GetLastLine()} (Using Auto-Encode)", true);

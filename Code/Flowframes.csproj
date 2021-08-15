@@ -339,7 +339,7 @@
     <Compile Include="Data\VidExtraData.cs" />
     <Compile Include="Data\Fraction.cs" />
     <Compile Include="Data\InterpSettings.cs" />
-    <Compile Include="Data\Networks.cs" />
+    <Compile Include="Data\Implementations.cs" />
     <Compile Include="Data\Padding.cs" />
     <Compile Include="Data\PseudoUniqueFile.cs" />
     <Compile Include="Data\ResumeState.cs" />
