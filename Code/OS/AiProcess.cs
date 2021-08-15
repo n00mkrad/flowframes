@@ -9,14 +9,14 @@ using Flowframes.UI;
 using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
-using Flowframes.Media;
+using System.Collections.Generic;
 
 namespace Flowframes
 {
     class AiProcess
     {
         public static bool hasShownError;
-
+        public static string lastLogName;
         public static Process lastAiProcess;
         public static Stopwatch processTime = new Stopwatch();
         public static Stopwatch processTimeMulti = new Stopwatch();
@@ -83,8 +83,10 @@ namespace Flowframes
 
             if(interpFramesCount < 3)
             {
+                string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), lastLogName + ".txt"));
+                string log = string.Join("\n", logLines.Reverse().Take(10).Reverse().Select(x => x.Split("]: ").Last()).ToList());
                 string amount = interpFramesCount > 0 ? $"Only {interpFramesCount}" : "No";
-                Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.");
+                Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.\n\n\nLast 10 log lines:\n{log}\n\nCheck the log '{lastLogName}' for more details.");
                 return;
             }
 
@@ -397,7 +399,7 @@ namespace Flowframes
             string outPath = Path.Combine(basePath, outDir);
             Directory.CreateDirectory(outPath);
             string mdlArgs = File.ReadAllText(Path.Combine(pkgPath, mdlDir, "args.ini"));
-            string args = $" --custom_path {basePath} --input {inPath.Wrap()} --output {outPath.Wrap()} --mdl_dir {mdlDir}" +
+            string args = $" --custom_path {basePath.Wrap()} --input {inPath.Wrap()} --output {outPath.Wrap()} --mdl_dir {mdlDir}" +
                 $" --multiple {interpFactor} --gpu 0 {mdlArgs}";
 
             Process xvfiPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
@@ -450,6 +452,7 @@ namespace Flowframes
                 return;
             }
 
+            lastLogName = logFilename;
             Logger.Log(line, true, false, logFilename);
 
             if (line.Contains("ff:nocuda-cpu"))
