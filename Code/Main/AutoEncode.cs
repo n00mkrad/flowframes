@@ -39,10 +39,10 @@ namespace Flowframes.Main
             if (Interpolate.current.ai.aiName.ToUpper().Contains("NCNN"))
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferNcnn, 150);
 
-            if (Interpolate.current.ai.aiName == Networks.rifeCuda.aiName)
+            if (Interpolate.current.ai.aiName == Implementations.rifeCuda.aiName)
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferRifeCuda, 90);
 
-            if (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName)
+            if (Interpolate.current.ai.aiName == Implementations.flavrCuda.aiName)
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferFlavrCuda, 90);
         }
 

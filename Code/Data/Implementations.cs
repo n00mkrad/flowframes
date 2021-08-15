@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Flowframes.Data
 {
-    class Networks
+    class Implementations
     {
         public static AI rifeCuda = new AI("RIFE_CUDA", "RIFE", "CUDA/Pytorch Implementation of RIFE (Nvidia Only!)", "rife-cuda", true);
         public static AI rifeNcnn = new AI("RIFE_NCNN", "RIFE (NCNN)", "Vulkan/NCNN Implementation of RIFE", "rife-ncnn", false);

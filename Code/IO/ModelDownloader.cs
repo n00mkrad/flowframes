@@ -191,7 +191,7 @@ namespace Flowframes.IO
         {
             List<string> modelPaths = new List<string>();
 
-            foreach (AI ai in Networks.networks)
+            foreach (AI ai in Implementations.networks)
             {
                 string aiPkgFolder = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
                 ModelCollection aiModels = AiModels.GetModels(ai);

@@ -110,7 +110,7 @@ namespace Flowframes
 
             try
             {
-                string rifeDir = Path.Combine(Paths.GetPkgPath(), Networks.rifeCuda.pkgDir);
+                string rifeDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.pkgDir);
                 string script = "rife.py";
 
                 if (!File.Exists(Path.Combine(rifeDir, script)))
@@ -153,7 +153,7 @@ namespace Flowframes
             Process rifePy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
-            rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeCuda.pkgDir).Wrap()} & " +
+            rifePy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.pkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
@@ -182,7 +182,7 @@ namespace Flowframes
 
             try
             {
-                string flavDir = Path.Combine(Paths.GetPkgPath(), Networks.flavrCuda.pkgDir);
+                string flavDir = Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.pkgDir);
                 string script = "flavr.py";
 
                 if (!File.Exists(Path.Combine(flavDir, script)))
@@ -210,7 +210,7 @@ namespace Flowframes
             Process flavrPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(flavrPy, 4500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
-            flavrPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.flavrCuda.pkgDir).Wrap()} & " +
+            flavrPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.pkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running FLAVR (CUDA)...", false);
             Logger.Log("cmd.exe " + flavrPy.StartInfo.Arguments, true);
@@ -291,7 +291,7 @@ namespace Flowframes
             string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
-            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Networks.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
+            rifeNcnn.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
             
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
@@ -332,7 +332,7 @@ namespace Flowframes
 
         public static async Task RunDainNcnnProcess (string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
-            string dainDir = Path.Combine(Paths.GetPkgPath(), Networks.dainNcnn.pkgDir);
+            string dainDir = Path.Combine(Paths.GetPkgPath(), Implementations.dainNcnn.pkgDir);
             Directory.CreateDirectory(outPath);
             Process dain = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
@@ -423,7 +423,7 @@ namespace Flowframes
             if (!hasShownError && line.ToLower().Contains("error(s) in loading state_dict"))
             {
                 hasShownError = true;
-                string msg = (Interpolate.current.ai.aiName == Networks.flavrCuda.aiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
+                string msg = (Interpolate.current.ai.aiName == Implementations.flavrCuda.aiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
                 InterpolateUtils.ShowMessage($"Error loading the AI model!\n\n{line}{msg}", "Error");
             }
 
@@ -448,7 +448,7 @@ namespace Flowframes
             if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
             {
                 hasShownError = true;
-                bool usingDain = (Interpolate.current.ai.aiName == Networks.dainNcnn.aiName);
+                bool usingDain = (Interpolate.current.ai.aiName == Implementations.dainNcnn.aiName);
                 string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
                 InterpolateUtils.ShowMessage($"Vulkan ran out of memory!\n\n{line}{msg}", "Error");
             }

@@ -132,7 +132,7 @@ namespace Flowframes
 
         static bool HideMessage (string msg)
         {
-            string[] hiddenMsgs = new string[] { "can produce invalid output", "pixel format" };
+            string[] hiddenMsgs = new string[] { "can produce invalid output", "pixel format", "provided invalid" };
 
             foreach (string str in hiddenMsgs)
                 if (msg.MatchesWildcard($"*{str}*"))

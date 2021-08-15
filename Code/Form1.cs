@@ -184,7 +184,7 @@ namespace Flowframes
             inputTbox.Text = entry.inPath;
             outputTbox.Text = entry.outPath;
             interpFactorCombox.Text = entry.interpFactor.ToString();
-            aiCombox.SelectedIndex = Networks.networks.IndexOf(entry.ai);
+            aiCombox.SelectedIndex = Implementations.networks.IndexOf(entry.ai);
             SetOutMode(entry.outMode);
         }
 
@@ -262,8 +262,9 @@ namespace Flowframes
 
         void InitAis()
         {
-            foreach (AI ai in Networks.networks)
+            foreach (AI ai in Implementations.networks)
                 aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
+
             ConfigParser.LoadComboxIndex(aiCombox);
         }
 
@@ -343,7 +344,7 @@ namespace Flowframes
 
         AI GetAi()
         {
-            return Networks.networks[aiCombox.SelectedIndex];
+            return Implementations.networks[aiCombox.SelectedIndex];
         }
 
         void inputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }

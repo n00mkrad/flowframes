@@ -21,10 +21,10 @@ namespace Flowframes.MiscUtils
 			canceled = false;
 			List<AI> ais = new List<AI>();
 
-			if (rifeC) ais.Add(Networks.rifeCuda);
-			if (rifeN) ais.Add(Networks.rifeNcnn);
-			if (dainN) ais.Add(Networks.dainNcnn);
-			if (flavrC) ais.Add(Networks.flavrCuda);
+			if (rifeC) ais.Add(Implementations.rifeCuda);
+			if (rifeN) ais.Add(Implementations.rifeNcnn);
+			if (dainN) ais.Add(Implementations.dainNcnn);
+			if (flavrC) ais.Add(Implementations.flavrCuda);
 
 			if (ais.Count < 1)
 				return;

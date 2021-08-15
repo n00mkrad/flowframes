@@ -178,16 +178,16 @@ namespace Flowframes
 
             List<Task> tasks = new List<Task>();
 
-            if (ai.aiName == Networks.rifeCuda.aiName)
+            if (ai.aiName == Implementations.rifeCuda.aiName)
                 tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model.dir));
 
-            if (ai.aiName == Networks.rifeNcnn.aiName)
+            if (ai.aiName == Implementations.rifeNcnn.aiName)
                 tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, (int)current.interpFactor, current.model.dir));
 
-            if (ai.aiName == Networks.flavrCuda.aiName)
+            if (ai.aiName == Implementations.flavrCuda.aiName)
                 tasks.Add(AiProcess.RunFlavrCuda(current.framesFolder, current.interpFactor, current.model.dir));
 
-            if (ai.aiName == Networks.dainNcnn.aiName)
+            if (ai.aiName == Implementations.dainNcnn.aiName)
                 tasks.Add(AiProcess.RunDainNcnn(current.framesFolder, outpath, current.interpFactor, current.model.dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
 
             if (currentlyUsingAutoEnc)

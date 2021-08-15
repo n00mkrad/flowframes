@@ -83,7 +83,7 @@ namespace Flowframes
         {
             inPath = "";
             outPath = "";
-            ai = Networks.networks[0];
+            ai = Implementations.networks[0];
             inFpsDetected = new Fraction();
             inFps = new Fraction();
             interpFactor = 0;
@@ -112,7 +112,7 @@ namespace Flowframes
                 {
                     case "INPATH": inPath = entry.Value; break;
                     case "OUTPATH": outPath = entry.Value; break;
-                    case "AI": ai = Networks.GetAi(entry.Value); break;
+                    case "AI": ai = Implementations.GetAi(entry.Value); break;
                     case "INFPSDETECTED": inFpsDetected = new Fraction(entry.Value); break;
                     case "INFPS": inFps = new Fraction(entry.Value); break;
                     case "OUTFPS": outFps = new Fraction(entry.Value); break;
