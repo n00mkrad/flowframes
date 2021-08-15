@@ -1,0 +1,13 @@
+[
+{
+	"name": "Vimeo",
+	"desc": "Model trained on Vimeo90K dataset",
+	"dir": "vimeo"
+},
+{
+	"name": "X4K1000FPS",
+	"desc": "Model trained on X4K1000FPS dataset",
+	"dir": "x4k1000fps",
+	"isDefault": "true"
+}
+]
