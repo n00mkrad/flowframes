@@ -396,12 +396,12 @@ namespace Flowframes
             string basePath = inPath.GetParentDir();
             string outPath = Path.Combine(basePath, outDir);
             Directory.CreateDirectory(outPath);
-            string mdlArgs = File.ReadAllText(Path.Combine(pkgPath, mdlDir, "args.txt"));
+            string mdlArgs = File.ReadAllText(Path.Combine(pkgPath, mdlDir, "args.ini"));
             string args = $" --custom_path {basePath} --input {inPath.Wrap()} --output {outPath.Wrap()} --mdl_dir {mdlDir}" +
                 $" --multiple {interpFactor} --gpu 0 {mdlArgs}";
 
             Process xvfiPy = OSUtils.NewProcess(!OSUtils.ShowHiddenCmd());
-            AiStarted(xvfiPy, 4500);
+            AiStarted(xvfiPy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
             xvfiPy.StartInfo.Arguments = $"{OSUtils.GetCmdArg()} cd /D {pkgPath.Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";

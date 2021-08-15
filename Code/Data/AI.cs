@@ -14,16 +14,18 @@ namespace Flowframes.Data
         public string friendlyName;
         public string description;
         public string pkgDir;
-        public bool supportsAnyExp;
+        public int[] supportedFactors;
+        public bool multiPass;  // Are multiple passes needed to get to the desired interp factor?
 
-        public AI(string aiNameArg, string friendlyNameArg, string descArg, string pkgDirArg, bool supportsAnyExpArg)
+        public AI(string aiNameArg, string friendlyNameArg, string descArg, string pkgDirArg, int[] factorsArg, bool multiPassArg = false)
         {
             aiName = aiNameArg;
             aiNameShort = aiNameArg.Split(' ')[0].Split('_')[0];
             friendlyName = friendlyNameArg;
             description = descArg;
             pkgDir = pkgDirArg;
-            supportsAnyExp = supportsAnyExpArg;
+            supportedFactors = factorsArg;
+            multiPass = multiPassArg;
         }
     }
 }

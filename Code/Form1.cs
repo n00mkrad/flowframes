@@ -393,10 +393,13 @@ namespace Flowframes
         {
             UpdateUiFps();
             int guiInterpFactor = interpFactorCombox.GetInt();
+
             if (!initialized)
                 return;
+
             string aiName = GetAi().aiName.Replace("_", "-");
-            if (!Program.busy && guiInterpFactor > 2 && !GetAi().supportsAnyExp && Config.GetInt(Config.Key.autoEncMode) > 0 && !Logger.GetLastLine().Contains(aiName))
+
+            if (!Program.busy && guiInterpFactor > 2 && GetAi().multiPass && Config.GetInt(Config.Key.autoEncMode) > 0 && !Logger.GetLastLine().Contains(aiName))
                 Logger.Log($"Warning: {aiName} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
         }
 
@@ -426,6 +429,13 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(aiCombox.Text) || aiCombox.Text == lastAiComboxStr) return;
             lastAiComboxStr = aiCombox.Text;
             UpdateAiModelCombox();
+
+            interpFactorCombox.Items.Clear();
+
+            foreach (int factor in GetAi().supportedFactors)
+                interpFactorCombox.Items.Add($"x{factor}");
+
+            interpFactorCombox.SelectedIndex = 0;
             
             if(initialized)
                 ConfigParser.SaveComboxIndex(aiCombox);

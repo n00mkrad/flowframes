@@ -80,7 +80,7 @@ namespace Flowframes.UI
             }
             catch
             {
-                Logger.Log($"UpdateLastFrameFromInterpOutput: Failed to get progress from '{output}' even though Regex matched!");
+                Logger.Log($"UpdateLastFrameFromInterpOutput: Failed to get progress from '{output}' even though Regex matched!", true);
             }
         }
 

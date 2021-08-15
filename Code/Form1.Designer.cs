@@ -317,10 +317,6 @@
             this.interpFactorCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.interpFactorCombox.ForeColor = System.Drawing.Color.White;
             this.interpFactorCombox.FormattingEnabled = true;
-            this.interpFactorCombox.Items.AddRange(new object[] {
-            "x2",
-            "x4",
-            "x8"});
             this.interpFactorCombox.Location = new System.Drawing.Point(447, 96);
             this.interpFactorCombox.Name = "interpFactorCombox";
             this.interpFactorCombox.Size = new System.Drawing.Size(100, 23);
