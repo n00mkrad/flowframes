@@ -70,7 +70,10 @@ namespace Flowframes
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
-            OSUtils.ShowNotificationIfInBackground("Flowframes", $"Finished interpolation after {FormatUtils.Time(sw.Elapsed)}.");
+
+            if(!BatchProcessing.busy)
+                OSUtils.ShowNotificationIfInBackground("Flowframes", $"Finished interpolation after {FormatUtils.Time(sw.Elapsed)}.");
+            
             Program.mainForm.InterpolationDone();
         }
 
