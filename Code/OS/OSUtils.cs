@@ -256,7 +256,7 @@ namespace Flowframes.OS
                     if (property.Name == "Description")
                     {
                         gpus.Add(property.Value.ToString());
-                        Logger.Log("[GetGpus] Found GPU: " + gpus, true);
+                        Logger.Log($"[GetGpus] Found GPU: {property.Value}", true);
                     }
                 }
             }
