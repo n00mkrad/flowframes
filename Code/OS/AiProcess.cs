@@ -435,22 +435,22 @@ namespace Flowframes
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            if (line.Contains("iVBOR"))
-            {
-                try
-                {
-                    string[] split = line.Split(':');
-                    //MemoryStream stream = new MemoryStream(Convert.FromBase64String(split[1]));
-                    //Image img = Image.FromStream(stream);
-                    Logger.Log($"Received image {split[0]} in {sw.ElapsedMilliseconds} ms", true);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log($"Failed to decode b64 string - {e}:");
-                    Logger.Log(line);
-                }
-                return;
-            }
+            //if (line.Contains("iVBOR"))
+            //{
+            //    try
+            //    {
+            //        string[] split = line.Split(':');
+            //        //MemoryStream stream = new MemoryStream(Convert.FromBase64String(split[1]));
+            //        //Image img = Image.FromStream(stream);
+            //        Logger.Log($"Received image {split[0]} in {sw.ElapsedMilliseconds} ms", true);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Logger.Log($"Failed to decode b64 string - {e}:");
+            //        Logger.Log(line);
+            //    }
+            //    return;
+            //}
 
             lastLogName = logFilename;
             Logger.Log(line, true, false, logFilename);
