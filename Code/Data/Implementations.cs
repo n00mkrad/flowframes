@@ -12,17 +12,7 @@ namespace Flowframes.Data
         public static AI dainNcnn = new AI("DAIN_NCNN", "DAIN (NCNN)", "Vulkan/NCNN Implementation of DAIN", "dain-ncnn", new int[] { 2, 3, 4, 5, 6, 7, 8 });
         public static AI xvfiCuda = new AI("XVFI_CUDA", "XVFI", "CUDA/Pytorch Implementation of XVFI (Nvidia Only!)", "xvfi-cuda", new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
-        public static List<AI> networks = new List<AI>();
-
-        public static void Init ()
-        {
-            networks.Clear();
-            networks.Add(rifeCuda);
-            networks.Add(rifeNcnn);
-            networks.Add(flavrCuda);
-            networks.Add(dainNcnn);
-            networks.Add(xvfiCuda);
-        }
+        public static List<AI> networks = new List<AI> { rifeCuda, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda };
 
         public static AI GetAi (string aiName)
         {
