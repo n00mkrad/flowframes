@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Flowframes.Forms;
 using Flowframes.Main;
 using I = Flowframes.Interpolate;
+using Flowframes.Os;
 
 namespace Flowframes.Ui
 {

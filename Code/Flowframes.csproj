@@ -407,7 +407,7 @@
     <Compile Include="Media\FfmpegCommands.cs" />
     <Compile Include="Media\FfmpegEncode.cs" />
     <Compile Include="Media\FfmpegExtract.cs" />
-    <Compile Include="Media\FFmpegUtils.cs" />
+    <Compile Include="Media\FfmpegUtils.cs" />
     <Compile Include="Media\GetFrameCountCached.cs" />
     <Compile Include="Media\GetMediaResolutionCached.cs" />
     <Compile Include="Media\GetVideoInfoCached.cs" />
@@ -416,7 +416,7 @@
     <Compile Include="MiscUtils\FrameRename.cs" />
     <Compile Include="MiscUtils\ModelDownloadFormUtils.cs" />
     <Compile Include="MiscUtils\NmkdStopwatch.cs" />
-    <Compile Include="OS\AiProcess.cs" />
+    <Compile Include="Os\AiProcess.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -427,27 +427,27 @@
     <Compile Include="Main\Interpolate.cs" />
     <Compile Include="IO\CfgStrings.cs" />
     <Compile Include="IO\Config.cs" />
-    <Compile Include="IO\IOUtils.cs" />
+    <Compile Include="IO\IoUtils.cs" />
     <Compile Include="Data\Paths.cs" />
     <Compile Include="IO\Logger.cs" />
     <Compile Include="Magick\Converter.cs" />
     <Compile Include="Magick\Dedupe.cs" />
-    <Compile Include="OS\AiProcessSuspend.cs" />
-    <Compile Include="OS\NvApi.cs" />
-    <Compile Include="OS\OSUtils.cs" />
-    <Compile Include="OS\Python.cs" />
-    <Compile Include="OS\StartupChecks.cs" />
-    <Compile Include="OS\Updater.cs" />
+    <Compile Include="Os\AiProcessSuspend.cs" />
+    <Compile Include="Os\NvApi.cs" />
+    <Compile Include="Os\OsUtils.cs" />
+    <Compile Include="Os\Python.cs" />
+    <Compile Include="Os\StartupChecks.cs" />
+    <Compile Include="Os\Updater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscUtils\FormatUtils.cs" />
-    <Compile Include="UI\ControlExtensions.cs" />
-    <Compile Include="UI\DebugFormHelper.cs" />
-    <Compile Include="UI\GetWebInfo.cs" />
-    <Compile Include="UI\InterpolationProgress.cs" />
-    <Compile Include="UI\MainUiFunctions.cs" />
-    <Compile Include="UI\UIUtils.cs" />
-    <Compile Include="UI\QuickSettingsTab.cs" />
+    <Compile Include="Ui\ControlExtensions.cs" />
+    <Compile Include="Ui\DebugFormHelper.cs" />
+    <Compile Include="Ui\GetWebInfo.cs" />
+    <Compile Include="Ui\InterpolationProgress.cs" />
+    <Compile Include="Ui\MainUiFunctions.cs" />
+    <Compile Include="Ui\UiUtils.cs" />
+    <Compile Include="Ui\QuickSettingsTab.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
