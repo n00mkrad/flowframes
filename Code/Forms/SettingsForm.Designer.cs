@@ -227,7 +227,7 @@
             this.settingsTabList.Controls.Add(this.vidExportTab);
             this.settingsTabList.Controls.Add(this.tabListPage1);
             this.settingsTabList.Controls.Add(this.debugTab);
-            this.settingsTabList.ForeColor = System.Drawing.Color.White;
+            this.settingsTabList.ForeColor = System.Drawing.Color.DodgerBlue;
             this.settingsTabList.Location = new System.Drawing.Point(12, 62);
             this.settingsTabList.Name = "settingsTabList";
             this.settingsTabList.Size = new System.Drawing.Size(920, 427);
@@ -269,6 +269,7 @@
             this.generalTab.Controls.Add(this.label31);
             this.generalTab.Controls.Add(this.delLogsOnStartup);
             this.generalTab.Controls.Add(this.label11);
+            this.generalTab.ForeColor = System.Drawing.Color.White;
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "Application";
@@ -689,6 +690,7 @@
             this.tabListPage2.Controls.Add(this.label2);
             this.tabListPage2.Controls.Add(this.keepAudio);
             this.tabListPage2.Controls.Add(this.label1);
+            this.tabListPage2.ForeColor = System.Drawing.Color.White;
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
@@ -1211,6 +1213,7 @@
             this.aiOptsPage.Controls.Add(this.ncnnGpus);
             this.aiOptsPage.Controls.Add(this.label5);
             this.aiOptsPage.Controls.Add(this.label32);
+            this.aiOptsPage.ForeColor = System.Drawing.Color.White;
             this.aiOptsPage.Name = "aiOptsPage";
             this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Options";
@@ -1514,6 +1517,7 @@
             this.vidExportTab.Controls.Add(this.label21);
             this.vidExportTab.Controls.Add(this.label9);
             this.vidExportTab.Controls.Add(this.label8);
+            this.vidExportTab.ForeColor = System.Drawing.Color.White;
             this.vidExportTab.Name = "vidExportTab";
             this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Export Options";
@@ -1729,6 +1733,7 @@
             this.tabListPage1.Controls.Add(this.label12);
             this.tabListPage1.Controls.Add(this.mp4Enc);
             this.tabListPage1.Controls.Add(this.label10);
+            this.tabListPage1.ForeColor = System.Drawing.Color.White;
             this.tabListPage1.Name = "tabListPage1";
             this.tabListPage1.Size = new System.Drawing.Size(762, 419);
             this.tabListPage1.Text = "Encoding Settings";
@@ -2046,6 +2051,7 @@
             this.debugTab.Controls.Add(this.label7);
             this.debugTab.Controls.Add(this.label3);
             this.debugTab.Controls.Add(this.cmdDebugMode);
+            this.debugTab.ForeColor = System.Drawing.Color.White;
             this.debugTab.Name = "debugTab";
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Developer Options";
