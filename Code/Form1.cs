@@ -1,8 +1,8 @@
 ﻿using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Main;
-using Flowframes.OS;
-using Flowframes.UI;
+using Flowframes.Os;
+using Flowframes.Ui;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -39,11 +39,11 @@ namespace Flowframes
             StartupChecks.CheckOs();
 
             // Main Tab
-            UIUtils.InitCombox(interpFactorCombox, 0);
-            UIUtils.InitCombox(outModeCombox, 0);
-            UIUtils.InitCombox(aiModel, 2);
+            UiUtils.InitCombox(interpFactorCombox, 0);
+            UiUtils.InitCombox(outModeCombox, 0);
+            UiUtils.InitCombox(aiModel, 2);
             // Video Utils
-            UIUtils.InitCombox(trimCombox, 0);
+            UiUtils.InitCombox(trimCombox, 0);
 
             Program.mainForm = this;
             Logger.textbox = logBox;
@@ -116,7 +116,7 @@ namespace Flowframes
             }
 
             if (Program.fileArgs.Length > 0)
-                DragDropHandler(Program.fileArgs.Where(x => IOUtils.IsFileValid(x)).ToArray());
+                DragDropHandler(Program.fileArgs.Where(x => IoUtils.IsFileValid(x)).ToArray());
 
         }
 
@@ -240,13 +240,13 @@ namespace Flowframes
                 new TimeoutForm(completionAction.Text, Application.Exit).ShowDialog();
 
             if (completionAction.SelectedIndex == 2)
-                new TimeoutForm(completionAction.Text, OSUtils.Sleep).ShowDialog();
+                new TimeoutForm(completionAction.Text, OsUtils.Sleep).ShowDialog();
 
             if (completionAction.SelectedIndex == 3)
-                new TimeoutForm(completionAction.Text, OSUtils.Hibernate).ShowDialog();
+                new TimeoutForm(completionAction.Text, OsUtils.Hibernate).ShowDialog();
 
             if (completionAction.SelectedIndex == 4)
-                new TimeoutForm(completionAction.Text, OSUtils.Shutdown).ShowDialog();
+                new TimeoutForm(completionAction.Text, OsUtils.Shutdown).ShowDialog();
         }
 
         public void ResetInputInfo ()
@@ -445,7 +445,7 @@ namespace Flowframes
 
         public void UpdateAiModelCombox ()
         {
-            aiModel = UIUtils.LoadAiModelsIntoGui(aiModel, GetAi());
+            aiModel = UiUtils.LoadAiModelsIntoGui(aiModel, GetAi());
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -497,7 +497,7 @@ namespace Flowframes
                 Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]), true);
                 inputTbox.Text = files[0];
 
-                bool resume = (IOUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0);
+                bool resume = (IoUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0);
                 ResumeUtils.resumeNextRun = resume;
 
                 if (resume)
