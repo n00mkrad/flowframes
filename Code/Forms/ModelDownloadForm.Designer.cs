@@ -42,6 +42,7 @@ namespace Flowframes.Forms
             this.rifeNcnn = new System.Windows.Forms.CheckBox();
             this.dainNcnn = new System.Windows.Forms.CheckBox();
             this.flavrCuda = new System.Windows.Forms.CheckBox();
+            this.xvfiCuda = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // longProgBar
@@ -215,12 +216,26 @@ namespace Flowframes.Forms
             this.flavrCuda.Text = "FLAVR CUDA";
             this.flavrCuda.UseVisualStyleBackColor = true;
             // 
+            // xvfiCuda
+            // 
+            this.xvfiCuda.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.xvfiCuda.AutoSize = true;
+            this.xvfiCuda.Checked = true;
+            this.xvfiCuda.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.xvfiCuda.Location = new System.Drawing.Point(382, 203);
+            this.xvfiCuda.Name = "xvfiCuda";
+            this.xvfiCuda.Size = new System.Drawing.Size(82, 17);
+            this.xvfiCuda.TabIndex = 99;
+            this.xvfiCuda.Text = "XVFI CUDA";
+            this.xvfiCuda.UseVisualStyleBackColor = true;
+            // 
             // ModelDownloadForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(624, 301);
+            this.Controls.Add(this.xvfiCuda);
             this.Controls.Add(this.flavrCuda);
             this.Controls.Add(this.dainNcnn);
             this.Controls.Add(this.rifeNcnn);
@@ -259,5 +274,6 @@ namespace Flowframes.Forms
         private System.Windows.Forms.CheckBox rifeNcnn;
         private System.Windows.Forms.CheckBox dainNcnn;
         private System.Windows.Forms.CheckBox flavrCuda;
+        private System.Windows.Forms.CheckBox xvfiCuda;
     }
 }

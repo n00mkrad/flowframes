@@ -15,7 +15,7 @@ namespace Flowframes.MiscUtils
 		static int tasksToDo = 0;
 		static bool canceled = false;
 
-		public static async Task DownloadModels (bool rifeC, bool rifeN, bool dainN, bool flavrC)
+		public static async Task DownloadModels (bool rifeC, bool rifeN, bool dainN, bool flavrC, bool xvfiC)
         {
 			form.SetDownloadBtnEnabled(true);
 			canceled = false;
@@ -25,6 +25,7 @@ namespace Flowframes.MiscUtils
 			if (rifeN) ais.Add(Implementations.rifeNcnn);
 			if (dainN) ais.Add(Implementations.dainNcnn);
 			if (flavrC) ais.Add(Implementations.flavrCuda);
+			if (xvfiC) ais.Add(Implementations.xvfiCuda);
 
 			if (ais.Count < 1)
 				return;

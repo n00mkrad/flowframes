@@ -67,7 +67,8 @@ namespace Flowframes.Forms
             bool rifeN = rifeNcnn.Checked;
             bool dainN = dainNcnn.Checked;
             bool flavrC = flavrCuda.Checked;
-            ModelDownloadFormUtils.DownloadModels(rifeC, rifeN, dainN, flavrC);
+            bool xvfiC = xvfiCuda.Checked;
+            ModelDownloadFormUtils.DownloadModels(rifeC, rifeN, dainN, flavrC, xvfiC);
         }
 
         private void cancelBtn_Click(object sender, EventArgs e)
