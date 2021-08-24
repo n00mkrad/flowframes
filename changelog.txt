@@ -3,6 +3,11 @@ If your video gets taken down by "flowframesinterpolation@gmail.com",
 please report that account, it's fake!
 
 
+Flowframes 1.31.1 Changelog:
+- Fixed problems that broke XVFI when using embedded python runtime
+- Fixed model downloader not offering the option to download XVFI models
+
+
 Flowframes 1.31.0 Changelog:
 - Added XVFI interpolation AI, allows all interpolation factors from 2-10
 - Unlocked 16x interpolation for RIFE-CUDA (quality will be worse than lower factors!)
