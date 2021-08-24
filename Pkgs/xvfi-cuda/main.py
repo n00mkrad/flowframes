@@ -2,6 +2,15 @@ import argparse, os, shutil, time, random, torch, cv2, datetime, torch.utils.dat
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import numpy as np
+import sys
+import os
+
+abspath = os.path.abspath(__file__)
+wrkdir = os.path.dirname(abspath)
+print("Changing working dir to {0}".format(wrkdir))
+os.chdir(os.path.dirname(wrkdir))
+print("Added {0} to temporary PATH".format(wrkdir))
+sys.path.append(wrkdir)
 
 from torch.autograd import Variable
 from utils import *
@@ -142,7 +151,7 @@ def main():
         epoch = args.epochs - 1
 
     elif args.phase == "test" or args.phase == "metrics_evaluation" or args.phase == 'test_custom':
-        checkpoint = SM.load_model(args.mdl_dir)
+        checkpoint = SM.load_model(os.path.join(wrkdir, args.mdl_dir))
         model_net.load_state_dict(checkpoint['state_dict_Model'])
         epoch = checkpoint['last_epoch']
 
@@ -309,20 +318,26 @@ def main():
     print("information of model:", args.model_dir)
     print("best_PSNR of model:", best_PSNR)
 
+def write_src_frame(src_path, target_path, args):
+    filename, file_ext = os.path.splitext(src_path)
+    if file_ext == f".{args.img_format}":
+        shutil.copy(src_path, target_path)
+    else:
+        cv2.imwrite(target_path, cv2.imread(src_path)) 
 
 def test(test_loader, model_net, criterion, epoch, args, device, multiple, postfix, validation):
     #os.chdir(interp_output_path)
 
-    batch_time = AverageClass('Time:', ':6.3f')
-    losses = AverageClass('testLoss:', ':.4e')
-    PSNRs = AverageClass('testPSNR:', ':.4e')
-    SSIMs = AverageClass('testSSIM:', ':.4e')
+    #batch_time = AverageClass('Time:', ':6.3f')
+    #losses = AverageClass('testLoss:', ':.4e')
+    #PSNRs = AverageClass('testPSNR:', ':.4e')
+    #SSIMs = AverageClass('testSSIM:', ':.4e')
     args.divide = 2 ** (args.S_tst) * args.module_scale_factor * 4
 
     # progress = ProgressMeter(len(test_loader), batch_time, accm_time, losses, PSNRs, SSIMs, prefix='Test after Epoch[{}]: '.format(epoch))
-    progress = ProgressMeter(len(test_loader), PSNRs, SSIMs, prefix='Test after Epoch[{}]: '.format(epoch))
+    #progress = ProgressMeter(len(test_loader), PSNRs, SSIMs, prefix='Test after Epoch[{}]: '.format(epoch))
 
-    multi_scale_recon_loss = criterion[0]
+    #multi_scale_recon_loss = criterion[0]
 
     # switch to evaluate mode
     model_net.eval()
@@ -383,7 +398,7 @@ def test(test_loader, model_net, criterion, epoch, args, device, multiple, postf
                     pass
                 else:
                     print(f"S => {os.path.basename(src_frame_path)} => {os.path.basename(frame_src_path)}")
-                    shutil.copy(src_frame_path, frame_src_path)
+                    write_src_frame(src_frame_path, frame_src_path, args)
                     copied_src_frames.append(src_frame_path)
                     counter += 1
             
@@ -401,7 +416,7 @@ def test(test_loader, model_net, criterion, epoch, args, device, multiple, postf
     frame_src_path = os.path.join(args.custom_path, args.output, '{:0>8d}.{}'.format(counter, args.img_format))
     print(f"LAST S => {frame_src_path}")
     src_frame_path = os.path.join(args.custom_path, args.input, last_frame)
-    shutil.copy(src_frame_path, frame_src_path)
+    write_src_frame(src_frame_path, frame_src_path, args)
 
     return epoch_save_path
 
