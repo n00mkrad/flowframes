@@ -3,7 +3,7 @@ If your video gets taken down by "flowframesinterpolation@gmail.com",
 please report that account, it's fake!
 
 
-Flowframes 1.30.0 Changelog:
+Flowframes 1.30.1 Changelog:
 - Added XVFI interpolation AI, allows all interpolation factors from 2-10
 - Unlocked 16x interpolation for RIFE-CUDA (quality will be worse than lower factors!)
 - Unlocked 3x, 5x, 6x, 7x factors for DAIN-NCNN
