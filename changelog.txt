@@ -4,6 +4,18 @@ please report that account, it's fake!
 
 
 Flowframes 1.30.0 Changelog:
+- Added XVFI interpolation AI, allows all interpolation factors from 2-10
+- Unlocked 16x interpolation for RIFE-CUDA (quality will be worse than lower factors!)
+- Unlocked 3x, 5x, 6x, 7x factors for DAIN-NCNN
+- GPUs are now listed in the application's window title
+- Batch: Notifications now only show on queue completion, not after each interpolation
+- If interpolation fails, the last 10 lines of the corresponding log are shown
+- Minor UI improvements
+- Fixed custom output directory not being applied when using the batch queue
+- Some internal refactoring and code cleanup
+
+
+Flowframes 1.30.0 Changelog:
 - Added the option to Close/Sleep/Hibernate/Shutdown after interpolation
 - Added notifications that will show if an interpolation finished in the background
 - Added option to change default output directory (same as input or custom)
