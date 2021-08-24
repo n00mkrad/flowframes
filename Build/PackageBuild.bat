@@ -25,6 +25,7 @@ xcopy "../../../../pkgs/licenses" "FlowframesApp%ver%/FlowframesData\pkgs\licens
 xcopy "../../../../pkgs/rife-cuda" "FlowframesApp%ver%/FlowframesData\pkgs\rife-cuda" /E /I
 xcopy "../../../../pkgs/rife-ncnn" "FlowframesApp%ver%/FlowframesData\pkgs\rife-ncnn" /E /I
 xcopy "../../../../pkgs/flavr-cuda" "FlowframesApp%ver%/FlowframesData\pkgs\flavr-cuda" /E /I
+xcopy "../../../../pkgs/xvfi-cuda" "FlowframesApp%ver%/FlowframesData\pkgs\xvfi-cuda" /E /I
 
 echo %ver% >> "FlowframesApp%ver%/FlowframesData/ver.ini"
 
