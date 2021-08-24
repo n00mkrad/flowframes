@@ -50,6 +50,7 @@ namespace Flowframes
             NvApi.Init();
             InitAis();
             InterpolationProgress.preview = previewPicturebox;
+            UnlockInterpFactorIfEnabled();
             RemovePreviewIfDisabled();
             UpdateStepByStepControls();
             Initialized();
@@ -118,6 +119,14 @@ namespace Flowframes
             if (Program.fileArgs.Length > 0)
                 DragDropHandler(Program.fileArgs.Where(x => IoUtils.IsFileValid(x)).ToArray());
 
+        }
+
+        void UnlockInterpFactorIfEnabled ()
+        {
+            if (!Config.GetBool(Config.Key.allowCustomInterpFactor))
+                return;
+
+            interpFactorCombox.DropDownStyle = ComboBoxStyle.DropDown;
         }
 
         void RemovePreviewIfDisabled ()
@@ -300,6 +309,8 @@ namespace Flowframes
 
         public void runBtn_Click(object sender, EventArgs e)
         {
+            ValidateFactor();
+
             if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
                 Interpolate.current = GetCurrentSettings();
 
@@ -342,7 +353,7 @@ namespace Flowframes
             outModeCombox.SelectedIndex = targetIndex;
         }
 
-        AI GetAi()
+        public AI GetAi()
         {
             return Implementations.networks[aiCombox.SelectedIndex];
         }
@@ -392,15 +403,20 @@ namespace Flowframes
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateUiFps();
-            int guiInterpFactor = interpFactorCombox.GetInt();
+            int guiFactor = interpFactorCombox.GetInt();
 
             if (!initialized)
                 return;
 
             string aiName = GetAi().aiName.Replace("_", "-");
 
-            if (!Program.busy && guiInterpFactor > 2 && GetAi().multiPass && Config.GetInt(Config.Key.autoEncMode) > 0 && !Logger.GetLastLine().Contains(aiName))
-                Logger.Log($"Warning: {aiName} doesn't natively support 4x/8x and will run multiple times for {guiInterpFactor}x. Auto-Encode will only work on the last run.");
+            if (!Program.busy && guiFactor > 2 && GetAi().multiPass && Config.GetInt(Config.Key.autoEncMode) > 0 && !Logger.GetLastLine().Contains(aiName))
+                Logger.Log($"Warning: {aiName} doesn't natively support 4x/8x and will run multiple times for {guiFactor}x. Auto-Encode will only work on the last run.");
+        }
+
+        public void ValidateFactor ()
+        {
+            interpFactorCombox.Text = $"x{MainUiFunctions.ValidateInterpFactor(interpFactorCombox.GetInt())}";
         }
 
         public void SetWorking(bool state, bool allowCancel = true)
@@ -542,6 +558,8 @@ namespace Flowframes
 
         private void queueBtn_Click(object sender, EventArgs e)
         {
+            ValidateFactor();
+
             if (BatchProcessing.currentBatchForm != null)
             {
                 BatchProcessing.currentBatchForm.WindowState = FormWindowState.Normal;

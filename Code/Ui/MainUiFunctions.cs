@@ -123,5 +123,28 @@ namespace Flowframes.Ui
                 return null;
             }
         }
+
+        public static int ValidateInterpFactor (int factor)
+        {
+            AI ai = Program.mainForm.GetAi();
+
+            if (factor > 256)
+                return 256;
+
+            if (ai.aiName == Implementations.rifeCuda.aiName)
+            {
+                if (!IsPowerOfTwo(factor))
+                {
+                    return Implementations.rifeCuda.supportedFactors.Last();
+                }
+            }
+
+            return factor;
+        }
+
+        static bool IsPowerOfTwo(int x)
+        {
+            return (x != 0) && ((x & (x - 1)) == 0);
+        }
     }
 }

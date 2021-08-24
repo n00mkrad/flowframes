@@ -306,6 +306,7 @@ namespace Flowframes.IO
             aiCombox,
             allowConsecutiveSceneChanges,
             allowCustomInputRate,
+            allowCustomInterpFactor,
             allowSymlinkEncoding,
             allowSymlinkImport,
             alwaysWaitForAutoEnc,

@@ -322,6 +322,7 @@
             this.interpFactorCombox.Size = new System.Drawing.Size(100, 23);
             this.interpFactorCombox.TabIndex = 7;
             this.interpFactorCombox.SelectedIndexChanged += new System.EventHandler(this.interpFactorCombox_SelectedIndexChanged);
+            this.interpFactorCombox.TextUpdate += new System.EventHandler(this.interpFactorCombox_SelectedIndexChanged);
             // 
             // label4
             // 
