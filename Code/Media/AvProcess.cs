@@ -174,19 +174,26 @@ namespace Flowframes
 
         public static void UpdateFfmpegProgress(string ffmpegTime)
         {
-            Form1 form = Program.mainForm;
-            long currInDuration = (form.currInDurationCut < form.currInDuration) ? form.currInDurationCut : form.currInDuration;
-
-            if (currInDuration < 1)
+            try
             {
-                Program.mainForm.SetProgress(0);
-                return;
-            }
+                Form1 form = Program.mainForm;
+                long currInDuration = (form.currInDurationCut < form.currInDuration) ? form.currInDurationCut : form.currInDuration;
 
-            long total = currInDuration / 100;
-            long current = FormatUtils.TimestampToMs(ffmpegTime);
-            int progress = Convert.ToInt32(current / total);
-            Program.mainForm.SetProgress(progress);
+                if (currInDuration < 1)
+                {
+                    Program.mainForm.SetProgress(0);
+                    return;
+                }
+
+                long total = currInDuration / 100;
+                long current = FormatUtils.TimestampToMs(ffmpegTime);
+                int progress = Convert.ToInt32(current / total);
+                Program.mainForm.SetProgress(progress);
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to get ffmpeg progress: {e.Message}", true);
+            }
         }
         
         static string GetAvDir ()
