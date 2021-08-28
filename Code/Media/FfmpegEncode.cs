@@ -13,7 +13,7 @@ namespace Flowframes.Media
 {
     partial class FfmpegEncode : FfmpegCommands
     {
-        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
+        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, float itsScale, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
@@ -32,7 +32,6 @@ namespace Flowframes.Media
             }
 
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
-            string rate = fps.ToString().Replace(",", ".");
 
             List<string> filters = new List<string>();
 
@@ -47,7 +46,8 @@ namespace Flowframes.Media
             }
 
             string vf = filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "";
-            string args = $"-vsync 0 -r {rate} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
+            fps = fps / new Fraction(itsScale);
+            string args = $"-vsync 0 -r {fps} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
             IoUtils.TryDeleteIfExists(linksDir);
         }
@@ -85,7 +85,7 @@ namespace Flowframes.Media
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
-        public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors, Fraction resampleFps, LogMode logMode = LogMode.OnlyLastLine)
+        public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors, Fraction resampleFps, float itsScale, LogMode logMode = LogMode.OnlyLastLine)
         {
             if (rate.GetFloat() > 50f && (resampleFps.GetFloat() > 50f || resampleFps.GetFloat() < 1))
                 resampleFps = new Fraction(50, 1);  // Force limit framerate as encoding above 50 will cause problems
@@ -99,6 +99,7 @@ namespace Flowframes.Media
             string fpsFilter = (resampleFps.GetFloat() <= 0) ? "" : $"fps=fps={resampleFps}";
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
+            rate = rate / new Fraction(itsScale);
             string args = $"-f concat -r {rate} -i {framesFilename.Wrap()} -gifflags -offsetting {vf} {extraArgs} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, "error", TaskType.Encode);
         }

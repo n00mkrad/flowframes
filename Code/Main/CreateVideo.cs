@@ -150,12 +150,12 @@ namespace Flowframes.Main
 
             if (mode == I.OutMode.VidGif)
             {
-                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt(Config.Key.gifColors), resampleFps);
+                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt(Config.Key.gifColors), resampleFps, I.current.outItsScale);
             }
             else
             {
                 VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.current.inPath);
-                await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps, extraData);
+                await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps, I.current.outItsScale, extraData);
                 await MuxOutputVideo(I.current.inPath, outPath);
                 await Loop(outPath, await GetLoopTimes());
             }
@@ -241,14 +241,14 @@ namespace Flowframes.Main
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
             if (!dontEncodeFullFpsVid)
-                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, new Fraction(), extraData, AvProcess.LogMode.Hidden, true);     // Encode
+                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, new Fraction(), I.current.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode
 
             if (fpsLimit)
             {
                 string filename = Path.GetFileName(outPath);
                 string newParentDir = outPath.GetParentDir() + Paths.fpsLimitSuffix;
                 outPath = Path.Combine(newParentDir, filename);
-                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, maxFps, extraData, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                await FfmpegEncode.FramesToVideo(framesFileChunk, outPath, mode, I.current.outFps, maxFps, I.current.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
             }
         }
 

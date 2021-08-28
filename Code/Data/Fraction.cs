@@ -46,6 +46,7 @@ namespace Flowframes.Data
             Numerator = (value * 10000f).RoundToInt();
             Denominator = 10000;
             this = GetReduced();
+            Logger.Log($"Converted float {value} to Fraction {this}", true);
         }
 
         public Fraction(string text)

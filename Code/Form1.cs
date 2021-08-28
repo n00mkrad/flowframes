@@ -40,6 +40,7 @@ namespace Flowframes
 
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
+            UiUtils.InitCombox(outSpeedCombox, 0);
             UiUtils.InitCombox(outModeCombox, 0);
             UiUtils.InitCombox(aiModel, 2);
             // Video Utils
@@ -162,7 +163,8 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetInt(), GetOutMode(), GetModel(GetAi()));
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, 
+                interpFactorCombox.GetInt(), outSpeedCombox.GetInt().Clamp(1, 64), GetOutMode(), GetModel(GetAi()));
         }
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
@@ -385,7 +387,7 @@ namespace Flowframes
             {
                 string[] split = fpsInTbox.Text.Split('/');
                 Fraction frac = new Fraction(split[0].GetInt(), split[1].GetInt());
-                fpsOutTbox.Text = (frac * interpFactorCombox.GetFloat()).ToString();
+                fpsOutTbox.Text = (frac * interpFactorCombox.GetFloat()).ToString() + " FPS";
 
                 if (!fpsInTbox.ReadOnly)
                     currInFps = frac;
@@ -393,7 +395,7 @@ namespace Flowframes
             else    // Parse float
             {
                 fpsInTbox.Text = fpsInTbox.Text.TrimNumbers(true);
-                fpsOutTbox.Text = (fpsInTbox.GetFloat() * interpFactorCombox.GetFloat()).ToString();
+                fpsOutTbox.Text = (fpsInTbox.GetFloat() * interpFactorCombox.GetFloat()).ToString() + " FPS";
 
                 if (!fpsInTbox.ReadOnly)
                     currInFps = new Fraction(fpsInTbox.GetFloat());

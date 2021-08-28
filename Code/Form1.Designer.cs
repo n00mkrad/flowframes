@@ -37,9 +37,7 @@
             this.outModeCombox = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.fpsOutTbox = new System.Windows.Forms.TextBox();
             this.fpsInTbox = new System.Windows.Forms.TextBox();
             this.interpFactorCombox = new System.Windows.Forms.ComboBox();
@@ -91,6 +89,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.outSpeedCombox = new System.Windows.Forms.ComboBox();
             this.completionActionPanel = new System.Windows.Forms.Panel();
             this.completionAction = new System.Windows.Forms.ComboBox();
             this.label25 = new System.Windows.Forms.Label();
@@ -137,6 +136,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -160,6 +160,7 @@
             this.abtTab.SuspendLayout();
             this.busyControlsPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -255,43 +256,22 @@
             this.label8.TabIndex = 13;
             this.label8.Text = "AI Model";
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(684, 100);
-            this.label7.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(67, 15);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Output FPS";
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(554, 100);
+            this.label6.Location = new System.Drawing.Point(443, 100);
+            this.label6.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(15, 15);
             this.label6.TabIndex = 11;
             this.label6.Text = "=";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(384, 100);
-            this.label5.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(57, 15);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "Input FPS";
-            // 
             // fpsOutTbox
             // 
             this.fpsOutTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.fpsOutTbox.ForeColor = System.Drawing.Color.White;
-            this.fpsOutTbox.Location = new System.Drawing.Point(574, 97);
+            this.fpsOutTbox.Location = new System.Drawing.Point(461, 97);
             this.fpsOutTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.fpsOutTbox.Name = "fpsOutTbox";
             this.fpsOutTbox.ReadOnly = true;
@@ -317,9 +297,9 @@
             this.interpFactorCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.interpFactorCombox.ForeColor = System.Drawing.Color.White;
             this.interpFactorCombox.FormattingEnabled = true;
-            this.interpFactorCombox.Location = new System.Drawing.Point(447, 96);
+            this.interpFactorCombox.Location = new System.Drawing.Point(387, 97);
             this.interpFactorCombox.Name = "interpFactorCombox";
-            this.interpFactorCombox.Size = new System.Drawing.Size(100, 23);
+            this.interpFactorCombox.Size = new System.Drawing.Size(50, 23);
             this.interpFactorCombox.TabIndex = 7;
             this.interpFactorCombox.SelectedIndexChanged += new System.EventHandler(this.interpFactorCombox_SelectedIndexChanged);
             this.interpFactorCombox.TextUpdate += new System.EventHandler(this.interpFactorCombox_SelectedIndexChanged);
@@ -332,9 +312,9 @@
             this.label4.Location = new System.Drawing.Point(11, 100);
             this.label4.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(148, 13);
+            this.label4.Size = new System.Drawing.Size(117, 13);
             this.label4.TabIndex = 6;
-            this.label4.Text = "Set FPS / Interpolation Factor";
+            this.label4.Text = "Output FPS and Speed";
             // 
             // outputTbox
             // 
@@ -586,7 +566,8 @@
             this.pictureBox4.Size = new System.Drawing.Size(29, 21);
             this.pictureBox4.TabIndex = 31;
             this.pictureBox4.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox4, "Supports drag-n-drop.");
+            this.toolTip1.SetToolTip(this.pictureBox4, "Set your input video file, or a folder that contains frames/images.\r\nSupports Dra" +
+        "g-N-Drop.");
             // 
             // pictureBox3
             // 
@@ -597,19 +578,19 @@
             this.pictureBox3.Size = new System.Drawing.Size(29, 21);
             this.pictureBox3.TabIndex = 30;
             this.pictureBox3.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox3, "Supports drag-n-drop.\r\nGets auto-assigned whenever you set an input file.");
+            this.toolTip1.SetToolTip(this.pictureBox3, "Supports Drag-N-Drop.\r\nGets auto-assigned whenever you set an input file.");
             // 
             // info1
             // 
             this.info1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.info1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.info1.Location = new System.Drawing.Point(165, 97);
+            this.info1.Location = new System.Drawing.Point(134, 97);
             this.info1.Name = "info1";
             this.info1.Size = new System.Drawing.Size(29, 21);
             this.info1.TabIndex = 27;
             this.info1.TabStop = false;
-            this.toolTip1.SetToolTip(this.info1, "Note: RIFE does not support factors that are not a power of two (like 3x, or 5x)." +
-        "\r\nFuture interpolation AIs might support this however.");
+            this.toolTip1.SetToolTip(this.info1, "Here you can change your interpolation factor (different AIs support different fa" +
+        "ctors), which will determine your output frame rate.");
             // 
             // settingsBtn
             // 
@@ -692,8 +673,8 @@
             this.pictureBox1.Size = new System.Drawing.Size(29, 21);
             this.pictureBox1.TabIndex = 28;
             this.pictureBox1.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox1, "This is the trained data the AI will use.\r\nDifferent AI models will produce sligh" +
-        "tly different results. Try them for yourself.");
+            this.toolTip1.SetToolTip(this.pictureBox1, "This is the training data the AI will use.\r\nDifferent AI models will produce slig" +
+        "htly different results. Try them for yourself.");
             // 
             // pictureBox2
             // 
@@ -919,6 +900,8 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.pictureBox5);
+            this.interpOptsTab.Controls.Add(this.outSpeedCombox);
             this.interpOptsTab.Controls.Add(this.completionActionPanel);
             this.interpOptsTab.Controls.Add(this.encodingSettingsBtn);
             this.interpOptsTab.Controls.Add(this.scnDetectTestBtn);
@@ -936,11 +919,9 @@
             this.interpOptsTab.Controls.Add(this.aiModel);
             this.interpOptsTab.Controls.Add(this.fpsInTbox);
             this.interpOptsTab.Controls.Add(this.fpsOutTbox);
-            this.interpOptsTab.Controls.Add(this.label5);
             this.interpOptsTab.Controls.Add(this.aiCombox);
             this.interpOptsTab.Controls.Add(this.label6);
             this.interpOptsTab.Controls.Add(this.label13);
-            this.interpOptsTab.Controls.Add(this.label7);
             this.interpOptsTab.Controls.Add(this.label8);
             this.interpOptsTab.Controls.Add(this.label9);
             this.interpOptsTab.Controls.Add(this.outModeCombox);
@@ -957,6 +938,23 @@
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // outSpeedCombox
+            // 
+            this.outSpeedCombox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.outSpeedCombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.outSpeedCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.outSpeedCombox.ForeColor = System.Drawing.Color.White;
+            this.outSpeedCombox.FormattingEnabled = true;
+            this.outSpeedCombox.Items.AddRange(new object[] {
+            "Normal Speed",
+            "2x Slowmo",
+            "4x Slowmo",
+            "8x Slowmo"});
+            this.outSpeedCombox.Location = new System.Drawing.Point(574, 97);
+            this.outSpeedCombox.Name = "outSpeedCombox";
+            this.outSpeedCombox.Size = new System.Drawing.Size(107, 23);
+            this.outSpeedCombox.TabIndex = 43;
             // 
             // completionActionPanel
             // 
@@ -1629,6 +1627,18 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox5.Location = new System.Drawing.Point(95, 7);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox5.TabIndex = 44;
+            this.pictureBox5.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox5, "Set the AI interpolation network to use for this video.\r\nDifferent AIs have diffe" +
+        "rent quality, VRAM requirements and speeds.");
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1697,6 +1707,7 @@
             this.abtTab.ResumeLayout(false);
             this.busyControlsPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1712,9 +1723,7 @@
         private System.Windows.Forms.TextBox outputTbox;
         private System.Windows.Forms.ComboBox interpFactorCombox;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox fpsOutTbox;
         private System.Windows.Forms.TextBox fpsInTbox;
         private System.Windows.Forms.Label label8;
@@ -1811,6 +1820,8 @@
         private System.Windows.Forms.Panel completionActionPanel;
         private System.Windows.Forms.ComboBox completionAction;
         private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.ComboBox outSpeedCombox;
+        private System.Windows.Forms.PictureBox pictureBox5;
     }
 }
 

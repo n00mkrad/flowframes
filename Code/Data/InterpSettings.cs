@@ -22,6 +22,7 @@ namespace Flowframes
         public Fraction inFps;
         public Fraction inFpsDetected;
         public Fraction outFps;
+        public float outItsScale;
         public float interpFactor;
         public Interpolate.OutMode outMode;
         public ModelCollection.ModelInfo model;
@@ -39,7 +40,7 @@ namespace Flowframes
         public string framesExt;
         public string interpExt;
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, int interpFactorArg, Interpolate.OutMode outModeArg, ModelCollection.ModelInfo modelArg)
+        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, int interpFactorArg, float itsScale, Interpolate.OutMode outModeArg, ModelCollection.ModelInfo modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -48,6 +49,7 @@ namespace Flowframes
             inFps = inFpsArg;
             interpFactor = interpFactorArg;
             outFps = inFpsArg * interpFactorArg;
+            outItsScale = itsScale;
             outMode = outModeArg;
             model = modelArg;
 
