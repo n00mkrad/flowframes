@@ -124,7 +124,8 @@ Based on:
 - RIFE by hzwer
 - rife-ncnn-vulkan by nihui
 - dain-ncnn-vulkan by nihui, originally based on DAIN (Depth-Aware Video Frame Interpolation) by baowenbo
-- FLAVR by tarun005</value>
+- FLAVR by tarun005
+- XVFI by JihyongOh</value>
   </data>
   <metadata name="inFolderDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

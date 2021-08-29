@@ -77,6 +77,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.debugBtn = new HTAlt.WinForms.HTButton();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.longProgBar = new HTAlt.WinForms.HTProgressBar();
             this.mainTabControl = new HTAlt.WinForms.HTTabControl();
             this.welcomeTab = new System.Windows.Forms.TabPage();
@@ -136,13 +137,13 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.mainTabControl.SuspendLayout();
             this.welcomeTab.SuspendLayout();
             this.panel8.SuspendLayout();
@@ -160,7 +161,6 @@
             this.abtTab.SuspendLayout();
             this.busyControlsPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -416,7 +416,7 @@
             this.label14.Location = new System.Drawing.Point(11, 8);
             this.label14.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(884, 142);
+            this.label14.Size = new System.Drawing.Size(884, 129);
             this.label14.TabIndex = 2;
             this.label14.Text = resources.GetString("label14.Text");
             // 
@@ -745,6 +745,18 @@
             this.panel2.Size = new System.Drawing.Size(21, 21);
             this.panel2.TabIndex = 90;
             this.toolTip1.SetToolTip(this.panel2, "Allows custom input.");
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox5.Location = new System.Drawing.Point(95, 7);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox5.TabIndex = 44;
+            this.pictureBox5.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox5, "Set the AI interpolation network to use for this video.\r\nDifferent AIs have diffe" +
+        "rent quality, VRAM requirements and speeds.");
             // 
             // longProgBar
             // 
@@ -1627,18 +1639,6 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
-            // pictureBox5
-            // 
-            this.pictureBox5.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox5.Location = new System.Drawing.Point(95, 7);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox5.TabIndex = 44;
-            this.pictureBox5.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox5, "Set the AI interpolation network to use for this video.\r\nDifferent AIs have diffe" +
-        "rent quality, VRAM requirements and speeds.");
-            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1682,6 +1682,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.info1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.mainTabControl.ResumeLayout(false);
             this.welcomeTab.ResumeLayout(false);
             this.welcomeTab.PerformLayout();
@@ -1707,7 +1708,6 @@
             this.abtTab.ResumeLayout(false);
             this.busyControlsPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
