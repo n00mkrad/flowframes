@@ -279,21 +279,21 @@ namespace Flowframes.Main
         {
             AutoEncode.UpdateChunkAndBufferSizes();
 
-            if (!current.outMode.ToString().ToLower().Contains("vid") || current.outMode.ToString().ToLower().Contains("gif"))
+            if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
             {
-                Logger.Log($"Not Using AutoEnc: Out Mode is not video ({current.outMode.ToString()})", true);
+                Logger.Log($"Not Using AutoEnc: CMD window is shown (cmdDebugMode > 0)", true);
                 return false;
             }
 
             if (stepByStep && !Config.GetBool(Config.Key.sbsAllowAutoEnc))
             {
-                Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false.", true);
+                Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false", true);
                 return false;
             }
 
             if (!stepByStep && Config.GetInt(Config.Key.autoEncMode) == 0)
             {
-                Logger.Log($"Not Using AutoEnc: 'autoEncMode' is 0.", true);
+                Logger.Log($"Not Using AutoEnc: 'autoEncMode' is 0", true);
                 return false;
             }
 

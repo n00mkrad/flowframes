@@ -65,11 +65,12 @@ namespace Flowframes.Media
                 return "";
         }
 
-        public static async Task FramesToFrames(string framesFile, string outDir, Fraction fps, Fraction resampleFps, string format = "png", LogMode logMode = LogMode.OnlyLastLine)
+        public static async Task FramesToFrames(string framesFile, string outDir, int startNo, Fraction fps, Fraction resampleFps, string format = "png", LogMode logMode = LogMode.OnlyLastLine)
         {
             Directory.CreateDirectory(outDir);
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
+            format = format.ToLower();
 
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
@@ -77,11 +78,12 @@ namespace Flowframes.Media
                     inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d{GetConcatFileExt(framesFile)}";
             }
 
+            string sn = $"-start_number {startNo}";
             string rate = fps.ToString().Replace(",", ".");
             string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
             string compression = format == "png" ? pngCompr : "-q:v 1";
-            string codec = format.ToLower() == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single AWEBP
-            string args = $"-vsync 0 -r {rate} {inArg} {codec} {compression} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
+            string codec = format == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
+            string args = $"-vsync 0 -r {rate} {inArg} {codec} {compression} {sn} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, true);
             IoUtils.TryDeleteIfExists(linksDir);
         }

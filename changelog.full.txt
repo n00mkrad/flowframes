@@ -8,6 +8,7 @@ Flowframes 1.32.0 Changelog:
 - Added config option to enable custom interpolation factor (if compatible)
 - ProRes now supports Alpha output when used with profile 4444 or 4444xq
 - Fixed ProRes being locked to YUV420 colors on all presets
+- Fixed WEBP image sequence export not working correctly
 
 
 Flowframes 1.31.1 Changelog:
