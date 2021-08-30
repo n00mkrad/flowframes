@@ -1,0 +1,386 @@
+Warning: A copyright troll is currently around.
+If your video gets taken down by "flowframesinterpolation@gmail.com",
+please report that account, it's fake!
+
+
+Flowframes 1.32.0 Changelog:
+- Added slow-motion option to easily create slow-mo interpolations
+- Added config option to enable custom interpolation factor (if compatible)
+- ProRes now supports Alpha output when used with profile 4444 or 4444xq
+- Fixed ProRes being locked to YUV420 colors on all presets
+
+
+Flowframes 1.31.1 Changelog:
+- Fixed problems that broke XVFI when using embedded python runtime
+- Fixed model downloader not offering the option to download XVFI models
+
+
+Flowframes 1.31.0 Changelog:
+- Added XVFI interpolation AI, allows all interpolation factors from 2-10
+- Unlocked 16x interpolation for RIFE-CUDA (quality will be worse than lower factors!)
+- Unlocked 3x, 5x, 6x, 7x factors for DAIN-NCNN
+- GPUs are now listed in the application's window title
+- Batch: Notifications now only show on queue completion, not after each interpolation
+- If interpolation fails, the last 10 lines of the corresponding log are shown
+- Minor UI improvements
+- Fixed custom output directory not being applied when using the batch queue
+- Some internal refactoring and code cleanup
+
+
+Flowframes 1.30.0 Changelog:
+- Added the option to Close/Sleep/Hibernate/Shutdown after interpolation
+- Added notifications that will show if an interpolation finished in the background
+- Added option to change default output directory (same as input or custom)
+- Added basic command line arguments to automate Flowframes interpolation
+- Added move up/down buttons to batch processing queue
+- Fixed a bug that would set incorrect default values for certain settings
+
+
+Flowframes 1.29.0 Changelog:
+- Added option to change the color space for most codecs (e.g. for 10-bit encoding)
+- Added a button in the settings to reset the config to default
+- Added a shortcut button to the Encoding Settings on the main tab
+- Added option to disable Preview tab
+- Fixed problem where videos with BT470M color format would fail to encode
+- Removed compatibility warning when Flowframes is run on Windows 11
+
+
+Flowframes 1.28.1 Changelog:
+- Added option to auto-pause interpolation if auto-encode can't keep up
+- Auto-Encode: Old frames now get deleted instead of being replaced by dummy files
+- Fixed speed regression on RIFE 3.x (up to ~1.5x as fast as in 1.28.0)
+
+
+Flowframes 1.28.0 Changelog:
+- Updated RIFE CUDA to 3.8 (Skipped previous models)
+- Added native transparency support with RIFE CUDA 3.8
+- Added model downloader to pre-download all models at once
+- Added support for loading custom AI models
+- Improved model loading (faster file validation and lots of internal changes)
+- Step-by-step mode: Previous steps now run automatically if needed
+
+
+Flowframes 1.27.2 Changelog:
+- Added Backup option - Will save an incomplete video after every chunk encode
+- Custom FFmpeg args now also get applied for GIF encoding, not just videos
+- Fixed low disk space warning popping up even if interpolation is already paused
+- Fixed certain temp files not being deleted correctly
+
+
+Flowframes 1.27.1 Changelog:
+- Image sequence inputs can now be used without any importing/copying (if compatible)
+- Added the FPS limit ("Maximum Output Framerate") to Quick Settings tab
+- Batch Processing: AI Model name is now shown in queue
+- Batch Processing: Fixed problems where GIFs/videos would play too slow
+- Fixed problem where GIF/APNG interpolations would have unnecessary dupe frames
+- Fixed problems with alpha interpolation when JPEG frames are enabled
+
+
+Flowframes 1.27.0 Changelog:
+- Updated RIFE-CUDA to v3 - Better quality and up to 25% faster!
+- Updated RIFE-NCNN to v3
+- Added new RIFE models 3.0 and 3.1 (both CUDA and NCNN)
+- AV1 encoding is now up to 35% faster (updated to SVT-AV1 0.8.7)
+- Renaming existing files to ".old" now also works for looped outputs and folders
+- Added image sequence copy support for BMP and WEBP (no PNG conversion on import)
+- Invalid (non-image) files now get ignored when loading an image sequence folder
+- New model files hoster, should make model downloading more reliable
+- Fixed the encoding log sometimes stopping, even if ffmpeg is still running
+- Fixed PNG image sequence outputs getting re-encoded unnecessarily
+- Fixed some problems regarding the FPS limit feature
+- Fixed problem where toggling JPEG frames wouldn't get applied
+- Internal data handling improvements (JSON for config files)
+
+
+Flowframes 1.26.1 Changelog:
+- Fixed image sequence copying not working correctly in some cases
+- Fixed loop not working correctly when using JPEG frames
+- Fixed batch queue not working correctly
+- Fixed encoding failing for videos with bt470bg color space
+- Fixed encoding failing when using lossless h265
+
+
+Flowframes 1.26.0 Changelog:
+- Image Sequence will now be copied instead of re-encoded if they are compatible
+- Color space (and transfer function) will now be retained from the input video
+- Aspect ratio of input video will now be preserved (for non-square pixel videos)
+- Added "Debug Tools" window with a log viewer and a config editor tab
+- Interpolation will now pause, not cancel, when disk space is low
+- Existing output files now get renamed instead of overwritten if they already exist
+- Several processing functions now run in the background, so the UI no longer freezes
+- Fixed h265 CRF 0 not being lossless
+- Fixed critical bug where Auto-Encode ran too early, causing FFmpeg errors
+- Fixed bug where deduplicated videos would play too fast if JPEG frames are used
+- Fixed some cases where the program wouldn't launch because of undhandled errors
+
+
+Flowframes 1.25.1 Changelog:
+- Added a button to pause/resume the interpolation
+- Added AV1 codec support for MP4/MKV output
+- Added support for JPG or WEBP image sequence output instead of only PNG
+- NVENC encoding is now slightly more efficient (P7 Preset)
+- Fixed accurate deduplication not working with JPEG frames
+
+
+Flowframes 1.25.0 Changelog:
+- Added support for FPS limiting (resampling) on Image Sequence outputs
+- Added MagicYUV codec for AVI exports (super fast, better compression than huffyuv)
+- Added option to import frames as JPEG for YUV420 content (almost lossless)
+- Added [RES] (resolution) and [H] (height) variables for export filename pattern
+- Added support for fractional input for "Maximum Output Frame Rate" option
+- Encoding Speed option in Developer Options now also affects VP9
+- Updated icon to a new colorful variant (same as FF Installer)
+- Updated FFmpeg build (Release 4.4)
+- Changed GIF encoding flags to fix potential transparency problems
+- Better error messages for overclocking bugs and model load errors
+- Fixed changing speed by adjusting input FPS not working correctly (allowCustomInputRate)
+- Fixed encoding failing on non-NTFS drives
+
+
+Flowframes 1.24.6 Changelog:
+- GIF encoding framerate will now automatically be downsampled to 50 if it's higher
+- Fixed CUDA AIs not actually starting on undetected GPUs or CPU
+- Fixed muxing not working if metadata transfer was enabled but input has no metadata (MKV)
+- Fixed audio/subtitle transfer sometimes breaking missing when using trim feature
+- Fixed transparency interpolation not working if input resolution is not divisible by 2
+- Fixed cursor skipping when entering fractions in the FPS input box
+
+
+Flowframes 1.24.5 Changelog:
+- Added option to choose dithering type for GIF encoding (Bayer/Floyd-Steinberg/None)
+- Added option to preserve video metadata (for embedded fonts in MKV, etc)
+- NVENC Improvements: CRF is more accurate, CRF 0 is now lossless
+- Manual FPS input now accepts both floats ("23.97") and fractions ("24000/1001")
+- Fixed manual FPS input (for image sequences etc) not working
+- Several under-the-hood improvements and better error handling
+- Fixed manual deduplication being ignored (Hotfix 1)
+
+
+Flowframes 1.24.4 Changelog:
+- Drastically improved ffmpeg encoding speed (+350% NVENC, +55% VP9/h264, +35% ProRes)
+- Added compatibility checks showing warnings if not running Windows 10 x64
+- Paths containing unicode chars now work with Pytorch implementations, removed warning
+- Fixed scene detection somehow being broken once again
+
+
+Flowframes 1.24.3 Changelog:
+- Running CUDA AIs without a (detected) Nvidia GPU is now possible (for CPU or undetected cards)
+- Fixed scene detection using wrong frames
+- Fixed blended scene transitions not working with deduplication or VFR inputs
+- Fixed manual deduplication and scene transition choices being ignored (step-by-step mode)
+- FFprobe frame counting should now be multithreaded (-threads 0)
+
+
+Flowframes 1.24.2 Changelog:
+- Fixed problems with image sequence inputs (broken scene detection, etc)
+- Added option to repeat the last frame, so the duration matches the input
+- Framerates are now handled as fractions (24000/1001 instead of 23.97...) to avoid timing problems
+- Fixed Variable Framerate (VFR) videos not being processed correctly
+- Fixed DPI scaling breaking when opening a file browser dialog
+- Other minor fixes and improvements
+
+Known Issue: Blended scene transitions might not work correctly with deduplication or VFR inputs
+
+
+Flowframes 1.24.1 (Hotfix) Changelog:
+- Fixed a critical bug that would disable subtitle transfer, even when enabled and compatible
+
+
+Flowframes 1.24.0 (Pre-Releases 1/2/3 + Final) Changelog:
+- [PR1] Added experimental FLAVR integration
+- [PR1] Fixed missing subtitle compatibility check when muxing audio/subs directly from input
+- [PR1] Fixed bug that could break Image Sequence exports
+- [PR1] Fixed flaw where certain online checks ran before the UI opens up instead of afterwards
+- [PR2] Added optional blending for scene transitions (instead of duplicating previous frame)
+- [PR2] Fixed a bug where the next-to-last frame can't get detected as a scene change
+- [PR3] Added config option to allow custom input FPS (might break trimming and progress bars!)
+- [PR3] Fixed scene change blending using the wrong frames
+- [PR3] Fixed scene change blending not working in step-by-step mode
+- [PR3] Fixed a problem in step-by-step mode that made manual deduplication impossible
+- [PR3] Fixed a rare bug where the video resolution gets reported incorrectly
+- [FNL] Fixed audio fallback not working for incompatible audio codecs
+- [FNL] Added MP3 and WMA (v1/v2) lossless transfer (MKV output)
+
+
+Flowframes 1.23.4 Changelog:
+- Scene detection now also works for Image Sequence inputs
+- Added a disk space check that will cancel the interpolation if disk space is too low
+- Model name is included in output name pattern by default
+- Fixed bug where framerate in output filename is incorrect when using FPS limiter
+- Fixed FFmpeg MKV muxing bug (caused audio stuttering or complete lack of audio)
+- Fixed models.txt files getting deleted if update fails
+- Fixed log box flickering in certain situation
+
+
+Flowframes 1.23.3 Changelog:
+- Added option to customize the output filename pattern using placeholders/variables
+- Audio/subtitle streams are now pulled from the input file, no longer requires extraction
+- Trimming is now a lot faster for longer videos (like movies)
+- Fixed UHD mode not working with RIFE-CUDA
+- Fixed rare bug where videos with specific frame counts got cut off at the end
+- Fixed scene detection not working for the last frame of a video
+- Fixed problem that sometimes made the output video shorter, especially when trimming
+
+
+Flowframes 1.23.2 Changelog:
+- Added RIFE 2.4 model (CUDA & NCNN)
+- Model list now gets loaded from GitHub, model updates won't require a Flowframes update
+- Fixed manual FPS input for image sequence or videos where no framerate was detected
+- Fixed a bug where encoding would sometimes fail
+- Fixed a bug with trimming where the end of video would get cut off when it shouldn't
+
+
+Flowframes 1.23.1 Changelog:
+- Added RIFE 2.3 model (CUDA)
+- Added AC3, DTS and PCM/Raw lossless audio transfer support for MOV output
+- Fixed problem where muxing would fail if there's an incompatible subtitle stream
+- Fixed "generating frame order information" optimizations being disabled
+- Fixed scene detection running even if it's disabled (in Step-By-Step mode)
+- Minor UX improvements to trimming tool
+- Removed ability to change input FPS as it caused problems and was confusing to some
+
+
+Flowframes 1.23.0 Changelog:
+- Added "Fast Mode" for RTX cards, uses less VRAM and is at least 20% faster (RIFE-CUDA)
+- Added support for keeping multiple audio tracks
+- Added trimming feature, allow you to selected start and end time for your interpolation
+- Added "Quick Settings" tab that allows you to change common settings faster
+- Several UX improvements to Step-By-Step mode
+- Peak output FPS is shown after interpolation (for benchmarking)
+- Increased max color amount for GIF output to 256 (GIF's maximum) instead of 128
+- Minor RIFE-CUDA optimization that should increase performance by an additional 3-5%
+- Optimized "generating frame order information" process, making it ~60x faster
+- Loading huge (>5gb) videos is now much faster and stable
+- If NVENC is enabled, Flowframes will run an NVENC compatibility check before starting
+- Flowframes now shows an error if someone tries to run it without unzipping (sigh...)
+- Fixed bug where the output video got deleted if one stream (e.g. audio) failed to encode
+- Fixed minor problems with transparent GIF encoding
+
+
+Flowframes 1.22.3 Changelog:
+- Added new RIFE-CUDA models: 2.1 and 2.2
+- Added new RIFE-NCNN model: 2.0
+- Improved interpolation progress bar and preview (updates faster, lower disk usage)
+- Fixed looped exports having a double frame
+- Fixed GIF encoding being locked even if framerate gets resampled to <=50 FPS
+- Fixed extreme RAM usage (or even disk caching) for accurate deduplication
+- Fixed bugs regarding alpha extraction
+
+
+Flowframes 1.22.2 Changelog:
+- Updated RIFE to 2.0 - Faster and better than ever!
+- Added progress bar for loading metadata of very long videos
+- Fixed freezing when loading video metadata
+- Fixed scene detection running when extracting frames in Step-By-Step mode
+- More error handling for Step-By-Step mode
+- Fixed rare bug where Auto-Encoding would get stuck after cancelling an interpolation
+
+
+Flowframes 1.22.1 Changelog:
+- Added progress bars for ffmpeg actions (extraction/encoding)
+- Added/fixed subtitle support for foreign languages/encodings
+- Added experimental APNG alpha support
+- Added video duration to "Current Input Info" label
+- Added backup model download mirror (Los Angeles)
+- Fixed batch processing not working at all
+- Fixed multi-gigabyte input videos freezing the program or causing errors
+- Fixed alpha not working correctly for image sequence inputs
+- Fixed the AI selection saving the last selected AI not working reliably
+- Fixed progress bar being stuck at 100% and not resetting in some cases
+- Raised the hard framerate limit from 500 to 1000 FPS (out)
+- Lots of under-the-hood work on resuming (not usable in 1.22.1 yet)
+
+
+Flowframes 1.22.0 Changelog:
+- Added experimental alpha (transparency) support for GIF and PNG inputs/outputs
+- RIFE-NCNN now has all RIFE models from 1.5 to 1.8, same as RIFE CUDA
+- The progress bar is now also being shown on the task bar icon
+- The "Minimum Video Length" option is now only active if loop is enabled
+- Fixed NVENC using default settings instead of the set CRF value
+- Fixed frame extraction in step-by-step mode not clearing old frames
+- In step-by-step mode, image sequences are now copied instead of moved on export
+- Inputs resolutions not divisible by 2 now get padded instead of cropped
+
+
+Flowframes 1.21.1 Changelog:
+- Improved RIFE-CUDA image writing, making it run up to 20% faster
+- Re-integrated DAIN-NCNN and reduced its VRAM usage
+- The resolution, frame rate and frame count of your input is now shown in the GUI
+- Fixed deduplicated loops not having the duplicate frames at the end removed
+- Fixed scene detection using the wrong frame to replace the interpolation frames
+- Fixed Auto-Encode making the GUI unresponsive when interpolating >10k frames
+- Fixed last frame missing from exported video
+
+
+Flowframes 1.21.0 Changelog:
+- Added support for optionally using MKV instead of MP4 as h264/h265 container
+- Added support for keeping subtitles (for MKV/MP4/WEBM/MOV outputs, MKV recommended)
+- Added support for NVENC encoding on Nvidia GPUs
+- Added AI model selection (RIFE 1.5 through 1.8)
+- AI models are now dynamically loaded from the web, no longer included in the installation
+- Downscaling ("Max Video Size") now also works for folder inputs
+- Settings GUI Cleanup, removed some obsolete settings
+- Fixed a bug where the progress bar for RIFE-NCNN wouldn't show
+- Fixed scene detection not working if first few frames are dupes followed by a scene cut
+- Fixed a problem where videos would get cut off if they end with a static image (dupes)
+- Removed DAIN-NCNN as it was deemed obsolete, and the NCNN version had many limitations
+- Other minor fixes and improvements
+
+Known Issue:
+Auto-Encode can get laggy if you're interpolating >5000 frames. Fixed in the next version.
+
+
+Flowframes 1.20.4 Changelog:
+- Fixed problem with Auto-Encode getting stuck at the end
+- Fixed performance problems when using Auto Encode on long (>10k frames) videos
+- Fixed freezes when trying to load certain video files (e.g. cut MTS files)
+- Added warning that GIF is not suited for high-FPS videos
+
+
+Flowframes 1.20.3 Changelog:
+- Added option to clear the log box when selecting a new input file (on by default)
+- Deduplication stats are now also shown when deduplicating during extraction
+- Improved deduplication logging messages
+- The encoding log is now being shown while waiting for Auto-Encode to fini
+- Fixed outputs sometimes being too slow (especially with GIFs as input)
+- Fixed scene detection not working
+- Fixed minor problem where the AVI color space would be overwritten
+
+
+Flowframes 1.20.2 Changelog:
+- Added AVI encoding options: Codec (rawvideo/ffv1/huffyuv) and Color Space
+- Added FPS limiting support to GIF exports
+- Fixed FPS limiting not working correctly
+- FPS limiting no longer re-encodes the video, which improves the quality
+- Fixed video duration/timing when using scene detection with deduplication
+- Fixed progress bar in step-by-step mode not showing up
+- Fixed image sequence input not working at all
+- AutoEncode "Delete Frames Once Encoded" option works again
+
+
+Flowframes 1.20.1 Changelog:
+- Updated RIFE-NCNN model to 1.7 (2D animation support)
+- Updated RIFE-NCNN with UHD support
+- Fixed GIF export not working correctly
+- Fixed bug where Auto-Encode gets stuck and never finishes
+- Fixed bug where old deduplication data was used even with deduplication disabled
+
+KNOWN ISSUES:
+- Scene detection will shorten the video - avoid it for now
+- Exporting FPS-limited videos might not work correctly with formats other than MP4
+- The AutoEncode mode "Delete Frames Once Encoded" is currently disabled as it's unstable
+
+
+Flowframes 1.20.0 Changelog:
+- Added export support for WEBM (VP9), MOV (ProRes) and uncompressed AVI
+- Updated RIFE to 1.7 which works better for 2D animation
+- Switched to a more stable approach for video timing, fixing desync issues
+- Fixed looped videos having a duplicate frame between loops
+- Embedded Python now supports RTX 3000 cards (Download "FF-1.20.0-RTX3000.7z")
+- The python runtime will now automatically be compressed to save 1-2 GB of disk space
+
+KNOWN ISSUES:
+- Using "Remove during extraction" deduplication might slow down the output video a lot
+- Exporting FPS-limited videos might not work correctly with formats other than MP4
+- The AutoEncode mode "Delete Frames Once Encoded" is currently disabled as it's unstable
+- RIFE-NCNN does not have the 1.7 model yet (Coming in 1.20.1)
