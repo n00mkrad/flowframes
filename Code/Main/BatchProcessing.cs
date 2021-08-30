@@ -19,6 +19,14 @@ namespace Flowframes.Main
 
         public static async void Start()
         {
+            if (busy)
+            {
+                Logger.Log("Queue: Start() has been called, but I'm already busy - Returning!", true);
+                return;
+            }
+
+            SetBusy(true);
+
             if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 
@@ -43,8 +51,10 @@ namespace Flowframes.Main
                         Logger.Log($"Failed to run batch queue entry. If this happened after force stopping the queue, it's non-critical. {e.Message}", true);
                     }
                 }
-                await Task.Delay(1000);
+
+                await Task.Delay(500);
             }
+
             Logger.Log("Queue: Finished queue processing.");
             OsUtils.ShowNotificationIfInBackground("Flowframes Queue", "Finished queue processing.");
             SetBusy(false);
@@ -59,6 +69,9 @@ namespace Flowframes.Main
 
         static async Task RunEntry(InterpSettings entry)
         {
+            SetBusy(true);
+            Program.mainForm.SetWorking(true);
+
             if (!EntryIsValid(entry))
             {
                 Logger.Log("Queue: Skipping entry because it's invalid.");
@@ -70,27 +83,25 @@ namespace Flowframes.Main
             if (IoUtils.IsPathDirectory(entry.inPath)) fname = Path.GetDirectoryName(entry.inPath);
             Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
 
-            SetBusy(true);
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
             Interpolate.current = entry;
             Program.mainForm.runBtn_Click(null, null);
 
-            await Task.Delay(2000);
             while (Program.busy)
-                await Task.Delay(1000);
-
-            SetBusy(false);
+                await Task.Delay(500);
 
             Program.batchQueue.Dequeue();
+            Program.mainForm.SetWorking(false);
             Logger.Log($"Queue: Done processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
         }
 
         static void SetBusy(bool state)
         {
             busy = state;
+
             if (currentBatchForm != null)
                 currentBatchForm.SetWorking(state);
-            Program.mainForm.SetWorking(state);
+
             Program.mainForm.GetMainTabControl().Enabled = !state;   // Lock GUI
         }
 
