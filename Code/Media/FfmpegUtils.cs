@@ -95,7 +95,7 @@ namespace Flowframes.Media
 
             if(codec == Codec.ProRes)
             {
-                args += $"-profile:v {Config.GetInt(Config.Key.proResProfile)} -pix_fmt {GetPixFmt()}";
+                args += $"-profile:v {Config.GetInt(Config.Key.proResProfile)}";
             }
 
             if (codec == Codec.AviRaw)

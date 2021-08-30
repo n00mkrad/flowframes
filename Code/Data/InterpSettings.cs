@@ -185,9 +185,12 @@ namespace Flowframes
             try
             {
                 bool alphaModel = model.supportsAlpha;
-                bool outputSupportsAlpha = (outMode == Interpolate.OutMode.ImgPng || outMode == Interpolate.OutMode.VidGif);
+                bool png = outMode == Interpolate.OutMode.ImgPng;
+                bool gif = outMode == Interpolate.OutMode.VidGif;
+                bool proResAlpha = outMode == Interpolate.OutMode.VidProRes && Config.GetInt(Config.Key.proResProfile) > 3;
+                bool outputSupportsAlpha = png || gif || proResAlpha;
                 string ext = inputIsFrames ? Path.GetExtension(IoUtils.GetFilesSorted(inPath).First()).ToLower() : Path.GetExtension(inPath).ToLower();
-                alpha = (alphaModel && outputSupportsAlpha && (ext == ".gif" || ext == ".png" || ext == ".apng"));
+                alpha = (alphaModel && outputSupportsAlpha && (ext == ".gif" || ext == ".png" || ext == ".apng" || ext == ".mov"));
                 Logger.Log($"RefreshAlpha: model.supportsAlpha = {alphaModel} - outputSupportsAlpha = {outputSupportsAlpha} - " +
                            $"input ext: {ext} => alpha = {alpha}", true);
             }
