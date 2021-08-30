@@ -1634,8 +1634,8 @@
             this.maxFpsMode.ForeColor = System.Drawing.Color.White;
             this.maxFpsMode.FormattingEnabled = true;
             this.maxFpsMode.Items.AddRange(new object[] {
-            "Only Create Video With Limited FPS",
-            "Create Videos With Full FPS And Limited FPS (2x Slower Encoding!)"});
+            "Only Create Output With Limited FPS",
+            "Create Outputs With Full FPS And Limited FPS (Takes 2x as long!)"});
             this.maxFpsMode.Location = new System.Drawing.Point(280, 127);
             this.maxFpsMode.Name = "maxFpsMode";
             this.maxFpsMode.Size = new System.Drawing.Size(400, 21);

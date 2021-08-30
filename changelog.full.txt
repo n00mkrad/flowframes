@@ -5,6 +5,8 @@ please report that account, it's fake!
 
 Flowframes 1.32.0 Changelog:
 - Added slow-motion option to easily create slow-mo interpolations
+- Auto-Encode now works with Image Sequence exports
+- Option to create both limited and unlimited FPS outputs now works with image sequences
 - Added config option to enable custom interpolation factor (if compatible)
 - ProRes now supports Alpha output when used with profile 4444 or 4444xq
 - Fixed ProRes being locked to YUV420 colors on all presets
