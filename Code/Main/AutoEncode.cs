@@ -99,7 +99,7 @@ namespace Flowframes.Main
                         int maxFrames = chunkSize + (0.5f * chunkSize).RoundToInt() + safetyBufferFrames;
                         bool overwhelmed = unencodedFrameLines.Count > maxFrames;
                         
-                        if(overwhelmed && !AiProcessSuspend.aiProcFrozen)
+                        if(overwhelmed && !AiProcessSuspend.aiProcFrozen && OsUtils.IsProcessHidden(AiProcess.lastAiProcess))
                         {
                             string dirSize = FormatUtils.Bytes(IoUtils.GetDirSize(Interpolate.current.interpFolder, true));
                             Logger.Log($"AutoEnc is overwhelmed! ({unencodedFrameLines.Count} unencoded frames > {maxFrames}) - Pausing.", true);

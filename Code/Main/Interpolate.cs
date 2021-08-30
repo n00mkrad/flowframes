@@ -41,6 +41,7 @@ namespace Flowframes
             if (!ResumeUtils.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             if (!(await Utils.CheckEncoderValid())) return;           // Check NVENC compat
+            Utils.ShowWarnings(current.interpFactor, current.ai);
             currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");

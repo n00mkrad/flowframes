@@ -411,9 +411,6 @@ namespace Flowframes
                 return;
 
             string aiName = GetAi().aiName.Replace("_", "-");
-
-            if (!Program.busy && guiFactor > 2 && GetAi().multiPass && Config.GetInt(Config.Key.autoEncMode) > 0 && !Logger.GetLastLine().Contains(aiName))
-                Logger.Log($"Warning: {aiName} doesn't natively support 4x/8x and will run multiple times for {guiFactor}x. Auto-Encode will only work on the last run.");
         }
 
         public void ValidateFactor ()

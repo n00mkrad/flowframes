@@ -53,6 +53,34 @@ namespace Flowframes.Os
             return proc;
         }
 
+        public static bool IsProcessHidden(Process proc)
+        {
+            bool defaultVal = true;
+
+            try
+            {
+                if(proc == null)
+                {
+                    Logger.Log($"IsProcessHidden was called but proc is null, defaulting to {defaultVal}", true);
+                    return defaultVal;
+                }
+
+                if (proc.HasExited)
+                {
+                    Logger.Log($"IsProcessHidden was called but proc has already exited, defaulting to {defaultVal}", true);
+                    return defaultVal;
+                }
+
+                ProcessStartInfo si = proc.StartInfo;
+                return !si.UseShellExecute && si.CreateNoWindow;
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"IsProcessHidden errored, defaulting to {defaultVal}: {e.Message}", true);
+                return defaultVal;
+            } 
+        }
+
         public static Process NewProcess(bool hidden, string filename = "cmd.exe")
         {
             Process proc = new Process();
