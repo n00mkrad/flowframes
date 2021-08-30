@@ -130,7 +130,7 @@ namespace Flowframes.Main
                             string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkNo.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.current.outMode)}");
                             string firstFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.First()].Trim());
                             string lastFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()].Trim());
-                            Logger.Log($"[AE] Encoding Chunk #{chunkNo} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile})", true, false, "ffmpeg");
+                            Logger.Log($"[AE] Encoding Chunk #{chunkNo} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile}) - {unencodedFrameLines.Count} unencoded frames left in total", true, false, "ffmpeg");
 
                             await CreateVideo.EncodeChunk(outpath, Interpolate.current.interpFolder, chunkNo, Interpolate.current.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
 

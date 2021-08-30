@@ -88,25 +88,24 @@ namespace Flowframes.Main
                 Logger.Log($"Exporting {desiredFormat.ToUpper()} frames to '{Path.GetFileName(outputFolderPath)}'...");
 
                 if (desiredFormat.ToUpper() == availableFormat.ToUpper())   // Move if frames are already in the desired format
-                    await CopyOutputFrames(framesPath, framesFile, outputFolderPath, fpsLimit);
+                    await CopyOutputFrames(framesPath, framesFile, outputFolderPath, 1, fpsLimit, false);
                 else    // Encode if frames are not in desired format
-                    await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, 0, I.current.outFps, new Fraction(), desiredFormat);
+                    await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, 1, I.current.outFps, new Fraction(), desiredFormat);
             }
             
             if (fpsLimit)
             {
                 string outputFolderPath = Path.Combine(I.current.outPath, await IoUtils.GetCurrentExportFilename(true, false));
                 Logger.Log($"Exporting {desiredFormat.ToUpper()} frames to '{Path.GetFileName(outputFolderPath)}' (Resampled to {maxFps} FPS)...");
-                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, 0,  I.current.outFps, maxFps, desiredFormat);
+                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, 1,  I.current.outFps, maxFps, desiredFormat);
             }
 
             if (!stepByStep)
                 await IoUtils.DeleteContentsOfDirAsync(I.current.interpFolder);
         }
 
-        static async Task CopyOutputFrames(string framesPath, string framesFile, string outputFolderPath, bool dontMove)
+        static async Task CopyOutputFrames(string framesPath, string framesFile, string outputFolderPath, int startNo, bool dontMove, bool hideLog)
         {
-            await IoUtils.TryDeleteIfExistsAsync(outputFolderPath);
             IoUtils.CreateDir(outputFolderPath);
             Stopwatch sw = new Stopwatch();
             sw.Restart();
@@ -118,7 +117,8 @@ namespace Flowframes.Main
                 string line = framesLines[idx - 1];
                 string inFilename = line.RemoveComments().Split('/').Last().Remove("'").Trim();
                 string framePath = Path.Combine(framesPath, inFilename);
-                string outFilename = Path.Combine(outputFolderPath, idx.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
+                string outFilename = Path.Combine(outputFolderPath, startNo.ToString().PadLeft(Padding.interpFrames, '0')) + Path.GetExtension(framePath);
+                startNo++;
 
                 if (dontMove || ((idx < framesLines.Length) && framesLines[idx].Contains(inFilename)))   // If file is re-used in the next line, copy instead of move
                     File.Copy(framePath, outFilename);
@@ -128,7 +128,7 @@ namespace Flowframes.Main
                 if (sw.ElapsedMilliseconds >= 500 || idx == framesLines.Length)
                 {
                     sw.Restart();
-                    Logger.Log($"Moving output frames... {idx}/{framesLines.Length}", false, true);
+                    Logger.Log($"Moving output frames... {idx}/{framesLines.Length}", hideLog, true);
                     await Task.Delay(1);
                 }
             }
@@ -239,23 +239,21 @@ namespace Flowframes.Main
 
             if (mode.ToString().ToLower().StartsWith("img"))    // Image Sequence output mode, not video
             {
-                //await FfmpegEncode.FramesToFrames(framesFileChunk, outPath, I.current.outFps, maxFps, Config.Get(Config.Key.imgSeqFormat).ToUpper(), AvProcess.LogMode.Hidden);
-
                 string desiredFormat = Config.Get(Config.Key.imgSeqFormat);
                 string availableFormat = Path.GetExtension(IoUtils.GetFilesSorted(interpDir)[0]).Remove(".").ToUpper();
 
                 if (!dontEncodeFullFpsVid)
                 {
                     string outputFolderPath = Path.Combine(I.current.outPath, await IoUtils.GetCurrentExportFilename(false, false));
-                    int startNumber = IoUtils.GetAmountOfFiles(outputFolderPath, false) + 1;
+                    int startNo = IoUtils.GetAmountOfFiles(outputFolderPath, false) + 1;
 
                     if(chunkNo == 1)    // Only check for existing folder on first chunk, otherwise each chunk makes a new folder
                         IoUtils.RenameExistingFolder(outputFolderPath);
 
                     if (desiredFormat.ToUpper() == availableFormat.ToUpper())   // Move if frames are already in the desired format
-                        await CopyOutputFrames(interpDir, framesFileChunk, outputFolderPath, fpsLimit);
+                        await CopyOutputFrames(interpDir, framesFileChunk, outputFolderPath, startNo, fpsLimit, true);
                     else    // Encode if frames are not in desired format
-                        await FfmpegEncode.FramesToFrames(framesFileChunk, outputFolderPath, startNumber, I.current.outFps, new Fraction(), desiredFormat, AvProcess.LogMode.Hidden);
+                        await FfmpegEncode.FramesToFrames(framesFileChunk, outputFolderPath, startNo, I.current.outFps, new Fraction(), desiredFormat, AvProcess.LogMode.Hidden);
                 }
 
                 if (fpsLimit)
