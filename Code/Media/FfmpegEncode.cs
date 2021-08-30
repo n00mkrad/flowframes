@@ -80,6 +80,7 @@ namespace Flowframes.Media
             string rate = fps.ToString().Replace(",", ".");
             string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
             string compression = format == "png" ? pngCompr : "-q:v 1";
+            string codec = format.ToLower() == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single AWEBP
             string args = $"-vsync 0 -r {rate} {inArg} {compression} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, true);
             IoUtils.TryDeleteIfExists(linksDir);

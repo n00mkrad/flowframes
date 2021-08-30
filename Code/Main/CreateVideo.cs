@@ -10,7 +10,6 @@ using I = Flowframes.Interpolate;
 using System.Diagnostics;
 using Flowframes.Data;
 using Flowframes.Media;
-using Microsoft.VisualBasic.Logging;
 using Flowframes.MiscUtils;
 using Flowframes.Os;
 
@@ -43,7 +42,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (IoUtils.GetAmountOfFiles(path, false, "*" + I.current.interpExt) <= 1)
+            if (IoUtils.GetAmountOfFiles(path, false, "*.*" + I.current.interpExt) <= 1)
             {
                 I.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
@@ -82,7 +81,6 @@ namespace Flowframes.Main
             bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
-            
 
             if (!dontEncodeFullFpsVid)
             {
