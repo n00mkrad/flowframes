@@ -288,6 +288,7 @@
             this.fpsInTbox.ReadOnly = true;
             this.fpsInTbox.Size = new System.Drawing.Size(100, 23);
             this.fpsInTbox.TabIndex = 8;
+            this.fpsInTbox.Text = "0";
             this.fpsInTbox.TextChanged += new System.EventHandler(this.fpsInTbox_TextChanged);
             // 
             // interpFactorCombox
