@@ -221,7 +221,7 @@ namespace Flowframes.Main
                 await Loop(outPath, await GetLoopTimes());
         }
 
-        public static async Task EncodeChunk(string outPath, string interpDir, I.OutMode mode, int firstFrameNum, int framesAmount)
+        public static async Task EncodeChunk(string outPath, string interpDir, int chunkNo, I.OutMode mode, int firstFrameNum, int framesAmount)
         {
             string framesFileFull = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilename(I.current.interpFactor));
             string framesFileChunk = Path.Combine(I.current.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
@@ -248,6 +248,9 @@ namespace Flowframes.Main
                 {
                     string outputFolderPath = Path.Combine(I.current.outPath, await IoUtils.GetCurrentExportFilename(false, false));
                     int startNumber = IoUtils.GetAmountOfFiles(outputFolderPath, false) + 1;
+
+                    if(chunkNo == 1)    // Only check for existing folder on first chunk, otherwise each chunk makes a new folder
+                        IoUtils.RenameExistingFolder(outputFolderPath);
 
                     if (desiredFormat.ToUpper() == availableFormat.ToUpper())   // Move if frames are already in the desired format
                         await CopyOutputFrames(interpDir, framesFileChunk, outputFolderPath, fpsLimit);

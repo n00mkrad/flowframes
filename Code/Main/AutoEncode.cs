@@ -62,7 +62,7 @@ namespace Flowframes.Main
                 unencodedFrameLines.Clear();
 
                 Logger.Log($"[AE] Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
-                int chunkIndex = 1;
+                int chunkNo = 1;
                 string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.current.interpFactor));
                 interpFramesLines = IoUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
 
@@ -127,12 +127,12 @@ namespace Flowframes.Main
                             }
 
                             busy = true;
-                            string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkIndex.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.current.outMode)}");
+                            string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkNo.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.current.outMode)}");
                             string firstFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.First()].Trim());
                             string lastFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()].Trim());
-                            Logger.Log($"[AE] Encoding Chunk #{chunkIndex} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile})", true, false, "ffmpeg");
+                            Logger.Log($"[AE] Encoding Chunk #{chunkNo} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile})", true, false, "ffmpeg");
 
-                            await CreateVideo.EncodeChunk(outpath, Interpolate.current.interpFolder, Interpolate.current.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
+                            await CreateVideo.EncodeChunk(outpath, Interpolate.current.interpFolder, chunkNo, Interpolate.current.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
 
                             if (Interpolate.canceled) return;
 
@@ -143,10 +143,10 @@ namespace Flowframes.Main
 
                             encodedFrameLines.AddRange(frameLinesToEncode);
 
-                            Logger.Log("[AE] Done Encoding Chunk #" + chunkIndex, true, false, "ffmpeg");
+                            Logger.Log("[AE] Done Encoding Chunk #" + chunkNo, true, false, "ffmpeg");
                             lastEncodedFrameNum = (frameLinesToEncode.Last() + 1);
 
-                            chunkIndex++;
+                            chunkNo++;
 
                             if(!imgSeq && Config.GetInt(Config.Key.autoEncBackupMode) > 0)
                             {
