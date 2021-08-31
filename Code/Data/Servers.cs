@@ -10,7 +10,7 @@ namespace Flowframes.Data
     class Servers
     {
         public static Server hetznerEu = new Server { host = "nmkd-hz.de", pattern = "https://dl.*" };
-        public static Server contaboUs = new Server { host = "209.126.5.164", pattern = "http://*/dl" };
+        public static Server contaboUs = new Server { host = "nmkd-cb.de", pattern = "https://dl.*" };
 
         public static List<Server> serverList = new List<Server> { hetznerEu, contaboUs };
 

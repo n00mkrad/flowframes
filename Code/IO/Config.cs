@@ -320,6 +320,7 @@ namespace Flowframes.IO
             clearLogOnInput,
             cmdDebugMode,
             compressedPyVersion,
+            customServer,
             dainNcnnTilesize,
             dedupMode,
             dedupThresh,
