@@ -172,10 +172,6 @@
             this.mp4Enc = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.panel13 = new System.Windows.Forms.Panel();
-            this.mdlBaseUrl = new System.Windows.Forms.ComboBox();
-            this.label42 = new System.Windows.Forms.Label();
             this.ffEncArgs = new System.Windows.Forms.TextBox();
             this.label56 = new System.Windows.Forms.Label();
             this.label48 = new System.Windows.Forms.Label();
@@ -212,7 +208,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.vp9Crf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).BeginInit();
             this.debugTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -2031,10 +2026,6 @@
             // debugTab
             // 
             this.debugTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.debugTab.Controls.Add(this.pictureBox1);
-            this.debugTab.Controls.Add(this.panel13);
-            this.debugTab.Controls.Add(this.mdlBaseUrl);
-            this.debugTab.Controls.Add(this.label42);
             this.debugTab.Controls.Add(this.ffEncArgs);
             this.debugTab.Controls.Add(this.label56);
             this.debugTab.Controls.Add(this.label48);
@@ -2056,65 +2047,20 @@
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Developer Options";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(563, 97);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox1.TabIndex = 90;
-            this.pictureBox1.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox1, resources.GetString("pictureBox1.ToolTip"));
-            // 
-            // panel13
-            // 
-            this.panel13.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel13.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel13.Location = new System.Drawing.Point(536, 97);
-            this.panel13.Name = "panel13";
-            this.panel13.Size = new System.Drawing.Size(21, 21);
-            this.panel13.TabIndex = 61;
-            this.toolTip1.SetToolTip(this.panel13, "Allows custom input.");
-            // 
-            // mdlBaseUrl
-            // 
-            this.mdlBaseUrl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.mdlBaseUrl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.mdlBaseUrl.ForeColor = System.Drawing.Color.White;
-            this.mdlBaseUrl.FormattingEnabled = true;
-            this.mdlBaseUrl.Items.AddRange(new object[] {
-            "https://dl.nmkd-hz.de/flowframes/mdl/",
-            "https://dl.nmkd.de/flowframes/mdl/"});
-            this.mdlBaseUrl.Location = new System.Drawing.Point(280, 97);
-            this.mdlBaseUrl.Name = "mdlBaseUrl";
-            this.mdlBaseUrl.Size = new System.Drawing.Size(250, 21);
-            this.mdlBaseUrl.TabIndex = 87;
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(10, 100);
-            this.label42.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(174, 13);
-            this.label42.TabIndex = 86;
-            this.label42.Text = "Model Download Mirror (Base URL)";
-            // 
             // ffEncArgs
             // 
             this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ffEncArgs.ForeColor = System.Drawing.Color.White;
-            this.ffEncArgs.Location = new System.Drawing.Point(280, 240);
+            this.ffEncArgs.Location = new System.Drawing.Point(280, 210);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(10, 243);
+            this.label56.Location = new System.Drawing.Point(10, 213);
             this.label56.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(147, 13);
@@ -2136,7 +2082,7 @@
             // 
             this.label54.AutoSize = true;
             this.label54.ForeColor = System.Drawing.Color.Silver;
-            this.label54.Location = new System.Drawing.Point(543, 214);
+            this.label54.Location = new System.Drawing.Point(543, 184);
             this.label54.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(118, 13);
@@ -2158,7 +2104,7 @@
             "Slow",
             "Slower",
             "Very Slow"});
-            this.ffEncPreset.Location = new System.Drawing.Point(280, 210);
+            this.ffEncPreset.Location = new System.Drawing.Point(280, 180);
             this.ffEncPreset.Name = "ffEncPreset";
             this.ffEncPreset.Size = new System.Drawing.Size(250, 21);
             this.ffEncPreset.TabIndex = 78;
@@ -2166,7 +2112,7 @@
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(10, 213);
+            this.label47.Location = new System.Drawing.Point(10, 183);
             this.label47.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(174, 13);
@@ -2177,7 +2123,7 @@
             // 
             this.label46.AutoSize = true;
             this.label46.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label46.Location = new System.Drawing.Point(10, 150);
+            this.label46.Location = new System.Drawing.Point(10, 120);
             this.label46.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(65, 16);
@@ -2199,7 +2145,7 @@
             // 
             this.label38.AutoSize = true;
             this.label38.ForeColor = System.Drawing.Color.Silver;
-            this.label38.Location = new System.Drawing.Point(543, 186);
+            this.label38.Location = new System.Drawing.Point(543, 156);
             this.label38.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(131, 13);
@@ -2210,16 +2156,16 @@
             // 
             this.ffEncThreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ffEncThreads.ForeColor = System.Drawing.Color.White;
-            this.ffEncThreads.Location = new System.Drawing.Point(280, 180);
+            this.ffEncThreads.Location = new System.Drawing.Point(280, 150);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(10, 183);
+            this.label37.Location = new System.Drawing.Point(10, 153);
             this.label37.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(204, 13);
@@ -2361,7 +2307,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.mp4Crf)).EndInit();
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2472,9 +2417,6 @@
         private System.Windows.Forms.ComboBox dainNcnnTilesize;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.ComboBox mdlBaseUrl;
-        private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Panel panel13;
         private System.Windows.Forms.CheckBox rifeCudaFp16;
         private System.Windows.Forms.Label label65;
         private System.Windows.Forms.Label label66;
@@ -2484,7 +2426,6 @@
         private System.Windows.Forms.TextBox exportNamePatternLoop;
         private System.Windows.Forms.Label label69;
         private System.Windows.Forms.Label label68;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ComboBox sceneChangeFillMode;
         private System.Windows.Forms.Label label71;
         private System.Windows.Forms.Label label73;
