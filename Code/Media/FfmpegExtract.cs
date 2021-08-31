@@ -166,7 +166,8 @@ namespace Flowframes.Media
                 return false;
             }
 
-            Image[] randomSamples = files.OrderBy(arg => Guid.NewGuid()).Take(10).Select(x => IoUtils.GetImage(x.FullName)).ToArray();
+            int sampleCount = Config.GetInt(Config.Key.imgSeqSampleCount, 10);
+            Image[] randomSamples = files.OrderBy(arg => Guid.NewGuid()).Take(sampleCount).Select(x => IoUtils.GetImage(x.FullName)).ToArray();
 
             bool allSameSize = randomSamples.All(i => i.Size == randomSamples.First().Size);
 

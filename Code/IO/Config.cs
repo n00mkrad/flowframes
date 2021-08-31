@@ -343,6 +343,7 @@ namespace Flowframes.IO
             h265Crf,
             av1Crf,
             imgSeqFormat,
+            imgSeqSampleCount,
             jpegFrames,
             jpegInterp,
             keepAspectRatio,
