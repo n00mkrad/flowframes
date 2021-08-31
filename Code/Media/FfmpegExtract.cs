@@ -109,7 +109,7 @@ namespace Flowframes.Media
 
         public static async Task CopyImages (string inpath, string outpath, bool showLog)
         {
-            if (showLog) Logger.Log($"Copying images from {new DirectoryInfo(inpath).Name}...");
+            if (showLog) Logger.Log($"Loading images from {new DirectoryInfo(inpath).Name}...");
             Directory.CreateDirectory(outpath);
 
             Dictionary<string, string> moveFromTo = new Dictionary<string, string>();
@@ -124,11 +124,13 @@ namespace Flowframes.Media
 
             if (Config.GetBool(Config.Key.allowSymlinkEncoding) && Config.GetBool(Config.Key.allowSymlinkImport, true))
             {
+                Logger.Log($"Symlink Import enabled, creating symlinks for input frames...", true);
                 Dictionary<string, string> moveFromToSwapped = moveFromTo.ToDictionary(x => x.Value, x => x.Key);   // From/To => To/From (Link/Target)
                 await Symlinks.CreateSymlinksParallel(moveFromToSwapped);
             }
             else
             {
+                Logger.Log($"Symlink Import disabled, copying input frames...", true);
                 await Task.Run(async () => {
                     foreach (KeyValuePair<string, string> moveFromToPair in moveFromTo)
                         File.Copy(moveFromToPair.Key, moveFromToPair.Value);
