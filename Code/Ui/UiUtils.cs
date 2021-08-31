@@ -37,6 +37,9 @@ namespace Flowframes.Ui
             {
 				ModelCollection modelCollection = AiModels.GetModels(ai);
 
+				if (modelCollection.models == null || modelCollection.models.Count < 1)
+					return combox;
+
 				for (int i = 0; i < modelCollection.models.Count; i++)
 				{
 					ModelCollection.ModelInfo modelInfo = modelCollection.models[i];

@@ -278,7 +278,6 @@ namespace Flowframes.IO
             if (key == Key.ncnnThreads)       return WriteDefault(key, "1");
             if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
             // Debug / Other / Experimental
-            if (key == Key.mdlBaseUrl)    return WriteDefault(key, "https://dl.nmkd-hz.de/flowframes/mdl/");
             if (key == Key.ffEncPreset)   return WriteDefault(key, "medium");
             if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "true");
 
@@ -358,7 +357,6 @@ namespace Flowframes.IO
             maxFps,
             maxFpsMode,
             maxVidHeight,
-            mdlBaseUrl,
             minOutVidLength,
             minVidLength,
             mp4Enc,

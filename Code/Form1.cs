@@ -82,6 +82,7 @@ namespace Flowframes
                 Task.Run(() => Updater.AsyncUpdateCheck());
                 Task.Run(() => GetWebInfo.LoadNews(newsLabel));
                 Task.Run(() => GetWebInfo.LoadPatronListCsv(patronsLabel));
+                Task.Run(() => Servers.Init());
                 await Python.CheckCompression();
                 await StartupChecks.SymlinksCheck();
             }
@@ -322,7 +323,14 @@ namespace Flowframes
 
         public ModelCollection.ModelInfo GetModel(AI currentAi)
         {
-            return AiModels.GetModels(currentAi).models[aiModel.SelectedIndex];
+            try
+            {
+                return AiModels.GetModels(currentAi).models[aiModel.SelectedIndex];
+            }
+            catch 
+            {
+                return null;
+            }
         }
 
         Interpolate.OutMode GetOutMode()

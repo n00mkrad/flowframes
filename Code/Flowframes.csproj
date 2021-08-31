@@ -336,6 +336,7 @@
     <Compile Include="Data\AudioTrack.cs" />
     <Compile Include="Data\Filetypes.cs" />
     <Compile Include="Data\ModelCollection.cs" />
+    <Compile Include="Data\Servers.cs" />
     <Compile Include="Data\VidExtraData.cs" />
     <Compile Include="Data\Fraction.cs" />
     <Compile Include="Data\InterpSettings.cs" />

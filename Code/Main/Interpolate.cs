@@ -37,7 +37,7 @@ namespace Flowframes
             Program.initialRun = false;
             Program.mainForm.SetWorking(true);
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
-            if (!Utils.CheckAiAvailable(current.ai)) return;            // Check if selected AI pkg is installed
+            if (!Utils.CheckAiAvailable(current.ai, current.model)) return;            // Check if selected AI pkg is installed
             if (!ResumeUtils.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             if (!(await Utils.CheckEncoderValid())) return;           // Check NVENC compat

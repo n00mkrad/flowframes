@@ -138,12 +138,19 @@ namespace Flowframes.Main
             }
         }
 
-        public static bool CheckAiAvailable(AI ai)
+        public static bool CheckAiAvailable(AI ai, ModelCollection.ModelInfo model)
         {
             if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.pkgDir), true) < 1)
             {
                 ShowMessage("The selected AI is not installed!", "Error");
                 I.Cancel("Selected AI not available.", true);
+                return false;
+            }
+
+            if (model == null || model.dir.Trim() == "")
+            {
+                ShowMessage("No valid AI model has been selected!", "Error");
+                I.Cancel("No valid model selected.", true);
                 return false;
             }
 

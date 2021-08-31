@@ -69,7 +69,7 @@ namespace Flowframes.Main
 
         public static async Task InterpolateStep()
         {
-            if (!InterpolateUtils.CheckAiAvailable(current.ai)) return;
+            if (!InterpolateUtils.CheckAiAvailable(current.ai, current.model)) return;
 
             current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
 

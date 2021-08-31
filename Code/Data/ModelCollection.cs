@@ -8,7 +8,7 @@ namespace Flowframes.Data
     public class ModelCollection
     {
         public AI ai;
-        public List<ModelInfo> models;
+        public List<ModelInfo> models = new List<ModelInfo>();
 
         public class ModelInfo
         {
@@ -40,8 +40,15 @@ namespace Flowframes.Data
             }
         }
 
+        public ModelCollection(AI ai)
+        {
+            this.ai = ai;
+        }
+
         public ModelCollection(AI ai, string jsonContentOrPath)
         {
+            this.ai = ai;
+
             if (IoUtils.IsPathValid(jsonContentOrPath) && File.Exists(jsonContentOrPath))
                 jsonContentOrPath = File.ReadAllText(jsonContentOrPath);
 

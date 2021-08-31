@@ -16,6 +16,13 @@ namespace Flowframes.Main
         {
             string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
             string modelsFile = Path.Combine(pkgPath, "models.json");
+
+            if (!File.Exists(modelsFile))
+            {
+                Logger.Log($"Error: File models.json is missing for {ai.aiName}, can't load AI models for this implementation!");
+                return new ModelCollection(ai);
+            }
+
             ModelCollection modelCollection = new ModelCollection(ai, modelsFile);
 
             foreach (string customModel in GetCustomModels(ai))
