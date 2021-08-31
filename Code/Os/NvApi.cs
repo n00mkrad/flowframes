@@ -31,7 +31,7 @@ namespace Flowframes.Os
 
                 string gpuNamesList = string.Join(", ", gpuNames);
 
-                Logger.Log($"Initialized Nvidia API. GPU{(gpus.Length > 1 ? "s" : "")}: {gpuNamesList}");
+                Logger.Log($"Initialized Nvidia API. GPU{(gpus.Length > 1 ? "s" : "")}: {gpuNamesList}", true);
             }
             catch (Exception e)
             {
