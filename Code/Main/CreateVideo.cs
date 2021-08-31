@@ -42,7 +42,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (IoUtils.GetAmountOfFiles(path, false, "*.*" + I.current.interpExt) <= 1)
+            if (IoUtils.GetAmountOfFiles(path, false, "*" + I.current.interpExt) <= 1)
             {
                 I.Cancel("Output folder does not contain frames - An error must have occured during interpolation!", AiProcess.hasShownError);
                 return;
