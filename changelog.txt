@@ -3,6 +3,17 @@ If your video gets taken down by "flowframesinterpolation@gmail.com",
 please report that account, it's fake!
 
 
+Flowframes 1.32.0 Changelog:
+- Added slow-motion option to easily create slow-mo interpolations
+- Auto-Encode now works with Image Sequence exports
+- Option to create both limited and unlimited FPS outputs now works with image sequences
+- Added automatic ping-based server picker to download models from US or EU server
+- Added config option to enable custom interpolation factor (if compatible)
+- ProRes now supports Alpha output when used with profile 4444 or 4444xq
+- Fixed ProRes being locked to YUV420 colors on all presets
+- Fixed WEBP image sequence export not working correctly
+
+
 Flowframes 1.31.1 Changelog:
 - Fixed problems that broke XVFI when using embedded python runtime
 - Fixed model downloader not offering the option to download XVFI models
@@ -105,26 +116,3 @@ Flowframes 1.26.0 Changelog:
 - Fixed critical bug where Auto-Encode ran too early, causing FFmpeg errors
 - Fixed bug where deduplicated videos would play too fast if JPEG frames are used
 - Fixed some cases where the program wouldn't launch because of undhandled errors
-
-
-Flowframes 1.25.1 Changelog:
-- Added a button to pause/resume the interpolation
-- Added AV1 codec support for MP4/MKV output
-- Added support for JPG or WEBP image sequence output instead of only PNG
-- NVENC encoding is now slightly more efficient (P7 Preset)
-- Fixed accurate deduplication not working with JPEG frames
-
-
-Flowframes 1.25.0 Changelog:
-- Added support for FPS limiting (resampling) on Image Sequence outputs
-- Added MagicYUV codec for AVI exports (super fast, better compression than huffyuv)
-- Added option to import frames as JPEG for YUV420 content (almost lossless)
-- Added [RES] (resolution) and [H] (height) variables for export filename pattern
-- Added support for fractional input for "Maximum Output Frame Rate" option
-- Encoding Speed option in Developer Options now also affects VP9
-- Updated icon to a new colorful variant (same as FF Installer)
-- Updated FFmpeg build (Release 4.4)
-- Changed GIF encoding flags to fix potential transparency problems
-- Better error messages for overclocking bugs and model load errors
-- Fixed changing speed by adjusting input FPS not working correctly (allowCustomInputRate)
-- Fixed encoding failing on non-NTFS drives
