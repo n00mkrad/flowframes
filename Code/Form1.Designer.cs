@@ -231,6 +231,7 @@
             this.outModeCombox.Name = "outModeCombox";
             this.outModeCombox.Size = new System.Drawing.Size(400, 23);
             this.outModeCombox.TabIndex = 16;
+            this.outModeCombox.SelectedIndexChanged += new System.EventHandler(this.outModeCombox_SelectedIndexChanged);
             // 
             // label9
             // 

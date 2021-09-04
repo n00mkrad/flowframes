@@ -278,6 +278,7 @@ namespace Flowframes
                 aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
 
             ConfigParser.LoadComboxIndex(aiCombox);
+            ConfigParser.LoadComboxIndex(outModeCombox);
         }
 
         public void Initialized()
@@ -708,6 +709,12 @@ namespace Flowframes
         private void encodingSettingsBtn_Click(object sender, EventArgs e)
         {
             new SettingsForm(4).ShowDialog();
+        }
+
+        private void outModeCombox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (initialized)
+                ConfigParser.SaveComboxIndex(outModeCombox);
         }
     }
 }
