@@ -199,7 +199,7 @@ namespace Flowframes.Main
             {
                 if (!IoUtils.IsDirValid(path))
                 {
-                    ShowMessage("Input directory is not valid.");
+                    ShowMessage("Input directory is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
                     I.Cancel();
                     return false;
                 }
@@ -208,7 +208,7 @@ namespace Flowframes.Main
             {
                 if (!IsVideoValid(path))
                 {
-                    ShowMessage("Input video file is not valid.");
+                    ShowMessage("Input video file is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
                     return false;
                 }
             }

@@ -3,6 +3,10 @@ If your video gets taken down by "flowframesinterpolation@gmail.com",
 please report that account, it's fake!
 
 
+Flowframes 1.32.1 Changelog:
+- Fixed GPU list not detecting physical GPUs when using Flowframes through RDP
+
+
 Flowframes 1.32.0 Changelog:
 - Added slow-motion option to easily create slow-mo interpolations
 - Auto-Encode now works with Image Sequence exports
