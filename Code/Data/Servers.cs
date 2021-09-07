@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flowframes.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -15,7 +16,7 @@ namespace Flowframes.Data
 
         public static List<Server> serverList = new List<Server> { hetznerEu, contaboUs };
 
-        public static Server closestServer = serverList[0];
+        private static Server closestServer = serverList[0];
 
         public class Server
         {
@@ -61,6 +62,16 @@ namespace Flowframes.Data
                         comboBox.SelectedIndex = i;
                 }
             }
+        }
+
+        public static Server GetServer ()
+        {
+            int server = Config.GetInt("serverCombox");
+
+            if (server == 0)
+                return closestServer;
+            else
+                return serverList[server - 1];
         }
     }
 }

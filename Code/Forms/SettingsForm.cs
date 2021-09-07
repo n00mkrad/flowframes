@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -27,9 +28,21 @@ namespace Flowframes.Forms
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Width, (Height * 1.5f).RoundToInt());
 
+            InitServers();
             LoadSettings();
             initialized = true;
             Task.Run(() => CheckModelCacheSize());
+        }
+
+        void InitServers()
+        {
+            serverCombox.Items.Clear();
+            serverCombox.Items.Add($"Automatic (Closest)");
+
+            foreach (Servers.Server srv in Servers.serverList)
+                serverCombox.Items.Add(srv.name);
+
+            serverCombox.SelectedIndex = 0;
         }
 
         public async Task CheckModelCacheSize ()
@@ -122,6 +135,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(imgSeqFormat);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
+            ConfigParser.SaveComboxIndex(serverCombox);
             ConfigParser.SaveGuiElement(ffEncThreads, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffEncArgs);
@@ -182,6 +196,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(imgSeqFormat);
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
+            ConfigParser.LoadComboxIndex(serverCombox);
             ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffEncArgs);
