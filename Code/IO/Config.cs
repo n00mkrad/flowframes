@@ -252,7 +252,6 @@ namespace Flowframes.IO
             if (key == Key.keepAudio)             return WriteDefault(key, "True");
             if (key == Key.keepSubs)              return WriteDefault(key, "True");
             if (key == Key.keepMeta)              return WriteDefault(key, "True");
-            if (key == Key.autoDedupFrames)       return WriteDefault(key, "100");
             if (key == Key.scnDetect)             return WriteDefault(key, "True");
             if (key == Key.scnDetectValue)        return WriteDefault(key, "0.2");
             if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "1");
@@ -309,7 +308,6 @@ namespace Flowframes.IO
             allowSymlinkEncoding,
             allowSymlinkImport,
             alwaysWaitForAutoEnc,
-            autoDedupFrames,
             autoEncBackupMode,
             autoEncDebug,
             autoEncMode,
