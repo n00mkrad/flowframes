@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Flowframes.IO
 {
-    internal class Config
+    class Config
     {
         private static string configPath;
         public static Dictionary<string, string> cachedValues = new Dictionary<string, string>();
@@ -38,7 +38,7 @@ namespace Flowframes.IO
             catch(Exception e)
             {
                 retries -= 1;
-                Logger.Log($"Failed to reset config: {e.Message}. Retrying ({retries} attempts left).");
+                Logger.Log($"Failed to reset config: {e.Message}. Retrying ({retries} attempts left).", true);
                 await Task.Delay(500);
                 await Reset(retries, settingsForm);
             }

@@ -174,7 +174,6 @@
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
             this.ffEncArgs = new System.Windows.Forms.TextBox();
             this.label56 = new System.Windows.Forms.Label();
-            this.label48 = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
             this.ffEncPreset = new System.Windows.Forms.ComboBox();
             this.label47 = new System.Windows.Forms.Label();
@@ -183,9 +182,6 @@
             this.label38 = new System.Windows.Forms.Label();
             this.ffEncThreads = new System.Windows.Forms.TextBox();
             this.label37 = new System.Windows.Forms.Label();
-            this.panel9 = new System.Windows.Forms.Panel();
-            this.autoDedupFrames = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
@@ -2028,7 +2024,6 @@
             this.debugTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.debugTab.Controls.Add(this.ffEncArgs);
             this.debugTab.Controls.Add(this.label56);
-            this.debugTab.Controls.Add(this.label48);
             this.debugTab.Controls.Add(this.label54);
             this.debugTab.Controls.Add(this.ffEncPreset);
             this.debugTab.Controls.Add(this.label47);
@@ -2037,9 +2032,6 @@
             this.debugTab.Controls.Add(this.label38);
             this.debugTab.Controls.Add(this.ffEncThreads);
             this.debugTab.Controls.Add(this.label37);
-            this.debugTab.Controls.Add(this.panel9);
-            this.debugTab.Controls.Add(this.autoDedupFrames);
-            this.debugTab.Controls.Add(this.label7);
             this.debugTab.Controls.Add(this.label3);
             this.debugTab.Controls.Add(this.cmdDebugMode);
             this.debugTab.ForeColor = System.Drawing.Color.White;
@@ -2054,7 +2046,7 @@
             this.ffEncArgs.Location = new System.Drawing.Point(280, 210);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
@@ -2066,17 +2058,6 @@
             this.label56.Size = new System.Drawing.Size(147, 13);
             this.label56.TabIndex = 84;
             this.label56.Text = "Additional (Output) Arguments";
-            // 
-            // label48
-            // 
-            this.label48.AutoSize = true;
-            this.label48.ForeColor = System.Drawing.Color.Silver;
-            this.label48.Location = new System.Drawing.Point(570, 71);
-            this.label48.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(169, 13);
-            this.label48.TabIndex = 83;
-            this.label48.Text = "Use 0 to disable (check all frames)";
             // 
             // label54
             // 
@@ -2159,7 +2140,7 @@
             this.ffEncThreads.Location = new System.Drawing.Point(280, 150);
             this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 21);
+            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
             this.ffEncThreads.TabIndex = 70;
             // 
             // label37
@@ -2171,44 +2152,6 @@
             this.label37.Size = new System.Drawing.Size(204, 13);
             this.label37.TabIndex = 61;
             this.label37.Text = "Override FFmpeg Encoding Thread Count";
-            // 
-            // panel9
-            // 
-            this.panel9.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel9.Location = new System.Drawing.Point(536, 67);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(21, 21);
-            this.panel9.TabIndex = 60;
-            this.toolTip1.SetToolTip(this.panel9, "Allows custom input.");
-            // 
-            // autoDedupFrames
-            // 
-            this.autoDedupFrames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.autoDedupFrames.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.autoDedupFrames.ForeColor = System.Drawing.Color.White;
-            this.autoDedupFrames.FormattingEnabled = true;
-            this.autoDedupFrames.Items.AddRange(new object[] {
-            "0",
-            "25",
-            "50",
-            "100",
-            "250",
-            "500"});
-            this.autoDedupFrames.Location = new System.Drawing.Point(280, 67);
-            this.autoDedupFrames.Name = "autoDedupFrames";
-            this.autoDedupFrames.Size = new System.Drawing.Size(250, 21);
-            this.autoDedupFrames.TabIndex = 34;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(10, 70);
-            this.label7.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(224, 13);
-            this.label7.TabIndex = 33;
-            this.label7.Text = "Amount Of Non-Dupe Frames Before Skipping";
             // 
             // label3
             // 
@@ -2333,8 +2276,6 @@
         private Cyotek.Windows.Forms.TabListPage vidExportTab;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ComboBox autoDedupFrames;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.ComboBox maxFpsMode;
         private System.Windows.Forms.Label label22;
@@ -2354,7 +2295,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Panel panel7;
-        private System.Windows.Forms.Panel panel9;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Panel panel10;
         private System.Windows.Forms.ComboBox maxVidHeight;
@@ -2389,7 +2329,6 @@
         private System.Windows.Forms.Panel panel14;
         private System.Windows.Forms.Label label49;
         private System.Windows.Forms.ComboBox autoEncMode;
-        private System.Windows.Forms.Label label48;
         private System.Windows.Forms.CheckBox sbsAllowAutoEnc;
         private System.Windows.Forms.Label label53;
         private System.Windows.Forms.Label label30;

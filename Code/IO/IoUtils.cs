@@ -846,7 +846,7 @@ namespace Flowframes.IO
             }
 			catch (Exception e)
             {
-				Logger.Log($"Failed to create file at '{path}': {e.Message}");
+				Logger.Log($"Failed to create file at '{path}': {e.Message}", true);
 				return false;
             }
         }

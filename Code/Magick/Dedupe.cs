@@ -72,10 +72,6 @@ namespace Flowframes.Magick
             int statsFramesKept = 0;
             int statsFramesDeleted = 0;
 
-            int skipAfterNoDupesFrames = Config.GetInt(Config.Key.autoDedupFrames);
-            bool hasEncounteredAnyDupes = false;
-            bool skipped = false;
-
             bool hasReachedEnd = false;
 
             string fileContent = "";
@@ -114,8 +110,8 @@ namespace Flowframes.Magick
                             {
                                 framesToDelete.Add(frame2);
                                 if (debugLog) Logger.Log("Deduplication: Deleted " + Path.GetFileName(frame2));
-                                hasEncounteredAnyDupes = true;
                             }
+
                             statsFramesDeleted++;
                             currentDupeCount++;
                         }
@@ -135,6 +131,7 @@ namespace Flowframes.Magick
                     sw.Restart();
                     Logger.Log($"Deduplication: Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
                     Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
+
                     if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OsUtils.GetFreeRamMb() < 3500))
                         ClearCache();
                 }
@@ -150,12 +147,6 @@ namespace Flowframes.Magick
                     await Task.Delay(1);
 
                 if (Interpolate.canceled) return;
-
-                if (!testRun && skipIfNoDupes && !hasEncounteredAnyDupes && skipAfterNoDupesFrames > 0 && i >= skipAfterNoDupesFrames)
-                {
-                    skipped = true;
-                    break;
-                }
             }
 
             foreach (string frame in framesToDelete)
@@ -170,10 +161,7 @@ namespace Flowframes.Magick
             float percentDeleted = ((float)framesDeleted / framePaths.Length) * 100f;
             string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
 
-            if (skipped)
-                Logger.Log($"Deduplication: First {skipAfterNoDupesFrames} frames did not have any duplicates - Skipping the rest!", false, true);
-            else
-                Logger.Log($"[Deduplication]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
+            Logger.Log($"[Deduplication]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
 
             if (statsFramesKept <= 0)
                 Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");
