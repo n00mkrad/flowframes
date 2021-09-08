@@ -1,9 +1,6 @@
-Warning: A copyright troll is currently around.
-If your video gets taken down by "flowframesinterpolation@gmail.com",
-please report that account, it's fake!
-
-
 Flowframes 1.32.1 Changelog:
+- The last selected output mode is now remembered after closing Flowframes
+- Added server selection option (Automatic/EU/US) to allow manual selection of server
 - Fixed GPU list not detecting physical GPUs when using Flowframes through RDP
 
 
