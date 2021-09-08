@@ -651,7 +651,7 @@
             // discordBtn
             // 
             this.discordBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.discordBtn.ButtonImage = global::Flowframes.Properties.Resources.discordIcoColored;
+            this.discordBtn.ButtonImage = global::Flowframes.Properties.Resources.discordNew;
             this.discordBtn.DrawImage = true;
             this.discordBtn.FlatAppearance.BorderSize = 0;
             this.discordBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

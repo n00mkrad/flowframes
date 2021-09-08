@@ -140,6 +140,7 @@ namespace Flowframes
         {
             if (str == null || stringToRemove == null)
                 return str;
+
             return str.Replace(stringToRemove, "");
         }
 

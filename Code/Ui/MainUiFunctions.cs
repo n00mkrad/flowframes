@@ -105,6 +105,7 @@ namespace Flowframes.Ui
         public static async Task<Image> GetThumbnail (string path)
         {
             string imgOnDisk = Path.Combine(Paths.GetDataPath(), "thumb-temp.jpg");
+
             try
             {
                 if (!IoUtils.IsPathDirectory(path))     // If path is video - Extract first frame
