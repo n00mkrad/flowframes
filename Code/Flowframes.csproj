@@ -513,6 +513,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlowframesLogo2021.ico" />
+    <None Include="Resources\paypal256px.png" />
+    <None Include="Resources\discordNew.png" />
     <None Include="Resources\baseline_restart_alt_white_48dp.png" />
     <None Include="Resources\baseline_format_size_white_48dp.png" />
     <None Include="Resources\baseline_wrap_text_white_48dp.png" />
@@ -528,7 +530,6 @@
     <None Include="Resources\7za.exe" />
     <None Include="Resources\baseline_fact_check_white_48dp.png" />
     <None Include="Resources\discordIco.png" />
-    <None Include="Resources\paypal256px.png" />
     <None Include="Resources\patreon256px.png" />
     <None Include="Resources\baseline_settings_white_48dp.png" />
     <None Include="Resources\baseline_image_white_48dp.png" />
