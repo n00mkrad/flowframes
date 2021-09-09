@@ -116,7 +116,8 @@ namespace Flowframes.Main
 
                 if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
                 {
-                    ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.");
+                    string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
+                    ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.{imgSeqNote}");
                     passes = false;
                 }
 
