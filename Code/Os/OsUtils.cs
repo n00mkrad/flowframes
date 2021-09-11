@@ -270,15 +270,23 @@ namespace Flowframes.Os
 
         public static string GetGpus ()
         {
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DisplayControllerConfiguration");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DisplayConfiguration");
 
             List<string> gpus = new List<string>();
 
-            foreach (ManagementObject queryObj in searcher.Get())
+            foreach (ManagementObject mo in searcher.Get())
             {
-                string gpuName = queryObj["Name"].ToString();
-                gpus.Add(gpuName);
-                Logger.Log($"[GetGpus] Found GPU: {gpuName}", true);
+                foreach (PropertyData property in mo.Properties)
+                {
+                    if (property.Name == "Description")
+                    {
+                        gpus.Add(property.Value.ToString());
+                        Logger.Log($"[GetGpus] Found GPU: {property.Value}", true);
+                    }
+                }
+                //string gpuName = queryObj["Name"].ToString();
+                //gpus.Add(gpuName);
+                //Logger.Log($"[GetGpus] Found GPU: {gpuName}", true);
             }
 
             return string.Join(", ", gpus);
