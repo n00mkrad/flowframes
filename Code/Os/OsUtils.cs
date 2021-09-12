@@ -280,8 +280,13 @@ namespace Flowframes.Os
                 {
                     if (property.Name == "Description")
                     {
-                        gpus.Add(property.Value.ToString());
-                        Logger.Log($"[GetGpus] Found GPU: {property.Value}", true);
+                        string gpuName = property.Value.ToString();
+
+                        if (!gpuName.ToLower().Contains("microsoft"))   // To ignore pseudo-GPUs like on vServers, RDP sessions, etc. (e.g. "Microsoft Basic Display Adapter")
+                        {
+                            gpus.Add(gpuName);
+                            Logger.Log($"[GetGpus] Found GPU: {property.Value}", true);
+                        }
                     }
                 }
                 //string gpuName = queryObj["Name"].ToString();
