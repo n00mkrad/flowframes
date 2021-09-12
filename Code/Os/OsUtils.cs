@@ -115,6 +115,7 @@ namespace Flowframes.Os
         public static string GetCmdArg()
         {
             bool stayOpen = Config.GetInt(Config.Key.cmdDebugMode) == 2;
+
             if (stayOpen)
                 return "/K";
             else

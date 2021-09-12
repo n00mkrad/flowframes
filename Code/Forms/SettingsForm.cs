@@ -133,6 +133,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(gifColors);
             ConfigParser.SaveGuiElement(gifDitherType);
             ConfigParser.SaveGuiElement(imgSeqFormat);
+            ConfigParser.SaveComboxIndex(imgSeqQuality);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveComboxIndex(serverCombox);
@@ -194,6 +195,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(gifColors);
             ConfigParser.LoadGuiElement(gifDitherType);
             ConfigParser.LoadGuiElement(imgSeqFormat);
+            ConfigParser.LoadComboxIndex(imgSeqQuality);
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadComboxIndex(serverCombox);
@@ -292,6 +294,11 @@ namespace Flowframes.Forms
 
             await Config.Reset(3, this);
             SettingsForm_Load(null, null);
+        }
+
+        private void imgSeqFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            imgSeqQuality.Visible = imgSeqFormat.SelectedIndex != 0;
         }
     }
 }

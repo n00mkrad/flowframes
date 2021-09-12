@@ -150,6 +150,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.tabListPage1 = new Cyotek.Windows.Forms.TabListPage();
+            this.imgSeqQuality = new System.Windows.Forms.ComboBox();
             this.pixFmt = new System.Windows.Forms.ComboBox();
             this.label75 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -172,6 +173,8 @@
             this.mp4Enc = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.debugTab = new Cyotek.Windows.Forms.TabListPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.serverCombox = new System.Windows.Forms.ComboBox();
             this.ffEncArgs = new System.Windows.Forms.TextBox();
             this.label56 = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
@@ -187,8 +190,6 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.serverCombox = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -1705,6 +1706,7 @@
             // 
             // tabListPage1
             // 
+            this.tabListPage1.Controls.Add(this.imgSeqQuality);
             this.tabListPage1.Controls.Add(this.pixFmt);
             this.tabListPage1.Controls.Add(this.label75);
             this.tabListPage1.Controls.Add(this.label13);
@@ -1730,6 +1732,24 @@
             this.tabListPage1.Name = "tabListPage1";
             this.tabListPage1.Size = new System.Drawing.Size(762, 419);
             this.tabListPage1.Text = "Encoding Settings";
+            // 
+            // imgSeqQuality
+            // 
+            this.imgSeqQuality.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.imgSeqQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.imgSeqQuality.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.imgSeqQuality.ForeColor = System.Drawing.Color.White;
+            this.imgSeqQuality.FormattingEnabled = true;
+            this.imgSeqQuality.Items.AddRange(new object[] {
+            "Maximum Quality",
+            "High Quality",
+            "Medium Quality",
+            "Low Quality",
+            "Lowest Quality"});
+            this.imgSeqQuality.Location = new System.Drawing.Point(486, 247);
+            this.imgSeqQuality.Name = "imgSeqQuality";
+            this.imgSeqQuality.Size = new System.Drawing.Size(194, 21);
+            this.imgSeqQuality.TabIndex = 116;
             // 
             // pixFmt
             // 
@@ -1822,6 +1842,7 @@
             this.imgSeqFormat.Name = "imgSeqFormat";
             this.imgSeqFormat.Size = new System.Drawing.Size(200, 21);
             this.imgSeqFormat.TabIndex = 110;
+            this.imgSeqFormat.SelectedIndexChanged += new System.EventHandler(this.imgSeqFormat_SelectedIndexChanged);
             // 
             // label40
             // 
@@ -2043,6 +2064,36 @@
             this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Developer Options";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(10, 70);
+            this.label7.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(121, 13);
+            this.label7.TabIndex = 87;
+            this.label7.Text = "Model Download Server";
+            // 
+            // serverCombox
+            // 
+            this.serverCombox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.serverCombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.serverCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.serverCombox.ForeColor = System.Drawing.Color.White;
+            this.serverCombox.FormattingEnabled = true;
+            this.serverCombox.Items.AddRange(new object[] {
+            "Very Fast",
+            "Faster",
+            "Fast",
+            "Medium",
+            "Slow",
+            "Slower",
+            "Very Slow"});
+            this.serverCombox.Location = new System.Drawing.Point(280, 67);
+            this.serverCombox.Name = "serverCombox";
+            this.serverCombox.Size = new System.Drawing.Size(250, 21);
+            this.serverCombox.TabIndex = 86;
+            // 
             // ffEncArgs
             // 
             this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -2213,36 +2264,6 @@
             this.toolTip1.SetToolTip(this.resetBtn, "Reset To Default");
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
-            // 
-            // serverCombox
-            // 
-            this.serverCombox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.serverCombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.serverCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.serverCombox.ForeColor = System.Drawing.Color.White;
-            this.serverCombox.FormattingEnabled = true;
-            this.serverCombox.Items.AddRange(new object[] {
-            "Very Fast",
-            "Faster",
-            "Fast",
-            "Medium",
-            "Slow",
-            "Slower",
-            "Very Slow"});
-            this.serverCombox.Location = new System.Drawing.Point(280, 67);
-            this.serverCombox.Name = "serverCombox";
-            this.serverCombox.Size = new System.Drawing.Size(250, 21);
-            this.serverCombox.TabIndex = 86;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(10, 70);
-            this.label7.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(121, 13);
-            this.label7.TabIndex = 87;
-            this.label7.Text = "Model Download Server";
             // 
             // SettingsForm
             // 
@@ -2450,5 +2471,6 @@
         private System.Windows.Forms.Label label78;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox serverCombox;
+        private System.Windows.Forms.ComboBox imgSeqQuality;
     }
 }

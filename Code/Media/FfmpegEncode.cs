@@ -65,7 +65,7 @@ namespace Flowframes.Media
                 return "";
         }
 
-        public static async Task FramesToFrames(string framesFile, string outDir, int startNo, Fraction fps, Fraction resampleFps, string format = "png", LogMode logMode = LogMode.OnlyLastLine)
+        public static async Task FramesToFrames(string framesFile, string outDir, int startNo, Fraction fps, Fraction resampleFps, string format = "png", int lossyQ = 1, LogMode logMode = LogMode.OnlyLastLine)
         {
             Directory.CreateDirectory(outDir);
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
@@ -81,7 +81,7 @@ namespace Flowframes.Media
             string sn = $"-start_number {startNo}";
             string rate = fps.ToString().Replace(",", ".");
             string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
-            string compression = format == "png" ? pngCompr : "-q:v 1";
+            string compression = format == "png" ? pngCompr : $"-q:v {lossyQ}";
             string codec = format == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
             string args = $"-vsync 0 -r {rate} {inArg} {codec} {compression} {sn} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, true);
