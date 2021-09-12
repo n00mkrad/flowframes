@@ -62,7 +62,7 @@ namespace Flowframes
             Program.mainForm.SetProgress(100);
 
             if(!currentlyUsingAutoEnc)
-                await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, false);
+                await Export.ExportFrames(current.interpFolder, current.outPath, current.outMode, false);
 
             if (Config.GetBool(Config.Key.keepTempFolder))
                 await Task.Run(async () => { await FrameRename.Unrename(); });

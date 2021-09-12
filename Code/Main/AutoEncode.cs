@@ -132,7 +132,7 @@ namespace Flowframes.Main
                             string lastFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()].Trim());
                             Logger.Log($"[AE] Encoding Chunk #{chunkNo} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile}) - {unencodedFrameLines.Count} unencoded frames left in total", true, false, "ffmpeg");
 
-                            await CreateVideo.EncodeChunk(outpath, Interpolate.current.interpFolder, chunkNo, Interpolate.current.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
+                            await Export.EncodeChunk(outpath, Interpolate.current.interpFolder, chunkNo, Interpolate.current.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
 
                             if (Interpolate.canceled) return;
 
@@ -151,7 +151,7 @@ namespace Flowframes.Main
                             if(!imgSeq && Config.GetInt(Config.Key.autoEncBackupMode) > 0)
                             {
                                 if (aiRunning && (currentMuxTask == null || (currentMuxTask != null && currentMuxTask.IsCompleted)))
-                                    currentMuxTask = Task.Run(() => CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
+                                    currentMuxTask = Task.Run(() => Export.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
                                 else
                                     Logger.Log($"[AE] Skipping backup because {(!aiRunning ? "this is the final chunk" : "previous mux task has not finished yet")}!", true, false, "ffmpeg");
                             }
@@ -176,7 +176,7 @@ namespace Flowframes.Main
                 if (imgSeq)
                     return;
 
-                await CreateVideo.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath);
+                await Export.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath);
             }
             catch (Exception e)
             {

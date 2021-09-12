@@ -15,11 +15,11 @@ using Flowframes.Os;
 
 namespace Flowframes.Main
 {
-    class CreateVideo
+    class Export
     {
         
 
-        public static async Task Export(string path, string outFolder, I.OutMode mode, bool stepByStep)
+        public static async Task ExportFrames(string path, string outFolder, I.OutMode mode, bool stepByStep)
         {
             if(Config.GetInt(Config.Key.sceneChangeFillMode) == 1)
             {
@@ -31,7 +31,7 @@ namespace Flowframes.Main
             {
                 try
                 {
-                    await ExportFrames(path, stepByStep);
+                    await ExportImageSequence(path, stepByStep);
                 }
                 catch (Exception e)
                 {
@@ -70,7 +70,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task ExportFrames (string framesPath, bool stepByStep)
+        static async Task ExportImageSequence (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");
             string desiredFormat = Config.Get(Config.Key.imgSeqFormat).ToUpper();
@@ -78,10 +78,10 @@ namespace Flowframes.Main
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() > 0f && I.current.outFps.GetFloat() > maxFps.GetFloat();
-            bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
+            bool dontEncodeFullFpsSeq = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.current.interpFactor));
 
-            if (!dontEncodeFullFpsVid)
+            if (!dontEncodeFullFpsSeq)
             {
                 string outputFolderPath = Path.Combine(I.current.outPath, await IoUtils.GetCurrentExportFilename(false, false));
                 IoUtils.RenameExistingFolder(outputFolderPath);

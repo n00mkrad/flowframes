@@ -133,7 +133,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            await CreateVideo.Export(current.interpFolder, current.outPath, current.outMode, true);
+            await Export.ExportFrames(current.interpFolder, current.outPath, current.outMode, true);
         }
 
         public static async Task Reset()
