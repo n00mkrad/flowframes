@@ -1,7 +1,10 @@
-Flowframes 1.32.1 Changelog:
-- The last selected output mode is now remembered after closing Flowframes
+Flowframes 1.33.0 Changelog:
+- Added option to set quality when using image sequence output (fixes bad WEBP quality)
 - Added server selection option (Automatic/EU/US) to allow manual selection of server
-- Fixed GPU list not detecting physical GPUs when using Flowframes through RDP
+- The last selected output mode is now remembered after closing Flowframes
+- Fixed issues with GPU list
+- Minor UI improvements (uniform/updated PayPal, Discord icons)
+- Minor UX improvements (clarify that image sequences require manual FPS input)
 
 
 Flowframes 1.32.0 Changelog:
