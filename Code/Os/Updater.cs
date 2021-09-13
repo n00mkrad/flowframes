@@ -136,8 +136,15 @@ namespace Flowframes.Os
 
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
 
+            string gpus = OsUtils.GetGpus().Remove("NVIDIA ").Remove("AMD ").Remove("Intel ");
+
             if (installed.ToString() != "0.0.0")
-                Program.mainForm.Text = $"Flowframes {installed} [GPU: {OsUtils.GetGpus().Remove("NVIDIA ").Remove("AMD ").Remove("Intel ")}]";
+                Program.mainForm.Text = $"Flowframes {installed}";
+            else
+                Program.mainForm.Text = $"Flowframes [Unknown Version]";
+
+            if (!string.IsNullOrWhiteSpace(gpus.Trim()))
+                Program.mainForm.Text = $"{Program.mainForm.Text} [GPU: {gpus}]";
         }
 
         public static async Task UpdateModelList()
