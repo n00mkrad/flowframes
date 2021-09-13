@@ -206,11 +206,6 @@ namespace Flowframes.Media
             return ext;
         }
 
-        public static string GetAudioExt(string videoFile, int streamIndex = -1)
-        {
-            return GetAudioExt(FfmpegCommands.GetAudioCodec(videoFile, streamIndex));
-        }
-
         public static string GetAudioExt (string codec)
         {
             if (codec.StartsWith("pcm_"))
@@ -245,17 +240,6 @@ namespace Flowframes.Media
                 return $"-c:a aac -b:a {Config.GetInt(Config.Key.aacBitrate, 160)}k -aac_coder twoloop -ac 2";
         }
 
-        public static string GetAudioExtForContainer(string containerExt)
-        {
-            containerExt = containerExt.Remove(".");
-            string ext = "m4a";
-
-            if (containerExt == "webm" || containerExt == "mkv")
-                ext = "ogg";
-
-            return ext;
-        }
-
         public static string GetSubCodecForContainer(string containerExt)
         {
             containerExt = containerExt.Remove("."); 
@@ -263,7 +247,7 @@ namespace Flowframes.Media
             if (containerExt == "mp4") return "mov_text";
             if (containerExt == "webm") return "webvtt";
 
-            return "copy";    // Default: Copy SRT subs
+            return "copy";    // Default: Copy subs
         }
 
         public static bool ContainerSupportsSubs(string containerExt, bool showWarningIfNotSupported = true)
