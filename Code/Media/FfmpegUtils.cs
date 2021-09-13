@@ -237,16 +237,12 @@ namespace Flowframes.Media
 
         public static string GetAudioFallbackArgs (Interpolate.OutMode outMode)
         {
-            string codec = "aac";
-            string bitrate = $"{Config.GetInt(Config.Key.aacBitrate, 160)}";
+            bool opusMp4 = Config.GetBool(Config.Key.allowOpusInMp4);
 
-            if(outMode == Interpolate.OutMode.VidMkv || outMode == Interpolate.OutMode.VidWebm)
-            {
-                codec = "libopus";
-                bitrate = $"{Config.GetInt(Config.Key.opusBitrate, 128)}";
-            }
-
-            return $"-c:a {codec} -b:a {bitrate}k -ac 2";
+            if (outMode == Interpolate.OutMode.VidMkv || outMode == Interpolate.OutMode.VidWebm || (outMode == Interpolate.OutMode.VidMp4 && opusMp4))
+                return $"-c:a libopus -b:a {Config.GetInt(Config.Key.opusBitrate, 128)}k -aac_coder twoloop -ac 2";
+            else
+                return $"-c:a aac -b:a {Config.GetInt(Config.Key.aacBitrate, 160)}k -aac_coder twoloop -ac 2";
         }
 
         public static string GetAudioExtForContainer(string containerExt)

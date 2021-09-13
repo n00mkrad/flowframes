@@ -305,6 +305,7 @@ namespace Flowframes.IO
             allowConsecutiveSceneChanges,
             allowCustomInputRate,
             allowCustomInterpFactor,
+            allowOpusInMp4,
             allowSymlinkEncoding,
             allowSymlinkImport,
             alwaysWaitForAutoEnc,
