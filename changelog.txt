@@ -1,6 +1,10 @@
-Warning: A copyright troll is currently around.
-If your video gets taken down by "flowframesinterpolation@gmail.com",
-please report that account, it's fake!
+Flowframes 1.33.0 Changelog:
+- Added option to set quality when using image sequence output (fixes bad WEBP quality)
+- Added server selection option (Automatic/EU/US) to allow manual selection of server
+- The last selected output mode is now remembered after closing Flowframes
+- Fixed issues with GPU list
+- Minor UI improvements (uniform/updated PayPal, Discord icons)
+- Minor UX improvements (clarify that image sequences require manual FPS input)
 
 
 Flowframes 1.32.0 Changelog:
