@@ -397,7 +397,7 @@
     <Compile Include="Main\AiModels.cs" />
     <Compile Include="Main\AutoEncode.cs" />
     <Compile Include="Main\BatchProcessing.cs" />
-    <Compile Include="Main\CreateVideo.cs" />
+    <Compile Include="Main\Export.cs" />
     <Compile Include="Main\InterpolateSteps.cs" />
     <Compile Include="Main\InterpolateUtils.cs" />
     <Compile Include="Main\FrameOrder.cs" />

@@ -244,6 +244,7 @@ namespace Flowframes.Main
         {
             if (!BatchProcessing.busy)
                 MessageBox.Show(msg, title);
+
             Logger.Log("Message: " + msg, true);
         }
 
