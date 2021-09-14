@@ -9,14 +9,14 @@ namespace Flowframes.Media
 {
     class GetFrameCountCached
     {
-        public static Dictionary<PseudoUniqueFile, int> cache = new Dictionary<PseudoUniqueFile, int>();
+        public static Dictionary<QueryInfo, int> cache = new Dictionary<QueryInfo, int>();
 
         public static async Task<int> GetFrameCountAsync(string path)
         {
             Logger.Log($"Getting frame count ({path})", true);
 
             long filesize = IoUtils.GetFilesize(path);
-            PseudoUniqueFile hash = new PseudoUniqueFile(path, filesize);
+            QueryInfo hash = new QueryInfo(path, filesize);
 
             if (filesize > 0 && CacheContains(hash))
             {
@@ -41,18 +41,18 @@ namespace Flowframes.Media
             return frameCount;
         }
 
-        private static bool CacheContains (PseudoUniqueFile hash)
+        private static bool CacheContains(QueryInfo hash)
         {
-            foreach(KeyValuePair<PseudoUniqueFile, int> entry in cache)
+            foreach (KeyValuePair<QueryInfo, int> entry in cache)
                 if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
                     return true;
 
             return false;
         }
 
-        private static int GetFromCache(PseudoUniqueFile hash)
+        private static int GetFromCache(QueryInfo hash)
         {
-            foreach (KeyValuePair<PseudoUniqueFile, int> entry in cache)
+            foreach (KeyValuePair<QueryInfo, int> entry in cache)
                 if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
                     return entry.Value;
 

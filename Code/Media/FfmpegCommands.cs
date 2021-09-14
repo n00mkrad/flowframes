@@ -90,7 +90,7 @@ namespace Flowframes
 
             try
             {
-                string ffprobeOutput = await GetVideoInfoCached.GetFfprobeInfoAsync(inputFile, "r_frame_rate");
+                string ffprobeOutput = await GetVideoInfo.GetFfprobeInfoAsync(inputFile, GetVideoInfo.FfprobeMode.ShowStreams, "r_frame_rate");
                 string fpsStr = ffprobeOutput.SplitIntoLines().First();
                 string[] numbers = fpsStr.Split('=')[1].Split('/');
                 Logger.Log($"Fractional FPS from ffprobe: {numbers[0]}/{numbers[1]} = {((float)numbers[0].GetInt() / numbers[1].GetInt())}", true, false, "ffmpeg");
@@ -103,7 +103,7 @@ namespace Flowframes
 
             try
             {
-                string ffmpegOutput = await GetVideoInfoCached.GetFfmpegInfoAsync(inputFile);
+                string ffmpegOutput = await GetVideoInfo.GetFfmpegInfoAsync(inputFile);
                 string[] entries = ffmpegOutput.Split(',');
 
                 foreach (string entry in entries)
@@ -222,7 +222,7 @@ namespace Flowframes
 
         public static async Task<VidExtraData> GetVidExtraInfo(string inputFile)
         {
-            string ffprobeOutput = await GetVideoInfoCached.GetFfprobeInfoAsync(inputFile);
+            string ffprobeOutput = await GetVideoInfo.GetFfprobeInfoAsync(inputFile, GetVideoInfo.FfprobeMode.ShowBoth);
             VidExtraData data = new VidExtraData(ffprobeOutput);
             return data;
         }

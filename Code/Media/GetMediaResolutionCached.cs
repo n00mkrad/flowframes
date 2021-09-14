@@ -9,14 +9,14 @@ namespace Flowframes.Media
 {
     class GetMediaResolutionCached
     {
-        public static Dictionary<PseudoUniqueFile, Size> cache = new Dictionary<PseudoUniqueFile, Size>();
+        public static Dictionary<QueryInfo, Size> cache = new Dictionary<QueryInfo, Size>();
 
         public static async Task<Size> GetSizeAsync(string path)
         {
             Logger.Log($"Getting media resolution ({path})", true);
 
             long filesize = IoUtils.GetFilesize(path);
-            PseudoUniqueFile hash = new PseudoUniqueFile(path, filesize);
+            QueryInfo hash = new QueryInfo(path, filesize);
 
             if (filesize > 0 && CacheContains(hash))
             {
@@ -37,18 +37,18 @@ namespace Flowframes.Media
             return size;
         }
 
-        private static bool CacheContains(PseudoUniqueFile hash)
+        private static bool CacheContains(QueryInfo hash)
         {
-            foreach (KeyValuePair<PseudoUniqueFile, Size> entry in cache)
+            foreach (KeyValuePair<QueryInfo, Size> entry in cache)
                 if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
                     return true;
 
             return false;
         }
 
-        private static Size GetFromCache(PseudoUniqueFile hash)
+        private static Size GetFromCache(QueryInfo hash)
         {
-            foreach (KeyValuePair<PseudoUniqueFile, Size> entry in cache)
+            foreach (KeyValuePair<QueryInfo, Size> entry in cache)
                 if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
                     return entry.Value;
 

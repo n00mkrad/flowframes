@@ -342,7 +342,7 @@
     <Compile Include="Data\InterpSettings.cs" />
     <Compile Include="Data\Implementations.cs" />
     <Compile Include="Data\Padding.cs" />
-    <Compile Include="Data\PseudoUniqueFile.cs" />
+    <Compile Include="Data\QueryInfo.cs" />
     <Compile Include="Data\ResumeState.cs" />
     <Compile Include="Data\SubtitleTrack.cs" />
     <Compile Include="Extensions\ProcessExtensions.cs" />
@@ -411,7 +411,7 @@
     <Compile Include="Media\FfmpegUtils.cs" />
     <Compile Include="Media\GetFrameCountCached.cs" />
     <Compile Include="Media\GetMediaResolutionCached.cs" />
-    <Compile Include="Media\GetVideoInfoCached.cs" />
+    <Compile Include="Media\GetVideoInfo.cs" />
     <Compile Include="MiscUtils\BackgroundTaskManager.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
