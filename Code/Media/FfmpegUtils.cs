@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Flowframes.Media
 {
@@ -230,14 +231,17 @@ namespace Flowframes.Media
             return "unsupported";
         }
 
-        public static string GetAudioFallbackArgs (Interpolate.OutMode outMode)
+        public static async Task<string> GetAudioFallbackArgs (string videoPath, Interpolate.OutMode outMode)
         {
             bool opusMp4 = Config.GetBool(Config.Key.allowOpusInMp4);
+            int opusBr = Config.GetInt(Config.Key.opusBitrate, 128);
+            int aacBr = Config.GetInt(Config.Key.aacBitrate, 160);
+            int ac = (await GetVideoInfo.GetFfprobeInfoAsync(videoPath, GetVideoInfo.FfprobeMode.ShowStreams, "channels")).GetInt();
 
             if (outMode == Interpolate.OutMode.VidMkv || outMode == Interpolate.OutMode.VidWebm || (outMode == Interpolate.OutMode.VidMp4 && opusMp4))
-                return $"-c:a libopus -b:a {Config.GetInt(Config.Key.opusBitrate, 128)}k -aac_coder twoloop -ac 2";
+                return $"-c:a libopus -b:a {(ac > 4 ? $"{opusBr * 2}" : $"{opusBr}")}k -ac {(ac > 0 ? $"{ac}" : "2")}"; // Double bitrate if 5ch or more, ignore ac if <= 0
             else
-                return $"-c:a aac -b:a {Config.GetInt(Config.Key.aacBitrate, 160)}k -aac_coder twoloop -ac 2";
+                return $"-c:a aac -b:a {(ac > 4 ? $"{aacBr * 2}" : $"{aacBr}")}k -aac_coder twoloop -ac {(ac > 0 ? $"{ac}" : "2")}";
         }
 
         public static string GetSubCodecForContainer(string containerExt)

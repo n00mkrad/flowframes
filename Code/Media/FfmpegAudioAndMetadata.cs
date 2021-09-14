@@ -31,7 +31,7 @@ namespace Flowframes.Media
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
 
             bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(inputVideo));
-            string audioArgs = audioCompat ? "" : Utils.GetAudioFallbackArgs(I.current.outMode);
+            string audioArgs = audioCompat ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.current.outMode);
 
             if (!audioCompat)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
