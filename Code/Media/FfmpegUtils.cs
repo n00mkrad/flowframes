@@ -171,8 +171,8 @@ namespace Flowframes.Media
             bool supported = false;
             string alias = GetAudioExt(format);
 
-            string[] formatsMp4 = new string[] { "m4a", "ac3", "dts" };
-            string[] formatsMkv = new string[] { "m4a", "ac3", "dts", "ogg", "mp2", "mp3", "wav", "wma" };
+            string[] formatsMp4 = new string[] { "m4a", "mp3", "ac3", "dts" };
+            string[] formatsMkv = new string[] { "m4a", "mp3", "ac3", "dts", "ogg", "mp2", "wav", "wma" };
             string[] formatsWebm = new string[] { "ogg" };
             string[] formatsProres = new string[] { "m4a", "ac3", "dts", "wav" };
             string[] formatsAvi = new string[] { "m4a", "ac3", "dts" };
