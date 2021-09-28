@@ -33,7 +33,7 @@ namespace Flowframes.Main
             current.RefreshAlpha();
             current.stepByStep = true;
 
-            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.outFps, current.interpFactor, current.outMode)) return;     // General input checks
+            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.inFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!InterpolateUtils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
 
             if (step.Contains("Extract Frames"))

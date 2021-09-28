@@ -94,13 +94,13 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, Fraction fpsOut, float factor, I.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, Fraction fpsIn, float factor, I.OutMode outMode)
         {
             try
             {
                 bool passes = true;
-
                 bool isFile = !IoUtils.IsPathDirectory(inDir);
+                float fpsOut = fpsIn.GetFloat() * factor;
 
                 if ((passes && isFile && !IoUtils.IsFileValid(inDir)) || (!isFile && !IoUtils.IsDirValid(inDir)))
                 {
@@ -114,18 +114,18 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                if (passes && fpsOut.GetFloat() < 1f || fpsOut.GetFloat() > 1000f)
+                if (passes && fpsOut < 1f || fpsOut > 1000f)
                 {
                     string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
-                    ShowMessage($"Invalid output frame rate ({fpsOut.GetFloat()}).\nMust be 1-1000.{imgSeqNote}");
+                    ShowMessage($"Invalid output frame rate ({fpsOut}).\nMust be 1-1000.{imgSeqNote}");
                     passes = false;
                 }
 
                 string fpsLimitValue = Config.Get(Config.Key.maxFps);
                 float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(Config.Get(Config.Key.maxFps)).GetFloat() : fpsLimitValue.GetFloat());
 
-                if (outMode == I.OutMode.VidGif && fpsOut.GetFloat() > 50 && !(fpsLimit > 0 && fpsLimit <= 50))
-                    Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut.GetFloat()} as the format doesn't support frame rates that high.");
+                if (outMode == I.OutMode.VidGif && fpsOut > 50 && !(fpsLimit > 0 && fpsLimit <= 50))
+                    Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut} as the format doesn't support frame rates that high.");
 
                 if (!passes)
                     I.Cancel("Invalid settings detected.", true);
