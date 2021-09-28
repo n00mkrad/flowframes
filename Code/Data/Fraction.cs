@@ -5,11 +5,11 @@ namespace Flowframes.Data
 {
     public struct Fraction
     {
-        public int Numerator;
-        public int Denominator;
+        public long Numerator;
+        public long Denominator;
         public static Fraction Zero = new Fraction(0, 0);
 
-        public Fraction(int numerator, int denominator)
+        public Fraction(long numerator, long denominator)
         {
             this.Numerator = numerator;
             this.Denominator = denominator;
@@ -23,13 +23,13 @@ namespace Flowframes.Data
             }
         }
 
-        public Fraction(int numerator, Fraction denominator)
+        public Fraction(long numerator, Fraction denominator)
         {
             //divide the numerator by the denominator fraction
             this = new Fraction(numerator, 1) / denominator;
         }
 
-        public Fraction(Fraction numerator, int denominator)
+        public Fraction(Fraction numerator, long denominator)
         {
             //multiply the numerator fraction by 1 over the denominator
             this = numerator * new Fraction(1, denominator);
@@ -74,13 +74,13 @@ namespace Flowframes.Data
             Logger.Log($"Fraction from String: Fraction(\"{text}\") => {Numerator}/{Denominator}", true);
         }
 
-        private static int getGCD(int a, int b)
+        private static long GetGreatestCommonDenominator(long a, long b)
         {
             //Drop negative signs
             a = Math.Abs(a);
             b = Math.Abs(b);
 
-            //Return the greatest common denominator between two integers
+            //Return the greatest common denominator between two longegers
             while (a != 0 && b != 0)
             {
                 if (a > b)
@@ -95,14 +95,14 @@ namespace Flowframes.Data
                 return a;
         }
 
-        private static int getLCD(int a, int b)
+        private static long GetLeastCommonDenominator(long a, long b)
         {
-            //Return the Least Common Denominator between two integers
-            return (a * b) / getGCD(a, b);
+            //Return the Least Common Denominator between two longegers
+            return (a * b) / GetGreatestCommonDenominator(a, b);
         }
 
 
-        public Fraction ToDenominator(int targetDenominator)
+        public Fraction ToDenominator(long targetDenominator)
         {
             //Multiply the fraction by a factor to make the denominator
             //match the target denominator
@@ -118,7 +118,7 @@ namespace Flowframes.Data
 
             if (this.Denominator != targetDenominator)
             {
-                int factor = targetDenominator / this.Denominator;
+                long factor = targetDenominator / this.Denominator;
                 modifiedFraction.Denominator = targetDenominator;
                 modifiedFraction.Numerator *= factor;
             }
@@ -135,8 +135,8 @@ namespace Flowframes.Data
             {
                 //While the numerator and denominator share a greatest common denominator,
                 //keep dividing both by it
-                int gcd = 0;
-                while (Math.Abs(gcd = getGCD(modifiedFraction.Numerator, modifiedFraction.Denominator)) != 1)
+                long gcd = 0;
+                while (Math.Abs(gcd = GetGreatestCommonDenominator(modifiedFraction.Numerator, modifiedFraction.Denominator)) != 1)
                 {
                     modifiedFraction.Numerator /= gcd;
                     modifiedFraction.Denominator /= gcd;
@@ -173,7 +173,7 @@ namespace Flowframes.Data
                 return fraction1;
 
             //Get Least Common Denominator
-            int lcd = getLCD(fraction1.Denominator, fraction2.Denominator);
+            long lcd = GetLeastCommonDenominator(fraction1.Denominator, fraction2.Denominator);
 
             //Transform the fractions
             fraction1 = fraction1.ToDenominator(lcd);
@@ -186,7 +186,7 @@ namespace Flowframes.Data
         public static Fraction operator -(Fraction fraction1, Fraction fraction2)
         {
             //Get Least Common Denominator
-            int lcd = getLCD(fraction1.Denominator, fraction2.Denominator);
+            long lcd = GetLeastCommonDenominator(fraction1.Denominator, fraction2.Denominator);
 
             //Transform the fractions
             fraction1 = fraction1.ToDenominator(lcd);
@@ -196,26 +196,30 @@ namespace Flowframes.Data
             return new Fraction(fraction1.Numerator - fraction2.Numerator, lcd).GetReduced();
         }
 
-        public static Fraction operator *(Fraction fract, int multi)
+        public static Fraction operator *(Fraction fract, long multi)
         {
-            int numerator = fract.Numerator * multi;
-            int denomenator = fract.Denominator;
+            Logger.Log($"=> {fract} * {multi}");
+
+            long numerator = (long)fract.Numerator * (long)multi;
+            Logger.Log($"=> numerator = {numerator}");
+
+            long denomenator = fract.Denominator;
 
             return new Fraction(numerator, denomenator).GetReduced();
         }
 
         public static Fraction operator *(Fraction fract, float multi)
         {
-            int numerator = (fract.Numerator * multi).RoundToInt();
-            int denomenator = fract.Denominator;
+            long numerator = (fract.Numerator * multi).RoundToInt();
+            long denomenator = fract.Denominator;
 
             return new Fraction(numerator, denomenator).GetReduced();
         }
 
         public static Fraction operator *(Fraction fraction1, Fraction fraction2)
         {
-            int numerator = fraction1.Numerator * fraction2.Numerator;
-            int denomenator = fraction1.Denominator * fraction2.Denominator;
+            long numerator = fraction1.Numerator * fraction2.Numerator;
+            long denomenator = fraction1.Denominator * fraction2.Denominator;
 
             return new Fraction(numerator, denomenator).GetReduced();
         }
