@@ -1,6 +1,7 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +18,7 @@ namespace Flowframes.Main
         static FileInfo[] frameFilesWithoutLast;
         static List<string> sceneFrames = new List<string>();
         static Dictionary<int, string> frameFileContents = new Dictionary<int, string>();
+        static List<string> inputFilenames = new List<string>();
         static int lastOutFileCount;
 
         public static async Task CreateFrameOrderFile(string framesPath, bool loopEnabled, float times)
@@ -80,6 +82,7 @@ namespace Flowframes.Main
             if (Directory.Exists(scnFramesPath))
                 sceneFrames = Directory.GetFiles(scnFramesPath).Select(file => GetNameNoExt(file)).ToList();
 
+            inputFilenames.Clear();
             bool debug = Config.GetBool("frameOrderDebug", false);
             List<Task> tasks = new List<Task>();
             int linesPerTask = 400 / (int)interpFactor;
@@ -100,12 +103,19 @@ namespace Flowframes.Main
             int lastFrameTimes = Config.GetBool(Config.Key.fixOutputDuration) ? (int)interpFactor : 1;
 
             for(int i = 0; i < lastFrameTimes; i++)
+            {
                 fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}{ext}'";     // Last frame (source)
-
+                inputFilenames.Add(frameFiles.Last().Name);
+            }
+                
             if (loop)
+            {
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
+                inputFilenames.Remove(inputFilenames.Last());
+            }
 
             File.WriteAllText(framesFile, fileContent);
+            File.WriteAllText(framesFile + ".inputframes.json", JsonConvert.SerializeObject(inputFilenames, Formatting.Indented));
         }
 
         static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool loopEnabled, bool sceneDetection, bool debug)
@@ -163,6 +173,8 @@ namespace Flowframes.Main
                         totalFileCount++;
                         fileContent = WriteFrameWithDupes(dupesAmount, fileContent, totalFileCount, ext, debug, $"[In: {frameName}] [{((frm == 0) ? " Source " : $"Interp {frm}")}]");
                     }
+
+                    inputFilenames.Add(frameFilesWithoutLast[i].Name);
                 }
             }
 
@@ -180,6 +192,9 @@ namespace Flowframes.Main
             return fileContent;
         }
 
-        static string GetNameNoExt (string path) { return Path.GetFileNameWithoutExtension(path); }
+        static string GetNameNoExt (string path)
+        {
+            return Path.GetFileNameWithoutExtension(path);
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace Flowframes.Main
 
         public static async Task MainLoop(string interpFramesPath)
         {
+            AutoEncodeResume.Reset();
             debug = Config.GetBool("autoEncDebug", false);
 
             try
@@ -142,11 +143,10 @@ namespace Flowframes.Main
                             if (Interpolate.canceled) return;
 
                             encodedFrameLines.AddRange(frameLinesToEncode);
-
                             Logger.Log("[AE] Done Encoding Chunk #" + chunkNo, true, false, "ffmpeg");
                             lastEncodedFrameNum = (frameLinesToEncode.Last() + 1);
-
                             chunkNo++;
+                            AutoEncodeResume.Save();
 
                             if(!imgSeq && Config.GetInt(Config.Key.autoEncBackupMode) > 0)
                             {

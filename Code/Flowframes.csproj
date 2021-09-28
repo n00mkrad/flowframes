@@ -396,6 +396,7 @@
     <Compile Include="Magick\SceneDetect.cs" />
     <Compile Include="Main\AiModels.cs" />
     <Compile Include="Main\AutoEncode.cs" />
+    <Compile Include="Main\AutoEncodeResume.cs" />
     <Compile Include="Main\BatchProcessing.cs" />
     <Compile Include="Main\Export.cs" />
     <Compile Include="Main\InterpolateSteps.cs" />

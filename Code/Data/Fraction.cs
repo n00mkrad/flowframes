@@ -198,11 +198,7 @@ namespace Flowframes.Data
 
         public static Fraction operator *(Fraction fract, long multi)
         {
-            Logger.Log($"=> {fract} * {multi}");
-
             long numerator = (long)fract.Numerator * (long)multi;
-            Logger.Log($"=> numerator = {numerator}");
-
             long denomenator = fract.Denominator;
 
             return new Fraction(numerator, denomenator).GetReduced();

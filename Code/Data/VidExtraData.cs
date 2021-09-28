@@ -61,7 +61,7 @@ namespace Flowframes.Data
 
             if (!validColorSpaces.Contains(colorSpace.Trim()))
             {
-                Logger.Log($"Warning: Color Space '{colorSpace.Trim()}' not valid.", true, false, "ffmpeg");
+                Logger.Log($"Warning: Ignoring invalid color space '{colorSpace.Trim()}'.", true, false, "ffmpeg");
                 colorSpace = "";
             }
 
