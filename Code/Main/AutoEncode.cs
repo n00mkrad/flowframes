@@ -153,7 +153,7 @@ namespace Flowframes.Main
                             if(!imgSeq && Config.GetInt(Config.Key.autoEncBackupMode) > 0)
                             {
                                 if (aiRunning && (currentMuxTask == null || (currentMuxTask != null && currentMuxTask.IsCompleted)))
-                                    currentMuxTask = Task.Run(() => Export.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
+                                    currentMuxTask = Task.Run(() => Export.ChunksToVideo(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
                                 else
                                     Logger.Log($"[AE] Skipping backup because {(!aiRunning ? "this is the final chunk" : "previous mux task has not finished yet")}!", true, false, "ffmpeg");
                             }
@@ -178,7 +178,7 @@ namespace Flowframes.Main
                 if (imgSeq)
                     return;
 
-                await Export.ChunksToVideos(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath);
+                await Export.ChunksToVideo(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath);
             }
             catch (Exception e)
             {

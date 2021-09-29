@@ -94,7 +94,7 @@ namespace Flowframes.Main
 
                 string videoChunksFolder = Path.Combine(I.current.tempFolder, Paths.chunksDir);
 
-                FileInfo[] invalidChunks = IoUtils.GetFileInfosSorted(videoChunksFolder, false, "????.*").Skip(encodedChunks).ToArray();
+                FileInfo[] invalidChunks = IoUtils.GetFileInfosSorted(videoChunksFolder, true, "????.*").Skip(encodedChunks).ToArray();
 
                 foreach (FileInfo chunk in invalidChunks)
                     chunk.Delete();
@@ -108,7 +108,7 @@ namespace Flowframes.Main
                     if(IoUtils.GetAmountOfFiles(videoChunksFolder, true, "*.*") > 0)
                     {
                         Logger.Log($"No more frames left to interpolate - Merging existing video chunks instead.");
-                        await Export.ChunksToVideos(I.current.tempFolder, videoChunksFolder, I.current.outPath);
+                        await Export.ChunksToVideo(I.current.tempFolder, videoChunksFolder, I.current.outPath);
                         await I.Done();
                     }
                     else

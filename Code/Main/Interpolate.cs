@@ -65,7 +65,7 @@ namespace Flowframes
             if(!currentlyUsingAutoEnc)
                 await Export.ExportFrames(current.interpFolder, current.outPath, current.outMode, false);
 
-            if (Config.GetBool(Config.Key.keepTempFolder))
+            if (!AutoEncodeResume.resumeNextRun && Config.GetBool(Config.Key.keepTempFolder))
                 await Task.Run(async () => { await FrameRename.Unrename(); });
 
             await Done();
@@ -74,6 +74,7 @@ namespace Flowframes
         public static async Task Done ()
         {
             await Cleanup();
+            Logger.Log($"after cleanup in done", true);
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
