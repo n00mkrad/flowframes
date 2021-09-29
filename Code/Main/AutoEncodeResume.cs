@@ -92,14 +92,19 @@ namespace Flowframes.Main
                     IoUtils.TryDeleteIfExists(inputFrameFullPath);
                 }
 
+                string videoChunksFolder = Path.Combine(I.current.tempFolder, Paths.chunksDir);
+
+                FileInfo[] invalidChunks = IoUtils.GetFileInfosSorted(videoChunksFolder, false, "????.*").Skip(encodedChunks).ToArray();
+
+                foreach (FileInfo chunk in invalidChunks)
+                    chunk.Delete();
+
                 int inputFramesLeft = IoUtils.GetAmountOfFiles(Path.Combine(I.current.tempFolder, Paths.framesDir), false);
 
                 Logger.Log($"Deleted already processed input frames - {inputFramesLeft} left to interpolate");
 
                 if(inputFramesLeft < 2)
                 {
-                    string videoChunksFolder = Path.Combine(I.current.tempFolder, Paths.chunksDir);
-
                     if(IoUtils.GetAmountOfFiles(videoChunksFolder, true, "*.*") > 0)
                     {
                         Logger.Log($"No more frames left to interpolate - Merging existing video chunks instead.");
