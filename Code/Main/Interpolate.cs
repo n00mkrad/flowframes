@@ -38,7 +38,7 @@ namespace Flowframes
             Program.mainForm.SetWorking(true);
             if (!Utils.InputIsValid(current.inPath, current.outPath, current.inFps, current.interpFactor, current.outMode)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai, current.model)) return;            // Check if selected AI pkg is installed
-            if (!ResumeUtils.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
+            if (!AutoEncodeResume.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
             if (!(await Utils.CheckEncoderValid())) return;           // Check NVENC compat
             Utils.ShowWarnings(current.interpFactor, current.ai);
@@ -46,7 +46,7 @@ namespace Flowframes
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
 
-            if (!ResumeUtils.resumeNextRun)
+            if (!AutoEncodeResume.resumeNextRun)
             {
                 await GetFrames();
                 if (canceled) return;
@@ -55,7 +55,8 @@ namespace Flowframes
             }
 
             if (canceled) return;
-            await ResumeUtils.PrepareResumedRun();
+            bool skip = await AutoEncodeResume.PrepareResumedRun();
+            if (skip || canceled) return;
             //Task.Run(() => Utils.DeleteInterpolatedInputFrames());
             await RunAi(current.interpFolder, current.ai);
             if (canceled) return;
@@ -67,14 +68,19 @@ namespace Flowframes
             if (Config.GetBool(Config.Key.keepTempFolder))
                 await Task.Run(async () => { await FrameRename.Unrename(); });
 
+            await Done();
+        }
+
+        public static async Task Done ()
+        {
             await Cleanup();
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
 
-            if(!BatchProcessing.busy)
+            if (!BatchProcessing.busy)
                 OsUtils.ShowNotificationIfInBackground("Flowframes", $"Finished interpolation after {FormatUtils.Time(sw.Elapsed)}.");
-            
+
             Program.mainForm.InterpolationDone();
         }
 

@@ -95,7 +95,7 @@ namespace Flowframes
 
         void HandleArgs()
         {
-            foreach(string arg in Program.args)
+            foreach (string arg in Program.args)
             {
                 if (arg.StartsWith("out="))
                     outputTbox.Text = arg.Split('=').Last().Trim();
@@ -123,7 +123,7 @@ namespace Flowframes
 
         }
 
-        void UnlockInterpFactorIfEnabled ()
+        void UnlockInterpFactorIfEnabled()
         {
             if (!Config.GetBool(Config.Key.allowCustomInterpFactor))
                 return;
@@ -131,7 +131,7 @@ namespace Flowframes
             interpFactorCombox.DropDownStyle = ComboBoxStyle.DropDown;
         }
 
-        void RemovePreviewIfDisabled ()
+        void RemovePreviewIfDisabled()
         {
             if (!Config.GetBool(Config.Key.disablePreview))
                 return;
@@ -144,7 +144,7 @@ namespace Flowframes
         }
 
         public HTTabControl GetMainTabControl() { return mainTabControl; }
-        public TextBox GetInputFpsTextbox () { return fpsInTbox; }
+        public TextBox GetInputFpsTextbox() { return fpsInTbox; }
         public Button GetPauseBtn() { return pauseBtn; }
 
         public bool IsInFocus() { return (ActiveForm == this); }
@@ -164,7 +164,7 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, 
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps,
                 interpFactorCombox.GetInt(), outSpeedCombox.GetInt().Clamp(1, 64), GetOutMode(), GetModel(GetAi()));
         }
 
@@ -196,7 +196,8 @@ namespace Flowframes
             inputTbox.Text = entry.inPath;
             outputTbox.Text = entry.outPath;
             interpFactorCombox.Text = entry.interpFactor.ToString();
-            aiCombox.SelectedIndex = Implementations.networks.IndexOf(entry.ai);
+            //aiCombox.SelectedIndex = Implementations.networks.IndexOf(entry.ai);
+            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.aiName == entry.ai.aiName).FirstOrDefault());
             SetOutMode(entry.outMode);
         }
 
@@ -206,7 +207,7 @@ namespace Flowframes
             statusLabel.Text = str;
         }
 
-        public string GetStatus ()
+        public string GetStatus()
         {
             return statusLabel.Text;
         }
@@ -226,7 +227,7 @@ namespace Flowframes
         public long currInDuration;
         public long currInDurationCut;
 
-        public void UpdateInputInfo ()
+        public void UpdateInputInfo()
         {
             string str = $"Size: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
             str += $"Rate: {(currInFpsDetected.GetFloat() > 0f ? $"{currInFpsDetected} ({currInFpsDetected.GetFloat()})" : "Unknown")} - ";
@@ -235,7 +236,7 @@ namespace Flowframes
             inputInfo.Text = str;
         }
 
-        public void InterpolationDone ()
+        public void InterpolationDone()
         {
             SetStatus("Done interpolating!");
 
@@ -243,7 +244,7 @@ namespace Flowframes
                 CompletionAction();
         }
 
-        public void CompletionAction ()
+        public void CompletionAction()
         {
             if (Program.args.Contains("quit-when-done"))
                 Application.Exit();
@@ -261,7 +262,7 @@ namespace Flowframes
                 new TimeoutForm(completionAction.Text, OsUtils.Shutdown).ShowDialog();
         }
 
-        public void ResetInputInfo ()
+        public void ResetInputInfo()
         {
             currInRes = new Size();
             currInFpsDetected = new Fraction();
@@ -328,7 +329,7 @@ namespace Flowframes
             {
                 return AiModels.GetModels(currentAi).models[aiModel.SelectedIndex];
             }
-            catch 
+            catch
             {
                 return null;
             }
@@ -350,7 +351,7 @@ namespace Flowframes
         {
             int targetIndex = 0;
 
-            for(int i = 0; i < outModeCombox.Items.Count; i++)
+            for (int i = 0; i < outModeCombox.Items.Count; i++)
             {
                 string currentItem = outModeCombox.Items[i].ToString().ToLower();
                 if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) targetIndex = i;
@@ -422,7 +423,7 @@ namespace Flowframes
             string aiName = GetAi().aiName.Replace("_", "-");
         }
 
-        public void ValidateFactor ()
+        public void ValidateFactor()
         {
             interpFactorCombox.Text = $"x{MainUiFunctions.ValidateInterpFactor(interpFactorCombox.GetInt())}";
         }
@@ -460,14 +461,14 @@ namespace Flowframes
                 interpFactorCombox.Items.Add($"x{factor}");
 
             interpFactorCombox.SelectedIndex = 0;
-            
-            if(initialized)
+
+            if (initialized)
                 ConfigParser.SaveComboxIndex(aiCombox);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
         }
 
-        public void UpdateAiModelCombox ()
+        public void UpdateAiModelCombox()
         {
             aiModel = UiUtils.LoadAiModelsIntoGui(aiModel, GetAi());
         }
@@ -509,7 +510,7 @@ namespace Flowframes
 
             bool start = Program.initialRun && Program.args.Contains("start");
 
-                if (files.Length > 1)
+            if (files.Length > 1)
             {
                 queueBtn_Click(null, null);
                 if (BatchProcessing.currentBatchForm != null)
@@ -521,11 +522,11 @@ namespace Flowframes
                 Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]), true);
                 inputTbox.Text = files[0];
 
-                bool resume = (IoUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true) > 0);
-                ResumeUtils.resumeNextRun = resume;
+                bool resume = (IoUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true, "*.json") > 0);
+                AutoEncodeResume.resumeNextRun = resume;
 
                 if (resume)
-                    ResumeUtils.LoadTempFolder(files[0]);
+                    AutoEncodeResume.LoadTempFolder(files[0]);
 
                 trimCombox.SelectedIndex = 0;
 
@@ -536,7 +537,7 @@ namespace Flowframes
         private void cancelBtn_Click(object sender, EventArgs e)
         {
             DialogResult dialog = MessageBox.Show($"Are you sure you want to cancel the interpolation?", "Are you sure?", MessageBoxButtons.YesNo);
-            
+
             if (dialog == DialogResult.Yes)
             {
                 SetTab("interpolation");
@@ -601,7 +602,7 @@ namespace Flowframes
 
         public void UpdateStepByStepControls()
         {
-            if(stepSelector.SelectedIndex < 0)
+            if (stepSelector.SelectedIndex < 0)
                 stepSelector.SelectedIndex = 0;
 
             bool stepByStep = Config.GetInt(Config.Key.processingMode) == 1;
@@ -644,7 +645,7 @@ namespace Flowframes
 
         #region Quick Settings
 
-        public void SaveQuickSettings (object sender, EventArgs e)
+        public void SaveQuickSettings(object sender, EventArgs e)
         {
             if (!quickSettingsInitialized) return;
 
@@ -661,7 +662,7 @@ namespace Flowframes
             ConfigParser.SaveGuiElement(maxFps);
         }
 
-        public void LoadQuickSettings (object sender = null, EventArgs e = null)
+        public void LoadQuickSettings(object sender = null, EventArgs e = null)
         {
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(dedupMode);

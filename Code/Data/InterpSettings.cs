@@ -40,6 +40,8 @@ namespace Flowframes
         public string framesExt;
         public string interpExt;
 
+        public InterpSettings() { }
+
         public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, int interpFactorArg, float itsScale, Interpolate.OutMode outModeArg, ModelCollection.ModelInfo modelArg)
         {
             inPath = inPathArg;

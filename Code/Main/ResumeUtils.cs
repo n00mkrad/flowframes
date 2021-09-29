@@ -16,7 +16,7 @@ namespace Flowframes.Main
 
     class ResumeUtils
     {
-        public static bool resumeNextRun;
+        // public static bool resumeNextRun;
 
         public static float timeBetweenSaves = 10;
         public static int minFrames = 100;
@@ -72,36 +72,36 @@ namespace Flowframes.Main
             File.WriteAllText(filepath, I.current.Serialize());
         }
 
-        public static void LoadTempFolder (string tempFolderPath)
-        {
-            string resumeFolderPath = Path.Combine(tempFolderPath, Paths.resumeDir);
-            string interpSettingsPath = Path.Combine(resumeFolderPath, interpSettingsFilename);
-            InterpSettings interpSettings = new InterpSettings(File.ReadAllText(interpSettingsPath));
-            Program.mainForm.LoadBatchEntry(interpSettings);
-        }
+        // public static void LoadTempFolder (string tempFolderPath)
+        // {
+        //     string resumeFolderPath = Path.Combine(tempFolderPath, Paths.resumeDir);
+        //     string interpSettingsPath = Path.Combine(resumeFolderPath, interpSettingsFilename);
+        //     InterpSettings interpSettings = new InterpSettings(File.ReadAllText(interpSettingsPath));
+        //     Program.mainForm.LoadBatchEntry(interpSettings);
+        // }
 
-        public static async Task PrepareResumedRun ()
-        {
-            if (!resumeNextRun) return;
-
-            string stateFilepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, resumeFilename);
-            ResumeState state = new ResumeState(File.ReadAllText(stateFilepath));
-
-            string fileMapFilepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
-            List<string> inputFrameLines = File.ReadAllLines(fileMapFilepath).Where(l => l.Trim().Length > 3).ToList();
-            List<string> inputFrames = inputFrameLines.Select(l => Path.Combine(I.current.framesFolder, l.Split('|')[1])).ToList();
-
-            for (int i = 0; i < state.interpolatedInputFrames; i++)
-            {
-                IoUtils.TryDeleteIfExists(inputFrames[i]);
-                if (i % 1000 == 0) await Task.Delay(1);
-            }
-
-            Directory.Move(I.current.interpFolder, I.current.interpFolder + Paths.prevSuffix);  // Move existing interp frames
-            Directory.CreateDirectory(I.current.interpFolder);  // Re-create empty interp folder
-
-            LoadFilenameMap();
-        }
+        // public static async Task PrepareResumedRun ()
+        // {
+        //     if (!resumeNextRun) return;
+        // 
+        //     string stateFilepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, resumeFilename);
+        //     ResumeState state = new ResumeState(File.ReadAllText(stateFilepath));
+        // 
+        //     string fileMapFilepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
+        //     List<string> inputFrameLines = File.ReadAllLines(fileMapFilepath).Where(l => l.Trim().Length > 3).ToList();
+        //     List<string> inputFrames = inputFrameLines.Select(l => Path.Combine(I.current.framesFolder, l.Split('|')[1])).ToList();
+        // 
+        //     for (int i = 0; i < state.interpolatedInputFrames; i++)
+        //     {
+        //         IoUtils.TryDeleteIfExists(inputFrames[i]);
+        //         if (i % 1000 == 0) await Task.Delay(1);
+        //     }
+        // 
+        //     Directory.Move(I.current.interpFolder, I.current.interpFolder + Paths.prevSuffix);  // Move existing interp frames
+        //     Directory.CreateDirectory(I.current.interpFolder);  // Re-create empty interp folder
+        // 
+        //     LoadFilenameMap();
+        // }
 
         static void LoadFilenameMap()
         {

@@ -45,7 +45,9 @@ namespace Flowframes.Main
 
         public static async Task MainLoop(string interpFramesPath)
         {
-            AutoEncodeResume.Reset();
+            if(!AutoEncodeResume.resumeNextRun)
+                AutoEncodeResume.Reset();
+
             debug = Config.GetBool("autoEncDebug", false);
 
             try
@@ -63,7 +65,7 @@ namespace Flowframes.Main
                 unencodedFrameLines.Clear();
 
                 Logger.Log($"[AE] Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
-                int chunkNo = 1;
+                int chunkNo = AutoEncodeResume.encodedChunks + 1;
                 string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.current.interpFactor));
                 interpFramesLines = IoUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
 
