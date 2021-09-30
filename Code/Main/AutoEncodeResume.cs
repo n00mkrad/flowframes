@@ -54,12 +54,10 @@ namespace Flowframes.Main
         {
             try
             {
-                Logger.Log($"Resume: Loading temp folder");
                 string resumeFolderPath = Path.Combine(tempFolderPath, Paths.resumeDir);
                 string settingsJsonPath = Path.Combine(resumeFolderPath, interpSettingsFilename);
                 InterpSettings interpSettings = JsonConvert.DeserializeObject<InterpSettings>(File.ReadAllText(settingsJsonPath));
                 Program.mainForm.LoadBatchEntry(interpSettings);
-                Logger.Log($"Resume: Loaded temp folder");
             }
             catch(Exception e)
             {
@@ -84,8 +82,6 @@ namespace Flowframes.Main
                 List<string> processedInputFrames = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(inFramesJsonPath));
                 int uniqueInputFrames = processedInputFrames.Distinct().Count();
 
-                Logger.Log($"Preparing resumed run - Already encoded {encodedFrames} frames in {encodedChunks} chunks, processed {uniqueInputFrames} input frames");
-
                 foreach (string inputFrameName in processedInputFrames)
                 {
                     string inputFrameFullPath = Path.Combine(I.current.tempFolder, Paths.framesDir, inputFrameName);
@@ -101,7 +97,7 @@ namespace Flowframes.Main
 
                 int inputFramesLeft = IoUtils.GetAmountOfFiles(Path.Combine(I.current.tempFolder, Paths.framesDir), false);
 
-                Logger.Log($"Deleted already processed input frames - {inputFramesLeft} left to interpolate");
+                Logger.Log($"Resume: Already encoded {encodedFrames} frames in {encodedChunks} chunks. There are now {inputFramesLeft} input frames left to interpolate.");
 
                 if(inputFramesLeft < 2)
                 {

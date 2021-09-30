@@ -45,12 +45,12 @@ namespace Flowframes
             currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
             current.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
+            sw.Restart();
 
             if (!AutoEncodeResume.resumeNextRun)
             {
                 await GetFrames();
                 if (canceled) return;
-                sw.Restart();
                 await PostProcessFrames(false);
             }
 
