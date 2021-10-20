@@ -10,7 +10,6 @@ namespace Flowframes.Media
 {
     partial class FfmpegAudioAndMetadata : FfmpegCommands
     {
-        #region Mux From Input
 
         public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder, bool shortest)
         {
@@ -31,9 +30,10 @@ namespace Flowframes.Media
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
 
             bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(inputVideo));
-            string audioArgs = audioCompat ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.current.outMode);
+            bool slowmo = I.current.outItsScale != 0 && I.current.outItsScale != 1;
+            string audioArgs = audioCompat && !slowmo ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.current.outMode, I.current.outItsScale);
 
-            if (!audioCompat)
+            if (!audioCompat && !slowmo)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
 
             bool audio = Config.GetBool(Config.Key.keepAudio);
@@ -80,7 +80,5 @@ namespace Flowframes.Media
                 File.Move(tempPath, interpVideo);   // Muxing failed, move unmuxed video file back
             }
         }
-
-        #endregion
     }
 }

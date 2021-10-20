@@ -84,14 +84,14 @@ namespace Flowframes.Media
             if (codec == Codec.Av1)
             {
                 int cq = (Config.GetInt(Config.Key.av1Crf) * 1.0f).RoundToInt();
-                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} -tile_rows 2 -tile_columns 2 -pix_fmt {GetPixFmt()}";
+                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()}  -tile_columns 1 -tile_rows 0 -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.Vp9)
             {
                 int crf = Config.GetInt(Config.Key.vp9Crf);
                 string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
-                args += $"{qualityStr} {GetVp9Speed()} -tile-columns 2 -tile-rows 2 -row-mt 1 -pix_fmt {GetPixFmt()}";
+                args += $"{qualityStr} {GetVp9Speed()} -tile-columns 1 -tile-rows 0 -row-mt 1 -pix_fmt {GetPixFmt()}";
             }
 
             if(codec == Codec.ProRes)
@@ -231,17 +231,31 @@ namespace Flowframes.Media
             return "unsupported";
         }
 
-        public static async Task<string> GetAudioFallbackArgs (string videoPath, Interpolate.OutMode outMode)
+        public static async Task<string> GetAudioFallbackArgs (string videoPath, Interpolate.OutMode outMode, float itsScale)
         {
             bool opusMp4 = Config.GetBool(Config.Key.allowOpusInMp4);
             int opusBr = Config.GetInt(Config.Key.opusBitrate, 128);
             int aacBr = Config.GetInt(Config.Key.aacBitrate, 160);
-            int ac = (await GetVideoInfo.GetFfprobeInfoAsync(videoPath, GetVideoInfo.FfprobeMode.ShowStreams, "channels")).GetInt();
+            int ac = (await GetVideoInfo.GetFfprobeInfoAsync(videoPath, GetVideoInfo.FfprobeMode.ShowStreams, "channels", 0)).GetInt();
+            string af = GetAudioFilters(itsScale);
 
             if (outMode == Interpolate.OutMode.VidMkv || outMode == Interpolate.OutMode.VidWebm || (outMode == Interpolate.OutMode.VidMp4 && opusMp4))
-                return $"-c:a libopus -b:a {(ac > 4 ? $"{opusBr * 2}" : $"{opusBr}")}k -ac {(ac > 0 ? $"{ac}" : "2")}"; // Double bitrate if 5ch or more, ignore ac if <= 0
+                return $"-c:a libopus -b:a {(ac > 4 ? $"{opusBr * 2}" : $"{opusBr}")}k -ac {(ac > 0 ? $"{ac}" : "2")} {af}"; // Double bitrate if 5ch or more, ignore ac if <= 0
             else
-                return $"-c:a aac -b:a {(ac > 4 ? $"{aacBr * 2}" : $"{aacBr}")}k -aac_coder twoloop -ac {(ac > 0 ? $"{ac}" : "2")}";
+                return $"-c:a aac -b:a {(ac > 4 ? $"{aacBr * 2}" : $"{aacBr}")}k -aac_coder twoloop -ac {(ac > 0 ? $"{ac}" : "2")} {af}";
+        }
+
+        private static string GetAudioFilters(float itsScale)
+        {
+            if (itsScale == 0 || itsScale == 1)
+                return "";
+
+            if(itsScale > 4)
+                return $"-af atempo=0.25,atempo={((1f / itsScale) * 4).ToStringDot()}";
+            else if (itsScale > 2)
+                return $"-af atempo=0.5,atempo={((1f / itsScale) * 2).ToStringDot()}";
+            else
+                return $"-af atempo={(1f / itsScale).ToStringDot()}";
         }
 
         public static string GetSubCodecForContainer(string containerExt)
