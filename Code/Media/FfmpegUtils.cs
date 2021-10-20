@@ -251,7 +251,7 @@ namespace Flowframes.Media
                 return "";
 
             if(itsScale > 4)
-                return $"-af atempo=0.25,atempo={((1f / itsScale) * 4).ToStringDot()}";
+                return $"-af atempo=0.5,atempo=0.5,atempo={((1f / itsScale) * 4).ToStringDot()}";
             else if (itsScale > 2)
                 return $"-af atempo=0.5,atempo={((1f / itsScale) * 2).ToStringDot()}";
             else
