@@ -227,7 +227,7 @@ namespace Flowframes
 
             if (!current.stepByStep && !Config.GetBool(Config.Key.keepTempFolder))
             {
-                if(IoUtils.GetAmountOfFiles(Path.Combine(current.tempFolder, Paths.resumeDir), true) > 0)
+                if(!BatchProcessing.busy && IoUtils.GetAmountOfFiles(Path.Combine(current.tempFolder, Paths.resumeDir), true) > 0)
                 {
                     DialogResult dialogResult = MessageBox.Show($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
                     
