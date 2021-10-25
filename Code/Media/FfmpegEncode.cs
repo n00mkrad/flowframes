@@ -20,7 +20,7 @@ namespace Flowframes.Media
 
             IoUtils.RenameExistingFile(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
-            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode));
+            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode), Interpolate.current.scaledResolution);
             if (!isChunk && outMode == Interpolate.OutMode.VidMp4) encArgs += $" -movflags +faststart";
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);

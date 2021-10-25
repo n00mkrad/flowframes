@@ -1,6 +1,7 @@
 ﻿using Flowframes.IO;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace Flowframes.Media
             return "libx264";
         }
 
-        public static string GetEncArgs (Codec codec)
+        public static string GetEncArgs (Codec codec, Size res)
         {
             string args = $"-c:v {GetEnc(codec)} ";
 
@@ -83,15 +84,15 @@ namespace Flowframes.Media
 
             if (codec == Codec.Av1)
             {
-                int cq = (Config.GetInt(Config.Key.av1Crf) * 1.0f).RoundToInt();
-                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()}  -tile_columns 1 -tile_rows 0 -pix_fmt {GetPixFmt()}";
+                int cq = Config.GetInt(Config.Key.av1Crf);
+                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns", "-tile_rows")} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.Vp9)
             {
                 int crf = Config.GetInt(Config.Key.vp9Crf);
                 string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
-                args += $"{qualityStr} {GetVp9Speed()} -tile-columns 1 -tile-rows 0 -row-mt 1 -pix_fmt {GetPixFmt()}";
+                args += $"{qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns", "-tile-rows")} -row-mt 1 -pix_fmt {GetPixFmt()}";
             }
 
             if(codec == Codec.ProRes)
@@ -105,6 +106,21 @@ namespace Flowframes.Media
             }
 
             return args;
+        }
+
+        public static string GetTilingArgs(Size resolution, string colArg, string rowArg)
+        {
+            int cols = 0;
+            if (resolution.Width >= 1920) cols = 1;
+            if (resolution.Width >= 3840) cols = 2;
+            if (resolution.Width >= 7680) cols = 3;
+
+            int rows = 0;
+            if (resolution.Height >= 1600) cols = 1;
+            if (resolution.Height >= 3200) cols = 2;
+            if (resolution.Height >= 6400) cols = 3;
+
+            return $"{colArg}{cols} {rowArg}{rows}";
         }
 
         static string GetVp9Speed ()
