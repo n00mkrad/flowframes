@@ -53,21 +53,24 @@ namespace Flowframes.Media
             return "libx264";
         }
 
-        public static string GetEncArgs (Codec codec, Size res)
+        public static string GetEncArgs (Codec codec, Size res, float fps)
         {
             string args = $"-c:v {GetEnc(codec)} ";
+            int keyint = 10;
 
             if(codec == Codec.H264)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
-                args += $"-crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} -pix_fmt {GetPixFmt()}";
+                string g = GetKeyIntArg(fps, keyint);
+                args += $"-crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} {g} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.H265)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
                 int crf = Config.GetInt(Config.Key.h265Crf);
-                args += $"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} -pix_fmt {GetPixFmt()}";
+                string g = GetKeyIntArg(fps, keyint);
+                args += $"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} {g} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.H264Nvenc)
@@ -85,14 +88,16 @@ namespace Flowframes.Media
             if (codec == Codec.Av1)
             {
                 int cq = Config.GetInt(Config.Key.av1Crf);
-                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns", "-tile_rows")} -pix_fmt {GetPixFmt()}";
+                string g = GetKeyIntArg(fps, keyint);
+                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns ", "-tile_rows ")} {g} -pix_fmt {GetPixFmt()}";
             }
 
             if (codec == Codec.Vp9)
             {
                 int crf = Config.GetInt(Config.Key.vp9Crf);
                 string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
-                args += $"{qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns", "-tile-rows")} -row-mt 1 -pix_fmt {GetPixFmt()}";
+                string g = GetKeyIntArg(fps, keyint);
+                args += $"{qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns ", "-tile-rows ")} -row-mt 1 {g} -pix_fmt {GetPixFmt()}";
             }
 
             if(codec == Codec.ProRes)
@@ -121,6 +126,12 @@ namespace Flowframes.Media
             if (resolution.Height >= 6400) cols = 3;
 
             return $"{colArg}{cols} {rowArg}{rows}";
+        }
+
+        public static string GetKeyIntArg(float fps, int intervalSeconds, string arg = "-g ")
+        {
+            int keyInt = (fps * intervalSeconds).RoundToInt().Clamp(20, 480);
+            return $"{arg}{keyInt}";
         }
 
         static string GetVp9Speed ()
