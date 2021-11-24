@@ -107,7 +107,7 @@ namespace Flowframes
             if (!current.inputIsFrames)        // Extract if input is video, import if image sequence
                 await ExtractFrames(current.inPath, current.framesFolder, current.alpha);
             else
-                await FfmpegExtract.ImportImagesCheckCompat(current.inPath, current.framesFolder, current.alpha, (await current.GetScaledRes()), true, current.framesExt);
+                await FfmpegExtract.ImportImagesCheckCompat(current.inPath, current.framesFolder, current.alpha, current.ScaledResolution, true, current.framesExt);
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha)

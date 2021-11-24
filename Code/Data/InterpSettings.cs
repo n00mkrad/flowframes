@@ -31,8 +31,11 @@ namespace Flowframes
         public string framesFolder;
         public string interpFolder;
         public bool inputIsFrames;
-        public Size inputResolution;
-        public Size scaledResolution;
+
+        private Size _inputResolution;
+        public Size InputResolution { get { RefreshInputRes(); return _inputResolution; } }
+        private Size _scaledResolution;
+        public Size ScaledResolution { get { RefreshOutputRes(); return _scaledResolution; } }
 
         public bool alpha;
         public bool stepByStep;
@@ -77,8 +80,8 @@ namespace Flowframes
                 inputIsFrames = false;
             }
 
-            inputResolution = new Size(0, 0);
-            scaledResolution = new Size(0, 0);
+            _inputResolution = new Size(0, 0);
+            _scaledResolution = new Size(0, 0);
 
             RefreshExtensions();
         }
@@ -96,8 +99,8 @@ namespace Flowframes
             model = null;
             alpha = false;
             stepByStep = false;
-            inputResolution = new Size(0, 0);
-            scaledResolution = new Size(0, 0);
+            _inputResolution = new Size(0, 0);
+            _scaledResolution = new Size(0, 0);
             framesExt = "";
             interpExt = "";
 
@@ -123,8 +126,8 @@ namespace Flowframes
                     case "INTERPFACTOR": interpFactor = float.Parse(entry.Value); break;
                     case "OUTMODE": outMode = (Interpolate.OutMode)Enum.Parse(typeof(Interpolate.OutMode), entry.Value); break;
                     case "MODEL": model = AiModels.GetModelByName(ai, entry.Value); break;
-                    case "INPUTRES": inputResolution = FormatUtils.ParseSize(entry.Value); break;
-                    case "OUTPUTRES": scaledResolution = FormatUtils.ParseSize(entry.Value); break;
+                    case "INPUTRES": _inputResolution = FormatUtils.ParseSize(entry.Value); break;
+                    case "OUTPUTRES": _scaledResolution = FormatUtils.ParseSize(entry.Value); break;
                     case "ALPHA": alpha = bool.Parse(entry.Value); break;
                     case "STEPBYSTEP": stepByStep = bool.Parse(entry.Value); break;
                     case "FRAMESEXT": framesExt = entry.Value; break;
@@ -161,25 +164,16 @@ namespace Flowframes
             inputIsFrames = IoUtils.IsPathDirectory(inPath);
         }
 
-        public async Task<Size> GetInputRes()
+        async Task RefreshInputRes ()
         {
-            await RefreshResolutions();
-            return inputResolution;
+            if (_inputResolution.IsEmpty)
+                _inputResolution = await GetMediaResolutionCached.GetSizeAsync(inPath);
         }
 
-        public async Task<Size> GetScaledRes()
+        void RefreshOutputRes ()
         {
-            await RefreshResolutions();
-            return scaledResolution;
-        }
-
-        async Task RefreshResolutions ()
-        {
-            if (inputResolution.IsEmpty || scaledResolution.IsEmpty)
-            {
-                inputResolution = await GetMediaResolutionCached.GetSizeAsync(inPath);
-                scaledResolution = InterpolateUtils.GetOutputResolution(inputResolution, false, true);
-            }
+            if (_scaledResolution.IsEmpty)
+                _scaledResolution = InterpolateUtils.GetOutputResolution(InputResolution, false, true);
         }
 
         public void RefreshAlpha ()
@@ -246,8 +240,8 @@ namespace Flowframes
             s += $"INTERPFACTOR|{interpFactor}\n";
             s += $"OUTMODE|{outMode}\n";
             s += $"MODEL|{model.name}\n";
-            s += $"INPUTRES|{inputResolution.Width}x{inputResolution.Height}\n";
-            s += $"OUTPUTRES|{scaledResolution.Width}x{scaledResolution.Height}\n";
+            s += $"INPUTRES|{InputResolution.Width}x{InputResolution.Height}\n";
+            s += $"OUTPUTRES|{ScaledResolution.Width}x{ScaledResolution.Height}\n";
             s += $"ALPHA|{alpha}\n";
             s += $"STEPBYSTEP|{stepByStep}\n";
             s += $"FRAMESEXT|{framesExt}\n";

@@ -88,7 +88,7 @@ namespace Flowframes.Media
             {
                 int cq = Config.GetInt(Config.Key.av1Crf);
                 string g = GetKeyIntArg(fps, keyint);
-                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns ", "-tile_rows ")} {g} -pix_fmt {GetPixFmt()}" };
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetKeyIntArg(fps, keyint)} {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns ", "-tile_rows ")} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.Vp9)
@@ -96,8 +96,9 @@ namespace Flowframes.Media
                 int crf = Config.GetInt(Config.Key.vp9Crf);
                 string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
                 string g = GetKeyIntArg(fps, keyint);
-                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns ", "-tile-rows ")} -row-mt 1 {g} -pass 1 -pix_fmt {GetPixFmt()} -an -f null -",
-                                      $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns ", "-tile-rows ")} -row-mt 1 {g} -pass 2 -pix_fmt {GetPixFmt()}" };
+                string t = GetTilingArgs(res, "-tile-columns ", "-tile-rows ");
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pass 1 -pix_fmt {GetPixFmt()} -an",
+                                      $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pass 2 -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.ProRes)
@@ -121,16 +122,18 @@ namespace Flowframes.Media
             if (resolution.Width >= 7680) cols = 3;
 
             int rows = 0;
-            if (resolution.Height >= 1600) cols = 1;
-            if (resolution.Height >= 3200) cols = 2;
-            if (resolution.Height >= 6400) cols = 3;
+            if (resolution.Height >= 1600) rows = 1;
+            if (resolution.Height >= 3200) rows = 2;
+            if (resolution.Height >= 6400) rows = 3;
 
-            return $"{colArg}{cols} {rowArg}{rows}";
+            Logger.Log($"GetTilingArgs: Video resolution is {resolution.Width}x{resolution.Height} - Using 2^{cols} columns, 2^{rows} rows (=> {Math.Pow(2, cols)}x{Math.Pow(2, rows)} = {Math.Pow(2, cols) * Math.Pow(2, rows)} Tiles)", true);
+
+            return $"{(cols > 0 ? colArg+cols : "")} {(rows > 0 ? rowArg + rows : "")}";
         }
 
         public static string GetKeyIntArg(float fps, int intervalSeconds, string arg = "-g ")
         {
-            int keyInt = (fps * intervalSeconds).RoundToInt().Clamp(20, 480);
+            int keyInt = (fps * intervalSeconds).RoundToInt().Clamp(20, 300);
             return $"{arg}{keyInt}";
         }
 

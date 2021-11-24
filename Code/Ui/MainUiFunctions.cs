@@ -94,7 +94,7 @@ namespace Flowframes.Ui
             Size res = new Size();
 
             if(path == Interpolate.current?.inPath)
-                res = await Interpolate.current.GetInputRes();
+                res = Interpolate.current.InputResolution;
             else
                 res = await GetMediaResolutionCached.GetSizeAsync(path);
 
