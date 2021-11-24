@@ -33,17 +33,10 @@ parser.add_argument('--fp16', dest='fp16', action='store_true', help='half-preci
 parser.add_argument('--UHD', dest='UHD', action='store_true', help='support 4k video')
 parser.add_argument('--scale', dest='scale', type=float, default=1.0, help='Try scale=0.5 for 4k video')
 parser.add_argument('--exp', dest='exp', type=int, default=1)
-parser.add_argument('--multi', dest='multi', type=int, default=2)
 args = parser.parse_args()
-
-if args.exp != 1:
-    args.multi = (2 ** args.exp)
-    
 assert (not args.input is None)
-
 if args.UHD and args.scale==1.0:
     args.scale = 0.5
-    
 assert args.scale in [0.25, 0.5, 1.0, 2.0, 4.0]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -69,12 +62,6 @@ try:
         print(f"Trying to load v3 (new) model using arch files from {os.path.join(dname, args.model)}")
         from arch.RIFE_HDv3 import Model
         model = Model()
-        
-        if not hasattr(model, 'version'):
-            model.version = 0
-        else:
-            print("Using >= 3.9 model.")
-        
         model.load_model(os.path.join(dname, args.model), -1)
         print("Loaded v3.x HD model.")
     except:
@@ -143,23 +130,14 @@ def build_read_buffer(user_args, read_buffer, videogen):
         read_buffer.put(frame)
     read_buffer.put(None)
 
-def make_inference(I0, I1, n):    
+def make_inference(I0, I1, exp):
     global model
-    if hasattr(model, 'version') and model.version >= 3.9:
-        res = []
-        for i in range(n):
-            res.append(model.inference(I0, I1, (i+1) * 1. / (n+1), args.scale))
-        return res
-    else:
-        middle = model.inference(I0, I1, args.scale)
-        if n == 1:
-            return [middle]
-        first_half = make_inference(I0, middle, n=n//2)
-        second_half = make_inference(middle, I1, n=n//2)
-        if n%2:
-            return [*first_half, middle, *second_half]
-        else:
-            return [*first_half, *second_half]
+    middle = model.inference(I0, I1, args.scale)
+    if exp == 1:
+        return [middle]
+    first_half = make_inference(I0, middle, exp=exp - 1)
+    second_half = make_inference(middle, I1, exp=exp - 1)
+    return [*first_half, middle, *second_half]
     
 def pad_image(img):
     if(args.fp16):
@@ -194,7 +172,7 @@ while True:
     I1 = torch.from_numpy(np.transpose(frame, (2,0,1))).to(device, non_blocking=True).unsqueeze(0).float() / 255.
     I1 = pad_image(I1)
 
-    output = make_inference(I0, I1, args.multi-1)
+    output = make_inference(I0, I1, args.exp)
     write_buffer.put([cnt, lastframe])
     cnt += 1
     for mid in output:

@@ -28,7 +28,7 @@
 	"desc": "Updated v3 General Model",
 	"dir": "RIFE31",
 	"supportsAlpha": "false",
-	"isDefault": "true"
+	"isDefault": "false"
 },
 {
 	"name": "RIFE 3.8",
@@ -36,5 +36,12 @@
 	"dir": "RIFE38",
 	"supportsAlpha": "true",
 	"isDefault": "false"
+},
+{
+	"name": "RIFE 3.9",
+	"desc": "Latest General Model",
+	"dir": "RIFE39",
+	"supportsAlpha": "true",
+	"isDefault": "true"
 },
 ]
