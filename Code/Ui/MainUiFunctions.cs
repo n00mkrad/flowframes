@@ -135,13 +135,14 @@ namespace Flowframes.Ui
             if (factor > 256)
                 return 256;
 
-            if (ai.aiName == Implementations.rifeCuda.aiName)
-            {
-                if (!IsPowerOfTwo(factor))
-                {
-                    return Implementations.rifeCuda.supportedFactors.Last();
-                }
-            }
+            // NO LONGER NEEDED WITH RIFE 3.9
+            //if (ai.aiName == Implementations.rifeCuda.aiName)
+            //{
+            //    if (!IsPowerOfTwo(factor))
+            //    {
+            //        return Implementations.rifeCuda.supportedFactors.Last();
+            //    }
+            //}
 
             return factor;
         }

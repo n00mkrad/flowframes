@@ -5,7 +5,7 @@ namespace Flowframes.Data
     class Implementations
     {
         public static AI rifeCuda = new AI(AI.Backend.Pytorch, "RIFE_CUDA", "RIFE", 
-            "CUDA/Pytorch Implementation of RIFE (Nvidia Only!)", "rife-cuda", new int[] { 2, 4, 8, 16 });
+            "CUDA/Pytorch Implementation of RIFE (Nvidia Only!)", "rife-cuda", new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
         public static AI rifeNcnn = new AI(AI.Backend.Ncnn, "RIFE_NCNN", "RIFE (NCNN)", 
             "Vulkan/NCNN Implementation of RIFE", "rife-ncnn", new int[] { 2, 4, 8 }, true);

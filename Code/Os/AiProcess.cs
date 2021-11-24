@@ -148,7 +148,7 @@ namespace Flowframes.Os
             string rbuffer = $"--rbuffer {Config.GetInt(Config.Key.rifeCudaBufferSize, 200)}";
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
             string prec = Config.GetBool(Config.Key.rifeCudaFp16) ? "--fp16" : "";
-            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --exp {(int)Math.Log(interpFactor, 2)} {uhdStr} {wthreads} {rbuffer} {prec}";
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --multi {interpFactor} {uhdStr} {wthreads} {rbuffer} {prec}";
 
             Process rifePy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
