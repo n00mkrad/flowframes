@@ -53,16 +53,15 @@ namespace Flowframes.Media
             return "libx264";
         }
 
-        public static string GetEncArgs (Codec codec, Size res, float fps)
+        public static string[] GetEncArgs(Codec codec, Size res, float fps) // Array contains as many entries as there are encoding passes
         {
-            string args = $"-c:v {GetEnc(codec)} ";
             int keyint = 10;
 
-            if(codec == Codec.H264)
+            if (codec == Codec.H264)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
                 string g = GetKeyIntArg(fps, keyint);
-                args += $"-crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} {g} -pix_fmt {GetPixFmt()}";
+                return new string[] { $"-c:v {GetEnc(codec)} -crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.H265)
@@ -70,47 +69,48 @@ namespace Flowframes.Media
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
                 int crf = Config.GetInt(Config.Key.h265Crf);
                 string g = GetKeyIntArg(fps, keyint);
-                args += $"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} {g} -pix_fmt {GetPixFmt()}";
+                return new string[] { $"-c:v {GetEnc(codec)} {(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.H264Nvenc)
             {
                 int cq = (Config.GetInt(Config.Key.h264Crf) * 1.1f).RoundToInt();
-                args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt {GetPixFmt()}";
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.H265Nvenc)
             {
                 int cq = (Config.GetInt(Config.Key.h265Crf) * 1.1f).RoundToInt();
-                args += $"-b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt {GetPixFmt()}";
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {(cq > 0 ? $"-cq {cq} -preset p7" : "-preset lossless")} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.Av1)
             {
                 int cq = Config.GetInt(Config.Key.av1Crf);
                 string g = GetKeyIntArg(fps, keyint);
-                args += $"-b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns ", "-tile_rows ")} {g} -pix_fmt {GetPixFmt()}";
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} -g 240 {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns ", "-tile_rows ")} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.Vp9)
             {
                 int crf = Config.GetInt(Config.Key.vp9Crf);
-                string qualityStr = (crf > 0) ? $"-b:v 0 -crf {crf}" : "-lossless 1";
+                string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
                 string g = GetKeyIntArg(fps, keyint);
-                args += $"{qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns ", "-tile-rows ")} -row-mt 1 {g} -pix_fmt {GetPixFmt()}";
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns ", "-tile-rows ")} -row-mt 1 {g} -pass 1 -pix_fmt {GetPixFmt()} -an -f null -",
+                                      $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {GetTilingArgs(res, "-tile-columns ", "-tile-rows ")} -row-mt 1 {g} -pass 2 -pix_fmt {GetPixFmt()}" };
             }
 
-            if(codec == Codec.ProRes)
+            if (codec == Codec.ProRes)
             {
-                args += $"-profile:v {Config.GetInt(Config.Key.proResProfile)}";
+                return new string[] { $"-c:v {GetEnc(codec)} -profile:v {Config.GetInt(Config.Key.proResProfile)} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.AviRaw)
             {
-                args += $"-pix_fmt {Config.Get(Config.Key.aviColors)}";
+                return new string[] { $"-c:v {GetEnc(codec)} -pix_fmt {Config.Get(Config.Key.aviColors)}" };
             }
 
-            return args;
+            return new string[0];
         }
 
         public static string GetTilingArgs(Size resolution, string colArg, string rowArg)
@@ -134,7 +134,7 @@ namespace Flowframes.Media
             return $"{arg}{keyInt}";
         }
 
-        static string GetVp9Speed ()
+        static string GetVp9Speed()
         {
             string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
             string arg = "";
@@ -166,7 +166,7 @@ namespace Flowframes.Media
             return $"-preset {arg}";
         }
 
-        static string GetPixFmt ()
+        static string GetPixFmt()
         {
             switch (Config.GetInt(Config.Key.pixFmt))
             {
@@ -179,9 +179,9 @@ namespace Flowframes.Media
             return "yuv420p";
         }
 
-        public static bool ContainerSupportsAllAudioFormats (Interpolate.OutMode outMode, List<string> codecs)
+        public static bool ContainerSupportsAllAudioFormats(Interpolate.OutMode outMode, List<string> codecs)
         {
-            if(codecs.Count < 1)
+            if (codecs.Count < 1)
                 Logger.Log($"Warning: ContainerSupportsAllAudioFormats() was called, but codec list has {codecs.Count} entries.", true, false, "ffmpeg");
 
             foreach (string format in codecs)
@@ -193,7 +193,7 @@ namespace Flowframes.Media
             return true;
         }
 
-        public static bool ContainerSupportsAudioFormat (Interpolate.OutMode outMode, string format)
+        public static bool ContainerSupportsAudioFormat(Interpolate.OutMode outMode, string format)
         {
             bool supported = false;
             string alias = GetAudioExt(format);
@@ -234,7 +234,7 @@ namespace Flowframes.Media
             return ext;
         }
 
-        public static string GetAudioExt (string codec)
+        public static string GetAudioExt(string codec)
         {
             if (codec.StartsWith("pcm_"))
                 return "wav";
@@ -258,7 +258,7 @@ namespace Flowframes.Media
             return "unsupported";
         }
 
-        public static async Task<string> GetAudioFallbackArgs (string videoPath, Interpolate.OutMode outMode, float itsScale)
+        public static async Task<string> GetAudioFallbackArgs(string videoPath, Interpolate.OutMode outMode, float itsScale)
         {
             bool opusMp4 = Config.GetBool(Config.Key.allowOpusInMp4);
             int opusBr = Config.GetInt(Config.Key.opusBitrate, 128);
@@ -277,7 +277,7 @@ namespace Flowframes.Media
             if (itsScale == 0 || itsScale == 1)
                 return "";
 
-            if(itsScale > 4)
+            if (itsScale > 4)
                 return $"-af atempo=0.5,atempo=0.5,atempo={((1f / itsScale) * 4).ToStringDot()}";
             else if (itsScale > 2)
                 return $"-af atempo=0.5,atempo={((1f / itsScale) * 2).ToStringDot()}";
@@ -287,7 +287,7 @@ namespace Flowframes.Media
 
         public static string GetSubCodecForContainer(string containerExt)
         {
-            containerExt = containerExt.Remove("."); 
+            containerExt = containerExt.Remove(".");
 
             if (containerExt == "mp4") return "mov_text";
             if (containerExt == "webm") return "webvtt";
@@ -303,11 +303,11 @@ namespace Flowframes.Media
 
             if (showWarningIfNotSupported && Config.GetBool(Config.Key.keepSubs) && !supported)
                 Logger.Log($"Warning: Subtitle transfer is enabled, but {containerExt.ToUpper()} does not support subtitles properly. MKV is recommended instead.");
-           
+
             return supported;
         }
 
-        public static void CreateConcatFile (string inputFilesDir, string outputPath, string[] validExtensions = null)
+        public static void CreateConcatFile(string inputFilesDir, string outputPath, string[] validExtensions = null)
         {
             string concatFileContent = "";
             string[] files = IoUtils.GetFilesSorted(inputFilesDir);

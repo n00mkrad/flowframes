@@ -70,15 +70,13 @@ namespace Flowframes
             if (string.IsNullOrWhiteSpace(loglevel))
                 loglevel = defLogLevel;
 
-            string beforeArgs = $"-hide_banner -stats -loglevel {loglevel} -y";
-
             if(!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {GetFfmpegDefaultArgs(loglevel)} {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe {beforeArgs} {args}";
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe {GetFfmpegDefaultArgs(loglevel)} {args}";
             
             if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
-            Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
+            Logger.Log($"ffmpeg {GetFfmpegDefaultArgs(loglevel)} {args}", true, false, "ffmpeg");
             ffmpeg.OutputDataReceived += FfmpegOutputHandler;
             ffmpeg.ErrorDataReceived += FfmpegOutputHandler;
             ffmpeg.Start();
@@ -90,6 +88,11 @@ namespace Flowframes
 
             if(progressBar)
                 Program.mainForm.SetProgress(0);
+        }
+
+        public static string GetFfmpegDefaultArgs (string loglevel = "warning")
+        {
+            return $"-hide_banner -stats -loglevel {loglevel} -y";
         }
 
         static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)

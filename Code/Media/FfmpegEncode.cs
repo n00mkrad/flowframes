@@ -20,8 +20,8 @@ namespace Flowframes.Media
 
             IoUtils.RenameExistingFile(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
-            string encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode), Interpolate.current.scaledResolution, Interpolate.current.outFps.GetFloat());
-            if (!isChunk && outMode == Interpolate.OutMode.VidMp4) encArgs += $" -movflags +faststart";
+            string[] encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode), Interpolate.current.scaledResolution, Interpolate.current.outFps.GetFloat());
+
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
 
@@ -47,7 +47,17 @@ namespace Flowframes.Media
 
             string vf = filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "";
             fps = fps / new Fraction(itsScale);
-            string args = $"-vsync 0 -r {fps} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
+
+            string args = "";
+
+            for(int i = 0; i < encArgs.Length; i++)
+            {
+                string pre = i > 0 ? $" && {AvProcess.GetFfmpegDefaultArgs()}" : "";
+                string fs = (!isChunk && outMode == Interpolate.OutMode.VidMp4) ? $"-movflags +faststart" : "";
+                args += $"{pre} -vsync 0 -r {fps} {inArg} {encArgs[i]} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {fs} {outPath.Wrap()} ";
+            }
+
+            //string argsOld = $"-vsync 0 -r {fps} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
             IoUtils.TryDeleteIfExists(linksDir);
         }
