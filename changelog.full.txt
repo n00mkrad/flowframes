@@ -3,6 +3,7 @@ Flowframes 1.35.0 Changelog:
 - Added RIFE 3.9 model, big speed improvements (54% faster than 3.1, 100% faster than 2.3)
 - WEBM/VP9 encoding is now signficantly more efficient by using 2-pass (but also a bit slower)
 - Updated ffmpeg to 4.4.1 (possible encoding/decoding speed improvements)
+- Fixed some specific encoding parameters being set incorrectly (auto-tiling)
 
 
 Flowframes 1.34.1 Changelog:
