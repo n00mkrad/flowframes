@@ -1,3 +1,10 @@
+Flowframes 1.35.0 Changelog:
+- Updated RIFE - It now supports any interpolation factor (like 3x, 5x, 10x, ...)
+- Added RIFE 3.9 model, big speed improvements (54% faster than 3.1, 100% faster than 2.3)
+- WEBM/VP9 encoding is now signficantly more efficient by using 2-pass (but also a bit slower)
+- Updated ffmpeg to 4.4.1 (possible encoding/decoding speed improvements)
+
+
 Flowframes 1.34.1 Changelog:
 - Audio will now be slowed down accordingly when using slowmo
 - Optimized encoding: VP9 and AV1 dynamic tiling, h264/h265/VP9/AV1 dynamic keyframe interval
@@ -83,35 +90,3 @@ Flowframes 1.28.0 Changelog:
 - Added support for loading custom AI models
 - Improved model loading (faster file validation and lots of internal changes)
 - Step-by-step mode: Previous steps now run automatically if needed
-
-
-Flowframes 1.27.2 Changelog:
-- Added Backup option - Will save an incomplete video after every chunk encode
-- Custom FFmpeg args now also get applied for GIF encoding, not just videos
-- Fixed low disk space warning popping up even if interpolation is already paused
-- Fixed certain temp files not being deleted correctly
-
-
-Flowframes 1.27.1 Changelog:
-- Image sequence inputs can now be used without any importing/copying (if compatible)
-- Added the FPS limit ("Maximum Output Framerate") to Quick Settings tab
-- Batch Processing: AI Model name is now shown in queue
-- Batch Processing: Fixed problems where GIFs/videos would play too slow
-- Fixed problem where GIF/APNG interpolations would have unnecessary dupe frames
-- Fixed problems with alpha interpolation when JPEG frames are enabled
-
-
-Flowframes 1.27.0 Changelog:
-- Updated RIFE-CUDA to v3 - Better quality and up to 25% faster!
-- Updated RIFE-NCNN to v3
-- Added new RIFE models 3.0 and 3.1 (both CUDA and NCNN)
-- AV1 encoding is now up to 35% faster (updated to SVT-AV1 0.8.7)
-- Renaming existing files to ".old" now also works for looped outputs and folders
-- Added image sequence copy support for BMP and WEBP (no PNG conversion on import)
-- Invalid (non-image) files now get ignored when loading an image sequence folder
-- New model files hoster, should make model downloading more reliable
-- Fixed the encoding log sometimes stopping, even if ffmpeg is still running
-- Fixed PNG image sequence outputs getting re-encoded unnecessarily
-- Fixed some problems regarding the FPS limit feature
-- Fixed problem where toggling JPEG frames wouldn't get applied
-- Internal data handling improvements (JSON for config files)
