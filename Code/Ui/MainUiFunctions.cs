@@ -26,7 +26,7 @@ namespace Flowframes.Ui
             if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 
-            SetOutPath(inputTbox, inputTbox.Text.Trim().GetParentDir());
+            SetOutPath(outputTbox, inputTbox.Text.Trim().GetParentDir());
 
             Program.lastInputPath = path;
             Program.lastInputPathIsSsd = OsUtils.DriveIsSSD(path);

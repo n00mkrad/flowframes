@@ -743,7 +743,7 @@ namespace Flowframes.IO
             }
 
 			if (log)
-				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}): {hashStr} ({sw.GetElapsedStr()})", true);
+				Logger.Log($"Computed {hashType} for '{Path.GetFileNameWithoutExtension(path).Trunc(40) + Path.GetExtension(path)}' ({GetFilesizeStr(path)}): {hashStr} ({sw})", true);
 			
 			return hashStr;
 		}

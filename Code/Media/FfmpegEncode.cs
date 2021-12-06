@@ -59,7 +59,7 @@ namespace Flowframes.Media
             }
 
             //string argsOld = $"-vsync 0 -r {fps} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
-            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, !isChunk);
+            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
@@ -95,7 +95,7 @@ namespace Flowframes.Media
             string compression = format == "png" ? pngCompr : $"-q:v {lossyQ}";
             string codec = format == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
             string args = $"-vsync 0 -r {rate} {inArg} {codec} {compression} {sn} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
-            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", TaskType.Encode, true);
+            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", true);
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
@@ -115,7 +115,7 @@ namespace Flowframes.Media
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
             rate = rate / new Fraction(itsScale);
             string args = $"-f concat -r {rate} -i {framesFilename.Wrap()} -gifflags -offsetting {vf} {extraArgs} {outPath.Wrap()}";
-            await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, "error", TaskType.Encode);
+            await RunFfmpeg(args, framesFile.GetParentDir(), LogMode.OnlyLastLine, "error");
         }
     }
 }

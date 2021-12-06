@@ -226,7 +226,7 @@ namespace Flowframes.Os
             while (timeSinceLastOutput.ElapsedMilliseconds < 100) await Task.Delay(50);
             output = output.Trim('\r', '\n');
 
-            Logger.Log($"Output (after {sw.GetElapsedStr()}):  {output.Replace("\r", " / ").Replace("\n", " / ").Trunc(250)}", true);
+            Logger.Log($"Output (after {sw}):  {output.Replace("\r", " / ").Replace("\n", " / ").Trunc(250)}", true);
 
             if (onlyLastLine)
                 output = output.SplitIntoLines().LastOrDefault();

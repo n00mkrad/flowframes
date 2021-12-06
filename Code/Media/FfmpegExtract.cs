@@ -35,7 +35,7 @@ namespace Flowframes.Media
             string args = $"-vsync 0 {GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
 
             LogMode logMode = await Interpolate.GetCurrentInputFrameCount() > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", TaskType.ExtractFrames, true);
+            await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", true);
 
             bool hiddenLog = await Interpolate.GetCurrentInputFrameCount() <= 50;
             int amount = IoUtils.GetAmountOfFiles(outDir, false);
@@ -84,7 +84,7 @@ namespace Flowframes.Media
             string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
             string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} -vsync 0 {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = await Interpolate.GetCurrentInputFrameCount()  > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await RunFfmpeg(args, logMode, TaskType.ExtractFrames, true);
+            await RunFfmpeg(args, logMode, true);
             int amount = IoUtils.GetAmountOfFiles(framesDir, false, "*" + format);
             Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
             await Task.Delay(1);
@@ -173,7 +173,7 @@ namespace Flowframes.Media
 
             if (!allSameSize)
             {
-                Logger.Log($"Sequence not compatible: Not all images have the same dimensions [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Not all images have the same dimensions.", true);
                 return false;
             }
 
@@ -182,7 +182,7 @@ namespace Flowframes.Media
 
             if (!allDivBy2)
             {
-                Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div} [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
                 return false;
             }
 
@@ -190,7 +190,7 @@ namespace Flowframes.Media
 
             if (!allSmallEnough)
             {
-                Logger.Log($"Sequence not compatible: Image dimensions above max size [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Image dimensions above max size.", true);
                 return false;
             }
 
@@ -198,12 +198,12 @@ namespace Flowframes.Media
 
             if (!all24Bit)
             {
-                Logger.Log($"Sequence not compatible: Some images are not 24-bit (8bpp) [{sw.GetElapsedStr()}].", true);
+                Logger.Log($"Sequence not compatible: Some images are not 24-bit (8bpp).", true);
                 return false;
             }
 
             Interpolate.current.framesExt = files.First().Extension;
-            Logger.Log($"Sequence compatible! [{sw.GetElapsedStr()}]", true);
+            Logger.Log($"Sequence compatible!", true);
             return true;
         }
 
@@ -228,7 +228,7 @@ namespace Flowframes.Media
             string vf = $"-vf {GetPadFilter()}";
             string args = $"-r 25 {inArg} {GetImgArgs(format, true, alpha)} {sizeStr} -vsync 0 -start_number 0 {vf} \"{outPath}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = IoUtils.GetAmountOfFiles(inPath, false) > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
-            await RunFfmpeg(args, logMode, "panic", TaskType.ExtractFrames);
+            await RunFfmpeg(args, logMode, "panic");
         }
 
         public static string[] GetTrimArgs()
@@ -282,7 +282,7 @@ namespace Flowframes.Media
             string comprArg = isPng ? pngCompr : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {GetPadFilter()} {outPath.Wrap()}";
-            await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
+            await RunFfmpeg(args, LogMode.Hidden);
         }
 
         public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum)
@@ -291,7 +291,7 @@ namespace Flowframes.Media
             string comprArg = isPng ? pngCompr : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
-            await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
+            await RunFfmpeg(args, LogMode.Hidden);
         }
 
         public static async Task ExtractLastFrame(string inputFile, string outputPath, Size size)
@@ -309,7 +309,7 @@ namespace Flowframes.Media
             string trim = QuickSettingsTab.trimEnabled ? $"-ss {QuickSettingsTab.GetTrimEndMinusOne()} -to {QuickSettingsTab.trimEnd}" : "";
             string sseof = string.IsNullOrWhiteSpace(trim) ? "-sseof -1" : "";
             string args = $"{sseof} -i {inputFile.Wrap()} -update 1 {pixFmt} {sizeStr} {trim} {outputPath.Wrap()}";
-            await RunFfmpeg(args, LogMode.Hidden, TaskType.ExtractFrames);
+            await RunFfmpeg(args, LogMode.Hidden);
         }
     }
 }

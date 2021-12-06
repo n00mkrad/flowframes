@@ -112,7 +112,7 @@ namespace Flowframes.Ui
             }
 
             Config.Set(dict);
-            Logger.Log($"Config Editor: Saved {grid.Rows.Count} config keys in {sw.GetElapsedStr()}", true);
+            Logger.Log($"Config Editor: Saved {grid.Rows.Count} config keys in {sw}", true);
         }
 
         #endregion

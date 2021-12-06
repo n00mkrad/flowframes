@@ -45,7 +45,7 @@ namespace Flowframes
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
             string args = $" {loopStr} -vsync 1 -f concat -i {vfrFilename} -c copy -movflags +faststart -fflags +genpts {outPath.Wrap()}";
-            await RunFfmpeg(args, concatFile.GetParentDir(), LogMode.Hidden, TaskType.Merge);
+            await RunFfmpeg(args, concatFile.GetParentDir(), LogMode.Hidden);
         }
 
         public static async Task LoopVideo(string inputFile, int times, bool delSrc = false)
@@ -157,9 +157,13 @@ namespace Flowframes
 
         public static async Task<int> GetFrameCountAsync(string inputFile)
         {
-            Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe first.", true, false, "ffmpeg");
+            Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
+            int frames = await ReadFrameCountFfprobePacketCount(inputFile);      // Try reading frame count with ffprobe packet counting
+            if (frames > 0) return frames;
 
-            int frames = await ReadFrameCountFfprobeAsync(inputFile, Config.GetBool(Config.Key.ffprobeFrameCount));      // Try reading frame count with ffprobe
+            Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe decoding now.", true, false, "ffmpeg");
+
+            frames = await ReadFrameCountFfprobe(inputFile);      // Try reading frame count with ffprobe decoding
             if (frames > 0) return frames;
 
             Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Trying to read with ffmpeg.", true, false, "ffmpeg");
@@ -170,7 +174,7 @@ namespace Flowframes
             return 0;
         }
 
-        static int ReadFrameCountFromDuration (string inputFile, long durationMs, float fps)
+        static int ReadFrameCountFromDuration(string inputFile, long durationMs, float fps)
         {
             float durationSeconds = durationMs / 1000f;
             float frameCount = durationSeconds * fps;
@@ -179,21 +183,25 @@ namespace Flowframes
             return frameCountRounded;
         }
 
-        static async Task<int> ReadFrameCountFfprobeAsync(string inputFile, bool readFramesSlow)
+        public static async Task<int> ReadFrameCountFfprobePacketCount(string filePath)
         {
-            string args = $" -v panic -threads 0 -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {inputFile.Wrap()}";
-            if (readFramesSlow)
-            {
-                Logger.Log("Counting total frames using FFprobe. This can take a moment...");
-                await Task.Delay(10);
-                args = $" -v panic -threads 0 -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 {inputFile.Wrap()}";
-            }
-            string info = GetFfprobeOutput(args);
+            string output = await RunFfprobe($"-select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}", LogMode.Hidden, "error");
+            string[] lines = output.SplitIntoLines().Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+            if (lines == null || lines.Length < 1)
+                return 0;
+
+            return lines.Last().GetInt();
+        }
+
+        public static async Task<int> ReadFrameCountFfprobe(string filePath)
+        {
+            string args = $" -v panic {filePath.Wrap()} -threads 0 -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {filePath.Wrap()}";
+            string info = await RunFfprobe(args);
             string[] entries = info.SplitIntoLines();
+
             try
             {
-                if (readFramesSlow)
-                    return info.GetInt();
                 foreach (string entry in entries)
                 {
                     if (entry.Contains("nb_frames="))
@@ -201,17 +209,18 @@ namespace Flowframes
                 }
             }
             catch { }
+
             return -1;
         }
 
-        static async Task<int> ReadFrameCountFfmpegAsync (string inputFile)
+        public static async Task<int> ReadFrameCountFfmpegAsync(string filePath)
         {
-            string args = $" -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null - ";
-            string info = await GetFfmpegOutputAsync(args, true, true);
+            string args = $" -loglevel panic -stats {filePath.Wrap()} -i {filePath.Wrap()} -map 0:v:0 -c copy -f null - ";
+            string info = await RunFfmpeg(args, LogMode.Hidden);
             try
             {
                 string[] lines = info.SplitIntoLines();
-                string lastLine = lines.Last();
+                string lastLine = lines.Last().ToLower();
                 return lastLine.Substring(0, lastLine.IndexOf("fps")).GetInt();
             }
             catch
@@ -231,7 +240,7 @@ namespace Flowframes
         {
             Logger.Log($"IsEncoderCompatible('{enc}')", true, false, "ffmpeg");
             string args = $"-loglevel error -f lavfi -i color=black:s=540x540 -vframes 1 -an -c:v {enc} -f null -";
-            string output = await GetFfmpegOutputAsync(args);
+            string output = await RunFfmpeg(args, LogMode.Hidden);
             return !output.ToLower().Contains("error");
         }
 

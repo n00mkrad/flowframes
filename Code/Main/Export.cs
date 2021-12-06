@@ -232,7 +232,7 @@ namespace Flowframes.Main
                     MessageBox.Show("An error occured while trying to merge the video chunks.\nCheck the log for details.");
             }
 
-            Logger.Log($"Merged video chunks in {sw.GetElapsedStr()}", true);
+            Logger.Log($"Merged video chunks in {sw}", true);
         }
 
         static async Task MergeChunks(string framesFile, string outPath, bool isBackup = false)

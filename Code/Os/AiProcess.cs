@@ -90,7 +90,7 @@ namespace Flowframes.Os
 
             while (Interpolate.currentlyUsingAutoEnc && Program.busy)
             {
-                if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited && AvProcess.lastTask == AvProcess.TaskType.Encode)
+                if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
                 {
                     string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
                     Logger.Log(FormatUtils.BeautifyFfmpegStats(lastLine), false, Logger.GetLastLine().ToLower().Contains("frame"));

@@ -9,7 +9,7 @@ namespace Flowframes.MiscUtils
         {
             NmkdStopwatch sw = new NmkdStopwatch();
             var returnVal =  method.DynamicInvoke(args);
-            Logger.Log($"Ran {methodName} in {sw.GetElapsedStr()}", true);
+            Logger.Log($"Ran {methodName} in {sw}", true);
             return returnVal;
         }
 
@@ -18,7 +18,7 @@ namespace Flowframes.MiscUtils
         {
             NmkdStopwatch sw = new NmkdStopwatch();
             method.DynamicInvoke(args);
-            Logger.Log($"Ran {methodName} in {sw.GetElapsedStr()}", true);
+            Logger.Log($"Ran {methodName} in {sw}", true);
         }
     }
 }

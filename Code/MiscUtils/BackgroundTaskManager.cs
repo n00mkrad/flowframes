@@ -39,7 +39,7 @@ namespace Flowframes.MiscUtils
             {
                 if(task.timer.sw.ElapsedMilliseconds > task.timeoutSeconds * 1000)
                 {
-                    Logger.Log($"[BgTaskMgr] Task with ID {task.id} timed out, has been running for {task.timer.GetElapsedStr()}!", true);
+                    Logger.Log($"[BgTaskMgr] Task with ID {task.id} timed out, has been running for {task.timer}!", true);
                     runningTasks.Remove(task);
                 }
             }
@@ -59,7 +59,7 @@ namespace Flowframes.MiscUtils
             {
                 if(task.id == id)
                 {
-                    Logger.Log($"[BgTaskMgr] Task '{task.name}' has finished after {task.timer.GetElapsedStr()} (Timeout {task.timeoutSeconds}s)", true);
+                    Logger.Log($"[BgTaskMgr] Task '{task.name}' has finished after {task.timer} (Timeout {task.timeoutSeconds}s)", true);
                     runningTasks.Remove(task);
                 }
             }

@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Flowframes.MiscUtils;
 using Microsoft.VisualBasic;
+using Flowframes.Media;
 
 namespace Flowframes
 {
@@ -17,8 +18,6 @@ namespace Flowframes
     {
         public static Process lastAvProcess;
         public static Stopwatch timeSinceLastOutput = new Stopwatch();
-        public enum TaskType { ExtractFrames, ExtractOther, Encode, GetInfo, Merge, Other };
-        public static TaskType lastTask = TaskType.Other;
 
         public static string lastOutputFfmpeg;
 
@@ -42,52 +41,64 @@ namespace Flowframes
             }
         }
 
-        public static async Task RunFfmpeg(string args, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
+        public static async Task<string> RunFfmpeg(string args, LogMode logMode, bool reliableOutput = true, bool progressBar = false)
         {
-            await RunFfmpeg(args, "", logMode, defLogLevel, taskType, progressBar);
+            return await RunFfmpeg(args, "", logMode, defLogLevel, reliableOutput, progressBar);
         }
 
-        public static async Task RunFfmpeg(string args, LogMode logMode, string loglevel, TaskType taskType = TaskType.Other, bool progressBar = false)
+        public static async Task<string> RunFfmpeg(string args, LogMode logMode, string loglevel, bool reliableOutput = true, bool progressBar = false)
         {
-            await RunFfmpeg(args, "", logMode, loglevel, taskType, progressBar);
+            return await RunFfmpeg(args, "", logMode, loglevel, reliableOutput, progressBar);
         }
 
-        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, TaskType taskType = TaskType.Other, bool progressBar = false)
+        public static async Task<string> RunFfmpeg(string args, string workingDir, LogMode logMode, bool reliableOutput = true, bool progressBar = false)
         {
-            await RunFfmpeg(args, workingDir, logMode, defLogLevel, taskType, progressBar);
+            return await RunFfmpeg(args, workingDir, logMode, defLogLevel, reliableOutput, progressBar);
         }
 
-        public static async Task RunFfmpeg(string args, string workingDir, LogMode logMode, string loglevel, TaskType taskType = TaskType.Other, bool progressBar = false)
+        public static async Task<string> RunFfmpeg(string args, string workingDir, LogMode logMode, string loglevel, bool reliableOutput = true, bool progressBar = false)
         {
-            lastOutputFfmpeg = "";
-            currentLogMode = logMode;
-            showProgressBar = progressBar;
-            Process ffmpeg = OsUtils.NewProcess(true);
-            timeSinceLastOutput.Restart();
+            bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
+            string processOutput = "";
+            Process ffmpeg = OsUtils.NewProcess(!show);
+            NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
             lastAvProcess = ffmpeg;
-            lastTask = taskType;
 
             if (string.IsNullOrWhiteSpace(loglevel))
                 loglevel = defLogLevel;
 
-            if(!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {GetFfmpegDefaultArgs(loglevel)} {args}";
+            string beforeArgs = $"-hide_banner -stats -loglevel {loglevel} -y";
+
+            if (!string.IsNullOrWhiteSpace(workingDir))
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe {GetFfmpegDefaultArgs(loglevel)} {args}";
-            
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg {beforeArgs} {args}";
+
             if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
-            Logger.Log($"ffmpeg {GetFfmpegDefaultArgs(loglevel)} {args}", true, false, "ffmpeg");
-            ffmpeg.OutputDataReceived += FfmpegOutputHandler;
-            ffmpeg.ErrorDataReceived += FfmpegOutputHandler;
+            Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
+
+            if (!show)
+            {
+                ffmpeg.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.sw.Restart(); };
+                ffmpeg.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.sw.Restart(); };
+            }
+
             ffmpeg.Start();
-            ffmpeg.BeginOutputReadLine();
-            ffmpeg.BeginErrorReadLine();
+            ffmpeg.PriorityClass = ProcessPriorityClass.BelowNormal;
 
-            while (!ffmpeg.HasExited)
-                await Task.Delay(1);
+            if (!show)
+            {
+                ffmpeg.BeginOutputReadLine();
+                ffmpeg.BeginErrorReadLine();
+            }
 
-            if(progressBar)
+            while (!ffmpeg.HasExited) await Task.Delay(10);
+            while (reliableOutput && timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
+
+            if (progressBar)
                 Program.mainForm.SetProgress(0);
+
+            return processOutput;
         }
 
         public static string GetFfmpegDefaultArgs (string loglevel = "warning")
@@ -95,71 +106,41 @@ namespace Flowframes
             return $"-hide_banner -stats -loglevel {loglevel} -y";
         }
 
-        static void FfmpegOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        public static async Task<string> RunFfprobe(string args, LogMode logMode = LogMode.Hidden, string loglevel = "quiet")
         {
-            timeSinceLastOutput.Restart();
+            bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
+            string processOutput = "";
+            Process ffprobe = OsUtils.NewProcess(!show);
+            NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
+            lastAvProcess = ffprobe;
 
-            if (Interpolate.canceled || outLine == null || outLine.Data == null)
-                return;
+            if (string.IsNullOrWhiteSpace(loglevel))
+                loglevel = defLogLevel;
 
-            string line = outLine.Data;
-            lastOutputFfmpeg = lastOutputFfmpeg + "\n" + line;
+            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe -v {loglevel} {args}";
 
-            bool hidden = currentLogMode == LogMode.Hidden;
+            if (logMode != LogMode.Hidden) Logger.Log("Running FFprobe...", false);
+            Logger.Log($"ffprobe -v {loglevel} {args}", true, false, "ffmpeg");
 
-            if (HideMessage(line)) // Don't print certain warnings 
-                hidden = true;
-
-            bool replaceLastLine = currentLogMode == LogMode.OnlyLastLine;
-
-            if (line.StartsWith("frame="))
-                line = FormatUtils.BeautifyFfmpegStats(line);
-            
-            Logger.Log(line, hidden, replaceLastLine, "ffmpeg");
-
-            if (line.Contains(".srt: Invalid data found"))
-                Logger.Log($"Warning: Failed to encode subtitle track {line.Split(':')[2]}. This track will be missing in the output file.");
-
-            if (line.Contains("Could not open file"))
-                Interpolate.Cancel($"FFmpeg Error: {line}");
-
-            if (line.Contains("No NVENC capable devices found") || line.MatchesWildcard("*nvcuda.dll*"))
-                Interpolate.Cancel($"FFmpeg Error: {line}\nMake sure you have an NVENC-capable Nvidia GPU.");
-
-            if (!hidden && showProgressBar && line.Contains("Time:"))
+            if (!show)
             {
-                Regex timeRegex = new Regex("(?<=Time:).*(?= )");
-                UpdateFfmpegProgress(timeRegex.Match(line).Value);
+                ffprobe.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, false); timeSinceLastOutput.sw.Restart(); };
+                ffprobe.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, false); timeSinceLastOutput.sw.Restart(); };
             }
-        }
 
-        static bool HideMessage (string msg)
-        {
-            string[] hiddenMsgs = new string[] { "can produce invalid output", "pixel format", "provided invalid" };
+            ffprobe.Start();
+            ffprobe.PriorityClass = ProcessPriorityClass.BelowNormal;
 
-            foreach (string str in hiddenMsgs)
-                if (msg.MatchesWildcard($"*{str}*"))
-                    return true;
+            if (!show)
+            {
+                ffprobe.BeginOutputReadLine();
+                ffprobe.BeginErrorReadLine();
+            }
 
-            return false;
-        }
+            while (!ffprobe.HasExited) await Task.Delay(10);
+            while (timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
 
-        public static async Task<string> GetFfmpegOutputAsync(string args, bool setBusy = false, bool progressBar = false)
-        {
-            timeSinceLastOutput.Restart();
-            if (Program.busy) setBusy = false;
-            lastOutputFfmpeg = "";
-            showProgressBar = progressBar;
-            Process ffmpeg = OsUtils.NewProcess(true);
-            lastAvProcess = ffmpeg;
-            ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg.exe -hide_banner -y -stats {args}";
-            Logger.Log($"ffmpeg {args}", true, false, "ffmpeg");
-            if (setBusy) Program.mainForm.SetWorking(true);
-            lastOutputFfmpeg = await OsUtils.GetOutputAsync(ffmpeg);
-            while (!ffmpeg.HasExited) await Task.Delay(50);
-            while(timeSinceLastOutput.ElapsedMilliseconds < 200) await Task.Delay(50);
-            if (setBusy) Program.mainForm.SetWorking(false);
-            return lastOutputFfmpeg;
+            return processOutput;
         }
 
         public static string GetFfprobeOutput (string args)
@@ -173,30 +154,6 @@ namespace Flowframes
             string err = ffprobe.StandardError.ReadToEnd();
             if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
             return output;
-        }
-
-        public static void UpdateFfmpegProgress(string ffmpegTime)
-        {
-            try
-            {
-                Form1 form = Program.mainForm;
-                long currInDuration = (form.currInDurationCut < form.currInDuration) ? form.currInDurationCut : form.currInDuration;
-
-                if (currInDuration < 1)
-                {
-                    Program.mainForm.SetProgress(0);
-                    return;
-                }
-
-                long total = currInDuration / 100;
-                long current = FormatUtils.TimestampToMs(ffmpegTime);
-                int progress = Convert.ToInt32(current / total);
-                Program.mainForm.SetProgress(progress);
-            }
-            catch (Exception e)
-            {
-                Logger.Log($"Failed to get ffmpeg progress: {e.Message}", true);
-            }
         }
         
         static string GetAvDir ()

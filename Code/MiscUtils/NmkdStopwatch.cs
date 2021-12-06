@@ -6,15 +6,16 @@ namespace Flowframes.MiscUtils
 {
     class NmkdStopwatch
     {
-        public Stopwatch sw = new Stopwatch(); 
+        public Stopwatch sw = new Stopwatch();
+        public long ElapsedMs { get { return sw.ElapsedMilliseconds; } }
 
-        public NmkdStopwatch (bool startOnCreation = true)
+        public NmkdStopwatch(bool startOnCreation = true)
         {
             if (startOnCreation)
                 sw.Restart();
         }
 
-        public string GetElapsedStr ()
+        public override string ToString()
         {
             return FormatUtils.TimeSw(sw);
         }
