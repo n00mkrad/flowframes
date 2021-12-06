@@ -26,7 +26,7 @@ namespace Flowframes.Ui
             if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 
-            outputTbox.Text = (Config.GetInt("outFolderLoc") == 0) ? inputTbox.Text.Trim().GetParentDir() : Config.Get("custOutDir").Trim();
+            SetOutPath(inputTbox, inputTbox.Text.Trim().GetParentDir());
 
             Program.lastInputPath = path;
             Program.lastInputPathIsSsd = OsUtils.DriveIsSSD(path);
@@ -64,6 +64,28 @@ namespace Flowframes.Ui
             if (start)
                 Program.mainForm.runBtn_Click(null, null);
                 
+        }
+
+        public static bool SetOutPath (TextBox outputTbox, string outPath)
+        {
+            bool customOutDir = Config.GetInt("outFolderLoc") == 1;
+            outputTbox.Text = customOutDir ? Config.Get("custOutDir").Trim() : outPath;
+
+            if (customOutDir)
+            {
+                try
+                {
+                    Directory.CreateDirectory(outputTbox.Text);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"Failed to create output folder: {e.Message}");
+                    outputTbox.Text = outPath;
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         static void CheckExistingFolder (string inpath, string outpath)

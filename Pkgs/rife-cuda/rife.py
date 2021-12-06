@@ -76,7 +76,7 @@ try:
             print("Using >= 3.9 model.")
         
         model.load_model(os.path.join(dname, args.model), -1)
-        print("Loaded v3.x HD model.")
+        print("Loaded v3.x/4.x model.")
     except:
         try:
             print(f"Trying to load v3 (legacy) model from {os.path.join(dname, args.model)}")

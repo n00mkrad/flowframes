@@ -194,9 +194,8 @@ namespace Flowframes
         public void LoadBatchEntry(InterpSettings entry)
         {
             inputTbox.Text = entry.inPath;
-            outputTbox.Text = entry.outPath;
+            MainUiFunctions.SetOutPath(inputTbox, entry.outPath);
             interpFactorCombox.Text = entry.interpFactor.ToString();
-            //aiCombox.SelectedIndex = Implementations.networks.IndexOf(entry.ai);
             aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.aiName == entry.ai.aiName).FirstOrDefault());
             SetOutMode(entry.outMode);
         }

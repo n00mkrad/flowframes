@@ -114,7 +114,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (entry.outPath == null || !Directory.Exists(entry.outPath))
+            if (entry.outPath == null || (!Directory.Exists(entry.outPath) && Config.GetInt("outFolderLoc") != 1))
             {
                 Logger.Log("Queue: Can't process queue entry: Output path is invalid.");
                 return false;
