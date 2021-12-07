@@ -113,6 +113,9 @@ namespace Flowframes
 
         public static string[] SplitIntoLines(this string str)
         {
+            if (string.IsNullOrWhiteSpace(str))
+                return new string[0];
+
             return Regex.Split(str, "\r\n|\r|\n");
         }
 

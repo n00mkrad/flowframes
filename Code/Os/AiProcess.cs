@@ -88,18 +88,31 @@ namespace Flowframes.Os
                 return;
             }
 
-            while (Interpolate.currentlyUsingAutoEnc && Program.busy)
+            try
             {
-                if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
+                while (Interpolate.currentlyUsingAutoEnc && Program.busy)
                 {
-                    string lastLine = AvProcess.lastOutputFfmpeg.SplitIntoLines().Last();
-                    Logger.Log(FormatUtils.BeautifyFfmpegStats(lastLine), false, Logger.GetLastLine().ToLower().Contains("frame"));
+                    Logger.Log($"Interpolate.currentlyUsingAutoEnc && Program.busy");
+
+                    if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
+                    {
+                        string lastLine = Logger.LastLogLine;
+
+                        if(lastLine.Contains("frame"))
+                            Logger.Log(FormatUtils.BeautifyFfmpegStats(lastLine), false, Logger.LastUiLine.ToLower().Contains("frame"));
+                    }
+
+                    Logger.Log($"will break if AvProcess.lastAvProcess.HasExited ({AvProcess.lastAvProcess.HasExited}) && !AutoEncode.HasWorkToDo() ({!AutoEncode.HasWorkToDo()})");
+
+                    if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
+                        break;
+
+                    await Task.Delay(500);
                 }
-
-                if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
-                    break;
-
-                await Task.Delay(500);
+            }
+            catch(Exception e)
+            {
+                Logger.Log($"AiFinished encoder logging error: {e.Message}\n{e.StackTrace}", true);
             }
         }
 
