@@ -92,8 +92,6 @@ namespace Flowframes.Os
             {
                 while (Interpolate.currentlyUsingAutoEnc && Program.busy)
                 {
-                    Logger.Log($"Interpolate.currentlyUsingAutoEnc && Program.busy");
-
                     if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
                     {
                         string lastLine = Logger.LastLogLine;
@@ -101,8 +99,6 @@ namespace Flowframes.Os
                         if(lastLine.Contains("frame"))
                             Logger.Log(FormatUtils.BeautifyFfmpegStats(lastLine), false, Logger.LastUiLine.ToLower().Contains("frame"));
                     }
-
-                    Logger.Log($"will break if AvProcess.lastAvProcess.HasExited ({AvProcess.lastAvProcess.HasExited}) && !AutoEncode.HasWorkToDo() ({!AutoEncode.HasWorkToDo()})");
 
                     if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
                         break;
