@@ -167,13 +167,10 @@ def pad_image(img):
     else:
         return F.pad(img, padding)
 
-if args.UHD:
-    print("UHD mode enabled.")
-    ph = ((h - 1) // 64 + 1) * 64
-    pw = ((w - 1) // 64 + 1) * 64
-else:
-    ph = ((h - 1) // 32 + 1) * 32
-    pw = ((w - 1) // 32 + 1) * 32
+print(f"Using scale {args.scale}.")
+tmp = max(128, int(128 / args.scale))
+ph = ((h - 1) // tmp + 1) * tmp
+pw = ((w - 1) // tmp + 1) * tmp
 padding = (0, pw - w, 0, ph - h)
 
 write_buffer = Queue(maxsize=args.rbuffer)
