@@ -294,6 +294,12 @@ namespace Flowframes.Main
                 return false;
             }
 
+            if(current.outMode == I.OutMode.VidGif)
+            {
+                Logger.Log($"Not Using AutoEnc: Using GIF output", true);
+                return false;
+            }
+
             if (stepByStep && !Config.GetBool(Config.Key.sbsAllowAutoEnc))
             {
                 Logger.Log($"Not Using AutoEnc: Using step-by-step mode, but 'sbsAllowAutoEnc' is false", true);
