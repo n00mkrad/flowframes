@@ -1,3 +1,11 @@
+Flowframes 1.36.0 Changelog:
+- Added RIFE 4.0 model which is both faster and higher quality than 3.9
+- Fixed issue with GIF exorting where auto-encode would try to mux a h264 stream into GIF
+- Fixed custom output folder not working for batch processing
+- Fixed issues where the batch queue could get stuck waiting for ffmpeg to finish
+- Minor improvements by backporting Nmkoder code
+
+
 Flowframes 1.35.0 Changelog:
 - Updated RIFE - It now supports any interpolation factor (like 3x, 5x, 10x, ...)
 - Added RIFE 3.9 model, big speed improvements (54% faster than 3.1, 100% faster than 2.3)
@@ -67,27 +75,3 @@ Flowframes 1.30.0 Changelog:
 - Added basic command line arguments to automate Flowframes interpolation
 - Added move up/down buttons to batch processing queue
 - Fixed a bug that would set incorrect default values for certain settings
-
-
-Flowframes 1.29.0 Changelog:
-- Added option to change the color space for most codecs (e.g. for 10-bit encoding)
-- Added a button in the settings to reset the config to default
-- Added a shortcut button to the Encoding Settings on the main tab
-- Added option to disable Preview tab
-- Fixed problem where videos with BT470M color format would fail to encode
-- Removed compatibility warning when Flowframes is run on Windows 11
-
-
-Flowframes 1.28.1 Changelog:
-- Added option to auto-pause interpolation if auto-encode can't keep up
-- Auto-Encode: Old frames now get deleted instead of being replaced by dummy files
-- Fixed speed regression on RIFE 3.x (up to ~1.5x as fast as in 1.28.0)
-
-
-Flowframes 1.28.0 Changelog:
-- Updated RIFE CUDA to 3.8 (Skipped previous models)
-- Added native transparency support with RIFE CUDA 3.8
-- Added model downloader to pre-download all models at once
-- Added support for loading custom AI models
-- Improved model loading (faster file validation and lots of internal changes)
-- Step-by-step mode: Previous steps now run automatically if needed
