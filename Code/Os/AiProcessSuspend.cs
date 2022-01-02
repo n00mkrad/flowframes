@@ -108,7 +108,5 @@ namespace Flowframes.Os
                 btn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkOrange;
             }
         }
-
-
     }
 }

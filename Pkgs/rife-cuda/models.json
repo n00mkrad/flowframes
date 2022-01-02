@@ -39,8 +39,15 @@
 },
 {
 	"name": "RIFE 3.9",
-	"desc": "Latest General Model",
+	"desc": "Updated v3 Model",
 	"dir": "RIFE39",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.0",
+	"desc": "Latest General Model",
+	"dir": "RIFE40",
 	"supportsAlpha": "true",
 	"isDefault": "true"
 },
