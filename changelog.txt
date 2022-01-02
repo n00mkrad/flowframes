@@ -1,6 +1,6 @@
 Flowframes 1.36.0 Changelog:
 - Added RIFE 4.0 model which is both faster and higher quality than 3.9
-- Fixed issue with GIF exorting where auto-encode would try to mux a h264 stream into GIF
+- Fixed issue with GIF exporting where auto-encode would try to mux a h264 stream into GIF
 - Fixed custom output folder not working for batch processing
 - Fixed issues where the batch queue could get stuck waiting for ffmpeg to finish
 - Minor improvements by backporting Nmkoder code
