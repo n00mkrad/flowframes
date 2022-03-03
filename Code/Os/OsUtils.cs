@@ -271,7 +271,7 @@ namespace Flowframes.Os
 
         public static string GetGpus ()
         {
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DisplayConfiguration");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
 
             List<string> gpus = new List<string>();
 
