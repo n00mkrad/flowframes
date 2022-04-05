@@ -45,6 +45,7 @@ namespace Flowframes.Media
                 if (retryCount > 0)
                 {
                     Logger.Log($"Got {frameCount} frames, retrying ({retryCount} left)", true);
+                    Clear();
                     frameCount = await GetFrameCountAsync(path, retryCount - 1);
                 }
                 else
