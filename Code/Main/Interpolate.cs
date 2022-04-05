@@ -149,7 +149,7 @@ namespace Flowframes
                 if(extractedFrames == 1)
                     Cancel("Only a single frame was extracted from your input file!\n\nPossibly your input is an image, not a video?");
                 else
-                    Cancel($"Frame extraction failed!\nExtracted {extractedFrames} frames.\n\nYour input file might be incompatible.");
+                    Cancel($"Frame extraction failed!\nExtracted {extractedFrames} frames - current.framesFolder exists: {Directory.Exists(current.framesFolder)} - currentInputFrameCount = {currentInputFrameCount} - extractedFrames = {extractedFrames}.\n\nYour input file might be incompatible.");
             }  
 
             if (Config.GetInt(Config.Key.dedupMode) == 1)

@@ -23,6 +23,9 @@ namespace Flowframes.Ui
             Program.mainForm.ResetInputInfo();
             string path = inputTbox.Text.Trim();
 
+            GetFrameCountCached.Clear();
+            GetMediaResolutionCached.Clear();
+
             if (Config.GetBool(Config.Key.clearLogOnInput))
                 Logger.ClearLogBox();
 

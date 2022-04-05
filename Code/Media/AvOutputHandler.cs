@@ -120,7 +120,7 @@ namespace Flowframes.Media
 
         static bool HideMessage(string msg)
         {
-            string[] hiddenMsgs = new string[] { "can produce invalid output", "pixel format", "provided invalid" };
+            string[] hiddenMsgs = new string[] { "can produce invalid output", "pixel format", "provided invalid", "Non-monotonous", "not enough frames to estimate rate", "invalid dropping", "message repeated" };
 
             foreach (string str in hiddenMsgs)
                 if (msg.MatchesWildcard($"*{str}*"))

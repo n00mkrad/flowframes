@@ -9,9 +9,9 @@ namespace Flowframes.Media
 {
     class GetFrameCountCached
     {
-        public static Dictionary<QueryInfo, int> cache = new Dictionary<QueryInfo, int>();
+        private static Dictionary<QueryInfo, int> cache = new Dictionary<QueryInfo, int>();
 
-        public static async Task<int> GetFrameCountAsync(string path)
+        public static async Task<int> GetFrameCountAsync(string path, int retryCount = 3)
         {
             Logger.Log($"Getting frame count ({path})", true);
 
@@ -35,8 +35,23 @@ namespace Flowframes.Media
             else
                 frameCount = await FfmpegCommands.GetFrameCountAsync(path);
 
-            Logger.Log($"Adding hash with value {frameCount} to cache.", true);
-            cache.Add(hash, frameCount);
+            if(frameCount > 0)
+            {
+                Logger.Log($"Adding hash with value {frameCount} to cache.", true);
+                cache.Add(hash, frameCount);
+            }
+            else 
+            {
+                if (retryCount > 0)
+                {
+                    Logger.Log($"Got {frameCount} frames, retrying ({retryCount} left)", true);
+                    frameCount = await GetFrameCountAsync(path, retryCount - 1);
+                }
+                else
+                {
+                    Logger.Log($"Failed to get frames and out of retries ({frameCount} frames for {path})", true);
+                }
+            }
 
             return frameCount;
         }
@@ -57,6 +72,11 @@ namespace Flowframes.Media
                     return entry.Value;
 
             return 0;
+        }
+
+        public static void Clear ()
+        {
+            cache.Clear();
         }
     }
 }

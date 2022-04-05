@@ -9,7 +9,7 @@ namespace Flowframes.Media
 {
     class GetMediaResolutionCached
     {
-        public static Dictionary<QueryInfo, Size> cache = new Dictionary<QueryInfo, Size>();
+        private static Dictionary<QueryInfo, Size> cache = new Dictionary<QueryInfo, Size>();
 
         public static async Task<Size> GetSizeAsync(string path)
         {
@@ -31,8 +31,11 @@ namespace Flowframes.Media
             Size size;
             size = await IoUtils.GetVideoOrFramesRes(path);
 
-            Logger.Log($"Adding hash with value {size} to cache.", true);
-            cache.Add(hash, size);
+            if(size.Width > 0 && size.Height > 0)
+            {
+                Logger.Log($"Adding hash with value {size} to cache.", true);
+                cache.Add(hash, size);
+            }
 
             return size;
         }
@@ -53,6 +56,11 @@ namespace Flowframes.Media
                     return entry.Value;
 
             return new Size();
+        }
+
+        public static void Clear()
+        {
+            cache.Clear();
         }
     }
 }

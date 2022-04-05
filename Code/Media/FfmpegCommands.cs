@@ -170,7 +170,7 @@ namespace Flowframes
             frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
             if (frames > 0) return frames;
 
-            Logger.Log("Failed to get total frame count of video.");
+            Logger.Log("Failed to get total frame count of video.", true);
             return 0;
         }
 
