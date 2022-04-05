@@ -102,10 +102,11 @@ namespace Flowframes
 
                 if (arg.StartsWith("factor="))
                 {
-                    int factor = arg.Split('=').Last().GetInt();
-                    if (factor == 2) interpFactorCombox.SelectedIndex = 0;
-                    if (factor == 4) interpFactorCombox.SelectedIndex = 1;
-                    if (factor == 8) interpFactorCombox.SelectedIndex = 2;
+                    float factor = arg.Split('=').Last().GetFloat();
+                    interpFactorCombox.Text = factor.ToString();
+                    //if (factor == 2) interpFactorCombox.SelectedIndex = 0;
+                    //if (factor == 4) interpFactorCombox.SelectedIndex = 1;
+                    //if (factor == 8) interpFactorCombox.SelectedIndex = 2;
                 }
 
                 if (arg.StartsWith("ai="))
@@ -165,7 +166,7 @@ namespace Flowframes
         {
             SetTab("interpolate");
             return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps,
-                interpFactorCombox.GetInt(), outSpeedCombox.GetInt().Clamp(1, 64), GetOutMode(), GetModel(GetAi()));
+                interpFactorCombox.GetFloat(), outSpeedCombox.GetInt().Clamp(1, 64), GetOutMode(), GetModel(GetAi()));
         }
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
@@ -183,7 +184,7 @@ namespace Flowframes
             settings.ai = GetAi();
             settings.inFpsDetected = currInFpsDetected;
             settings.inFps = currInFps;
-            settings.interpFactor = interpFactorCombox.GetInt();
+            settings.interpFactor = interpFactorCombox.GetFloat();
             settings.outFps = settings.inFps * settings.interpFactor;
             settings.outMode = GetOutMode();
             settings.model = GetModel(GetAi());
@@ -414,17 +415,17 @@ namespace Flowframes
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateUiFps();
-            int guiFactor = interpFactorCombox.GetInt();
-
-            if (!initialized)
-                return;
-
-            string aiName = GetAi().aiName.Replace("_", "-");
+            //int guiFactor = interpFactorCombox.GetInt();
+            //
+            //if (!initialized)
+            //    return;
+            //
+            //string aiName = GetAi().aiName.Replace("_", "-");
         }
 
         public void ValidateFactor()
         {
-            interpFactorCombox.Text = $"x{MainUiFunctions.ValidateInterpFactor(interpFactorCombox.GetInt())}";
+            interpFactorCombox.Text = $"x{MainUiFunctions.ValidateInterpFactor(interpFactorCombox.GetFloat())}";
         }
 
         public void SetWorking(bool state, bool allowCancel = true)

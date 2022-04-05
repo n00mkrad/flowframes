@@ -260,37 +260,6 @@ namespace Flowframes.Os
             await AiFinished("RIFE");
         }
 
-        // static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
-        // {
-        //     int times = (int)Math.Log(factor, 2);
-        // 
-        //     if (times > 1)
-        //         AutoEncode.paused = true;  // Disable autoenc until the last iteration
-        //     else
-        //         AutoEncode.paused = false;
-        // 
-        //     for (int iteration = 1; iteration <= times; iteration++)
-        //     {
-        //         if (Interpolate.canceled) return;
-        // 
-        //         if (Interpolate.currentlyUsingAutoEnc && iteration == times)      // Enable autoenc if this is the last iteration
-        //             AutoEncode.paused = false;
-        // 
-        //         if (iteration > 1)
-        //         {
-        //             Logger.Log($"Re-Running RIFE for {Math.Pow(2, iteration)}x interpolation...", false);
-        //             string lastInterpPath = outPath + $"-run{iteration - 1}";
-        //             Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
-        //             await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
-        //             await IoUtils.TryDeleteIfExistsAsync(lastInterpPath);
-        //         }
-        //         else
-        //         {
-        //             await RunRifeNcnnProcess(framesPath, outPath, mdl);
-        //         }
-        //     }
-        // }
-
         static async Task RunRifeNcnnProcess(string inPath, float factor, string outPath, string mdl)
         {
             Directory.CreateDirectory(outPath);

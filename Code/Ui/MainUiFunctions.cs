@@ -153,12 +153,12 @@ namespace Flowframes.Ui
             }
         }
 
-        public static int ValidateInterpFactor (int factor)
+        public static float ValidateInterpFactor (float factor)
         {
             AI ai = Program.mainForm.GetAi();
 
-            if (factor > 256)
-                return 256;
+            if (factor > 256f)
+                return 256f;
 
             // NO LONGER NEEDED WITH RIFE 3.9
             //if (ai.aiName == Implementations.rifeCuda.aiName)
