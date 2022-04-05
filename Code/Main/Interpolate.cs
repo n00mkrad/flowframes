@@ -194,7 +194,7 @@ namespace Flowframes
                 tasks.Add(AiProcess.RunRifeCuda(current.framesFolder, current.interpFactor, current.model.dir));
 
             if (ai.aiName == Implementations.rifeNcnn.aiName)
-                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, (int)current.interpFactor, current.model.dir));
+                tasks.Add(AiProcess.RunRifeNcnn(current.framesFolder, outpath, current.interpFactor, current.model.dir));
 
             if (ai.aiName == Implementations.flavrCuda.aiName)
                 tasks.Add(AiProcess.RunFlavrCuda(current.framesFolder, current.interpFactor, current.model.dir));

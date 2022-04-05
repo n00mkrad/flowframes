@@ -40,7 +40,7 @@ namespace Flowframes.Media
                 Logger.Log($"Adding hash with value {frameCount} to cache.", true);
                 cache.Add(hash, frameCount);
             }
-            else 
+            else
             {
                 if (retryCount > 0)
                 {

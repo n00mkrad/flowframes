@@ -241,7 +241,7 @@ namespace Flowframes.Os
             while (!flavrPy.HasExited) await Task.Delay(1);
         }
 
-        public static async Task RunRifeNcnn (string framesPath, string outPath, int factor, string mdl)
+        public static async Task RunRifeNcnn (string framesPath, string outPath, float factor, string mdl)
         {
             processTimeMulti.Restart();
 
@@ -249,7 +249,8 @@ namespace Flowframes.Os
             {
                 Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
-                await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
+                //await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
+                await RunRifeNcnnProcess(framesPath, factor, outPath, mdl);
             }
             catch (Exception e)
             {
@@ -259,49 +260,50 @@ namespace Flowframes.Os
             await AiFinished("RIFE");
         }
 
-        static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
-        {
-            int times = (int)Math.Log(factor, 2);
+        // static async Task RunRifeNcnnMulti(string framesPath, string outPath, int factor, string mdl)
+        // {
+        //     int times = (int)Math.Log(factor, 2);
+        // 
+        //     if (times > 1)
+        //         AutoEncode.paused = true;  // Disable autoenc until the last iteration
+        //     else
+        //         AutoEncode.paused = false;
+        // 
+        //     for (int iteration = 1; iteration <= times; iteration++)
+        //     {
+        //         if (Interpolate.canceled) return;
+        // 
+        //         if (Interpolate.currentlyUsingAutoEnc && iteration == times)      // Enable autoenc if this is the last iteration
+        //             AutoEncode.paused = false;
+        // 
+        //         if (iteration > 1)
+        //         {
+        //             Logger.Log($"Re-Running RIFE for {Math.Pow(2, iteration)}x interpolation...", false);
+        //             string lastInterpPath = outPath + $"-run{iteration - 1}";
+        //             Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
+        //             await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
+        //             await IoUtils.TryDeleteIfExistsAsync(lastInterpPath);
+        //         }
+        //         else
+        //         {
+        //             await RunRifeNcnnProcess(framesPath, outPath, mdl);
+        //         }
+        //     }
+        // }
 
-            if (times > 1)
-                AutoEncode.paused = true;  // Disable autoenc until the last iteration
-            else
-                AutoEncode.paused = false;
-
-            for (int iteration = 1; iteration <= times; iteration++)
-            {
-                if (Interpolate.canceled) return;
-
-                if (Interpolate.currentlyUsingAutoEnc && iteration == times)      // Enable autoenc if this is the last iteration
-                    AutoEncode.paused = false;
-
-                if (iteration > 1)
-                {
-                    Logger.Log($"Re-Running RIFE for {Math.Pow(2, iteration)}x interpolation...", false);
-                    string lastInterpPath = outPath + $"-run{iteration - 1}";
-                    Directory.Move(outPath, lastInterpPath);      // Rename last interp folder
-                    await RunRifeNcnnProcess(lastInterpPath, outPath, mdl);
-                    await IoUtils.TryDeleteIfExistsAsync(lastInterpPath);
-                }
-                else
-                {
-                    await RunRifeNcnnProcess(framesPath, outPath, mdl);
-                }
-            }
-        }
-
-        static async Task RunRifeNcnnProcess(string inPath, string outPath, string mdl)
+        static async Task RunRifeNcnnProcess(string inPath, float factor, string outPath, string mdl)
         {
             Directory.CreateDirectory(outPath);
             Process rifeNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, inPath);
-            SetProgressCheck(outPath, 2);
+            SetProgressCheck(outPath, factor);
+            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Maybe won't work with fractional factors ??
 
             string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
             
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
            
@@ -346,7 +348,7 @@ namespace Flowframes.Os
             Process dain = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
-            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Won't work with fractional factors
+            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Maybe won't work with fractional factors ??
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
                 $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j 2:1:2";
