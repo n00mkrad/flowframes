@@ -157,17 +157,26 @@ namespace Flowframes.Ui
         {
             AI ai = Program.mainForm.GetAi();
 
-            if (factor > 256f)
-                return 256f;
+            if(ai.factorSupport == AI.FactorSupport.Fixed)
+            {
+                int closest = ai.supportedFactors.Min(i => (Math.Abs(factor.RoundToInt() - i), i)).i;
+                return (float)closest;
+            }
 
-            // NO LONGER NEEDED WITH RIFE 3.9
-            //if (ai.aiName == Implementations.rifeCuda.aiName)
-            //{
-            //    if (!IsPowerOfTwo(factor))
-            //    {
-            //        return Implementations.rifeCuda.supportedFactors.Last();
-            //    }
-            //}
+            if(ai.factorSupport == AI.FactorSupport.AnyPowerOfTwo)
+            {
+                return ToNearestPow2(factor.RoundToInt()).Clamp(2, 128);
+            }
+
+            if(ai.factorSupport == AI.FactorSupport.AnyInteger)
+            {
+                return factor.RoundToInt().Clamp(2, 128);
+            }
+
+            if(ai.factorSupport == AI.FactorSupport.AnyFloat)
+            {
+                return factor.Clamp(2, 128);
+            }
 
             return factor;
         }
@@ -175,6 +184,25 @@ namespace Flowframes.Ui
         static bool IsPowerOfTwo(int x)
         {
             return (x != 0) && ((x & (x - 1)) == 0);
+        }
+
+        static int ToNearestPow2(int x)
+        {
+            int next = ToNextNearestPow2(x);
+            int prev = next >> 1;
+            return next - x < x - prev ? next : prev;
+        }
+
+        static int ToNextNearestPow2(int x)
+        {
+            if (x < 0) { return 0; }
+            --x;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            return x + 1;
         }
     }
 }

@@ -16,10 +16,11 @@ namespace Flowframes.Data
         public string friendlyName;
         public string description;
         public string pkgDir;
+        public enum FactorSupport { Fixed, AnyPowerOfTwo, AnyInteger, AnyFloat }
+        public FactorSupport factorSupport;
         public int[] supportedFactors;
-        public bool multiPass;  // Are multiple passes needed to get to the desired interp factor?
 
-        public AI(Backend backend, string aiName, string friendlyName, string desc, string pkgDir, int[] factors, bool multiPass = false)
+        public AI(Backend backend, string aiName, string friendlyName, string desc, string pkgDir, FactorSupport factorSupport = FactorSupport.Fixed, int[] factors = null)
         {
             this.backend = backend;
             this.aiName = aiName;
@@ -28,7 +29,7 @@ namespace Flowframes.Data
             this.description = desc;
             this.pkgDir = pkgDir;
             this.supportedFactors = factors;
-            this.multiPass = multiPass;
+            this.factorSupport = factorSupport;
         }
     }
 }

@@ -182,14 +182,6 @@ namespace Flowframes.Main
 
         public static void ShowWarnings (float factor, AI ai)
         {
-            string aiName = ai.aiName.Replace("_", "-");
-
-            if (factor > 2 && ai.multiPass && Config.GetInt(Config.Key.autoEncMode) > 0)
-            {
-                int times = (int)Math.Log(factor, 2);
-                Logger.Log($"Warning: {aiName} can only do 2x at a time and will run {times} times for {factor}x. Auto-Encode will only work on the last run.");
-            }
-
             if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
                 Logger.Log($"Warning: The CMD window for interpolation is enabled. This will disable Auto-Encode and the progress bar!");
         }

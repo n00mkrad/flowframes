@@ -85,10 +85,13 @@ namespace Flowframes
         public static string Wrap(this string path, bool addSpaceFront = false, bool addSpaceEnd = false)
         {
             string s = "\"" + path + "\"";
+
             if (addSpaceFront)
                 s = " " + s;
+
             if (addSpaceEnd)
                 s = s + " ";
+
             return s;
         }
 
@@ -106,8 +109,21 @@ namespace Flowframes
         {
             if (i < min)
                 i = min;
+
             if (i > max)
                 i = max;
+
+            return i;
+        }
+
+        public static float Clamp(this float i, int min, float max)
+        {
+            if (i < min)
+                i = min;
+
+            if (i > max)
+                i = max;
+
             return i;
         }
 
