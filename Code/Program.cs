@@ -3,6 +3,7 @@ using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.Os;
+using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -81,7 +82,7 @@ namespace Flowframes
 
         static void ShowUnhandledError(string text)
         {
-            MessageBox.Show(text, "Unhandled Error");
+            UiUtils.ShowMessageBox(text, UiUtils.MessageType.Error);
             Clipboard.SetText(text);
         }
 
@@ -118,8 +119,8 @@ namespace Flowframes
 
                                 if (showMsg)
                                 {
-                                    MessageBox.Show($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
-                                    $"Please either clear up some disk space or cancel the interpolation.", "Warning");
+                                    UiUtils.ShowMessageBox($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
+                                    $"Please either clear up some disk space or cancel the interpolation.", UiUtils.MessageType.Warning);
                                 }
                             }
                         }

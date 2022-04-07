@@ -439,52 +439,52 @@ namespace Flowframes.Os
             if (!hasShownError && err && line.ToLower().Contains("out of memory"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}", "Error");
+                UiUtils.ShowMessageBox($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && err && line.ToLower().Contains("modulenotfounderror"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}", "Error");
-                if(!Python.HasEmbeddedPyFolder())
+                UiUtils.ShowMessageBox($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}", UiUtils.MessageType.Error);
+                if (!Python.HasEmbeddedPyFolder())
                     Process.Start("https://github.com/n00mkrad/flowframes/blob/main/PythonDependencies.md");
             }
 
             if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"Your GPU seems to be outdated and is not supported!\n\n{line}", "Error");
+                UiUtils.ShowMessageBox($"Your GPU seems to be outdated and is not supported!\n\n{line}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && line.ToLower().Contains("illegal memory access"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"Your GPU appears to be unstable! If you have an overclock enabled, please disable it!\n\n{line}", "Error");
+                UiUtils.ShowMessageBox($"Your GPU appears to be unstable! If you have an overclock enabled, please disable it!\n\n{line}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && line.ToLower().Contains("error(s) in loading state_dict"))
             {
                 hasShownError = true;
                 string msg = (Interpolate.current.ai.aiName == Implementations.flavrCuda.aiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
-                InterpolateUtils.ShowMessage($"Error loading the AI model!\n\n{line}{msg}", "Error");
+                UiUtils.ShowMessageBox($"Error loading the AI model!\n\n{line}{msg}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && line.ToLower().Contains("unicodeencodeerror"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"It looks like your path contains invalid characters - remove them and try again!\n\n{line}", "Error");
+                UiUtils.ShowMessageBox($"It looks like your path contains invalid characters - remove them and try again!\n\n{line}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && err && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A python error occured during interpolation!\nCheck {logFilename} for details.\n\n{line}", "Error");
+                UiUtils.ShowMessageBox($"A python error occured during interpolation!\nCheck {logFilename} for details.\n\n{line}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && err && line.MatchesWildcard("vk*Instance* failed"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.", "Error");
+                UiUtils.ShowMessageBox($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
@@ -492,19 +492,19 @@ namespace Flowframes.Os
                 hasShownError = true;
                 bool usingDain = (Interpolate.current.ai.aiName == Implementations.dainNcnn.aiName);
                 string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
-                InterpolateUtils.ShowMessage($"Vulkan ran out of memory!\n\n{line}{msg}", "Error");
+                UiUtils.ShowMessageBox($"Vulkan ran out of memory!\n\n{line}{msg}", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && err && line.Contains("invalid gpu device"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?", "Error");
+                UiUtils.ShowMessageBox($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?", UiUtils.MessageType.Error);
             }
 
             if (!hasShownError && err && line.MatchesWildcard("vk* failed"))
             {
                 hasShownError = true;
-                InterpolateUtils.ShowMessage($"A Vulkan error occured during interpolation!\n\n{line}", "Error");
+                UiUtils.ShowMessageBox($"A Vulkan error occured during interpolation!\n\n{line}", UiUtils.MessageType.Error);
             }
 
             if (hasShownError)

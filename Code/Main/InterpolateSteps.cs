@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Flowframes.MiscUtils;
 using System.Windows.Forms;
+using Flowframes.Ui;
 
 namespace Flowframes.Main
 {
@@ -57,7 +58,7 @@ namespace Flowframes.Main
         {
             if (!(await IoUtils.TryDeleteIfExistsAsync(current.framesFolder)))
             {
-                InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
+                UiUtils.ShowMessageBox("Failed to delete existing frames folder - Make sure no file is opened in another program!", UiUtils.MessageType.Error);
                 return;
             }
 
@@ -83,14 +84,14 @@ namespace Flowframes.Main
 
                 if (IoUtils.GetAmountOfFiles(current.framesFolder, false, "*") < 2)
                 {
-                    InterpolateUtils.ShowMessage("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", "Error");
+                    UiUtils.ShowMessageBox("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", UiUtils.MessageType.Error);
                     return;
                 }
             }
 
             if (!(await IoUtils.TryDeleteIfExistsAsync(current.interpFolder)))
             {
-                InterpolateUtils.ShowMessage("Failed to delete existing frames folder - Make sure no file is opened in another program!", "Error");
+                UiUtils.ShowMessageBox("Failed to delete existing frames folder - Make sure no file is opened in another program!", UiUtils.MessageType.Error);
                 return;
             }
 
@@ -128,8 +129,8 @@ namespace Flowframes.Main
 
             if (outFrames.Length > 0 && !IoUtils.CheckImageValid(outFrames[0]))
             {
-                InterpolateUtils.ShowMessage("Invalid frame files detected!\n\nIf you used Auto-Encode, this is normal, and you don't need to run " +
-                    "this step as the video was already created in the \"Interpolate\" step.", "Error");
+                UiUtils.ShowMessageBox("Invalid frame files detected!\n\nIf you used Auto-Encode, this is normal, and you don't need to run " +
+                    "this step as the video was already created in the \"Interpolate\" step.", UiUtils.MessageType.Error);
                 return;
             }
 

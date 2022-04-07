@@ -247,7 +247,7 @@ namespace Flowframes
             Logger.LogIfLastLineDoesNotContainMsg("Canceled interpolation.");
 
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
-                Utils.ShowMessage($"Canceled:\n\n{reason}");
+                UiUtils.ShowMessageBox($"Canceled:\n\n{reason}");
         }
 
         public static async Task Cleanup(bool ignoreKeepSetting = false, int retriesLeft = 3, bool isRetry = false)

@@ -104,20 +104,20 @@ namespace Flowframes.Main
 
                 if ((passes && isFile && !IoUtils.IsFileValid(inDir)) || (!isFile && !IoUtils.IsDirValid(inDir)))
                 {
-                    ShowMessage("Input path is not valid!");
+                    UiUtils.ShowMessageBox("Input path is not valid!");
                     passes = false;
                 }
 
                 if (passes && !IoUtils.IsDirValid(outDir))
                 {
-                    ShowMessage("Output path is not valid!");
+                    UiUtils.ShowMessageBox("Output path is not valid!");
                     passes = false;
                 }
 
                 if (passes && fpsOut < 1f || fpsOut > 1000f)
                 {
                     string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
-                    ShowMessage($"Invalid output frame rate ({fpsOut}).\nMust be 1-1000.{imgSeqNote}");
+                    UiUtils.ShowMessageBox($"Invalid output frame rate ({fpsOut}).\nMust be 1-1000.{imgSeqNote}");
                     passes = false;
                 }
 
@@ -143,22 +143,22 @@ namespace Flowframes.Main
         {
             if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.pkgDir), true) < 1)
             {
-                ShowMessage("The selected AI is not installed!", "Error");
+                UiUtils.ShowMessageBox("The selected AI is not installed!", UiUtils.MessageType.Error);
                 I.Cancel("Selected AI not available.", true);
                 return false;
             }
 
             if (model == null || model.dir.Trim() == "")
             {
-                ShowMessage("No valid AI model has been selected!", "Error");
+                UiUtils.ShowMessageBox("No valid AI model has been selected!", UiUtils.MessageType.Error);
                 I.Cancel("No valid model selected.", true);
                 return false;
             }
 
             if (I.current.ai.aiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
             {
-                ShowMessage("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", "Error");
-                
+                UiUtils.ShowMessageBox("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", UiUtils.MessageType.Error);
+
                 if (!Config.GetBool("allowCudaWithoutDetectedGpu", true))
                 {
                     I.Cancel("No CUDA-capable graphics card available.", true);
@@ -173,7 +173,7 @@ namespace Flowframes.Main
         {
             if (!IoUtils.TryDeleteIfExists(I.current.tempFolder))
             {
-                ShowMessage("Failed to remove an existing temp folder of this video!\nMake sure you didn't open any frames in an editor.", "Error");
+                UiUtils.ShowMessageBox("Failed to remove an existing temp folder of this video!\nMake sure you didn't open any frames in an editor.", UiUtils.MessageType.Error);
                 I.Cancel();
                 return false;
             }
@@ -192,7 +192,7 @@ namespace Flowframes.Main
             {
                 if (!IoUtils.IsDirValid(path))
                 {
-                    ShowMessage("Input directory is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
+                    UiUtils.ShowMessageBox("Input directory is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
                     I.Cancel();
                     return false;
                 }
@@ -201,7 +201,7 @@ namespace Flowframes.Main
             {
                 if (!IsVideoValid(path))
                 {
-                    ShowMessage("Input video file is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
+                    UiUtils.ShowMessageBox("Input video file is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
                     return false;
                 }
             }
@@ -217,7 +217,7 @@ namespace Flowframes.Main
 
             if (!(await FfmpegCommands.IsEncoderCompatible(enc)))
             {
-                ShowMessage("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", "Error");
+                UiUtils.ShowMessageBox("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", UiUtils.MessageType.Error);
                 I.Cancel();
                 return false;
             }
@@ -230,14 +230,6 @@ namespace Flowframes.Main
             if (videoPath == null || !IoUtils.IsFileValid(videoPath))
                 return false;
             return true;
-        }
-
-        public static void ShowMessage(string msg, string title = "Message")
-        {
-            if (!BatchProcessing.busy)
-                MessageBox.Show(msg, title);
-
-            Logger.Log("Message: " + msg, true);
         }
 
         public static async Task<Size> GetOutputResolution(string inputPath, bool print, bool returnZeroIfUnchanged = false)
