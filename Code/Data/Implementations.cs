@@ -14,7 +14,7 @@ namespace Flowframes.Data
             "Experimental Pytorch Implementation of FLAVR (Nvidia Only!)", "flavr-cuda", AI.FactorSupport.Fixed, new int[] { 2, 4, 8 });
 
         public static AI dainNcnn = new AI(AI.Backend.Ncnn, "DAIN_NCNN", "DAIN (NCNN)", 
-            "Vulkan/NCNN Implementation of DAIN", "dain-ncnn", AI.FactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8 });
+            "Vulkan/NCNN Implementation of DAIN", "dain-ncnn", AI.FactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8 });
 
         public static AI xvfiCuda = new AI(AI.Backend.Pytorch, "XVFI_CUDA", "XVFI", 
             "CUDA/Pytorch Implementation of XVFI (Nvidia Only!)", "xvfi-cuda", AI.FactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });

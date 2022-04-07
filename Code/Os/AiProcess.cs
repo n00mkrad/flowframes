@@ -8,6 +8,9 @@ using Flowframes.Ui;
 using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
+using System.Collections.Generic;
+using ImageMagick;
+using Paths = Flowframes.IO.Paths;
 
 namespace Flowframes.Os
 {
@@ -251,6 +254,7 @@ namespace Flowframes.Os
 
                 //await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
                 await RunRifeNcnnProcess(framesPath, factor, outPath, mdl);
+                await DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
@@ -266,7 +270,7 @@ namespace Flowframes.Os
             Process rifeNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, factor);
-            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Maybe won't work with fractional factors ??
+            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()); // TODO: Maybe won't work with fractional factors ??
 
             string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
@@ -301,6 +305,7 @@ namespace Flowframes.Os
             try
             {
                 await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
+                await DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
@@ -539,6 +544,18 @@ namespace Flowframes.Os
                 progThreadsStr += $",{procThreads}";
 
             return $"4:{progThreadsStr}:4"; ;
+        }
+
+        static async Task DeleteNcnnDupes (string dir, float factor)
+        {
+            int dupeCount = InterpolateUtils.GetRoundedInterpFramesPerInputFrame(factor);
+            Logger.Log($"DeleteNcnnDupes: Calculated dupe count from factor; deleting last {dupeCount} interp frames ({IoUtils.GetAmountOfFiles(dir, false)} files)", true);
+            IoUtils.GetFileInfosSorted(dir, false).Reverse().Take(dupeCount).ToList().ForEach(x => x.Delete());
+        }
+
+        static double Compare(string referenceImg, string compareImg)
+        {
+            return new MagickImage(referenceImg).Compare(new MagickImage(compareImg), ErrorMetric.PeakSignalToNoiseRatio);
         }
     }
 }

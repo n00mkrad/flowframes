@@ -337,5 +337,13 @@ namespace Flowframes.Main
             foreach (string frame in sceneFramesToDelete)
                 IoUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + I.current.framesExt));
         }
+
+        public static int GetRoundedInterpFramesPerInputFrame(float factor, bool roundDown = true)
+        {
+            if (roundDown)
+                return (int)Math.Floor(factor) - 1;
+            else
+                return factor.RoundToInt();
+        }
     }
 }

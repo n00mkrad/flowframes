@@ -85,13 +85,22 @@ namespace Flowframes.Main
             inputFilenames.Clear();
             bool debug = Config.GetBool("frameOrderDebug", false);
             List<Task> tasks = new List<Task>();
-            int linesPerTask = 400 / (int)interpFactor;
+            int linesPerTask = (400 / interpFactor).RoundToInt();
             int num = 0;
 
-            for (int i = 0; i < frameFilesWithoutLast.Length; i += linesPerTask)
+            int targetFrameCount = (frameFiles.Length * interpFactor).RoundToInt() - InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor);
+
+            if(interpFactor == (int)interpFactor) // Use old multi-threaded code if factor is not fractional
             {
-                tasks.Add(GenerateFrameLines(num, i, linesPerTask, (int)interpFactor, loopEnabled, sceneDetection, debug));
-                num++;
+                for (int i = 0; i < frameFilesWithoutLast.Length; i += linesPerTask)
+                {
+                    tasks.Add(GenerateFrameLines(num, i, linesPerTask, (int)interpFactor, sceneDetection, debug));
+                    num++;
+                }
+            }
+            else
+            {
+                await GenerateFrameLinesFloat(targetFrameCount, interpFactor, sceneDetection, debug);
             }
 
             await Task.WhenAll(tasks);
@@ -100,25 +109,63 @@ namespace Flowframes.Main
                 fileContent += frameFileContents[x];
 
             lastOutFileCount++;
-            int lastFrameTimes = Config.GetBool(Config.Key.fixOutputDuration) ? (int)interpFactor : 1;
 
-            for(int i = 0; i < lastFrameTimes; i++)
+            if (Config.GetBool(Config.Key.fixOutputDuration)) // Match input duration by padding duping last frame until interp frames == (inputframes * factor)
             {
-                fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}{ext}'";     // Last frame (source)
-                inputFilenames.Add(frameFiles.Last().Name);
+                int neededFrames = (frameFiles.Length * interpFactor).RoundToInt() - fileContent.SplitIntoLines().Where(x => x.StartsWith("'file ")).Count();
+
+                for (int i = 0; i < neededFrames; i++)
+                    fileContent += fileContent.SplitIntoLines().Where(x => x.StartsWith("'file ")).Last();
             }
-                
+
+            //int lastFrameTimes = Config.GetBool(Config.Key.fixOutputDuration) ? (int)interpFactor : 1;
+            //
+            //for (int i = 0; i < lastFrameTimes; i++)
+            //{
+            //    fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}{ext}'";     // Last frame (source)
+            //    inputFilenames.Add(frameFiles.Last().Name);
+            //}
+
             if (loop)
             {
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
-                inputFilenames.Remove(inputFilenames.Last());
+                //inputFilenames.Remove(inputFilenames.Last());
             }
 
             File.WriteAllText(framesFile, fileContent);
             File.WriteAllText(framesFile + ".inputframes.json", JsonConvert.SerializeObject(inputFilenames, Formatting.Indented));
         }
 
-        static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool loopEnabled, bool sceneDetection, bool debug)
+        static async Task GenerateFrameLinesFloat(int targetFrameCount, float factor, bool sceneDetection, bool debug)
+        {
+            int totalFileCount = 0;
+            string ext = Interpolate.current.interpExt;
+            float step = 1 / factor;
+
+            string fileContent = "";
+            //float currentFrameTime = 1f; // Start at 1 because there are no interp frames before the first input frame
+
+            for (int i = 0; i < targetFrameCount; i++)
+            {
+                if (Interpolate.canceled) return;
+                //if (i >= frameFilesWithoutLast.Length) break;
+
+                //string frameName = GetNameNoExt(frameFilesWithoutLast[i].Name);
+
+                float currentFrameTime = 1 + (step * i);
+                string filename = $"{Paths.interpDir}/{(i + 1).ToString().PadLeft(Padding.interpFrames, '0')}{ext}";
+                string note = $"Frame {currentFrameTime.ToString("0.0000")} {(currentFrameTime.ToString("0.0000").EndsWith("0000") ? $"[Source Frame {frameFiles[(int)currentFrameTime - 1]}]" : "[Interp]")}";
+                fileContent += $"file '{filename}' # {note}\n";
+            }
+
+            if (totalFileCount > lastOutFileCount)
+                lastOutFileCount = totalFileCount;
+
+            frameFileContents[0] = fileContent;
+            //frameFileContents[number] = fileContent;
+        }
+
+        static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool sceneDetection, bool debug)
         {
             int totalFileCount = (startIndex) * factor;
             int interpFramesAmount = factor;
@@ -192,7 +239,7 @@ namespace Flowframes.Main
             return fileContent;
         }
 
-        static string GetNameNoExt (string path)
+        static string GetNameNoExt(string path)
         {
             return Path.GetFileNameWithoutExtension(path);
         }
