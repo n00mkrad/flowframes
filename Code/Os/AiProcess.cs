@@ -275,9 +275,23 @@ namespace Flowframes.Os
             string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
-            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
+            if (mdl.ToLower() == "rife-v4")
+            {
+
+                rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan-v4.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
-            
+
+            }
+
+            else
+
+            {
+               
+                rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
+            $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
+
+            }
+
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
            
             if (!OsUtils.ShowHiddenCmd())
