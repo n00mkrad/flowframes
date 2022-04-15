@@ -66,11 +66,9 @@ namespace Flowframes.IO
 
                 foreach (string line in File.ReadAllLines(framesFile))
                 {
-                    string relTargetPath =
-                        line.Remove("file '").Split('\'').FirstOrDefault(); // Relative path in frames file
+                    string relTargetPath = line.Remove("file '").Split('\'').FirstOrDefault(); // Relative path in frames file
                     string absTargetPath = Path.Combine(framesFile.GetParentDir(), relTargetPath); // Full path to frame
-                    string linkPath = Path.Combine(linksDir,
-                        counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
+                    string linkPath = Path.Combine(linksDir, counter.ToString().PadLeft(zPad, '0') + Path.GetExtension(relTargetPath));
                     pathsLinkTarget.Add(linkPath, absTargetPath);
                     counter++;
                 }

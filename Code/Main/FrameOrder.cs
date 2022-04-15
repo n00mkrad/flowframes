@@ -154,7 +154,7 @@ namespace Flowframes.Main
 
                 float currentFrameTime = 1 + (step * i);
                 string filename = $"{Paths.interpDir}/{(i + 1).ToString().PadLeft(Padding.interpFrames, '0')}{ext}";
-                string note = $"Frame {currentFrameTime.ToString("0.0000")} {(currentFrameTime.ToString("0.0000").EndsWith("0000") ? $"[Source Frame {frameFiles[(int)currentFrameTime - 1]}]" : "[Interp]")}";
+                string note = $"Frame {currentFrameTime.ToString("0.0000")}";
                 fileContent += $"file '{filename}' # {note}\n";
             }
 

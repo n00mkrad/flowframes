@@ -322,7 +322,7 @@ namespace Flowframes.Os
             Process dain = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
-            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()) - (factor.RoundToInt() - 1); // TODO: Maybe won't work with fractional factors ??
+            int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt());
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
                 $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j 2:1:2";
