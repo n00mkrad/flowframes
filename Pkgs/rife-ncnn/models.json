@@ -5,19 +5,29 @@
 	"dir": "rife-anime"
 },
 {
+	"name": "RIFE 2.3",
+	"desc": "General Model",
+	"dir": "rife-v2.3"
+},
+{
 	"name": "RIFE 2.4",
-	"desc": "Updated General Model",
+	"desc": "General Model",
 	"dir": "rife-v2.4"
 },
 {
 	"name": "RIFE 3.0",
-	"desc": "Updated General Model",
+	"desc": "General Model",
 	"dir": "rife-v3.0",
 },
 {
 	"name": "RIFE 3.1",
-	"desc": "Latest General Model",
+	"desc": "General Model",
 	"dir": "rife-v3.1",
+},
+{
+	"name": "RIFE 4.0",
+	"desc": "Latest General Model",
+	"dir": "rife-v4",
 	"isDefault": "true"
 }
 ]
