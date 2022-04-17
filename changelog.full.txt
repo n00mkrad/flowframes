@@ -1,3 +1,12 @@
+Flowframes 1.37.0 Changelog:
+- Updated RIFE-NCNN, now supports any interpolation factor
+- Fractional factors are now possible with NCNN, but scene detection currently won't work with them
+- Updated RIFE-NCNN models (added 2.3 and 4.0)
+- Updated ffmpeg, AV1 encoding should now be even faster
+- Frame counting should now be more reliable
+- UI improvements (backported from Nmkoder)
+
+
 Flowframes 1.36.0 Changelog:
 - Added RIFE 4.0 model which is both faster and higher quality than 3.9
 - Fixed issue with GIF exporting where auto-encode would try to mux a h264 stream into GIF
