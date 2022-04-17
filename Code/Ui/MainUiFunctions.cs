@@ -157,7 +157,15 @@ namespace Flowframes.Ui
         {
             AI ai = Program.mainForm.GetAi();
 
-            if(ai.factorSupport == AI.FactorSupport.Fixed)
+            if (ai.aiName == Implementations.rifeNcnn.aiName && !Program.mainForm.GetModel(ai).dir.Contains("v4"))
+            {
+                if (factor != 2)
+                    Logger.Log($"{ai.friendlyName} models before 4.0 only support 2x interpolation!");
+
+                return 2;
+            }
+
+            if (ai.factorSupport == AI.FactorSupport.Fixed)
             {
                 int closest = ai.supportedFactors.Min(i => (Math.Abs(factor.RoundToInt() - i), i)).i;
                 return (float)closest;
