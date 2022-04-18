@@ -88,7 +88,7 @@ namespace Flowframes.Media
             {
                 int cq = Config.GetInt(Config.Key.av1Crf);
                 string g = GetKeyIntArg(fps, keyint);
-                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetKeyIntArg(fps, keyint)} {GetSvtAv1Speed()} {GetTilingArgs(res, "-tile_columns ", "-tile_rows ")} {g} -pix_fmt {GetPixFmt()}" };
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetKeyIntArg(fps, keyint)} {GetSvtAv1Speed()} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.Vp9)
