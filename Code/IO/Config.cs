@@ -277,7 +277,7 @@ namespace Flowframes.IO
             if (key == Key.ncnnThreads)       return WriteDefault(key, "1");
             if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
             // Debug / Other / Experimental
-            if (key == Key.ffEncPreset)   return WriteDefault(key, "medium");
+            if (key == Key.ffEncPreset)   return WriteDefault(key, "fast");
             if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "true");
             if (key == Key.allowCustomInterpFactor)     return WriteDefault(key, "True");
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)

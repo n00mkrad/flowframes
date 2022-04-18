@@ -158,13 +158,13 @@ namespace Flowframes.Media
             string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
             string arg = "8";
 
-            if (preset == "veryslow") arg = "2";
-            if (preset == "slower") arg = "3";
-            if (preset == "slow") arg = "4";
-            if (preset == "medium") arg = "5";
-            if (preset == "fast") arg = "6";
-            if (preset == "faster") arg = "7";
-            if (preset == "veryfast") arg = "8";
+            if (preset == "veryslow") arg = "3";
+            if (preset == "slower") arg = "4";
+            if (preset == "slow") arg = "5";
+            if (preset == "medium") arg = "6";
+            if (preset == "fast") arg = "7";
+            if (preset == "faster") arg = "8";
+            if (preset == "veryfast") arg = "9";
 
             return $"-preset {arg}";
         }
