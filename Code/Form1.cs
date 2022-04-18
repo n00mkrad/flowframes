@@ -611,6 +611,7 @@ namespace Flowframes
 
         private async void runStepBtn_Click(object sender, EventArgs e)
         {
+            ValidateFactor();
             SetTab("interpolate");
             await InterpolateSteps.Run(stepSelector.Text);
         }

@@ -279,7 +279,7 @@ namespace Flowframes.IO
             // Debug / Other / Experimental
             if (key == Key.ffEncPreset)   return WriteDefault(key, "medium");
             if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "true");
-
+            if (key == Key.allowCustomInterpFactor)     return WriteDefault(key, "True");
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)
             return WriteDefault(key, "");
