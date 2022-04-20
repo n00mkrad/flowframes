@@ -278,6 +278,7 @@
             this.fpsOutTbox.ReadOnly = true;
             this.fpsOutTbox.Size = new System.Drawing.Size(107, 23);
             this.fpsOutTbox.TabIndex = 9;
+            this.fpsOutTbox.Leave += new System.EventHandler(this.fpsOutTbox_Leave);
             // 
             // fpsInTbox
             // 

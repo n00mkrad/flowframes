@@ -466,6 +466,7 @@ namespace Flowframes
                 ConfigParser.SaveComboxIndex(aiCombox);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
+            fpsOutTbox.ReadOnly = GetAi().factorSupport != AI.FactorSupport.AnyFloat;
         }
 
         public void UpdateAiModelCombox()
@@ -717,6 +718,19 @@ namespace Flowframes
         {
             if (initialized)
                 ConfigParser.SaveComboxIndex(outModeCombox);
+        }
+
+        private void fpsOutTbox_Leave(object sender, EventArgs e)
+        {
+            float inFps = fpsInTbox.GetFloat();
+            float outFps = fpsOutTbox.GetFloat();
+
+            var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 2, MidpointRounding.AwayFromZero);
+
+            interpFactorCombox.Text = $"{targetFactorRounded}";
+            fpsOutTbox.Text = $"{outFps} FPS";
+
+            ValidateFactor();
         }
     }
 }
