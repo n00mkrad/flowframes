@@ -204,6 +204,14 @@ namespace Flowframes.Data
             return new Fraction(numerator, denomenator).GetReduced();
         }
 
+        public static Fraction operator *(Fraction fract, double multi)
+        {
+            long numerator = (long)Math.Round((double)(fract.Numerator * (double)multi));
+            long denomenator = fract.Denominator;
+
+            return new Fraction(numerator, denomenator).GetReduced();
+        }
+
         public static Fraction operator *(Fraction fract, float multi)
         {
             long numerator = (fract.Numerator * multi).RoundToInt();

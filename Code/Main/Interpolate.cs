@@ -74,7 +74,6 @@ namespace Flowframes
         public static async Task Done ()
         {
             await Cleanup();
-            Logger.Log($"after cleanup in done", true);
             Program.mainForm.SetWorking(false);
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();

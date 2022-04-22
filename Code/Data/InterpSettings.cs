@@ -53,7 +53,7 @@ namespace Flowframes
             inFpsDetected = inFpsDetectedArg;
             inFps = inFpsArg;
             interpFactor = interpFactorArg;
-            outFps = inFpsArg * (long)interpFactorArg;
+            outFps = inFpsArg * (double)interpFactorArg;
             outItsScale = itsScale;
             outMode = outModeArg;
             model = modelArg;
