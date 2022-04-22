@@ -100,7 +100,7 @@ namespace Flowframes.Main
             }
             else
             {
-                await GenerateFrameLinesFloat(targetFrameCount, interpFactor, sceneDetection, debug);
+                await GenerateFrameLinesFloat(frameFiles.Length, targetFrameCount, interpFactor, sceneDetection, debug);
             }
 
             await Task.WhenAll(tasks);
@@ -136,25 +136,26 @@ namespace Flowframes.Main
             File.WriteAllText(framesFile + ".inputframes.json", JsonConvert.SerializeObject(inputFilenames, Formatting.Indented));
         }
 
-        static async Task GenerateFrameLinesFloat(int targetFrameCount, float factor, bool sceneDetection, bool debug)
+        static async Task GenerateFrameLinesFloat(int sourceFrameCount, int targetFrameCount, float factor, bool sceneDetection, bool debug)
         {
             int totalFileCount = 0;
             string ext = Interpolate.current.interpExt;
-            float step = 1 / factor;
+            Fraction step = new Fraction(sourceFrameCount, targetFrameCount + InterpolateUtils.GetRoundedInterpFramesPerInputFrame(factor));
 
             string fileContent = "";
-            //float currentFrameTime = 1f; // Start at 1 because there are no interp frames before the first input frame
 
             for (int i = 0; i < targetFrameCount; i++)
             {
                 if (Interpolate.canceled) return;
-                //if (i >= frameFilesWithoutLast.Length) break;
 
-                //string frameName = GetNameNoExt(frameFilesWithoutLast[i].Name);
-
-                float currentFrameTime = 1 + (step * i);
+                float currentFrameTime = 1 + (step * i).GetFloat();
                 string filename = $"{Paths.interpDir}/{(i + 1).ToString().PadLeft(Padding.interpFrames, '0')}{ext}";
-                string note = $"Frame {currentFrameTime.ToString("0.0000")}";
+                int sourceFrameIdx = (int)Math.Floor(currentFrameTime) - 1;
+                string timestep = (currentFrameTime - (int)Math.Floor(currentFrameTime)).ToString("0.000000").Split('.').Last();
+
+                string frames = sourceFrameIdx + 1 >= frameFiles.Length ? $"{frameFiles[sourceFrameIdx].Name}" : $"{frameFiles[sourceFrameIdx].Name} to {frameFiles[sourceFrameIdx + 1].Name}";
+
+                string note = $"Output frame {(i+1).ToString().PadLeft(8, '0')} => {frames} at {timestep}";
                 fileContent += $"file '{filename}' # {note}\n";
             }
 
@@ -162,7 +163,6 @@ namespace Flowframes.Main
                 lastOutFileCount = totalFileCount;
 
             frameFileContents[0] = fileContent;
-            //frameFileContents[number] = fileContent;
         }
 
         static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool sceneDetection, bool debug)
