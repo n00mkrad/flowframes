@@ -174,9 +174,14 @@ namespace Flowframes.MiscUtils
 
         public static string BeautifyFfmpegStats (string line)
         {
-            return line.Remove("q=-0.0").Remove("q=-1.0").Remove("size=N/A").Remove("bitrate=N/A").Replace("frame=", "Frame: ")
+            line = line.Remove("q=-0.0").Remove("q=-1.0").Remove("size=N/A").Remove("bitrate=N/A").Replace("frame=", "Frame: ")
                     .Replace("fps=", "FPS: ").Replace("q=", "QP: ").Replace("time=", "Time: ").Replace("speed=", "Relative Speed: ")
                     .Replace("bitrate=", "Bitrate: ").Replace("Lsize=", "Size: ").Replace("size=", "Size: ").TrimWhitespaces();
+
+            if(!line.Contains("Bitrate: ") && line.Contains(" 0x"))
+                line = line.Split(" QP: ").FirstOrDefault().Trim() + " (Analysing...)";
+
+            return line;
         }
     }
 }
