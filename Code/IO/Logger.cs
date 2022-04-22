@@ -18,6 +18,7 @@ namespace Flowframes
         public const string defaultLogName = "sessionlog";
         public static long id;
 
+        private static Dictionary<string, string> sessionLogs = new Dictionary<string, string>();
         private static string _lastUi = "";
         public static string LastUiLine { get { return _lastUi; } }
         private static string _lastLog = "";
@@ -47,7 +48,7 @@ namespace Flowframes
             ShowNext();
         }
 
-        public static void ShowNext ()
+        public static void ShowNext()
         {
             LogEntry entry;
 
@@ -61,6 +62,9 @@ namespace Flowframes
                 return;
 
             string msg = entry.logMessage;
+
+            if (msg == LastUiLine)
+                entry.hidden = true; // Never show the same line twice in UI, but log it to file
 
             _lastLog = msg;
 
@@ -104,16 +108,16 @@ namespace Flowframes
 
             if (Path.GetExtension(filename) != ".txt")
                 filename = Path.ChangeExtension(filename, "txt");
+
             file = Path.Combine(Paths.GetLogPath(), filename);
             logStr = logStr.Replace(Environment.NewLine, " ").TrimWhitespaces();
-            string time = DT.Now.Month + "-" + DT.Now.Day + "-" + DT.Now.Year + " " + DT.Now.Hour + ":" + DT.Now.Minute + ":" + DT.Now.Second;
+            string time = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss");
 
             try
             {
-                if (!noLineBreak)
-                    File.AppendAllText(file, $"{Environment.NewLine}[{id}] [{time}]: {logStr}");
-                else
-                    File.AppendAllText(file, " " + logStr);
+                string appendStr = noLineBreak ? $" {logStr}" : $"{Environment.NewLine}[{id.ToString().PadLeft(8, '0')}] [{time}]: {logStr}";
+                sessionLogs[filename] = (sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : "") + appendStr;
+                File.AppendAllText(file, appendStr);
                 id++;
             }
             catch
@@ -122,13 +126,31 @@ namespace Flowframes
             }
         }
 
-        public static void LogIfLastLineDoesNotContainMsg (string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
+        public static string GetSessionLog(string filename)
+        {
+            if (!filename.Contains(".txt"))
+                filename = Path.ChangeExtension(filename, "txt");
+
+            if (sessionLogs.ContainsKey(filename))
+                return sessionLogs[filename];
+            else
+                return "";
+        }
+
+        public static List<string> GetSessionLogLastLines(string filename, int linesCount = 5)
+        {
+            string log = GetSessionLog(filename);
+            string[] lines = log.SplitIntoLines();
+            return lines.Reverse().Take(linesCount).Reverse().ToList();
+        }
+
+        public static void LogIfLastLineDoesNotContainMsg(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
             if (!GetLastLine().Contains(s))
                 Log(s, hidden, replaceLastLine, filename);
         }
 
-        public static void WriteToFile (string content, bool append, string filename)
+        public static void WriteToFile(string content, bool append, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
                 filename = defaultLogName;
@@ -149,24 +171,21 @@ namespace Flowframes
             }
             catch
             {
-                
+
             }
         }
 
-        public static void ClearLogBox ()
+        public static void ClearLogBox()
         {
             textbox.Text = "";
         }
 
-        public static string GetLastLine ()
+        public static string GetLastLine(bool includeHidden = false)
         {
-            string[] lines = textbox.Text.SplitIntoLines();
-            if (lines.Length < 1)
-                return "";
-            return lines.Last();
+            return includeHidden ? _lastLog : _lastUi;
         }
 
-        public static void RemoveLastLine ()
+        public static void RemoveLastLine()
         {
             textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine));
         }
