@@ -724,13 +724,10 @@ namespace Flowframes
         {
             float inFps = fpsInTbox.GetFloat();
             float outFps = fpsOutTbox.GetFloat();
-
-            var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 2, MidpointRounding.AwayFromZero);
-
+            var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);
             interpFactorCombox.Text = $"{targetFactorRounded}";
-            fpsOutTbox.Text = $"{outFps} FPS";
-
             ValidateFactor();
+            fpsOutTbox.Text = $"{inFps * interpFactorCombox.GetFloat()} FPS";
         }
     }
 }

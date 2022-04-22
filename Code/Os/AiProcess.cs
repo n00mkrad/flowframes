@@ -25,7 +25,7 @@ namespace Flowframes.Os
         public static int lastStartupTimeMs = 1000;
         static string lastInPath;
 
-        public static void Kill ()
+        public static void Kill()
         {
             if (lastAiProcess == null) return;
 
@@ -40,7 +40,7 @@ namespace Flowframes.Os
             }
         }
 
-        static void AiStarted (Process proc, int startupTimeMs, string inPath = "")
+        static void AiStarted(Process proc, int startupTimeMs, string inPath = "")
         {
             lastStartupTimeMs = startupTimeMs;
             processTime.Restart();
@@ -72,7 +72,7 @@ namespace Flowframes.Os
             int interpFramesCount = interpFramesFiles + InterpolationProgress.deletedFramesCount;
             InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
-            
+
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
             {
                 logStr += " - Waiting for encoding to finish...";
@@ -82,7 +82,7 @@ namespace Flowframes.Os
             Logger.Log(logStr);
             processTime.Stop();
 
-            if(interpFramesCount < 3)
+            if (interpFramesCount < 3)
             {
                 string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), lastLogName + ".txt"));
                 string log = string.Join("\n", logLines.Reverse().Take(10).Reverse().Select(x => x.Split("]: ").Last()).ToList());
@@ -97,10 +97,8 @@ namespace Flowframes.Os
                 {
                     if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
                     {
-                        string lastLine = Logger.LastLogLine;
-
-                        if(lastLine.Contains("frame"))
-                            Logger.Log(FormatUtils.BeautifyFfmpegStats(lastLine), false, Logger.LastUiLine.ToLower().Contains("frame"));
+                        if (Logger.LastLogLine.ToLower().Contains("frame: "))
+                            Logger.Log(FormatUtils.BeautifyFfmpegStats(Logger.LastLogLine), false, Logger.LastUiLine.ToLower().Contains("frame"));
                     }
 
                     if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
@@ -109,7 +107,7 @@ namespace Flowframes.Os
                     await Task.Delay(500);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log($"AiFinished encoder logging error: {e.Message}\n{e.StackTrace}", true);
             }
@@ -117,7 +115,7 @@ namespace Flowframes.Os
 
         public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
         {
-            if(Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
+            if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
             try
@@ -146,12 +144,13 @@ namespace Flowframes.Os
             catch (Exception e)
             {
                 Logger.Log("Error running RIFE-CUDA: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
             await AiFinished("RIFE");
         }
 
-        public static async Task RunRifeCudaProcess (string inPath, string outDir, string script, float interpFactor, string mdl)
+        public static async Task RunRifeCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdl)
         {
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             Directory.CreateDirectory(outPath);
@@ -177,7 +176,7 @@ namespace Flowframes.Os
             }
 
             rifePy.Start();
-            
+
             if (!OsUtils.ShowHiddenCmd())
             {
                 rifePy.BeginOutputReadLine();
@@ -208,6 +207,7 @@ namespace Flowframes.Os
             catch (Exception e)
             {
                 Logger.Log("Error running FLAVR-CUDA: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
             await AiFinished("FLAVR");
@@ -244,7 +244,7 @@ namespace Flowframes.Os
             while (!flavrPy.HasExited) await Task.Delay(1);
         }
 
-        public static async Task RunRifeNcnn (string framesPath, string outPath, float factor, string mdl)
+        public static async Task RunRifeNcnn(string framesPath, string outPath, float factor, string mdl)
         {
             processTimeMulti.Restart();
 
@@ -259,6 +259,7 @@ namespace Flowframes.Os
             catch (Exception e)
             {
                 Logger.Log("Error running RIFE-NCNN: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
             await AiFinished("RIFE");
@@ -278,9 +279,9 @@ namespace Flowframes.Os
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
-            
+
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
-           
+
             if (!OsUtils.ShowHiddenCmd())
             {
                 rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log"); };
@@ -311,12 +312,13 @@ namespace Flowframes.Os
             catch (Exception e)
             {
                 Logger.Log("Error running DAIN-NCNN: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
             await AiFinished("DAIN");
         }
 
-        public static async Task RunDainNcnnProcess (string framesPath, string outPath, float factor, string mdl, int tilesize)
+        public static async Task RunDainNcnnProcess(string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
             string dainDir = Path.Combine(Paths.GetPkgPath(), Implementations.dainNcnn.pkgDir);
             Directory.CreateDirectory(outPath);
@@ -371,6 +373,7 @@ namespace Flowframes.Os
             catch (Exception e)
             {
                 Logger.Log("Error running XVFI-CUDA: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
             await AiFinished("XVFI");
@@ -411,7 +414,7 @@ namespace Flowframes.Os
             while (!xvfiPy.HasExited) await Task.Delay(1);
         }
 
-        static void LogOutput (string line, string logFilename, bool err = false)
+        static void LogOutput(string line, string logFilename, bool err = false)
         {
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
@@ -519,7 +522,7 @@ namespace Flowframes.Os
             InterpolationProgress.UpdateLastFrameFromInterpOutput(line);
         }
 
-        static string GetNcnnPattern ()
+        static string GetNcnnPattern()
         {
             return $"%0{Padding.interpFrames}d{Interpolate.current.interpExt}";
         }
@@ -535,7 +538,7 @@ namespace Flowframes.Os
             return tilesizeStr;
         }
 
-        static string GetNcnnThreads ()
+        static string GetNcnnThreads(bool forceSingleThread = false)
         {
             int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
             int procThreads = Config.GetInt(Config.Key.ncnnThreads);
@@ -544,14 +547,39 @@ namespace Flowframes.Os
             for (int i = 1; i < gpusAmount; i++)
                 progThreadsStr += $",{procThreads}";
 
-            return $"4:{progThreadsStr}:4"; ;
+            return $"{(forceSingleThread ? 1 : (Interpolate.currentlyUsingAutoEnc ? 2 : 4))}:{progThreadsStr}:4"; // Read threads: 1 for singlethreaded, 2 for autoenc, 4 if order is irrelevant
         }
 
-        static async Task DeleteNcnnDupes (string dir, float factor)
+        static async Task DeleteNcnnDupes(string dir, float factor)
         {
             int dupeCount = InterpolateUtils.GetRoundedInterpFramesPerInputFrame(factor);
-            Logger.Log($"DeleteNcnnDupes: Calculated dupe count from factor; deleting last {dupeCount} interp frames ({IoUtils.GetAmountOfFiles(dir, false)} files)", true);
-            IoUtils.GetFileInfosSorted(dir, false).Reverse().Take(dupeCount).ToList().ForEach(x => x.Delete());
+            var files = IoUtils.GetFileInfosSorted(dir, false).Reverse().Take(dupeCount).ToList();
+            Logger.Log($"DeleteNcnnDupes: Calculated dupe count from factor; deleting last {dupeCount} interp frames of {IoUtils.GetAmountOfFiles(dir, false)} ({string.Join(", ", files.Select(x => x.Name))})", true);
+
+            int attempts = 4;
+
+            while (attempts > 0)
+            {
+                try
+                {
+                    files.ForEach(x => x.Delete());
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    attempts--;
+
+                    if (attempts < 1)
+                    {
+                        Logger.Log($"DeleteNcnnDupes Error: {ex.Message}", true);
+                        break;
+                    }
+                    else
+                    {
+                        await Task.Delay(500);
+                    }
+                }
+            }
         }
 
         static double Compare(string referenceImg, string compareImg)

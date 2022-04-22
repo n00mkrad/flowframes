@@ -261,7 +261,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(443, 100);
+            this.label6.Location = new System.Drawing.Point(450, 100);
             this.label6.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(15, 15);
@@ -272,11 +272,11 @@
             // 
             this.fpsOutTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.fpsOutTbox.ForeColor = System.Drawing.Color.White;
-            this.fpsOutTbox.Location = new System.Drawing.Point(461, 97);
+            this.fpsOutTbox.Location = new System.Drawing.Point(468, 97);
             this.fpsOutTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.fpsOutTbox.Name = "fpsOutTbox";
             this.fpsOutTbox.ReadOnly = true;
-            this.fpsOutTbox.Size = new System.Drawing.Size(107, 23);
+            this.fpsOutTbox.Size = new System.Drawing.Size(100, 23);
             this.fpsOutTbox.TabIndex = 9;
             this.fpsOutTbox.Leave += new System.EventHandler(this.fpsOutTbox_Leave);
             // 
@@ -302,7 +302,7 @@
             this.interpFactorCombox.FormattingEnabled = true;
             this.interpFactorCombox.Location = new System.Drawing.Point(387, 97);
             this.interpFactorCombox.Name = "interpFactorCombox";
-            this.interpFactorCombox.Size = new System.Drawing.Size(50, 23);
+            this.interpFactorCombox.Size = new System.Drawing.Size(57, 23);
             this.interpFactorCombox.TabIndex = 7;
             this.interpFactorCombox.SelectedIndexChanged += new System.EventHandler(this.interpFactorCombox_SelectedIndexChanged);
             this.interpFactorCombox.TextUpdate += new System.EventHandler(this.interpFactorCombox_SelectedIndexChanged);

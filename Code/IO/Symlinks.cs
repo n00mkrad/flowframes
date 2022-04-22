@@ -53,7 +53,7 @@ namespace Flowframes.IO
         public static async Task<bool> MakeSymlinksForEncode(string framesFile, string linksDir, int zPad = 8)
         {
             try
-            {
+            { 
                 IoUtils.DeleteIfExists(linksDir);
                 Directory.CreateDirectory(linksDir);
                 Stopwatch sw = new Stopwatch();
