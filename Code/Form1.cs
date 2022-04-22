@@ -51,7 +51,6 @@ namespace Flowframes
             NvApi.Init();
             InitAis();
             InterpolationProgress.preview = previewPicturebox;
-            UnlockInterpFactorIfEnabled();
             RemovePreviewIfDisabled();
             UpdateStepByStepControls();
             Initialized();
@@ -122,14 +121,6 @@ namespace Flowframes
             if (Program.fileArgs.Length > 0)
                 DragDropHandler(Program.fileArgs.Where(x => IoUtils.IsFileValid(x)).ToArray());
 
-        }
-
-        void UnlockInterpFactorIfEnabled()
-        {
-            if (!Config.GetBool(Config.Key.allowCustomInterpFactor))
-                return;
-
-            interpFactorCombox.DropDownStyle = ComboBoxStyle.DropDown;
         }
 
         void RemovePreviewIfDisabled()

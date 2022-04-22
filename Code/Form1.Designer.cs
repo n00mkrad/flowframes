@@ -296,7 +296,6 @@
             // interpFactorCombox
             // 
             this.interpFactorCombox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.interpFactorCombox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.interpFactorCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.interpFactorCombox.ForeColor = System.Drawing.Color.White;
             this.interpFactorCombox.FormattingEnabled = true;
