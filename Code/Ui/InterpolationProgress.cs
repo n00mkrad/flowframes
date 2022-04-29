@@ -100,7 +100,7 @@ namespace Flowframes.Ui
             Program.mainForm.SetProgress(percent);
 
             float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
-            float fps = (float)frames / generousTime;
+            float fps = ((float)frames / generousTime).Clamp(0, 9999);
             string fpsIn = (fps / currentFactor).ToString("0.00");
             string fpsOut = fps.ToString("0.00");
 
