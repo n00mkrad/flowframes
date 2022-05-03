@@ -83,7 +83,7 @@ namespace Flowframes.Ui
 
         public static DialogResult ShowMessageBox(string text, MessageType type = MessageType.Message)
         {
-            Logger.Log($"MessageBox: {text} ({type}){(BatchProcessing.busy ? "[Batch Mode - Will not display messagebox]" : "")}");
+            Logger.Log($"MessageBox: {text} ({type}){(BatchProcessing.busy ? "[Batch Mode - Will not display messagebox]" : "")}", true);
 
             if (BatchProcessing.busy)
                 return new DialogResult();

@@ -36,7 +36,7 @@ namespace Flowframes
             canceled = false;
             Program.initialRun = false;
             Program.mainForm.SetWorking(true);
-            if (!Utils.InputIsValid(current.inPath, current.outPath, current.inFps, current.interpFactor, current.outMode)) return;     // General input checks
+            if (!Utils.InputIsValid(current.inPath, current.outPath, current.inFps, current.interpFactor, current.outMode, current.tempFolder)) return;     // General input checks
             if (!Utils.CheckAiAvailable(current.ai, current.model)) return;            // Check if selected AI pkg is installed
             if (!AutoEncodeResume.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
             if (!Utils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid

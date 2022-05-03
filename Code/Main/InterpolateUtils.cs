@@ -87,6 +87,7 @@ namespace Flowframes.Main
             if (Config.GetInt(Config.Key.tempFolderLoc) == 4)
             {
                 string custPath = Config.Get(Config.Key.tempDirCustom);
+
                 if (IoUtils.IsDirValid(custPath))
                     basePath = custPath;
             }
@@ -94,7 +95,7 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, Fraction fpsIn, float factor, I.OutMode outMode)
+        public static bool InputIsValid(string inDir, string outDir, Fraction fpsIn, float factor, I.OutMode outMode, string tempFolder)
         {
             try
             {
@@ -111,6 +112,12 @@ namespace Flowframes.Main
                 if (passes && !IoUtils.IsDirValid(outDir))
                 {
                     UiUtils.ShowMessageBox("Output path is not valid!");
+                    passes = false;
+                }
+
+                if (passes && tempFolder.StartsWith(@"\\"))
+                {
+                    UiUtils.ShowMessageBox("Flowframes does not support UNC/Network paths as a temp folder!\nPlease use a local path instead.");
                     passes = false;
                 }
 
@@ -188,6 +195,13 @@ namespace Flowframes.Main
 
         public static bool CheckPathValid(string path)
         {
+            if (path.StartsWith(@"\\"))
+            {
+                UiUtils.ShowMessageBox("Input path is not valid.\nFlowframes does not support UNC/Network paths.");
+                I.Cancel();
+                return false;
+            }
+
             if (IoUtils.IsPathDirectory(path))
             {
                 if (!IoUtils.IsDirValid(path))
