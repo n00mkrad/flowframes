@@ -215,7 +215,7 @@ namespace Flowframes
 
         public static async Task<int> ReadFrameCountFfmpegAsync(string filePath)
         {
-            string args = $" -loglevel panic -stats {filePath.Wrap()} -i {filePath.Wrap()} -map 0:v:0 -c copy -f null - ";
+            string args = $" -loglevel panic -stats -i {filePath.Wrap()} -map 0:v:0 -c copy -f null - ";
             string info = await RunFfmpeg(args, LogMode.Hidden);
             try
             {
