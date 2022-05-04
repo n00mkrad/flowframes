@@ -1,6 +1,19 @@
+Flowframes 1.37.1 Changelog:
+- Custom interpolation factors are no longer disabled by default (thx @ DrPleaseRespect)
+- You can now input a target frame rate instead of a factor with RIFE-NCNN
+- Flowframes now prevents Windows from going to sleep while it's running (needs testing)
+- FFmpeg log is now shown again when waiting for encoding to finish
+- Updated ffmpeg with SVT-AV1 1.0.0 (even faster AV1 export!)
+- SVT-AV1 speed/presets have been offset by 1 (slowest to fastest is now 3-9 instead of 2-8)
+- Default encoding preset is now "fast" instead of "medium"
+- Interpolation factor will now also be validated in step-by-step mode, not just auto mode
+- Fixed unreliable input video frame counting
+- Fixed some encoding bugs for videos with weird frame rates
+
+
 Flowframes 1.37.0 Changelog:
 - Updated RIFE-NCNN, now supports any interpolation factor
-- Fractional factors are now possible with NCNN, but scene detection currently won't work with them
+- Fractional factors are now possible with NCNN (currently disables scene detection)
 - Updated RIFE-NCNN models (added 2.3 and 4.0)
 - Updated ffmpeg, AV1 encoding should now be even faster
 - Frame counting should now be more reliable
@@ -18,7 +31,7 @@ Flowframes 1.36.0 Changelog:
 Flowframes 1.35.0 Changelog:
 - Updated RIFE - It now supports any interpolation factor (like 3x, 5x, 10x, ...)
 - Added RIFE 3.9 model, big speed improvements (54% faster than 3.1, 100% faster than 2.3)
-- WEBM/VP9 encoding is now signficantly more efficient by using 2-pass (but also a bit slower)
+- WEBM/VP9 encoding is now signficantly more efficient by using 2-pass (but a bit slower)
 - Updated ffmpeg to 4.4.1 (possible encoding/decoding speed improvements)
 - Fixed some specific encoding parameters being set incorrectly (auto-tiling)
 
@@ -32,9 +45,9 @@ Flowframes 1.34.1 Changelog:
 
 Flowframes 1.34.0 Changelog:
 - Added resuming functionality (with auto-encode) - Drop a temp folder to resume it
-- Resuming an already fully interpolated folder will instead just merge all chunks and mux audio
+- Resuming an already fully interpolated folder will instead just merge/mux all chunks
 - Audio: MP3 tracks will no longer get re-encoded to AAC when using MP4 output
-- Audio: Opus in MP4 (without re-encoding) can now be enabled with config option "allowOpusInMp4"
+- Audio: Opus in MP4 muxing can now be enabled with config option allowOpusInMp4
 - Audio Fallback: Improved AAC fallback quality
 - Audio Fallback: Use same channel count as input file, no longer force Stereo
 - Fixed problems with weird frame rates where Flowframes would claim it's invalid

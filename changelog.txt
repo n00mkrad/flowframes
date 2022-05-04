@@ -1,3 +1,20 @@
+Flowframes 1.37.1 Changelog:
+- Custom interpolation factors are no longer disabled by default (thx @ DrPleaseRespect)
+- You can now input a target frame rate instead of a factor with RIFE-NCNN
+- Flowframes now prevents Windows from going to sleep while it's running (needs testing)
+- FFmpeg log is now shown again when waiting for encoding to finish
+- Updated ffmpeg with SVT-AV1 1.0.0 (even faster AV1 export!)
+- SVT-AV1 speed/presets have been offset by 1 (slowest to fastest is now 3-9 instead of 2-8)
+- Default encoding preset is now "fast" instead of "medium"
+- Interpolation factor will now also be validated in step-by-step mode, not just auto mode
+- Fixed unreliable input video frame counting
+- Fixed some encoding bugs for videos with weird frame rates
+
+KNOWN ISSUES:
+- Scene detection still does not work for fractional factors
+- Deduplication may not work correctly with arbitrary interpolation factors
+
+
 Flowframes 1.37.0 Changelog:
 - Updated RIFE-NCNN, now supports any interpolation factor
 - Fractional factors are now possible with NCNN (currently disables scene detection)
