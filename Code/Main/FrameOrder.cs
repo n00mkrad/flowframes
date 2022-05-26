@@ -90,7 +90,7 @@ namespace Flowframes.Main
 
             int targetFrameCount = (frameFiles.Length * interpFactor).RoundToInt() - InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor);
 
-            if(interpFactor == (int)interpFactor && false) // Use old multi-threaded code if factor is not fractional
+            if(interpFactor == (int)interpFactor) // Use old multi-threaded code if factor is not fractional
             {
                 for (int i = 0; i < frameFilesWithoutLast.Length; i += linesPerTask)
                 {
@@ -249,7 +249,7 @@ namespace Flowframes.Main
                 string frameName = GetNameNoExt(frameFilesWithoutLast[i].Name);
                 string frameNameImport = GetNameNoExt(FrameRename.importFilenames[i]);
                 int dupesAmount = dupesDict.ContainsKey(frameNameImport) ? dupesDict[frameNameImport] : 0;
-                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[i + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+                bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[i + 1]))); // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
                 {
