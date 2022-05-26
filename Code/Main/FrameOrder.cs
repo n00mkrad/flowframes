@@ -136,13 +136,52 @@ namespace Flowframes.Main
             File.WriteAllText(framesFile + ".inputframes.json", JsonConvert.SerializeObject(inputFilenames, Formatting.Indented));
         }
 
+        class FrameFileLine
+        {
+            public string OutFileName { get; set; } = "";
+            public string InFileNameFrom { get; set; } = "";
+            public string InFileNameTo { get; set; } = "";
+            public string InFileNameFromNext { get; set; } = "";
+            public string InFileNameToNext { get; set; } = "";
+            public float Timestep { get; set; } = -1;
+            public bool Discard { get; set; } = false;
+            public bool DiscardNext { get; set; } = false;
+            public int DiscardedFrames { get; set; } = 0;
+
+            public FrameFileLine (string outFileName, string inFilenameFrom, string inFilenameTo, string inFilenameToNext, float timestep, bool discard = false, bool discardNext = false, int discardedFrames = 0)
+            {
+                OutFileName = outFileName;
+                InFileNameFrom = inFilenameFrom;
+                InFileNameTo = inFilenameTo;
+                InFileNameFromNext = inFilenameTo;
+                InFileNameToNext = inFilenameToNext;
+                Timestep = timestep;
+                Discard = discard;
+                DiscardNext = discardNext;
+                DiscardedFrames = discardedFrames;
+            }
+
+            public override string ToString()
+            {
+                List<string> strings = new List<string>();
+
+                if (!string.IsNullOrWhiteSpace(InFileNameTo)) strings.Add($"to {InFileNameTo}");
+                if (Timestep >= 0f) strings.Add($"@ {Timestep.ToString("0.000000").Split('.').Last()}");
+                if (Discard) strings.Add("[Discard]");
+                if (DiscardNext) strings.Add($"SCN:{InFileNameFromNext}>{InFileNameToNext}>{DiscardedFrames}");
+
+                return $"file '{OutFileName}' # => {InFileNameFrom} {string.Join(" ", strings)}\n";
+            }
+        }
+
         static async Task GenerateFrameLinesFloat(int sourceFrameCount, int targetFrameCount, float factor, bool sceneDetection, bool debug)
         {
             int totalFileCount = 0;
+            bool blendSceneChances = Config.GetInt(Config.Key.sceneChangeFillMode) > 0;
             string ext = Interpolate.current.interpExt;
             Fraction step = new Fraction(sourceFrameCount, targetFrameCount + InterpolateUtils.GetRoundedInterpFramesPerInputFrame(factor));
 
-            string fileContent = "";
+            List<FrameFileLine> lines = new List<FrameFileLine>();
 
             string lastUndiscardFrame = "";
 
@@ -151,36 +190,47 @@ namespace Flowframes.Main
                 if (Interpolate.canceled) return;
 
                 float currentFrameTime = 1 + (step * i).GetFloat();
-
                 int sourceFrameIdx = (int)Math.Floor(currentFrameTime) - 1;
-
                 float timestep = (currentFrameTime - (int)Math.Floor(currentFrameTime));
-
-                string frames = (sourceFrameIdx + 1 >= frameFiles.Length) || timestep == 0f ? $"{frameFiles[sourceFrameIdx].Name}" : $"{frameFiles[sourceFrameIdx].Name} to {frameFiles[sourceFrameIdx + 1].Name}";
-
-                bool sceneChange = (sceneDetection && (sourceFrameIdx + 1) < FrameRename.importFilenames.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[sourceFrameIdx + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
-
-                string note = $"=> {frames} at {timestep.ToString("0.000000").Split('.').Last()}";
-
+                bool sceneChange = (sceneDetection && (sourceFrameIdx + 1) < FrameRename.importFilenames.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[sourceFrameIdx + 1])));
                 string filename = $"{Paths.interpDir}/{(i + 1).ToString().PadLeft(Padding.interpFrames, '0')}{ext}";
 
                 if (string.IsNullOrWhiteSpace(lastUndiscardFrame))
                     lastUndiscardFrame = filename;
 
-                bool discardThisFrame = sceneChange && timestep != 0f;
-
-                if (discardThisFrame)
-                    note += " [DISCARD]";
-                else
+                if (!sceneChange)
                     lastUndiscardFrame = filename;
 
-                fileContent += $"file '{(discardThisFrame ? lastUndiscardFrame : filename)}' # {note}\n";
+                string inputFilenameFrom = frameFiles[sourceFrameIdx].Name;
+                string inputFilenameTo = (sourceFrameIdx + 1 >= frameFiles.Length) ? "" : frameFiles[sourceFrameIdx + 1].Name;
+                string inputFilenameToNext = (sourceFrameIdx + 2 >= frameFiles.Length) ? "" : frameFiles[sourceFrameIdx + 2].Name;
+                lines.Add(new FrameFileLine(sceneChange && !blendSceneChances ? lastUndiscardFrame : filename, inputFilenameFrom, inputFilenameTo, inputFilenameToNext, timestep, sceneChange));
             }
 
             if (totalFileCount > lastOutFileCount)
                 lastOutFileCount = totalFileCount;
 
-            frameFileContents[0] = fileContent;
+            for(int lineIdx = 0; lineIdx < lines.Count; lineIdx++)
+            {
+                bool discardNext = lineIdx > 0 && (lineIdx + 1) < lines.Count && !lines.ElementAt(lineIdx).Discard && lines.ElementAt(lineIdx + 1).Discard;
+                int discardedFramesCount = 0;
+
+                if (discardNext)
+                {
+                    for (int idx = lineIdx + 1; idx < lines.Count; idx++)
+                    {
+                        if (lines.ElementAt(idx).Discard)
+                            discardedFramesCount++;
+                        else
+                            break;
+                    }
+                }
+
+                lines.ElementAt(lineIdx).DiscardNext = discardNext;
+                lines.ElementAt(lineIdx).DiscardedFrames = discardedFramesCount;
+            }
+
+            frameFileContents[0] = String.Join("", lines);
         }
 
         static async Task GenerateFrameLines(int number, int startIndex, int count, int factor, bool sceneDetection, bool debug)

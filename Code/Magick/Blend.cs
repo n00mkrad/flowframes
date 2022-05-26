@@ -35,8 +35,6 @@ namespace Flowframes.Magick
             if (setStatus)
                 Program.mainForm.SetStatus("Blending scene transitions...");
 
-            int amountOfBlendFrames = (int)Interpolate.current.interpFactor - 1;
-
             string[] frames = FrameRename.framesAreRenamed ? new string[0] : IoUtils.GetFilesSorted(Interpolate.current.framesFolder);
 
             List<Task> runningTasks = new List<Task>();
@@ -49,9 +47,10 @@ namespace Flowframes.Magick
                     if (line.Contains(keyword))
                     {
                         string trimmedLine = line.Split(keyword).Last();
-                        string[] inputFrameNames = trimmedLine.Split('>');
-                        string frameFrom = FrameRename.framesAreRenamed ? inputFrameNames[0] : frames[inputFrameNames[0].GetInt()];
-                        string frameTo = FrameRename.framesAreRenamed ? inputFrameNames[1] : frames[inputFrameNames[1].GetInt()];
+                        string[] values = trimmedLine.Split('>');
+                        string frameFrom = FrameRename.framesAreRenamed ? values[0] : frames[values[0].GetInt()];
+                        string frameTo = FrameRename.framesAreRenamed ? values[1] : frames[values[1].GetInt()];
+                        int amountOfBlendFrames = values[2].GetInt();
 
                         string img1 = Path.Combine(Interpolate.current.framesFolder, frameFrom);
                         string img2 = Path.Combine(Interpolate.current.framesFolder, frameTo);
@@ -78,7 +77,7 @@ namespace Flowframes.Magick
                             } while (runningTasks.Count >= maxThreads);
                         }
 
-                        Logger.Log($"Starting task for transition {inputFrameNames[0]} > {inputFrameNames[1]} ({runningTasks.Count}/{maxThreads} running)", true);
+                        Logger.Log($"Starting task for transition {values[0]} > {values[1]} ({runningTasks.Count}/{maxThreads} running)", true);
                         Task newTask = Task.Run(() => BlendImages(img1, img2, outputFilenames.ToArray()));
                         runningTasks.Add(newTask);
                         totalFrames += outputFilenames.Count;
