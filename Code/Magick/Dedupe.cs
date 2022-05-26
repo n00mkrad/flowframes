@@ -10,6 +10,7 @@ using Flowframes.Os;
 using Flowframes.Data;
 using System.Drawing;
 using Paths = Flowframes.IO.Paths;
+using Newtonsoft.Json;
 
 namespace Flowframes.Magick
 {
@@ -196,13 +197,13 @@ namespace Flowframes.Magick
         public static async Task CreateDupesFile (string framesPath, int lastFrameNum, string ext)
         {
             bool debug = Config.GetBool("dupeScanDebug", false);
-            string infoFile = Path.Combine(framesPath.GetParentDir(), "dupes.ini");
-            string fileContent = "";
 
             FileInfo[] frameFiles = IoUtils.GetFileInfosSorted(framesPath, false, "*" + ext);
 
             if (debug)
                 Logger.Log($"Running CreateDupesFile for '{framesPath}' ({frameFiles.Length} files), lastFrameNum = {lastFrameNum}, ext = {ext}.", true, false, "dupes");
+
+            Dictionary<string, List<string>> frames = new Dictionary<string, List<string>>();
 
             for(int i = 0; i < frameFiles.Length; i++)
             {
@@ -217,10 +218,22 @@ namespace Flowframes.Magick
                 if(debug)
                     Logger.Log($"{(isLastItem ? "[isLastItem] " : "")}frameNum1 (frameFiles[{i}]) = {frameNum1}, frameNum2 (frameFiles[{i+1}]) = {frameNum2} => dupes = {dupes}", true, false, "dupes");
 
-                fileContent += $"{Path.GetFileNameWithoutExtension(frameFiles[i].Name)}:{dupes}\n";
+                try
+                {
+                    frames[Path.GetFileNameWithoutExtension(frameFiles[i].Name)] = new List<string>();
+
+                    for (int dupe = 1; dupe <= dupes; dupe++)
+                        frames[Path.GetFileNameWithoutExtension(frameFiles[i].Name)].Add(Path.GetFileNameWithoutExtension(frameFiles[i + dupe].Name));
+                }
+                catch(Exception ex)
+                {
+                    Logger.Log(ex.Message);
+                }
+                
+
             }
 
-            File.WriteAllText(infoFile, fileContent);
+            File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), JsonConvert.SerializeObject(frames, Formatting.Indented));
         }
     }
 }

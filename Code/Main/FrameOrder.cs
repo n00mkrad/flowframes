@@ -41,18 +41,11 @@ namespace Flowframes.Main
             }
         }
 
-        static Dictionary<string, int> dupesDict = new Dictionary<string, int>();
+        static Dictionary<string, List<string>> dupesDict = new Dictionary<string, List<string>>();
 
         static void LoadDupesFile(string path)
         {
-            dupesDict.Clear();
-            if (!File.Exists(path)) return;
-            string[] dupesFileLines = IoUtils.ReadLines(path);
-            foreach (string line in dupesFileLines)
-            {
-                string[] values = line.Split(':');
-                dupesDict.Add(values[0], values[1].GetInt());
-            }
+            dupesDict = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(File.ReadAllText(path));
         }
 
         public static async Task CreateEncFile(string framesPath, bool loopEnabled, float interpFactor)
@@ -72,7 +65,7 @@ namespace Flowframes.Main
             Array.Resize(ref frameFilesWithoutLast, frameFilesWithoutLast.Length - 1);
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(interpFactor));
             string fileContent = "";
-            string dupesFile = Path.Combine(framesPath.GetParentDir(), "dupes.ini");
+            string dupesFile = Path.Combine(framesPath.GetParentDir(), "dupes.json");
             LoadDupesFile(dupesFile);
 
             string scnFramesPath = Path.Combine(framesPath.GetParentDir(), Paths.scenesDir);
@@ -118,18 +111,9 @@ namespace Flowframes.Main
                     fileContent += fileContent.SplitIntoLines().Where(x => x.StartsWith("'file ")).Last();
             }
 
-            //int lastFrameTimes = Config.GetBool(Config.Key.fixOutputDuration) ? (int)interpFactor : 1;
-            //
-            //for (int i = 0; i < lastFrameTimes; i++)
-            //{
-            //    fileContent += $"{(i > 0 ? "\n" : "")}file '{Paths.interpDir}/{lastOutFileCount.ToString().PadLeft(Padding.interpFrames, '0')}{ext}'";     // Last frame (source)
-            //    inputFilenames.Add(frameFiles.Last().Name);
-            //}
-
             if (loop)
             {
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
-                //inputFilenames.Remove(inputFilenames.Last());
             }
 
             File.WriteAllText(framesFile, fileContent);
@@ -248,7 +232,7 @@ namespace Flowframes.Main
 
                 string frameName = GetNameNoExt(frameFilesWithoutLast[i].Name);
                 string frameNameImport = GetNameNoExt(FrameRename.importFilenames[i]);
-                int dupesAmount = dupesDict.ContainsKey(frameNameImport) ? dupesDict[frameNameImport] : 0;
+                int dupesAmount = dupesDict.ContainsKey(frameNameImport) ? dupesDict[frameNameImport].Count : 0;
                 bool discardThisFrame = (sceneDetection && i < frameFilesWithoutLast.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[i + 1]))); // i+2 is in scene detection folder, means i+1 is ugly interp frame
 
                 for (int frm = 0; frm < interpFramesAmount; frm++)  // Generate frames file lines
