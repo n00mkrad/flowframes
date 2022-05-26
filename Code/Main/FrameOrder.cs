@@ -83,7 +83,7 @@ namespace Flowframes.Main
 
             int targetFrameCount = (frameFiles.Length * interpFactor).RoundToInt() - InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor);
 
-            if(interpFactor == (int)interpFactor) // Use old multi-threaded code if factor is not fractional
+            if (interpFactor == (int)interpFactor) // Use old multi-threaded code if factor is not fractional
             {
                 for (int i = 0; i < frameFilesWithoutLast.Length; i += linesPerTask)
                 {
@@ -132,7 +132,7 @@ namespace Flowframes.Main
             public bool DiscardNext { get; set; } = false;
             public int DiscardedFrames { get; set; } = 0;
 
-            public FrameFileLine (string outFileName, string inFilenameFrom, string inFilenameTo, string inFilenameToNext, float timestep, bool discard = false, bool discardNext = false, int discardedFrames = 0)
+            public FrameFileLine(string outFileName, string inFilenameFrom, string inFilenameTo, string inFilenameToNext, float timestep, bool discard = false, bool discardNext = false, int discardedFrames = 0)
             {
                 OutFileName = outFileName;
                 InFileNameFrom = inFilenameFrom;
@@ -189,12 +189,20 @@ namespace Flowframes.Main
                 string inputFilenameTo = (sourceFrameIdx + 1 >= frameFiles.Length) ? "" : frameFiles[sourceFrameIdx + 1].Name;
                 string inputFilenameToNext = (sourceFrameIdx + 2 >= frameFiles.Length) ? "" : frameFiles[sourceFrameIdx + 2].Name;
                 lines.Add(new FrameFileLine(sceneChange && !blendSceneChances ? lastUndiscardFrame : filename, inputFilenameFrom, inputFilenameTo, inputFilenameToNext, timestep, sceneChange));
+
+                string inputFilenameNoExtRenamed = Path.GetFileNameWithoutExtension(FrameRename.importFilenames[sourceFrameIdx]);
+
+                if (!dupesDict.ContainsKey(inputFilenameNoExtRenamed))
+                    continue;
+
+                foreach (string s in dupesDict[inputFilenameNoExtRenamed])
+                    lines.Add(new FrameFileLine(sceneChange && !blendSceneChances ? lastUndiscardFrame : filename, inputFilenameFrom, inputFilenameTo, inputFilenameToNext, timestep, sceneChange));
             }
 
             if (totalFileCount > lastOutFileCount)
                 lastOutFileCount = totalFileCount;
 
-            for(int lineIdx = 0; lineIdx < lines.Count; lineIdx++)
+            for (int lineIdx = 0; lineIdx < lines.Count; lineIdx++)
             {
                 bool discardNext = lineIdx > 0 && (lineIdx + 1) < lines.Count && !lines.ElementAt(lineIdx).Discard && lines.ElementAt(lineIdx + 1).Discard;
                 int discardedFramesCount = 0;
