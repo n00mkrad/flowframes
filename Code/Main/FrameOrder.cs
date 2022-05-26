@@ -90,7 +90,7 @@ namespace Flowframes.Main
 
             int targetFrameCount = (frameFiles.Length * interpFactor).RoundToInt() - InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor);
 
-            if(interpFactor == (int)interpFactor) // Use old multi-threaded code if factor is not fractional
+            if(interpFactor == (int)interpFactor && false) // Use old multi-threaded code if factor is not fractional
             {
                 for (int i = 0; i < frameFilesWithoutLast.Length; i += linesPerTask)
                 {
@@ -144,19 +144,37 @@ namespace Flowframes.Main
 
             string fileContent = "";
 
+            string lastUndiscardFrame = "";
+
             for (int i = 0; i < targetFrameCount; i++)
             {
                 if (Interpolate.canceled) return;
 
                 float currentFrameTime = 1 + (step * i).GetFloat();
-                string filename = $"{Paths.interpDir}/{(i + 1).ToString().PadLeft(Padding.interpFrames, '0')}{ext}";
+
                 int sourceFrameIdx = (int)Math.Floor(currentFrameTime) - 1;
-                string timestep = (currentFrameTime - (int)Math.Floor(currentFrameTime)).ToString("0.000000").Split('.').Last();
 
-                string frames = sourceFrameIdx + 1 >= frameFiles.Length ? $"{frameFiles[sourceFrameIdx].Name}" : $"{frameFiles[sourceFrameIdx].Name} to {frameFiles[sourceFrameIdx + 1].Name}";
+                float timestep = (currentFrameTime - (int)Math.Floor(currentFrameTime));
 
-                string note = $"Output frame {(i+1).ToString().PadLeft(8, '0')} => {frames} at {timestep}";
-                fileContent += $"file '{filename}' # {note}\n";
+                string frames = (sourceFrameIdx + 1 >= frameFiles.Length) || timestep == 0f ? $"{frameFiles[sourceFrameIdx].Name}" : $"{frameFiles[sourceFrameIdx].Name} to {frameFiles[sourceFrameIdx + 1].Name}";
+
+                bool sceneChange = (sceneDetection && (sourceFrameIdx + 1) < FrameRename.importFilenames.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[sourceFrameIdx + 1])));     // i+2 is in scene detection folder, means i+1 is ugly interp frame
+
+                string note = $"=> {frames} at {timestep.ToString("0.000000").Split('.').Last()}";
+
+                string filename = $"{Paths.interpDir}/{(i + 1).ToString().PadLeft(Padding.interpFrames, '0')}{ext}";
+
+                if (string.IsNullOrWhiteSpace(lastUndiscardFrame))
+                    lastUndiscardFrame = filename;
+
+                bool discardThisFrame = sceneChange && timestep != 0f;
+
+                if (discardThisFrame)
+                    note += " [DISCARD]";
+                else
+                    lastUndiscardFrame = filename;
+
+                fileContent += $"file '{(discardThisFrame ? lastUndiscardFrame : filename)}' # {note}\n";
             }
 
             if (totalFileCount > lastOutFileCount)
