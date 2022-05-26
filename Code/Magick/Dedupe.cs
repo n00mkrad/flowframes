@@ -212,7 +212,7 @@ namespace Flowframes.Magick
                 int frameNum2 = isLastItem ? lastFrameNum : frameFiles[i+1].Name.GetInt();
 
                 int diff = frameNum2 - frameNum1;
-                int dupes = diff - 1;
+                int dupes = (diff - 1).Clamp(0, int.MaxValue);
 
                 if(debug)
                     Logger.Log($"{(isLastItem ? "[isLastItem] " : "")}frameNum1 (frameFiles[{i}]) = {frameNum1}, frameNum2 (frameFiles[{i+1}]) = {frameNum2} => dupes = {dupes}", true, false, "dupes");
