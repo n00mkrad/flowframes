@@ -12,27 +12,69 @@ namespace Flowframes.Os
 {
     class VapourSynthUtils
     {
-        public static string CreateScript(InterpSettings set, string modelDir, float factor, Size res, bool uhd, float sceneDetectSens = 0.15f, int gpuId = 0, int gpuThreads = 3, bool tta = false)
+        public class VsSettings
         {
-            string inputPath = set.inPath;
-            bool resize = !set.ScaledResolution.IsEmpty && set.ScaledResolution != set.InputResolution;
-            bool sc = sceneDetectSens >= 0.01f;
+            public InterpSettings InterpSettings { get; set; }
+            public string ModelDir { get; set; } = "";
+            public float Factor { get; set; } = 2.0f;
+            public Size Res { get; set; } = new Size();
+            public bool Uhd { get; set; } = false;
+            public float SceneDetectSensitivity { get; set; } = 0.15f;
+            public int GpuId { get; set; } = 0;
+            public int GpuThreads { get; set; } = 3;
+            public bool Tta { get; set; } = false;
+            public bool Loop { get; set; } = false;
+            public bool MatchDuration { get; set; } = false;
+        }
 
-            string text = ""
-                + $"import sys\n"
-                + $"import vapoursynth as vs\n"
-                + $"core = vs.core\n"
-                + $"clip = core.ffms2.Source(source=r'{inputPath}')\n"
-                + $"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={set.ScaledResolution.Width}, height={set.ScaledResolution.Height}" : "")})\n"
-                + $"{(sc ? $"clip = core.misc.SCDetect(clip=clip,threshold={sceneDetectSens.ToStringDot()})" : "# Scene detection disabled")}\n"
-                + $"clip = core.rife.RIFE(clip, {GetModelNum(modelDir)}, {factor.ToStringDot()}, {gpuId}, {gpuThreads}, {tta}, {uhd}, {sc})\n"
-                + $"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=\"709\")\n"
-                + $"clip.set_output()\n";
+        public static string CreateScript(VsSettings s)
+        {
+            string inputPath = s.InterpSettings.inPath;
+            bool resize = !s.InterpSettings.ScaledResolution.IsEmpty && s.InterpSettings.ScaledResolution != s.InterpSettings.InputResolution;
+            bool sc = s.SceneDetectSensitivity >= 0.01f;
+
+            int endDupeCount = s.Factor.RoundToInt() - 1;
+
+            List<string> l = new List<string>();
+
+            l.Add($"import sys");
+            l.Add($"import vapoursynth as vs");
+            l.Add($"core = vs.core");
+            l.Add($"clip = core.ffms2.Source(source=r'{inputPath}')");
+
+            l.Add($"targetFrameCountMatchDuration = round((clip.num_frames*{s.Factor.ToStringDot()}), 1)"); // Target frame count to match original duration (and for loops)
+            l.Add($"targetFrameCountTrue = targetFrameCountMatchDuration-{endDupeCount}"); // Target frame count without dupes at the end (only in-between frames added)
+
+            if (s.Loop)
+            {
+                l.Add($"firstFrame = clip[0]"); // Grab first frame
+                l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
+            }
+
+            l.Add($"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+
+            if (sc)
+                l.Add($"clip = core.misc.SCDetect(clip=clip,threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
+
+            l.Add($"clip = core.rife.RIFE(clip, {GetModelNum(s.ModelDir)}, {s.Factor.ToStringDot()}, {s.GpuId}, {s.GpuThreads}, {s.Tta}, {s.Uhd}, {sc})"); // Interpolate
+            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=\"709\")"); // Convert RGB to YUV
+
+            if (s.Loop)
+            {
+                l.Add($"clip = clip.std.Trim(0, targetFrameCountMatchDuration-1)");
+            }
+            else
+            {
+                if (!s.MatchDuration)
+                    l.Add($"clip = clip.std.Trim(0, targetFrameCountTrue-1)");
+            }
+
+            l.Add($"clip.set_output()"); // Set output
 
             string pkgPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             string vpyPath = Path.Combine(pkgPath, "rife.vpy");
 
-            File.WriteAllText(vpyPath, text);
+            File.WriteAllText(vpyPath, string.Join("\n", l));
 
             return vpyPath;
         }

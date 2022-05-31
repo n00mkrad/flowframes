@@ -350,8 +350,10 @@ namespace Flowframes.Os
             float scn = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) : 0f;
             Size res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true);
 
-            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir).Wrap()} & " +
-                $" vspipe {VapourSynthUtils.CreateScript(Interpolate.current, mdl, factor, res, uhd, scn).Wrap()} -c y4m - | {ffmpegArgs}";
+            VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
+            { InterpSettings = Interpolate.current, ModelDir = mdl, Factor = factor, Res = res, Uhd = uhd, SceneDetectSensitivity = scn, Loop = Config.GetBool(Config.Key.enableLoop), MatchDuration = Config.GetBool(Config.Key.fixOutputDuration) };
+
+            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir).Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {ffmpegArgs}";
 
             Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
 
