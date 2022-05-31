@@ -26,8 +26,14 @@
 },
 {
 	"name": "RIFE 4.0",
-	"desc": "Latest General Model",
+	"desc": "New Fast General Model",
 	"dir": "rife-v4",
 	"isDefault": "true"
+},
+{
+	"name": "RIFE 4.1",
+	"desc": "Experimental Model, Unstable!",
+	"dir": "rife-v4.1",
+	"isDefault": "false"
 }
 ]
