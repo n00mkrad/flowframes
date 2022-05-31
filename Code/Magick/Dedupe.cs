@@ -227,10 +227,9 @@ namespace Flowframes.Magick
                 }
                 catch(Exception ex)
                 {
-                    Logger.Log(ex.Message);
+                    Logger.Log($"Deduplication error: {ex.Message}");
+                    Logger.Log($"Stack Trace:\n{ex.StackTrace}", true);
                 }
-                
-
             }
 
             File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), JsonConvert.SerializeObject(frames, Formatting.Indented));

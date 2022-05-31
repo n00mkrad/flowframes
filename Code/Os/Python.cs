@@ -35,6 +35,7 @@ namespace Flowframes.Os
                     compact.Start();
                     compact.BeginOutputReadLine();
                     compact.BeginErrorReadLine();
+
                     while (!compact.HasExited)
                     {
                         await Task.Delay(500);
@@ -44,6 +45,7 @@ namespace Flowframes.Os
                             shownPatienceMsg = true;
                             await Task.Delay(500);
                         }
+
                     }
                     Config.Set("compressedPyVersion", Updater.GetInstalledVer().ToString());
                     Logger.Log("Done compressing python runtime.");

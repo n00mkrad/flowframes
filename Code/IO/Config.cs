@@ -351,6 +351,7 @@ namespace Flowframes.IO
             keepSubs,
             keepTempFolder,
             loopMode,
+            lastUsedAiName,
             lowDiskSpaceCancelGb,
             lowDiskSpacePauseGb,
             maxFps,

@@ -109,9 +109,6 @@ namespace Flowframes
                 {
                     float factor = arg.Split('=').Last().GetFloat();
                     interpFactorCombox.Text = factor.ToString();
-                    //if (factor == 2) interpFactorCombox.SelectedIndex = 0;
-                    //if (factor == 4) interpFactorCombox.SelectedIndex = 1;
-                    //if (factor == 8) interpFactorCombox.SelectedIndex = 2;
                 }
 
                 if (arg.StartsWith("ai="))
@@ -272,10 +269,25 @@ namespace Flowframes
 
         void InitAis()
         {
-            foreach (AI ai in Implementations.networks)
-                aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
+            bool pytorchAvailable = Python.HasEmbeddedPyFolder() || Python.IsSysPyInstalled();
 
-            ConfigParser.LoadComboxIndex(aiCombox);
+            foreach (AI ai in Implementations.networks)
+            {
+                if (ai.backend == AI.Backend.Pytorch && !pytorchAvailable)
+                {
+                    Logger.Log($"AI implementation {ai.friendlyName} ({ai.backend}) has not been loaded because Pytorch was not found.", true);
+                    continue;
+                }
+                    
+
+                aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
+            }
+
+            string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
+            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.aiName == lastUsedAiName).FirstOrDefault());
+            if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
+            Config.Set(Config.Key.lastUsedAiName, GetAi().aiName);
+
             ConfigParser.LoadComboxIndex(outModeCombox);
         }
 
@@ -460,7 +472,7 @@ namespace Flowframes
             interpFactorCombox.SelectedIndex = 0;
 
             if (initialized)
-                ConfigParser.SaveComboxIndex(aiCombox);
+                Config.Set(Config.Key.lastUsedAiName, GetAi().aiName);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
             fpsOutTbox.ReadOnly = GetAi().factorSupport != AI.FactorSupport.AnyFloat;
