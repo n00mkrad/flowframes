@@ -7,29 +7,30 @@ using System.Threading.Tasks;
 
 namespace Flowframes.Data
 {
-    public struct AI
+    public class AI
     {
-        public enum Backend { Pytorch, Ncnn, Tensorflow, Other }
-        public Backend backend;
-        public string aiName;
-        public string aiNameShort;
-        public string friendlyName;
-        public string description;
-        public string pkgDir;
-        public enum FactorSupport { Fixed, AnyPowerOfTwo, AnyInteger, AnyFloat }
-        public FactorSupport factorSupport;
-        public int[] supportedFactors;
+        public enum AiBackend { Pytorch, Ncnn, Tensorflow, Other }
+        public AiBackend Backend { get; set; } = AiBackend.Pytorch;
+        public string AiName { get; set; } = "";
+        public string AiNameShort { get; set; } = "";
+        public string FriendlyName { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string PkgDir { get; set; } = "";
+        public enum InterpFactorSupport { Fixed, AnyPowerOfTwo, AnyInteger, AnyFloat }
+        public InterpFactorSupport FactorSupport { get; set; } = InterpFactorSupport.Fixed;
+        public int[] SupportedFactors { get; set; } = new int[0];
+        public bool Piped { get; set; } = false;
 
-        public AI(Backend backend, string aiName, string friendlyName, string desc, string pkgDir, FactorSupport factorSupport = FactorSupport.Fixed, int[] factors = null)
+        public AI(AiBackend backend, string aiName, string friendlyName, string desc, string pkgDir, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
         {
-            this.backend = backend;
-            this.aiName = aiName;
-            this.aiNameShort = aiName.Split(' ')[0].Split('_')[0];
-            this.friendlyName = friendlyName;
-            this.description = desc;
-            this.pkgDir = pkgDir;
-            this.supportedFactors = factors;
-            this.factorSupport = factorSupport;
+            Backend = backend;
+            AiName = aiName;
+            AiNameShort = aiName.Split(' ')[0].Split('_')[0];
+            FriendlyName = friendlyName;
+            Description = desc;
+            PkgDir = pkgDir;
+            SupportedFactors = supportedFactors;
+            FactorSupport = factorSupport;
         }
     }
 }

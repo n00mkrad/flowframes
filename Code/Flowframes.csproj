@@ -441,6 +441,7 @@
     <Compile Include="Os\Python.cs" />
     <Compile Include="Os\StartupChecks.cs" />
     <Compile Include="Os\Updater.cs" />
+    <Compile Include="Os\VapourSynthUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscUtils\FormatUtils.cs" />

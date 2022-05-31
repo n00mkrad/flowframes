@@ -36,10 +36,10 @@ namespace Flowframes.Main
 
             safetyBufferFrames = 90;
 
-            if (Interpolate.current.ai.backend == AI.Backend.Ncnn)
+            if (Interpolate.current.ai.Backend == AI.AiBackend.Ncnn)
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferNcnn, 150);
 
-            if (Interpolate.current.ai.backend == AI.Backend.Pytorch)
+            if (Interpolate.current.ai.Backend == AI.AiBackend.Pytorch)
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferCuda, 90);
         }
 

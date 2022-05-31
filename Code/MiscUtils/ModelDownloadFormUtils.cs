@@ -54,7 +54,7 @@ namespace Flowframes.MiscUtils
 					return;
 
 				ModelCollection.ModelInfo modelInfo = modelCollection.models[i];
-				form.SetStatus($"Downloading files for {modelInfo.ai.aiName.Replace("_", "-")}...");
+				form.SetStatus($"Downloading files for {modelInfo.ai.AiName.Replace("_", "-")}...");
 				await ModelDownloader.DownloadModelFiles(ai, modelInfo.dir, false);
 				taskCounter++;
 				UpdateProgressBar();

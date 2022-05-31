@@ -189,6 +189,12 @@ namespace Flowframes.Main
             }
         }
 
+        public static async Task MuxPipedVideo (string inputVideo, string outputPath)
+        {
+            await MuxOutputVideo(inputVideo, Path.Combine(outputPath, outputPath));
+            await Loop(outputPath, await GetLoopTimes());
+        }
+
         public static async Task ChunksToVideo(string tempFolder, string chunksFolder, string baseOutPath, bool isBackup = false)
         {
             if (IoUtils.GetAmountOfFiles(chunksFolder, true, "*" + FfmpegUtils.GetExt(I.current.outMode)) < 1)

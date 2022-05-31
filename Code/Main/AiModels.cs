@@ -14,12 +14,12 @@ namespace Flowframes.Main
     {
         public static ModelCollection GetModels (AI ai)
         {
-            string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
+            string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
             string modelsFile = Path.Combine(pkgPath, "models.json");
 
             if (!File.Exists(modelsFile))
             {
-                Logger.Log($"Error: File models.json is missing for {ai.aiName}, can't load AI models for this implementation!");
+                Logger.Log($"Error: File models.json is missing for {ai.AiName}, can't load AI models for this implementation!");
                 return new ModelCollection(ai);
             }
 
@@ -37,7 +37,7 @@ namespace Flowframes.Main
 
         public static List<string> GetCustomModels(AI ai)
         {
-            string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
+            string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
             List<string> custModels = new List<string>();
 
             foreach (DirectoryInfo dir in new DirectoryInfo(pkgPath).GetDirectories())

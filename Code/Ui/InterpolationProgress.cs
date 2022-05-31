@@ -28,17 +28,22 @@ namespace Flowframes.Ui
         public static PictureBox preview;
         public static BigPreviewForm bigPreviewForm;
 
-        public static async void GetProgressByFrameAmount(string outdir, int target)
+        public static void Restart ()
         {
             progCheckRunning = true;
+            deletedFramesCount = 0;
+            lastFrame = 0;
+            peakFpsOut = 0f;
+            Program.mainForm.SetProgress(0);
+        }
+
+        public static async void GetProgressByFrameAmount(string outdir, int target)
+        {
             targetFrames = target;
             currentOutdir = outdir;
             Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
             bool firstProgUpd = true;
-            Program.mainForm.SetProgress(0);
-            deletedFramesCount = 0;
-            lastFrame = 0;
-            peakFpsOut = 0f;
+            Restart();
 
             while (Program.busy)
             {
@@ -74,7 +79,7 @@ namespace Flowframes.Ui
         {
             try
             {
-                string ncnnStr = I.current.ai.aiName.Contains("NCNN") ? " done" : "";
+                string ncnnStr = I.current.ai.AiName.Contains("NCNN") ? " done" : "";
                 Regex frameRegex = new Regex($@"(?<=.)\d*(?={I.current.interpExt}{ncnnStr})");
                 if (!frameRegex.IsMatch(output)) return;
                 lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
@@ -83,6 +88,40 @@ namespace Flowframes.Ui
             {
                 Logger.Log($"UpdateLastFrameFromInterpOutput: Failed to get progress from '{output}' even though Regex matched!", true);
             }
+        }
+
+        public static async void GetProgressFromFfmpegLog(string logFile, int target)
+        {
+            targetFrames = target;
+            Logger.Log($"Starting GetProgressFromFfmpegLog() loop for log '{logFile}', target is {target} frames", true);
+            Restart();
+
+            while (Program.busy)
+            {
+                if (!progressPaused && AiProcess.processTime.IsRunning)
+                {
+                    string lastLogLine = Logger.GetSessionLogLastLines(logFile, 3).Where(x => x.Contains("frame=")).LastOrDefault();
+
+                    int num = lastLogLine == null ? 0 : lastLogLine.Split("frame=")[1].Split("fps=")[0].GetInt();
+
+                    if(num > 0)
+                        UpdateInterpProgress(num, targetFrames);
+
+                    await Task.Delay(500);
+
+                    if (num >= targetFrames)
+                        break;
+                }
+                else
+                {
+                    await Task.Delay(100);
+                }
+            }
+
+            progCheckRunning = false;
+
+            if (I.canceled)
+                Program.mainForm.SetProgress(0);
         }
 
         public static int interpolatedInputFramesCount;

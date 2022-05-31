@@ -81,7 +81,7 @@ namespace Flowframes.Main
 
             string fname = Path.GetFileName(entry.inPath);
             if (IoUtils.IsPathDirectory(entry.inPath)) fname = Path.GetDirectoryName(entry.inPath);
-            Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
+            Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.AiNameShort}).");
 
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
             Interpolate.current = entry;
@@ -92,7 +92,7 @@ namespace Flowframes.Main
 
             Program.batchQueue.Dequeue();
             Program.mainForm.SetWorking(false);
-            Logger.Log($"Queue: Done processing {fname} ({entry.interpFactor}x {entry.ai.aiNameShort}).");
+            Logger.Log($"Queue: Done processing {fname} ({entry.interpFactor}x {entry.ai.AiNameShort}).");
         }
 
         static void SetBusy(bool state)
@@ -120,7 +120,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), entry.ai.pkgDir), true) < 1)
+            if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), entry.ai.PkgDir), true) < 1)
             {
                 Logger.Log("Queue: Can't process queue entry: Selected AI is not available.");
                 return false;

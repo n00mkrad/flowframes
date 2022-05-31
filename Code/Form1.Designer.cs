@@ -1297,7 +1297,7 @@
             this.scnDetectValue.DecimalPlaces = 2;
             this.scnDetectValue.ForeColor = System.Drawing.Color.White;
             this.scnDetectValue.Increment = new decimal(new int[] {
-            5,
+            1,
             0,
             0,
             131072});
@@ -1308,7 +1308,7 @@
             0,
             65536});
             this.scnDetectValue.Minimum = new decimal(new int[] {
-            5,
+            2,
             0,
             0,
             131072});

@@ -50,6 +50,7 @@ namespace Flowframes.Media
                 case Codec.ProRes: return "prores_ks";
                 case Codec.AviRaw: return Config.Get(Config.Key.aviCodec);
             }
+
             return "libx264";
         }
 

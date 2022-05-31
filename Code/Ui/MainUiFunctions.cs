@@ -157,31 +157,31 @@ namespace Flowframes.Ui
         {
             AI ai = Program.mainForm.GetAi();
 
-            if (ai.aiName == Implementations.rifeNcnn.aiName && !Program.mainForm.GetModel(ai).dir.Contains("v4"))
+            if (ai.AiName == Implementations.rifeNcnn.AiName && !Program.mainForm.GetModel(ai).dir.Contains("v4"))
             {
                 if (factor != 2)
-                    Logger.Log($"{ai.friendlyName} models before 4.0 only support 2x interpolation!");
+                    Logger.Log($"{ai.FriendlyName} models before 4.0 only support 2x interpolation!");
 
                 return 2;
             }
 
-            if (ai.factorSupport == AI.FactorSupport.Fixed)
+            if (ai.FactorSupport == AI.InterpFactorSupport.Fixed)
             {
-                int closest = ai.supportedFactors.Min(i => (Math.Abs(factor.RoundToInt() - i), i)).i;
+                int closest = ai.SupportedFactors.Min(i => (Math.Abs(factor.RoundToInt() - i), i)).i;
                 return (float)closest;
             }
 
-            if(ai.factorSupport == AI.FactorSupport.AnyPowerOfTwo)
+            if(ai.FactorSupport == AI.InterpFactorSupport.AnyPowerOfTwo)
             {
                 return ToNearestPow2(factor.RoundToInt()).Clamp(2, 128);
             }
 
-            if(ai.factorSupport == AI.FactorSupport.AnyInteger)
+            if(ai.FactorSupport == AI.InterpFactorSupport.AnyInteger)
             {
                 return factor.RoundToInt().Clamp(2, 128);
             }
 
-            if(ai.factorSupport == AI.FactorSupport.AnyFloat)
+            if(ai.FactorSupport == AI.InterpFactorSupport.AnyFloat)
             {
                 return factor.Clamp(2, 128);
             }

@@ -11,6 +11,8 @@ using Flowframes.MiscUtils;
 using System.Collections.Generic;
 using ImageMagick;
 using Paths = Flowframes.IO.Paths;
+using Flowframes.Media;
+using System.Drawing;
 
 namespace Flowframes.Os
 {
@@ -63,6 +65,18 @@ namespace Flowframes.Os
                 InterpolationProgress.GetProgressByFrameAmount(interpPath, target);
         }
 
+        static void SetProgressCheck(int sourceFrames, float factor, string logFile)
+        {
+            int target = ((sourceFrames * factor) - (factor - 1)).RoundToInt();
+            InterpolationProgress.progressPaused = false;
+            InterpolationProgress.currentFactor = factor;
+
+            if (InterpolationProgress.progCheckRunning)
+                InterpolationProgress.targetFrames = target;
+            else
+                InterpolationProgress.GetProgressFromFfmpegLog(logFile, target);
+        }
+
         static async Task AiFinished(string aiName)
         {
             if (Interpolate.canceled) return;
@@ -82,7 +96,7 @@ namespace Flowframes.Os
             Logger.Log(logStr);
             processTime.Stop();
 
-            if (interpFramesCount < 3)
+            if (!Interpolate.current.ai.Piped && interpFramesCount < 3)
             {
                 string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), lastLogName + ".txt"));
                 string log = string.Join("\n", logLines.Reverse().Take(10).Reverse().Select(x => x.Split("]: ").Last()).ToList());
@@ -120,7 +134,7 @@ namespace Flowframes.Os
 
             try
             {
-                string rifeDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.pkgDir);
+                string rifeDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir);
                 string script = "rife.py";
 
                 if (!File.Exists(Path.Combine(rifeDir, script)))
@@ -164,7 +178,7 @@ namespace Flowframes.Os
             Process rifePy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
-            rifePy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.pkgDir).Wrap()} & " +
+            rifePy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
@@ -193,7 +207,7 @@ namespace Flowframes.Os
 
             try
             {
-                string flavDir = Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.pkgDir);
+                string flavDir = Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.PkgDir);
                 string script = "flavr.py";
 
                 if (!File.Exists(Path.Combine(flavDir, script)))
@@ -222,7 +236,7 @@ namespace Flowframes.Os
             Process flavrPy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(flavrPy, 4000);
             SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
-            flavrPy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.pkgDir).Wrap()} & " +
+            flavrPy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running FLAVR (CUDA)...", false);
             Logger.Log("cmd.exe " + flavrPy.StartInfo.Arguments, true);
@@ -268,6 +282,7 @@ namespace Flowframes.Os
         static async Task RunRifeNcnnProcess(string inPath, float factor, string outPath, string mdl)
         {
             Directory.CreateDirectory(outPath);
+            string logFileName = "rife-ncnn-log";
             Process rifeNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, factor);
@@ -277,15 +292,15 @@ namespace Flowframes.Os
             string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
-            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.pkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
+            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
 
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
 
             if (!OsUtils.ShowHiddenCmd())
             {
-                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, "rife-ncnn-log"); };
-                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, "rife-ncnn-log", true); };
+                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, logFileName); };
+                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, logFileName, true); };
             }
 
             rifeNcnn.Start();
@@ -297,6 +312,64 @@ namespace Flowframes.Os
             }
 
             while (!rifeNcnn.HasExited) await Task.Delay(1);
+        }
+
+        public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl)
+        {
+            processTimeMulti.Restart();
+
+            try
+            {
+                bool uhd = await InterpolateUtils.UseUhd();
+                Logger.Log($"Running RIFE (NCNN-VS){(uhd ? " (UHD Mode)" : "")}...", false);
+
+                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, uhd);
+                //await DeleteNcnnDupes(outPath, factor);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error running RIFE-NCNN-VS: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
+            }
+
+            await AiFinished("RIFE");
+        }
+
+        static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, bool uhd)
+        {
+            Directory.CreateDirectory(outPath);
+            string logFileName = "rife-ncnn-vs-log";
+            Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            AiStarted(rifeNcnnVs, 1500, inPath);
+            SetProgressCheck(Interpolate.currentInputFrameCount, factor, logFileName);
+
+            Interpolate.current.FullOutPath = Path.Combine(Interpolate.current.outPath, await IoUtils.GetCurrentExportFilename(false, true));
+            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat()).FirstOrDefault();
+            string ffmpegArgs = $"ffmpeg -y -i pipe: {encArgs} {Interpolate.current.FullOutPath.Wrap()}";
+
+            float scn = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) : 0f;
+            Size res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true);
+
+            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir).Wrap()} & " +
+                $" vspipe {VapourSynthUtils.CreateScript(Interpolate.current, mdl, factor, res, uhd, scn).Wrap()} -c y4m - | {ffmpegArgs}";
+
+            Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
+
+            if (!OsUtils.ShowHiddenCmd())
+            {
+                rifeNcnnVs.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, logFileName); };
+                rifeNcnnVs.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, logFileName, true); };
+            }
+
+            rifeNcnnVs.Start();
+
+            if (!OsUtils.ShowHiddenCmd())
+            {
+                rifeNcnnVs.BeginOutputReadLine();
+                rifeNcnnVs.BeginErrorReadLine();
+            }
+
+            while (!rifeNcnnVs.HasExited) await Task.Delay(1);
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
@@ -320,7 +393,7 @@ namespace Flowframes.Os
 
         public static async Task RunDainNcnnProcess(string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
-            string dainDir = Path.Combine(Paths.GetPkgPath(), Implementations.dainNcnn.pkgDir);
+            string dainDir = Path.Combine(Paths.GetPkgPath(), Implementations.dainNcnn.PkgDir);
             Directory.CreateDirectory(outPath);
             Process dain = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(dain, 1500);
@@ -359,7 +432,7 @@ namespace Flowframes.Os
 
             try
             {
-                string xvfiDir = Path.Combine(Paths.GetPkgPath(), Implementations.xvfiCuda.pkgDir);
+                string xvfiDir = Path.Combine(Paths.GetPkgPath(), Implementations.xvfiCuda.PkgDir);
                 string script = "main.py";
 
                 if (!File.Exists(Path.Combine(xvfiDir, script)))
@@ -381,7 +454,7 @@ namespace Flowframes.Os
 
         public static async Task RunXvfiCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdlDir)
         {
-            string pkgPath = Path.Combine(Paths.GetPkgPath(), Implementations.xvfiCuda.pkgDir);
+            string pkgPath = Path.Combine(Paths.GetPkgPath(), Implementations.xvfiCuda.PkgDir);
             string basePath = inPath.GetParentDir();
             string outPath = Path.Combine(basePath, outDir);
             Directory.CreateDirectory(outPath);
@@ -474,7 +547,7 @@ namespace Flowframes.Os
             if (!hasShownError && line.ToLower().Contains("error(s) in loading state_dict"))
             {
                 hasShownError = true;
-                string msg = (Interpolate.current.ai.aiName == Implementations.flavrCuda.aiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
+                string msg = (Interpolate.current.ai.AiName == Implementations.flavrCuda.AiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
                 UiUtils.ShowMessageBox($"Error loading the AI model!\n\n{line}{msg}", UiUtils.MessageType.Error);
             }
 
@@ -499,7 +572,7 @@ namespace Flowframes.Os
             if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
             {
                 hasShownError = true;
-                bool usingDain = (Interpolate.current.ai.aiName == Implementations.dainNcnn.aiName);
+                bool usingDain = (Interpolate.current.ai.AiName == Implementations.dainNcnn.AiName);
                 string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
                 UiUtils.ShowMessageBox($"Vulkan ran out of memory!\n\n{line}{msg}", UiUtils.MessageType.Error);
             }
@@ -580,11 +653,6 @@ namespace Flowframes.Os
                     }
                 }
             }
-        }
-
-        static double Compare(string referenceImg, string compareImg)
-        {
-            return new MagickImage(referenceImg).Compare(new MagickImage(compareImg), ErrorMetric.PeakSignalToNoiseRatio);
         }
     }
 }

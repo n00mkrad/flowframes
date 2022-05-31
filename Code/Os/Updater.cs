@@ -157,14 +157,14 @@ namespace Flowframes.Os
                 try
                 {
                     var client = new WebClient();
-                    string aiName = ai.pkgDir;
+                    string aiName = ai.PkgDir;
                     string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/Pkgs/{aiName}/models.txt";
                     string movePath = Path.Combine(Paths.GetPkgPath(), aiName, "models.txt");
                     string savePath = movePath + ".tmp";
 
                     if (!Directory.Exists(savePath.GetParentDir()))
                     {
-                        Logger.Log($"Skipping {ai.pkgDir} models file download as '{savePath.GetParentDir()}' does not exist!", true);
+                        Logger.Log($"Skipping {ai.PkgDir} models file download as '{savePath.GetParentDir()}' does not exist!", true);
                         continue;
                     }
 
@@ -185,7 +185,7 @@ namespace Flowframes.Os
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"Failed to fetch models file for {ai.friendlyName}. Ignore this if you are not connected to the internet.");
+                    Logger.Log($"Failed to fetch models file for {ai.FriendlyName}. Ignore this if you are not connected to the internet.");
                     Logger.Log($"{e.Message}\n{e.StackTrace}", true);
                 }
             }

@@ -222,7 +222,7 @@ namespace Flowframes
 
         public static string[] Split(this string str, string trimStr)
         {
-            return str.Split(new string[] { trimStr }, StringSplitOptions.None);
+            return str?.Split(new string[] { trimStr }, StringSplitOptions.None);
         }
 
         public static bool MatchesWildcard(this string str, string wildcard)

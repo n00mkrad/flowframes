@@ -191,7 +191,7 @@ namespace Flowframes
             inputTbox.Text = entry.inPath;
             MainUiFunctions.SetOutPath(outputTbox, entry.outPath);
             interpFactorCombox.Text = entry.interpFactor.ToString();
-            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.aiName == entry.ai.aiName).FirstOrDefault());
+            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.AiName == entry.ai.AiName).FirstOrDefault());
             SetOutMode(entry.outMode);
         }
 
@@ -273,20 +273,20 @@ namespace Flowframes
 
             foreach (AI ai in Implementations.networks)
             {
-                if (ai.backend == AI.Backend.Pytorch && !pytorchAvailable)
+                if (ai.Backend == AI.AiBackend.Pytorch && !pytorchAvailable)
                 {
-                    Logger.Log($"AI implementation {ai.friendlyName} ({ai.backend}) has not been loaded because Pytorch was not found.", true);
+                    Logger.Log($"AI implementation {ai.FriendlyName} ({ai.Backend}) has not been loaded because Pytorch was not found.", true);
                     continue;
                 }
                     
 
-                aiCombox.Items.Add(ai.friendlyName + " - " + ai.description);
+                aiCombox.Items.Add(ai.FriendlyName + " - " + ai.Description);
             }
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
-            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.aiName == lastUsedAiName).FirstOrDefault());
+            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.AiName == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
-            Config.Set(Config.Key.lastUsedAiName, GetAi().aiName);
+            Config.Set(Config.Key.lastUsedAiName, GetAi().AiName);
 
             ConfigParser.LoadComboxIndex(outModeCombox);
         }
@@ -466,16 +466,16 @@ namespace Flowframes
 
             interpFactorCombox.Items.Clear();
 
-            foreach (int factor in GetAi().supportedFactors)
+            foreach (int factor in GetAi().SupportedFactors)
                 interpFactorCombox.Items.Add($"x{factor}");
 
             interpFactorCombox.SelectedIndex = 0;
 
             if (initialized)
-                Config.Set(Config.Key.lastUsedAiName, GetAi().aiName);
+                Config.Set(Config.Key.lastUsedAiName, GetAi().AiName);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
-            fpsOutTbox.ReadOnly = GetAi().factorSupport != AI.FactorSupport.AnyFloat;
+            fpsOutTbox.ReadOnly = GetAi().FactorSupport != AI.InterpFactorSupport.AnyFloat;
         }
 
         public void UpdateAiModelCombox()

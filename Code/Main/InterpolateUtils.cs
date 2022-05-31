@@ -148,7 +148,7 @@ namespace Flowframes.Main
 
         public static bool CheckAiAvailable(AI ai, ModelCollection.ModelInfo model)
         {
-            if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.pkgDir), true) < 1)
+            if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.PkgDir), true) < 1)
             {
                 UiUtils.ShowMessageBox("The selected AI is not installed!", UiUtils.MessageType.Error);
                 I.Cancel("Selected AI not available.", true);
@@ -162,7 +162,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (I.current.ai.aiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
+            if (I.current.ai.AiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
             {
                 UiUtils.ShowMessageBox("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", UiUtils.MessageType.Error);
 
@@ -285,6 +285,12 @@ namespace Flowframes.Main
         public static bool CanUseAutoEnc(bool stepByStep, InterpSettings current)
         {
             AutoEncode.UpdateChunkAndBufferSizes();
+
+            if (current.ai.Piped)
+            {
+                Logger.Log($"Not Using AutoEnc: Using piped encoding.", true);
+                return false;
+            }
 
             if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
             {

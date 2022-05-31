@@ -134,8 +134,8 @@ namespace Flowframes.IO
 
         public static async Task DownloadModelFiles (AI ai, string modelDir, bool log = true)
         {
-            string aiDir = ai.pkgDir;
-            Logger.Log($"DownloadModelFiles(string ai = {ai.aiName}, string model = {modelDir}, bool log = {log})", true);
+            string aiDir = ai.PkgDir;
+            Logger.Log($"DownloadModelFiles(string ai = {ai.AiName}, string model = {modelDir}, bool log = {log})", true);
 
             try
             {
@@ -198,7 +198,7 @@ namespace Flowframes.IO
 
             foreach (AI ai in Implementations.networks)
             {
-                string aiPkgFolder = Path.Combine(Paths.GetPkgPath(), ai.pkgDir);
+                string aiPkgFolder = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
                 ModelCollection aiModels = AiModels.GetModels(ai);
 
                 foreach(ModelCollection.ModelInfo model in aiModels.models)

@@ -60,7 +60,7 @@ namespace Flowframes.Ui
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to load available AI models for {ai.aiName}! {e.Message}");
+                Logger.Log($"Failed to load available AI models for {ai.AiName}! {e.Message}");
                 Logger.Log($"Stack Trace: {e.StackTrace}", true);
             }
 

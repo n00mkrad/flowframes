@@ -18,6 +18,7 @@ namespace Flowframes
     {
         public string inPath;
         public string outPath;
+        public string FullOutPath { get; set; } = "";
         public AI ai;
         public Fraction inFps;
         public Fraction inFpsDetected;
@@ -233,7 +234,7 @@ namespace Flowframes
         {
             string s = $"INPATH|{inPath}\n";
             s += $"OUTPATH|{outPath}\n";
-            s += $"AI|{ai.aiName}\n";
+            s += $"AI|{ai.AiName}\n";
             s += $"INFPSDETECTED|{inFpsDetected}\n";
             s += $"INFPS|{inFps}\n";
             s += $"OUTFPS|{outFps}\n";

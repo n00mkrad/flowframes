@@ -25,7 +25,7 @@ namespace Flowframes
 
         public static int GetPadding ()
         {
-            return (Interpolate.current.ai.aiName == Implementations.flavrCuda.aiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
+            return (Interpolate.current.ai.AiName == Implementations.flavrCuda.AiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
         }
 
         public static string GetPadFilter ()
