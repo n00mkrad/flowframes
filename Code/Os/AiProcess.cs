@@ -82,9 +82,13 @@ namespace Flowframes.Os
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             AiProcessSuspend.SetRunning(false);
+
             int interpFramesFiles = IoUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt);
             int interpFramesCount = interpFramesFiles + InterpolationProgress.deletedFramesCount;
-            InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
+
+            if (!Interpolate.current.ai.Piped)
+                InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
+
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
 
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
@@ -324,7 +328,6 @@ namespace Flowframes.Os
                 Logger.Log($"Running RIFE (NCNN-VS){(uhd ? " (UHD Mode)" : "")}...", false);
 
                 await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, uhd);
-                //await DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
@@ -350,10 +353,14 @@ namespace Flowframes.Os
             float scn = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) : 0f;
             Size res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true);
 
+            string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
+            string vsModelDir = Path.Combine(pkgDir, "vapoursynth64", "plugins", "models", mdl);
+            IoUtils.CopyDir(Path.Combine(pkgDir, mdl), vsModelDir);
+
             VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
             { InterpSettings = Interpolate.current, ModelDir = mdl, Factor = factor, Res = res, Uhd = uhd, SceneDetectSensitivity = scn, Loop = Config.GetBool(Config.Key.enableLoop), MatchDuration = Config.GetBool(Config.Key.fixOutputDuration) };
 
-            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir).Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {ffmpegArgs}";
+            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {ffmpegArgs}";
 
             Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
 
@@ -372,6 +379,10 @@ namespace Flowframes.Os
             }
 
             while (!rifeNcnnVs.HasExited) await Task.Delay(1);
+
+            await Task.Delay(100);
+
+            IoUtils.TryDeleteIfExists(vsModelDir);
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
@@ -496,23 +507,6 @@ namespace Flowframes.Os
 
             Stopwatch sw = new Stopwatch();
             sw.Restart();
-
-            //if (line.Contains("iVBOR"))
-            //{
-            //    try
-            //    {
-            //        string[] split = line.Split(':');
-            //        //MemoryStream stream = new MemoryStream(Convert.FromBase64String(split[1]));
-            //        //Image img = Image.FromStream(stream);
-            //        Logger.Log($"Received image {split[0]} in {sw.ElapsedMilliseconds} ms", true);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Logger.Log($"Failed to decode b64 string - {e}:");
-            //        Logger.Log(line);
-            //    }
-            //    return;
-            //}
 
             lastLogName = logFilename;
             Logger.Log(line, true, false, logFilename);

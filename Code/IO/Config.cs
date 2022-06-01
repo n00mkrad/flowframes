@@ -261,7 +261,7 @@ namespace Flowframes.IO
             if (key == Key.minOutVidLength)   return WriteDefault(key, "5");
             if (key == Key.h264Crf)           return WriteDefault(key, "20");
             if (key == Key.h265Crf)           return WriteDefault(key, "24");
-            if (key == Key.av1Crf)            return WriteDefault(key, "27");
+            if (key == Key.av1Crf)            return WriteDefault(key, "28");
             if (key == Key.vp9Crf)            return WriteDefault(key, "28");
             if (key == Key.proResProfile)     return WriteDefault(key, "2");
             if (key == Key.aviCodec)          return WriteDefault(key, "ffv1");

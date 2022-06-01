@@ -47,7 +47,7 @@ namespace Flowframes
             Program.mainForm.SetStatus("Starting...");
             sw.Restart();
 
-            if (!AutoEncodeResume.resumeNextRun && !current.ai.Piped)
+            if (!AutoEncodeResume.resumeNextRun && !(current.ai.Piped && !current.inputIsFrames))
             {
                 await GetFrames();
                 if (canceled) return;
@@ -179,15 +179,14 @@ namespace Flowframes
         {
             if (canceled) return;
 
+            await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
+            await Task.Run(async () => { await FrameRename.Rename(); });
+
             if (!ai.Piped)
-            {
-                await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
-                await Task.Run(async () => { await FrameRename.Rename(); });
                 await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool(Config.Key.enableLoop), current.interpFactor); });
-            }
 
             Program.mainForm.SetStatus("Downloading models...");
-            //await ModelDownloader.DownloadModelFiles(ai, current.model.dir);
+            await ModelDownloader.DownloadModelFiles(ai, current.model.dir);
             if (canceled) return;
 
             currentlyUsingAutoEnc = Utils.CanUseAutoEnc(stepByStep, current);

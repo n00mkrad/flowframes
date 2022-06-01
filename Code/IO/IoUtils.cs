@@ -117,11 +117,11 @@ namespace Flowframes.IO
 				return IsFileValid(path);
 		}
 
-		public static void CopyDir(string sourceDirectoryName, string targetDirectoryName, bool move = false)
+		public static void CopyDir(string sourceDirectory, string targetDirectory, bool move = false)
 		{
-			Directory.CreateDirectory(targetDirectoryName);
-			DirectoryInfo source = new DirectoryInfo(sourceDirectoryName);
-			DirectoryInfo target = new DirectoryInfo(targetDirectoryName);
+			Directory.CreateDirectory(targetDirectory);
+			DirectoryInfo source = new DirectoryInfo(sourceDirectory);
+			DirectoryInfo target = new DirectoryInfo(targetDirectory);
 			CopyWork(source, target, move);
 		}
 

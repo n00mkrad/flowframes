@@ -30,22 +30,23 @@ namespace Flowframes.Os
         public static string CreateScript(VsSettings s)
         {
             string inputPath = s.InterpSettings.inPath;
-            bool resize = !s.InterpSettings.ScaledResolution.IsEmpty && s.InterpSettings.ScaledResolution != s.InterpSettings.InputResolution;
             bool sc = s.SceneDetectSensitivity >= 0.01f;
 
             int endDupeCount = s.Factor.RoundToInt() - 1;
 
-            List<string> l = new List<string>();
+            List<string> l = new List<string> { "import sys", "import vapoursynth as vs", "core = vs.core" }; // Imports
 
-            l.Add($"import sys");
-            l.Add($"import vapoursynth as vs");
-            l.Add($"core = vs.core");
-
-            if (Config.GetBool(Config.Key.vsUseLsmash, true))
-                l.Add($"clip = core.lsmas.LWLibavSource(r'{inputPath}', cachefile=r'{Path.Combine(s.InterpSettings.tempFolder, "lsmash.cache.lwi")}')");
+            if (s.InterpSettings.inputIsFrames)
+            {
+                string first = Path.GetFileNameWithoutExtension(IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false).FirstOrDefault().FullName);
+                l.Add($"clip = core.imwri.Read(r'{Path.Combine(s.InterpSettings.framesFolder, $"%0{first.Length}d.png")}', firstnum={first.GetInt()})"); // Load image sequence with imwri
+                l.Add($"clip = core.std.AssumeFPS(clip, fpsnum={s.InterpSettings.inFps.Numerator}, fpsden={s.InterpSettings.inFps.Denominator})"); // Set frame rate for img seq
+            }
             else
-                l.Add($"clip = core.ffms2.Source(source=r'{inputPath}', cachefile=r'{Path.Combine(s.InterpSettings.tempFolder, "ffms2.cache.ffindex")}')");
-
+            {
+                l.Add($"clip = core.lsmas.LWLibavSource(r'{inputPath}', cachefile=r'{Path.Combine(s.InterpSettings.tempFolder, "lsmash.cache.lwi")}')"); // Load video with lsmash
+            }
+                
             l.Add($"targetFrameCountMatchDuration = round((clip.num_frames*{s.Factor.ToStringDot()}), 1)"); // Target frame count to match original duration (and for loops)
             l.Add($"targetFrameCountTrue = targetFrameCountMatchDuration-{endDupeCount}"); // Target frame count without dupes at the end (only in-between frames added)
 
@@ -55,13 +56,12 @@ namespace Flowframes.Os
                 l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
             }
 
-            l.Add($"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
-            //l.Add($"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            l.AddRange(GetScaleLines(s));
 
             if (sc)
                 l.Add($"clip = core.misc.SCDetect(clip=clip,threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
 
-            l.Add($"clip = core.rife.RIFE(clip, {GetModelNum(s.ModelDir)}, {s.Factor.ToStringDot()}, {s.GpuId}, {s.GpuThreads}, {s.Tta}, {s.Uhd}, {sc})"); // Interpolate
+            l.Add($"clip = core.rife.RIFE(clip, {9}, {s.Factor.ToStringDot()}, {s.GpuId}, {s.GpuThreads}, {s.Tta}, {s.Uhd}, {sc})"); // Interpolate
             l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=\"709\")"); // Convert RGB to YUV
 
             if (s.Loop)
@@ -82,6 +82,22 @@ namespace Flowframes.Os
             File.WriteAllText(vpyPath, string.Join("\n", l));
 
             return vpyPath;
+        }
+
+        static List<string> GetScaleLines(VsSettings s)
+        {
+            bool resize = !s.InterpSettings.ScaledResolution.IsEmpty && s.InterpSettings.ScaledResolution != s.InterpSettings.InputResolution;
+            List<string> l = new List<string>();
+
+            l.Add($"");
+            l.Add($"if clip.format.color_family == vs.YUV:");
+            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            l.Add($"");
+            l.Add($"if clip.format.color_family == vs.RGB:");
+            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            l.Add($"");
+
+            return l;
         }
 
         private static int GetModelNum(string modelDir)

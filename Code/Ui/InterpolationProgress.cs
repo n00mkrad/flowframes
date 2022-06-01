@@ -102,7 +102,6 @@ namespace Flowframes.Ui
                 if (!progressPaused && AiProcess.processTime.IsRunning)
                 {
                     string lastLogLine = Logger.GetSessionLogLastLines(logFile, 1).Where(x => x.Contains("frame=")).LastOrDefault();
-
                     int num = lastLogLine == null ? 0 : lastLogLine.Split("frame=")[1].Split("fps=")[0].GetInt();
 
                     if(num > 0)
