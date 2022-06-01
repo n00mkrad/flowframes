@@ -41,9 +41,9 @@ namespace Flowframes.Ui
         {
             targetFrames = target;
             currentOutdir = outdir;
+            Restart();
             Logger.Log($"Starting GetProgressByFrameAmount() loop for outdir '{currentOutdir}', target is {target} frames", true);
             bool firstProgUpd = true;
-            Restart();
 
             while (Program.busy)
             {
@@ -93,14 +93,15 @@ namespace Flowframes.Ui
         public static async void GetProgressFromFfmpegLog(string logFile, int target)
         {
             targetFrames = target;
-            Logger.Log($"Starting GetProgressFromFfmpegLog() loop for log '{logFile}', target is {target} frames", true);
             Restart();
+            Logger.Log($"Starting GetProgressFromFfmpegLog() loop for log '{logFile}', target is {target} frames", true);
+            UpdateInterpProgress(0, targetFrames);
 
             while (Program.busy)
             {
                 if (!progressPaused && AiProcess.processTime.IsRunning)
                 {
-                    string lastLogLine = Logger.GetSessionLogLastLines(logFile, 3).Where(x => x.Contains("frame=")).LastOrDefault();
+                    string lastLogLine = Logger.GetSessionLogLastLines(logFile, 1).Where(x => x.Contains("frame=")).LastOrDefault();
 
                     int num = lastLogLine == null ? 0 : lastLogLine.Split("frame=")[1].Split("fps=")[0].GetInt();
 

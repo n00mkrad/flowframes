@@ -380,6 +380,7 @@ namespace Flowframes.IO
             tempFolderLoc,
             torchGpus,
             uhdThresh,
+            vsUseLsmash,
             vp9Crf
         }
     }

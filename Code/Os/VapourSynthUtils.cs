@@ -40,7 +40,11 @@ namespace Flowframes.Os
             l.Add($"import sys");
             l.Add($"import vapoursynth as vs");
             l.Add($"core = vs.core");
-            l.Add($"clip = core.ffms2.Source(source=r'{inputPath}')");
+
+            if (Config.GetBool(Config.Key.vsUseLsmash, true))
+                l.Add($"clip = core.lsmas.LWLibavSource(r'{inputPath}', cachefile=r'{Path.Combine(s.InterpSettings.tempFolder, "lsmash.cache.lwi")}')");
+            else
+                l.Add($"clip = core.ffms2.Source(source=r'{inputPath}', cachefile=r'{Path.Combine(s.InterpSettings.tempFolder, "ffms2.cache.ffindex")}')");
 
             l.Add($"targetFrameCountMatchDuration = round((clip.num_frames*{s.Factor.ToStringDot()}), 1)"); // Target frame count to match original duration (and for loops)
             l.Add($"targetFrameCountTrue = targetFrameCountMatchDuration-{endDupeCount}"); // Target frame count without dupes at the end (only in-between frames added)
@@ -51,7 +55,8 @@ namespace Flowframes.Os
                 l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
             }
 
-            l.Add($"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            l.Add($"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            //l.Add($"clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
 
             if (sc)
                 l.Add($"clip = core.misc.SCDetect(clip=clip,threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
