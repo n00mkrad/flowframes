@@ -1,3 +1,10 @@
+Flowframes 1.37.2 Changelog:
+- Added RIFE 4.1 model (RIFE-CUDA)
+- Scene detection now works with fractional factors (RIFE-NCNN)
+- Frame deduplication now works with fractional factors (RIFE-NCNN)
+- Pytorch AIs are no longer shown in the dropdown list if Pytorch is not installed
+
+
 Flowframes 1.37.1 Changelog:
 - Custom interpolation factors are no longer disabled by default (thx @ DrPleaseRespect)
 - You can now input a target frame rate instead of a factor with RIFE-NCNN
@@ -9,10 +16,6 @@ Flowframes 1.37.1 Changelog:
 - Interpolation factor will now also be validated in step-by-step mode, not just auto mode
 - Fixed unreliable input video frame counting
 - Fixed some encoding bugs for videos with weird frame rates
-
-KNOWN ISSUES:
-- Scene detection still does not work for fractional factors
-- Deduplication may not work correctly with arbitrary interpolation factors
 
 
 Flowframes 1.37.0 Changelog:
