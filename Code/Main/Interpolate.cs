@@ -69,7 +69,7 @@ namespace Flowframes
                     await Export.ExportFrames(current.interpFolder, current.outPath, current.outMode, false);
             }
 
-            if (!AutoEncodeResume.resumeNextRun && Config.GetBool(Config.Key.keepTempFolder))
+            if (!AutoEncodeResume.resumeNextRun && Config.GetBool(Config.Key.keepTempFolder) && IoUtils.GetAmountOfFiles(current.framesFolder, false) > 0)
                 await Task.Run(async () => { await FrameRename.Unrename(); });
 
             await Done();
@@ -179,8 +179,11 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
-            await Task.Run(async () => { await FrameRename.Rename(); });
+            if (!ai.Piped || ai.Piped && current.inputIsFrames)
+            {
+                await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
+                await Task.Run(async () => { await FrameRename.Rename(); });
+            }
 
             if (!ai.Piped)
                 await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool(Config.Key.enableLoop), current.interpFactor); });

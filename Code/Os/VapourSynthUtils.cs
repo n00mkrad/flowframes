@@ -33,6 +33,8 @@ namespace Flowframes.Os
             bool sc = s.SceneDetectSensitivity >= 0.01f;
 
             int endDupeCount = s.Factor.RoundToInt() - 1;
+            int targetFrameCountMatchDuration = (Interpolate.currentInputFrameCount * s.Factor).RoundToInt(); // Target frame count to match original duration (and for loops)
+            int targetFrameCountTrue = targetFrameCountMatchDuration - endDupeCount; // Target frame count without dupes at the end (only in-between frames added)
 
             List<string> l = new List<string> { "import sys", "import vapoursynth as vs", "core = vs.core" }; // Imports
 
@@ -46,11 +48,8 @@ namespace Flowframes.Os
             {
                 l.Add($"clip = core.lsmas.LWLibavSource(r'{inputPath}', cachefile=r'{Path.Combine(s.InterpSettings.tempFolder, "lsmash.cache.lwi")}')"); // Load video with lsmash
             }
-                
-            l.Add($"targetFrameCountMatchDuration = round((clip.num_frames*{s.Factor.ToStringDot()}), 1)"); // Target frame count to match original duration (and for loops)
-            l.Add($"targetFrameCountTrue = targetFrameCountMatchDuration-{endDupeCount}"); // Target frame count without dupes at the end (only in-between frames added)
 
-            if (s.Loop)
+            if (s.Loop && !s.InterpSettings.inputIsFrames)
             {
                 l.Add($"firstFrame = clip[0]"); // Grab first frame
                 l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
@@ -66,12 +65,12 @@ namespace Flowframes.Os
 
             if (s.Loop)
             {
-                l.Add($"clip = clip.std.Trim(0, targetFrameCountMatchDuration-1)");
+                l.Add($"clip = clip.std.Trim(0, {targetFrameCountMatchDuration}-1)");
             }
             else
             {
                 if (!s.MatchDuration)
-                    l.Add($"clip = clip.std.Trim(0, targetFrameCountTrue-1)");
+                    l.Add($"clip = clip.std.Trim(0, {targetFrameCountTrue}-1)");
             }
 
             l.Add($"clip.set_output()"); // Set output

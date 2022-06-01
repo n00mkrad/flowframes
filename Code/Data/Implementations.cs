@@ -7,12 +7,11 @@ namespace Flowframes.Data
         public static AI rifeCuda = new AI(AI.AiBackend.Pytorch, "RIFE_CUDA", "RIFE", 
             "CUDA/Pytorch Implementation of RIFE (Nvidia Only!)", "rife-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
+        public static AI rifeNcnnVs = new AI(AI.AiBackend.Ncnn, "RIFE_NCNN_VS", "RIFE (NCNN/VS)",
+            "Vulkan/NCNN/VapourSynth Implementation of RIFE", "rife-ncnn-vs", AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 }) { Piped = true };
+
         public static AI rifeNcnn = new AI(AI.AiBackend.Ncnn, "RIFE_NCNN", "RIFE (NCNN)", 
             "Vulkan/NCNN Implementation of RIFE", "rife-ncnn", AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-
-        public static AI rifeNcnnVs = new AI(AI.AiBackend.Ncnn, "RIFE_NCNN_VS", "RIFE (NCNN/VS)",
-            "Vulkan/NCNN Implementation of RIFE in VS", "rife-ncnn-vs", AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 })
-        { Piped = true };
 
         public static AI flavrCuda = new AI(AI.AiBackend.Pytorch, "FLAVR_CUDA", "FLAVR", 
             "Experimental Pytorch Implementation of FLAVR (Nvidia Only!)", "flavr-cuda", AI.InterpFactorSupport.Fixed, new int[] { 2, 4, 8 });
