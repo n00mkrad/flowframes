@@ -22,7 +22,7 @@ namespace Flowframes.Data
         public static AI xvfiCuda = new AI(AI.AiBackend.Pytorch, "XVFI_CUDA", "XVFI", 
             "CUDA/Pytorch Implementation of XVFI (Nvidia Only!)", "xvfi-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
-        public static List<AI> networks = new List<AI> { rifeCuda, rifeNcnn, rifeNcnnVs, flavrCuda, dainNcnn, xvfiCuda };
+        public static List<AI> networks = new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda };
 
         public static AI GetAi (string aiName)
         {

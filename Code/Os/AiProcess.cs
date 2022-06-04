@@ -318,7 +318,7 @@ namespace Flowframes.Os
             while (!rifeNcnn.HasExited) await Task.Delay(1);
         }
 
-        public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl)
+        public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl, bool rt = false)
         {
             processTimeMulti.Restart();
 
@@ -327,7 +327,7 @@ namespace Flowframes.Os
                 bool uhd = await InterpolateUtils.UseUhd();
                 Logger.Log($"Running RIFE (NCNN-VS){(uhd ? " (UHD Mode)" : "")}...", false);
 
-                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, uhd);
+                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, uhd, rt);
             }
             catch (Exception e)
             {
@@ -338,27 +338,31 @@ namespace Flowframes.Os
             await AiFinished("RIFE");
         }
 
-        static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, bool uhd)
+        static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, bool uhd, bool rt = false)
         {
-            Directory.CreateDirectory(outPath);
+            IoUtils.CreateDir(outPath);
             string logFileName = "rife-ncnn-vs-log";
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifeNcnnVs, 1500, inPath);
-            SetProgressCheck(Interpolate.currentInputFrameCount, factor, logFileName);
+
+            if(!rt)
+                SetProgressCheck(Interpolate.currentInputFrameCount, factor, logFileName);
+
+            string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
+            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.current.inFps.GetString()} FPS x{factor} = {Interpolate.current.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval 20 " +
+                $"-vf \"drawtext=fontfile='C\\:/WINDOWS/fonts/consola.ttf':text='%{{pts\\:hms}}':x=-7:y=1:fontcolor=white:fontsize=15\"";
 
             Interpolate.current.FullOutPath = Path.Combine(Interpolate.current.outPath, await IoUtils.GetCurrentExportFilename(false, true));
             string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat()).FirstOrDefault();
-            string ffmpegArgs = $"ffmpeg -y -i pipe: {encArgs} {Interpolate.current.FullOutPath.Wrap()}";
+            string ffmpegArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {encArgs} {Interpolate.current.FullOutPath.Wrap()}";
 
             float scn = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) : 0f;
             Size res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true);
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
-            string vsModelDir = Path.Combine(pkgDir, "vapoursynth64", "plugins", "models", mdl);
-            IoUtils.CopyDir(Path.Combine(pkgDir, mdl), vsModelDir);
 
             VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
-            { InterpSettings = Interpolate.current, ModelDir = mdl, Factor = factor, Res = res, Uhd = uhd, SceneDetectSensitivity = scn, Loop = Config.GetBool(Config.Key.enableLoop), MatchDuration = Config.GetBool(Config.Key.fixOutputDuration) };
+            { InterpSettings = Interpolate.current, ModelDir = mdl, Factor = factor, Res = res, Uhd = uhd, SceneDetectSensitivity = scn, Loop = Config.GetBool(Config.Key.enableLoop), MatchDuration = Config.GetBool(Config.Key.fixOutputDuration), Realtime = rt };
 
             rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {ffmpegArgs}";
 
@@ -379,10 +383,6 @@ namespace Flowframes.Os
             }
 
             while (!rifeNcnnVs.HasExited) await Task.Delay(1);
-
-            await Task.Delay(100);
-
-            IoUtils.TryDeleteIfExists(vsModelDir);
         }
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
@@ -513,6 +513,15 @@ namespace Flowframes.Os
 
             if (line.Contains("ff:nocuda-cpu"))
                 Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
+
+            if(true /* if NCNN VS */)
+            {
+                if (!hasShownError && line.ToLower().Contains("allocate memory failed"))
+                {
+                    hasShownError = true;
+                    UiUtils.ShowMessageBox($"Out of memory!\nTry reducing your RAM usage by closing some programs.\n\n{line}", UiUtils.MessageType.Error);
+                }
+            }
 
             if (!hasShownError && err && line.ToLower().Contains("out of memory"))
             {

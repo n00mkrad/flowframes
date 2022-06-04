@@ -17,6 +17,7 @@ using Flowframes.MiscUtils;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Flowframes.Media;
 
 #pragma warning disable IDE1006
 
@@ -72,7 +73,7 @@ namespace Flowframes
             if (Debugger.IsAttached)
             {
                 Logger.Log("Debugger is attached - Flowframes seems to be running within VS.");
-                scnDetectTestBtn.Visible = true;
+                realtimeBtn.Visible = true;
             }
 
             completionAction.SelectedIndex = 0;
@@ -278,9 +279,8 @@ namespace Flowframes
                     Logger.Log($"AI implementation {ai.FriendlyName} ({ai.Backend}) has not been loaded because Pytorch was not found.", true);
                     continue;
                 }
-                    
 
-                aiCombox.Items.Add(ai.FriendlyName + " - " + ai.Description);
+                aiCombox.Items.Add(GetAiComboboxName(ai));
             }
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
@@ -289,6 +289,11 @@ namespace Flowframes
             Config.Set(Config.Key.lastUsedAiName, GetAi().AiName);
 
             ConfigParser.LoadComboxIndex(outModeCombox);
+        }
+
+        private string GetAiComboboxName (AI ai)
+        {
+            return ai.FriendlyName + " - " + ai.Description;
         }
 
         public void Initialized()
@@ -376,7 +381,16 @@ namespace Flowframes
 
         public AI GetAi()
         {
-            return Implementations.networks[aiCombox.SelectedIndex];
+            foreach(AI ai in Implementations.networks)
+            {
+                if (GetAiComboboxName(ai) == aiCombox.Text)
+                    return ai;
+            }
+
+            Logger.Log($"AI implementation lookup failed! This should not happen! Please tell tehe developer!");
+            return Implementations.networks[0];
+
+            //return Implementations.networks[aiCombox.SelectedIndex];
         }
 
         void inputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -703,9 +717,16 @@ namespace Flowframes
 
         #endregion
 
-        private void scnDetectTestBtn_Click(object sender, EventArgs e)
+        private async void scnDetectTestBtn_Click(object sender, EventArgs e)
         {
-            Magick.SceneDetect.RunSceneDetection(inputTbox.Text.Trim());
+            if (BatchProcessing.busy || !File.Exists(inputTbox.Text.Trim())) return;
+
+            Interpolate.current = GetCurrentSettings();
+            Interpolate.currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(Interpolate.current.inPath);
+
+            AiProcessSuspend.Reset();
+            await Interpolate.Realtime();
+            SetProgress(0);
         }
 
         private void pauseBtn_Click(object sender, EventArgs e)

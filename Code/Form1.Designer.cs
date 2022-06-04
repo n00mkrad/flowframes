@@ -95,7 +95,7 @@
             this.completionAction = new System.Windows.Forms.ComboBox();
             this.label25 = new System.Windows.Forms.Label();
             this.encodingSettingsBtn = new HTAlt.WinForms.HTButton();
-            this.scnDetectTestBtn = new HTAlt.WinForms.HTButton();
+            this.realtimeBtn = new HTAlt.WinForms.HTButton();
             this.inputInfo = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
@@ -918,7 +918,7 @@
             this.interpOptsTab.Controls.Add(this.outSpeedCombox);
             this.interpOptsTab.Controls.Add(this.completionActionPanel);
             this.interpOptsTab.Controls.Add(this.encodingSettingsBtn);
-            this.interpOptsTab.Controls.Add(this.scnDetectTestBtn);
+            this.interpOptsTab.Controls.Add(this.realtimeBtn);
             this.interpOptsTab.Controls.Add(this.inputInfo);
             this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
@@ -1026,20 +1026,20 @@
             this.encodingSettingsBtn.UseVisualStyleBackColor = false;
             this.encodingSettingsBtn.Click += new System.EventHandler(this.encodingSettingsBtn_Click);
             // 
-            // scnDetectTestBtn
+            // realtimeBtn
             // 
-            this.scnDetectTestBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scnDetectTestBtn.FlatAppearance.BorderSize = 0;
-            this.scnDetectTestBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.scnDetectTestBtn.ForeColor = System.Drawing.Color.White;
-            this.scnDetectTestBtn.Location = new System.Drawing.Point(689, 185);
-            this.scnDetectTestBtn.Name = "scnDetectTestBtn";
-            this.scnDetectTestBtn.Size = new System.Drawing.Size(206, 23);
-            this.scnDetectTestBtn.TabIndex = 38;
-            this.scnDetectTestBtn.Text = "Scn Detect Test";
-            this.scnDetectTestBtn.UseVisualStyleBackColor = false;
-            this.scnDetectTestBtn.Visible = false;
-            this.scnDetectTestBtn.Click += new System.EventHandler(this.scnDetectTestBtn_Click);
+            this.realtimeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.realtimeBtn.FlatAppearance.BorderSize = 0;
+            this.realtimeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.realtimeBtn.ForeColor = System.Drawing.Color.White;
+            this.realtimeBtn.Location = new System.Drawing.Point(689, 185);
+            this.realtimeBtn.Name = "realtimeBtn";
+            this.realtimeBtn.Size = new System.Drawing.Size(206, 23);
+            this.realtimeBtn.TabIndex = 38;
+            this.realtimeBtn.Text = "Realtime Interpolation";
+            this.realtimeBtn.UseVisualStyleBackColor = false;
+            this.realtimeBtn.Visible = false;
+            this.realtimeBtn.Click += new System.EventHandler(this.scnDetectTestBtn_Click);
             // 
             // inputInfo
             // 
@@ -1808,7 +1808,7 @@
         private System.Windows.Forms.Panel mpDedupePanel;
         private System.Windows.Forms.ComboBox mpdecimateMode;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private HTAlt.WinForms.HTButton scnDetectTestBtn;
+        private HTAlt.WinForms.HTButton realtimeBtn;
         private System.Windows.Forms.Panel busyControlsPanel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button pauseBtn;

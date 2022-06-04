@@ -106,15 +106,13 @@ namespace Flowframes.Main
             if (Config.GetBool(Config.Key.fixOutputDuration)) // Match input duration by padding duping last frame until interp frames == (inputframes * factor)
             {
                 int neededFrames = (frameFiles.Length * interpFactor).RoundToInt() - fileContent.SplitIntoLines().Where(x => x.StartsWith("'file ")).Count();
-
+            
                 for (int i = 0; i < neededFrames; i++)
                     fileContent += fileContent.SplitIntoLines().Where(x => x.StartsWith("'file ")).Last();
             }
 
             if (loop)
-            {
                 fileContent = fileContent.Remove(fileContent.LastIndexOf("\n"));
-            }
 
             File.WriteAllText(framesFile, fileContent);
             File.WriteAllText(framesFile + ".inputframes.json", JsonConvert.SerializeObject(inputFilenames, Formatting.Indented));

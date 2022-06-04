@@ -756,6 +756,9 @@ namespace Flowframes.IO
 
 		public static bool CreateDir (string path)		// Returns whether the dir already existed
         {
+			if (string.IsNullOrWhiteSpace(path))
+				return false;
+
 			if (!Directory.Exists(path))
             {
 				Directory.CreateDirectory(path);

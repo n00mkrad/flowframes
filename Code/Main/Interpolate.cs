@@ -88,6 +88,11 @@ namespace Flowframes
             Program.mainForm.InterpolationDone();
         }
 
+        public static async Task Realtime ()
+        {
+            await AiProcess.RunRifeNcnnVs(current.framesFolder, "", current.interpFactor, current.model.dir, true);
+        }
+
         public static async Task<int> GetCurrentInputFrameCount()
         {
             if (currentInputFrameCount < 2)
