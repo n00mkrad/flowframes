@@ -350,7 +350,7 @@ namespace Flowframes.Os
 
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
             string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.current.inFps.GetString()} FPS x{factor} = {Interpolate.current.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval 20 " +
-                $"-vf \"drawtext=fontfile='C\\:/WINDOWS/fonts/consola.ttf':text='%{{pts\\:hms}}':x=-7:y=1:fontcolor=white:fontsize=15\"";
+                $"-vf \"drawtext=fontfile='C\\:/WINDOWS/fonts/consola.ttf':text='%{{pts\\:hms}}':x=-7:y=1:fontcolor=white:fontsize=15:bordercolor=black:borderw=1\"";
 
             Interpolate.current.FullOutPath = Path.Combine(Interpolate.current.outPath, await IoUtils.GetCurrentExportFilename(false, true));
             string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat(), true).FirstOrDefault();
@@ -528,6 +528,12 @@ namespace Flowframes.Os
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"Out of memory!\nTry reducing your RAM usage by closing some programs.\n\n{line}", UiUtils.MessageType.Error);
+                }
+
+                if (!hasShownError && line.ToLower().Contains("vapoursynth.error:"))
+                {
+                    hasShownError = true;
+                    UiUtils.ShowMessageBox($"VapourSynth Error:\n\n{line}", UiUtils.MessageType.Error);
                 }
             }
 

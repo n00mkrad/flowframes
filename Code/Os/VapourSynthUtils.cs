@@ -42,7 +42,7 @@ namespace Flowframes.Os
 
             List<string> l = new List<string> { "import sys", "import os", "import json", "import vapoursynth as vs", "core = vs.core", "" }; // Imports
 
-            if (s.InterpSettings.inputIsFrames || s.Dedupe)
+            if (s.InterpSettings.inputIsFrames || (s.Dedupe && !s.Realtime))
             {
                 string first = Path.GetFileNameWithoutExtension(IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false).FirstOrDefault().FullName);
                 l.Add($"clip = core.imwri.Read(r'{Path.Combine(s.InterpSettings.framesFolder, $"%0{first.Length}d.png")}', firstnum={first.GetInt()})"); // Load image sequence with imwri
@@ -69,19 +69,23 @@ namespace Flowframes.Os
 
             l.Add($"clip = core.rife.RIFE(clip, {9}, {s.Factor.ToStringDot()}, {mdlPath}, {s.GpuId}, {s.GpuThreads}, {s.Tta}, {s.Uhd}, {sc})"); // Interpolate
 
-            if (s.Dedupe)
+            if (s.Dedupe && !s.Realtime)
                 l.AddRange(GetRedupeLines(s));
 
             l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=cMatrix)"); // Convert RGB to YUV
+            l.Add($"print(f\"Clip Frame Count: {{clip.num_frames}}\")");
 
-            if (s.Loop)
+            if (!s.Dedupe) // Ignore trimming code when using deduping that that already handles trimming in the frame order file
             {
-                l.Add($"clip = clip.std.Trim(0, {targetFrameCountMatchDuration - 1})"); // -1 because we use index, not count
-            }
-            else
-            {
-                if (!s.MatchDuration)
-                    l.Add($"clip = clip.std.Trim(0, {targetFrameCountTrue - 1})"); // -1 because we use index, not count
+                if (s.Loop)
+                {
+                    l.Add($"clip = clip.std.Trim(0, {targetFrameCountMatchDuration - 1})"); // -1 because we use index, not count
+                }
+                else
+                {
+                    if (!s.MatchDuration)
+                        l.Add($"clip = clip.std.Trim(0, {targetFrameCountTrue - 1})"); // -1 because we use index, not count
+                }
             }
 
             if(s.Realtime && s.Loop)
@@ -127,10 +131,19 @@ namespace Flowframes.Os
                 l.Add($"except:");
                 l.Add($"\tcMatrix = '709'");
                 l.Add($"");
+                l.Add($"colRange = 'limited'");
+                l.Add($"");
+                l.Add($"try:");
+                l.Add($"\tif clip.get_frame(0).props._ColorRange == 0: colRange = 'full'");
+                l.Add($"except:");
+                l.Add($"\tcolRange = 'limited'");
+                l.Add($"");
+                l.Add($"");
+                l.Add($"");
             }
 
             l.Add($"if clip.format.color_family == vs.YUV:");
-            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=cMatrix, range_s=('full' if clip.get_frame(0).props._ColorRange == 2 else 'limited'){(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=cMatrix, range_s=colRange{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
             l.Add($"");
             l.Add($"if clip.format.color_family == vs.RGB:");
             l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
