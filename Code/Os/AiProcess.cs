@@ -353,16 +353,24 @@ namespace Flowframes.Os
                 $"-vf \"drawtext=fontfile='C\\:/WINDOWS/fonts/consola.ttf':text='%{{pts\\:hms}}':x=-7:y=1:fontcolor=white:fontsize=15\"";
 
             Interpolate.current.FullOutPath = Path.Combine(Interpolate.current.outPath, await IoUtils.GetCurrentExportFilename(false, true));
-            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat()).FirstOrDefault();
+            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat(), true).FirstOrDefault();
             string ffmpegArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {encArgs} {Interpolate.current.FullOutPath.Wrap()}";
-
-            float scn = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) : 0f;
-            Size res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true);
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
 
             VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
-            { InterpSettings = Interpolate.current, ModelDir = mdl, Factor = factor, Res = res, Uhd = uhd, SceneDetectSensitivity = scn, Loop = Config.GetBool(Config.Key.enableLoop), MatchDuration = Config.GetBool(Config.Key.fixOutputDuration), Realtime = rt };
+            {
+                InterpSettings = Interpolate.current,
+                ModelDir = mdl,
+                Factor = factor,
+                Res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true),
+                Uhd = uhd,
+                SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
+                Loop = Config.GetBool(Config.Key.enableLoop),
+                MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
+                Dedupe = Config.GetInt(Config.Key.dedupMode) != 0,
+                Realtime = rt
+            };
 
             rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {ffmpegArgs}";
 

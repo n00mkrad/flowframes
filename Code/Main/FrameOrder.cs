@@ -116,6 +116,14 @@ namespace Flowframes.Main
 
             File.WriteAllText(framesFile, fileContent);
             File.WriteAllText(framesFile + ".inputframes.json", JsonConvert.SerializeObject(inputFilenames, Formatting.Indented));
+
+            string framesFileVs = Path.Combine(framesPath.GetParentDir(), "frames.vs.json");
+            List<int> frameNums = new List<int>();
+
+            foreach (string line in fileContent.SplitIntoLines().Where(x => x.StartsWith("file ")))
+                frameNums.Add(line.Split('/')[1].Split('.')[0].GetInt() - 1); // Convert filename to 0-indexed number
+
+            File.WriteAllText(framesFileVs, JsonConvert.SerializeObject(frameNums, Formatting.Indented));
         }
 
         class FrameFileLine

@@ -10,7 +10,7 @@ namespace Flowframes.Media
 {
     class FfmpegUtils
     {
-        public enum Codec { H264, H265, H264Nvenc, H265Nvenc, Av1, Vp9, ProRes, AviRaw }
+        public enum Codec { H264, H265, H264Nvenc, H265Nvenc, Av1, Vp9, ProRes, AviRaw, Gif }
 
 
         public static Codec GetCodec(Interpolate.OutMode mode)
@@ -34,6 +34,9 @@ namespace Flowframes.Media
             if (mode == Interpolate.OutMode.VidAvi)
                 return Codec.AviRaw;
 
+            if (mode == Interpolate.OutMode.VidGif)
+                return Codec.Gif;
+
             return Codec.H264;
         }
 
@@ -49,12 +52,13 @@ namespace Flowframes.Media
                 case Codec.Vp9: return "libvpx-vp9";
                 case Codec.ProRes: return "prores_ks";
                 case Codec.AviRaw: return Config.Get(Config.Key.aviCodec);
+                case Codec.Gif: return "gif";
             }
 
             return "libx264";
         }
 
-        public static string[] GetEncArgs(Codec codec, Size res, float fps) // Array contains as many entries as there are encoding passes
+        public static string[] GetEncArgs(Codec codec, Size res, float fps, bool realtime = false) // Array contains as many entries as there are encoding passes. If "realtime" is true, force single pass.
         {
             int keyint = 10;
 
@@ -89,7 +93,7 @@ namespace Flowframes.Media
             {
                 int cq = Config.GetInt(Config.Key.av1Crf);
                 string g = GetKeyIntArg(fps, keyint);
-                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetKeyIntArg(fps, keyint)} {GetSvtAv1Speed()} {g} -pix_fmt {GetPixFmt()}" };
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetSvtAv1Speed()} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.Vp9)
@@ -98,8 +102,18 @@ namespace Flowframes.Media
                 string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
                 string g = GetKeyIntArg(fps, keyint);
                 string t = GetTilingArgs(res, "-tile-columns ", "-tile-rows ");
-                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pass 1 -pix_fmt {GetPixFmt()} -an",
-                                      $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pass 2 -pix_fmt {GetPixFmt()}" };
+
+                if (realtime) // Force 1-pass
+                {
+                    return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pix_fmt {GetPixFmt()}" };
+                }
+                else
+                {
+                    return new string[] { 
+                        $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pass 1 -pix_fmt {GetPixFmt()} -an", 
+                        $"-c:v {GetEnc(codec)} -b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1 {g} -pass 2 -pix_fmt {GetPixFmt()}"
+                    };
+                }
             }
 
             if (codec == Codec.ProRes)
@@ -110,6 +124,11 @@ namespace Flowframes.Media
             if (codec == Codec.AviRaw)
             {
                 return new string[] { $"-c:v {GetEnc(codec)} -pix_fmt {Config.Get(Config.Key.aviColors)}" };
+            }
+
+            if (codec == Codec.Gif)
+            {
+                return new string[] { $"-c:v {GetEnc(codec)} -gifflags -offsetting" };
             }
 
             return new string[0];
@@ -293,7 +312,7 @@ namespace Flowframes.Media
         {
             containerExt = containerExt.Remove(".");
 
-            if (containerExt == "mp4") return "mov_text";
+            if (containerExt == "mp4" || containerExt == "mov") return "mov_text";
             if (containerExt == "webm") return "webvtt";
 
             return "copy";    // Default: Copy subs
@@ -306,7 +325,7 @@ namespace Flowframes.Media
             Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
 
             if (showWarningIfNotSupported && Config.GetBool(Config.Key.keepSubs) && !supported)
-                Logger.Log($"Warning: Subtitle transfer is enabled, but {containerExt.ToUpper()} does not support subtitles properly. MKV is recommended instead.");
+                Logger.Log($"Warning: {containerExt.ToUpper()} exports do not include subtitles.");
 
             return supported;
         }

@@ -47,7 +47,7 @@ namespace Flowframes
             Program.mainForm.SetStatus("Starting...");
             sw.Restart();
 
-            if (!AutoEncodeResume.resumeNextRun && !(current.ai.Piped && !current.inputIsFrames))
+            if (!AutoEncodeResume.resumeNextRun && !(current.ai.Piped && !current.inputIsFrames && Config.GetInt(Config.Key.dedupMode) == 0))
             {
                 await GetFrames();
                 if (canceled) return;
@@ -184,13 +184,15 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            if (!ai.Piped || ai.Piped && current.inputIsFrames)
+            bool dedupe = Config.GetInt(Config.Key.dedupMode) != 0;
+
+            if (!ai.Piped || (ai.Piped && current.inputIsFrames) || (ai.Piped && dedupe))
             {
                 await Task.Run(async () => { await Dedupe.CreateDupesFile(current.framesFolder, currentInputFrameCount, current.framesExt); });
                 await Task.Run(async () => { await FrameRename.Rename(); });
             }
 
-            if (!ai.Piped)
+            if (!ai.Piped || (ai.Piped && dedupe))
                 await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(current.framesFolder, Config.GetBool(Config.Key.enableLoop), current.interpFactor); });
 
             Program.mainForm.SetStatus("Downloading models...");

@@ -25,6 +25,7 @@ namespace Flowframes.Os
             public bool Tta { get; set; } = false;
             public bool Loop { get; set; } = false;
             public bool MatchDuration { get; set; } = false;
+            public bool Dedupe { get; set; } = false;
             public bool Realtime { get; set; } = false;
         }
 
@@ -39,9 +40,9 @@ namespace Flowframes.Os
             int targetFrameCountMatchDuration = (Interpolate.currentInputFrameCount * s.Factor).RoundToInt(); // Target frame count to match original duration (and for loops)
             int targetFrameCountTrue = targetFrameCountMatchDuration - endDupeCount; // Target frame count without dupes at the end (only in-between frames added)
 
-            List<string> l = new List<string> { "import sys", "import os", "import vapoursynth as vs", "core = vs.core", "" }; // Imports
+            List<string> l = new List<string> { "import sys", "import os", "import json", "import vapoursynth as vs", "core = vs.core", "" }; // Imports
 
-            if (s.InterpSettings.inputIsFrames)
+            if (s.InterpSettings.inputIsFrames || s.Dedupe)
             {
                 string first = Path.GetFileNameWithoutExtension(IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false).FirstOrDefault().FullName);
                 l.Add($"clip = core.imwri.Read(r'{Path.Combine(s.InterpSettings.framesFolder, $"%0{first.Length}d.png")}', firstnum={first.GetInt()})"); // Load image sequence with imwri
@@ -67,7 +68,11 @@ namespace Flowframes.Os
                 l.Add($"clip = core.misc.SCDetect(clip=clip,threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
 
             l.Add($"clip = core.rife.RIFE(clip, {9}, {s.Factor.ToStringDot()}, {mdlPath}, {s.GpuId}, {s.GpuThreads}, {s.Tta}, {s.Uhd}, {sc})"); // Interpolate
-            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=\"709\")"); // Convert RGB to YUV
+
+            if (s.Dedupe)
+                l.AddRange(GetRedupeLines(s));
+
+            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=cMatrix)"); // Convert RGB to YUV
 
             if (s.Loop)
             {
@@ -101,8 +106,31 @@ namespace Flowframes.Os
             List<string> l = new List<string>();
 
             l.Add($"");
+            l.Add($"cMatrix = '709'");
+            l.Add($"");
+
+            if (!s.InterpSettings.inputIsFrames)
+            {
+                l.Add("try:");
+                l.Add("\tm = clip.get_frame(0).props._Matrix");
+                l.Add("\tif m == 0:    cMatrix = 'rgb'");
+                l.Add("\telif m == 4:  cMatrix = 'fcc'");
+                l.Add("\telif m == 5:  cMatrix = '470bg'");
+                l.Add("\telif m == 6:  cMatrix = '170m'");
+                l.Add("\telif m == 7:  cMatrix = '240m'");
+                l.Add("\telif m == 8:  cMatrix = 'ycgco'");
+                l.Add("\telif m == 9:  cMatrix = '2020ncl'");
+                l.Add("\telif m == 10: cMatrix = '2020cl'");
+                l.Add("\telif m == 12: cMatrix = 'chromancl'");
+                l.Add("\telif m == 13: cMatrix = 'chromacl'");
+                l.Add("\telif m == 14: cMatrix = 'ictcp'");
+                l.Add($"except:");
+                l.Add($"\tcMatrix = '709'");
+                l.Add($"");
+            }
+
             l.Add($"if clip.format.color_family == vs.YUV:");
-            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=\"709\", range_s=\"limited\"{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
+            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=cMatrix, range_s=('full' if clip.get_frame(0).props._ColorRange == 2 else 'limited'){(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
             l.Add($"");
             l.Add($"if clip.format.color_family == vs.RGB:");
             l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
@@ -111,23 +139,23 @@ namespace Flowframes.Os
             return l;
         }
 
-        private static int GetModelNum(string modelDir)
+        static List<string> GetRedupeLines(VsSettings s)
         {
-            switch (modelDir)
-            {
-                case "rife": return 0;
-                case "rife-HD": return 1;
-                case "rife-UHD": return 2;
-                case "rife-anime": return 3;
-                case "rife-v2": return 4;
-                case "rife-v2.3": return 5;
-                case "rife-v2.4": return 6;
-                case "rife-v3.0": return 7;
-                case "rife-v3.1": return 8;
-                case "rife-v4": return 9;
-            }
+            List<string> l = new List<string>();
 
-            return 9;
+            l.Add(@"reorderedClip = clip[0]");
+            l.Add("");
+            l.Add($"with open(r'{Path.Combine(s.InterpSettings.tempFolder, "frames.vs.json")}') as json_file:");
+            l.Add("\tframeList = json.load(json_file)");
+            l.Add("\t");
+            l.Add("\tfor i in frameList:");
+            l.Add("\t\tif(i < clip.num_frames):");
+            l.Add("\t\t\treorderedClip = reorderedClip + clip[i]");
+            l.Add("");
+            l.Add("clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)");
+            l.Add("");
+
+            return l;
         }
     }
 }
