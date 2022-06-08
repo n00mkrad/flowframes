@@ -52,6 +52,14 @@ namespace Flowframes.Os
             hasShownError = false;
         }
 
+        static void AiStartedRt(Process proc, string inPath = "")
+        {
+            lastAiProcess = proc;
+            AiProcessSuspend.SetRunning(true);
+            lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.current.framesFolder : inPath;
+            hasShownError = false;
+        }
+
         static void SetProgressCheck(string interpPath, float factor)
         {
             int frames = IoUtils.GetAmountOfFiles(lastInPath, false);
@@ -77,11 +85,17 @@ namespace Flowframes.Os
                 InterpolationProgress.GetProgressFromFfmpegLog(logFile, target);
         }
 
-        static async Task AiFinished(string aiName)
+        static async Task AiFinished(string aiName, bool rt = false)
         {
             if (Interpolate.canceled) return;
             Program.mainForm.SetProgress(100);
             AiProcessSuspend.SetRunning(false);
+
+            if (rt)
+            {
+                Logger.Log($"Stopped running {aiName}.");
+                return;
+            }
 
             int interpFramesFiles = IoUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt);
             int interpFramesCount = interpFramesFiles + InterpolationProgress.deletedFramesCount;
@@ -335,7 +349,7 @@ namespace Flowframes.Os
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("RIFE");
+            await AiFinished("RIFE", true);
         }
 
         static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, bool uhd, bool rt = false)
@@ -343,14 +357,19 @@ namespace Flowframes.Os
             IoUtils.CreateDir(outPath);
             string logFileName = "rife-ncnn-vs-log";
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
-            AiStarted(rifeNcnnVs, 1500, inPath);
 
-            if(!rt)
+            if (rt)
+            {
+                AiStartedRt(rifeNcnnVs, inPath);
+            }
+            else
+            {
                 SetProgressCheck(Interpolate.currentInputFrameCount, factor, logFileName);
+                AiStarted(rifeNcnnVs, 1500, inPath);
+            }
 
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.current.inFps.GetString()} FPS x{factor} = {Interpolate.current.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval 20 " +
-                $"-vf \"drawtext=fontfile='C\\:/WINDOWS/fonts/consola.ttf':text='%{{pts\\:hms}}':x=-7:y=1:fontcolor=white:fontsize=15:bordercolor=black:borderw=1\"";
+            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.current.inFps.GetString()} FPS x{factor} = {Interpolate.current.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
 
             Interpolate.current.FullOutPath = Path.Combine(Interpolate.current.outPath, await IoUtils.GetCurrentExportFilename(false, true));
             string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat(), true).FirstOrDefault();
@@ -522,7 +541,7 @@ namespace Flowframes.Os
             if (line.Contains("ff:nocuda-cpu"))
                 Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
-            if(true /* if NCNN VS */)
+            if (true /* if NCNN VS */)
             {
                 if (!hasShownError && line.ToLower().Contains("allocate memory failed"))
                 {

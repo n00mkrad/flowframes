@@ -387,7 +387,7 @@ namespace Flowframes
                     return ai;
             }
 
-            Logger.Log($"AI implementation lookup failed! This should not happen! Please tell tehe developer!");
+            Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer!");
             return Implementations.networks[0];
 
             //return Implementations.networks[aiCombox.SelectedIndex];

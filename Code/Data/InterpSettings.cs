@@ -91,7 +91,7 @@ namespace Flowframes
         {
             inPath = "";
             outPath = "";
-            ai = Implementations.networks[0];
+            ai = null;
             inFpsDetected = new Fraction();
             inFps = new Fraction();
             interpFactor = 0;

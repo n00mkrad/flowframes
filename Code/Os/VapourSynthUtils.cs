@@ -27,6 +27,7 @@ namespace Flowframes.Os
             public bool MatchDuration { get; set; } = false;
             public bool Dedupe { get; set; } = false;
             public bool Realtime { get; set; } = false;
+            public bool Osd { get; set; } = true;
         }
 
         public static string CreateScript(VsSettings s)
@@ -40,7 +41,9 @@ namespace Flowframes.Os
             int targetFrameCountMatchDuration = (Interpolate.currentInputFrameCount * s.Factor).RoundToInt(); // Target frame count to match original duration (and for loops)
             int targetFrameCountTrue = targetFrameCountMatchDuration - endDupeCount; // Target frame count without dupes at the end (only in-between frames added)
 
-            List<string> l = new List<string> { "import sys", "import os", "import json", "import vapoursynth as vs", "core = vs.core", "" }; // Imports
+            List<string> l = new List<string> { "import sys", "import os", "import json", "import time", "import functools", "import vapoursynth as vs", "core = vs.core", "" }; // Imports
+            l.Add($"inputPath = r'{inputPath}'");
+            l.Add($"");
 
             if (s.InterpSettings.inputIsFrames || (s.Dedupe && !s.Realtime))
             {
@@ -50,11 +53,13 @@ namespace Flowframes.Os
             }
             else
             {
-                l.Add($"indexFilePath = r'{inputPath}.cache.lwi'");
+                l.Add("indexFilePath = f'{inputPath}.cache.lwi'");
                 l.Add($"if os.path.isdir(r'{s.InterpSettings.tempFolder}'):");
                 l.Add($"\tindexFilePath = r'{Path.Combine(s.InterpSettings.tempFolder, "cache.lwi")}'");
-                l.Add($"clip = core.lsmas.LWLibavSource(r'{inputPath}', cachefile=indexFilePath)"); // Load video with lsmash
+                l.Add($"clip = core.lsmas.LWLibavSource(inputPath, cachefile=indexFilePath)"); // Load video with lsmash
             }
+
+            l.Add($"");
 
             if (s.Loop && !s.InterpSettings.inputIsFrames)
             {
@@ -65,15 +70,14 @@ namespace Flowframes.Os
             l.AddRange(GetScaleLines(s));
 
             if (sc)
-                l.Add($"clip = core.misc.SCDetect(clip=clip,threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
+                l.Add($"clip = core.misc.SCDetect(clip=clip, threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
 
-            l.Add($"clip = core.rife.RIFE(clip, {9}, {s.Factor.ToStringDot()}, {mdlPath}, {s.GpuId}, {s.GpuThreads}, {s.Tta}, {s.Uhd}, {sc})"); // Interpolate
+            l.Add($"clip = core.rife.RIFE(clip, multiplier={s.Factor.ToStringDot()}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
 
             if (s.Dedupe && !s.Realtime)
                 l.AddRange(GetRedupeLines(s));
 
             l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=cMatrix)"); // Convert RGB to YUV
-            l.Add($"print(f\"Clip Frame Count: {{clip.num_frames}}\")");
 
             if (!s.Dedupe) // Ignore trimming code when using deduping that that already handles trimming in the frame order file
             {
@@ -89,9 +93,13 @@ namespace Flowframes.Os
             }
 
             if(s.Realtime && s.Loop)
-                l.Add($"clip = clip.std.Loop(0)"); // Can't loop piped video so we loop it before piping it to ffplay
+                l.AddRange(new List<string> { $"clip = clip.std.Loop(0)", "" }); // Can't loop piped video so we loop it before piping it to ffplay
+
+            if(s.Realtime && s.Osd)
+                l.AddRange(GetOsdLines(s));
 
             l.Add($"clip.set_output()"); // Set output
+            l.Add("");
 
             l.Add($"if os.path.isfile(r'{inputPath}.cache.lwi'):");
             l.Add($"\tos.remove(r'{inputPath}.cache.lwi')");
@@ -138,8 +146,6 @@ namespace Flowframes.Os
                 l.Add($"except:");
                 l.Add($"\tcolRange = 'limited'");
                 l.Add($"");
-                l.Add($"");
-                l.Add($"");
             }
 
             l.Add($"if clip.format.color_family == vs.YUV:");
@@ -169,6 +175,55 @@ namespace Flowframes.Os
             l.Add("");
 
             return l;
+        }
+
+        static List<string> GetOsdLines(VsSettings s)
+        {
+            List<string> l = new List<string>();
+
+            l.Add($"framesProducedPrevious = 0");
+            l.Add($"framesProducedCurrent = 0");
+            l.Add($"lastFpsUpdateTime = time.time()");
+            l.Add($"startTime = time.time()");
+            l.Add($"");
+            l.Add($"def onFrame(n, clip):");
+            l.Add($"\tglobal startTime");
+            l.Add($"\tfpsAvgTime = 1");
+            l.Add($"\t");
+            l.Add($"\tif time.time() - startTime > fpsAvgTime:");
+            l.Add($"\t\tglobal framesProducedPrevious");
+            l.Add($"\t\tglobal framesProducedCurrent");
+            l.Add($"\t\tglobal lastFpsUpdateTime");
+            l.Add($"\t\t");
+            l.Add($"\t\tfpsFloat = (clip.fps.numerator / clip.fps.denominator)");
+            l.Add($"\t\tvideoTimeFloat = (1 / fpsFloat) * n");
+            l.Add($"\t\tframesProducedCurrent+=1");
+            l.Add($"\t\t");
+            l.Add($"\t\tif time.time() - lastFpsUpdateTime > fpsAvgTime:");
+            l.Add($"\t\t\tlastFpsUpdateTime = time.time()");
+            l.Add($"\t\t\tframesProducedPrevious = framesProducedCurrent / fpsAvgTime");
+            l.Add($"\t\t\tframesProducedCurrent = 0");
+            l.Add($"\t\t");
+            l.Add($"\t\tspeed = (framesProducedPrevious / fpsFloat) * 100");
+            l.Add($"\t\tosdString = f\"Time: {{time.strftime(\'%H:%M:%S\', time.gmtime(videoTimeFloat))}} - FPS: {{framesProducedPrevious:.2f}}/{{fpsFloat:.2f}} ({{speed:.0f}}%){{\' [!]\' if speed < 95 else \'\'}}\"");
+            l.Add($"\t\tclip = core.text.Text(clip, text=osdString, alignment=7, scale=1)");
+            l.Add($"\treturn clip");
+            l.Add($"");
+            l.Add($"clip = core.std.FrameEval(clip, functools.partial(onFrame, clip=clip))");
+            l.Add($"");
+
+            return l;
+        }
+
+        public static int GetSeekSeconds(long videoLengthSeconds)
+        {
+            int seekStep = 10;
+
+            if(videoLengthSeconds >  2 * 60) seekStep = 20;
+            if(videoLengthSeconds >  5 * 60) seekStep = 30;
+            if(videoLengthSeconds > 15 * 60) seekStep = 60;
+
+            return seekStep;
         }
     }
 }

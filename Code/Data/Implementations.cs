@@ -32,6 +32,7 @@ namespace Flowframes.Data
                     return ai;
             }
 
+            Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer! (Implementations.cs)");
             return networks[0];
         }
     }
