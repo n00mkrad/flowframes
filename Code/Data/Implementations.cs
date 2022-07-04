@@ -5,7 +5,7 @@ namespace Flowframes.Data
     class Implementations
     {
         public static AI rifeCuda = new AI(AI.AiBackend.Pytorch, "RIFE_CUDA", "RIFE", 
-            "CUDA/Pytorch Implementation of RIFE (Nvidia Only!)", "rife-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            "CUDA/Pytorch Implementation of RIFE", "rife-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
         public static AI rifeNcnnVs = new AI(AI.AiBackend.Ncnn, "RIFE_NCNN_VS", "RIFE (NCNN/VS)",
             "Vulkan/NCNN/VapourSynth Implementation of RIFE", "rife-ncnn-vs", AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 }) { Piped = true };
@@ -14,13 +14,13 @@ namespace Flowframes.Data
             "Vulkan/NCNN Implementation of RIFE", "rife-ncnn", AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
         public static AI flavrCuda = new AI(AI.AiBackend.Pytorch, "FLAVR_CUDA", "FLAVR", 
-            "Experimental Pytorch Implementation of FLAVR (Nvidia Only!)", "flavr-cuda", AI.InterpFactorSupport.Fixed, new int[] { 2, 4, 8 });
+            "Experimental Pytorch Implementation of FLAVR", "flavr-cuda", AI.InterpFactorSupport.Fixed, new int[] { 2, 4, 8 });
 
         public static AI dainNcnn = new AI(AI.AiBackend.Ncnn, "DAIN_NCNN", "DAIN (NCNN)", 
             "Vulkan/NCNN Implementation of DAIN", "dain-ncnn", AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8 });
 
         public static AI xvfiCuda = new AI(AI.AiBackend.Pytorch, "XVFI_CUDA", "XVFI", 
-            "CUDA/Pytorch Implementation of XVFI (Nvidia Only!)", "xvfi-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            "CUDA/Pytorch Implementation of XVFI", "xvfi-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
         public static List<AI> networks = new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda };
 

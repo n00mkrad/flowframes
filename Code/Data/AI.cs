@@ -31,6 +31,9 @@ namespace Flowframes.Data
             PkgDir = pkgDir;
             SupportedFactors = supportedFactors;
             FactorSupport = factorSupport;
+
+            if (backend == AiBackend.Pytorch)
+                Description += " (Nvidia Only!)";
         }
     }
 }

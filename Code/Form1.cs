@@ -270,7 +270,7 @@ namespace Flowframes
 
         void InitAis()
         {
-            bool pytorchAvailable = Python.HasEmbeddedPyFolder() || Python.IsSysPyInstalled();
+            bool pytorchAvailable = Python.IsPytorchReady();
 
             foreach (AI ai in Implementations.networks)
             {

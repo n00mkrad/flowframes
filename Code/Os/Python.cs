@@ -105,8 +105,12 @@ namespace Flowframes.Os
         
         public static bool IsPytorchReady ()
         {
+            if (HasEmbeddedPyFolder())
+                return true;
+
             string torchVer = GetPytorchVer();
-            if (!string.IsNullOrWhiteSpace(torchVer) && torchVer.Length <= 35)
+
+            if (!string.IsNullOrWhiteSpace(torchVer) && torchVer.Length <= 35 && !torchVer.Contains("ModuleNotFoundError"))
                 return true;
             else
                 return false;
@@ -118,13 +122,13 @@ namespace Flowframes.Os
             {
                 Process py = OsUtils.NewProcess(true);
                 py.StartInfo.Arguments = "\"/C\" " + GetPyCmd() + " -c \"import torch; print(torch.__version__)\"";
-                Logger.Log("[DepCheck] CMD: " + py.StartInfo.Arguments);
+                Logger.Log($"[DepCheck] CMD: {py.StartInfo.Arguments}", true);
                 py.Start();
                 py.WaitForExit();
                 string output = py.StandardOutput.ReadToEnd();
                 string err = py.StandardError.ReadToEnd();
                 if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
-                Logger.Log("[DepCheck] Pytorch Check Output: " + output.Trim());
+                Logger.Log("[DepCheck] Pytorch Check Output: " + output.Trim(), true);
                 return output;
             }
             catch
