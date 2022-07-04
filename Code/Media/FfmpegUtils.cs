@@ -93,7 +93,7 @@ namespace Flowframes.Media
             {
                 int cq = Config.GetInt(Config.Key.av1Crf);
                 string g = GetKeyIntArg(fps, keyint);
-                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetSvtAv1Speed()} {g} -pix_fmt {GetPixFmt()}" };
+                return new string[] { $"-c:v {GetEnc(codec)} -b:v 0 -qp {cq} {GetSvtAv1Speed()} {g} -svtav1-params enable-overlays=0:enable-tf=0:scd=0 -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.Vp9)
