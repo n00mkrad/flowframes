@@ -1,3 +1,10 @@
+Flowframes 1.38.0 Changelog:
+- Implemented VapourSynth-RIFE-ncnn-Vulkan by HolyWu (interpolate completely in RAM)
+- Improved the Pytorch availability check, unsupported implementations should no longer show up
+- Possibly fixed bug where RIFE-CUDA would run instead of the selected implementation
+- Improved AV1 encoding quality by changing bad default parameters
+
+
 Flowframes 1.37.2 Changelog:
 - Added RIFE 4.1 model (RIFE-CUDA)
 - Scene detection now works with fractional factors (RIFE-NCNN)
@@ -78,29 +85,3 @@ Flowframes 1.32.0 Changelog:
 - ProRes now supports Alpha output when used with profile 4444 or 4444xq
 - Fixed ProRes being locked to YUV420 colors on all presets
 - Fixed WEBP image sequence export not working correctly
-
-
-Flowframes 1.31.1 Changelog:
-- Fixed problems that broke XVFI when using embedded python runtime
-- Fixed model downloader not offering the option to download XVFI models
-
-
-Flowframes 1.31.0 Changelog:
-- Added XVFI interpolation AI, allows all interpolation factors from 2-10
-- Unlocked 16x interpolation for RIFE-CUDA (quality will be worse than lower factors!)
-- Unlocked 3x, 5x, 6x, 7x factors for DAIN-NCNN
-- GPUs are now listed in the application's window title
-- Batch: Notifications now only show on queue completion, not after each interpolation
-- If interpolation fails, the last 10 lines of the corresponding log are shown
-- Minor UI improvements
-- Fixed custom output directory not being applied when using the batch queue
-- Some internal refactoring and code cleanup
-
-
-Flowframes 1.30.0 Changelog:
-- Added the option to Close/Sleep/Hibernate/Shutdown after interpolation
-- Added notifications that will show if an interpolation finished in the background
-- Added option to change default output directory (same as input or custom)
-- Added basic command line arguments to automate Flowframes interpolation
-- Added move up/down buttons to batch processing queue
-- Fixed a bug that would set incorrect default values for certain settings

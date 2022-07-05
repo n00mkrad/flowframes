@@ -1,3 +1,10 @@
+Flowframes 1.38.0 Changelog:
+- Implemented VapourSynth-RIFE-ncnn-Vulkan by HolyWu (interpolate completely in RAM)
+- Improved the Pytorch availability check, unsupported implementations should no longer show up
+- Possibly fixed bug where RIFE-CUDA would run instead of the selected implementation
+- Improved AV1 encoding quality by changing bad default parameters
+
+
 Flowframes 1.37.2 Changelog:
 - Added RIFE 4.1 model (RIFE-CUDA)
 - Scene detection now works with fractional factors (RIFE-NCNN)
