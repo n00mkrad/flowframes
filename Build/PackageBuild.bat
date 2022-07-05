@@ -7,8 +7,7 @@ echo.
 
 set /p ver="Enter the version number: "
 set /p packSlim="Package Slim (no Pytorch) archive? (Y/N) "
-set /p packFull="Package Full (Pytorch for Turing and older) archive? (Y/N) "
-set /p packFull3000="Package Full-RTX3000 (Pytorch for Ampere and older) archive? (Y/N) "
+set /p packFull="Package Full (with Pytorch for Ampere and older) archive? (Y/N) "
 set /p packWebBase="Package web installer (base.7z) file? (Y/N) "
 
 cd ..\Code\bin\x64\Release
@@ -26,6 +25,7 @@ xcopy "../../../../pkgs/rife-cuda" "FlowframesApp%ver%/FlowframesData\pkgs\rife-
 xcopy "../../../../pkgs/rife-ncnn" "FlowframesApp%ver%/FlowframesData\pkgs\rife-ncnn" /E /I
 xcopy "../../../../pkgs/flavr-cuda" "FlowframesApp%ver%/FlowframesData\pkgs\flavr-cuda" /E /I
 xcopy "../../../../pkgs/xvfi-cuda" "FlowframesApp%ver%/FlowframesData\pkgs\xvfi-cuda" /E /I
+xcopy "../../../../pkgs/rife-ncnn-vs" "FlowframesApp%ver%/FlowframesData\pkgs\rife-ncnn-vs" /E /I
 
 echo %ver% >> "FlowframesApp%ver%/FlowframesData/ver.ini"
 
@@ -51,13 +51,6 @@ IF /I "%packWebBase%"=="Y" (
 )
 
 IF /I "%packFull%"=="Y" (
-	rem PACK FULL
-	xcopy "../pkgs/py-tu" "..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-tu" /E /I
-	7za.exe a FF-%ver%-Full.7z -m0=flzma2 -mx7 "..\Code\bin\x64\Release\FlowframesApp%ver%"
-	rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-tu
-)
-
-IF /I "%packFull3000%"=="Y" (
 	xcopy "../pkgs/py-amp" "..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-amp" /E /I
 	7za.exe a FF-%ver%-Full-RTX3000.7z -m0=flzma2 -mx7 "..\Code\bin\x64\Release\FlowframesApp%ver%"
 	rmdir /s/q ..\Code\bin\x64\Release\FlowframesApp%ver%\FlowframesData\pkgs\py-amp

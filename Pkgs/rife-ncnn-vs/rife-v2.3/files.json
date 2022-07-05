@@ -1,0 +1,38 @@
+[
+  {
+    "filename": "contextnet.bin",
+    "dir": "",
+    "size": 2387688,
+    "crc32": "1062612804"
+  },
+  {
+    "filename": "contextnet.param",
+    "dir": "",
+    "size": 3360,
+    "crc32": "2077820760"
+  },
+  {
+    "filename": "flownet.bin",
+    "dir": "",
+    "size": 30555792,
+    "crc32": "1458171657"
+  },
+  {
+    "filename": "flownet.param",
+    "dir": "",
+    "size": 10178,
+    "crc32": "3826053718"
+  },
+  {
+    "filename": "fusionnet.bin",
+    "dir": "",
+    "size": 23686092,
+    "crc32": "771032652"
+  },
+  {
+    "filename": "fusionnet.param",
+    "dir": "",
+    "size": 5775,
+    "crc32": "2970625635"
+  }
+]

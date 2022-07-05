@@ -1,0 +1,163 @@
+r19-mod-4:
+-BUGFIX: Encode preset header not correctly loaded.
+-BUGFIX: Loading chapters for VFR video results in division by zero.
+-BUGFIX: Failure when building in a recent version of MacOS.
+-BUGFIX: Program crashes when launching from second screen in MacOS with Qt 5.12.
+-BUGFIX: Only the main screen's bit depth is reported.
+-BUGFIX: Settings are lost in current session when switching to portable mode while config file is not writable.
+-Add Inno build script for a Windows installer (by rlaphoenix).
+-Add a setting entry for reloading script from disk before execution.
+-Improve open-box experience of the text editor: using spaces as tabs, 12pt font size, adjusted colors for dark themes.
+-Raise minimum VapourSynth version requirement to R47 (API 3.6).
+-Remove a number of obsolete Qt methods (raising Qt version requirement to 5.8).
+-Frame numbers computed from chapter timestamps are rounded instead of ceiling.
+-"Shell commands" in job server won't be executed with cmd /c or sh -c prefix anymore.
+
+
+r19-mod-3:
+-BUGFIX: Crash on file drop setting menu.
+-BUGFIX: Black screen for 10-bit preview.
+-Add back support for YCOCG and COMPAT colorspaces.
+-Show cursur position and on screen RGB values with color panel.
+-Add a setting entry for snapshot compression level.
+
+r19-mod-2:
+-Improve performance for RGB format packing (thanks to DJATOM and sekrit-twc).
+
+r19-mod-1:
+-Drop support for YCOCG and COMPAT colorspaces.
+-Work with VapourSynth v4 API (built with v3).
+-Dither to RGB for preview output.
+-Preview in 10-bit color depth in Unix when allowed.
+-Compress PNG file size when saving snapshots.
+-Replace legacy get_core() from the template.
+
+r19:
+-BUGFIX: Rapid settings updating on windows geometry change.
+-BUGFIX: Theme settings corruption when using job server.
+-Color picker update with a still mouse cursor in play mode.
+-Benchmark dialog remembers first and last frame for current script.
+
+r18:
+-BUGFIX: Crash on encode dialog initialization error.
+-BUGFIX: No error in log on encode dialog initialization error.
+-Import chapter files as preview bookmarks (by brainvlad@gmail.com).
+
+r17:
+-BUGFIX: Blank preview on variable size video with fixed zoom ratio.
+-BUGFIX: Saving new script.
+-BUGFIX: Invalid context menu for editor.
+-BUGFIX: Context menu behavior in preview.
+-New multi-app architecture: editor, job server, server watcher.
+
+r16:
+-BUGFIX: Default hotkey forced when trying to save an empty hotkey.
+-BUGFIX: Inactive actions in the log context menu.
+-Jobs queue with dependencies tracking.
+-Adjustable jobs table.
+-Pausable CLI encoding jobs.
+-Pausable process run jobs.
+-Shell command execute jobs.
+-Removed framebuffer monitoring.
+-Move text block up action.
+-Move text block down action.
+-Toggle comment action.
+-Fixed VS API version requested for internal plugins polling.
+-Larger settings dialog to remove the warning.
+
+r15:
+-BUGFIX: crash on colour picking while refreshing preview.
+-BUGFIX: random junk instead of black frame on preview refresh.
+-BUGFIX: wrong hours displayed in estimated finish time for benchmark and encoding.
+-Buildable with Qt version lower than 5.4.
+-Float formats support in yuv4mpeg video header for encoding.
+
+r14:
+-BUGFIX: Encoding logic.
+-Core buffer usage display.
+-Relative paths are resolved from the application directory, not CWD.
+-Benchmark and encoding progress in window title.
+-MS Windows: taskbar button progress for benchmark and encoding.
+-Script dialogs status bar reorganized.
+-WebP snapshots support.
+
+r13:
+-yuv4mpeg header for video encoding.
+
+r12:
+-Improved log.
+-Crash log is saved as HTML from the main log.
+
+r11:
+-BUGFIX: Default file drop template.
+-BUGFIX: Preview non-YUV clips.
+-An option to keep the currently previewed frame number on previewing different script.
+
+r10:
+-BUGFIX: Colour picking.
+-BUGFIX: VapourSynth messages handling.
+-BUGFIX: Frame processing errors handling in different modes.
+-BUGFIX: Pasting crop snippet into the last script line.
+-BUGFIX: Benchmark and encode dialogs forward initialization error to main window log and hide on error if open.
+-Crashlog on VapourSynth fatal errors.
+-Keep preview scrolling and frame number on refreshing the same script.
+Reset on previewing new script. Unsaved script preview is always reset.
+-Editor: selected text/current line duplication action.
+-Editor: comment/uncomment selected lines actions.
+-Editor: multiline tab and backtab.
+-Options to use spaces as Tab and set Tab size.
+-Editor: Replace Tab characters with spaces action.
+-Editor: smart Home key behaviour.
+-An option to remember and restore the last previewed frame between sessions.
+-New script template setting.
+-Code snippets.
+-File drop templates.
+-Option to highlight selection matches in script editor.
+-Timeline bookmarks with auto-saving/loading bookmarks file along the script file.
+-Remember timeline panel visibility.
+-Most timeline colours are bound to OS theme.
+-Changes in default standard hotkeys. Many default hotkeys are now OS-dependent. CTRL + arrows in preview window now move between bookmarks and CTRL + SHIFT + arrows jump time intervals.
+-Frames number and subsampling string tokens in encoder.
+-Estimated finish time output in benchmark and encoder.
+-Encoder argument tokens format changed into more readable one.
+-Colour picker moved into status bar.
+-Paste shown frame number into script action.
+
+r⑨:
+-Asynchronous frames processing. More responsive GUI.
+-Preview video playback.
+-Script processing benchmarking.
+-Encoding video with CLI tools.
+
+r8:
+-BUGFIX: Preview stride.
+
+r7:
+-BUGFIX: Bt.601 YUV to RGB conversion matrix. Not sure if it works correctly, but it works.
+-BUGFIX: Massive memory leak.
+-Late linking to vsscript library. Can start with no VapourSynth installed.
+-Better detection of VapourSynth installation on Windows.
+-Experimental colour picker. Shows values under cursor in preview window. Not thoroughly tested.
+
+r6:
+-Added some theme settings.
+-Switched preview to use the internal resizer instead of zimg. Requires VapourSynth R29+.
+-Support for building under MacOS X (not tested).
+
+r5:
+Fix release.
+-Fixed compatibility with VapourSynth r27. Patch by Myrsloik.
+-Fixed "Copy frame to clipboard" action.
+
+r4:
+-Custom font is embedded.
+-Internal format conversion for preview. All VapourSynth video formats are now supported.
+
+r3:
+-Fixed zoom ratio changed to real number.
+-New line autoindentation.
+
+r2:
+-File paths are changed to canonical before adding to recent files list to eliminate doubling records.
+-Change window title when script path changes.
+-Always create new script on start before trying to open any.
