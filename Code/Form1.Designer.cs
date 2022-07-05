@@ -418,7 +418,7 @@
             this.label14.Location = new System.Drawing.Point(11, 8);
             this.label14.Margin = new System.Windows.Forms.Padding(8, 8, 3, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(884, 129);
+            this.label14.Size = new System.Drawing.Size(884, 189);
             this.label14.TabIndex = 2;
             this.label14.Text = resources.GetString("label14.Text");
             // 
