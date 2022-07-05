@@ -4,6 +4,10 @@ Flowframes 1.38.0 Changelog:
 - Possibly fixed bug where RIFE-CUDA would run instead of the selected implementation
 - Improved AV1 encoding quality by changing bad default parameters
 
+KNOWN ISSUES:
+- Frame counting sometimes fails and returns 0. Restart Flowframes if this happens.
+- Certain export features (image sequences, FPS limiting, ...) don't work with RIFE-NCNN-VS
+
 
 Flowframes 1.37.2 Changelog:
 - Added RIFE 4.1 model (RIFE-CUDA)
