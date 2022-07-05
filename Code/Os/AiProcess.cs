@@ -358,8 +358,11 @@ namespace Flowframes.Os
             string logFileName = "rife-ncnn-vs-log";
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
 
+            Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with specific Flowframes features, such as FPS limiting and image sequence exporting.");
+
             if (rt)
             {
+                Logger.Log($"Starting. Use Space to pause, Left Arrow and Right Arrow to seek, albeit seeking takes some time.");
                 AiStartedRt(rifeNcnnVs, inPath);
             }
             else
