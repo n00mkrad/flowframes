@@ -387,6 +387,7 @@ namespace Flowframes.Os
                 Factor = factor,
                 Res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true),
                 Uhd = uhd,
+                GpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt(),
                 SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
                 Loop = Config.GetBool(Config.Key.enableLoop),
                 MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
