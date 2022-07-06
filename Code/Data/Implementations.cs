@@ -38,7 +38,11 @@ namespace Flowframes.Data
             get
             {
                 bool pytorchAvailable = Python.IsPytorchReady();
-                return NetworksAll.Where(x => x.Backend != AI.AiBackend.Pytorch).ToList();
+
+                if (pytorchAvailable)
+                    return NetworksAll;
+                else
+                    return NetworksAll.Where(x => x.Backend != AI.AiBackend.Pytorch).ToList();
             }
         }
 
