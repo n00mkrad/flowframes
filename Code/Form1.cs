@@ -192,7 +192,7 @@ namespace Flowframes
             inputTbox.Text = entry.inPath;
             MainUiFunctions.SetOutPath(outputTbox, entry.outPath);
             interpFactorCombox.Text = entry.interpFactor.ToString();
-            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.AiName == entry.ai.AiName).FirstOrDefault());
+            aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.AiName == entry.ai.AiName).FirstOrDefault());
             SetOutMode(entry.outMode);
         }
 
@@ -272,19 +272,11 @@ namespace Flowframes
         {
             bool pytorchAvailable = Python.IsPytorchReady();
 
-            foreach (AI ai in Implementations.networks)
-            {
-                if (ai.Backend == AI.AiBackend.Pytorch && !pytorchAvailable)
-                {
-                    Logger.Log($"AI implementation {ai.FriendlyName} ({ai.Backend}) has not been loaded because Pytorch was not found.", true);
-                    continue;
-                }
-
+            foreach (AI ai in Implementations.NetworksAvailable)
                 aiCombox.Items.Add(GetAiComboboxName(ai));
-            }
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
-            aiCombox.SelectedIndex = Implementations.networks.IndexOf(Implementations.networks.Where(x => x.AiName == lastUsedAiName).FirstOrDefault());
+            aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.AiName == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
             Config.Set(Config.Key.lastUsedAiName, GetAi().AiName);
 
@@ -381,14 +373,14 @@ namespace Flowframes
 
         public AI GetAi()
         {
-            foreach(AI ai in Implementations.networks)
+            foreach(AI ai in Implementations.NetworksAll)
             {
                 if (GetAiComboboxName(ai) == aiCombox.Text)
                     return ai;
             }
 
             Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer!");
-            return Implementations.networks[0];
+            return Implementations.NetworksAvailable[0];
 
             //return Implementations.networks[aiCombox.SelectedIndex];
         }
