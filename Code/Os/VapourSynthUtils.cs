@@ -1,5 +1,7 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
+using Flowframes.MiscUtils;
+using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -36,9 +38,17 @@ namespace Flowframes.Os
             string mdlPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, s.ModelDir).Replace(@"\", "/").Wrap();
 
             bool sc = s.SceneDetectSensitivity >= 0.01f;
+            long frameCount = (long)Interpolate.currentInputFrameCount;
+
+            bool trim = QuickSettingsTab.trimEnabled;
+            long srcTrimStartFrame = trim ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.GetFloat())) : 0;
+            long srcTrimEndFrame = trim && QuickSettingsTab.doTrimEnd ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimEnd) / 1000f * s.InterpSettings.inFps.GetFloat())) - 1 : frameCount - 1;
+
+            if(trim)
+                frameCount = srcTrimEndFrame - srcTrimStartFrame;
 
             int endDupeCount = s.Factor.RoundToInt() - 1;
-            int targetFrameCountMatchDuration = (Interpolate.currentInputFrameCount * s.Factor).RoundToInt(); // Target frame count to match original duration (and for loops)
+            int targetFrameCountMatchDuration = (frameCount * s.Factor).RoundToInt(); // Target frame count to match original duration (and for loops)
             int targetFrameCountTrue = targetFrameCountMatchDuration - endDupeCount; // Target frame count without dupes at the end (only in-between frames added)
 
             List<string> l = new List<string> { "import sys", "import os", "import json", "import time", "import functools", "import vapoursynth as vs", "core = vs.core", "" }; // Imports
@@ -58,6 +68,9 @@ namespace Flowframes.Os
                 l.Add($"\tindexFilePath = r'{Path.Combine(s.InterpSettings.tempFolder, "cache.lwi")}'");
                 l.Add($"clip = core.lsmas.LWLibavSource(inputPath, cachefile=indexFilePath)"); // Load video with lsmash
             }
+
+            if (trim)
+                l.Add($"clip = clip.std.Trim({srcTrimStartFrame}, {srcTrimEndFrame})");
 
             l.Add($"");
 

@@ -33,10 +33,10 @@ namespace Flowframes.Ui
             if (trimEndSecs <= trimStartSecs)
                 trimEndBox.Text = FormatUtils.SecsToTimestamp(trimStartSecs + 1);
 
-            long dur = FormatUtils.TimestampToMs(trimEnd, false) - FormatUtils.TimestampToMs(trimStart, false);
+            long dur = FormatUtils.TimestampToMs(trimEnd) - FormatUtils.TimestampToMs(trimStart);
             Program.mainForm.currInDurationCut = dur;
 
-            doTrimEnd = FormatUtils.TimestampToMs(trimEnd, false) != FormatUtils.TimestampToMs(FormatUtils.MsToTimestamp(Program.mainForm.currInDuration), false);
+            doTrimEnd = FormatUtils.TimestampToMs(trimEnd) != FormatUtils.TimestampToMs(FormatUtils.MsToTimestamp(Program.mainForm.currInDuration));
         }
 
         public static string GetTrimEndMinusOne ()
