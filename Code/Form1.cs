@@ -101,6 +101,10 @@ namespace Flowframes
 
         void HandleArgs()
         {
+
+            if (Program.fileArgs.Length > 0)
+                DragDropHandler(Program.fileArgs.Where(x => IoUtils.IsFileValid(x)).ToArray());
+
             foreach (string arg in Program.args)
             {
                 if (arg.StartsWith("out="))
@@ -121,10 +125,6 @@ namespace Flowframes
                 if (arg.StartsWith("output-mode="))
                     outModeCombox.SelectedIndex = arg.Split('=').Last().GetInt();
             }
-
-            if (Program.fileArgs.Length > 0)
-                DragDropHandler(Program.fileArgs.Where(x => IoUtils.IsFileValid(x)).ToArray());
-
         }
 
         void RemovePreviewIfDisabled()
@@ -430,12 +430,6 @@ namespace Flowframes
         private void interpFactorCombox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateUiFps();
-            //int guiFactor = interpFactorCombox.GetInt();
-            //
-            //if (!initialized)
-            //    return;
-            //
-            //string aiName = GetAi().aiName.Replace("_", "-");
         }
 
         public void ValidateFactor()

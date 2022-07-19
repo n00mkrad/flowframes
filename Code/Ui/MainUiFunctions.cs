@@ -37,7 +37,7 @@ namespace Flowframes.Ui
             if (!Program.lastInputPathIsSsd)
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
 
-            Logger.Log("Loading metadata...");
+            Logger.Log("Importing file...");
             Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
             Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
             int frameCount = await GetFrameCountCached.GetFrameCountAsync(path);
