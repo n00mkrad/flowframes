@@ -222,14 +222,20 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> CheckEncoderValid ()
+        public static async Task<bool> CheckEncoderValid (float encodeFps)
         {
             string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.current.outMode));
 
-            if (!enc.ToLower().Contains("nvenc"))
-                return true;
+            float maxAv1Fps = 240;
 
-            if (!(await FfmpegCommands.IsEncoderCompatible(enc)))
+            if (enc.ToLower().Contains("av1") && encodeFps > maxAv1Fps)
+            {
+                UiUtils.ShowMessageBox($"The selected encoder only supports up to {maxAv1Fps} FPS!\nPlease use a different encoder or reduce the interpolation factor.", UiUtils.MessageType.Error);
+                I.Cancel();
+                return false;
+            }
+
+            if (enc.ToLower().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
             {
                 UiUtils.ShowMessageBox("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", UiUtils.MessageType.Error);
                 I.Cancel();

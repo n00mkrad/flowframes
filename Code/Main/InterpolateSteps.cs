@@ -97,7 +97,7 @@ namespace Flowframes.Main
 
             currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
 
-            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid())) return;
+            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid(current.outFps.GetFloat()))) return;
 
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
@@ -123,7 +123,7 @@ namespace Flowframes.Main
                 }
             }
 
-            if (!(await InterpolateUtils.CheckEncoderValid())) return;
+            if (!(await InterpolateUtils.CheckEncoderValid(current.outFps.GetFloat()))) return;
 
             string[] outFrames = IoUtils.GetFilesSorted(current.interpFolder, current.interpExt);
 
