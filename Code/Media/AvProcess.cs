@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Flowframes.MiscUtils;
 using Microsoft.VisualBasic;
 using Flowframes.Media;
+using System.Windows.Input;
 
 namespace Flowframes
 {
@@ -101,7 +102,7 @@ namespace Flowframes
             return processOutput;
         }
 
-        public static string GetFfmpegDefaultArgs (string loglevel = "warning")
+        public static string GetFfmpegDefaultArgs(string loglevel = "warning")
         {
             return $"-hide_banner -stats -loglevel {loglevel} -y";
         }
@@ -114,9 +115,10 @@ namespace Flowframes
             public bool SetBusy { get; set; } = false;
         }
 
-        public static async Task<string> RunFfprobe(FfprobeSettings settings)
+        public static async Task<string> RunFfprobe(FfprobeSettings settings, bool asyncOutput = false)
         {
             bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
+
             string processOutput = "";
             Process ffprobe = OsUtils.NewProcess(!show);
             NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
@@ -126,11 +128,14 @@ namespace Flowframes
             if (settings.LoggingMode != LogMode.Hidden) Logger.Log("Running FFprobe...", false);
             Logger.Log($"ffprobe -v {settings.LogLevel} {settings.Args}", true, false, "ffmpeg");
 
+            if (!asyncOutput)
+                return await Task.Run(() => GetProcOutput(ffprobe));
+
             if (!show)
             {
                 string[] ignore = new string[0];
-                ffprobe.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", settings.LoggingMode, false); timeSinceLastOutput.sw.Restart(); };
-                ffprobe.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", settings.LoggingMode, false); timeSinceLastOutput.sw.Restart(); };
+                ffprobe.OutputDataReceived += (sender, outLine) => { processOutput += outLine + Environment.NewLine; };
+                ffprobe.ErrorDataReceived += (sender, outLine) => { processOutput += outLine + Environment.NewLine; };
             }
 
             ffprobe.Start();
@@ -148,44 +153,16 @@ namespace Flowframes
             return processOutput;
         }
 
-        public static async Task<string> RunFfprobe(string args, LogMode logMode = LogMode.Hidden, string loglevel = "quiet")
+        private static string GetProcOutput (Process proc)
         {
-            bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
-            string processOutput = "";
-            Process ffprobe = OsUtils.NewProcess(!show);
-            NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
-            lastAvProcess = ffprobe;
-
-            if (string.IsNullOrWhiteSpace(loglevel))
-                loglevel = defLogLevel;
-
-            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe -v {loglevel} {args}";
-
-            if (logMode != LogMode.Hidden) Logger.Log("Running FFprobe...", false);
-            Logger.Log($"ffprobe -v {loglevel} {args}", true, false, "ffmpeg");
-
-            if (!show)
-            {
-                ffprobe.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, false); timeSinceLastOutput.sw.Restart(); };
-                ffprobe.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, false); timeSinceLastOutput.sw.Restart(); };
-            }
-
-            ffprobe.Start();
-            ffprobe.PriorityClass = ProcessPriorityClass.BelowNormal;
-
-            if (!show)
-            {
-                ffprobe.BeginOutputReadLine();
-                ffprobe.BeginErrorReadLine();
-            }
-
-            while (!ffprobe.HasExited) await Task.Delay(10);
-            while (timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
-
-            return processOutput;
+            proc.Start();
+            proc.PriorityClass = ProcessPriorityClass.BelowNormal;
+            string output = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
+            return output;
         }
 
-        public static string GetFfprobeOutput (string args)
+        public static string GetFfprobeOutput(string args)
         {
             Process ffprobe = OsUtils.NewProcess(true);
             ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
@@ -197,23 +174,23 @@ namespace Flowframes
             if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
             return output;
         }
-        
-        static string GetAvDir ()
+
+        static string GetAvDir()
         {
             return Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
         }
 
-        static string GetCmdArg ()
+        static string GetCmdArg()
         {
             return "/C";
         }
 
-        public static async Task SetBusyWhileRunning ()
+        public static async Task SetBusyWhileRunning()
         {
             if (Program.busy) return;
 
             await Task.Delay(100);
-            while(!lastAvProcess.HasExited)
+            while (!lastAvProcess.HasExited)
                 await Task.Delay(10);
         }
     }

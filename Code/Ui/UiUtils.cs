@@ -86,6 +86,12 @@ namespace Flowframes.Ui
             Logger.Log($"MessageBox: {text} ({type}){(BatchProcessing.busy ? "[Batch Mode - Will not display messagebox]" : "")}", true);
 
             if (BatchProcessing.busy)
+            {
+                Logger.Log(text);
+                return new DialogResult();
+            }
+
+            if (BatchProcessing.busy)
                 return new DialogResult();
 
             MessageBoxIcon icon = MessageBoxIcon.Information;

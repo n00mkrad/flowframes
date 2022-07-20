@@ -1,4 +1,5 @@
-﻿using Flowframes.Forms;
+﻿using Flowframes.Data;
+using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Os;
 using System;
@@ -82,6 +83,11 @@ namespace Flowframes.Main
             string fname = Path.GetFileName(entry.inPath);
             if (IoUtils.IsPathDirectory(entry.inPath)) fname = Path.GetDirectoryName(entry.inPath);
             Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.AiNameShort}).");
+
+            MediaFile mf = new MediaFile(entry.inPath);
+            await mf.Initialize();
+
+            Interpolate.currentMediaFile = mf;
 
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
             Interpolate.currentSettings = entry;

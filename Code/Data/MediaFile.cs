@@ -100,7 +100,7 @@ namespace Flowframes.Data
             // }
         }
 
-        public async Task Initialize(bool progressBar = true)
+        public async Task Initialize(bool progressBar = true, bool countFrames = true)
         {
             Logger.Log($"MediaFile {Name}: Initializing", true);
 
@@ -110,7 +110,7 @@ namespace Flowframes.Data
                     await InitializeSequence();
 
                 await LoadFormatInfo(ImportPath);
-                AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, (Fraction)InputRate, true);
+                AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, (Fraction)InputRate, countFrames);
                 VideoStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Video).Select(x => (VideoStream)x).ToList();
                 AudioStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Audio).Select(x => (AudioStream)x).ToList();
                 SubtitleStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Subtitle).Select(x => (SubtitleStream)x).ToList();

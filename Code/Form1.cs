@@ -320,6 +320,9 @@ namespace Flowframes
 
         public void runBtn_Click(object sender, EventArgs e)
         {
+            if (Interpolate.currentMediaFile == null || !Interpolate.currentMediaFile.Initialized)
+                return;
+
             ValidateFactor();
 
             if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used

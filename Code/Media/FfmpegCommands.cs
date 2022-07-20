@@ -187,7 +187,8 @@ namespace Flowframes
 
         public static async Task<int> ReadFrameCountFfprobePacketCount(string filePath)
         {
-            string output = await RunFfprobe($"-select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}", LogMode.Hidden, "error");
+            FfprobeSettings settings = new FfprobeSettings() { Args = $"-select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}", LoggingMode = LogMode.Hidden, LogLevel = "error" };
+            string output = await RunFfprobe(settings);
             string[] lines = output.SplitIntoLines().Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
             if (lines == null || lines.Length < 1)
@@ -198,8 +199,8 @@ namespace Flowframes
 
         public static async Task<int> ReadFrameCountFfprobe(string filePath)
         {
-            string args = $"-threads 0 -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {filePath.Wrap()}";
-            string info = await RunFfprobe(args, LogMode.Hidden, "panic");
+            FfprobeSettings s = new FfprobeSettings() { Args = $"-threads 0 -select_streams v:0 -show_entries stream=nb_frames -of default=noprint_wrappers=1 {filePath.Wrap()}", LoggingMode = LogMode.Hidden, LogLevel = "panic" };
+            string info = await RunFfprobe(s);
             string[] entries = info.SplitIntoLines();
 
             try
