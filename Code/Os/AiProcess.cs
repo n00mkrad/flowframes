@@ -338,7 +338,7 @@ namespace Flowframes.Os
 
             try
             {
-                Size scaledSize = await InterpolateUtils.GetOutputResolution(Interpolate.currentSettings.inPath, false);
+                Size scaledSize = await InterpolateUtils.GetOutputResolution(Interpolate.currentSettings.inPath, false, false);
                 Logger.Log($"Running RIFE (NCNN-VS){(InterpolateUtils.UseUhd(scaledSize) ? " (UHD Mode)" : "")}...", false);
 
                 await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, scaledSize, rt);
@@ -384,9 +384,10 @@ namespace Flowframes.Os
                 InterpSettings = Interpolate.currentSettings,
                 ModelDir = mdl,
                 Factor = factor,
-                Res = InterpolateUtils.GetOutputResolution(Interpolate.currentSettings.InputResolution, true, true),
+                Res = res,
                 Uhd = InterpolateUtils.UseUhd(res),
                 GpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt(),
+                GpuThreads = GetRifeNcnnVsGpuThreads(res),
                 SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
                 Loop = Config.GetBool(Config.Key.enableLoop),
                 MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
@@ -646,6 +647,14 @@ namespace Flowframes.Os
                 Interpolate.Cancel();
 
             InterpolationProgress.UpdateLastFrameFromInterpOutput(line);
+        }
+
+        static int GetRifeNcnnVsGpuThreads (Size res)
+        {
+            int threads = 3;
+            if(res.Width * res.Height > 2560 * 1440) threads = 2;
+            if(res.Width * res.Height > 3840 * 2160) threads = 1;
+            return threads;
         }
 
         static string GetNcnnPattern()
