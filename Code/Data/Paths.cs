@@ -57,7 +57,6 @@ namespace Flowframes.IO
 			return path;
 		}
 
-
 		public static string GetPkgPath()
 		{
 			string path = Path.Combine(GetDataPath(), "pkgs");

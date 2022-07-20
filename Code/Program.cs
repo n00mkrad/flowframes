@@ -94,11 +94,11 @@ namespace Flowframes
                 {
                     try
                     {
-                        if (Interpolate.current == null || Interpolate.current.tempFolder.Length < 3)
+                        if (Interpolate.currentSettings == null || Interpolate.currentSettings.tempFolder.Length < 3)
                             return;
 
-                        string drivePath = Interpolate.current.tempFolder.Substring(0, 2);
-                        long mb = IoUtils.GetDiskSpace(Interpolate.current.tempFolder);
+                        string drivePath = Interpolate.currentSettings.tempFolder.Substring(0, 2);
+                        long mb = IoUtils.GetDiskSpace(Interpolate.currentSettings.tempFolder);
 
                         Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
 

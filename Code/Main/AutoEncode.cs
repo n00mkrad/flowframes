@@ -32,14 +32,14 @@ namespace Flowframes.Main
 
         public static void UpdateChunkAndBufferSizes ()
         {
-            chunkSize = GetChunkSize((IoUtils.GetAmountOfFiles(Interpolate.current.framesFolder, false, "*" + Interpolate.current.framesExt) * Interpolate.current.interpFactor).RoundToInt());
+            chunkSize = GetChunkSize((IoUtils.GetAmountOfFiles(Interpolate.currentSettings.framesFolder, false, "*" + Interpolate.currentSettings.framesExt) * Interpolate.currentSettings.interpFactor).RoundToInt());
 
             safetyBufferFrames = 90;
 
-            if (Interpolate.current.ai.Backend == AI.AiBackend.Ncnn)
+            if (Interpolate.currentSettings.ai.Backend == AI.AiBackend.Ncnn)
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferNcnn, 150);
 
-            if (Interpolate.current.ai.Backend == AI.AiBackend.Pytorch)
+            if (Interpolate.currentSettings.ai.Backend == AI.AiBackend.Pytorch)
                 safetyBufferFrames = Config.GetInt(Config.Key.autoEncSafeBufferCuda, 90);
         }
 
@@ -54,7 +54,7 @@ namespace Flowframes.Main
             {
                 UpdateChunkAndBufferSizes();
 
-                bool imgSeq = Interpolate.current.outMode.ToString().ToLower().StartsWith("img");
+                bool imgSeq = Interpolate.currentSettings.outMode.ToString().ToLower().StartsWith("img");
                 interpFramesFolder = interpFramesPath;
                 videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
 
@@ -66,7 +66,7 @@ namespace Flowframes.Main
 
                 Logger.Log($"[AE] Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
                 int chunkNo = AutoEncodeResume.encodedChunks + 1;
-                string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.current.interpFactor));
+                string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.currentSettings.interpFactor));
                 interpFramesLines = IoUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
 
                 while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
@@ -103,7 +103,7 @@ namespace Flowframes.Main
                         
                         if(overwhelmed && !AiProcessSuspend.aiProcFrozen && OsUtils.IsProcessHidden(AiProcess.lastAiProcess))
                         {
-                            string dirSize = FormatUtils.Bytes(IoUtils.GetDirSize(Interpolate.current.interpFolder, true));
+                            string dirSize = FormatUtils.Bytes(IoUtils.GetDirSize(Interpolate.currentSettings.interpFolder, true));
                             Logger.Log($"AutoEnc is overwhelmed! ({unencodedFrameLines.Count} unencoded frames > {maxFrames}) - Pausing.", true);
                             AiProcessSuspend.SuspendResumeAi(true);
                         }
@@ -130,12 +130,12 @@ namespace Flowframes.Main
                             }
 
                             busy = true;
-                            string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkNo.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.current.outMode)}");
+                            string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkNo.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.currentSettings.outMode)}");
                             string firstFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.First()].Trim());
                             string lastFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()].Trim());
                             Logger.Log($"[AE] Encoding Chunk #{chunkNo} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile}) - {unencodedFrameLines.Count} unencoded frames left in total", true, false, "ffmpeg");
 
-                            await Export.EncodeChunk(outpath, Interpolate.current.interpFolder, chunkNo, Interpolate.current.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
+                            await Export.EncodeChunk(outpath, Interpolate.currentSettings.interpFolder, chunkNo, Interpolate.currentSettings.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
 
                             if (Interpolate.canceled) return;
 
@@ -153,7 +153,7 @@ namespace Flowframes.Main
                             if(!imgSeq && Config.GetInt(Config.Key.autoEncBackupMode) > 0)
                             {
                                 if (aiRunning && (currentMuxTask == null || (currentMuxTask != null && currentMuxTask.IsCompleted)))
-                                    currentMuxTask = Task.Run(() => Export.ChunksToVideo(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath, true));
+                                    currentMuxTask = Task.Run(() => Export.ChunksToVideo(Interpolate.currentSettings.tempFolder, videoChunksFolder, Interpolate.currentSettings.outPath, true));
                                 else
                                     Logger.Log($"[AE] Skipping backup because {(!aiRunning ? "this is the final chunk" : "previous mux task has not finished yet")}!", true, false, "ffmpeg");
                             }
@@ -178,7 +178,7 @@ namespace Flowframes.Main
                 if (imgSeq)
                     return;
 
-                await Export.ChunksToVideo(Interpolate.current.tempFolder, videoChunksFolder, Interpolate.current.outPath);
+                await Export.ChunksToVideo(Interpolate.currentSettings.tempFolder, videoChunksFolder, Interpolate.currentSettings.outPath);
             }
             catch (Exception e)
             {
@@ -239,7 +239,7 @@ namespace Flowframes.Main
 
         static int GetInterpFramesAmount()
         {
-            return IoUtils.GetAmountOfFiles(interpFramesFolder, false, "*" + Interpolate.current.interpExt);
+            return IoUtils.GetAmountOfFiles(interpFramesFolder, false, "*" + Interpolate.currentSettings.interpExt);
         }
     }
 }

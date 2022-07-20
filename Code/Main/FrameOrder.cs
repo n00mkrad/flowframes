@@ -55,12 +55,12 @@ namespace Flowframes.Main
 
             bool loop = Config.GetBool(Config.Key.enableLoop);
             bool sceneDetection = true;
-            string ext = Interpolate.current.interpExt;
+            string ext = Interpolate.currentSettings.interpExt;
 
             frameFileContents.Clear();
             lastOutFileCount = 0;
 
-            frameFiles = new DirectoryInfo(framesPath).GetFiles("*" + Interpolate.current.framesExt);
+            frameFiles = new DirectoryInfo(framesPath).GetFiles("*" + Interpolate.currentSettings.framesExt);
             frameFilesWithoutLast = frameFiles;
             Array.Resize(ref frameFilesWithoutLast, frameFilesWithoutLast.Length - 1);
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(interpFactor));
@@ -168,7 +168,7 @@ namespace Flowframes.Main
         {
             int totalFileCount = 0;
             bool blendSceneChances = Config.GetInt(Config.Key.sceneChangeFillMode) > 0;
-            string ext = Interpolate.current.interpExt;
+            string ext = Interpolate.currentSettings.interpExt;
             Fraction step = new Fraction(sourceFrameCount, targetFrameCount + InterpolateUtils.GetRoundedInterpFramesPerInputFrame(factor));
 
             List<FrameFileLine> lines = new List<FrameFileLine>();
@@ -235,7 +235,7 @@ namespace Flowframes.Main
         {
             int totalFileCount = (startIndex) * factor;
             int interpFramesAmount = factor;
-            string ext = Interpolate.current.interpExt;
+            string ext = Interpolate.currentSettings.interpExt;
 
             string fileContent = "";
 

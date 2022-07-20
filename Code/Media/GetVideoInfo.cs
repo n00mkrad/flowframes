@@ -17,21 +17,22 @@ namespace Flowframes.Media
 
         static Dictionary<QueryInfo, string> cmdCache = new Dictionary<QueryInfo, string>();
 
-        private static string GetAvPath()
+        public static async Task<string> GetFfmpegInfoAsync(string path, string lineFilter = "", bool noCache = false)
         {
-            return Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
+            return await GetFfmpegOutputAsync(path, "", lineFilter, noCache);
         }
 
-        public static async Task<string> GetFfmpegInfoAsync(string path, string lineFilter = "")
+        public static async Task<string> GetFfmpegOutputAsync(string path, string args, string lineFilter = "", bool noCache = false)
         {
-            return await GetFfmpegOutputAsync(path, "", lineFilter);
+            return await GetFfmpegOutputAsync(path, "", args, lineFilter, noCache);
         }
 
-        public static async Task<string> GetFfmpegOutputAsync(string path, string args, string lineFilter = "")
+        public static async Task<string> GetFfmpegOutputAsync(string path, string argsIn, string argsOut, string lineFilter = "", bool noCache = false)
         {
             Process process = OsUtils.NewProcess(true);
-            process.StartInfo.Arguments = $"/C cd /D {GetAvPath().Wrap()} & ffmpeg.exe -hide_banner -y -stats -i {path.Wrap()} {args}";
-            return await GetInfoAsync(path, process, lineFilter, false);
+            process.StartInfo.Arguments = $"/C cd /D {GetAvPath().Wrap()} & " +
+                $"ffmpeg.exe -hide_banner -y {argsIn} {path.GetConcStr()} -i {path.Wrap()} {argsOut}";
+            return await GetInfoAsync(path, process, lineFilter, noCache);
         }
 
         public static async Task<string> GetFfprobeInfoAsync(string path, FfprobeMode mode, string lineFilter = "", int streamIndex = -1, bool stripKeyName = true)
@@ -39,39 +40,64 @@ namespace Flowframes.Media
             Process process = OsUtils.NewProcess(true);
             string showFormat = mode == FfprobeMode.ShowBoth || mode == FfprobeMode.ShowFormat ? "-show_format" : "";
             string showStreams = mode == FfprobeMode.ShowBoth || mode == FfprobeMode.ShowStreams ? "-show_streams" : "";
-            string streamSelect = (streamIndex >= 0) ? $"-select_streams {streamIndex}" : "";
-            process.StartInfo.Arguments = $"/C cd /D {GetAvPath().Wrap()} & ffprobe -v quiet {showFormat} {showStreams} {streamSelect} {path.Wrap()}";
-            return await GetInfoAsync(path, process, lineFilter, stripKeyName);
+
+            process.StartInfo.Arguments = $"/C cd /D {GetAvPath().Wrap()} & " +
+                $"ffprobe -v quiet {path.GetConcStr()} {showFormat} {showStreams} {path.Wrap()}";
+
+            string output = await GetInfoAsync(path, process, lineFilter, streamIndex, stripKeyName);
+
+            return output;
         }
 
-        static async Task<string> GetInfoAsync(string path, Process process, string lineFilter, bool stripKeyName = true)
+        static async Task<string> GetInfoAsync(string path, Process process, string lineFilter, bool noCache = false) // for ffmpeg
         {
-            string output = await GetOutputCached(path, process);
+            string output = await GetOutputCached(path, process, noCache);
+
+            if (!string.IsNullOrWhiteSpace(lineFilter.Trim()))
+                output = string.Join("\n", output.SplitIntoLines().Where(x => x.Contains(lineFilter)).ToArray());
+
+            return output;
+        }
+
+        static async Task<string> GetInfoAsync(string path, Process process, string lineFilter, int streamIndex = -1, bool stripKeyName = true, bool noCache = false) // for ffprobe
+        {
+            string output = await GetOutputCached(path, process, noCache);
+
+            try
+            {
+                if (streamIndex >= 0)
+                    output = output.Split("[/STREAM]")[streamIndex];
+            }
+            catch
+            {
+                Logger.Log($"output.Split(\"[/STREAM]\")[{streamIndex}] failed! Can't access index {streamIndex} because array only has {output.Split("[/STREAM]").Length} items.", true);
+                return "";
+            }
 
             if (!string.IsNullOrWhiteSpace(lineFilter.Trim()))
             {
                 if (stripKeyName)
                 {
-                    List<string> filtered = output.SplitIntoLines().Where(x => x.Contains(lineFilter)).ToList();    // Filter
+
+                    List<string> filtered = output.SplitIntoLines().Where(x => x.ToLower().Contains(lineFilter.ToLower())).ToList();    // Filter
                     filtered = filtered.Select(x => string.Join("", x.Split('=').Skip(1))).ToList();    // Ignore everything before (and including) the first '=' sign
                     output = string.Join("\n", filtered);
                 }
                 else
                 {
-                    output = string.Join("\n", output.SplitIntoLines().Where(x => x.Contains(lineFilter)).ToArray());
+                    output = string.Join("\n", output.SplitIntoLines().Where(x => x.ToLower().Contains(lineFilter.ToLower())).ToArray());
                 }
             }
-
 
             return output;
         }
 
-        static async Task<string> GetOutputCached(string path, Process process)
+        static async Task<string> GetOutputCached(string path, Process process, bool noCache = false)
         {
             long filesize = IoUtils.GetFilesize(path);
             QueryInfo hash = new QueryInfo(path, filesize, process.StartInfo.Arguments);
 
-            if (filesize > 0 && CacheContains(hash, ref cmdCache))
+            if (!noCache && filesize > 0 && CacheContains(hash, ref cmdCache))
             {
                 Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' cached, won't re-run.", true, false, "ffmpeg");
                 return GetFromCache(hash, ref cmdCache);
@@ -99,6 +125,16 @@ namespace Flowframes.Media
                     return entry.Value;
 
             return "";
+        }
+
+        public static void ClearCache()
+        {
+            cmdCache.Clear();
+        }
+
+        private static string GetAvPath()
+        {
+            return Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
         }
     }
 }

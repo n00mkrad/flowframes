@@ -106,6 +106,48 @@ namespace Flowframes
             return $"-hide_banner -stats -loglevel {loglevel} -y";
         }
 
+        public class FfprobeSettings
+        {
+            public string Args { get; set; } = "";
+            public LogMode LoggingMode { get; set; } = LogMode.Hidden;
+            public string LogLevel { get; set; } = "panic";
+            public bool SetBusy { get; set; } = false;
+        }
+
+        public static async Task<string> RunFfprobe(FfprobeSettings settings)
+        {
+            bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
+            string processOutput = "";
+            Process ffprobe = OsUtils.NewProcess(!show);
+            NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
+
+            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe -v {settings.LogLevel} {settings.Args}";
+
+            if (settings.LoggingMode != LogMode.Hidden) Logger.Log("Running FFprobe...", false);
+            Logger.Log($"ffprobe -v {settings.LogLevel} {settings.Args}", true, false, "ffmpeg");
+
+            if (!show)
+            {
+                string[] ignore = new string[0];
+                ffprobe.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", settings.LoggingMode, false); timeSinceLastOutput.sw.Restart(); };
+                ffprobe.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", settings.LoggingMode, false); timeSinceLastOutput.sw.Restart(); };
+            }
+
+            ffprobe.Start();
+            ffprobe.PriorityClass = ProcessPriorityClass.BelowNormal;
+
+            if (!show)
+            {
+                ffprobe.BeginOutputReadLine();
+                ffprobe.BeginErrorReadLine();
+            }
+
+            while (!ffprobe.HasExited) await Task.Delay(10);
+            while (timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
+
+            return processOutput;
+        }
+
         public static async Task<string> RunFfprobe(string args, LogMode logMode = LogMode.Hidden, string loglevel = "quiet")
         {
             bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;

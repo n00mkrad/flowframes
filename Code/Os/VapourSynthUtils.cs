@@ -38,7 +38,7 @@ namespace Flowframes.Os
             string mdlPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, s.ModelDir).Replace(@"\", "/").Wrap();
 
             bool sc = s.SceneDetectSensitivity >= 0.01f;
-            long frameCount = (long)Interpolate.currentInputFrameCount;
+            long frameCount = (long)Interpolate.currentMediaFile.FrameCount;
 
             bool trim = QuickSettingsTab.trimEnabled;
             long srcTrimStartFrame = trim ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.GetFloat())) : 0;

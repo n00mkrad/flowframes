@@ -323,7 +323,7 @@ namespace Flowframes
             ValidateFactor();
 
             if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
-                Interpolate.current = GetCurrentSettings();
+                Interpolate.currentSettings = GetCurrentSettings();
 
             AiProcessSuspend.Reset();
             Interpolate.Start();
@@ -707,8 +707,7 @@ namespace Flowframes
         {
             if (BatchProcessing.busy || !File.Exists(inputTbox.Text.Trim())) return;
 
-            Interpolate.current = GetCurrentSettings();
-            Interpolate.currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(Interpolate.current.inPath);
+            Interpolate.currentSettings = GetCurrentSettings();
 
             AiProcessSuspend.Reset();
             await Interpolate.Realtime();

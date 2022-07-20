@@ -25,7 +25,7 @@ namespace Flowframes
 
         public static int GetPadding ()
         {
-            return (Interpolate.current.ai.AiName == Implementations.flavrCuda.AiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
+            return (Interpolate.currentSettings.ai.AiName == Implementations.flavrCuda.AiName) ? 8 : 2;     // FLAVR input needs to be divisible by 8
         }
 
         public static string GetPadFilter ()
@@ -74,11 +74,13 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static long GetDuration(string inputFile)
+        public static async Task<long> GetDurationMs(string inputFile)
         {
             Logger.Log($"GetDuration({inputFile}) - Reading Duration using ffprobe.", true, false, "ffmpeg");
-            string args = $" -v panic -select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
-            string output = GetFfprobeOutput(args);
+            string args = $"-select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
+            FfprobeSettings settings = new FfprobeSettings() { Args = args };
+            string output = await RunFfprobe(settings);
+
             return FormatUtils.TimestampToMs(output);
         }
 

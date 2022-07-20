@@ -53,7 +53,7 @@ namespace Flowframes.Ui
                         Program.mainForm.SetTab("preview");
 
                     firstProgUpd = false;
-                    string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + I.current.interpExt;
+                    string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + I.currentSettings.interpExt;
 
                     if (lastFrame > 1)
                         UpdateInterpProgress(lastFrame, targetFrames, lastFramePath);
@@ -79,8 +79,8 @@ namespace Flowframes.Ui
         {
             try
             {
-                string ncnnStr = I.current.ai.AiName.Contains("NCNN") ? " done" : "";
-                Regex frameRegex = new Regex($@"(?<=.)\d*(?={I.current.interpExt}{ncnnStr})");
+                string ncnnStr = I.currentSettings.ai.AiName.Contains("NCNN") ? " done" : "";
+                Regex frameRegex = new Regex($@"(?<=.)\d*(?={I.currentSettings.interpExt}{ncnnStr})");
                 if (!frameRegex.IsMatch(output)) return;
                 lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);
             }
@@ -132,7 +132,7 @@ namespace Flowframes.Ui
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
             if (I.canceled) return;
-            interpolatedInputFramesCount = ((frames / I.current.interpFactor).RoundToInt() - 1);
+            interpolatedInputFramesCount = ((frames / I.currentSettings.interpFactor).RoundToInt() - 1);
             //ResumeUtils.Save();
             frames = frames.Clamp(0, target);
             int percent = (int)Math.Round(((float)frames / target) * 100f);
@@ -177,7 +177,7 @@ namespace Flowframes.Ui
         public static async Task DeleteInterpolatedInputFrames()
         {
             interpolatedInputFramesCount = 0;
-            string[] inputFrames = IoUtils.GetFilesSorted(I.current.framesFolder);
+            string[] inputFrames = IoUtils.GetFilesSorted(I.currentSettings.framesFolder);
 
             for (int i = 0; i < inputFrames.Length; i++)
             {

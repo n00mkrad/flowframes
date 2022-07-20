@@ -38,9 +38,10 @@ namespace Flowframes.Ui
                 Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
 
             Logger.Log("Importing file...");
-            Program.mainForm.currInDuration = FfmpegCommands.GetDuration(path);
+            Interpolate.currentMediaFile = new MediaFile(path);
+            await Interpolate.currentMediaFile.Initialize();
+            Program.mainForm.currInDuration = Interpolate.currentMediaFile.DurationMs;
             Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
-            int frameCount = await GetFrameCountCached.GetFrameCountAsync(path);
             string fpsStr = "Not Found";
             Fraction fps = (await IoUtils.GetFpsFolderOrVideo(path));
             Program.mainForm.currInFpsDetected = fps;
@@ -49,10 +50,10 @@ namespace Flowframes.Ui
             if (fps.GetFloat() > 0)
                 fpsStr = $"{fps} (~{fps.GetFloat()})";
 
-            Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {frameCount}", false, true);
+            Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}", false, true);
             Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.GetFloat() > 0 && !Config.GetBool("allowCustomInputRate", false));
             Program.mainForm.currInFps = fps;
-            Program.mainForm.currInFrames = frameCount;
+            Program.mainForm.currInFrames = Interpolate.currentMediaFile.FrameCount;
             Program.mainForm.UpdateInputInfo();
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);
@@ -93,13 +94,13 @@ namespace Flowframes.Ui
 
         static void CheckExistingFolder (string inpath, string outpath)
         {
-            if (Interpolate.current == null || !Interpolate.current.stepByStep) return;
+            if (Interpolate.currentSettings == null || !Interpolate.currentSettings.stepByStep) return;
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
             if (Directory.Exists(tmpFolder))
             {
-                int scnFrmAmount = IoUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.scenesDir), false, "*" + Interpolate.current.interpExt);  // TODO: Make this work if the frames extension was changed
+                int scnFrmAmount = IoUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.scenesDir), false, "*" + Interpolate.currentSettings.interpExt);  // TODO: Make this work if the frames extension was changed
                 string scnFrames = scnFrmAmount > 0 ? $"{scnFrmAmount} scene frames" : "no scene frames";
-                int srcFrmAmount = IoUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.framesDir), false, "*" + Interpolate.current.interpExt);
+                int srcFrmAmount = IoUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.framesDir), false, "*" + Interpolate.currentSettings.interpExt);
                 string srcFrames = srcFrmAmount > 1 ? $"{srcFrmAmount} source frames" : "no source frames";
                 int interpFrmAmount = IoUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.interpDir), false);
                 string interpFrames = interpFrmAmount > 2 ? $"{interpFrmAmount} interpolated frames" : "no interpolated frames";
@@ -118,8 +119,8 @@ namespace Flowframes.Ui
         {
             Size res = new Size();
 
-            if(path == Interpolate.current?.inPath)
-                res = Interpolate.current.InputResolution;
+            if(path == Interpolate.currentSettings?.inPath)
+                res = Interpolate.currentSettings.InputResolution;
             else
                 res = await GetMediaResolutionCached.GetSizeAsync(path);
 

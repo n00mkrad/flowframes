@@ -1,17 +1,176 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.Data.Streams;
+using Flowframes.IO;
+using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Flowframes.Media.GetVideoInfo;
+using Stream = Flowframes.Data.Streams.Stream;
 
 namespace Flowframes.Media
 {
     class FfmpegUtils
     {
-        public enum Codec { H264, H265, H264Nvenc, H265Nvenc, Av1, Vp9, ProRes, AviRaw, Gif }
+        private readonly static FfprobeMode showStreams = FfprobeMode.ShowStreams;
+        private readonly static FfprobeMode showFormat = FfprobeMode.ShowFormat;
 
+        public static async Task<int> GetStreamCount(string path)
+        {
+            Logger.Log($"GetStreamCount({path})", true);
+            string output = await GetFfmpegInfoAsync(path, "Stream #0:");
+
+            if (string.IsNullOrWhiteSpace(output.Trim()))
+                return 0;
+
+            return output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).Count();
+        }
+
+        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction defaultFps, bool countFrames)
+        {
+            List<Stream> streamList = new List<Stream>();
+
+            try
+            {
+                string output = await GetFfmpegInfoAsync(path, "Stream #0:");
+                string[] streams = output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).ToArray();
+
+                foreach (string streamStr in streams)
+                {
+                    try
+                    {
+                        int idx = streamStr.Split(':')[1].Split('[')[0].Split('(')[0].GetInt();
+                        bool def = await GetFfprobeInfoAsync(path, showStreams, "DISPOSITION:default", idx) == "1";
+
+                        if (progressBar)
+                            Program.mainForm.SetProgress(FormatUtils.RatioInt(idx + 1, streamCount));
+
+                        if (streamStr.Contains(": Video:"))
+                        {
+                            string lang = await GetFfprobeInfoAsync(path, showStreams, "TAG:language", idx);
+                            string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
+                            string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
+                            string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
+                            string pixFmt = (await GetFfprobeInfoAsync(path, showStreams, "pix_fmt", idx)).ToUpper();
+                            int kbits = (await GetFfprobeInfoAsync(path, showStreams, "bit_rate", idx)).GetInt() / 1024;
+                            Size res = await GetMediaResolutionCached.GetSizeAsync(path);
+                            Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
+                            Size dar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "display_aspect_ratio", idx));
+                            Fraction fps = path.IsConcatFile() ? defaultFps : await IoUtils.GetVideoFramerate(path);
+                            int frameCount = countFrames ? await GetFrameCountCached.GetFrameCountAsync(path) : 0;
+                            VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount);
+                            vStream.Index = idx;
+                            vStream.IsDefault = def;
+                            Logger.Log($"Added video stream: {vStream}", true);
+                            streamList.Add(vStream);
+                            continue;
+                        }
+
+                        if (streamStr.Contains(": Audio:"))
+                        {
+                            string lang = await GetFfprobeInfoAsync(path, showStreams, "TAG:language", idx);
+                            string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
+                            string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
+                            string profile = await GetFfprobeInfoAsync(path, showStreams, "profile", idx);
+                            if (codec.ToLower() == "dts" && profile != "unknown") codec = profile;
+                            string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
+                            int kbits = (await GetFfprobeInfoAsync(path, showStreams, "bit_rate", idx)).GetInt() / 1024;
+                            int sampleRate = (await GetFfprobeInfoAsync(path, showStreams, "sample_rate", idx)).GetInt();
+                            int channels = (await GetFfprobeInfoAsync(path, showStreams, "channels", idx)).GetInt();
+                            string layout = (await GetFfprobeInfoAsync(path, showStreams, "channel_layout", idx));
+                            AudioStream aStream = new AudioStream(lang, title, codec, codecLong, kbits, sampleRate, channels, layout);
+                            aStream.Index = idx;
+                            aStream.IsDefault = def;
+                            Logger.Log($"Added audio stream: {aStream}", true);
+                            streamList.Add(aStream);
+                            continue;
+                        }
+
+                        if (streamStr.Contains(": Subtitle:"))
+                        {
+                            string lang = await GetFfprobeInfoAsync(path, showStreams, "TAG:language", idx);
+                            string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
+                            string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
+                            string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
+                            bool bitmap = await IsSubtitleBitmapBased(path, idx, codec);
+                            SubtitleStream sStream = new SubtitleStream(lang, title, codec, codecLong, bitmap);
+                            sStream.Index = idx;
+                            sStream.IsDefault = def;
+                            Logger.Log($"Added subtitle stream: {sStream}", true);
+                            streamList.Add(sStream);
+                            continue;
+                        }
+
+                        if (streamStr.Contains(": Data:"))
+                        {
+                            string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
+                            string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
+                            DataStream dStream = new DataStream(codec, codecLong);
+                            dStream.Index = idx;
+                            dStream.IsDefault = def;
+                            Logger.Log($"Added data stream: {dStream}", true);
+                            streamList.Add(dStream);
+                            continue;
+                        }
+
+                        if (streamStr.Contains(": Attachment:"))
+                        {
+                            string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
+                            string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
+                            string filename = await GetFfprobeInfoAsync(path, showStreams, "TAG:filename", idx);
+                            string mimeType = await GetFfprobeInfoAsync(path, showStreams, "TAG:mimetype", idx);
+                            AttachmentStream aStream = new AttachmentStream(codec, codecLong, filename, mimeType);
+                            aStream.Index = idx;
+                            aStream.IsDefault = def;
+                            Logger.Log($"Added attachment stream: {aStream}", true);
+                            streamList.Add(aStream);
+                            continue;
+                        }
+
+                        Logger.Log($"Unknown stream (not vid/aud/sub/dat/att): {streamStr}", true);
+                        Stream stream = new Stream { Codec = "Unknown", CodecLong = "Unknown", Index = idx, IsDefault = def, Type = Stream.StreamType.Unknown };
+                        streamList.Add(stream);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log($"Error scanning stream: {e.Message}\n{e.StackTrace}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"GetStreams Exception: {e.Message}\n{e.StackTrace}", true);
+            }
+
+            Logger.Log($"Video Streams: {string.Join(", ", streamList.Where(x => x.Type == Stream.StreamType.Video).Select(x => string.IsNullOrWhiteSpace(x.Title) ? "No Title" : x.Title))}", true);
+            Logger.Log($"Audio Streams: {string.Join(", ", streamList.Where(x => x.Type == Stream.StreamType.Audio).Select(x => string.IsNullOrWhiteSpace(x.Title) ? "No Title" : x.Title))}", true);
+            Logger.Log($"Subtitle Streams: {string.Join(", ", streamList.Where(x => x.Type == Stream.StreamType.Subtitle).Select(x => string.IsNullOrWhiteSpace(x.Title) ? "No Title" : x.Title))}", true);
+
+            if (progressBar)
+                Program.mainForm.SetProgress(0);
+
+            return streamList;
+        }
+
+        public static async Task<bool> IsSubtitleBitmapBased(string path, int streamIndex, string codec = "")
+        {
+            if (codec == "ssa" || codec == "ass" || codec == "mov_text" || codec == "srt" || codec == "subrip" || codec == "text" || codec == "webvtt")
+                return false;
+
+            if (codec == "dvdsub" || codec == "dvd_subtitle" || codec == "pgssub" || codec == "hdmv_pgs_subtitle" || codec.StartsWith("dvb_"))
+                return true;
+
+            // If codec was not listed above, manually check if it's compatible by trying to encode it:
+            //string ffmpegCheck = await GetFfmpegOutputAsync(path, $"-map 0:{streamIndex} -c:s srt -t 0 -f null -");
+            //return ffmpegCheck.Contains($"encoding currently only possible from text to text or bitmap to bitmap");
+
+            return false;
+        }
+
+        public enum Codec { H264, H265, H264Nvenc, H265Nvenc, Av1, Vp9, ProRes, AviRaw, Gif }
 
         public static Codec GetCodec(Interpolate.OutMode mode)
         {
@@ -330,20 +489,42 @@ namespace Flowframes.Media
             return supported;
         }
 
-        public static void CreateConcatFile(string inputFilesDir, string outputPath, string[] validExtensions = null)
+        public static int CreateConcatFile(string inputFilesDir, string outputPath, List<string> validExtensions = null)
         {
+            if (IoUtils.GetAmountOfFiles(inputFilesDir, false) < 1)
+                return 0;
+
+            Directory.CreateDirectory(outputPath.GetParentDir());
+
+            if (validExtensions == null)
+                validExtensions = new List<string>();
+
+            validExtensions = validExtensions.Select(x => x.Remove(".").ToLower()).ToList(); // Ignore "." in extensions
             string concatFileContent = "";
             string[] files = IoUtils.GetFilesSorted(inputFilesDir);
+            int fileCount = 0;
 
-            foreach (string file in files)
+            foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLower())))
             {
-                if (validExtensions != null && !validExtensions.Contains(Path.GetExtension(file).ToLower()))
-                    continue;
-
+                fileCount++;
                 concatFileContent += $"file '{file.Replace(@"\", "/")}'\n";
             }
 
             File.WriteAllText(outputPath, concatFileContent);
+            return fileCount;
+        }
+
+        public static Size SizeFromString(string str, char delimiter = ':')
+        {
+            try
+            {
+                string[] nums = str.Remove(" ").Trim().Split(delimiter);
+                return new Size(nums[0].GetInt(), nums[1].GetInt());
+            }
+            catch
+            {
+                return new Size();
+            }
         }
     }
 }

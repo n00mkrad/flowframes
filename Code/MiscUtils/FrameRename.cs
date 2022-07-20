@@ -17,8 +17,8 @@ namespace Flowframes.MiscUtils
 
         public static async Task Rename()
         {
-            importFilenames = IoUtils.GetFilesSorted(Interpolate.current.framesFolder).Select(x => Path.GetFileName(x)).ToArray();
-            await IoUtils.RenameCounterDir(Interpolate.current.framesFolder, 0, Padding.inputFramesRenamed);
+            importFilenames = IoUtils.GetFilesSorted(Interpolate.currentSettings.framesFolder).Select(x => Path.GetFileName(x)).ToArray();
+            await IoUtils.RenameCounterDir(Interpolate.currentSettings.framesFolder, 0, Padding.inputFramesRenamed);
             framesAreRenamed = true;
         }
 
@@ -27,11 +27,11 @@ namespace Flowframes.MiscUtils
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            string[] files = IoUtils.GetFilesSorted(Interpolate.current.framesFolder);
+            string[] files = IoUtils.GetFilesSorted(Interpolate.currentSettings.framesFolder);
 
             for (int i = 0; i < files.Length; i++)
             {
-                string movePath = Path.Combine(Interpolate.current.framesFolder, importFilenames[i]);
+                string movePath = Path.Combine(Interpolate.currentSettings.framesFolder, importFilenames[i]);
                 File.Move(files[i], movePath);
 
                 if (sw.ElapsedMilliseconds > 100)

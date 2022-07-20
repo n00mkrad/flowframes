@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.Data;
 using System.Management.Automation;
+using System.Drawing;
 
 namespace Flowframes
 {
@@ -229,6 +230,46 @@ namespace Flowframes
         {
             WildcardPattern pattern = new WildcardPattern(wildcard);
             return pattern.IsMatch(str);
+        }
+
+        public static int RoundMod(this int n, int mod = 2)     // Round to a number that's divisible by 2 (for h264 etc)
+        {
+            int a = (n / 2) * 2;    // Smaller multiple
+            int b = a + 2;   // Larger multiple
+            return (n - a > b - n) ? b : a; // Return of closest of two
+        }
+
+        public static string ToTitleCase(this string s)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s);
+        }
+
+        public static string ToStringShort(this Size s, string separator = "x")
+        {
+            return $"{s.Width}{separator}{s.Height}";
+        }
+
+        public static bool IsConcatFile(this string filePath)
+        {
+            try
+            {
+                return Path.GetExtension(filePath)?.ToLower() == ".concat";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static string GetConcStr(this string filePath, int rate = -1)
+        {
+            string rateStr = rate >= 0 ? $"-r {rate} " : "";
+            return filePath.IsConcatFile() ? $"{rateStr}-safe 0 -f concat " : "";
+        }
+
+        public static string GetFfmpegInputArg(this string filePath)
+        {
+            return $"{(filePath.IsConcatFile() ? filePath.GetConcStr() : "")} -i {filePath.Wrap()}";
         }
     }
 }

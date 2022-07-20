@@ -28,20 +28,20 @@ namespace Flowframes.Main
             try
             {
                 lastFrameNum--;     // We have to do this as extracted frames start at 0, not 1
-                bool frameFolderInput = IoUtils.IsPathDirectory(I.current.inPath);
-                string targetPath = Path.Combine(I.current.framesFolder, lastFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + I.current.framesExt);
+                bool frameFolderInput = IoUtils.IsPathDirectory(I.currentSettings.inPath);
+                string targetPath = Path.Combine(I.currentSettings.framesFolder, lastFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + I.currentSettings.framesExt);
                 if (File.Exists(targetPath)) return;
 
-                Size res = IoUtils.GetImage(IoUtils.GetFilesSorted(I.current.framesFolder, false).First()).Size;
+                Size res = IoUtils.GetImage(IoUtils.GetFilesSorted(I.currentSettings.framesFolder, false).First()).Size;
 
                 if (frameFolderInput)
                 {
-                    string lastFramePath = IoUtils.GetFilesSorted(I.current.inPath, false).Last();
+                    string lastFramePath = IoUtils.GetFilesSorted(I.currentSettings.inPath, false).Last();
                     await FfmpegExtract.ExtractLastFrame(lastFramePath, targetPath, res);
                 }
                 else
                 {
-                    await FfmpegExtract.ExtractLastFrame(I.current.inPath, targetPath, res);
+                    await FfmpegExtract.ExtractLastFrame(I.currentSettings.inPath, targetPath, res);
                 }
             }
             catch (Exception e)
@@ -95,44 +95,43 @@ namespace Flowframes.Main
             return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
         }
 
-        public static bool InputIsValid(string inDir, string outDir, Fraction fpsIn, float factor, I.OutMode outMode, string tempFolder)
+        public static bool InputIsValid(InterpSettings s)
         {
             try
             {
                 bool passes = true;
-                bool isFile = !IoUtils.IsPathDirectory(inDir);
-                float fpsOut = fpsIn.GetFloat() * factor;
+                bool isFile = !IoUtils.IsPathDirectory(s.inPath);
 
-                if ((passes && isFile && !IoUtils.IsFileValid(inDir)) || (!isFile && !IoUtils.IsDirValid(inDir)))
+                if ((passes && isFile && !IoUtils.IsFileValid(s.inPath)) || (!isFile && !IoUtils.IsDirValid(s.inPath)))
                 {
                     UiUtils.ShowMessageBox("Input path is not valid!");
                     passes = false;
                 }
 
-                if (passes && !IoUtils.IsDirValid(outDir))
+                if (passes && !IoUtils.IsDirValid(s.outPath))
                 {
                     UiUtils.ShowMessageBox("Output path is not valid!");
                     passes = false;
                 }
 
-                if (passes && tempFolder.StartsWith(@"\\"))
+                if (passes && s.tempFolder.StartsWith(@"\\"))
                 {
                     UiUtils.ShowMessageBox("Flowframes does not support UNC/Network paths as a temp folder!\nPlease use a local path instead.");
                     passes = false;
                 }
 
-                if (passes && fpsOut < 1f || fpsOut > 1000f)
+                if (passes && s.outFps.GetFloat() < 1f || s.outFps.GetFloat() > 1000f)
                 {
                     string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
-                    UiUtils.ShowMessageBox($"Invalid output frame rate ({fpsOut}).\nMust be 1-1000.{imgSeqNote}");
+                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.GetFloat()}).\nMust be 1-1000.{imgSeqNote}");
                     passes = false;
                 }
 
                 string fpsLimitValue = Config.Get(Config.Key.maxFps);
                 float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(Config.Get(Config.Key.maxFps)).GetFloat() : fpsLimitValue.GetFloat());
 
-                if (outMode == I.OutMode.VidGif && fpsOut > 50 && !(fpsLimit > 0 && fpsLimit <= 50))
-                    Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {fpsOut} as the format doesn't support frame rates that high.");
+                if (s.outMode == I.OutMode.VidGif && s.outFps.GetFloat() > 50 && !(fpsLimit > 0 && fpsLimit <= 50))
+                    Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {s.outFps.GetFloat()} as the format doesn't support frame rates that high.");
 
                 if (!passes)
                     I.Cancel("Invalid settings detected.", true);
@@ -162,7 +161,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (I.current.ai.AiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
+            if (I.currentSettings.ai.AiName.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
             {
                 UiUtils.ShowMessageBox("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", UiUtils.MessageType.Error);
 
@@ -178,7 +177,7 @@ namespace Flowframes.Main
 
         public static bool CheckDeleteOldTempFolder()
         {
-            if (!IoUtils.TryDeleteIfExists(I.current.tempFolder))
+            if (!IoUtils.TryDeleteIfExists(I.currentSettings.tempFolder))
             {
                 UiUtils.ShowMessageBox("Failed to remove an existing temp folder of this video!\nMake sure you didn't open any frames in an editor.", UiUtils.MessageType.Error);
                 I.Cancel();
@@ -224,7 +223,7 @@ namespace Flowframes.Main
 
         public static async Task<bool> CheckEncoderValid (float encodeFps)
         {
-            string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.current.outMode));
+            string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.currentSettings.outMode));
 
             float maxAv1Fps = 240;
 
@@ -334,7 +333,12 @@ namespace Flowframes.Main
 
         public static async Task<bool> UseUhd()
         {
-            return (await GetOutputResolution(I.current.inPath, false)).Height >= Config.GetInt(Config.Key.uhdThresh);
+            return UseUhd(await GetOutputResolution(I.currentSettings.inPath, false));
+        }
+
+        public static bool UseUhd(Size outputRes)
+        {
+            return outputRes.Height >= Config.GetInt(Config.Key.uhdThresh);
         }
 
         public static void FixConsecutiveSceneFrames(string sceneFramesPath, string sourceFramesPath)
@@ -361,7 +365,7 @@ namespace Flowframes.Main
             }
 
             foreach (string frame in sceneFramesToDelete)
-                IoUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + I.current.framesExt));
+                IoUtils.TryDeleteIfExists(Path.Combine(sceneFramesPath, frame + I.currentSettings.framesExt));
         }
 
         public static int GetRoundedInterpFramesPerInputFrame(float factor, bool roundDown = true)

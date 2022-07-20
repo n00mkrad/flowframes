@@ -157,7 +157,7 @@ namespace Flowframes.Magick
 
             if (Interpolate.canceled) return;
 
-            int framesLeft = IoUtils.GetAmountOfFiles(path, false, "*" + Interpolate.current.framesExt);
+            int framesLeft = IoUtils.GetAmountOfFiles(path, false, "*" + Interpolate.currentSettings.framesExt);
             int framesDeleted = framePaths.Length - framesLeft;
             float percentDeleted = ((float)framesDeleted / framePaths.Length) * 100f;
             string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
@@ -180,7 +180,7 @@ namespace Flowframes.Magick
 
         static async Task<int> GetBufferSize ()
         {
-            Size res = Interpolate.current.ScaledResolution;
+            Size res = Interpolate.currentSettings.ScaledResolution;
             long pixels = res.Width * res.Height;    // 4K = 8294400, 1440p = 3686400, 1080p = 2073600, 720p = 921600, 540p = 518400, 360p = 230400
             int bufferSize = 100;
             if (pixels < 518400) bufferSize = 1800;

@@ -13,7 +13,7 @@ namespace Flowframes.Media
 
         public static async Task MergeStreamsFromInput (string inputVideo, string interpVideo, string tempFolder, bool shortest)
         {
-            if (!File.Exists(inputVideo) && !I.current.inputIsFrames)
+            if (!File.Exists(inputVideo) && !I.currentSettings.inputIsFrames)
             {
                 Logger.Log("Warning: Input video file not found, can't copy audio/subtitle streams to output video!");
                 return;
@@ -29,9 +29,9 @@ namespace Flowframes.Media
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
 
-            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.current.outMode, GetAudioCodecs(inputVideo));
-            bool slowmo = I.current.outItsScale != 0 && I.current.outItsScale != 1;
-            string audioArgs = audioCompat && !slowmo ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.current.outMode, I.current.outItsScale);
+            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.currentSettings.outMode, GetAudioCodecs(inputVideo));
+            bool slowmo = I.currentSettings.outItsScale != 0 && I.currentSettings.outItsScale != 1;
+            string audioArgs = audioCompat && !slowmo ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.currentSettings.outMode, I.currentSettings.outItsScale);
 
             if (!audioCompat && !slowmo)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
@@ -46,7 +46,7 @@ namespace Flowframes.Media
             if (!subs || (subs && !Utils.ContainerSupportsSubs(containerExt)))
                 subArgs = "-sn";
 
-            bool isMkv = I.current.outMode == I.OutMode.VidMkv;
+            bool isMkv = I.currentSettings.outMode == I.OutMode.VidMkv;
             string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
             string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
             string shortestArg = shortest ? "-shortest" : "";

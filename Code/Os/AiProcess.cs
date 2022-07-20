@@ -48,7 +48,7 @@ namespace Flowframes.Os
             processTime.Restart();
             lastAiProcess = proc;
             AiProcessSuspend.SetRunning(true);
-            lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.current.framesFolder : inPath;
+            lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.currentSettings.framesFolder : inPath;
             hasShownError = false;
         }
 
@@ -56,7 +56,7 @@ namespace Flowframes.Os
         {
             lastAiProcess = proc;
             AiProcessSuspend.SetRunning(true);
-            lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.current.framesFolder : inPath;
+            lastInPath = string.IsNullOrWhiteSpace(inPath) ? Interpolate.currentSettings.framesFolder : inPath;
             hasShownError = false;
         }
 
@@ -97,10 +97,10 @@ namespace Flowframes.Os
                 return;
             }
 
-            int interpFramesFiles = IoUtils.GetAmountOfFiles(Interpolate.current.interpFolder, false, "*" + Interpolate.current.interpExt);
+            int interpFramesFiles = IoUtils.GetAmountOfFiles(Interpolate.currentSettings.interpFolder, false, "*" + Interpolate.currentSettings.interpExt);
             int interpFramesCount = interpFramesFiles + InterpolationProgress.deletedFramesCount;
 
-            if (!Interpolate.current.ai.Piped)
+            if (!Interpolate.currentSettings.ai.Piped)
                 InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
 
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
@@ -114,7 +114,7 @@ namespace Flowframes.Os
             Logger.Log(logStr);
             processTime.Stop();
 
-            if (!Interpolate.current.ai.Piped && interpFramesCount < 3)
+            if (!Interpolate.currentSettings.ai.Piped && interpFramesCount < 3)
             {
                 string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), lastLogName + ".txt"));
                 string log = string.Join("\n", logLines.Reverse().Take(10).Reverse().Select(x => x.Split("]: ").Last()).ToList());
@@ -195,7 +195,7 @@ namespace Flowframes.Os
 
             Process rifePy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
-            SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
+            SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
@@ -253,7 +253,7 @@ namespace Flowframes.Os
 
             Process flavrPy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(flavrPy, 4000);
-            SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
+            SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
             flavrPy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running FLAVR (CUDA)...", false);
@@ -338,10 +338,10 @@ namespace Flowframes.Os
 
             try
             {
-                bool uhd = await InterpolateUtils.UseUhd();
-                Logger.Log($"Running RIFE (NCNN-VS){(uhd ? " (UHD Mode)" : "")}...", false);
+                Size scaledSize = await InterpolateUtils.GetOutputResolution(Interpolate.currentSettings.inPath, false);
+                Logger.Log($"Running RIFE (NCNN-VS){(InterpolateUtils.UseUhd(scaledSize) ? " (UHD Mode)" : "")}...", false);
 
-                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, uhd, rt);
+                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, scaledSize, rt);
             }
             catch (Exception e)
             {
@@ -352,10 +352,9 @@ namespace Flowframes.Os
             await AiFinished("RIFE", true);
         }
 
-        static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, bool uhd, bool rt = false)
+        static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, Size res, bool rt = false)
         {
             IoUtils.CreateDir(outPath);
-            string logFileName = "rife-ncnn-vs-log";
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
 
             Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with specific Flowframes features, such as FPS limiting and image sequence exporting.");
@@ -367,26 +366,26 @@ namespace Flowframes.Os
             }
             else
             {
-                SetProgressCheck(Interpolate.currentInputFrameCount, factor, logFileName);
+                SetProgressCheck(Interpolate.currentMediaFile.FrameCount, factor, Implementations.rifeNcnnVs.LogFilename);
                 AiStarted(rifeNcnnVs, 1500, inPath);
             }
 
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.current.inFps.GetString()} FPS x{factor} = {Interpolate.current.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
+            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.currentSettings.inFps.GetString()} FPS x{factor} = {Interpolate.currentSettings.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
 
-            Interpolate.current.FullOutPath = Path.Combine(Interpolate.current.outPath, await IoUtils.GetCurrentExportFilename(false, true));
-            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.current.outMode), (Interpolate.current.ScaledResolution.IsEmpty ? Interpolate.current.InputResolution : Interpolate.current.ScaledResolution), Interpolate.current.outFps.GetFloat(), true).FirstOrDefault();
-            string ffmpegArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {encArgs} {Interpolate.current.FullOutPath.Wrap()}";
+            Interpolate.currentSettings.FullOutPath = Path.Combine(Interpolate.currentSettings.outPath, await IoUtils.GetCurrentExportFilename(false, true));
+            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.currentSettings.outMode), (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat(), true).FirstOrDefault();
+            string ffmpegArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {encArgs} {Interpolate.currentSettings.FullOutPath.Wrap()}";
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
 
             VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
             {
-                InterpSettings = Interpolate.current,
+                InterpSettings = Interpolate.currentSettings,
                 ModelDir = mdl,
                 Factor = factor,
-                Res = InterpolateUtils.GetOutputResolution(Interpolate.current.InputResolution, true, true),
-                Uhd = uhd,
+                Res = InterpolateUtils.GetOutputResolution(Interpolate.currentSettings.InputResolution, true, true),
+                Uhd = InterpolateUtils.UseUhd(res),
                 GpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt(),
                 SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
                 Loop = Config.GetBool(Config.Key.enableLoop),
@@ -508,7 +507,7 @@ namespace Flowframes.Os
 
             Process xvfiPy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(xvfiPy, 3500);
-            SetProgressCheck(Path.Combine(Interpolate.current.tempFolder, outDir), interpFactor);
+            SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
             xvfiPy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgPath.Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running XVFI (CUDA)...", false);
@@ -539,9 +538,8 @@ namespace Flowframes.Os
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
-            string logFilename = ai.AiName.Replace("_", "-").ToLower() + "-log";
-            lastLogName = logFilename;
-            Logger.Log(line, true, false, logFilename);
+            lastLogName = ai.LogFilename;
+            Logger.Log(line, true, false, ai.LogFilename);
 
             string lastLogLines = string.Join("\n", Logger.GetSessionLogLastLines(lastLogName, 6).Select(x => $"[{x.Split("]: [").Skip(1).FirstOrDefault()}"));
 
@@ -553,7 +551,7 @@ namespace Flowframes.Os
                 if (!hasShownError && err && line.ToLower().Contains("modulenotfounderror"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A python module is missing.\nCheck {logFilename} for details.\n\n{line}", UiUtils.MessageType.Error);
+                    UiUtils.ShowMessageBox($"A python module is missing.\nCheck {ai.LogFilename} for details.\n\n{line}", UiUtils.MessageType.Error);
                 }
 
                 if (!hasShownError && line.ToLower().Contains("no longer supports this gpu"))
@@ -565,7 +563,7 @@ namespace Flowframes.Os
                 if (!hasShownError && line.ToLower().Contains("error(s) in loading state_dict"))
                 {
                     hasShownError = true;
-                    string msg = (Interpolate.current.ai.AiName == Implementations.flavrCuda.AiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
+                    string msg = (Interpolate.currentSettings.ai.AiName == Implementations.flavrCuda.AiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
                     UiUtils.ShowMessageBox($"Error loading the AI model!\n\n{line}{msg}", UiUtils.MessageType.Error);
                 }
 
@@ -593,7 +591,7 @@ namespace Flowframes.Os
                 if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
                 {
                     hasShownError = true;
-                    bool usingDain = (Interpolate.current.ai.AiName == Implementations.dainNcnn.AiName);
+                    bool usingDain = (Interpolate.currentSettings.ai.AiName == Implementations.dainNcnn.AiName);
                     string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
                     UiUtils.ShowMessageBox($"Vulkan ran out of memory!\n\n{line}{msg}", UiUtils.MessageType.Error);
                 }
@@ -652,7 +650,7 @@ namespace Flowframes.Os
 
         static string GetNcnnPattern()
         {
-            return $"%0{Padding.interpFrames}d{Interpolate.current.interpExt}";
+            return $"%0{Padding.interpFrames}d{Interpolate.currentSettings.interpExt}";
         }
 
         static string GetNcnnTilesize(int tilesize)

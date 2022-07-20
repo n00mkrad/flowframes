@@ -335,8 +335,16 @@
     <Compile Include="Data\AI.cs" />
     <Compile Include="Data\AudioTrack.cs" />
     <Compile Include="Data\Filetypes.cs" />
+    <Compile Include="Data\MediaFile.cs" />
     <Compile Include="Data\ModelCollection.cs" />
     <Compile Include="Data\Servers.cs" />
+    <Compile Include="Data\Streams\AttachmentStream.cs" />
+    <Compile Include="Data\Streams\AudioStream.cs" />
+    <Compile Include="Data\Streams\DataStream.cs" />
+    <Compile Include="Data\Streams\Stream.cs" />
+    <Compile Include="Data\Streams\SubtitleStream.cs" />
+    <Compile Include="Data\Streams\VideoStream.cs" />
+    <Compile Include="Data\VideoColorData.cs" />
     <Compile Include="Data\VidExtraData.cs" />
     <Compile Include="Data\Fraction.cs" />
     <Compile Include="Data\InterpSettings.cs" />
@@ -452,6 +460,7 @@
     <Compile Include="Ui\MainUiFunctions.cs" />
     <Compile Include="Ui\UiUtils.cs" />
     <Compile Include="Ui\QuickSettingsTab.cs" />
+    <Compile Include="Utilities\ColorDataUtils.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>

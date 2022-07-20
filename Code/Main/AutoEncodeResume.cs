@@ -34,7 +34,7 @@ namespace Flowframes.Main
 
         public static void Save ()
         {
-            string saveDir = Path.Combine(I.current.tempFolder, Paths.resumeDir);
+            string saveDir = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir);
             Directory.CreateDirectory(saveDir);
 
             string chunksJsonPath = Path.Combine(saveDir, chunksFilename);
@@ -47,7 +47,7 @@ namespace Flowframes.Main
             File.WriteAllText(inputFramesJsonPath, JsonConvert.SerializeObject(processedInputFrames, Formatting.Indented));
 
             string settingsJsonPath = Path.Combine(saveDir, interpSettingsFilename);
-            File.WriteAllText(settingsJsonPath, JsonConvert.SerializeObject(I.current, Formatting.Indented));
+            File.WriteAllText(settingsJsonPath, JsonConvert.SerializeObject(I.currentSettings, Formatting.Indented));
         }
 
         public static void LoadTempFolder(string tempFolderPath)
@@ -72,8 +72,8 @@ namespace Flowframes.Main
 
             try
             {
-                string chunkJsonPath = Path.Combine(I.current.tempFolder, Paths.resumeDir, chunksFilename);
-                string inFramesJsonPath = Path.Combine(I.current.tempFolder, Paths.resumeDir, inputFramesFilename);
+                string chunkJsonPath = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir, chunksFilename);
+                string inFramesJsonPath = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir, inputFramesFilename);
 
                 dynamic chunksData = JsonConvert.DeserializeObject(File.ReadAllText(chunkJsonPath));
                 encodedChunks = chunksData.encodedChunks;
@@ -84,18 +84,18 @@ namespace Flowframes.Main
 
                 foreach (string inputFrameName in processedInputFrames)
                 {
-                    string inputFrameFullPath = Path.Combine(I.current.tempFolder, Paths.framesDir, inputFrameName);
+                    string inputFrameFullPath = Path.Combine(I.currentSettings.tempFolder, Paths.framesDir, inputFrameName);
                     IoUtils.TryDeleteIfExists(inputFrameFullPath);
                 }
 
-                string videoChunksFolder = Path.Combine(I.current.tempFolder, Paths.chunksDir);
+                string videoChunksFolder = Path.Combine(I.currentSettings.tempFolder, Paths.chunksDir);
 
                 FileInfo[] invalidChunks = IoUtils.GetFileInfosSorted(videoChunksFolder, true, "????.*").Skip(encodedChunks).ToArray();
 
                 foreach (FileInfo chunk in invalidChunks)
                     chunk.Delete();
 
-                int inputFramesLeft = IoUtils.GetAmountOfFiles(Path.Combine(I.current.tempFolder, Paths.framesDir), false);
+                int inputFramesLeft = IoUtils.GetAmountOfFiles(Path.Combine(I.currentSettings.tempFolder, Paths.framesDir), false);
 
                 Logger.Log($"Resume: Already encoded {encodedFrames} frames in {encodedChunks} chunks. There are now {inputFramesLeft} input frames left to interpolate.");
 
@@ -104,7 +104,7 @@ namespace Flowframes.Main
                     if(IoUtils.GetAmountOfFiles(videoChunksFolder, true, "*.*") > 0)
                     {
                         Logger.Log($"No more frames left to interpolate - Merging existing video chunks instead.");
-                        await Export.ChunksToVideo(I.current.tempFolder, videoChunksFolder, I.current.outPath);
+                        await Export.ChunksToVideo(I.currentSettings.tempFolder, videoChunksFolder, I.currentSettings.outPath);
                         await I.Done();
                     }
                     else

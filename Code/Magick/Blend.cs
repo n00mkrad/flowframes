@@ -35,7 +35,7 @@ namespace Flowframes.Magick
             if (setStatus)
                 Program.mainForm.SetStatus("Blending scene transitions...");
 
-            string[] frames = FrameRename.framesAreRenamed ? new string[0] : IoUtils.GetFilesSorted(Interpolate.current.framesFolder);
+            string[] frames = FrameRename.framesAreRenamed ? new string[0] : IoUtils.GetFilesSorted(Interpolate.currentSettings.framesFolder);
 
             List<Task> runningTasks = new List<Task>();
             int maxThreads = Environment.ProcessorCount * 2;
@@ -52,8 +52,8 @@ namespace Flowframes.Magick
                         string frameTo = FrameRename.framesAreRenamed ? values[1] : frames[values[1].GetInt()];
                         int amountOfBlendFrames = values[2].GetInt();
 
-                        string img1 = Path.Combine(Interpolate.current.framesFolder, frameFrom);
-                        string img2 = Path.Combine(Interpolate.current.framesFolder, frameTo);
+                        string img1 = Path.Combine(Interpolate.currentSettings.framesFolder, frameFrom);
+                        string img2 = Path.Combine(Interpolate.currentSettings.framesFolder, frameTo);
 
                         string firstOutputFrameName = line.Split('/').Last().Remove("'").Split('#').First();
                         string ext = Path.GetExtension(firstOutputFrameName);
@@ -63,7 +63,7 @@ namespace Flowframes.Magick
                         for (int blendFrameNum = 1; blendFrameNum <= amountOfBlendFrames; blendFrameNum++)
                         {
                             int outputNum = firstOutputFrameNum + blendFrameNum;
-                            string outputPath = Path.Combine(Interpolate.current.interpFolder, outputNum.ToString().PadLeft(Padding.interpFrames, '0'));
+                            string outputPath = Path.Combine(Interpolate.currentSettings.interpFolder, outputNum.ToString().PadLeft(Padding.interpFrames, '0'));
                             outputPath = Path.ChangeExtension(outputPath, ext);
                             outputFilenames.Add(outputPath);
                         }

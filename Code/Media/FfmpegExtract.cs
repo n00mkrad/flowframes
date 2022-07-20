@@ -26,7 +26,7 @@ namespace Flowframes.Media
             if (inputIsFrames)
             {
                 string concatFile = Path.Combine(Paths.GetDataPath(), "png-scndetect-concat-temp.ini");
-                FfmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat);
+                FfmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat.ToList());
                 inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
             }
 
@@ -34,10 +34,10 @@ namespace Flowframes.Media
             string rateArg = (rate.GetFloat() > 0) ? $"-r {rate}" : "";
             string args = $"-vsync 0 {GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
 
-            LogMode logMode = await Interpolate.GetCurrentInputFrameCount() > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
+            LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", true);
 
-            bool hiddenLog = await Interpolate.GetCurrentInputFrameCount() <= 50;
+            bool hiddenLog = Interpolate.currentMediaFile.FrameCount <= 50;
             int amount = IoUtils.GetAmountOfFiles(outDir, false);
             Logger.Log($"Detected {amount} scene {(amount == 1 ? "change" : "changes")}.".Replace(" 0 ", " no "), false, !hiddenLog);
         }
@@ -83,7 +83,7 @@ namespace Flowframes.Media
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
             string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} -vsync 0 {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
-            LogMode logMode = await Interpolate.GetCurrentInputFrameCount()  > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
+            LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, true);
             int amount = IoUtils.GetAmountOfFiles(framesDir, false, "*" + format);
             Logger.Log($"Extracted {amount} {(amount == 1 ? "frame" : "frames")} from input.", false, true);
@@ -202,7 +202,7 @@ namespace Flowframes.Media
                 return false;
             }
 
-            Interpolate.current.framesExt = files.First().Extension;
+            Interpolate.currentSettings.framesExt = files.First().Extension;
             Logger.Log($"Sequence compatible!", true);
             return true;
         }
@@ -213,7 +213,7 @@ namespace Flowframes.Media
             Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size} - Format: {format}", true, false, "ffmpeg");
             IoUtils.CreateDir(outPath);
             string concatFile = Path.Combine(Paths.GetDataPath(), "import-concat-temp.ini");
-            FfmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat);
+            FfmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat.ToList());
 
             string inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
             string linksDir = Path.Combine(concatFile + Paths.symlinksSuffix);

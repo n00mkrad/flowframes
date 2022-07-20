@@ -30,10 +30,10 @@ namespace Flowframes.Main
         public static void Save ()
         {
             if (timeSinceLastSave.IsRunning && timeSinceLastSave.ElapsedMilliseconds < (timeBetweenSaves * 1000f).RoundToInt()) return;
-            int frames = (int)Math.Round((float)InterpolationProgress.interpolatedInputFramesCount / I.current.interpFactor) - safetyDelayFrames;
+            int frames = (int)Math.Round((float)InterpolationProgress.interpolatedInputFramesCount / I.currentSettings.interpFactor) - safetyDelayFrames;
             if (frames < 1) return;
             timeSinceLastSave.Restart();
-            Directory.CreateDirectory(Path.Combine(I.current.tempFolder, Paths.resumeDir));
+            Directory.CreateDirectory(Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir));
             SaveState(frames);
             SaveInterpSettings();
             SaveFilenameMap();
@@ -42,13 +42,13 @@ namespace Flowframes.Main
         static void SaveState (int frames)
         {
             ResumeState state = new ResumeState(I.currentlyUsingAutoEnc, frames);
-            string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, resumeFilename);
+            string filePath = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir, resumeFilename);
             File.WriteAllText(filePath, state.ToString());
         }
 
         static async Task SaveFilenameMap ()
         {
-            string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
+            string filePath = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir, filenameMapFilename);
 
             if (File.Exists(filePath) && IoUtils.GetFilesize(filePath) > 0)
                 return;
@@ -68,8 +68,8 @@ namespace Flowframes.Main
 
         static void SaveInterpSettings ()
         {
-            string filepath = Path.Combine(I.current.tempFolder, Paths.resumeDir, interpSettingsFilename);
-            File.WriteAllText(filepath, I.current.Serialize());
+            string filepath = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir, interpSettingsFilename);
+            File.WriteAllText(filepath, I.currentSettings.Serialize());
         }
 
         // public static void LoadTempFolder (string tempFolderPath)
@@ -106,7 +106,7 @@ namespace Flowframes.Main
         static void LoadFilenameMap()
         {
             List<string> files = new List<string>();
-            string filePath = Path.Combine(I.current.tempFolder, Paths.resumeDir, filenameMapFilename);
+            string filePath = Path.Combine(I.currentSettings.tempFolder, Paths.resumeDir, filenameMapFilename);
             string[] fileLines = File.ReadAllLines(filePath);
 
             foreach (string line in fileLines)

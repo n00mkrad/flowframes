@@ -20,22 +20,22 @@ namespace Flowframes.Main
             canceled = false;
             Program.mainForm.SetWorking(true);
 
-            if(current == null)
+            if(currentSettings == null)
             {
                 Logger.Log($"[SBS] Getting new current settings", true);
-                current = Program.mainForm.GetCurrentSettings();
+                currentSettings = Program.mainForm.GetCurrentSettings();
             }
             else
             {
                 Logger.Log($"[SBS] Updating current settings", true);
-                current = Program.mainForm.UpdateCurrentSettings(current);
+                currentSettings = Program.mainForm.UpdateCurrentSettings(currentSettings);
             }
 
-            current.RefreshAlpha();
-            current.stepByStep = true;
+            currentSettings.RefreshAlpha();
+            currentSettings.stepByStep = true;
 
-            if (!InterpolateUtils.InputIsValid(current.inPath, current.outPath, current.inFps, current.interpFactor, current.outMode, current.tempFolder)) return;     // General input checks
-            if (!InterpolateUtils.CheckPathValid(current.inPath)) return;           // Check if input path/file is valid
+            if (!InterpolateUtils.InputIsValid(currentSettings)) return;     // General input checks
+            if (!InterpolateUtils.CheckPathValid(currentSettings.inPath)) return;           // Check if input path/file is valid
 
             if (step.Contains("Extract Frames"))
                 await ExtractFramesStep();
@@ -56,13 +56,11 @@ namespace Flowframes.Main
 
         public static async Task ExtractFramesStep()
         {
-            if (!(await IoUtils.TryDeleteIfExistsAsync(current.framesFolder)))
+            if (!(await IoUtils.TryDeleteIfExistsAsync(currentSettings.framesFolder)))
             {
                 UiUtils.ShowMessageBox("Failed to delete existing frames folder - Make sure no file is opened in another program!", UiUtils.MessageType.Error);
                 return;
             }
-
-            currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
 
             await GetFrames();
             await PostProcessFrames(true);
@@ -70,11 +68,11 @@ namespace Flowframes.Main
 
         public static async Task InterpolateStep()
         {
-            if (!InterpolateUtils.CheckAiAvailable(current.ai, current.model)) return;
+            if (!InterpolateUtils.CheckAiAvailable(currentSettings.ai, currentSettings.model)) return;
 
-            current.framesFolder = Path.Combine(current.tempFolder, Paths.framesDir);
+            currentSettings.framesFolder = Path.Combine(currentSettings.tempFolder, Paths.framesDir);
 
-            if (IoUtils.GetAmountOfFiles(current.framesFolder, false, "*") < 2)
+            if (IoUtils.GetAmountOfFiles(currentSettings.framesFolder, false, "*") < 2)
             {
                 if (Config.GetBool(Config.Key.sbsRunPreviousStepIfNeeded))
                 {
@@ -82,33 +80,31 @@ namespace Flowframes.Main
                     await ExtractFramesStep();
                 }
 
-                if (IoUtils.GetAmountOfFiles(current.framesFolder, false, "*") < 2)
+                if (IoUtils.GetAmountOfFiles(currentSettings.framesFolder, false, "*") < 2)
                 {
                     UiUtils.ShowMessageBox("There are no extracted frames that can be interpolated!\nDid you run the extraction step?", UiUtils.MessageType.Error);
                     return;
                 }
             }
 
-            if (!(await IoUtils.TryDeleteIfExistsAsync(current.interpFolder)))
+            if (!(await IoUtils.TryDeleteIfExistsAsync(currentSettings.interpFolder)))
             {
                 UiUtils.ShowMessageBox("Failed to delete existing frames folder - Make sure no file is opened in another program!", UiUtils.MessageType.Error);
                 return;
             }
 
-            currentInputFrameCount = await GetFrameCountCached.GetFrameCountAsync(current.inPath);
-
-            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid(current.outFps.GetFloat()))) return;
+            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid(currentSettings.outFps.GetFloat()))) return;
 
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
-            await RunAi(current.interpFolder, current.ai, true);
+            await RunAi(currentSettings.interpFolder, currentSettings.ai, true);
             await Task.Run(async () => { await FrameRename.Unrename(); });   // Get timestamps back
             Program.mainForm.SetProgress(0);
         }
 
         public static async Task CreateOutputVid()
         {
-            if (IoUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
+            if (IoUtils.GetAmountOfFiles(currentSettings.interpFolder, false) < 2)
             {
                 if (Config.GetBool(Config.Key.sbsRunPreviousStepIfNeeded))
                 {
@@ -116,16 +112,16 @@ namespace Flowframes.Main
                     await InterpolateStep();
                 }
 
-                if (IoUtils.GetAmountOfFiles(current.interpFolder, false) < 2)
+                if (IoUtils.GetAmountOfFiles(currentSettings.interpFolder, false) < 2)
                 {
                     Cancel($"There are no interpolated frames to encode!\n\nDid you delete the folder?");
                     return;
                 }
             }
 
-            if (!(await InterpolateUtils.CheckEncoderValid(current.outFps.GetFloat()))) return;
+            if (!(await InterpolateUtils.CheckEncoderValid(currentSettings.outFps.GetFloat()))) return;
 
-            string[] outFrames = IoUtils.GetFilesSorted(current.interpFolder, current.interpExt);
+            string[] outFrames = IoUtils.GetFilesSorted(currentSettings.interpFolder, currentSettings.interpExt);
 
             if (outFrames.Length > 0 && !IoUtils.CheckImageValid(outFrames[0]))
             {
@@ -134,7 +130,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            await Export.ExportFrames(current.interpFolder, current.outPath, current.outMode, true);
+            await Export.ExportFrames(currentSettings.interpFolder, currentSettings.outPath, currentSettings.outMode, true);
         }
 
         public static async Task Reset()

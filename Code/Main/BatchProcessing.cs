@@ -84,7 +84,7 @@ namespace Flowframes.Main
             Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.AiNameShort}).");
 
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
-            Interpolate.current = entry;
+            Interpolate.currentSettings = entry;
             Program.mainForm.runBtn_Click(null, null);
 
             while (Program.busy)
