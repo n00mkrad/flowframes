@@ -372,10 +372,8 @@ namespace Flowframes.Os
 
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
             string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.currentSettings.inFps.GetString()} FPS x{factor} = {Interpolate.currentSettings.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
-
-            Interpolate.currentSettings.FullOutPath = Path.Combine(Interpolate.currentSettings.outPath, await IoUtils.GetCurrentExportFilename(false, true));
-            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(Interpolate.currentSettings.outMode), (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat(), true).FirstOrDefault();
-            string ffmpegArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {encArgs} {Interpolate.currentSettings.FullOutPath.Wrap()}";
+            
+            string pipedTargetArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {await Export.GetPipedFfmpegCmd()}";
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
 
@@ -395,7 +393,7 @@ namespace Flowframes.Os
                 Realtime = rt
             };
 
-            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {ffmpegArgs}";
+            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {pipedTargetArgs}";
 
             Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
 

@@ -72,6 +72,23 @@ namespace Flowframes.Main
             }
         }
 
+        public static async Task<string> GetPipedFfmpegCmd()
+        {
+            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(I.currentSettings.outMode), (I.currentSettings.ScaledResolution.IsEmpty ? I.currentSettings.InputResolution : I.currentSettings.ScaledResolution), I.currentSettings.outFps.GetFloat(), true).FirstOrDefault();
+
+            string max = Config.Get(Config.Key.maxFps);
+            Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
+            bool fpsLimit = maxFps.GetFloat() > 0f && I.currentSettings.outFps.GetFloat() > maxFps.GetFloat();
+
+            VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
+            string extraArgs = FfmpegEncode.GetFfmpegExportArgs(fpsLimit ? maxFps : new Fraction(), extraData);
+
+            I.currentSettings.FullOutPath = Path.Combine(I.currentSettings.outPath, await IoUtils.GetCurrentExportFilename(fpsLimit, true));
+            IoUtils.RenameExistingFile(I.currentSettings.FullOutPath);
+
+            return $"{encArgs} {extraArgs} {I.currentSettings.FullOutPath.Wrap()}";
+        }
+
         static async Task ExportImageSequence (string framesPath, bool stepByStep)
         {
             Program.mainForm.SetStatus("Copying output frames...");

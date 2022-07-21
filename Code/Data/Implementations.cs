@@ -25,7 +25,7 @@ namespace Flowframes.Data
         {
             get
             {
-                return new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda, /* ifrnetNcnn */ };
+                return new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda, ifrnetNcnn };
             }
         }
 

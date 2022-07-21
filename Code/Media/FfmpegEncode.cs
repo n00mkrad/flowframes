@@ -31,9 +31,26 @@ namespace Flowframes.Media
                     inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{GetConcatFileExt(framesFile)}\"";
             }
 
-            string extraArgs = Config.Get(Config.Key.ffEncArgs);
+            fps = fps / new Fraction(itsScale);
 
+            string args = "";
+
+            for(int i = 0; i < encArgs.Length; i++)
+            {
+                string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
+                string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
+                string fs = (!isChunk && outMode == Interpolate.OutMode.VidMp4) ? $"-movflags +faststart" : "";
+                args += $"{pre} -vsync 0 -r {fps} {inArg} {encArgs[i]} {GetFfmpegExportArgs(resampleFps, extraData)} -threads {Config.GetInt(Config.Key.ffEncThreads)} {fs} {post} ";
+            }
+
+            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
+            IoUtils.TryDeleteIfExists(linksDir);
+        }
+
+        public static string GetFfmpegExportArgs (Fraction resampleFps, VidExtraData extraData)
+        {
             List<string> filters = new List<string>();
+            string extraArgs = "";
 
             if (resampleFps.GetFloat() >= 0.1f)
                 filters.Add($"fps=fps={resampleFps}");
@@ -45,35 +62,15 @@ namespace Flowframes.Media
                 extraArgs += $" -colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v \"{extraData.colorRange}\"";
             }
 
-            string vf = filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "";
-            fps = fps / new Fraction(itsScale);
+            if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
+                extraArgs += $"-aspect {extraData.displayRatio}";
 
-            string args = "";
-
-            for(int i = 0; i < encArgs.Length; i++)
-            {
-                string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
-                string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                string fs = (!isChunk && outMode == Interpolate.OutMode.VidMp4) ? $"-movflags +faststart" : "";
-                args += $"{pre} -vsync 0 -r {fps} {inArg} {encArgs[i]} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {fs} {post} ";
-            }
-
-            //string argsOld = $"-vsync 0 -r {fps} {inArg} {encArgs} {vf} {GetAspectArg(extraData)} {extraArgs} -threads {Config.GetInt(Config.Key.ffEncThreads)} {outPath.Wrap()}";
-            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
-            IoUtils.TryDeleteIfExists(linksDir);
+            return filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "" + $" {extraArgs}";
         }
 
         public static string GetConcatFileExt (string concatFilePath)
         {
             return Path.GetExtension(File.ReadAllLines(concatFilePath).FirstOrDefault().Split('\'')[1]);
-        }
-
-        static string GetAspectArg (VidExtraData extraData)
-        {
-            if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
-                return $"-aspect {extraData.displayRatio}";
-            else
-                return "";
         }
 
         public static async Task FramesToFrames(string framesFile, string outDir, int startNo, Fraction fps, Fraction resampleFps, string format = "png", int lossyQ = 1, LogMode logMode = LogMode.OnlyLastLine)
