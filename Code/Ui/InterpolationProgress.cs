@@ -79,7 +79,7 @@ namespace Flowframes.Ui
         {
             try
             {
-                string ncnnStr = I.currentSettings.ai.AiName.Contains("NCNN") ? " done" : "";
+                string ncnnStr = I.currentSettings.ai.NameInternal.Contains("NCNN") ? " done" : "";
                 Regex frameRegex = new Regex($@"(?<=.)\d*(?={I.currentSettings.interpExt}{ncnnStr})");
                 if (!frameRegex.IsMatch(output)) return;
                 lastFrame = Math.Max(int.Parse(frameRegex.Match(output).Value), lastFrame);

@@ -617,7 +617,7 @@ namespace Flowframes.Os
                 if (!hasShownError && line.ToLower().Contains("error(s) in loading state_dict"))
                 {
                     hasShownError = true;
-                    string msg = (Interpolate.currentSettings.ai.AiName == Implementations.flavrCuda.AiName) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
+                    string msg = (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
                     UiUtils.ShowMessageBox($"Error loading the AI model!\n\n{line}{msg}", UiUtils.MessageType.Error);
                 }
 
@@ -645,7 +645,7 @@ namespace Flowframes.Os
                 if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
                 {
                     hasShownError = true;
-                    bool usingDain = (Interpolate.currentSettings.ai.AiName == Implementations.dainNcnn.AiName);
+                    bool usingDain = (Interpolate.currentSettings.ai.NameInternal == Implementations.dainNcnn.NameInternal);
                     string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
                     UiUtils.ShowMessageBox($"Vulkan ran out of memory!\n\n{line}{msg}", UiUtils.MessageType.Error);
                 }

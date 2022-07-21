@@ -11,11 +11,11 @@ namespace Flowframes.Data
     {
         public enum AiBackend { Pytorch, Ncnn, Tensorflow, Other }
         public AiBackend Backend { get; set; } = AiBackend.Pytorch;
-        public string AiName { get; set; } = "";
-        public string AiNameShort { get; set; } = "";
-        public string FriendlyName { get; set; } = "";
-        public string Description { get; set; } = "";
-        public string PkgDir { get; set; } = "";
+        public string NameInternal { get; set; } = "";
+        public string NameShort { get { return NameInternal.Split(' ')[0].Split('_')[0]; } }
+        public string FriendlyName { get { return $"{NameShort} ({GetFrameworkString()})"; } }
+        public string Description { get { return $"{GetImplemString()} of {NameShort}{(Backend == AiBackend.Pytorch ? " (Nvidia Only!)" : "")}"; } }
+        public string PkgDir { get { return NameInternal.Replace("_", "-").ToLower(); } }
         public enum InterpFactorSupport { Fixed, AnyPowerOfTwo, AnyInteger, AnyFloat }
         public InterpFactorSupport FactorSupport { get; set; } = InterpFactorSupport.Fixed;
         public int[] SupportedFactors { get; set; } = new int[0];
@@ -23,19 +23,40 @@ namespace Flowframes.Data
 
         public string LogFilename { get { return PkgDir + "-log"; } }
 
-        public AI(AiBackend backend, string aiName, string friendlyName, string desc, string pkgDir, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
+        public AI(AiBackend backend, string aiName, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
         {
             Backend = backend;
-            AiName = aiName;
-            AiNameShort = aiName.Split(' ')[0].Split('_')[0];
-            FriendlyName = friendlyName;
-            Description = desc;
-            PkgDir = pkgDir;
+            NameInternal = aiName;
             SupportedFactors = supportedFactors;
             FactorSupport = factorSupport;
+        }
 
-            if (backend == AiBackend.Pytorch)
-                Description += " (Nvidia Only!)";
+        private string GetImplemString ()
+        {
+            if (Backend == AiBackend.Pytorch)
+                return $"CUDA/Pytorch Implementation";
+
+            if(Backend == AiBackend.Ncnn)
+                return $"Vulkan/NCNN{(Piped ? "/VapourSynth" : "")} Implementation";
+
+            if (Backend == AiBackend.Tensorflow)
+                return $"Tensorflow Implementation";
+
+            return "";
+        }
+
+        private string GetFrameworkString()
+        {
+            if (Backend == AiBackend.Pytorch)
+                return $"CUDA";
+
+            if (Backend == AiBackend.Ncnn)
+                return $"NCNN{(Piped ? "/VS" : "")}";
+
+            if (Backend == AiBackend.Tensorflow)
+                return $"TF";
+
+            return "Custom";
         }
     }
 }

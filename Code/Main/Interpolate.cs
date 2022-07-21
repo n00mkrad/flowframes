@@ -196,25 +196,25 @@ namespace Flowframes
 
             List<Task> tasks = new List<Task>();
 
-            if (ai.AiName == Implementations.rifeCuda.AiName)
+            if (ai.NameInternal == Implementations.rifeCuda.NameInternal)
                 tasks.Add(AiProcess.RunRifeCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
 
-            if (ai.AiName == Implementations.rifeNcnn.AiName)
+            if (ai.NameInternal == Implementations.rifeNcnn.NameInternal)
                 tasks.Add(AiProcess.RunRifeNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
 
-            if (ai.AiName == Implementations.rifeNcnnVs.AiName)
+            if (ai.NameInternal == Implementations.rifeNcnnVs.NameInternal)
                 tasks.Add(AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
 
-            if (ai.AiName == Implementations.flavrCuda.AiName)
+            if (ai.NameInternal == Implementations.flavrCuda.NameInternal)
                 tasks.Add(AiProcess.RunFlavrCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
 
-            if (ai.AiName == Implementations.dainNcnn.AiName)
+            if (ai.NameInternal == Implementations.dainNcnn.NameInternal)
                 tasks.Add(AiProcess.RunDainNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
 
-            if (ai.AiName == Implementations.xvfiCuda.AiName)
+            if (ai.NameInternal == Implementations.xvfiCuda.NameInternal)
                 tasks.Add(AiProcess.RunXvfiCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
 
-            if(ai.AiName == Implementations.ifrnetNcnn.AiName)
+            if(ai.NameInternal == Implementations.ifrnetNcnn.NameInternal)
                 tasks.Add(AiProcess.RunIfrnetNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
 
             if (currentlyUsingAutoEnc)

@@ -234,7 +234,7 @@ namespace Flowframes
         {
             string s = $"INPATH|{inPath}\n";
             s += $"OUTPATH|{outPath}\n";
-            s += $"AI|{ai.AiName}\n";
+            s += $"AI|{ai.NameInternal}\n";
             s += $"INFPSDETECTED|{inFpsDetected}\n";
             s += $"INFPS|{inFps}\n";
             s += $"OUTFPS|{outFps}\n";

@@ -192,7 +192,7 @@ namespace Flowframes
             inputTbox.Text = entry.inPath;
             MainUiFunctions.SetOutPath(outputTbox, entry.outPath);
             interpFactorCombox.Text = entry.interpFactor.ToString();
-            aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.AiName == entry.ai.AiName).FirstOrDefault());
+            aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == entry.ai.NameInternal).FirstOrDefault());
             SetOutMode(entry.outMode);
         }
 
@@ -276,9 +276,9 @@ namespace Flowframes
                 aiCombox.Items.Add(GetAiComboboxName(ai));
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
-            aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.AiName == lastUsedAiName).FirstOrDefault());
+            aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
-            Config.Set(Config.Key.lastUsedAiName, GetAi().AiName);
+            Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
 
             ConfigParser.LoadComboxIndex(outModeCombox);
         }
@@ -475,7 +475,7 @@ namespace Flowframes
             interpFactorCombox.SelectedIndex = 0;
 
             if (initialized)
-                Config.Set(Config.Key.lastUsedAiName, GetAi().AiName);
+                Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
             fpsOutTbox.ReadOnly = GetAi().FactorSupport != AI.InterpFactorSupport.AnyFloat;

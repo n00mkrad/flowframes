@@ -135,7 +135,7 @@ namespace Flowframes.IO
         public static async Task DownloadModelFiles (AI ai, string modelDir, bool log = true)
         {
             string aiDir = ai.PkgDir;
-            Logger.Log($"DownloadModelFiles(string ai = {ai.AiName}, string model = {modelDir}, bool log = {log})", true);
+            Logger.Log($"DownloadModelFiles(string ai = {ai.NameInternal}, string model = {modelDir}, bool log = {log})", true);
 
             try
             {
