@@ -1,3 +1,12 @@
+Flowframes 1.38.1 Changelog:
+- RIFE-NCNN-VS will now use the GPU ID set in the settings (multi-GPU not possible for now)
+- Trimming the input video now works with RIFE-NCNN-VS
+- RIFE-NCNN-VS now dynamically adjusts threads based on resolution, reducing RAM usage
+- Trying to export >240 FPS video in AV1 will now show an error as SVT doesn't support this
+- Fixed frame counting sometimes failing
+- Fixed CLI -factor argument not being applied
+
+
 Flowframes 1.38.0 Changelog:
 - Implemented VapourSynth-RIFE-ncnn-Vulkan by HolyWu (interpolate completely in RAM)
 - Improved the Pytorch availability check, unsupported implementations should no longer show up
