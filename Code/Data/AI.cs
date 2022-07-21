@@ -21,7 +21,7 @@ namespace Flowframes.Data
         public int[] SupportedFactors { get; set; } = new int[0];
         public bool Piped { get; set; } = false;
 
-        public string LogFilename { get { return AiName.Replace("_", "-").ToLower() + "-log"; } }
+        public string LogFilename { get { return PkgDir + "-log"; } }
 
         public AI(AiBackend backend, string aiName, string friendlyName, string desc, string pkgDir, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
         {

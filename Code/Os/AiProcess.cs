@@ -531,6 +531,59 @@ namespace Flowframes.Os
             while (!xvfiPy.HasExited) await Task.Delay(1);
         }
 
+        public static async Task RunIfrnetNcnn(string framesPath, string outPath, float factor, string mdl)
+        {
+            processTimeMulti.Restart();
+
+            try
+            {
+                Logger.Log($"Running IFRNet (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
+
+                await RunIfrnetNcnnProcess(framesPath, factor, outPath, mdl);
+                await DeleteNcnnDupes(outPath, factor);
+            }
+            catch (Exception e)
+            {
+                Logger.Log("Error running IFRNet-NCNN: " + e.Message);
+                Logger.Log("Stack Trace: " + e.StackTrace, true);
+            }
+
+            await AiFinished("IFRNet");
+        }
+
+        static async Task RunIfrnetNcnnProcess(string inPath, float factor, string outPath, string mdl)
+        {
+            Directory.CreateDirectory(outPath);
+            Process ifrnetNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            AiStarted(ifrnetNcnn, 1500, inPath);
+            SetProgressCheck(outPath, factor);
+            //int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()); // TODO: Maybe won't work with fractional factors ??
+            //string frames = mdl.Contains("v4") ? $"-n {targetFrames}" : "";
+            string uhdStr = ""; // await InterpolateUtils.UseUhd() ? "-u" : "";
+            string ttaStr = ""; // Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
+
+            ifrnetNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
+
+            Logger.Log("cmd.exe " + ifrnetNcnn.StartInfo.Arguments, true);
+
+            if (!OsUtils.ShowHiddenCmd())
+            {
+                ifrnetNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.ifrnetNcnn); };
+                ifrnetNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.ifrnetNcnn, true); };
+            }
+
+            ifrnetNcnn.Start();
+
+            if (!OsUtils.ShowHiddenCmd())
+            {
+                ifrnetNcnn.BeginOutputReadLine();
+                ifrnetNcnn.BeginErrorReadLine();
+            }
+
+            while (!ifrnetNcnn.HasExited) await Task.Delay(1);
+        }
+
         static void LogOutput(string line, AI ai, bool err = false)
         {
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)

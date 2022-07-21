@@ -25,11 +25,14 @@ namespace Flowframes.Data
         public static AI xvfiCuda = new AI(AI.AiBackend.Pytorch, "XVFI_CUDA", "XVFI",
             "CUDA/Pytorch Implementation of XVFI", "xvfi-cuda", AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
+        public static AI ifrnetNcnn = new AI(AI.AiBackend.Ncnn, "IFRNet_NCNN", "IFRNet (NCNN)",
+           "Vulkan/NCNN Implementation of IFRNet", "ifrnet-ncnn", AI.InterpFactorSupport.Fixed, new int[] { 2 });
+
         public static List<AI> NetworksAll
         {
             get
             {
-                return new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda };
+                return new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda, /* ifrnetNcnn */ };
             }
         }
 

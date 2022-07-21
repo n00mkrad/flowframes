@@ -214,6 +214,9 @@ namespace Flowframes
             if (ai.AiName == Implementations.xvfiCuda.AiName)
                 tasks.Add(AiProcess.RunXvfiCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
 
+            if(ai.AiName == Implementations.ifrnetNcnn.AiName)
+                tasks.Add(AiProcess.RunIfrnetNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
+
             if (currentlyUsingAutoEnc)
             {
                 Logger.Log($"{Logger.GetLastLine()} (Using Auto-Encode)", true);
