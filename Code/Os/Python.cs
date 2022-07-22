@@ -64,7 +64,7 @@ namespace Flowframes.Os
             compactOutput = compactOutput + line + "\n";
         }
 
-        public static string GetPyCmd (bool unbufferedStdOut = true)
+        public static string GetPyCmd (bool unbufferedStdOut = true, bool quiet = false)
         {
             if (HasEmbeddedPyFolder())
             {
@@ -79,8 +79,11 @@ namespace Flowframes.Os
                 }
                 else
                 {
-                    MessageBox.Show("Neither the Flowframes Python Runtime nor System Python installation could be found!\nEither redownload Flowframes with the embedded Python runtime enabled or install Python/Pytorch yourself.");
-                    Interpolate.Cancel("Neither the Flowframes Python Runtime nor System Python installation could be found!");
+                    if (!quiet)
+                    {
+                        MessageBox.Show("Neither the Flowframes Python Runtime nor System Python installation could be found!\nEither redownload Flowframes with the embedded Python runtime enabled or install Python/Pytorch yourself.");
+                        Interpolate.Cancel("Neither the Flowframes Python Runtime nor System Python installation could be found!");
+                    }
                 }
             }
 
@@ -121,7 +124,7 @@ namespace Flowframes.Os
             try
             {
                 Process py = OsUtils.NewProcess(true);
-                py.StartInfo.Arguments = "\"/C\" " + GetPyCmd() + " -c \"import torch; print(torch.__version__)\"";
+                py.StartInfo.Arguments = "\"/C\" " + GetPyCmd(true, true) + " -c \"import torch; print(torch.__version__)\"";
                 Logger.Log($"[DepCheck] CMD: {py.StartInfo.Arguments}", true);
                 py.Start();
                 py.WaitForExit();
