@@ -376,16 +376,21 @@ namespace Flowframes
 
         public AI GetAi()
         {
-            foreach(AI ai in Implementations.NetworksAll)
+            try
             {
-                if (GetAiComboboxName(ai) == aiCombox.Text)
-                    return ai;
+                foreach (AI ai in Implementations.NetworksAll)
+                {
+                    if (GetAiComboboxName(ai) == aiCombox.Text)
+                        return ai;
+                }
+
+                Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer!");
+                return Implementations.NetworksAvailable[0];
             }
-
-            Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer!");
-            return Implementations.NetworksAvailable[0];
-
-            //return Implementations.networks[aiCombox.SelectedIndex];
+            catch
+            {
+                return null;
+            }
         }
 
         void inputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -746,6 +751,14 @@ namespace Flowframes
             interpFactorCombox.Text = $"{targetFactorRounded}";
             ValidateFactor();
             fpsOutTbox.Text = $"{inFps * interpFactorCombox.GetFloat()} FPS";
+        }
+
+        private void aiInfoBtn_Click(object sender, EventArgs e)
+        {
+            var ai = GetAi();
+
+            if(ai != null)
+                UiUtils.ShowMessageBox(ai.GetVerboseInfo(), UiUtils.MessageType.Message);
         }
     }
 }

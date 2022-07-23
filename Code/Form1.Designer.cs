@@ -90,6 +90,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.aiInfoBtn = new HTAlt.WinForms.HTButton();
             this.outSpeedCombox = new System.Windows.Forms.ComboBox();
             this.completionActionPanel = new System.Windows.Forms.Panel();
             this.completionAction = new System.Windows.Forms.ComboBox();
@@ -914,6 +915,7 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.aiInfoBtn);
             this.interpOptsTab.Controls.Add(this.pictureBox5);
             this.interpOptsTab.Controls.Add(this.outSpeedCombox);
             this.interpOptsTab.Controls.Add(this.completionActionPanel);
@@ -952,6 +954,20 @@
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // aiInfoBtn
+            // 
+            this.aiInfoBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aiInfoBtn.FlatAppearance.BorderSize = 0;
+            this.aiInfoBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.aiInfoBtn.ForeColor = System.Drawing.Color.White;
+            this.aiInfoBtn.Location = new System.Drawing.Point(689, 7);
+            this.aiInfoBtn.Name = "aiInfoBtn";
+            this.aiInfoBtn.Size = new System.Drawing.Size(206, 23);
+            this.aiInfoBtn.TabIndex = 45;
+            this.aiInfoBtn.Text = "About This Implementation...";
+            this.aiInfoBtn.UseVisualStyleBackColor = false;
+            this.aiInfoBtn.Click += new System.EventHandler(this.aiInfoBtn_Click);
             // 
             // outSpeedCombox
             // 
@@ -1824,6 +1840,7 @@
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.ComboBox outSpeedCombox;
         private System.Windows.Forms.PictureBox pictureBox5;
+        private HTAlt.WinForms.HTButton aiInfoBtn;
     }
 }
 

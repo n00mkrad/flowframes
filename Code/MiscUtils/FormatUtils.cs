@@ -183,5 +183,13 @@ namespace Flowframes.MiscUtils
 
             return line;
         }
+
+        public static string CapsIfShort(string codec, int capsIfShorterThan = 5)
+        {
+            if (codec.Length < capsIfShorterThan)
+                return codec.ToUpper();
+            else
+                return codec.ToTitleCase();
+        }
     }
 }

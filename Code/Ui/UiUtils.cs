@@ -1,4 +1,5 @@
 ﻿using Flowframes.Data;
+using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.Os;
@@ -91,16 +92,14 @@ namespace Flowframes.Ui
                 return new DialogResult();
             }
 
-            if (BatchProcessing.busy)
-                return new DialogResult();
-
             MessageBoxIcon icon = MessageBoxIcon.Information;
             if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
             else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
 
-            DialogResult res = MessageBox.Show(text, $"Flowframes - {type}", MessageBoxButtons.OK, icon, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
-            Program.mainForm.Activate();
-            return res;
+            //DialogResult res = MessageBox.Show(text, $"Flowframes - {type}", MessageBoxButtons.OK, icon, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+            MessageForm form = new MessageForm(text, type.ToString());
+            form.ShowDialog();
+            return DialogResult.OK;
         }
 
         public enum MoveDirection { Up = -1, Down = 1 };
