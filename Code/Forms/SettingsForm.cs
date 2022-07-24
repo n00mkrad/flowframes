@@ -2,6 +2,7 @@
 using Flowframes.IO;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
+using Flowframes.Ui;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Drawing;
@@ -239,7 +240,7 @@ namespace Flowframes.Forms
         private void cmdDebugMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (initialized && cmdDebugMode.SelectedIndex == 2)
-                MessageBox.Show("If you enable this, you need to close the CMD window manually after the process has finished, otherwise processing will be paused!", "Notice");
+                UiUtils.ShowMessageBox("If you enable this, you need to close the CMD window manually after the process has finished, otherwise processing will be paused!", UiUtils.MessageType.Warning);
         }
 
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -287,7 +288,7 @@ namespace Flowframes.Forms
 
         private async void resetBtn_Click(object sender, EventArgs e)
         {
-            DialogResult dialog = MessageBox.Show($"Are you sure you want to reset the configuration?", "Are you sure?", MessageBoxButtons.YesNo);
+            DialogResult dialog = UiUtils.ShowMessageBox($"Are you sure you want to reset the configuration?", "Are you sure?", MessageBoxButtons.YesNo);
 
             if (dialog == DialogResult.No)
                 return;

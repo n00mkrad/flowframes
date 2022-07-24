@@ -39,8 +39,9 @@ namespace Flowframes.Forms
             if (!configGridChanged)
                 return;
 
-            DialogResult dialogResult = MessageBox.Show($"Save the modified configuration file?", "Save Configuration?", MessageBoxButtons.YesNo);
-            
+            DialogResult dialogResult = UiUtils.ShowMessageBox($"Save the modified configuration file?", "Save Configuration?", MessageBoxButtons.YesNo);
+
+
             if (dialogResult == DialogResult.Yes)
                 DebugFormHelper.SaveGrid(configDataGrid);
         }

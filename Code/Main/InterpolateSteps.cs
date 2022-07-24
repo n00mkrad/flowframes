@@ -135,7 +135,7 @@ namespace Flowframes.Main
 
         public static async Task Reset()
         {
-            DialogResult dialog = MessageBox.Show($"Are you sure you want to remove all temporary files?", "Are you sure?", MessageBoxButtons.YesNo);
+            DialogResult dialog = UiUtils.ShowMessageBox($"Are you sure you want to remove all temporary files?", "Are you sure?", MessageBoxButtons.YesNo);
 
             if (dialog == DialogResult.Yes)
                 await Cleanup(true);

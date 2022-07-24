@@ -96,12 +96,17 @@ namespace Flowframes.Ui
             if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
             else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
 
-            //DialogResult res = MessageBox.Show(text, $"Flowframes - {type}", MessageBoxButtons.OK, icon, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
             MessageForm form = new MessageForm(text, type.ToString());
             form.ShowDialog();
             return DialogResult.OK;
         }
 
+        public static DialogResult ShowMessageBox(string text, string title, MessageBoxButtons btns)
+        {
+            MessageForm form = new MessageForm(text, title, btns);
+            return form.ShowDialog();
+        }
+         
         public enum MoveDirection { Up = -1, Down = 1 };
 
         public static void MoveListViewItem(ListView listView, MoveDirection direction)

@@ -107,7 +107,7 @@ namespace Flowframes.Ui
                 string interpFrames = interpFrmAmount > 2 ? $"{interpFrmAmount} interpolated frames" : "no interpolated frames";
                 string msg = $"A temporary folder for this video already exists. It contains {scnFrames}, {srcFrames}, {interpFrames}.";
 
-                DialogResult dialogResult = MessageBox.Show($"{msg}\n\nClick \"Yes\" to use the existing files or \"No\" to delete them.", "Use files from existing temp folder?", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = UiUtils.ShowMessageBox($"{msg}\n\nClick \"Yes\" to use the existing files or \"No\" to delete them.", "Use files from existing temp folder?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.No)
                 {
                     IoUtils.TryDeleteIfExists(tmpFolder);

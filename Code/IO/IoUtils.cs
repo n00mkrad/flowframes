@@ -345,7 +345,7 @@ namespace Flowframes.IO
 
 				Fraction guiFps = Program.mainForm.GetCurrentSettings().inFps;
 
-				DialogResult dialogResult = MessageBox.Show("A frame rate file has been found in the parent directory.\n\n" +
+				DialogResult dialogResult = UiUtils.ShowMessageBox("A frame rate file has been found in the parent directory.\n\n" +
 					$"Click \"Yes\" to use frame rate from the file ({fps}) or \"No\" to use current FPS set in GUI ({guiFps})", "Load Frame Rate From fps.ini?", MessageBoxButtons.YesNo);
 				if (dialogResult == DialogResult.Yes)
 					return fps;
@@ -664,7 +664,7 @@ namespace Flowframes.IO
             {
 				Logger.Log($"Can't write to {dir}! {e.Message}", errMode == ErrorMode.HiddenLog);
 				if (errMode == ErrorMode.Messagebox && !BatchProcessing.busy)
-					MessageBox.Show($"Can't write to {dir}!\n\n{e.Message}", "Error");
+					UiUtils.ShowMessageBox($"Can't write to {dir}!\n\n{e.Message}", UiUtils.MessageType.Error);
 				return false;
             }
         }

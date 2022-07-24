@@ -14,6 +14,7 @@ using Flowframes.MiscUtils;
 using Flowframes.Os;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Flowframes.Ui;
 
 namespace Flowframes.Main
 {
@@ -68,7 +69,7 @@ namespace Flowframes.Main
             catch (Exception e)
             {
                 Logger.Log("FramesToVideo Error: " + e.Message, false);
-                MessageBox.Show("An error occured while trying to convert the interpolated frames to a video.\nCheck the log for details.");
+                UiUtils.ShowMessageBox("An error occured while trying to convert the interpolated frames to a video.\nCheck the log for details.", UiUtils.MessageType.Error);
             }
         }
 
@@ -252,7 +253,7 @@ namespace Flowframes.Main
                 Logger.Log("ChunksToVideo Error: " + e.Message, isBackup);
 
                 if (!isBackup)
-                    MessageBox.Show("An error occured while trying to merge the video chunks.\nCheck the log for details.");
+                    UiUtils.ShowMessageBox("An error occured while trying to merge the video chunks.\nCheck the log for details.", UiUtils.MessageType.Error);
             }
 
             Logger.Log($"Merged video chunks in {sw}", true);

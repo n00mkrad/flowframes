@@ -225,7 +225,7 @@ namespace Flowframes.Main
         {
             string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.currentSettings.outMode));
 
-            float maxAv1Fps = 480;
+            float maxAv1Fps = 240;
 
             if (enc.ToLower().Contains("av1") && encodeFps > maxAv1Fps)
             {

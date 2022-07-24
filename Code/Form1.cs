@@ -504,7 +504,7 @@ namespace Flowframes
             if (Program.busy)
                 reason = "The program is still busy.";
 
-            DialogResult dialog = MessageBox.Show($"Are you sure you want to exit the program?\n\n{reason}", "Are you sure?", MessageBoxButtons.YesNo);
+            DialogResult dialog = UiUtils.ShowMessageBox($"Are you sure you want to exit the program?\n\n{reason}", "Are you sure?", MessageBoxButtons.YesNo);
 
             if (dialog == DialogResult.No)
                 e.Cancel = true;
@@ -554,7 +554,7 @@ namespace Flowframes
 
         private void cancelBtn_Click(object sender, EventArgs e)
         {
-            DialogResult dialog = MessageBox.Show($"Are you sure you want to cancel the interpolation?", "Are you sure?", MessageBoxButtons.YesNo);
+            DialogResult dialog = UiUtils.ShowMessageBox($"Are you sure you want to cancel the interpolation?", "Are you sure?", MessageBoxButtons.YesNo);
 
             if (dialog == DialogResult.Yes)
             {

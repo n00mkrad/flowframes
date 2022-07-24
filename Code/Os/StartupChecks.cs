@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.IO;
+using Flowframes.Ui;
 
 namespace Flowframes.Os
 {
@@ -39,7 +40,7 @@ namespace Flowframes.Os
         {
             if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().ToLower().Contains("temp"))
             {
-                MessageBox.Show("You seem to be running Flowframes out of an archive.\nPlease extract the whole archive first!", "Error");
+                UiUtils.ShowMessageBox("You seem to be running Flowframes out of an archive.\nPlease extract the whole archive first!", UiUtils.MessageType.Error);
                 IoUtils.TryDeleteIfExists(Paths.GetDataPath());
                 Application.Exit();
             }
@@ -49,7 +50,7 @@ namespace Flowframes.Os
 
             if (Is32Bit() && !Config.GetBool("allow32Bit", false))
             {
-                MessageBox.Show("This application is not compatible with 32 bit operating systems!", "Error");
+                UiUtils.ShowMessageBox("This application is not compatible with 32 bit operating systems!", UiUtils.MessageType.Error);
                 Application.Exit();
             }
 
@@ -58,8 +59,8 @@ namespace Flowframes.Os
 
             if (!version.ToLower().Contains("windows 10") && !version.ToLower().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
             {
-                MessageBox.Show($"This application was made for Windows 10/11 and is not officially compatible with {version}.\n\n" +
-                                $"Use it at your own risk and do NOT ask for support as long as your are on {version}.", "Warning");
+                UiUtils.ShowMessageBox($"This application was made for Windows 10/11 and is not officially compatible with {version}.\n\n" +
+                                $"Use it at your own risk and do NOT ask for support as long as your are on {version}.", UiUtils.MessageType.Warning);
             }
         }
 
@@ -77,8 +78,8 @@ namespace Flowframes.Os
             {
                 if (!silent)
                 {
-                    MessageBox.Show("Flowframes will now enable Windows' Developer Mode which is required for video encoding improvements.\n\n" +
-                                    "This requires administrator privileges once.", "Message");
+                    UiUtils.ShowMessageBox("Flowframes will now enable Windows' Developer Mode which is required for video encoding improvements.\n\n" +
+                                    "This requires administrator privileges once.", UiUtils.MessageType.Message);
                 }
 
                 Logger.Log($"Trying to enable dev mode.", true);
@@ -107,9 +108,9 @@ namespace Flowframes.Os
                 {
                     if (!silent)
                     {
-                        MessageBox.Show("Failed to enable developer mode - Perhaps you do not have sufficient privileges.\n\n" +
+                        UiUtils.ShowMessageBox("Failed to enable developer mode - Perhaps you do not have sufficient privileges.\n\n" +
                                         "Without Developer Mode, video encoding will be noticably slower.\n\nYou can still try enabling " +
-                                        "it manually in the Windows 10 Settings:\nSettings -> Update & security -> For developers -> Developer mode.", "Message");
+                                        "it manually in the Windows 10 Settings:\nSettings -> Update & security -> For developers -> Developer mode.", UiUtils.MessageType.Message);
                     }
 
                     Logger.Log("Failed to enable dev mode.", true);

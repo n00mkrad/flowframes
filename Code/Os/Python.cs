@@ -1,5 +1,6 @@
 ﻿using Flowframes.IO;
 using Flowframes.MiscUtils;
+using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -81,7 +82,7 @@ namespace Flowframes.Os
                 {
                     if (!quiet)
                     {
-                        MessageBox.Show("Neither the Flowframes Python Runtime nor System Python installation could be found!\nEither redownload Flowframes with the embedded Python runtime enabled or install Python/Pytorch yourself.");
+                        UiUtils.ShowMessageBox("Neither the Flowframes Python Runtime nor System Python installation could be found!\nEither redownload Flowframes with the embedded Python runtime enabled or install Python/Pytorch yourself.");
                         Interpolate.Cancel("Neither the Flowframes Python Runtime nor System Python installation could be found!");
                     }
                 }

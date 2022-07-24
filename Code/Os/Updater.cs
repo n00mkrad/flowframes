@@ -1,6 +1,7 @@
 ﻿using Flowframes.Data;
 using Flowframes.Forms;
 using Flowframes.IO;
+using Flowframes.Ui;
 using System;
 using System.IO;
 using System.Net;
@@ -103,7 +104,7 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error: Failed to download update.\n\n" + e.Message, "Error");
+                UiUtils.ShowMessageBox("Error: Failed to download update.\n\n" + e.Message, UiUtils.MessageType.Error);
                 Logger.Log("Updater Error during download: " + e.Message, true);
                 return;
             }
@@ -118,13 +119,13 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error: Failed to install update.\n\n" + e.Message, "Error");
+                UiUtils.ShowMessageBox("Error: Failed to install update.\n\n" + e.Message, UiUtils.MessageType.Error);
                 Logger.Log("Updater Error during install: " + e.Message, true);
                 return;
             }
             form.SetProgLabel(101f, $"Update downloaded.");
             await Task.Delay(20);
-            MessageBox.Show("Update was installed!\nFlowframes will now close. Restart it to use the new version.", "Message");
+            UiUtils.ShowMessageBox("Update was installed!\nFlowframes will now close. Restart it to use the new version.");
             Application.Exit();
         }
 
