@@ -241,6 +241,7 @@ namespace Flowframes.IO
                 return WriteDefault(keyStr, "");
             }
 
+            if (key == Key.disablePreview)        return WriteDefault(key, "True");
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
             if (key == Key.delLogsOnStartup)      return WriteDefault(key, "True");
             if (key == Key.clearLogOnInput)       return WriteDefault(key, "True");
