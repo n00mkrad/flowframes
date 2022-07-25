@@ -13,6 +13,7 @@ using ImageMagick;
 using Paths = Flowframes.IO.Paths;
 using Flowframes.Media;
 using System.Drawing;
+using Flowframes.Utilities;
 
 namespace Flowframes.Os
 {
@@ -286,7 +287,7 @@ namespace Flowframes.Os
 
                 //await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
                 await RunRifeNcnnProcess(framesPath, factor, outPath, mdl);
-                await DeleteNcnnDupes(outPath, factor);
+                await NcnnUtils.DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
@@ -311,7 +312,7 @@ namespace Flowframes.Os
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads()}";
 
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
 
@@ -357,7 +358,31 @@ namespace Flowframes.Os
             IoUtils.CreateDir(outPath);
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
 
-            Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with specific Flowframes features, such as FPS limiting and image sequence exporting.");
+            Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with certain Flowframes features, such as image sequence exporting.");
+
+            string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
+            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.currentSettings.inFps.GetString()} FPS x{factor} = {Interpolate.currentSettings.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
+            
+            string pipedTargetArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {await Export.GetPipedFfmpegCmd()}";
+
+            string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
+            int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();
+
+            VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
+            {
+                InterpSettings = Interpolate.currentSettings,
+                ModelDir = mdl,
+                Factor = factor,
+                Res = res,
+                Uhd = InterpolateUtils.UseUhd(res),
+                GpuId = gpuId,
+                GpuThreads = await NcnnUtils.GetRifeNcnnGpuThreads(res, gpuId, Implementations.rifeNcnnVs),
+                SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
+                Loop = Config.GetBool(Config.Key.enableLoop),
+                MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
+                Dedupe = Config.GetInt(Config.Key.dedupMode) != 0,
+                Realtime = rt
+            };
 
             if (rt)
             {
@@ -367,31 +392,8 @@ namespace Flowframes.Os
             else
             {
                 SetProgressCheck(Interpolate.currentMediaFile.FrameCount, factor, Implementations.rifeNcnnVs.LogFilename);
-                AiStarted(rifeNcnnVs, 1500, inPath);
+                AiStarted(rifeNcnnVs, 1000, inPath);
             }
-
-            string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.currentSettings.inFps.GetString()} FPS x{factor} = {Interpolate.currentSettings.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
-            
-            string pipedTargetArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {await Export.GetPipedFfmpegCmd()}";
-
-            string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
-
-            VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
-            {
-                InterpSettings = Interpolate.currentSettings,
-                ModelDir = mdl,
-                Factor = factor,
-                Res = res,
-                Uhd = InterpolateUtils.UseUhd(res),
-                GpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt(),
-                GpuThreads = GetRifeNcnnVsGpuThreads(res),
-                SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
-                Loop = Config.GetBool(Config.Key.enableLoop),
-                MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
-                Dedupe = Config.GetInt(Config.Key.dedupMode) != 0,
-                Realtime = rt
-            };
 
             rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {pipedTargetArgs}";
 
@@ -422,7 +424,7 @@ namespace Flowframes.Os
             try
             {
                 await RunDainNcnnProcess(framesPath, outPath, factor, mdl, tilesize);
-                await DeleteNcnnDupes(outPath, factor);
+                await NcnnUtils.DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
@@ -443,7 +445,7 @@ namespace Flowframes.Os
             int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt());
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLower()}" +
-                $" -t {GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j 2:1:2";
+                $" -t {NcnnUtils.GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j 2:1:2";
 
             dain.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
             Logger.Log("Running DAIN...", false);
@@ -538,7 +540,7 @@ namespace Flowframes.Os
                 Logger.Log($"Running IFRNet (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
                 await RunIfrnetNcnnProcess(framesPath, factor, outPath, mdl);
-                await DeleteNcnnDupes(outPath, factor);
+                await NcnnUtils.DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
@@ -561,7 +563,7 @@ namespace Flowframes.Os
             string ttaStr = ""; // Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             ifrnetNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {GetNcnnPattern()} -j {GetNcnnThreads()}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads()}";
 
             Logger.Log("cmd.exe " + ifrnetNcnn.StartInfo.Arguments, true);
 
@@ -700,72 +702,6 @@ namespace Flowframes.Os
             InterpolationProgress.UpdateLastFrameFromInterpOutput(line);
         }
 
-        static int GetRifeNcnnVsGpuThreads (Size res)
-        {
-            int threads = 3;
-            if(res.Width * res.Height > 2560 * 1440) threads = 2;
-            if(res.Width * res.Height > 3840 * 2160) threads = 1;
-            return threads;
-        }
-
-        static string GetNcnnPattern()
-        {
-            return $"%0{Padding.interpFrames}d{Interpolate.currentSettings.interpExt}";
-        }
-
-        static string GetNcnnTilesize(int tilesize)
-        {
-            int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
-            string tilesizeStr = $"{tilesize}";
-
-            for (int i = 1; i < gpusAmount; i++)
-                tilesizeStr += $",{tilesize}";
-
-            return tilesizeStr;
-        }
-
-        static string GetNcnnThreads(bool forceSingleThread = false)
-        {
-            int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
-            int procThreads = Config.GetInt(Config.Key.ncnnThreads);
-            string progThreadsStr = $"{procThreads}";
-
-            for (int i = 1; i < gpusAmount; i++)
-                progThreadsStr += $",{procThreads}";
-
-            return $"{(forceSingleThread ? 1 : (Interpolate.currentlyUsingAutoEnc ? 2 : 4))}:{progThreadsStr}:4"; // Read threads: 1 for singlethreaded, 2 for autoenc, 4 if order is irrelevant
-        }
-
-        static async Task DeleteNcnnDupes(string dir, float factor)
-        {
-            int dupeCount = InterpolateUtils.GetRoundedInterpFramesPerInputFrame(factor);
-            var files = IoUtils.GetFileInfosSorted(dir, false).Reverse().Take(dupeCount).ToList();
-            Logger.Log($"DeleteNcnnDupes: Calculated dupe count from factor; deleting last {dupeCount} interp frames of {IoUtils.GetAmountOfFiles(dir, false)} ({string.Join(", ", files.Select(x => x.Name))})", true);
-
-            int attempts = 4;
-
-            while (attempts > 0)
-            {
-                try
-                {
-                    files.ForEach(x => x.Delete());
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    attempts--;
-
-                    if (attempts < 1)
-                    {
-                        Logger.Log($"DeleteNcnnDupes Error: {ex.Message}", true);
-                        break;
-                    }
-                    else
-                    {
-                        await Task.Delay(500);
-                    }
-                }
-            }
-        }
+        
     }
 }

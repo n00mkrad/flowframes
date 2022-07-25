@@ -97,6 +97,7 @@ namespace Flowframes.Ui
         {
             if (Interpolate.currentSettings == null || !Interpolate.currentSettings.stepByStep) return;
             string tmpFolder = InterpolateUtils.GetTempFolderLoc(inpath, outpath);
+
             if (Directory.Exists(tmpFolder))
             {
                 int scnFrmAmount = IoUtils.GetAmountOfFiles(Path.Combine(tmpFolder, Paths.scenesDir), false, "*" + Interpolate.currentSettings.interpExt);  // TODO: Make this work if the frames extension was changed
@@ -108,6 +109,7 @@ namespace Flowframes.Ui
                 string msg = $"A temporary folder for this video already exists. It contains {scnFrames}, {srcFrames}, {interpFrames}.";
 
                 DialogResult dialogResult = UiUtils.ShowMessageBox($"{msg}\n\nClick \"Yes\" to use the existing files or \"No\" to delete them.", "Use files from existing temp folder?", MessageBoxButtons.YesNo);
+                
                 if (dialogResult == DialogResult.No)
                 {
                     IoUtils.TryDeleteIfExists(tmpFolder);

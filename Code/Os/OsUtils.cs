@@ -13,11 +13,24 @@ using Microsoft.VisualBasic.Devices;
 using Flowframes.MiscUtils;
 using System.Linq;
 using Tulpep.NotificationWindow;
+using System.Threading;
 
 namespace Flowframes.Os
 {
     class OsUtils
     {
+        public static string GetProcStdOut(Process proc, bool includeStdErr = false, ProcessPriorityClass priority = ProcessPriorityClass.BelowNormal)
+        {
+            if (includeStdErr)
+                proc.StartInfo.Arguments += " 2>&1";
+
+            proc.Start();
+            proc.PriorityClass = priority;
+            string output = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
+            return output;
+        }
+
         public static bool IsUserAdministrator()
         {
             //bool value to hold our return value

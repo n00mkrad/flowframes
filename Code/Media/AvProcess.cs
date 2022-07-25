@@ -129,7 +129,7 @@ namespace Flowframes
             Logger.Log($"ffprobe -v {settings.LogLevel} {settings.Args}", true, false, "ffmpeg");
 
             if (!asyncOutput)
-                return await Task.Run(() => GetProcOutput(ffprobe));
+                return await Task.Run(() => OsUtils.GetProcStdOut(ffprobe));
 
             if (!show)
             {
@@ -151,15 +151,6 @@ namespace Flowframes
             while (timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
 
             return processOutput;
-        }
-
-        private static string GetProcOutput (Process proc)
-        {
-            proc.Start();
-            proc.PriorityClass = ProcessPriorityClass.BelowNormal;
-            string output = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit();
-            return output;
         }
 
         public static string GetFfprobeOutput(string args)
