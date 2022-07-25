@@ -1,3 +1,11 @@
+Flowframes 1.38.2 Changelog:
+- FPS limiting (downsampling) now works with RIFE-NCNN-VS
+- RIFE-NCNN-VS will no longer overwrite existing output files
+- Fixed issue where RIFE-NCNN-VS would try to use too many GPU threads
+- Fixed issue where a warning would pop up every time Flowframes is started without Pytorch
+- Replaced the default Message Box with a custom window, fixes some UI weirdness
+
+
 Flowframes 1.38.1 Changelog:
 - RIFE-NCNN-VS will now use the GPU ID set in the settings (multi-GPU not possible for now)
 - Trimming the input video now works with RIFE-NCNN-VS
