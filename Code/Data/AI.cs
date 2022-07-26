@@ -26,6 +26,8 @@ namespace Flowframes.Data
 
         public string LogFilename { get { return PkgDir + "-log"; } }
 
+        public AI () { }
+
         public AI(AiBackend backend, string aiName, string longName, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
         {
             Backend = backend;

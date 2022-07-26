@@ -6,26 +6,70 @@ namespace Flowframes.Data
 {
     class Implementations
     {
-        private static readonly string rifeLong = "Real-Time Intermediate Flow Estimation";
-        private static readonly string flavrLong = "Flow-Agnostic Video Representations";
-        private static readonly string dainLong = "Depth-Aware Video Frame Interpolation";
-        private static readonly string xvfiLong = "eXtreme Video Frame Interpolation";
-        private static readonly string ifrnetLong = "Intermediate Feature Refine Network";
+        public static AI rifeCuda = new AI()
+        {
+            Backend = AI.AiBackend.Pytorch,
+            NameInternal = "RIFE_CUDA",
+            NameLong = "Real-Time Intermediate Flow Estimation",
+            FactorSupport = AI.InterpFactorSupport.AnyInteger,
+            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+        };
 
-        public static AI rifeCuda = new AI(AI.AiBackend.Pytorch, "RIFE_CUDA", rifeLong, AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        public static AI rifeNcnn = new AI()
+        {
+            Backend = AI.AiBackend.Ncnn,
+            NameInternal = "RIFE_NCNN",
+            NameLong = "Real-Time Intermediate Flow Estimation",
+            FactorSupport = AI.InterpFactorSupport.AnyFloat,
+            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+        };
 
-        public static AI rifeNcnnVs = new AI(AI.AiBackend.Ncnn, "RIFE_NCNN_VS", rifeLong, AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 })
-        { Piped = true };
+        public static AI rifeNcnnVs = new AI()
+        {
+            Backend = AI.AiBackend.Ncnn,
+            NameInternal = "RIFE_NCNN_VS",
+            NameLong = "Real-Time Intermediate Flow Estimation",
+            FactorSupport = AI.InterpFactorSupport.AnyFloat,
+            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+            Piped = true
+        };
 
-        public static AI rifeNcnn = new AI(AI.AiBackend.Ncnn, "RIFE_NCNN", rifeLong, AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        public static AI flavrCuda = new AI()
+        {
+            Backend = AI.AiBackend.Pytorch,
+            NameInternal = "FLAVR_CUDA",
+            NameLong = "Flow-Agnostic Video Representations",
+            FactorSupport = AI.InterpFactorSupport.AnyFloat,
+            SupportedFactors = new int[] { 2, 4, 8 },
+        };
 
-        public static AI flavrCuda = new AI(AI.AiBackend.Pytorch, "FLAVR_CUDA", flavrLong, AI.InterpFactorSupport.Fixed, new int[] { 2, 4, 8 });
+        public static AI dainNcnn = new AI()
+        {
+            Backend = AI.AiBackend.Ncnn,
+            NameInternal = "DAIN_NCNN",
+            NameLong = "Depth-Aware Video Frame Interpolation",
+            FactorSupport = AI.InterpFactorSupport.AnyFloat,
+            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8 },
+        };
 
-        public static AI dainNcnn = new AI(AI.AiBackend.Ncnn, "DAIN_NCNN", dainLong, AI.InterpFactorSupport.AnyFloat, new int[] { 2, 3, 4, 5, 6, 7, 8 });
+        public static AI xvfiCuda = new AI()
+        {
+            Backend = AI.AiBackend.Pytorch,
+            NameInternal = "XVFI_CUDA",
+            NameLong = "eXtreme Video Frame Interpolation",
+            FactorSupport = AI.InterpFactorSupport.AnyInteger,
+            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+        };
 
-        public static AI xvfiCuda = new AI(AI.AiBackend.Pytorch, "XVFI_CUDA", xvfiLong, AI.InterpFactorSupport.AnyInteger, new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        public static AI ifrnetNcnn = new AI()
+        {
+            Backend = AI.AiBackend.Ncnn,
+            NameInternal = "IFRNet_NCNN",
+            NameLong = "Intermediate Feature Refine Network",
+            FactorSupport = AI.InterpFactorSupport.Fixed,
+            SupportedFactors = new int[] { 2 },
+        };
 
-        public static AI ifrnetNcnn = new AI(AI.AiBackend.Ncnn, "IFRNet_NCNN", ifrnetLong, AI.InterpFactorSupport.Fixed, new int[] { 2 });
 
         public static List<AI> NetworksAll
         {
