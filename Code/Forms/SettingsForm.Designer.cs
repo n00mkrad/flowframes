@@ -48,9 +48,6 @@
             this.label67 = new System.Windows.Forms.Label();
             this.clearModelCacheBtn = new HTAlt.WinForms.HTButton();
             this.label64 = new System.Windows.Forms.Label();
-            this.label62 = new System.Windows.Forms.Label();
-            this.clearLogOnInput = new System.Windows.Forms.CheckBox();
-            this.label61 = new System.Windows.Forms.Label();
             this.processingMode = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
             this.tempDirBrowseBtn = new HTAlt.WinForms.HTButton();
@@ -141,8 +138,6 @@
             this.label55 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.label23 = new System.Windows.Forms.Label();
-            this.maxFpsMode = new System.Windows.Forms.ComboBox();
             this.label22 = new System.Windows.Forms.Label();
             this.maxFps = new System.Windows.Forms.ComboBox();
             this.label20 = new System.Windows.Forms.Label();
@@ -182,9 +177,6 @@
             this.label47 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
             this.label45 = new System.Windows.Forms.Label();
-            this.label38 = new System.Windows.Forms.Label();
-            this.ffEncThreads = new System.Windows.Forms.TextBox();
-            this.label37 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
@@ -246,9 +238,6 @@
             this.generalTab.Controls.Add(this.label67);
             this.generalTab.Controls.Add(this.clearModelCacheBtn);
             this.generalTab.Controls.Add(this.label64);
-            this.generalTab.Controls.Add(this.label62);
-            this.generalTab.Controls.Add(this.clearLogOnInput);
-            this.generalTab.Controls.Add(this.label61);
             this.generalTab.Controls.Add(this.processingMode);
             this.generalTab.Controls.Add(this.label39);
             this.generalTab.Controls.Add(this.tempDirBrowseBtn);
@@ -321,7 +310,7 @@
             // 
             this.label77.AutoSize = true;
             this.label77.ForeColor = System.Drawing.Color.Silver;
-            this.label77.Location = new System.Drawing.Point(308, 250);
+            this.label77.Location = new System.Drawing.Point(308, 220);
             this.label77.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label77.Name = "label77";
             this.label77.Size = new System.Drawing.Size(270, 13);
@@ -331,7 +320,7 @@
             // disablePreview
             // 
             this.disablePreview.AutoSize = true;
-            this.disablePreview.Location = new System.Drawing.Point(280, 250);
+            this.disablePreview.Location = new System.Drawing.Point(280, 220);
             this.disablePreview.Name = "disablePreview";
             this.disablePreview.Size = new System.Drawing.Size(15, 14);
             this.disablePreview.TabIndex = 88;
@@ -340,7 +329,7 @@
             // label76
             // 
             this.label76.AutoSize = true;
-            this.label76.Location = new System.Drawing.Point(10, 250);
+            this.label76.Location = new System.Drawing.Point(10, 220);
             this.label76.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label76.Name = "label76";
             this.label76.Size = new System.Drawing.Size(105, 13);
@@ -353,7 +342,7 @@
             this.modelDownloaderBtn.FlatAppearance.BorderSize = 0;
             this.modelDownloaderBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modelDownloaderBtn.ForeColor = System.Drawing.Color.White;
-            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 275);
+            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 245);
             this.modelDownloaderBtn.Name = "modelDownloaderBtn";
             this.modelDownloaderBtn.Size = new System.Drawing.Size(206, 23);
             this.modelDownloaderBtn.TabIndex = 86;
@@ -428,7 +417,7 @@
             this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
             this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
-            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 275);
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 245);
             this.clearModelCacheBtn.Name = "clearModelCacheBtn";
             this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
             this.clearModelCacheBtn.TabIndex = 79;
@@ -439,42 +428,12 @@
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(10, 280);
+            this.label64.Location = new System.Drawing.Point(10, 250);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(165, 13);
             this.label64.TabIndex = 78;
             this.label64.Text = "Manage Downloaded Model Files";
-            // 
-            // label62
-            // 
-            this.label62.AutoSize = true;
-            this.label62.ForeColor = System.Drawing.Color.Silver;
-            this.label62.Location = new System.Drawing.Point(308, 220);
-            this.label62.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(249, 13);
-            this.label62.TabIndex = 75;
-            this.label62.Text = "Only affects the log box in the GUI, not the log files.";
-            // 
-            // clearLogOnInput
-            // 
-            this.clearLogOnInput.AutoSize = true;
-            this.clearLogOnInput.Location = new System.Drawing.Point(280, 220);
-            this.clearLogOnInput.Name = "clearLogOnInput";
-            this.clearLogOnInput.Size = new System.Drawing.Size(15, 14);
-            this.clearLogOnInput.TabIndex = 74;
-            this.clearLogOnInput.UseVisualStyleBackColor = true;
-            // 
-            // label61
-            // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(10, 220);
-            this.label61.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(181, 13);
-            this.label61.TabIndex = 73;
-            this.label61.Text = "Clear Log Box When Switching Input";
             // 
             // processingMode
             // 
@@ -813,7 +772,7 @@
             this.label18.Location = new System.Drawing.Point(10, 150);
             this.label18.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(153, 16);
+            this.label18.Size = new System.Drawing.Size(152, 16);
             this.label18.TabIndex = 82;
             this.label18.Text = "Interpolation Helpers";
             // 
@@ -1111,7 +1070,7 @@
             this.label24.Location = new System.Drawing.Point(10, 10);
             this.label24.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(88, 16);
+            this.label24.Size = new System.Drawing.Size(87, 16);
             this.label24.TabIndex = 44;
             this.label24.Text = "Input Media";
             // 
@@ -1301,7 +1260,7 @@
             this.label26.Location = new System.Drawing.Point(10, 260);
             this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(152, 16);
+            this.label26.Size = new System.Drawing.Size(151, 16);
             this.label26.TabIndex = 76;
             this.label26.Text = "DAIN-NCNN Settings";
             // 
@@ -1385,7 +1344,7 @@
             this.label28.Location = new System.Drawing.Point(10, 150);
             this.label28.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(102, 16);
+            this.label28.Size = new System.Drawing.Size(101, 16);
             this.label28.TabIndex = 61;
             this.label28.Text = "RIFE Settings";
             // 
@@ -1487,7 +1446,7 @@
             this.label32.Location = new System.Drawing.Point(10, 10);
             this.label32.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(162, 16);
+            this.label32.Size = new System.Drawing.Size(161, 16);
             this.label32.TabIndex = 51;
             this.label32.Text = "AI Framework Settings";
             // 
@@ -1503,8 +1462,6 @@
             this.vidExportTab.Controls.Add(this.label55);
             this.vidExportTab.Controls.Add(this.panel8);
             this.vidExportTab.Controls.Add(this.panel7);
-            this.vidExportTab.Controls.Add(this.label23);
-            this.vidExportTab.Controls.Add(this.maxFpsMode);
             this.vidExportTab.Controls.Add(this.label22);
             this.vidExportTab.Controls.Add(this.maxFps);
             this.vidExportTab.Controls.Add(this.label20);
@@ -1520,7 +1477,7 @@
             // 
             this.label73.AutoSize = true;
             this.label73.ForeColor = System.Drawing.Color.Silver;
-            this.label73.Location = new System.Drawing.Point(308, 160);
+            this.label73.Location = new System.Drawing.Point(308, 130);
             this.label73.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label73.Name = "label73";
             this.label73.Size = new System.Drawing.Size(322, 13);
@@ -1530,7 +1487,7 @@
             // fixOutputDuration
             // 
             this.fixOutputDuration.AutoSize = true;
-            this.fixOutputDuration.Location = new System.Drawing.Point(280, 160);
+            this.fixOutputDuration.Location = new System.Drawing.Point(280, 130);
             this.fixOutputDuration.Name = "fixOutputDuration";
             this.fixOutputDuration.Size = new System.Drawing.Size(15, 14);
             this.fixOutputDuration.TabIndex = 83;
@@ -1539,7 +1496,7 @@
             // label72
             // 
             this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(10, 160);
+            this.label72.Location = new System.Drawing.Point(10, 130);
             this.label72.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(172, 13);
@@ -1610,31 +1567,6 @@
             this.panel7.TabIndex = 59;
             this.toolTip1.SetToolTip(this.panel7, "Allows custom input.");
             // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(10, 130);
-            this.label23.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(187, 13);
-            this.label23.TabIndex = 50;
-            this.label23.Text = "Maximum Output FPS Encoding Mode";
-            // 
-            // maxFpsMode
-            // 
-            this.maxFpsMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.maxFpsMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.maxFpsMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.maxFpsMode.ForeColor = System.Drawing.Color.White;
-            this.maxFpsMode.FormattingEnabled = true;
-            this.maxFpsMode.Items.AddRange(new object[] {
-            "Only Create Output With Limited FPS",
-            "Create Outputs With Full FPS And Limited FPS (Takes 2x as long!)"});
-            this.maxFpsMode.Location = new System.Drawing.Point(280, 127);
-            this.maxFpsMode.Name = "maxFpsMode";
-            this.maxFpsMode.Size = new System.Drawing.Size(400, 21);
-            this.maxFpsMode.TabIndex = 49;
-            // 
             // label22
             // 
             this.label22.AutoSize = true;
@@ -1679,7 +1611,7 @@
             this.label21.Location = new System.Drawing.Point(10, 10);
             this.label21.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(227, 16);
+            this.label21.Size = new System.Drawing.Size(226, 16);
             this.label21.TabIndex = 45;
             this.label21.Text = "Length And Frame Rate Options";
             // 
@@ -1960,7 +1892,7 @@
             this.label19.Location = new System.Drawing.Point(10, 10);
             this.label19.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(130, 16);
+            this.label19.Size = new System.Drawing.Size(129, 16);
             this.label19.TabIndex = 96;
             this.label19.Text = "Encoding Options";
             // 
@@ -2054,9 +1986,6 @@
             this.debugTab.Controls.Add(this.label47);
             this.debugTab.Controls.Add(this.label46);
             this.debugTab.Controls.Add(this.label45);
-            this.debugTab.Controls.Add(this.label38);
-            this.debugTab.Controls.Add(this.ffEncThreads);
-            this.debugTab.Controls.Add(this.label37);
             this.debugTab.Controls.Add(this.label3);
             this.debugTab.Controls.Add(this.cmdDebugMode);
             this.debugTab.ForeColor = System.Drawing.Color.White;
@@ -2098,16 +2027,16 @@
             // 
             this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ffEncArgs.ForeColor = System.Drawing.Color.White;
-            this.ffEncArgs.Location = new System.Drawing.Point(280, 210);
+            this.ffEncArgs.Location = new System.Drawing.Point(280, 180);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(10, 213);
+            this.label56.Location = new System.Drawing.Point(10, 183);
             this.label56.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(147, 13);
@@ -2118,7 +2047,7 @@
             // 
             this.label54.AutoSize = true;
             this.label54.ForeColor = System.Drawing.Color.Silver;
-            this.label54.Location = new System.Drawing.Point(543, 184);
+            this.label54.Location = new System.Drawing.Point(543, 154);
             this.label54.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(118, 13);
@@ -2140,7 +2069,7 @@
             "Slow",
             "Slower",
             "Very Slow"});
-            this.ffEncPreset.Location = new System.Drawing.Point(280, 180);
+            this.ffEncPreset.Location = new System.Drawing.Point(280, 150);
             this.ffEncPreset.Name = "ffEncPreset";
             this.ffEncPreset.Size = new System.Drawing.Size(250, 21);
             this.ffEncPreset.TabIndex = 78;
@@ -2148,7 +2077,7 @@
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(10, 183);
+            this.label47.Location = new System.Drawing.Point(10, 153);
             this.label47.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(174, 13);
@@ -2162,7 +2091,7 @@
             this.label46.Location = new System.Drawing.Point(10, 120);
             this.label46.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(65, 16);
+            this.label46.Size = new System.Drawing.Size(64, 16);
             this.label46.TabIndex = 76;
             this.label46.Text = "FFmpeg";
             // 
@@ -2173,40 +2102,9 @@
             this.label45.Location = new System.Drawing.Point(10, 10);
             this.label45.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(63, 16);
+            this.label45.Size = new System.Drawing.Size(62, 16);
             this.label45.TabIndex = 75;
             this.label45.Text = "General";
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.ForeColor = System.Drawing.Color.Silver;
-            this.label38.Location = new System.Drawing.Point(543, 156);
-            this.label38.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(131, 13);
-            this.label38.TabIndex = 71;
-            this.label38.Text = "Use 0 for automatic mode.";
-            // 
-            // ffEncThreads
-            // 
-            this.ffEncThreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ffEncThreads.ForeColor = System.Drawing.Color.White;
-            this.ffEncThreads.Location = new System.Drawing.Point(280, 150);
-            this.ffEncThreads.MinimumSize = new System.Drawing.Size(4, 21);
-            this.ffEncThreads.Name = "ffEncThreads";
-            this.ffEncThreads.Size = new System.Drawing.Size(250, 20);
-            this.ffEncThreads.TabIndex = 70;
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(10, 153);
-            this.label37.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(204, 13);
-            this.label37.TabIndex = 61;
-            this.label37.Text = "Override FFmpeg Encoding Thread Count";
             // 
             // label3
             // 
@@ -2331,8 +2229,6 @@
         private Cyotek.Windows.Forms.TabListPage vidExportTab;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.ComboBox maxFpsMode;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.ComboBox maxFps;
         private System.Windows.Forms.Label label20;
@@ -2360,9 +2256,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tempDirCustom;
         private HTAlt.WinForms.HTButton tempDirBrowseBtn;
-        private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.TextBox ffEncThreads;
         private System.Windows.Forms.ComboBox processingMode;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.Panel mpDedupePanel;
@@ -2393,9 +2286,6 @@
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.TextBox ffEncArgs;
         private System.Windows.Forms.Label label56;
-        private System.Windows.Forms.Label label62;
-        private System.Windows.Forms.CheckBox clearLogOnInput;
-        private System.Windows.Forms.Label label61;
         private System.Windows.Forms.Label label64;
         private HTAlt.WinForms.HTButton clearModelCacheBtn;
         private System.Windows.Forms.NumericUpDown scnDetectValue;

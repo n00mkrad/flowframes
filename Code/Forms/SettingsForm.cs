@@ -91,7 +91,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(exportNamePattern);
             ConfigParser.SaveGuiElement(exportNamePatternLoop);
             ConfigParser.SaveGuiElement(delLogsOnStartup);
-            ConfigParser.SaveGuiElement(clearLogOnInput);
             ConfigParser.SaveGuiElement(disablePreview);
             // Interpolation
             ConfigParser.SaveGuiElement(keepAudio);
@@ -120,7 +119,6 @@ namespace Flowframes.Forms
             // Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(maxFps);
-            ConfigParser.SaveComboxIndex(maxFpsMode);
             ConfigParser.SaveComboxIndex(loopMode);
             ConfigParser.SaveGuiElement(fixOutputDuration);
             // Encoding
@@ -138,7 +136,6 @@ namespace Flowframes.Forms
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveComboxIndex(serverCombox);
-            ConfigParser.SaveGuiElement(ffEncThreads, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffEncArgs);
         }
@@ -154,7 +151,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(keepTempFolder);
             ConfigParser.LoadGuiElement(exportNamePattern);
             ConfigParser.LoadGuiElement(exportNamePatternLoop);
-            ConfigParser.LoadGuiElement(clearLogOnInput);
             ConfigParser.LoadGuiElement(disablePreview);
             // Interpolation
             ConfigParser.LoadGuiElement(keepAudio);
@@ -183,7 +179,6 @@ namespace Flowframes.Forms
             // Export
             ConfigParser.LoadGuiElement(minOutVidLength);
             ConfigParser.LoadGuiElement(maxFps); 
-            ConfigParser.LoadComboxIndex(maxFpsMode);
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
             // Encoding
@@ -200,7 +195,6 @@ namespace Flowframes.Forms
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadComboxIndex(serverCombox);
-            ConfigParser.LoadGuiElement(ffEncThreads);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffEncArgs);
         }
