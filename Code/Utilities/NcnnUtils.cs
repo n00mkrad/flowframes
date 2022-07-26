@@ -21,7 +21,7 @@ namespace Flowframes.Utilities
             Dictionary<int, int> queueCounts = new Dictionary<int, int>(); // int gpuId, int queueCount
 
             Process rifeNcnn = OsUtils.NewProcess(true);
-            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir, "rife-ncnn-vulkan.exe")} -i C: -o C:";
+            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D  {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir)} & rife-ncnn-vulkan.exe -i dummydir -o dummydir";
 
             string output = await Task.Run(() => OsUtils.GetProcStdOut(rifeNcnn, true));
             var queueLines = output.SplitIntoLines().Where(x => x.MatchesWildcard(@"*queueC=*queue*"));
@@ -45,7 +45,8 @@ namespace Flowframes.Utilities
 
             if (threads != 1)
             {
-                int maxThreads = (await GetNcnnGpuComputeQueueCounts())[gpuId];
+                var queueDict = await GetNcnnGpuComputeQueueCounts();
+                int maxThreads = queueDict.ContainsKey(gpuId) ? queueDict[gpuId] : 1;
                 threads = threads.Clamp(1, maxThreads); // To avoid exceeding the max queue count
                 Logger.Log($"Using {threads}/{maxThreads} GPU threads.", true, false, ai.LogFilename);
             }
