@@ -90,7 +90,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(keepTempFolder);
             ConfigParser.SaveGuiElement(exportNamePattern);
             ConfigParser.SaveGuiElement(exportNamePatternLoop);
-            ConfigParser.SaveGuiElement(delLogsOnStartup);
             ConfigParser.SaveGuiElement(disablePreview);
             // Interpolation
             ConfigParser.SaveGuiElement(keepAudio);
@@ -147,7 +146,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(maxVidHeight);
             ConfigParser.LoadComboxIndex(tempFolderLoc); ConfigParser.LoadGuiElement(tempDirCustom);
             ConfigParser.LoadComboxIndex(outFolderLoc); ConfigParser.LoadGuiElement(custOutDir);
-            ConfigParser.LoadGuiElement(delLogsOnStartup);
             ConfigParser.LoadGuiElement(keepTempFolder);
             ConfigParser.LoadGuiElement(exportNamePattern);
             ConfigParser.LoadGuiElement(exportNamePatternLoop);

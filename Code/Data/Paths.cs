@@ -25,6 +25,14 @@ namespace Flowframes.IO
 		public const string audioVideoDir = "av";
 		public const string licensesDir = "licenses";
 
+		public static string sessionTimestamp;
+
+		public static void Init()
+		{
+			var n = DateTime.Now;
+			sessionTimestamp = $"{n.Year}-{n.Month}-{n.Day}-{n.Hour}-{n.Minute}-{n.Second}-{n.Millisecond}";
+		}
+
 		public static string GetFrameOrderFilename(float factor)
 		{
 			return $"{frameOrderPrefix}-{factor.ToStringDot()}x.ini";
@@ -57,6 +65,13 @@ namespace Flowframes.IO
 			return path;
 		}
 
+		public static string GetSessionsPath()
+		{
+			string path = Path.Combine(GetDataPath(), "sessions");
+			Directory.CreateDirectory(path);
+			return path;
+		}
+
 		public static string GetPkgPath()
 		{
 			string path = Path.Combine(GetDataPath(), "pkgs");
@@ -64,9 +79,23 @@ namespace Flowframes.IO
 			return path;
 		}
 
-		public static string GetLogPath()
+		public static string GetLogPath(bool noSession = false)
 		{
-			string path = Path.Combine(GetDataPath(), "logs");
+			string path = Path.Combine(GetDataPath(), "logs", (noSession ? "" : sessionTimestamp));
+			Directory.CreateDirectory(path);
+			return path;
+		}
+
+		public static string GetSessionDataPath()
+		{
+			string path = Path.Combine(GetSessionsPath(), sessionTimestamp);
+			Directory.CreateDirectory(path);
+			return path;
+		}
+
+		public static string GetFrameSeqPath(bool noSession = false)
+		{
+			string path = Path.Combine((noSession ? GetDataPath() : GetSessionDataPath()), "frameSequences");
 			Directory.CreateDirectory(path);
 			return path;
 		}

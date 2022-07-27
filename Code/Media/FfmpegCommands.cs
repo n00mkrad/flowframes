@@ -159,18 +159,19 @@ namespace Flowframes
 
         public static async Task<int> GetFrameCountAsync(string inputFile)
         {
-            Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
+            Logger.Log($"GetFrameCountAsync - Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
             int frames = await ReadFrameCountFfprobePacketCount(inputFile);      // Try reading frame count with ffprobe packet counting
             if (frames > 0) return frames;
 
-            Logger.Log($"GetFrameCountAsync('{inputFile}') - Trying ffprobe decoding now.", true, false, "ffmpeg");
+            Logger.Log($"GetFrameCountAsync - Trying ffmpeg demuxing.", true, false, "ffmpeg");
+            frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
+            if (frames > 0) return frames;
 
+            Logger.Log($"GetFrameCountAsync - Trying ffprobe demuxing.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfprobe(inputFile);      // Try reading frame count with ffprobe decoding
             if (frames > 0) return frames;
 
-            Logger.Log($"Failed to get frame count using ffprobe (frames = {frames}). Trying to read with ffmpeg.", true, false, "ffmpeg");
-            frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
-            if (frames > 0) return frames;
+
 
             Logger.Log("Failed to get total frame count of video.", true);
             return 0;
@@ -218,8 +219,8 @@ namespace Flowframes
 
         public static async Task<int> ReadFrameCountFfmpegAsync(string filePath)
         {
-            string args = $" -loglevel panic -stats -i {filePath.Wrap()} -map 0:v:0 -c copy -f null - ";
-            string info = await RunFfmpeg(args, LogMode.Hidden);
+            string args = $"{filePath.GetConcStr()} -i {filePath.Wrap()} -map 0:v:0 -c copy -f null - ";
+            string info = await RunFfmpeg(args, LogMode.Hidden, "panic");
             try
             {
                 string[] lines = info.SplitIntoLines();

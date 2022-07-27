@@ -1,4 +1,5 @@
 ﻿using Flowframes.Data.Streams;
+using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
@@ -17,7 +18,6 @@ namespace Flowframes.Data
         public bool IsDirectory;
         public FileInfo FileInfo;
         public DirectoryInfo DirectoryInfo;
-        public int FileCount;
         public string Name;
         public string SourcePath;
         public string ImportPath;
@@ -40,9 +40,10 @@ namespace Flowframes.Data
         public bool Initialized = false;
         public bool SequenceInitialized = false;
 
+        public int FileCount = 1;
         public int FrameCount { get { return VideoStreams.Count > 0 ? VideoStreams[0].FrameCount : 0; } }
 
-        public MediaFile(string path /* , bool requestFpsInputIfUnset = true */)
+        public MediaFile(string path, bool requestFpsInputIfUnset = true)
         {
             CreationTime = (long)(DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds; // Unix Timestamp as UID
 
@@ -54,12 +55,12 @@ namespace Flowframes.Data
                 SourcePath = DirectoryInfo.FullName;
                 Format = "Folder";
 
-                // if (requestFpsInputIfUnset && InputRate == null)
-                // {
-                //     PromptForm form = new PromptForm("Enter Frame Rate", $"Please enter a frame rate to use for the image sequence '{Name.Trunc(80)}'.", "30");
-                //     form.ShowDialog();
-                //     InputRate = new Fraction(form.EnteredText);
-                // }
+                if (requestFpsInputIfUnset && InputRate == null)
+                {
+                    PromptForm form = new PromptForm("Enter Frame Rate", $"Please enter a frame rate to use for the image sequence '{Name.Trunc(80)}'.", "15");
+                    form.ShowDialog();
+                    InputRate = new Fraction(form.EnteredText);
+                }
             }
             else
             {
@@ -68,7 +69,6 @@ namespace Flowframes.Data
                 SourcePath = FileInfo.FullName;
                 ImportPath = FileInfo.FullName;
                 Format = FileInfo.Extension.Remove(".").ToUpper();
-                FileCount = 1;
                 InputRate = new Fraction(-1, 1);
             }
 
@@ -77,27 +77,22 @@ namespace Flowframes.Data
 
         public async Task InitializeSequence()
         {
-            Logger.Log($"InitializeSequence not implemented!!");
+            try
+            {
+                if (SequenceInitialized) return;
 
-            // try
-            // {
-            //     if (SequenceInitialized) return;
-            // 
-            //     Logger.Log($"Preparing image sequence...");
-            //     Logger.Log($"MediaFile {Name}: Preparing image sequence", true);
-            //     string seqPath = Path.Combine(Paths.GetFrameSeqPath(), CreationTime.ToString(), "frames.concat");
-            //     string chosenExt = IoUtils.GetUniqueExtensions(SourcePath).FirstOrDefault();
-            //     int fileCount = FfmpegUtils.CreateConcatFile(SourcePath, seqPath, new List<string> { chosenExt });
-            //     ImportPath = seqPath;
-            //     FileCount = fileCount;
-            //     Logger.Log($"Created concat file with {fileCount} files.", true);
-            //     SequenceInitialized = true;
-            // }
-            // catch (Exception e)
-            // {
-            //     Logger.Log($"Error preparing frame sequence: {e.Message}\n{e.StackTrace}");
-            //     FileCount = 0;
-            // }
+                string seqPath = Path.Combine(Paths.GetFrameSeqPath(), CreationTime.ToString(), "frames.concat");
+                string chosenExt = IoUtils.GetUniqueExtensions(SourcePath).FirstOrDefault();
+                int fileCount = FfmpegUtils.CreateConcatFile(SourcePath, seqPath, new List<string> { chosenExt });
+                ImportPath = seqPath;
+                FileCount = fileCount;
+                SequenceInitialized = true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error preparing frame sequence: {e.Message}\n{e.StackTrace}");
+                FileCount = 0;
+            }
         }
 
         public async Task Initialize(bool progressBar = true, bool countFrames = true)

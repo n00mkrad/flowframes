@@ -34,10 +34,9 @@ namespace Flowframes
         [STAThread]
         static void Main()
         {
+            Paths.Init();
             Config.Init();
-
-            if (Config.GetBool(Config.Key.delLogsOnStartup))
-                IoUtils.DeleteContentsOfDir(Paths.GetLogPath());        // Clear out older logs from previous session
+            Cleanup();
 
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -84,6 +83,49 @@ namespace Flowframes
         {
             UiUtils.ShowMessageBox(text, UiUtils.MessageType.Error);
             Clipboard.SetText(text);
+        }
+
+        public static void Cleanup()
+        {
+            int keepLogsDays = 4;
+            int keepSessionDataDays = 4;
+
+            try
+            {
+                foreach (DirectoryInfo dir in new DirectoryInfo(Paths.GetLogPath(true)).GetDirectories())
+                {
+                    string[] split = dir.Name.Split('-');
+                    int daysOld = (DateTime.Now - new DateTime(split[0].GetInt(), split[1].GetInt(), split[2].GetInt())).Days;
+                    int fileCount = dir.GetFiles("*", SearchOption.AllDirectories).Length;
+
+                    if (daysOld > keepLogsDays || fileCount < 1) // keep logs for 4 days
+                    {
+                        Logger.Log($"Cleanup: Log folder {dir.Name} is {daysOld} days old and has {fileCount} files - Will Delete", true);
+                        IoUtils.TryDeleteIfExists(dir.FullName);
+                    }
+                }
+
+                IoUtils.DeleteContentsOfDir(Paths.GetSessionDataPath()); // Clear this session's temp files...
+
+                foreach (DirectoryInfo dir in new DirectoryInfo(Paths.GetSessionsPath()).GetDirectories())
+                {
+                    string[] split = dir.Name.Split('-');
+                    int daysOld = (DateTime.Now - new DateTime(split[0].GetInt(), split[1].GetInt(), split[2].GetInt())).Days;
+                    int fileCount = dir.GetFiles("*", SearchOption.AllDirectories).Length;
+
+                    if (daysOld > keepSessionDataDays || fileCount < 1) // keep temp files for 2 days
+                    {
+                        Logger.Log($"Cleanup: Session folder {dir.Name} is {daysOld} days old and has {fileCount} files - Will Delete", true);
+                        IoUtils.TryDeleteIfExists(dir.FullName);
+                    }
+                }
+
+                IoUtils.GetFilesSorted(Paths.GetPkgPath(), false, "*.log*").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Cleanup Error: {e.Message}\n{e.StackTrace}");
+            }
         }
 
         static async Task DiskSpaceCheckLoop()

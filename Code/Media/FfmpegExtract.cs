@@ -25,7 +25,7 @@ namespace Flowframes.Media
 
             if (inputIsFrames)
             {
-                string concatFile = Path.Combine(Paths.GetDataPath(), "png-scndetect-concat-temp.ini");
+                string concatFile = Path.Combine(Paths.GetSessionDataPath(), "png-scndetect-concat-temp.ini");
                 FfmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat.ToList());
                 inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";
             }
@@ -212,7 +212,7 @@ namespace Flowframes.Media
             if (showLog) Logger.Log($"Importing images from {new DirectoryInfo(inPath).Name}...");
             Logger.Log($"ImportImages() - Alpha: {alpha} - Size: {size} - Format: {format}", true, false, "ffmpeg");
             IoUtils.CreateDir(outPath);
-            string concatFile = Path.Combine(Paths.GetDataPath(), "import-concat-temp.ini");
+            string concatFile = Path.Combine(Paths.GetSessionDataPath(), "import-concat-temp.ini");
             FfmpegUtils.CreateConcatFile(inPath, concatFile, Filetypes.imagesInterpCompat.ToList());
 
             string inArg = $"-f concat -safe 0 -i {concatFile.Wrap()}";

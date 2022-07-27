@@ -11,6 +11,11 @@ namespace Flowframes.Media
     {
         private static Dictionary<QueryInfo, int> cache = new Dictionary<QueryInfo, int>();
 
+        public static async Task<int> GetFrameCountAsync(MediaFile mf, int retryCount = 3)
+        {
+            return await GetFrameCountAsync(mf.SourcePath, retryCount);
+        }
+
         public static async Task<int> GetFrameCountAsync(string path, int retryCount = 3)
         {
             Logger.Log($"Getting frame count ({path})", true);

@@ -44,7 +44,7 @@ namespace Flowframes.Ui
             Program.mainForm.currInDuration = Interpolate.currentMediaFile.DurationMs;
             Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
             string fpsStr = "Not Found";
-            Fraction fps = (await IoUtils.GetFpsFolderOrVideo(path));
+            Fraction fps = Interpolate.currentMediaFile.VideoStreams.Count > 0 ? Interpolate.currentMediaFile.VideoStreams[0].Rate : new Fraction();
             Program.mainForm.currInFpsDetected = fps;
             fpsInTbox.Text = fps.GetString();
 
@@ -136,7 +136,7 @@ namespace Flowframes.Ui
 
         public static async Task<Image> GetThumbnail (string path)
         {
-            string imgOnDisk = Path.Combine(Paths.GetDataPath(), "thumb-temp.jpg");
+            string imgOnDisk = Path.Combine(Paths.GetSessionDataPath(), "thumb-temp.jpg");
 
             try
             {

@@ -97,7 +97,7 @@ namespace Flowframes
             currentSettings.RefreshAlpha();
             currentSettings.RefreshExtensions(InterpSettings.FrameType.Import);
 
-            if (Config.GetBool(Config.Key.scnDetect))
+            if (Config.GetBool(Config.Key.scnDetect) && !currentSettings.ai.Piped)
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
                 await FfmpegExtract.ExtractSceneChanges(currentSettings.inPath, Path.Combine(currentSettings.tempFolder, Paths.scenesDir), currentSettings.inFpsDetected, currentSettings.inputIsFrames, currentSettings.framesExt);

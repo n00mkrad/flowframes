@@ -243,7 +243,6 @@ namespace Flowframes.IO
 
             if (key == Key.disablePreview)        return WriteDefault(key, "True");
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
-            if (key == Key.delLogsOnStartup)      return WriteDefault(key, "True");
             if (key == Key.clearLogOnInput)       return WriteDefault(key, "True");
             if (key == Key.tempDirCustom)         return WriteDefault(key, "D:/");
             if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[MODEL]-[FPS]fps");
@@ -322,7 +321,6 @@ namespace Flowframes.IO
             dainNcnnTilesize,
             dedupMode,
             dedupThresh,
-            delLogsOnStartup,
             disablePreview,
             dupeScanDebug,
             enableLoop,

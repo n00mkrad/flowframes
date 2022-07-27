@@ -60,8 +60,6 @@
             this.panel10 = new System.Windows.Forms.Panel();
             this.maxVidHeight = new System.Windows.Forms.ComboBox();
             this.label31 = new System.Windows.Forms.Label();
-            this.delLogsOnStartup = new System.Windows.Forms.CheckBox();
-            this.label11 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
             this.autoEncBlockPanel = new System.Windows.Forms.Panel();
             this.label70 = new System.Windows.Forms.Label();
@@ -250,8 +248,6 @@
             this.generalTab.Controls.Add(this.panel10);
             this.generalTab.Controls.Add(this.maxVidHeight);
             this.generalTab.Controls.Add(this.label31);
-            this.generalTab.Controls.Add(this.delLogsOnStartup);
-            this.generalTab.Controls.Add(this.label11);
             this.generalTab.ForeColor = System.Drawing.Color.White;
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
@@ -310,7 +306,7 @@
             // 
             this.label77.AutoSize = true;
             this.label77.ForeColor = System.Drawing.Color.Silver;
-            this.label77.Location = new System.Drawing.Point(308, 220);
+            this.label77.Location = new System.Drawing.Point(308, 190);
             this.label77.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label77.Name = "label77";
             this.label77.Size = new System.Drawing.Size(270, 13);
@@ -320,7 +316,7 @@
             // disablePreview
             // 
             this.disablePreview.AutoSize = true;
-            this.disablePreview.Location = new System.Drawing.Point(280, 220);
+            this.disablePreview.Location = new System.Drawing.Point(280, 190);
             this.disablePreview.Name = "disablePreview";
             this.disablePreview.Size = new System.Drawing.Size(15, 14);
             this.disablePreview.TabIndex = 88;
@@ -329,7 +325,7 @@
             // label76
             // 
             this.label76.AutoSize = true;
-            this.label76.Location = new System.Drawing.Point(10, 220);
+            this.label76.Location = new System.Drawing.Point(10, 190);
             this.label76.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label76.Name = "label76";
             this.label76.Size = new System.Drawing.Size(105, 13);
@@ -342,7 +338,7 @@
             this.modelDownloaderBtn.FlatAppearance.BorderSize = 0;
             this.modelDownloaderBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modelDownloaderBtn.ForeColor = System.Drawing.Color.White;
-            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 245);
+            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 215);
             this.modelDownloaderBtn.Name = "modelDownloaderBtn";
             this.modelDownloaderBtn.Size = new System.Drawing.Size(206, 23);
             this.modelDownloaderBtn.TabIndex = 86;
@@ -417,7 +413,7 @@
             this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
             this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
-            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 245);
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 215);
             this.clearModelCacheBtn.Name = "clearModelCacheBtn";
             this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
             this.clearModelCacheBtn.TabIndex = 79;
@@ -428,7 +424,7 @@
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(10, 250);
+            this.label64.Location = new System.Drawing.Point(10, 220);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(165, 13);
@@ -581,25 +577,6 @@
             this.label31.Size = new System.Drawing.Size(171, 13);
             this.label31.TabIndex = 62;
             this.label31.Text = "Maximum Video Input Size (Height)";
-            // 
-            // delLogsOnStartup
-            // 
-            this.delLogsOnStartup.AutoSize = true;
-            this.delLogsOnStartup.Location = new System.Drawing.Point(280, 190);
-            this.delLogsOnStartup.Name = "delLogsOnStartup";
-            this.delLogsOnStartup.Size = new System.Drawing.Size(15, 14);
-            this.delLogsOnStartup.TabIndex = 23;
-            this.delLogsOnStartup.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(10, 190);
-            this.label11.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(216, 13);
-            this.label11.TabIndex = 22;
-            this.label11.Text = "Delete Logs Of Previous Session On Startup";
             // 
             // tabListPage2
             // 
@@ -2030,7 +2007,7 @@
             this.ffEncArgs.Location = new System.Drawing.Point(280, 180);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
@@ -2215,8 +2192,6 @@
         private Cyotek.Windows.Forms.TabListPage tabListPage2;
         private Cyotek.Windows.Forms.TabListPage debugTab;
         private System.Windows.Forms.Label titleLabel;
-        private System.Windows.Forms.CheckBox delLogsOnStartup;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox keepAudio;
         private System.Windows.Forms.Label label1;

@@ -148,12 +148,14 @@ namespace Flowframes.Os
 
         public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
         {
+            AI ai = Implementations.rifeCuda;
+
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
             try
             {
-                string rifeDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir);
+                string rifeDir = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
                 string script = "rife.py";
 
                 if (!File.Exists(Path.Combine(rifeDir, script)))
@@ -176,11 +178,11 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log("Error running RIFE-CUDA: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("RIFE");
+            await AiFinished(ai.NameShort);
         }
 
         public static async Task RunRifeCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdl)
@@ -221,12 +223,14 @@ namespace Flowframes.Os
 
         public static async Task RunFlavrCuda(string framesPath, float interpFactor, string mdl)
         {
+            AI ai = Implementations.flavrCuda;
+
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
             try
             {
-                string flavDir = Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.PkgDir);
+                string flavDir = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
                 string script = "flavr.py";
 
                 if (!File.Exists(Path.Combine(flavDir, script)))
@@ -239,11 +243,11 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log("Error running FLAVR-CUDA: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("FLAVR");
+            await AiFinished(ai.NameShort);
         }
 
         public static async Task RunFlavrCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdl)
@@ -279,23 +283,23 @@ namespace Flowframes.Os
 
         public static async Task RunRifeNcnn(string framesPath, string outPath, float factor, string mdl)
         {
+            AI ai = Implementations.rifeNcnn;
             processTimeMulti.Restart();
 
             try
             {
                 Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
-                //await RunRifeNcnnMulti(framesPath, outPath, factor, mdl);
                 await RunRifeNcnnProcess(framesPath, factor, outPath, mdl);
                 await NcnnUtils.DeleteNcnnDupes(outPath, factor);
             }
             catch (Exception e)
             {
-                Logger.Log("Error running RIFE-NCNN: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("RIFE");
+            await AiFinished(ai.NameShort);
         }
 
         static async Task RunRifeNcnnProcess(string inPath, float factor, string outPath, string mdl)
@@ -335,6 +339,7 @@ namespace Flowframes.Os
 
         public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl, bool rt = false)
         {
+            AI ai = Implementations.rifeNcnnVs;
             processTimeMulti.Restart();
 
             try
@@ -346,11 +351,11 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log("Error running RIFE-NCNN-VS: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("RIFE", true);
+            await AiFinished(ai.NameShort);
         }
 
         static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, Size res, bool rt = false)
@@ -418,6 +423,8 @@ namespace Flowframes.Os
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
+            AI ai = Implementations.dainNcnn;
+
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
@@ -428,11 +435,11 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log("Error running DAIN-NCNN: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("DAIN");
+            await AiFinished(ai.NameShort);
         }
 
         public static async Task RunDainNcnnProcess(string framesPath, string outPath, float factor, string mdl, int tilesize)
@@ -471,6 +478,8 @@ namespace Flowframes.Os
 
         public static async Task RunXvfiCuda(string framesPath, float interpFactor, string mdl)
         {
+            AI ai = Implementations.xvfiCuda;
+
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
 
@@ -489,11 +498,11 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log("Error running XVFI-CUDA: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("XVFI");
+            await AiFinished(ai.NameShort);
         }
 
         public static async Task RunXvfiCudaProcess(string inPath, string outDir, string script, float interpFactor, string mdlDir)
@@ -533,6 +542,8 @@ namespace Flowframes.Os
 
         public static async Task RunIfrnetNcnn(string framesPath, string outPath, float factor, string mdl)
         {
+            AI ai = Implementations.ifrnetNcnn;
+
             processTimeMulti.Restart();
 
             try
@@ -544,11 +555,11 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log("Error running IFRNet-NCNN: " + e.Message);
+                Logger.Log($"Error running {ai.FriendlyName}: {e.Message}");
                 Logger.Log("Stack Trace: " + e.StackTrace, true);
             }
 
-            await AiFinished("IFRNet");
+            await AiFinished(ai.NameShort);
         }
 
         static async Task RunIfrnetNcnnProcess(string inPath, float factor, string outPath, string mdl)

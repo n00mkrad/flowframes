@@ -509,6 +509,8 @@ namespace Flowframes
 
             if (dialog == DialogResult.No)
                 e.Cancel = true;
+
+            Program.Cleanup();
         }
 
         private void licenseBtn_Click(object sender, EventArgs e)
