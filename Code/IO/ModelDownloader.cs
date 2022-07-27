@@ -201,9 +201,9 @@ namespace Flowframes.IO
                 string aiPkgFolder = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
                 ModelCollection aiModels = AiModels.GetModels(ai);
 
-                foreach(ModelCollection.ModelInfo model in aiModels.models)
+                foreach(ModelCollection.ModelInfo model in aiModels.Models)
                 {
-                    string mdlFolder = Path.Combine(aiPkgFolder, model.dir);
+                    string mdlFolder = Path.Combine(aiPkgFolder, model.Dir);
 
                     if (Directory.Exists(mdlFolder))
                         modelPaths.Add(mdlFolder);

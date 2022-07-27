@@ -39,7 +39,7 @@ namespace Flowframes.Data
             Backend = AI.AiBackend.Pytorch,
             NameInternal = "FLAVR_CUDA",
             NameLong = "Flow-Agnostic Video Representations",
-            FactorSupport = AI.InterpFactorSupport.AnyFloat,
+            FactorSupport = AI.InterpFactorSupport.Fixed,
             SupportedFactors = new int[] { 2, 4, 8 },
         };
 
@@ -75,7 +75,7 @@ namespace Flowframes.Data
         {
             get
             {
-                return new List<AI> { rifeCuda, rifeNcnnVs, rifeNcnn, flavrCuda, dainNcnn, xvfiCuda, ifrnetNcnn };
+                return new List<AI> { rifeNcnnVs, rifeNcnn, rifeCuda, flavrCuda, dainNcnn, xvfiCuda, ifrnetNcnn };
             }
         }
 

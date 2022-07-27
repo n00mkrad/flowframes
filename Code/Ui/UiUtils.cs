@@ -38,19 +38,19 @@ namespace Flowframes.Ui
             {
                 ModelCollection modelCollection = AiModels.GetModels(ai);
 
-                if (modelCollection.models == null || modelCollection.models.Count < 1)
+                if (modelCollection.Models == null || modelCollection.Models.Count < 1)
                     return combox;
 
-                for (int i = 0; i < modelCollection.models.Count; i++)
+                for (int i = 0; i < modelCollection.Models.Count; i++)
                 {
-                    ModelCollection.ModelInfo modelInfo = modelCollection.models[i];
+                    ModelCollection.ModelInfo modelInfo = modelCollection.Models[i];
 
-                    if (string.IsNullOrWhiteSpace(modelInfo.name))
+                    if (string.IsNullOrWhiteSpace(modelInfo.Name))
                         continue;
 
                     combox.Items.Add(modelInfo.GetUiString());
 
-                    if (modelInfo.isDefault)
+                    if (modelInfo.IsDefault)
                         combox.SelectedIndex = i;
                 }
 

@@ -1,18 +1,21 @@
 [
 {
 	"name": "FLAVR 2x",
-	"desc": "Official model, only works for 2x interpolation",
+	"desc": "Official model",
 	"dir": "FLAVR2X",
+	"fixedFactors": [2],
 	"isDefault": "true"
 },
 {
 	"name": "FLAVR 4x",
-	"desc": "Official model, only works for 4x interpolation",
-	"dir": "FLAVR4X"
+	"desc": "Official model",
+	"dir": "FLAVR4X",
+	"fixedFactors": [4],
 },
 {
 	"name": "FLAVR 8x",
-	"desc": "Official model, only works for 8x interpolation",
-	"dir": "FLAVR8X"
+	"desc": "Official model",
+	"dir": "FLAVR8X",
+	"fixedFactors": [8],
 }
 ]

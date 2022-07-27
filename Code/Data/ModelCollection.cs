@@ -1,58 +1,54 @@
 ﻿using Flowframes.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Flowframes.Data
 {
     public class ModelCollection
     {
-        public AI ai;
-        public List<ModelInfo> models = new List<ModelInfo>();
+        public AI Ai { get; set; } = null;
+        public List<ModelInfo> Models { get; set; } = new List<ModelInfo>();
 
         public class ModelInfo
         {
-            public AI ai;
-            public string name;
-            public string desc;
-            public string dir;
-            public bool supportsAlpha;
-            public bool isDefault;
+            public AI Ai { get; set; } = null;
+            public string Name { get; set; } = "";
+            public string Desc { get; set; } = "";
+            public string Dir { get; set; } = "";
+            public bool SupportsAlpha { get; set; } = false;
+            public bool IsDefault { get; set; } = false;
+            private int[] _fixedFactors = null;
+            public int[] FixedFactors { get { return _fixedFactors == null ? new int[0] : _fixedFactors; } set { _fixedFactors = value; } }
 
-            public ModelInfo(AI ai, string name, string desc, string dir, bool supportsAlpha, bool isDefault)
-            {
-                this.ai = ai;
-                this.name = name;
-                this.desc = desc;
-                this.dir = dir;
-                this.supportsAlpha = supportsAlpha;
-                this.isDefault = isDefault;
-            }
+            public ModelInfo() { }
 
             public string GetUiString()
             {
-                return $"{name} - {desc}{(supportsAlpha ? " (Supports Transparency)" : "")}{(isDefault ? " (Recommended)" : "")}";
+                return $"{Name} - {Desc}{(SupportsAlpha ? " (Supports Transparency)" : "")}{(FixedFactors.Count() > 0 ? $" ({GetFactorsString()})" : "")}{(IsDefault ? " (Recommended)" : "")}";
             }
 
-            public override string ToString()
+            public string GetFactorsString ()
             {
-                return $"{name} - {desc} ({dir}){(supportsAlpha ? " (Supports Transparency)" : "")}{(isDefault ? " (Recommended)" : "")}";
+                return string.Join(", ", FixedFactors.Select(x => $"{x}x"));
             }
         }
 
         public ModelCollection(AI ai)
         {
-            this.ai = ai;
+            Ai = ai;
         }
 
         public ModelCollection(AI ai, string jsonContentOrPath)
         {
-            this.ai = ai;
+            Ai = ai;
 
             if (IoUtils.IsPathValid(jsonContentOrPath) && File.Exists(jsonContentOrPath))
                 jsonContentOrPath = File.ReadAllText(jsonContentOrPath);
 
-            models = new List<ModelInfo>();
+            Models = new List<ModelInfo>();
             dynamic data = JsonConvert.DeserializeObject(jsonContentOrPath);
 
             foreach (var item in data)
@@ -63,7 +59,18 @@ namespace Flowframes.Data
                 bool def = false;
                 bool.TryParse((string)item.isDefault, out def);
 
-                models.Add(new ModelInfo(ai, (string)item.name, (string)item.desc, (string)item.dir, alpha, def));
+                ModelInfo modelInfo = new ModelInfo()
+                {
+                    Ai = ai,
+                    Name = (string)item.name,
+                    Desc = (string)item.desc,
+                    Dir = (string)item.dir,
+                    SupportsAlpha = alpha,
+                    IsDefault = def,
+                    FixedFactors = ((JArray)item.fixedFactors)?.Select(x => (int)x).ToArray(),
+                };
+
+                Models.Add(modelInfo);
             }
         }
     }

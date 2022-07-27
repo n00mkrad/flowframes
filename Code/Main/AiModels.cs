@@ -29,7 +29,7 @@ namespace Flowframes.Main
             {
                 string name = customModel.Remove("_alpha").Remove("_custom");
                 bool alpha = customModel.Contains("_alpha");
-                modelCollection.models.Add(new ModelCollection.ModelInfo(ai, name, "Custom Model", customModel, alpha, false));
+                modelCollection.Models.Add(new ModelCollection.ModelInfo() { Ai = ai, Name = name, Desc = "Custom Model", SupportsAlpha = alpha, IsDefault = false });
             }
 
             return modelCollection;
@@ -53,9 +53,9 @@ namespace Flowframes.Main
         {
             ModelCollection modelCollection = GetModels(ai);
 
-            foreach(ModelCollection.ModelInfo model in modelCollection.models)
+            foreach(ModelCollection.ModelInfo model in modelCollection.Models)
             {
-                if (model.name == modelName)
+                if (model.Name == modelName)
                     return model;
             }
 
@@ -66,9 +66,9 @@ namespace Flowframes.Main
         {
             ModelCollection modelCollection = GetModels(ai);
 
-            foreach (ModelCollection.ModelInfo model in modelCollection.models)
+            foreach (ModelCollection.ModelInfo model in modelCollection.Models)
             {
-                if (model.dir == dirName)
+                if (model.Dir == dirName)
                     return model;
             }
 

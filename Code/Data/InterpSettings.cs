@@ -181,7 +181,7 @@ namespace Flowframes
         {
             try
             {
-                bool alphaModel = model.supportsAlpha;
+                bool alphaModel = model.SupportsAlpha;
                 bool png = outMode == Interpolate.OutMode.ImgPng;
                 bool gif = outMode == Interpolate.OutMode.VidGif;
                 bool proResAlpha = outMode == Interpolate.OutMode.VidProRes && Config.GetInt(Config.Key.proResProfile) > 3;
@@ -240,7 +240,7 @@ namespace Flowframes
             s += $"OUTFPS|{outFps}\n";
             s += $"INTERPFACTOR|{interpFactor}\n";
             s += $"OUTMODE|{outMode}\n";
-            s += $"MODEL|{model.name}\n";
+            s += $"MODEL|{model.Name}\n";
             s += $"INPUTRES|{InputResolution.Width}x{InputResolution.Height}\n";
             s += $"OUTPUTRES|{ScaledResolution.Width}x{ScaledResolution.Height}\n";
             s += $"ALPHA|{alpha}\n";

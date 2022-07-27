@@ -48,14 +48,14 @@ namespace Flowframes.MiscUtils
         {
 			ModelCollection modelCollection = AiModels.GetModels(ai);
 
-			for (int i = 0; i < modelCollection.models.Count; i++)
+			for (int i = 0; i < modelCollection.Models.Count; i++)
 			{
 				if (canceled)
 					return;
 
-				ModelCollection.ModelInfo modelInfo = modelCollection.models[i];
-				form.SetStatus($"Downloading files for {modelInfo.ai.NameInternal.Replace("_", "-")}...");
-				await ModelDownloader.DownloadModelFiles(ai, modelInfo.dir, false);
+				ModelCollection.ModelInfo modelInfo = modelCollection.Models[i];
+				form.SetStatus($"Downloading files for {modelInfo.Ai.NameInternal.Replace("_", "-")}...");
+				await ModelDownloader.DownloadModelFiles(ai, modelInfo.Dir, false);
 				taskCounter++;
 				UpdateProgressBar();
 			}
@@ -79,7 +79,7 @@ namespace Flowframes.MiscUtils
 			foreach(AI ai in ais)
             {
 				ModelCollection modelCollection = AiModels.GetModels(ai);
-				count += modelCollection.models.Count;
+				count += modelCollection.Models.Count;
 			}
 
 			return count;

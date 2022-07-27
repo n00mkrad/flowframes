@@ -154,7 +154,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (model == null || model.dir.Trim() == "")
+            if (model == null || model.Dir.Trim() == "")
             {
                 UiUtils.ShowMessageBox("No valid AI model has been selected!", UiUtils.MessageType.Error);
                 I.Cancel("No valid model selected.", true);

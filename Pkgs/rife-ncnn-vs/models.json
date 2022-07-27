@@ -1,5 +1,11 @@
 [
 {
+	"name": "RIFE 2.3",
+	"desc": "Old Model",
+	"dir": "rife-v2.3",
+	"fixedFactors": [2]
+},
+{
 	"name": "RIFE 4.0",
 	"desc": "New Fast General Model",
 	"dir": "rife-v4",

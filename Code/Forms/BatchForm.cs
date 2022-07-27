@@ -34,7 +34,7 @@ namespace Flowframes.Forms
                 InterpSettings entry = Program.batchQueue.ElementAt(i);
                 string niceOutMode = entry.outMode.ToString().ToUpper().Remove("VID").Remove("IMG");
                 string str = $"#{i+1}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => " +
-                    $"{entry.interpFactor}x {entry.ai.NameShort} ({entry.model.name}) => {niceOutMode}";
+                    $"{entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {niceOutMode}";
                 taskList.Items.Add(str);
             }
         }

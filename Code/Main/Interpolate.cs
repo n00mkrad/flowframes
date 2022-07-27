@@ -89,7 +89,7 @@ namespace Flowframes
 
         public static async Task Realtime ()
         {
-            await AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, "", currentSettings.interpFactor, currentSettings.model.dir, true);
+            await AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, "", currentSettings.interpFactor, currentSettings.model.Dir, true);
         }
 
         public static async Task GetFrames()
@@ -186,8 +186,14 @@ namespace Flowframes
             if (!ai.Piped || (ai.Piped && dedupe))
                 await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(currentSettings.framesFolder, Config.GetBool(Config.Key.enableLoop), currentSettings.interpFactor); });
 
+            if (currentSettings.model.FixedFactors.Count() > 0 && (currentSettings.interpFactor != (int)currentSettings.interpFactor || !currentSettings.model.FixedFactors.Contains(currentSettings.interpFactor.RoundToInt())))
+                Cancel($"The selected model does not support {currentSettings.interpFactor}x interpolation.\n\nSupported Factors: {currentSettings.model.GetFactorsString()}");
+
+            if (canceled) return;
+
             Program.mainForm.SetStatus("Downloading models...");
-            await ModelDownloader.DownloadModelFiles(ai, currentSettings.model.dir);
+            await ModelDownloader.DownloadModelFiles(ai, currentSettings.model.Dir);
+
             if (canceled) return;
 
             currentlyUsingAutoEnc = Utils.CanUseAutoEnc(stepByStep, currentSettings);
@@ -197,25 +203,25 @@ namespace Flowframes
             List<Task> tasks = new List<Task>();
 
             if (ai.NameInternal == Implementations.rifeCuda.NameInternal)
-                tasks.Add(AiProcess.RunRifeCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
+                tasks.Add(AiProcess.RunRifeCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if (ai.NameInternal == Implementations.rifeNcnn.NameInternal)
-                tasks.Add(AiProcess.RunRifeNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
+                tasks.Add(AiProcess.RunRifeNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if (ai.NameInternal == Implementations.rifeNcnnVs.NameInternal)
-                tasks.Add(AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
+                tasks.Add(AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if (ai.NameInternal == Implementations.flavrCuda.NameInternal)
-                tasks.Add(AiProcess.RunFlavrCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
+                tasks.Add(AiProcess.RunFlavrCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if (ai.NameInternal == Implementations.dainNcnn.NameInternal)
-                tasks.Add(AiProcess.RunDainNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
+                tasks.Add(AiProcess.RunDainNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.Dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
 
             if (ai.NameInternal == Implementations.xvfiCuda.NameInternal)
-                tasks.Add(AiProcess.RunXvfiCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.dir));
+                tasks.Add(AiProcess.RunXvfiCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if(ai.NameInternal == Implementations.ifrnetNcnn.NameInternal)
-                tasks.Add(AiProcess.RunIfrnetNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.dir));
+                tasks.Add(AiProcess.RunIfrnetNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if (currentlyUsingAutoEnc)
             {

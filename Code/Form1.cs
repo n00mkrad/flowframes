@@ -337,7 +337,7 @@ namespace Flowframes
         {
             try
             {
-                return AiModels.GetModels(currentAi).models[aiModel.SelectedIndex];
+                return AiModels.GetModels(currentAi).Models[aiModel.SelectedIndex];
             }
             catch
             {

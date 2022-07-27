@@ -161,7 +161,7 @@ namespace Flowframes.Ui
         {
             AI ai = Program.mainForm.GetAi();
 
-            if (ai.NameInternal == Implementations.rifeNcnn.NameInternal && !Program.mainForm.GetModel(ai).dir.Contains("v4"))
+            if (ai.NameInternal == Implementations.rifeNcnn.NameInternal && !Program.mainForm.GetModel(ai).Dir.Contains("v4"))
             {
                 if (factor != 2)
                     Logger.Log($"{ai.FriendlyName} models before 4.0 only support 2x interpolation!");
