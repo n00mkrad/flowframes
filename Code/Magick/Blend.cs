@@ -50,7 +50,7 @@ namespace Flowframes.Magick
                         string[] values = trimmedLine.Split('>');
                         string frameFrom = FrameRename.framesAreRenamed ? values[0] : frames[values[0].GetInt()];
                         string frameTo = FrameRename.framesAreRenamed ? values[1] : frames[values[1].GetInt()];
-                        int amountOfBlendFrames = values[2].GetInt();
+                        int amountOfBlendFrames = values.Count() == 3 ? values[2].GetInt() : (int)Interpolate.currentSettings.interpFactor - 1;
 
                         string img1 = Path.Combine(Interpolate.currentSettings.framesFolder, frameFrom);
                         string img2 = Path.Combine(Interpolate.currentSettings.framesFolder, frameTo);
@@ -87,7 +87,7 @@ namespace Flowframes.Magick
                 }
                 catch (Exception e)
                 {
-                    Logger.Log("Failed to blend scene changes: " + e.Message, true);
+                    Logger.Log($"Failed to blend scene changes: {e.Message}\n{e.StackTrace}", true);
                 }
             }
 
