@@ -31,8 +31,6 @@ namespace Flowframes.Media
                     inArg = $"-i \"{linksDir}/%{Padding.interpFrames}d{GetConcatFileExt(framesFile)}\"";
             }
 
-            fps = fps / new Fraction(itsScale);
-
             string args = "";
 
             for(int i = 0; i < encArgs.Length; i++)
@@ -40,14 +38,20 @@ namespace Flowframes.Media
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
                 string fs = (!isChunk && outMode == Interpolate.OutMode.VidMp4) ? $"-movflags +faststart" : "";
-                args += $"{pre} -fps_mode 0 -r {fps} {inArg} {encArgs[i]} {GetFfmpegExportArgs(resampleFps, extraData)} -threads {Config.GetInt(Config.Key.ffEncThreads)} {fs} {post} ";
+                args += $"{pre} -fps_mode 0 {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData)} -threads {Config.GetInt(Config.Key.ffEncThreads)} {fs} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
-        public static string GetFfmpegExportArgs (Fraction resampleFps, VidExtraData extraData)
+        public static string GetFfmpegExportArgsIn(Fraction fps, float itsScale)
+        {
+            fps = fps / new Fraction(itsScale);
+            return $"-r {fps}";
+        }
+
+        public static string GetFfmpegExportArgsOut (Fraction resampleFps, VidExtraData extraData)
         {
             List<string> filters = new List<string>();
             string extraArgs = "";

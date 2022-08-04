@@ -368,7 +368,7 @@ namespace Flowframes.Os
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
             string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.currentSettings.inFps.GetString()} FPS x{factor} = {Interpolate.currentSettings.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
             
-            string pipedTargetArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y -i pipe: {await Export.GetPipedFfmpegCmd()}";
+            string pipedTargetArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y {await Export.GetPipedFfmpegCmd()}";
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();
