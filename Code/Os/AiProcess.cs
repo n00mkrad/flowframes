@@ -366,9 +366,8 @@ namespace Flowframes.Os
             Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with certain Flowframes features, such as image sequence exporting.");
 
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            string rtArgs = $"-window_title \"Flowframes Realtime Interpolation ({Interpolate.currentSettings.inFps.GetString()} FPS x{factor} = {Interpolate.currentSettings.outFps.GetString()} FPS - {mdl})\" -autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} ";
             
-            string pipedTargetArgs = rt ? $"{Path.Combine(avDir, "ffplay").Wrap()} {rtArgs} - " : $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y {await Export.GetPipedFfmpegCmd()}";
+            string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y {await Export.GetPipedFfmpegCmd(rt)}";
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();

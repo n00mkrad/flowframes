@@ -73,22 +73,34 @@ namespace Flowframes.Main
             }
         }
 
-        public static async Task<string> GetPipedFfmpegCmd()
+        public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
         {
-            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(I.currentSettings.outMode), (I.currentSettings.ScaledResolution.IsEmpty ? I.currentSettings.InputResolution : I.currentSettings.ScaledResolution), I.currentSettings.outFps.GetFloat(), true).FirstOrDefault();
+            InterpSettings s = I.currentSettings;
+            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(s.outMode), (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.GetFloat(), true).FirstOrDefault();
 
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-            bool fpsLimit = maxFps.GetFloat() > 0f && I.currentSettings.outFps.GetFloat() > maxFps.GetFloat();
+            bool fpsLimit = maxFps.GetFloat() > 0f && s.outFps.GetFloat() > maxFps.GetFloat();
 
-            VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
-            string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(I.currentSettings.outFps, I.currentSettings.outItsScale);
+            VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(s.inPath);
+            string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
             string extraArgsOut = FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData);
 
-            I.currentSettings.FullOutPath = Path.Combine(I.currentSettings.outPath, await IoUtils.GetCurrentExportFilename(fpsLimit, true));
-            IoUtils.RenameExistingFile(I.currentSettings.FullOutPath);
+            if (ffplay)
+            {
+                encArgs = $"-pix_fmt {encArgs.Split("-pix_fmt ").Last()}";
 
-            return $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} {I.currentSettings.FullOutPath.Wrap()}";
+                return 
+                    $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} -f yuv4mpegpipe - | ffplay - " +
+                    $"-autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} " +
+                    $"-window_title \"Flowframes Realtime Interpolation ({s.inFps.GetString()} FPS x{s.interpFactor} = {s.outFps.GetString()} FPS) ({s.model.Name})\" ";
+            }
+            else
+            {
+                s.FullOutPath = Path.Combine(s.outPath, await IoUtils.GetCurrentExportFilename(fpsLimit, true));
+                IoUtils.RenameExistingFile(s.FullOutPath);
+                return $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} {s.FullOutPath.Wrap()}";
+            }
         }
 
         static async Task ExportImageSequence (string framesPath, bool stepByStep)
