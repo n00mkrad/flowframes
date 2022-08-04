@@ -1,3 +1,13 @@
+Flowframes 1.38.3 Changelog:
+- Slow-motion feature now works with RIFE-NCNN-VS
+- Added RIFE 2.3 model to RIFE-NCNN-VS (only 2x supported!)
+- Updated RIFE-NCNN and DAIN-NCNN to release 20220728
+- Updated ffmpeg to include SVT-AV1 1.2.0 (previously 1.0.0 was included)
+- Fixed image sequence inputs not working
+- Fixed scene change blending not working with integer interpolation factors
+- Fixed the function that checks for the max vulkan GPU thread count (was unreliable)
+
+
 Flowframes 1.38.2 Changelog:
 - FPS limiting (downsampling) now works with RIFE-NCNN-VS
 - RIFE-NCNN-VS will no longer overwrite existing output files
