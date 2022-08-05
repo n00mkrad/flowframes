@@ -84,7 +84,7 @@ namespace Flowframes.Main
 
             VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(s.inPath);
             string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
-            string extraArgsOut = FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData);
+            string extraArgsOut = FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outMode);
 
             if (ffplay)
             {

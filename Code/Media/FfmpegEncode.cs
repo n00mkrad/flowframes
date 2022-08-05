@@ -37,8 +37,7 @@ namespace Flowframes.Media
             {
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                string fs = (!isChunk && outMode == Interpolate.OutMode.VidMp4) ? $"-movflags +faststart" : "";
-                args += $"{pre} -vsync 0 {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData)} -threads {Config.GetInt(Config.Key.ffEncThreads)} {fs} {post} ";
+                args += $"{pre} -vsync 0 {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, Interpolate.currentSettings.outMode, isChunk)} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
@@ -51,7 +50,7 @@ namespace Flowframes.Media
             return $"-r {fps}";
         }
 
-        public static string GetFfmpegExportArgsOut (Fraction resampleFps, VidExtraData extraData)
+        public static string GetFfmpegExportArgsOut (Fraction resampleFps, VidExtraData extraData, Interpolate.OutMode outMode, bool isChunk = false)
         {
             List<string> filters = new List<string>();
             string extraArgs = "";
@@ -67,7 +66,10 @@ namespace Flowframes.Media
             }
 
             if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
-                extraArgs += $"-aspect {extraData.displayRatio}";
+                extraArgs += $" -aspect {extraData.displayRatio}";
+
+            if(!isChunk && outMode == Interpolate.OutMode.VidMp4)
+                extraArgs += $" -movflags +faststart";
 
             return filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "" + $" {extraArgs}";
         }
