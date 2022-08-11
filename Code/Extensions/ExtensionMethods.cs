@@ -36,7 +36,7 @@ namespace Flowframes
 
         public static int GetInt(this string str)
         {
-            if (str.Length < 1 || str == null)
+            if (str == null || str.Length < 1)
                 return 0;
 
             try
@@ -74,7 +74,7 @@ namespace Flowframes
 
         public static float GetFloat(this string str)
         {
-            if (str.Length < 1 || str == null)
+            if (str == null || str.Length < 1)
                 return 0f;
 
             string num = str.TrimNumbers(true).Replace(",", ".");
@@ -117,7 +117,7 @@ namespace Flowframes
             return i;
         }
 
-        public static float Clamp(this float i, int min, float max)
+        public static float Clamp(this float i, float min, float max)
         {
             if (i < min)
                 i = min;
@@ -159,14 +159,14 @@ namespace Flowframes
         public static string Remove(this string str, string stringToRemove)
         {
             if (str == null || stringToRemove == null)
-                return str;
+                return "";
 
             return str.Replace(stringToRemove, "");
         }
 
         public static string TrimWhitespaces(this string str)
         {
-            if (str == null) return str;
+            if (str == null) return "";
             var newString = new StringBuilder();
             bool previousIsWhitespace = false;
             for (int i = 0; i < str.Length; i++)

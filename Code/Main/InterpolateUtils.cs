@@ -221,11 +221,13 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> CheckEncoderValid (float encodeFps)
+        public static async Task<bool> CheckEncoderValid (float interpFps)
         {
             string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.currentSettings.outMode));
 
-            float maxAv1Fps = 240;
+            float maxAv1Fps = 240; // SVT-AV1 only supports up to 240 FPS as of 2022-08
+            float maxFps = Config.GetFloat(Config.Key.maxFps);
+            float encodeFps = maxFps > 0 ? interpFps.Clamp(0, maxFps) : interpFps;
 
             if (enc.ToLower().Contains("av1") && encodeFps > maxAv1Fps)
             {

@@ -187,24 +187,24 @@ namespace Flowframes.IO
 
         public static float GetFloat(Key key)
         {
-            return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
+            return Get(key, Type.Float).GetFloat();
         }
 
         public static float GetFloat(Key key, float defaultVal)
         {
             WriteIfDoesntExist(key.ToString(), defaultVal.ToStringDot());
-            return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
+            return Get(key, Type.Float).GetFloat();
         }
 
         public static float GetFloat(string key)
         {
-            return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
+            return Get(key, Type.Float).GetFloat();
         }
 
         public static float GetFloat(string key, float defaultVal)
         {
             WriteIfDoesntExist(key.ToString(), defaultVal.ToStringDot());
-            return float.Parse(Get(key, Type.Float), CultureInfo.InvariantCulture);
+            return Get(key, Type.Float).GetFloat();
         }
 
         public static string GetFloatString (Key key)
