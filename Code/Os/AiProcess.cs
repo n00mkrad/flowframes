@@ -339,6 +339,8 @@ namespace Flowframes.Os
 
         public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl, bool rt = false)
         {
+            if(Interpolate.canceled) return;
+
             AI ai = Implementations.rifeNcnnVs;
             processTimeMulti.Restart();
 
@@ -385,7 +387,8 @@ namespace Flowframes.Os
                 Loop = Config.GetBool(Config.Key.enableLoop),
                 MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
                 Dedupe = Config.GetInt(Config.Key.dedupMode) != 0,
-                Realtime = rt
+                Realtime = rt,
+                Osd = Config.GetBool(Config.Key.vsRtShowOsd),
             };
 
             if (rt)
@@ -675,7 +678,7 @@ namespace Flowframes.Os
 
             if (ai.Piped) // VS specific
             {
-                if (!hasShownError && line.ToLower().Contains("fwrite() call failed"))
+                if (!hasShownError && Interpolate.currentSettings.outMode != Interpolate.OutMode.Realtime && line.ToLower().Contains("fwrite() call failed"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);

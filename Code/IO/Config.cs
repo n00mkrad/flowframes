@@ -299,7 +299,6 @@ namespace Flowframes.IO
         public enum Key
         {
             aacBitrate,
-            askedForDevModeVersion,
             aiCombox,
             allowConsecutiveSceneChanges,
             allowCustomInputRate,
@@ -307,11 +306,13 @@ namespace Flowframes.IO
             allowSymlinkEncoding,
             allowSymlinkImport,
             alwaysWaitForAutoEnc,
+            askedForDevModeVersion,
             autoEncBackupMode,
             autoEncDebug,
             autoEncMode,
             autoEncSafeBufferCuda,
             autoEncSafeBufferNcnn,
+            av1Crf,
             aviCodec,
             aviColors,
             clearLogOnInput,
@@ -337,7 +338,6 @@ namespace Flowframes.IO
             gifDitherType,
             h264Crf,
             h265Crf,
-            av1Crf,
             imgSeqFormat,
             imgSeqQuality,
             imgSeqSampleCount,
@@ -349,8 +349,8 @@ namespace Flowframes.IO
             keepMeta,
             keepSubs,
             keepTempFolder,
-            loopMode,
             lastUsedAiName,
+            loopMode,
             lowDiskSpaceCancelGb,
             lowDiskSpacePauseGb,
             maxFps,
@@ -359,13 +359,13 @@ namespace Flowframes.IO
             minOutVidLength,
             minVidLength,
             mp4Enc,
-            pixFmt,
             mpdecimateMode,
             ncnnGpus,
             ncnnThreads,
             opusBitrate,
-            processingMode,
+            pixFmt,
             proResProfile,
+            processingMode,
             rifeCudaBufferSize,
             rifeCudaFp16,
             rifeNcnnUseTta,
@@ -379,8 +379,9 @@ namespace Flowframes.IO
             tempFolderLoc,
             torchGpus,
             uhdThresh,
-            vsUseLsmash,
-            vp9Crf
+            vp9Crf,
+            vsRtShowOsd,
+            vsUseLsmash
         }
     }
 }

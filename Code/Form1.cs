@@ -74,7 +74,7 @@ namespace Flowframes
             if (Debugger.IsAttached)
             {
                 Logger.Log("Debugger is attached - Flowframes seems to be running within VS.");
-                realtimeBtn.Visible = true;
+                // ...
             }
 
             completionAction.SelectedIndex = 0;
@@ -319,18 +319,32 @@ namespace Flowframes
                 outputTbox.Text = dialog.FileName;
         }
 
-        public void runBtn_Click(object sender, EventArgs e)
+        public async void runBtn_Click(object sender, EventArgs e)
         {
             if (Interpolate.currentMediaFile == null || !Interpolate.currentMediaFile.Initialized)
                 return;
 
             ValidateFactor();
 
-            if (!BatchProcessing.busy)      // Don't load values from gui if batch processing is used
+            if (!BatchProcessing.busy)      // Don't load values from GUI if batch processing is used
                 Interpolate.currentSettings = GetCurrentSettings();
 
             AiProcessSuspend.Reset();
-            Interpolate.Start();
+
+            if(Interpolate.currentSettings.outMode == Interpolate.OutMode.Realtime)
+            {
+                await Interpolate.Realtime();
+                SetProgress(0);
+            }
+            else
+            {
+                await Interpolate.Start();
+            }
+        }
+
+        private async void RealtimeInterp(object sender, EventArgs e)
+        {
+            
         }
 
         public ModelCollection.ModelInfo GetModel(AI currentAi)
@@ -354,6 +368,7 @@ namespace Flowframes
             if (outModeCombox.Text.ToLower().Contains("avi")) outMode = Interpolate.OutMode.VidAvi;
             if (outModeCombox.Text.ToLower().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
             if (outModeCombox.Text.ToLower().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
+            if (outModeCombox.Text.ToLower().Contains("real")) outMode = Interpolate.OutMode.Realtime;
             return outMode;
         }
 
@@ -370,6 +385,7 @@ namespace Flowframes
                 if (mode == Interpolate.OutMode.VidAvi && currentItem.Contains("avi")) targetIndex = i;
                 if (mode == Interpolate.OutMode.VidGif && currentItem.Contains("gif")) targetIndex = i;
                 if (mode == Interpolate.OutMode.ImgPng && currentItem.Contains("image")) targetIndex = i;
+                if (mode == Interpolate.OutMode.Realtime && currentItem.Contains("real")) targetIndex = i;
             }
 
             outModeCombox.SelectedIndex = targetIndex;
@@ -713,17 +729,6 @@ namespace Flowframes
         }
 
         #endregion
-
-        private async void scnDetectTestBtn_Click(object sender, EventArgs e)
-        {
-            if (BatchProcessing.busy || !File.Exists(inputTbox.Text.Trim())) return;
-
-            Interpolate.currentSettings = GetCurrentSettings();
-
-            AiProcessSuspend.Reset();
-            await Interpolate.Realtime();
-            SetProgress(0);
-        }
 
         private void pauseBtn_Click(object sender, EventArgs e)
         {

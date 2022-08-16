@@ -96,7 +96,6 @@
             this.completionAction = new System.Windows.Forms.ComboBox();
             this.label25 = new System.Windows.Forms.Label();
             this.encodingSettingsBtn = new HTAlt.WinForms.HTButton();
-            this.realtimeBtn = new HTAlt.WinForms.HTButton();
             this.inputInfo = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.browseOutBtn = new HTAlt.WinForms.HTButton();
@@ -227,7 +226,8 @@
             "MOV Video (Apple ProRes)",
             "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
             "Animated GIF (Only supports up to 50 FPS)",
-            "Image Sequence (PNG, JPG, WEBP)"});
+            "Image Sequence (PNG, JPG, WEBP)",
+            "Real-time Interpolation (Video only)"});
             this.outModeCombox.Location = new System.Drawing.Point(281, 157);
             this.outModeCombox.Name = "outModeCombox";
             this.outModeCombox.Size = new System.Drawing.Size(400, 23);
@@ -920,7 +920,6 @@
             this.interpOptsTab.Controls.Add(this.outSpeedCombox);
             this.interpOptsTab.Controls.Add(this.completionActionPanel);
             this.interpOptsTab.Controls.Add(this.encodingSettingsBtn);
-            this.interpOptsTab.Controls.Add(this.realtimeBtn);
             this.interpOptsTab.Controls.Add(this.inputInfo);
             this.interpOptsTab.Controls.Add(this.label1);
             this.interpOptsTab.Controls.Add(this.browseOutBtn);
@@ -1041,21 +1040,6 @@
             this.encodingSettingsBtn.Text = "Encoding Settings";
             this.encodingSettingsBtn.UseVisualStyleBackColor = false;
             this.encodingSettingsBtn.Click += new System.EventHandler(this.encodingSettingsBtn_Click);
-            // 
-            // realtimeBtn
-            // 
-            this.realtimeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.realtimeBtn.FlatAppearance.BorderSize = 0;
-            this.realtimeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.realtimeBtn.ForeColor = System.Drawing.Color.White;
-            this.realtimeBtn.Location = new System.Drawing.Point(689, 185);
-            this.realtimeBtn.Name = "realtimeBtn";
-            this.realtimeBtn.Size = new System.Drawing.Size(206, 23);
-            this.realtimeBtn.TabIndex = 38;
-            this.realtimeBtn.Text = "Realtime Interpolation";
-            this.realtimeBtn.UseVisualStyleBackColor = false;
-            this.realtimeBtn.Visible = false;
-            this.realtimeBtn.Click += new System.EventHandler(this.scnDetectTestBtn_Click);
             // 
             // inputInfo
             // 
@@ -1824,7 +1808,6 @@
         private System.Windows.Forms.Panel mpDedupePanel;
         private System.Windows.Forms.ComboBox mpdecimateMode;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private HTAlt.WinForms.HTButton realtimeBtn;
         private System.Windows.Forms.Panel busyControlsPanel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button pauseBtn;

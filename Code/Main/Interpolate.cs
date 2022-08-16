@@ -22,7 +22,7 @@ namespace Flowframes
 {
     public class Interpolate
     {
-        public enum OutMode { VidMp4, VidMkv, VidWebm, VidProRes, VidAvi, VidGif, ImgPng }
+        public enum OutMode { VidMp4, VidMkv, VidWebm, VidProRes, VidAvi, VidGif, ImgPng, Realtime }
 
         public static bool currentlyUsingAutoEnc;
         public static InterpSettings currentSettings;
@@ -89,7 +89,13 @@ namespace Flowframes
 
         public static async Task Realtime ()
         {
+            Program.mainForm.SetWorking(true);
+
+            if(currentSettings.ai.NameInternal != Implementations.rifeNcnnVs.NameInternal)
+                Cancel($"Real-time interpolation is only available when using {Implementations.rifeNcnnVs.FriendlyName}.");
+
             await AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, "", currentSettings.interpFactor, currentSettings.model.Dir, true);
+            Program.mainForm.SetWorking(false);
         }
 
         public static async Task GetFrames()
