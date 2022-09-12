@@ -135,6 +135,7 @@ namespace Flowframes.IO
         public static async Task DownloadModelFiles (AI ai, string modelDir, bool log = true)
         {
             string aiDir = ai.PkgDir;
+
             Logger.Log($"DownloadModelFiles(string ai = {ai.NameInternal}, string model = {modelDir}, bool log = {log})", true);
 
             try
@@ -147,7 +148,8 @@ namespace Flowframes.IO
                 Logger.Log($"Downloading '{modelDir}' model files...", !log);
                 Directory.CreateDirectory(mdlDir);
 
-                await DownloadTo(GetMdlFileUrl(aiDir, modelDir, "files.json"), mdlDir, false);
+                string remoteDir = aiDir.EndsWith("-ncnn-vs") ? aiDir.Remove(aiDir.Length - 3) : aiDir;
+                await DownloadTo(GetMdlFileUrl(remoteDir, modelDir, "files.json"), mdlDir, false);
 
                 string jsonPath = Path.Combine(mdlDir, "files.json");
                 List<ModelFile> modelFiles = GetModelFilesFromJson(File.ReadAllText(jsonPath));
@@ -167,7 +169,7 @@ namespace Flowframes.IO
                 foreach (ModelFile mf in modelFiles)
                 {
                     string relPath = Path.Combine(mf.dir, mf.filename).Replace("\\", "/");
-                    await DownloadTo(GetMdlFileUrl(aiDir, modelDir, relPath), Path.Combine(mdlDir, relPath), log);
+                    await DownloadTo(GetMdlFileUrl(remoteDir, modelDir, relPath), Path.Combine(mdlDir, relPath), log);
                 }
 
                 Logger.Log($"Downloaded \"{modelDir}\" model files.", !log, true);
