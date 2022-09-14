@@ -3,6 +3,7 @@
 	"name": "RIFE 2.3",
 	"desc": "Old Model",
 	"dir": "rife-v2.3",
+	"isDefault": "false",
 	"fixedFactors": [2]
 },
 {
@@ -15,7 +16,7 @@
 	"name": "RIFE 4.3",
 	"desc": "New Fast General Model",
 	"dir": "rife-v4.3",
-	"isDefault": "true"
+	"isDefault": "false"
 },
 {
 	"name": "RIFE 4.4",

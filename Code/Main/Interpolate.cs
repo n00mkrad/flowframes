@@ -89,10 +89,19 @@ namespace Flowframes
 
         public static async Task Realtime ()
         {
+            canceled = false;
+
             Program.mainForm.SetWorking(true);
 
             if(currentSettings.ai.NameInternal != Implementations.rifeNcnnVs.NameInternal)
                 Cancel($"Real-time interpolation is only available when using {Implementations.rifeNcnnVs.FriendlyName}.");
+
+            if (canceled) return;
+
+            Program.mainForm.SetStatus("Downloading models...");
+            await ModelDownloader.DownloadModelFiles(currentSettings.ai, currentSettings.model.Dir);
+
+            if (canceled) return;
 
             await AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, "", currentSettings.interpFactor, currentSettings.model.Dir, true);
             Program.mainForm.SetWorking(false);
