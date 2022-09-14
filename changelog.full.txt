@@ -1,3 +1,10 @@
+Flowframes 1.39.0 Changelog:
+- Added real-time interpolation output mode (with RIFE-NCNN-VS)
+- Added RIFE 4.4 and RIFE 4.3 models
+- Option "Import HQ JPEG instead of PNG" no longer breaks with RIFE-NCNN-VS
+- Fix AV1 export showing an error when exporting >240 FPS that's limited to <=240 FPS
+
+
 Flowframes 1.38.3 Changelog:
 - Slow-motion feature now works with RIFE-NCNN-VS
 - Added RIFE 2.3 model to RIFE-NCNN-VS (only 2x supported!)
