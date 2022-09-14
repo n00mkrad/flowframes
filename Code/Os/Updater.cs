@@ -13,7 +13,7 @@ namespace Flowframes.Os
     class Updater
     {
         public enum VersionCompareResult { Older, Newer, Equal };
-        public static string latestVerUrl = "https://dl.nmkd.de/flowframes/exe/ver.ini";
+        public static string latestVerUrl = "https://raw.githubusercontent.com/n00mkrad/flowframes/main/ver.txt";
 
         public static string GetInstalledVerStr()
         {
