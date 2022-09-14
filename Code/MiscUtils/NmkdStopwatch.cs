@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Flowframes.MiscUtils
 {
     class NmkdStopwatch
     {
-        public Stopwatch sw = new Stopwatch();
-        public long ElapsedMs { get { return sw.ElapsedMilliseconds; } }
+        public Stopwatch Sw = new Stopwatch();
+        public TimeSpan Elapsed { get { return Sw.Elapsed; } }
+        public long ElapsedMs { get { return Sw.ElapsedMilliseconds; } }
 
         public NmkdStopwatch(bool startOnCreation = true)
         {
             if (startOnCreation)
-                sw.Restart();
+                Sw.Restart();
         }
 
         public override string ToString()
         {
-            return FormatUtils.TimeSw(sw);
+            return FormatUtils.TimeSw(Sw);
         }
     }
 }

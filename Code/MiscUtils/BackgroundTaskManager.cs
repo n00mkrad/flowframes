@@ -37,7 +37,7 @@ namespace Flowframes.MiscUtils
         {
             foreach(RunningTask task in runningTasks)
             {
-                if(task.timer.sw.ElapsedMilliseconds > task.timeoutSeconds * 1000)
+                if(task.timer.Sw.ElapsedMilliseconds > task.timeoutSeconds * 1000)
                 {
                     Logger.Log($"[BgTaskMgr] Task with ID {task.id} timed out, has been running for {task.timer}!", true);
                     runningTasks.Remove(task);

@@ -80,8 +80,8 @@ namespace Flowframes
 
             if (!show)
             {
-                ffmpeg.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.sw.Restart(); };
-                ffmpeg.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.sw.Restart(); };
+                ffmpeg.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.Sw.Restart(); };
+                ffmpeg.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.Sw.Restart(); };
             }
 
             ffmpeg.Start();
