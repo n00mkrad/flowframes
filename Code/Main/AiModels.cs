@@ -30,7 +30,7 @@ namespace Flowframes.Main
             {
                 string name = customModel.Remove("_alpha").Remove("_custom");
                 bool alpha = customModel.Contains("_alpha");
-                modelCollection.Models.Add(new ModelCollection.ModelInfo() { Ai = ai, Name = name, Desc = "Custom Model", SupportsAlpha = alpha, IsDefault = false });
+                modelCollection.Models.Add(new ModelCollection.ModelInfo() { Ai = ai, Name = name, Desc = "Custom Model", Dir = customModel, SupportsAlpha = alpha, IsDefault = false });
             }
 
             return modelCollection;
