@@ -168,8 +168,6 @@ namespace Flowframes
 
             if (Config.GetInt(Config.Key.dedupMode) == 1)
                 await Dedupe.Run(currentSettings.framesFolder);
-            else
-                Dedupe.ClearCache();
 
             if (!Config.GetBool(Config.Key.enableLoop))
             {

@@ -500,17 +500,18 @@ namespace Flowframes.Media
                 validExtensions = new List<string>();
 
             validExtensions = validExtensions.Select(x => x.Remove(".").ToLower()).ToList(); // Ignore "." in extensions
-            string concatFileContent = "";
             string[] files = IoUtils.GetFilesSorted(inputFilesDir);
             int fileCount = 0;
+
+            if (File.Exists(outputPath)) File.Delete(outputPath);
+            StreamWriter concatFile = new StreamWriter(outputPath, append: true);
 
             foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLower())))
             {
                 fileCount++;
-                concatFileContent += $"file '{file.Replace(@"\", "/")}'\n";
+                concatFile.WriteLine($"file '{file.Replace(@"\", "/")}'\n");
             }
 
-            File.WriteAllText(outputPath, concatFileContent);
             return fileCount;
         }
 
