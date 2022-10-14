@@ -315,7 +315,7 @@ namespace Flowframes.IO
 		public static async Task<Fraction> GetVideoFramerate (string path)
         {
 			string[] preferFfmpegReadoutFormats = new string[] { ".gif", ".png", ".apng", ".webp" };
-			bool preferFfmpegReadout = preferFfmpegReadoutFormats.Contains(Path.GetExtension(path).ToLower());
+			bool preferFfmpegReadout = preferFfmpegReadoutFormats.Contains(Path.GetExtension(path).ToLowerInvariant());
 
             Fraction fps = new Fraction();
 

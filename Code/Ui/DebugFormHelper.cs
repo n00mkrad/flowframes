@@ -54,7 +54,7 @@ namespace Flowframes.Ui
 
         public static void ToggleMonospace(TextBox logBox)
         {
-            bool isMonospace = logBox.Font.Name.ToLower().Contains("consolas");
+            bool isMonospace = logBox.Font.Name.ToLowerInvariant().Contains("consolas");
 
             if (isMonospace)
                 logBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5f);

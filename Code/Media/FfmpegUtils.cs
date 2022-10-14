@@ -75,7 +75,7 @@ namespace Flowframes.Media
                             string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
                             string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
                             string profile = await GetFfprobeInfoAsync(path, showStreams, "profile", idx);
-                            if (codec.ToLower() == "dts" && profile != "unknown") codec = profile;
+                            if (codec.ToLowerInvariant() == "dts" && profile != "unknown") codec = profile;
                             string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
                             int kbits = (await GetFfprobeInfoAsync(path, showStreams, "bit_rate", idx)).GetInt() / 1024;
                             int sampleRate = (await GetFfprobeInfoAsync(path, showStreams, "sample_rate", idx)).GetInt();
@@ -223,14 +223,14 @@ namespace Flowframes.Media
 
             if (codec == Codec.H264)
             {
-                string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
+                string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" ");
                 string g = GetKeyIntArg(fps, keyint);
                 return new string[] { $"-c:v {GetEnc(codec)} -crf {Config.GetInt(Config.Key.h264Crf)} -preset {preset} {g} -pix_fmt {GetPixFmt()}" };
             }
 
             if (codec == Codec.H265)
             {
-                string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
+                string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" ");
                 int crf = Config.GetInt(Config.Key.h265Crf);
                 string g = GetKeyIntArg(fps, keyint);
                 return new string[] { $"-c:v {GetEnc(codec)} {(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset} {g} -pix_fmt {GetPixFmt()}" };
@@ -318,7 +318,7 @@ namespace Flowframes.Media
 
         static string GetVp9Speed()
         {
-            string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
+            string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" ");
             string arg = "";
 
             if (preset == "veryslow") arg = "0";
@@ -334,7 +334,7 @@ namespace Flowframes.Media
 
         static string GetSvtAv1Speed()
         {
-            string preset = Config.Get(Config.Key.ffEncPreset).ToLower().Remove(" ");
+            string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" ");
             string arg = "8";
 
             if (preset == "veryslow") arg = "3";
@@ -499,12 +499,12 @@ namespace Flowframes.Media
             if (validExtensions == null)
                 validExtensions = new List<string>();
 
-            validExtensions = validExtensions.Select(x => x.Remove(".").ToLower()).ToList(); // Ignore "." in extensions
+            validExtensions = validExtensions.Select(x => x.Remove(".").ToLowerInvariant()).ToList(); // Ignore "." in extensions
             string concatFileContent = "";
             string[] files = IoUtils.GetFilesSorted(inputFilesDir);
             int fileCount = 0;
 
-            foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLower())))
+            foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLowerInvariant())))
             {
                 fileCount++;
                 concatFileContent += $"file '{file.Replace(@"\", "/")}'\n";

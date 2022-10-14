@@ -84,7 +84,7 @@ namespace Flowframes.Media
             Directory.CreateDirectory(outDir);
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
-            format = format.ToLower();
+            format = format.ToLowerInvariant();
 
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {

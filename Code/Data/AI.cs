@@ -18,7 +18,7 @@ namespace Flowframes.Data
         public string NameLong { get; set; } = "";
         public string FriendlyName { get { return $"{NameShort} ({GetFrameworkString(Backend)})"; } }
         public string Description { get { return $"{GetImplemString(Backend)} of {NameShort}{(Backend == AiBackend.Pytorch ? " (Nvidia Only!)" : "")}"; } }
-        public string PkgDir { get { return NameInternal.Replace("_", "-").ToLower(); } }
+        public string PkgDir { get { return NameInternal.Replace("_", "-").ToLowerInvariant(); } }
         public enum InterpFactorSupport { Fixed, AnyPowerOfTwo, AnyInteger, AnyFloat }
         public InterpFactorSupport FactorSupport { get; set; } = InterpFactorSupport.Fixed;
         public int[] SupportedFactors { get; set; } = new int[0];
