@@ -504,7 +504,10 @@ namespace Flowframes.Media
             string[] files = IoUtils.GetFilesSorted(inputFilesDir);
             int fileCount = 0;
 
-            foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLowerInvariant())))
+            IoUtils.TryDeleteIfExists(outputPath);
+            StreamWriter concatFile = new StreamWriter(outputPath, append: true);
+
+            foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLower())))
             {
                 fileCount++;
                 concatFile.WriteLine($"file '{file.Replace(@"\", "/")}'\n");
