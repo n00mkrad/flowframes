@@ -253,7 +253,7 @@ namespace Flowframes
         {
             try
             {
-                return Path.GetExtension(filePath)?.ToLower() == ".concat";
+                return Path.GetExtension(filePath)?.ToLowerInvariant() == ".concat";
             }
             catch
             {

@@ -150,7 +150,7 @@ namespace Flowframes.Os
                     char pathDriveLetter = (path[0].ToString().ToUpper())[0];
                     foreach (var detectedDrive in detectedDrives)
                     {
-                        if (detectedDrive.DriveLetter == pathDriveLetter && detectedDrive.HardwareType.ToString().ToLower().Trim() == "ssd")
+                        if (detectedDrive.DriveLetter == pathDriveLetter && detectedDrive.HardwareType.ToString().ToLowerInvariant().Trim() == "ssd")
                             return true;
                     }
                 }
@@ -296,7 +296,7 @@ namespace Flowframes.Os
                     {
                         string gpuName = property.Value.ToString();
 
-                        if (!gpuName.ToLower().Contains("microsoft"))   // To ignore pseudo-GPUs like on vServers, RDP sessions, etc. (e.g. "Microsoft Basic Display Adapter")
+                        if (!gpuName.ToLowerInvariant().Contains("microsoft"))   // To ignore pseudo-GPUs like on vServers, RDP sessions, etc. (e.g. "Microsoft Basic Display Adapter")
                         {
                             gpus.Add(gpuName);
                             Logger.Log($"[GetGpus] Found GPU: {property.Value}", true);

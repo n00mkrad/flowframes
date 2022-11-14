@@ -54,7 +54,7 @@ namespace Flowframes.Main
             {
                 UpdateChunkAndBufferSizes();
 
-                bool imgSeq = Interpolate.currentSettings.outMode.ToString().ToLower().StartsWith("img");
+                bool imgSeq = Interpolate.currentSettings.outMode.ToString().ToLowerInvariant().StartsWith("img");
                 interpFramesFolder = interpFramesPath;
                 videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
 

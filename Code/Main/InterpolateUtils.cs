@@ -229,14 +229,14 @@ namespace Flowframes.Main
             float maxFps = Config.GetFloat(Config.Key.maxFps);
             float encodeFps = maxFps > 0 ? interpFps.Clamp(0, maxFps) : interpFps;
 
-            if (enc.ToLower().Contains("av1") && encodeFps > maxAv1Fps)
+            if (enc.ToLowerInvariant().Contains("av1") && encodeFps > maxAv1Fps)
             {
                 UiUtils.ShowMessageBox($"The selected encoder only supports up to {maxAv1Fps} FPS!\nPlease use a different encoder or reduce the interpolation factor.", UiUtils.MessageType.Error);
                 I.Cancel();
                 return false;
             }
 
-            if (enc.ToLower().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
+            if (enc.ToLowerInvariant().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
             {
                 UiUtils.ShowMessageBox("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", UiUtils.MessageType.Error);
                 I.Cancel();

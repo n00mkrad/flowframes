@@ -224,7 +224,7 @@ namespace Flowframes
             try
             {
                 string[] lines = info.SplitIntoLines();
-                string lastLine = lines.Last().ToLower();
+                string lastLine = lines.Last().ToLowerInvariant();
                 return lastLine.Substring(0, lastLine.IndexOf("fps")).GetInt();
             }
             catch
@@ -245,7 +245,7 @@ namespace Flowframes
             Logger.Log($"IsEncoderCompatible('{enc}')", true, false, "ffmpeg");
             string args = $"-loglevel error -f lavfi -i color=black:s=540x540 -vframes 1 -an -c:v {enc} -f null -";
             string output = await RunFfmpeg(args, LogMode.Hidden);
-            return !output.ToLower().Contains("error");
+            return !output.ToLowerInvariant().Contains("error");
         }
 
         public static string GetAudioCodec(string path, int streamIndex = -1)

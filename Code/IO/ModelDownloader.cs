@@ -20,7 +20,7 @@ namespace Flowframes.IO
             string custServer = Config.Get(Config.Key.customServer);
             string server = custServer.Trim().Length > 3 ? custServer : Servers.GetServer().GetUrl();
             string baseUrl = $"{server}/flowframes/mdl/";
-            return Path.Combine(baseUrl, ai.ToLower(), relPath);
+            return Path.Combine(baseUrl, ai.ToLowerInvariant(), relPath);
         }
 
         static string GetMdlFileUrl(string ai, string model, string relPath)

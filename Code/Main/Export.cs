@@ -30,7 +30,7 @@ namespace Flowframes.Main
                 await Blend.BlendSceneChanges(frameFile);
             }
             
-            if (!mode.ToString().ToLower().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
+            if (!mode.ToString().ToLowerInvariant().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
                 {
@@ -139,7 +139,7 @@ namespace Flowframes.Main
 
         static int GetImgSeqQ (string format)
         {
-            if(format.ToLower() == "jpg" || format.ToLower() == "jpeg")
+            if(format.ToLowerInvariant() == "jpg" || format.ToLowerInvariant() == "jpeg")
             {
                 switch (Config.GetInt(Config.Key.imgSeqQuality))
                 {
@@ -151,7 +151,7 @@ namespace Flowframes.Main
                 }
             }
 
-            if (format.ToLower() == "webp")
+            if (format.ToLowerInvariant() == "webp")
             {
                 switch (Config.GetInt(Config.Key.imgSeqQuality))
                 {
@@ -307,7 +307,7 @@ namespace Flowframes.Main
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
-            if (mode.ToString().ToLower().StartsWith("img"))    // Image Sequence output mode, not video
+            if (mode.ToString().ToLowerInvariant().StartsWith("img"))    // Image Sequence output mode, not video
             {
                 string desiredFormat = Config.Get(Config.Key.imgSeqFormat);
                 string availableFormat = Path.GetExtension(IoUtils.GetFilesSorted(interpDir)[0]).Remove(".").ToUpper();

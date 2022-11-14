@@ -150,7 +150,7 @@ namespace Flowframes
         {
             foreach (TabPage tab in mainTabControl.TabPages)
             {
-                if (tab.Text.ToLower() == tabName.ToLower())
+                if (tab.Text.ToLowerInvariant() == tabName.ToLowerInvariant())
                     mainTabControl.SelectedTab = tab;
             }
 
@@ -362,13 +362,13 @@ namespace Flowframes
         Interpolate.OutMode GetOutMode()
         {
             Interpolate.OutMode outMode = Interpolate.OutMode.VidMp4;
-            if (outModeCombox.Text.ToLower().Contains("mkv")) outMode = Interpolate.OutMode.VidMkv;
-            if (outModeCombox.Text.ToLower().Contains("webm")) outMode = Interpolate.OutMode.VidWebm;
-            if (outModeCombox.Text.ToLower().Contains("prores")) outMode = Interpolate.OutMode.VidProRes;
-            if (outModeCombox.Text.ToLower().Contains("avi")) outMode = Interpolate.OutMode.VidAvi;
-            if (outModeCombox.Text.ToLower().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
-            if (outModeCombox.Text.ToLower().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
-            if (outModeCombox.Text.ToLower().Contains("real")) outMode = Interpolate.OutMode.Realtime;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("mkv")) outMode = Interpolate.OutMode.VidMkv;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("webm")) outMode = Interpolate.OutMode.VidWebm;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("prores")) outMode = Interpolate.OutMode.VidProRes;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("avi")) outMode = Interpolate.OutMode.VidAvi;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
+            if (outModeCombox.Text.ToLowerInvariant().Contains("real")) outMode = Interpolate.OutMode.Realtime;
             return outMode;
         }
 
@@ -378,7 +378,7 @@ namespace Flowframes
 
             for (int i = 0; i < outModeCombox.Items.Count; i++)
             {
-                string currentItem = outModeCombox.Items[i].ToString().ToLower();
+                string currentItem = outModeCombox.Items[i].ToString().ToLowerInvariant();
                 if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) targetIndex = i;
                 if (mode == Interpolate.OutMode.VidWebm && currentItem.Contains("webm")) targetIndex = i;
                 if (mode == Interpolate.OutMode.VidProRes && currentItem.Contains("prores")) targetIndex = i;
