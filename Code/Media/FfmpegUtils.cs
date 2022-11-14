@@ -507,10 +507,9 @@ namespace Flowframes.Media
             foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLowerInvariant())))
             {
                 fileCount++;
-                concatFileContent += $"file '{file.Replace(@"\", "/")}'\n";
+                concatFile.WriteLine($"file '{file.Replace(@"\", "/")}'\n");
             }
 
-            File.WriteAllText(outputPath, concatFileContent);
             return fileCount;
         }
 

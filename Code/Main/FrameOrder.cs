@@ -39,9 +39,9 @@ namespace Flowframes.Main
             {
                 Logger.Log($"Error generating frame order information: {e.Message}\n{e.StackTrace}");
             }
-        }
+		}
 
-        static Dictionary<string, List<string>> dupesDict = new Dictionary<string, List<string>>();
+		static Dictionary<string, List<string>> dupesDict = new Dictionary<string, List<string>>();
 
         static void LoadDupesFile(string path)
         {

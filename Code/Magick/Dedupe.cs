@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 using Flowframes.IO;
 using ImageMagick;
 using Flowframes.Os;
@@ -14,225 +15,245 @@ using Newtonsoft.Json;
 
 namespace Flowframes.Magick
 {
-    class Dedupe
-    {
-        public enum Mode { None, Info, Enabled, Auto }
-        public static Mode currentMode;
-        public static float currentThreshold;
+	class Dedupe
+	{
+		public enum Mode { None, Info, Enabled, Auto }
+		public static Mode currentMode;
+		public static float currentThreshold;
 
-        public static async Task Run(string path, bool testRun = false, bool setStatus = true)
-        {
-            if (path == null || !Directory.Exists(path) || Interpolate.canceled)
-                return;
+		public static async Task Run(string path, bool testRun = false, bool setStatus = true)
+		{
+			if (path == null || !Directory.Exists(path) || Interpolate.canceled)
+				return;
 
-            currentMode = Mode.Auto;
+			currentMode = Mode.Auto;
 
-            if(setStatus)
-                Program.mainForm.SetStatus("Running frame de-duplication");
+			if (setStatus)
+				Program.mainForm.SetStatus("Running frame de-duplication");
 
-            currentThreshold = Config.GetFloat(Config.Key.dedupThresh);
-            Logger.Log("Running accurate frame de-duplication...");
+			currentThreshold = Config.GetFloat(Config.Key.dedupThresh);
+			Logger.Log("Running accurate frame de-duplication...");
 
-            if (currentMode == Mode.Enabled || currentMode == Mode.Auto)
-                await RemoveDupeFrames(path, currentThreshold, "*", testRun, false, (currentMode == Mode.Auto));
-        }
+			if (currentMode == Mode.Enabled || currentMode == Mode.Auto)
+				await RemoveDupeFrames(path, currentThreshold, "*", testRun, false, (currentMode == Mode.Auto));
+		}
 
-        public static Dictionary<string, MagickImage> imageCache = new Dictionary<string, MagickImage>();
-        static MagickImage GetImage(string path)
-        {
-            bool allowCaching = true;
+		static MagickImage GetImage(string path)
+		{
+			return new MagickImage(path);
+		}
 
-            if (!allowCaching)
-                return new MagickImage(path);
+		public static async Task RemoveDupeFrames(string path, float threshold, string ext, bool testRun = false, bool debugLog = false, bool skipIfNoDupes = false)
+		{
+			Stopwatch sw = new Stopwatch();
+			sw.Restart();
+			Logger.Log("Removing duplicate frames - Threshold: " + threshold.ToString("0.00"));
 
-            if (!imageCache.ContainsKey(path))
-                imageCache.Add(path, new MagickImage(path));
+			FileInfo[] framePaths = IoUtils.GetFileInfosSorted(path, false, "*." + ext);
+			List<string> framesToDelete = new List<string>();
 
-            return imageCache[path];
-        }
+			int statsFramesKept = framePaths.Length > 0 ? 1 : 0; // always keep at least one frame
+			int statsFramesDeleted = 0;
 
-        public static void ClearCache ()
-        {
-            imageCache.Clear();
-        }
+			Mutex mtx_framesToDelete = new Mutex();
+			Mutex mtx_debugLog = new Mutex();
+			Task[] workTasks = new Task[Environment.ProcessorCount];
 
-        public static async Task RemoveDupeFrames(string path, float threshold, string ext, bool testRun = false, bool debugLog = false, bool skipIfNoDupes = false)
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Restart();
-            Logger.Log("Removing duplicate frames - Threshold: " + threshold.ToString("0.00"));
+			bool threadAbort = false;
 
-            FileInfo[] framePaths = IoUtils.GetFileInfosSorted(path, false, "*." + ext);
-            List<string> framesToDelete = new List<string>();
+			Action<int, int> lamProcessFrames = (indStart, indEnd) =>
+			{
+				MagickImage img1 = null;
+				MagickImage img2 = null;
 
-            int bufferSize = await GetBufferSize();
+				for (int i = indStart; i < indEnd; i++)     // Loop through frames
+				{
+					string frame1_name = framePaths[i].FullName;
 
-            int currentOutFrame = 1;
-            int currentDupeCount = 0;
+					// its likely we carried over an already loaded image from a previous iteration
+					if(!(img1 != null && img1.FileName == frame1_name))
+						img1 = GetImage(framePaths[i].FullName);
 
-            int statsFramesKept = 0;
-            int statsFramesDeleted = 0;
+					if (img1 == null) continue;
 
-            bool hasReachedEnd = false;
+					for (int j = i + 1; j < framePaths.Length; j++)
+					{
+						if (threadAbort || Interpolate.canceled) return;
 
-            string fileContent = "";
+						//if (j % 3 == 0)
+							//await Task.Delay(1);
 
-            for (int i = 0; i < framePaths.Length; i++)     // Loop through frames
-            {
-                if (hasReachedEnd)
-                    break;
+						string frame2_name = framePaths[j].FullName;
 
-                string frame1 = framePaths[i].FullName;
+						if(j>=indEnd)
+						{
+							// if we are already extending outside of this thread's range and j is already flagged, then we need to abort
+							bool isFlaggedForDeletion = false;
+							mtx_framesToDelete.WaitOne();
+							isFlaggedForDeletion = framesToDelete.Contains(frame2_name);
+							mtx_framesToDelete.ReleaseMutex();
+							if (isFlaggedForDeletion)
+								return;
+						}
 
-                int compareWithIndex = i + 1;
+						img2 = GetImage(framePaths[j].FullName);
+						if (img2 == null) continue;
 
-                while (true)   // Loop dupes
-                {
-                    //compareWithIndex++;
-                    if (compareWithIndex >= framePaths.Length)
-                    {
-                        hasReachedEnd = true;
-                        break;
-                    }
 
-                    if (framesToDelete.Contains(framePaths[compareWithIndex].FullName) || !File.Exists(framePaths[compareWithIndex].FullName))
-                    {
-                        //Logger.Log($"Frame {compareWithIndex} was already deleted - skipping");
-                        compareWithIndex++;
-                    }
-                    else
-                    {
-                        string frame2 = framePaths[compareWithIndex].FullName;
-                        float diff = GetDifference(frame1, frame2);
+						float diff = GetDifference(img1, img2);
 
-                        if (diff < threshold)     // Is a duped frame.
-                        {
-                            if (!testRun)
-                            {
-                                framesToDelete.Add(frame2);
-                                if (debugLog) Logger.Log("Deduplication: Deleted " + Path.GetFileName(frame2));
-                            }
+						if (diff < threshold)     // Is a duped frame.
+						{
+							if (!testRun)
+							{
+								mtx_framesToDelete.WaitOne();
+								framesToDelete.Add(frame2_name);
+								mtx_framesToDelete.ReleaseMutex();
+								if (debugLog)
+								{
+									mtx_debugLog.WaitOne();
+									Logger.Log("Deduplication: Deleted " + Path.GetFileName(frame2_name));
+									mtx_debugLog.ReleaseMutex();
+								}
+							}
 
-                            statsFramesDeleted++;
-                            currentDupeCount++;
-                        }
-                        else
-                        {
-                            fileContent += $"{Path.GetFileNameWithoutExtension(framePaths[i].Name)}:{currentDupeCount}\n";
-                            statsFramesKept++;
-                            currentOutFrame++;
-                            currentDupeCount = 0;
-                            break;
-                        }
-                    }
-                }
+							System.Threading.Interlocked.Increment(ref statsFramesDeleted);
 
-                if (sw.ElapsedMilliseconds >= 500 || (i + 1) == framePaths.Length)   // Print every 0.5s (or when done)
-                {
-                    sw.Restart();
-                    Logger.Log($"Deduplication: Running de-duplication ({i}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
-                    Program.mainForm.SetProgress((int)Math.Round(((float)i / framePaths.Length) * 100f));
+							if (j+1 == framePaths.Length)
+								return;
 
-                    if (imageCache.Count > bufferSize || (imageCache.Count > 50 && OsUtils.GetFreeRamMb() < 3500))
-                        ClearCache();
-                }
+							continue; // test next frame
+						}
 
-                // int oldIndex = -1; // TODO: Compare with 1st to fix loops?
-                // if (i >= framePaths.Length)    // If this is the last frame, compare with 1st to avoid OutOfRange error
-                // {
-                //     oldIndex = i;
-                //     i = 0;
-                // }
 
-                if (i % 3 == 0)
-                    await Task.Delay(1);
+						System.Threading.Interlocked.Increment(ref statsFramesKept);
 
-                if (Interpolate.canceled) return;
-            }
+						// this frame is different, stop testing agaisnt 'i'
+						// all the frames between i and j are dupes, we can skip them
+						i = j - 1;
+						// keep the currently loaded in img for the next iteration
+						img1 = img2;
+						break;
+					}
+				}
+			};
 
-            foreach (string frame in framesToDelete)
-                IoUtils.TryDeleteIfExists(frame);
+			Action lamUpdateInfoBox = () =>
+			{
+				int framesProcessed = statsFramesKept + statsFramesDeleted;
+				Logger.Log($"Deduplication: Running de-duplication ({framesProcessed}/{framePaths.Length}), deleted {statsFramesDeleted} ({(((float)statsFramesDeleted / framePaths.Length) * 100f).ToString("0")}%) duplicate frames so far...", false, true);
+				Program.mainForm.SetProgress((int)Math.Round(((float)framesProcessed / framePaths.Length) * 100f));
+			};
 
-            string testStr = testRun ? " [TestRun]" : "";
+			// start the worker threads
+			for (int i = 0; i < workTasks.Length; i++)
+			{
+				int chunkSize = framePaths.Length / workTasks.Length;
+				int indStart = chunkSize * i;
+				int indEnd = indStart + chunkSize;
+				if (i + 1 == workTasks.Length) indEnd = framePaths.Length;
 
-            if (Interpolate.canceled) return;
+				workTasks[i] = Task.Run(() => lamProcessFrames(indStart, indEnd));
+			}
 
-            int framesLeft = IoUtils.GetAmountOfFiles(path, false, "*" + Interpolate.currentSettings.framesExt);
-            int framesDeleted = framePaths.Length - framesLeft;
-            float percentDeleted = ((float)framesDeleted / framePaths.Length) * 100f;
-            string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
+			// wait for all the worker threads to finish and update the info box
+			while (!Interpolate.canceled)
+			{
+				await Task.Delay(5);
 
-            Logger.Log($"[Deduplication]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
 
-            if (statsFramesKept <= 0)
-                Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");
-        }
+				bool anyThreadStillWorking = false;
+				// wait for the threads to finish
+				for (int i = 0; i < workTasks.Length; i++)
+				{
+					if (!workTasks[i].IsCompleted) anyThreadStillWorking = true;
+				}
 
-        static float GetDifference (string img1Path, string img2Path)
-        {
-            MagickImage img2 = GetImage(img2Path);
-            MagickImage img1 = GetImage(img1Path);
+				if (sw.ElapsedMilliseconds >= 250 || !anyThreadStillWorking)   // Print every 0.25s (or when done)
+				{
+					sw.Restart();
+					lamUpdateInfoBox();
+				}
 
-            double err = img1.Compare(img2, ErrorMetric.Fuzz);
-            float errPercent = (float)err * 100f;
-            return errPercent;
-        }
+				if (!anyThreadStillWorking) break;
+			}
 
-        static async Task<int> GetBufferSize ()
-        {
-            Size res = Interpolate.currentSettings.ScaledResolution;
-            long pixels = res.Width * res.Height;    // 4K = 8294400, 1440p = 3686400, 1080p = 2073600, 720p = 921600, 540p = 518400, 360p = 230400
-            int bufferSize = 100;
-            if (pixels < 518400) bufferSize = 1800;
-            if (pixels >= 518400) bufferSize = 1400;
-            if (pixels >= 921600) bufferSize = 800;
-            if (pixels >= 2073600) bufferSize = 400;
-            if (pixels >= 3686400) bufferSize = 200;
-            if (pixels >= 8294400) bufferSize = 100;
-            if (pixels == 0) bufferSize = 100;
-            Logger.Log($"Using magick dedupe buffer size {bufferSize} for frame resolution {res.Width}x{res.Height}", true);
-            return bufferSize;
-        }
+			threadAbort = true;
+			for (int i = 0; i < workTasks.Length; i++)
+				await workTasks[i];
 
-        public static async Task CreateDupesFile (string framesPath, int lastFrameNum, string ext)
-        {
-            bool debug = Config.GetBool("dupeScanDebug", false);
+			lamUpdateInfoBox();
 
-            FileInfo[] frameFiles = IoUtils.GetFileInfosSorted(framesPath, false, "*" + ext);
+			// int oldIndex = -1; // TODO: Compare with 1st to fix loops?
+			// if (i >= framePaths.Length)    // If this is the last frame, compare with 1st to avoid OutOfRange error
+			// {
+			//     oldIndex = i;
+			//     i = 0;
+			// }
 
-            if (debug)
-                Logger.Log($"Running CreateDupesFile for '{framesPath}' ({frameFiles.Length} files), lastFrameNum = {lastFrameNum}, ext = {ext}.", true, false, "dupes");
+			foreach (string frame in framesToDelete)
+				IoUtils.TryDeleteIfExists(frame);
 
-            Dictionary<string, List<string>> frames = new Dictionary<string, List<string>>();
+			string testStr = testRun ? " [TestRun]" : "";
 
-            for(int i = 0; i < frameFiles.Length; i++)
-            {
-                bool isLastItem = (i + 1) == frameFiles.Length;
+			if (Interpolate.canceled) return;
 
-                int frameNum1 = frameFiles[i].Name.GetInt();
-                int frameNum2 = isLastItem ? lastFrameNum : frameFiles[i+1].Name.GetInt();
+			int framesLeft = IoUtils.GetAmountOfFiles(path, false, "*" + Interpolate.currentSettings.framesExt);
+			int framesDeleted = framePaths.Length - framesLeft;
+			float percentDeleted = ((float)framesDeleted / framePaths.Length) * 100f;
+			string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
 
-                int diff = frameNum2 - frameNum1;
-                int dupes = (diff - 1).Clamp(0, int.MaxValue);
+			Logger.Log($"[Deduplication]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
 
-                if(debug)
-                    Logger.Log($"{(isLastItem ? "[isLastItem] " : "")}frameNum1 (frameFiles[{i}]) = {frameNum1}, frameNum2 (frameFiles[{i+1}]) = {frameNum2} => dupes = {dupes}", true, false, "dupes");
+			if (statsFramesKept <= 0)
+				Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");
+		}
+		static float GetDifference(MagickImage img1, MagickImage img2)
+		{
+			double err = img1.Compare(img2, ErrorMetric.Fuzz);
+			float errPercent = (float)err * 100f;
+			return errPercent;
+		}
 
-                try
-                {
-                    frames[Path.GetFileNameWithoutExtension(frameFiles[i].Name)] = new List<string>();
+		static float GetDifference(string img1Path, string img2Path)
+		{
+			return GetDifference(GetImage(img1Path), GetImage(img2Path));
+		}
 
-                    for (int dupe = 1; dupe <= dupes; dupe++)
-                        frames[Path.GetFileNameWithoutExtension(frameFiles[i].Name)].Add(Path.GetFileNameWithoutExtension(frameFiles[i + dupe].Name));
-                }
-                catch(Exception ex)
-                {
-                    Logger.Log($"Deduplication error: {ex.Message}");
-                    Logger.Log($"Stack Trace:\n{ex.StackTrace}", true);
-                }
-            }
+		public static async Task CreateDupesFile(string framesPath, int lastFrameNum, string ext)
+		{
+			bool debug = Config.GetBool("dupeScanDebug", false);
 
-            File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), JsonConvert.SerializeObject(frames, Formatting.Indented));
-        }
-    }
+			FileInfo[] frameFiles = IoUtils.GetFileInfosSorted(framesPath, false, "*" + ext);
+
+			if (debug)
+				Logger.Log($"Running CreateDupesFile for '{framesPath}' ({frameFiles.Length} files), lastFrameNum = {lastFrameNum}, ext = {ext}.", true, false, "dupes");
+
+			Dictionary<string, List<string>> frames = new Dictionary<string, List<string>>();
+
+
+			for (int i = 0; i < frameFiles.Length; i++)
+			{
+				bool isLastItem = (i + 1) == frameFiles.Length;
+
+				String fnameCur = Path.GetFileNameWithoutExtension(frameFiles[i].Name);
+				int frameNumCur = fnameCur.GetInt();
+
+				frames[fnameCur] = new List<string>();
+
+				if(!isLastItem)
+				{
+					String fnameNext = Path.GetFileNameWithoutExtension(frameFiles[i + 1].Name);
+					int frameNumNext = fnameNext.GetInt();
+
+					for(int j = frameNumCur + 1; j < frameNumNext; j++)
+					{
+						frames[fnameCur].Add(j.ToString().PadLeft(9,'0'));
+					}
+				}
+			}
+
+			File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), JsonConvert.SerializeObject(frames, Formatting.Indented));
+		}
+	}
 }

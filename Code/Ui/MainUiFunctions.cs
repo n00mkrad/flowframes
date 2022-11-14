@@ -59,7 +59,6 @@ namespace Flowframes.Ui
             CheckExistingFolder(path, outputTbox.Text.Trim());
             await Task.Delay(10);
             await PrintResolution(path);
-            Dedupe.ClearCache();
             await Task.Delay(10);
             InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
 
