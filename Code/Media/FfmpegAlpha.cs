@@ -18,6 +18,7 @@ namespace Flowframes.Media
         public static async Task ExtractAlphaDir(string rgbDir, string alphaDir)
         {
             Directory.CreateDirectory(alphaDir);
+
             foreach (FileInfo file in IoUtils.GetFileInfosSorted(rgbDir))
             {
                 string args = $"-i {file.FullName.Wrap()} -vf \"format=yuva444p16le,alphaextract,format=yuv420p,{GetPadFilter()}\" {Path.Combine(alphaDir, file.Name).Wrap()}";

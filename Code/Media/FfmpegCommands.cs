@@ -11,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
-using Utils = Flowframes.Media.FfmpegUtils;
 
 namespace Flowframes
 {
@@ -23,15 +22,15 @@ namespace Flowframes
         public static string mpDecDef = "\"mpdecimate\"";
         public static string mpDecAggr = "\"mpdecimate=hi=64*32:lo=64*32:frac=0.1\"";
 
-        public static int GetPadding ()
+        public static int GetModulo ()
         {
             return (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal) ? 8 : 2;     // FLAVR input needs to be divisible by 8
         }
 
         public static string GetPadFilter ()
         {
-            int padPixels = GetPadding();
-            return $"pad=width=ceil(iw/{padPixels})*{padPixels}:height=ceil(ih/{padPixels})*{padPixels}:color=black@0";
+            int mod = GetModulo();
+            return $"pad=width=ceil(iw/{mod})*{mod}:height=ceil(ih/{mod})*{mod}:color=black@0";
         }
 
         public static async Task ConcatVideos(string concatFile, string outPath, int looptimes = -1, bool showLog = true)

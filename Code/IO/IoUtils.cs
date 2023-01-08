@@ -568,7 +568,7 @@ namespace Flowframes.IO
             if (curr.outMode == Interpolate.OutMode.VidGif && fps > 50f)
                 fps = 50f;
 
-            Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, false, false);
+            Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, true);
 			string pattern = Config.Get(Config.Key.exportNamePattern);
 			string inName = Interpolate.currentSettings.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
             bool encodeBoth = Config.GetInt(Config.Key.maxFpsMode) == 0;

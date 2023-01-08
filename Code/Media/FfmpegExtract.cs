@@ -177,7 +177,7 @@ namespace Flowframes.Media
                 return false;
             }
 
-            int div = GetPadding();
+            int div = GetModulo();
             bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
 
             if (!allDivBy2)

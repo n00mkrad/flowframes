@@ -35,8 +35,8 @@ namespace Flowframes
 
         private Size _inputResolution;
         public Size InputResolution { get { RefreshInputRes(); return _inputResolution; } }
-        private Size _scaledResolution;
-        public Size ScaledResolution { get { RefreshOutputRes(); return _scaledResolution; } }
+        public Size ScaledResolution { get { return InterpolateUtils.GetOutputResolution(InputResolution, false); } }
+        public Size ScaledPaddedResolution { get { return InterpolateUtils.GetOutputResolution(InputResolution, true); } }
 
         public bool alpha;
         public bool stepByStep;
@@ -82,7 +82,6 @@ namespace Flowframes
             }
 
             _inputResolution = new Size(0, 0);
-            _scaledResolution = new Size(0, 0);
 
             RefreshExtensions();
         }
@@ -101,7 +100,6 @@ namespace Flowframes
             alpha = false;
             stepByStep = false;
             _inputResolution = new Size(0, 0);
-            _scaledResolution = new Size(0, 0);
             framesExt = "";
             interpExt = "";
 
@@ -128,7 +126,6 @@ namespace Flowframes
                     case "OUTMODE": outMode = (Interpolate.OutMode)Enum.Parse(typeof(Interpolate.OutMode), entry.Value); break;
                     case "MODEL": model = AiModels.GetModelByName(ai, entry.Value); break;
                     case "INPUTRES": _inputResolution = FormatUtils.ParseSize(entry.Value); break;
-                    case "OUTPUTRES": _scaledResolution = FormatUtils.ParseSize(entry.Value); break;
                     case "ALPHA": alpha = bool.Parse(entry.Value); break;
                     case "STEPBYSTEP": stepByStep = bool.Parse(entry.Value); break;
                     case "FRAMESEXT": framesExt = entry.Value; break;
@@ -169,12 +166,6 @@ namespace Flowframes
         {
             if (_inputResolution.IsEmpty)
                 _inputResolution = await GetMediaResolutionCached.GetSizeAsync(inPath);
-        }
-
-        void RefreshOutputRes ()
-        {
-            if (_scaledResolution.IsEmpty)
-                _scaledResolution = InterpolateUtils.GetOutputResolution(InputResolution, false, true);
         }
 
         public void RefreshAlpha ()

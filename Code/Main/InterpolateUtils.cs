@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using I = Flowframes.Interpolate;
 using Padding = Flowframes.Data.Padding;
+using static Flowframes.Magick.Dedupe;
 
 namespace Flowframes.Main
 {
@@ -138,7 +139,7 @@ namespace Flowframes.Main
 
                 return passes;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log($"Failed to run InputIsValid: {e.Message}\n{e.StackTrace}", true);
                 return false;
@@ -186,7 +187,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static void ShowWarnings (float factor, AI ai)
+        public static void ShowWarnings(float factor, AI ai)
         {
             if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
                 Logger.Log($"Warning: The CMD window for interpolation is enabled. This will disable Auto-Encode and the progress bar!");
@@ -221,7 +222,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> CheckEncoderValid (float interpFps)
+        public static async Task<bool> CheckEncoderValid(float interpFps)
         {
             string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.currentSettings.outMode));
 
@@ -253,33 +254,29 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<Size> GetOutputResolution(string inputPath, bool print, bool returnZeroIfUnchanged = false)
+        public static async Task<Size> GetOutputResolution(string inputPath, bool pad, bool print = false)
         {
             Size resolution = await GetMediaResolutionCached.GetSizeAsync(inputPath);
-            return GetOutputResolution(resolution, print, returnZeroIfUnchanged);
+            return GetOutputResolution(resolution, pad, print);
         }
 
-        public static Size GetOutputResolution(Size inputRes, bool print = false, bool returnZeroIfUnchanged = false)
+        public static Size GetOutputResolution(Size inputRes, bool pad, bool print = false)
         {
-            int maxHeightValue = Config.GetInt(Config.Key.maxVidHeight);
-            int maxHeight = RoundDivisibleBy(maxHeightValue, FfmpegCommands.GetPadding());
+            Size res = new Size(inputRes.Width, inputRes.Height);
+            int maxHeight = Config.GetInt(Config.Key.maxVidHeight);
+            int mod = pad ? FfmpegCommands.GetModulo() : 1;
+            float factor = res.Height > maxHeight ? (float)maxHeight / res.Height : 1f; // Calculate downscale factor if bigger than max, otherwise just use 1x
+            Logger.Log($"Un-rounded downscaled size: {(res.Width * factor).ToString("0.###")}x{(res.Height * factor).ToString("0.###")}", true);
+            int width = RoundDivisibleBy((res.Width * factor).RoundToInt(), mod);
+            int height = RoundDivisibleBy((res.Height * factor).RoundToInt(), mod);
 
-            if (inputRes.Height > maxHeight)
-            {
-                float factor = (float)maxHeight / inputRes.Height;
-                Logger.Log($"Un-rounded downscaled size: {(inputRes.Width * factor).ToString("0.00")}x{maxHeightValue}", true);
-                int width = RoundDivisibleBy((inputRes.Width * factor).RoundToInt(), FfmpegCommands.GetPadding());
-                if (print)
-                    Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{maxHeight}.");
-                return new Size(width, maxHeight);
-            }
-            else
-            {
-                if (returnZeroIfUnchanged)
-                    return new Size();
-                else
-                    return inputRes;
-            }
+            if (print && factor < 1f)
+                Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{height}.");
+
+            if (res != inputRes)
+                Logger.Log($"Scaled {inputRes.Width}x{inputRes.Height} to {res.Width}x{res.Height}", true);
+
+            return res;
         }
 
         public static int RoundDivisibleBy(int number, int divisibleBy)     // Round to a number that's divisible by 2 (for h264 etc)
@@ -305,7 +302,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if(current.outMode == I.OutMode.VidGif)
+            if (current.outMode == I.OutMode.VidGif)
             {
                 Logger.Log($"Not Using AutoEnc: Using GIF output", true);
                 return false;

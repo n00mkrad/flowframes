@@ -71,6 +71,7 @@ namespace Flowframes.Media
             if(!isChunk && outMode == Interpolate.OutMode.VidMp4)
                 extraArgs += $" -movflags +faststart";
 
+            filters.Add(GetPadFilter());
             return filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "" + $" {extraArgs}";
         }
 
