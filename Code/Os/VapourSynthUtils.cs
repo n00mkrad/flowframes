@@ -69,7 +69,7 @@ namespace Flowframes.Os
             {
                 l.Add("indexFilePath = f'{inputPath}.cache.lwi'");
                 l.Add($"if os.path.isdir(r'{s.InterpSettings.tempFolder}'):");
-                l.Add($"\tindexFilePath = r'{Path.Combine(s.InterpSettings.tempFolder, "cache.lwi")}'");
+                l.Add($"    indexFilePath = r'{Path.Combine(s.InterpSettings.tempFolder, "cache.lwi")}'");
                 l.Add($"clip = core.lsmas.LWLibavSource(inputPath, cachefile=indexFilePath)"); // Load video with lsmash
             }
 
@@ -84,7 +84,7 @@ namespace Flowframes.Os
                 l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
             }
 
-            l.AddRange(GetScaleLines(s));
+            l.Add(GetScaleLines(s));
 
             if (sc)
                 l.Add($"clip = core.misc.SCDetect(clip=clip, threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
@@ -92,7 +92,7 @@ namespace Flowframes.Os
             l.Add($"clip = core.rife.RIFE(clip, multiplier={s.Factor.ToStringDot()}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
 
             if (s.Dedupe && !s.Realtime)
-                l.AddRange(GetRedupeLines(s));
+                l.Add(GetRedupeLines(s));
 
             l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=cMatrix)"); // Convert RGB to YUV
 
@@ -113,13 +113,13 @@ namespace Flowframes.Os
                 l.AddRange(new List<string> { $"clip = clip.std.Loop(0)", "" }); // Can't loop piped video so we loop it before piping it to ffplay
 
             if(s.Realtime && s.Osd)
-                l.AddRange(GetOsdLines(s));
+                l.Add(GetOsdLines());
 
             l.Add($"clip.set_output()"); // Set output
             l.Add("");
 
             l.Add($"if os.path.isfile(r'{inputPath}.cache.lwi'):");
-            l.Add($"\tos.remove(r'{inputPath}.cache.lwi')");
+            l.Add($"    os.remove(r'{inputPath}.cache.lwi')");
 
             string pkgPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             string vpyPath = Path.Combine(pkgPath, "rife.vpy");
@@ -129,107 +129,108 @@ namespace Flowframes.Os
             return vpyPath;
         }
 
-        static List<string> GetScaleLines(VsSettings s)
+        static string GetScaleLines(VsSettings settings)
         {
-            bool resize = !s.InterpSettings.ScaledResolution.IsEmpty && s.InterpSettings.ScaledResolution != s.InterpSettings.InputResolution;
-            List<string> l = new List<string>();
+            InterpSettings interp = settings.InterpSettings;
+            bool resize = !interp.ScaledResolution.IsEmpty && interp.ScaledResolution != interp.InputResolution;
+            string s = "";
 
-            l.Add($"");
-            l.Add($"cMatrix = '709'");
-            l.Add($"");
+            s += $"\n";
+            s += $"cMatrix = '709'\n";
+            s += $"\n";
 
-            if (!s.InterpSettings.inputIsFrames)
+            if (!interp.inputIsFrames)
             {
-                l.Add("try:");
-                l.Add("\tm = clip.get_frame(0).props._Matrix");
-                l.Add("\tif m == 0:    cMatrix = 'rgb'");
-                l.Add("\telif m == 4:  cMatrix = 'fcc'");
-                l.Add("\telif m == 5:  cMatrix = '470bg'");
-                l.Add("\telif m == 6:  cMatrix = '170m'");
-                l.Add("\telif m == 7:  cMatrix = '240m'");
-                l.Add("\telif m == 8:  cMatrix = 'ycgco'");
-                l.Add("\telif m == 9:  cMatrix = '2020ncl'");
-                l.Add("\telif m == 10: cMatrix = '2020cl'");
-                l.Add("\telif m == 12: cMatrix = 'chromancl'");
-                l.Add("\telif m == 13: cMatrix = 'chromacl'");
-                l.Add("\telif m == 14: cMatrix = 'ictcp'");
-                l.Add($"except:");
-                l.Add($"\tcMatrix = '709'");
-                l.Add($"");
-                l.Add($"colRange = 'limited'");
-                l.Add($"");
-                l.Add($"try:");
-                l.Add($"\tif clip.get_frame(0).props._ColorRange == 0: colRange = 'full'");
-                l.Add($"except:");
-                l.Add($"\tcolRange = 'limited'");
-                l.Add($"");
+                s += "try:\n";
+                s += "    m = clip.get_frame(0).props._Matrix\n";
+                s += "    if m == 0:    cMatrix = 'rgb'\n";
+                s += "    elif m == 4:  cMatrix = 'fcc'\n";
+                s += "    elif m == 5:  cMatrix = '470bg'\n";
+                s += "    elif m == 6:  cMatrix = '170m'\n";
+                s += "    elif m == 7:  cMatrix = '240m'\n";
+                s += "    elif m == 8:  cMatrix = 'ycgco'\n";
+                s += "    elif m == 9:  cMatrix = '2020ncl'\n";
+                s += "    elif m == 10: cMatrix = '2020cl'\n";
+                s += "    elif m == 12: cMatrix = 'chromancl'\n";
+                s += "    elif m == 13: cMatrix = 'chromacl'\n";
+                s += "    elif m == 14: cMatrix = 'ictcp'\n";
+                s += $"except:\n";
+                s += $"    cMatrix = '709'\n";
+                s += $"\n";
+                s += $"colRange = 'limited'\n";
+                s += $"\n";
+                s += $"try:\n";
+                s += $"    if clip.get_frame(0).props._ColorRange == 0: colRange = 'full'\n";
+                s += $"except:\n";
+                s += $"    colRange = 'limited'\n";
+                s += $"\n";
             }
 
-            l.Add($"if clip.format.color_family == vs.YUV:");
-            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=cMatrix, range_s=colRange{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
-            l.Add($"");
-            l.Add($"if clip.format.color_family == vs.RGB:");
-            l.Add($"\tclip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={s.InterpSettings.ScaledResolution.Width}, height={s.InterpSettings.ScaledResolution.Height}" : "")})");
-            l.Add($"");
+            s += $"if clip.format.color_family == vs.YUV:\n";
+            s += $"    clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=cMatrix, range_s=colRange{(resize ? $", width={interp.ScaledResolution.Width}, height={interp.ScaledResolution.Height}" : "")})\n";
+            s += $"\n";
+            s += $"if clip.format.color_family == vs.RGB:\n";
+            s += $"    clip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={interp.ScaledResolution.Width}, height={interp.ScaledResolution.Height}" : "")})\n";
+            s += $"\n";
 
-            return l;
+            return s;
         }
 
-        static List<string> GetRedupeLines(VsSettings s)
+        static string GetRedupeLines(VsSettings settings)
         {
-            List<string> l = new List<string>();
+            string s = "";
 
-            l.Add(@"reorderedClip = clip[0]");
-            l.Add("");
-            l.Add($"with open(r'{Path.Combine(s.InterpSettings.tempFolder, "frames.vs.json")}') as json_file:");
-            l.Add("\tframeList = json.load(json_file)");
-            l.Add("\t");
-            l.Add("\tfor i in frameList:");
-            l.Add("\t\tif(i < clip.num_frames):");
-            l.Add("\t\t\treorderedClip = reorderedClip + clip[i]");
-            l.Add("");
-            l.Add("clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)");
-            l.Add("");
+            s += @"reorderedClip = clip[0]\n";
+            s += "\n";
+            s += $"with open(r'{Path.Combine(inSet.tempFolder, "frames.vs.json")}') as json_file:\n";
+            s += "    frameList = json.load(json_file)\n";
+            s += "    \n";
+            s += "    for i in frameList:\n";
+            s += "        if(i < clip.num_frames):\n";
+            s += "            reorderedClip = reorderedClip + clip[i]\n";
+            s += "\n";
+            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
+            s += "\n";
 
-            return l;
+            return s;
         }
 
-        static List<string> GetOsdLines(VsSettings s)
+        static string GetOsdLines()
         {
-            List<string> l = new List<string>();
+            string s = "";
 
-            l.Add($"framesProducedPrevious = 0");
-            l.Add($"framesProducedCurrent = 0");
-            l.Add($"lastFpsUpdateTime = time.time()");
-            l.Add($"startTime = time.time()");
-            l.Add($"");
-            l.Add($"def onFrame(n, clip):");
-            l.Add($"\tglobal startTime");
-            l.Add($"\tfpsAvgTime = 1");
-            l.Add($"\t");
-            l.Add($"\tif time.time() - startTime > fpsAvgTime:");
-            l.Add($"\t\tglobal framesProducedPrevious");
-            l.Add($"\t\tglobal framesProducedCurrent");
-            l.Add($"\t\tglobal lastFpsUpdateTime");
-            l.Add($"\t\t");
-            l.Add($"\t\tfpsFloat = (clip.fps.numerator / clip.fps.denominator)");
-            l.Add($"\t\tvideoTimeFloat = (1 / fpsFloat) * n");
-            l.Add($"\t\tframesProducedCurrent+=1");
-            l.Add($"\t\t");
-            l.Add($"\t\tif time.time() - lastFpsUpdateTime > fpsAvgTime:");
-            l.Add($"\t\t\tlastFpsUpdateTime = time.time()");
-            l.Add($"\t\t\tframesProducedPrevious = framesProducedCurrent / fpsAvgTime");
-            l.Add($"\t\t\tframesProducedCurrent = 0");
-            l.Add($"\t\t");
-            l.Add($"\t\tspeed = (framesProducedPrevious / fpsFloat) * 100");
-            l.Add($"\t\tosdString = f\"Time: {{time.strftime(\'%H:%M:%S\', time.gmtime(videoTimeFloat))}} - FPS: {{framesProducedPrevious:.2f}}/{{fpsFloat:.2f}} ({{speed:.0f}}%){{\' [!]\' if speed < 95 else \'\'}}\"");
-            l.Add($"\t\tclip = core.text.Text(clip, text=osdString, alignment=7, scale=1)");
-            l.Add($"\treturn clip");
-            l.Add($"");
-            l.Add($"clip = core.std.FrameEval(clip, functools.partial(onFrame, clip=clip))");
-            l.Add($"");
+            s += $"framesProducedPrevious = 0 \n";
+            s += $"framesProducedCurrent = 0 \n";
+            s += $"lastFpsUpdateTime = time.time() \n";
+            s += $"startTime = time.time() \n";
+            s += $" \n";
+            s += $"def onFrame(n, clip): \n";
+            s += $"    global startTime \n";
+            s += $"    fpsAvgTime = 1 \n";
+            s += $"     \n";
+            s += $"    if time.time() - startTime > fpsAvgTime: \n";
+            s += $"        global framesProducedPrevious \n";
+            s += $"        global framesProducedCurrent \n";
+            s += $"        global lastFpsUpdateTime \n";
+            s += $"         \n";
+            s += $"        fpsFloat = (clip.fps.numerator / clip.fps.denominator) \n";
+            s += $"        videoTimeFloat = (1 / fpsFloat) * n \n";
+            s += $"        framesProducedCurrent+=1 \n";
+            s += $"         \n";
+            s += $"        if time.time() - lastFpsUpdateTime > fpsAvgTime: \n";
+            s += $"            lastFpsUpdateTime = time.time() \n";
+            s += $"            framesProducedPrevious = framesProducedCurrent / fpsAvgTime \n";
+            s += $"            framesProducedCurrent = 0 \n";
+            s += $"         \n";
+            s += $"        speed = (framesProducedPrevious / fpsFloat) * 100 \n";
+            s += $"        osdString = f\"Time: {{time.strftime(\'%H:%M:%S\', time.gmtime(videoTimeFloat))}} - FPS: {{framesProducedPrevious:.2f}}/{{fpsFloat:.2f}} ({{speed:.0f}}%){{\' [!]\' if speed < 95 else \'\'}}\" \n";
+            s += $"        clip = core.text.Text(clip, text=osdString, alignment=7, scale=1) \n";
+            s += $"    return clip \n";
+            s += $" \n";
+            s += $"clip = core.std.FrameEval(clip, functools.partial(onFrame, clip=clip)) \n";
+            s += $" \n";
 
-            return l;
+            return s;
         }
 
         public static int GetSeekSeconds(long videoLengthSeconds)
