@@ -180,7 +180,7 @@ namespace Flowframes.Os
         {
             string s = "";
 
-            s += @"reorderedClip = clip[0]\n";
+            s += "reorderedClip = clip[0]\n";
             s += "\n";
             s += $"with open(r'{Path.Combine(settings.InterpSettings.tempFolder, "frames.vs.json")}') as json_file:\n";
             s += "    frameList = json.load(json_file)\n";
