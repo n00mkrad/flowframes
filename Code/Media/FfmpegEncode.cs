@@ -37,7 +37,7 @@ namespace Flowframes.Media
             {
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                args += $"{pre} -vsync 0 {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, Interpolate.currentSettings.outMode, isChunk)} {post} ";
+                args += $"{pre} {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, Interpolate.currentSettings.outMode, isChunk)} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
@@ -98,7 +98,7 @@ namespace Flowframes.Media
             string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
             string compression = format == "png" ? pngCompr : $"-q:v {lossyQ}";
             string codec = format == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
-            string args = $"-vsync 0 -r {rate} {inArg} {codec} {compression} {sn} {vf} \"{outDir}/%{Padding.interpFrames}d.{format}\"";
+            string args = $"-r {rate} {inArg} {codec} {compression} {sn} {vf} -fps_mode passthrough \"{outDir}/%{Padding.interpFrames}d.{format}\"";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", true);
             IoUtils.TryDeleteIfExists(linksDir);
         }
