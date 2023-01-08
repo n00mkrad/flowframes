@@ -43,6 +43,12 @@ namespace Flowframes
         {
             CheckForIllegalCrossThreadCalls = false;
             AutoScaleMode = AutoScaleMode.None;
+        }
+
+        private async void Form1_Shown(object sender, EventArgs e)
+        {
+            Refresh();
+            await Task.Delay(1);
 
             StartupChecks.CheckOs();
 
@@ -67,10 +73,7 @@ namespace Flowframes
 
             if (Program.args.Contains("show-model-downloader"))
                 new ModelDownloadForm().ShowDialog();
-        }
 
-        private async void Form1_Shown(object sender, EventArgs e)
-        {
             if (Debugger.IsAttached)
             {
                 Logger.Log("Debugger is attached - Flowframes seems to be running within VS.");
