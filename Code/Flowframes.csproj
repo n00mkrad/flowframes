@@ -495,6 +495,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PromptForm.resx">
       <DependentUpon>PromptForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

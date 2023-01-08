@@ -182,7 +182,7 @@ namespace Flowframes.Os
 
             s += @"reorderedClip = clip[0]\n";
             s += "\n";
-            s += $"with open(r'{Path.Combine(inSet.tempFolder, "frames.vs.json")}') as json_file:\n";
+            s += $"with open(r'{Path.Combine(settings.InterpSettings.tempFolder, "frames.vs.json")}') as json_file:\n";
             s += "    frameList = json.load(json_file)\n";
             s += "    \n";
             s += "    for i in frameList:\n";
