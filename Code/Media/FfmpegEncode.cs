@@ -53,7 +53,7 @@ namespace Flowframes.Media
         public static string GetFfmpegExportArgsOut (Fraction resampleFps, VidExtraData extraData, Interpolate.OutMode outMode, bool isChunk = false)
         {
             List<string> filters = new List<string>();
-            string extraArgs = "";
+            string extraArgs = Config.Get(Config.Key.ffEncArgs);
 
             if (resampleFps.GetFloat() >= 0.1f)
                 filters.Add($"fps=fps={resampleFps}");
@@ -62,7 +62,7 @@ namespace Flowframes.Media
             {
                 Logger.Log($"Applying color transfer ({extraData.colorSpace}).", true, false, "ffmpeg");
                 filters.Add($"scale=out_color_matrix={extraData.colorSpace}");
-                extraArgs += $" -colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v \"{extraData.colorRange}\"";
+                extraArgs += $" -colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v {extraData.colorRange.Wrap()}";
             }
 
             if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
