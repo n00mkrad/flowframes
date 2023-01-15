@@ -565,9 +565,6 @@ namespace Flowframes.IO
 			Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
 			float fps = fpsLimit ? maxFps.GetFloat() : curr.outFps.GetFloat();
 
-            if (curr.outMode == Interpolate.OutMode.VidGif && fps > 50f)
-                fps = 50f;
-
             Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, true);
 			string pattern = Config.Get(Config.Key.exportNamePattern);
 			string inName = Interpolate.currentSettings.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
@@ -580,7 +577,7 @@ namespace Flowframes.IO
             filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
 			filename = filename.Replace("[AI]", curr.ai.NameShort.ToUpper());
 			filename = filename.Replace("[MODEL]", curr.model.Name.Remove(" "));
-			filename = filename.Replace("[FPS]", fps.ToStringDot());
+			filename = filename.Replace("[FPS]", fps.ToStringDot("0.###"));
             filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
 			filename = filename.Replace("[RES]", $"{outRes.Width}x{outRes.Height}");
 			filename = filename.Replace("[H]", $"{outRes.Height}p");
@@ -589,7 +586,7 @@ namespace Flowframes.IO
 				filename += Paths.fpsLimitSuffix;
 
 			if (withExt)
-				filename += FfmpegUtils.GetExt(curr.outMode);
+				filename += FfmpegUtils.GetExt(curr.outSettings);
 
 			return filename;
 		}

@@ -54,7 +54,7 @@ namespace Flowframes.Main
             {
                 UpdateChunkAndBufferSizes();
 
-                bool imgSeq = Interpolate.currentSettings.outMode.ToString().ToLowerInvariant().StartsWith("img");
+                bool imgSeq = Interpolate.currentSettings.outSettings.Encoder.GetInfo().IsImageSequence;
                 interpFramesFolder = interpFramesPath;
                 videoChunksFolder = Path.Combine(interpFramesPath.GetParentDir(), Paths.chunksDir);
 
@@ -130,12 +130,12 @@ namespace Flowframes.Main
                             }
 
                             busy = true;
-                            string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkNo.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.currentSettings.outMode)}");
+                            string outpath = Path.Combine(videoChunksFolder, "chunks", $"{chunkNo.ToString().PadLeft(4, '0')}{FfmpegUtils.GetExt(Interpolate.currentSettings.outSettings)}");
                             string firstFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.First()].Trim());
                             string lastFile = Path.GetFileName(interpFramesLines[frameLinesToEncode.Last()].Trim());
                             Logger.Log($"[AE] Encoding Chunk #{chunkNo} to using line {frameLinesToEncode.First()} ({firstFile}) through {frameLinesToEncode.Last()} ({lastFile}) - {unencodedFrameLines.Count} unencoded frames left in total", true, false, "ffmpeg");
 
-                            await Export.EncodeChunk(outpath, Interpolate.currentSettings.interpFolder, chunkNo, Interpolate.currentSettings.outMode, frameLinesToEncode.First(), frameLinesToEncode.Count);
+                            await Export.EncodeChunk(outpath, Interpolate.currentSettings.interpFolder, chunkNo, Interpolate.currentSettings.outSettings, frameLinesToEncode.First(), frameLinesToEncode.Count);
 
                             if (Interpolate.canceled) return;
 

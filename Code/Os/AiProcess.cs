@@ -678,7 +678,7 @@ namespace Flowframes.Os
 
             if (ai.Piped) // VS specific
             {
-                if (!hasShownError && Interpolate.currentSettings.outMode != Interpolate.OutMode.Realtime && line.ToLowerInvariant().Contains("fwrite() call failed"))
+                if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && line.ToLowerInvariant().Contains("fwrite() call failed"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);

@@ -93,7 +93,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid(currentSettings.outFps.GetFloat()))) return;
+            if (Config.GetBool(Config.Key.sbsAllowAutoEnc) && !(await InterpolateUtils.CheckEncoderValid())) return;
 
             if (canceled) return;
             Program.mainForm.SetStatus("Running AI...");
@@ -119,7 +119,7 @@ namespace Flowframes.Main
                 }
             }
 
-            if (!(await InterpolateUtils.CheckEncoderValid(currentSettings.outFps.GetFloat()))) return;
+            if (!(await InterpolateUtils.CheckEncoderValid())) return;
 
             string[] outFrames = IoUtils.GetFilesSorted(currentSettings.interpFolder, currentSettings.interpExt);
 
@@ -130,7 +130,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            await Export.ExportFrames(currentSettings.interpFolder, currentSettings.outPath, currentSettings.outMode, true);
+            await Export.ExportFrames(currentSettings.interpFolder, currentSettings.outPath, currentSettings.outSettings, true);
         }
 
         public static async Task Reset()

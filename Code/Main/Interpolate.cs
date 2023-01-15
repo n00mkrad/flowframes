@@ -22,8 +22,6 @@ namespace Flowframes
 {
     public class Interpolate
     {
-        public enum OutMode { VidMp4, VidMkv, VidWebm, VidProRes, VidAvi, VidGif, ImgPng, Realtime }
-
         public static bool currentlyUsingAutoEnc;
         public static InterpSettings currentSettings;
         public static MediaFile currentMediaFile;
@@ -40,7 +38,7 @@ namespace Flowframes
             if (!Utils.CheckPathValid(currentSettings.inPath)) return;           // Check if input path/file is valid
             if (!Utils.CheckAiAvailable(currentSettings.ai, currentSettings.model)) return;            // Check if selected AI pkg is installed
             if (!AutoEncodeResume.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
-            if (!(await Utils.CheckEncoderValid(currentSettings.outFps.GetFloat()))) return;           // Check encoder compat
+            if (!(await Utils.CheckEncoderValid())) return;           // Check encoder compat
             Utils.ShowWarnings(currentSettings.interpFactor, currentSettings.ai);
             currentSettings.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
@@ -65,7 +63,7 @@ namespace Flowframes
                 if (currentSettings.ai.Piped)
                     await Export.MuxPipedVideo(currentSettings.inPath, currentSettings.FullOutPath);
                 else
-                    await Export.ExportFrames(currentSettings.interpFolder, currentSettings.outPath, currentSettings.outMode, false);
+                    await Export.ExportFrames(currentSettings.interpFolder, currentSettings.outPath, currentSettings.outSettings, false);
             }
 
             if (!AutoEncodeResume.resumeNextRun && Config.GetBool(Config.Key.keepTempFolder) && IoUtils.GetAmountOfFiles(currentSettings.framesFolder, false) > 0)

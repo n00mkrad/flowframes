@@ -55,7 +55,8 @@ namespace Flowframes
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-            UiUtils.InitCombox(outModeCombox, 0);
+            //UiUtils.InitCombox(outModeCombox, 0);
+            InitOutputUi();
             UiUtils.InitCombox(aiModel, 2);
             // Video Utils
             UiUtils.InitCombox(trimCombox, 0);
@@ -82,6 +83,39 @@ namespace Flowframes
 
             completionAction.SelectedIndex = 0;
             await Checks();
+        }
+
+        private void InitOutputUi()
+        {
+            comboxOutputFormat.FillFromEnum<Enums.Output.Format>(Strings.OutputFormat, 0);
+            UpdateOutputUi();
+        }
+
+        private void UpdateOutputUi()
+        {
+            var outMode = ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat);
+            comboxOutputEncoder.FillFromEnum(OutputUtils.GetAvailableEncoders(outMode), Strings.Encoder, 0);
+            comboxOutputEncoder.Visible = comboxOutputEncoder.Items.Count > 1;
+
+            UpdateOutputEncodingUi();
+        }
+
+        private void UpdateOutputEncodingUi()
+        {
+            var encoder = ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder);
+            bool noEncoder = (int)encoder == -1;
+
+            comboxOutputCrf.Visible = !noEncoder;
+            comboxOutputColors.Visible = !noEncoder;
+
+            if (noEncoder)
+                return;
+
+            EncoderInfoVideo info = OutputUtils.GetEncoderInfoVideo(encoder);
+            comboxOutputCrf.Visible = !info.Lossless;
+            var pixelFormats = info.PixelFormats;
+            comboxOutputColors.Visible = pixelFormats.Count > 0;
+            comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, 0);
         }
 
         async Task Checks()
@@ -164,8 +198,7 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps,
-                interpFactorCombox.GetFloat(), outSpeedCombox.GetInt().Clamp(1, 64), GetOutMode(), GetModel(GetAi()));
+            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetFloat(), outSpeedCombox.GetInt().Clamp(1, 64), GetExportSettings, GetModel(GetAi()));
         }
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
@@ -185,7 +218,7 @@ namespace Flowframes
             settings.inFps = currInFps;
             settings.interpFactor = interpFactorCombox.GetFloat();
             settings.outFps = settings.inFps * settings.interpFactor;
-            settings.outMode = GetOutMode();
+            settings.outSettings = GetExportSettings;
             settings.model = GetModel(GetAi());
 
             return settings;
@@ -197,7 +230,7 @@ namespace Flowframes
             MainUiFunctions.SetOutPath(outputTbox, entry.outPath);
             interpFactorCombox.Text = entry.interpFactor.ToString();
             aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == entry.ai.NameInternal).FirstOrDefault());
-            SetOutMode(entry.outMode);
+            SetFormat(entry.outSettings.Format);
         }
 
         public void SetStatus(string str)
@@ -287,7 +320,7 @@ namespace Flowframes
             ConfigParser.LoadComboxIndex(outModeCombox);
         }
 
-        private string GetAiComboboxName (AI ai)
+        private string GetAiComboboxName(AI ai)
         {
             return ai.FriendlyName + " - " + ai.Description;
         }
@@ -334,7 +367,7 @@ namespace Flowframes
 
             AiProcessSuspend.Reset();
 
-            if(Interpolate.currentSettings.outMode == Interpolate.OutMode.Realtime)
+            if (Interpolate.currentSettings.outSettings.Format == Enums.Output.Format.Realtime)
             {
                 await Interpolate.Realtime();
                 SetProgress(0);
@@ -343,11 +376,6 @@ namespace Flowframes
             {
                 await Interpolate.Start();
             }
-        }
-
-        private async void RealtimeInterp(object sender, EventArgs e)
-        {
-            
         }
 
         public ModelCollection.ModelInfo GetModel(AI currentAi)
@@ -362,36 +390,14 @@ namespace Flowframes
             }
         }
 
-        Interpolate.OutMode GetOutMode()
+        Enums.Output.Format GetOutputFormat { get { return ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat); } }
+        Enums.Encoding.Encoder GetEncoder { get { return ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder); } }
+        Enums.Encoding.PixelFormat GetPixelFormat { get { return ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(comboxOutputColors.Text, true, Strings.PixelFormat); } }
+        ExportSettings GetExportSettings { get { return new ExportSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat }; } }
+
+        public void SetFormat(Enums.Output.Format format)
         {
-            Interpolate.OutMode outMode = Interpolate.OutMode.VidMp4;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("mkv")) outMode = Interpolate.OutMode.VidMkv;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("webm")) outMode = Interpolate.OutMode.VidWebm;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("prores")) outMode = Interpolate.OutMode.VidProRes;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("avi")) outMode = Interpolate.OutMode.VidAvi;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("gif")) outMode = Interpolate.OutMode.VidGif;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("image")) outMode = Interpolate.OutMode.ImgPng;
-            if (outModeCombox.Text.ToLowerInvariant().Contains("real")) outMode = Interpolate.OutMode.Realtime;
-            return outMode;
-        }
-
-        public void SetOutMode(Interpolate.OutMode mode)
-        {
-            int targetIndex = 0;
-
-            for (int i = 0; i < outModeCombox.Items.Count; i++)
-            {
-                string currentItem = outModeCombox.Items[i].ToString().ToLowerInvariant();
-                if (mode == Interpolate.OutMode.VidMkv && currentItem.Contains("mkv")) targetIndex = i;
-                if (mode == Interpolate.OutMode.VidWebm && currentItem.Contains("webm")) targetIndex = i;
-                if (mode == Interpolate.OutMode.VidProRes && currentItem.Contains("prores")) targetIndex = i;
-                if (mode == Interpolate.OutMode.VidAvi && currentItem.Contains("avi")) targetIndex = i;
-                if (mode == Interpolate.OutMode.VidGif && currentItem.Contains("gif")) targetIndex = i;
-                if (mode == Interpolate.OutMode.ImgPng && currentItem.Contains("image")) targetIndex = i;
-                if (mode == Interpolate.OutMode.Realtime && currentItem.Contains("real")) targetIndex = i;
-            }
-
-            outModeCombox.SelectedIndex = targetIndex;
+            outModeCombox.Text = Strings.OutputFormat.Get(format.ToString());
         }
 
         public AI GetAi()
@@ -768,8 +774,18 @@ namespace Flowframes
         {
             var ai = GetAi();
 
-            if(ai != null)
+            if (ai != null)
                 UiUtils.ShowMessageBox(ai.GetVerboseInfo(), UiUtils.MessageType.Message);
+        }
+
+        private void comboxOutputFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateOutputUi();
+        }
+
+        private void comboxOutputEncoder_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateOutputEncodingUi();
         }
     }
 }

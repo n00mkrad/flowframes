@@ -32,9 +32,8 @@ namespace Flowframes.Forms
             for (int i = 0; i < Program.batchQueue.Count; i++)
             {
                 InterpSettings entry = Program.batchQueue.ElementAt(i);
-                string niceOutMode = entry.outMode.ToString().ToUpper().Remove("VID").Remove("IMG");
-                string str = $"#{i+1}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => " +
-                    $"{entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {niceOutMode}";
+                string outFormat = Strings.OutputFormat.Get(entry.outSettings.Format.ToString());
+                string str = $"#{i+1}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => {entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {outFormat}";
                 taskList.Items.Add(str);
             }
         }

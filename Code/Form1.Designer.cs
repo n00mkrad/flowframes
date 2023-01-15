@@ -90,6 +90,10 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.comboxOutputFormat = new System.Windows.Forms.ComboBox();
+            this.comboxOutputCrf = new System.Windows.Forms.ComboBox();
+            this.comboxOutputColors = new System.Windows.Forms.ComboBox();
             this.aiInfoBtn = new HTAlt.WinForms.HTButton();
             this.outSpeedCombox = new System.Windows.Forms.ComboBox();
             this.completionActionPanel = new System.Windows.Forms.Panel();
@@ -137,6 +141,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.comboxOutputEncoder = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -149,6 +154,7 @@
             this.panel8.SuspendLayout();
             this.panel6.SuspendLayout();
             this.interpOptsTab.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.completionActionPanel.SuspendLayout();
             this.quickSettingsTab.SuspendLayout();
             this.mpDedupePanel.SuspendLayout();
@@ -228,7 +234,7 @@
             "Animated GIF (Only supports up to 50 FPS)",
             "Image Sequence (PNG, JPG, WEBP)",
             "Real-time Interpolation (Video only)"});
-            this.outModeCombox.Location = new System.Drawing.Point(281, 157);
+            this.outModeCombox.Location = new System.Drawing.Point(283, 229);
             this.outModeCombox.Name = "outModeCombox";
             this.outModeCombox.Size = new System.Drawing.Size(400, 23);
             this.outModeCombox.TabIndex = 16;
@@ -915,6 +921,7 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.flowLayoutPanel1);
             this.interpOptsTab.Controls.Add(this.aiInfoBtn);
             this.interpOptsTab.Controls.Add(this.pictureBox5);
             this.interpOptsTab.Controls.Add(this.outSpeedCombox);
@@ -953,6 +960,66 @@
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.comboxOutputFormat);
+            this.flowLayoutPanel1.Controls.Add(this.comboxOutputEncoder);
+            this.flowLayoutPanel1.Controls.Add(this.comboxOutputCrf);
+            this.flowLayoutPanel1.Controls.Add(this.comboxOutputColors);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(281, 157);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(614, 23);
+            this.flowLayoutPanel1.TabIndex = 46;
+            // 
+            // comboxOutputFormat
+            // 
+            this.comboxOutputFormat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.comboxOutputFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboxOutputFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboxOutputFormat.ForeColor = System.Drawing.Color.White;
+            this.comboxOutputFormat.FormattingEnabled = true;
+            this.comboxOutputFormat.Items.AddRange(new object[] {
+            "MP4 Video (h264, h265, AV1)",
+            "MKV Video (h264, h265, AV1) (Best Audio/Subtitles Support)",
+            "WEBM Video (Google VP9)",
+            "MOV Video (Apple ProRes)",
+            "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
+            "Animated GIF (Only supports up to 50 FPS)",
+            "Image Sequence (PNG, JPG, WEBP)",
+            "Real-time Interpolation (Video only)"});
+            this.comboxOutputFormat.Location = new System.Drawing.Point(0, 0);
+            this.comboxOutputFormat.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.comboxOutputFormat.Name = "comboxOutputFormat";
+            this.comboxOutputFormat.Size = new System.Drawing.Size(80, 23);
+            this.comboxOutputFormat.TabIndex = 47;
+            this.comboxOutputFormat.SelectedIndexChanged += new System.EventHandler(this.comboxOutputFormat_SelectedIndexChanged);
+            // 
+            // comboxOutputCrf
+            // 
+            this.comboxOutputCrf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.comboxOutputCrf.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboxOutputCrf.ForeColor = System.Drawing.Color.White;
+            this.comboxOutputCrf.FormattingEnabled = true;
+            this.comboxOutputCrf.Location = new System.Drawing.Point(182, 0);
+            this.comboxOutputCrf.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.comboxOutputCrf.Name = "comboxOutputCrf";
+            this.comboxOutputCrf.Size = new System.Drawing.Size(50, 23);
+            this.comboxOutputCrf.TabIndex = 48;
+            this.comboxOutputCrf.Text = "24";
+            // 
+            // comboxOutputColors
+            // 
+            this.comboxOutputColors.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.comboxOutputColors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboxOutputColors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboxOutputColors.ForeColor = System.Drawing.Color.White;
+            this.comboxOutputColors.FormattingEnabled = true;
+            this.comboxOutputColors.Location = new System.Drawing.Point(238, 0);
+            this.comboxOutputColors.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.comboxOutputColors.Name = "comboxOutputColors";
+            this.comboxOutputColors.Size = new System.Drawing.Size(110, 23);
+            this.comboxOutputColors.TabIndex = 49;
             // 
             // aiInfoBtn
             // 
@@ -1033,7 +1100,7 @@
             this.encodingSettingsBtn.FlatAppearance.BorderSize = 0;
             this.encodingSettingsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.encodingSettingsBtn.ForeColor = System.Drawing.Color.White;
-            this.encodingSettingsBtn.Location = new System.Drawing.Point(689, 157);
+            this.encodingSettingsBtn.Location = new System.Drawing.Point(689, 192);
             this.encodingSettingsBtn.Name = "encodingSettingsBtn";
             this.encodingSettingsBtn.Size = new System.Drawing.Size(206, 23);
             this.encodingSettingsBtn.TabIndex = 39;
@@ -1641,6 +1708,29 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // comboxOutputEncoder
+            // 
+            this.comboxOutputEncoder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.comboxOutputEncoder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboxOutputEncoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboxOutputEncoder.ForeColor = System.Drawing.Color.White;
+            this.comboxOutputEncoder.FormattingEnabled = true;
+            this.comboxOutputEncoder.Items.AddRange(new object[] {
+            "MP4 Video (h264, h265, AV1)",
+            "MKV Video (h264, h265, AV1) (Best Audio/Subtitles Support)",
+            "WEBM Video (Google VP9)",
+            "MOV Video (Apple ProRes)",
+            "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
+            "Animated GIF (Only supports up to 50 FPS)",
+            "Image Sequence (PNG, JPG, WEBP)",
+            "Real-time Interpolation (Video only)"});
+            this.comboxOutputEncoder.Location = new System.Drawing.Point(86, 0);
+            this.comboxOutputEncoder.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.comboxOutputEncoder.Name = "comboxOutputEncoder";
+            this.comboxOutputEncoder.Size = new System.Drawing.Size(90, 23);
+            this.comboxOutputEncoder.TabIndex = 50;
+            this.comboxOutputEncoder.SelectedIndexChanged += new System.EventHandler(this.comboxOutputEncoder_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1694,6 +1784,7 @@
             this.panel6.PerformLayout();
             this.interpOptsTab.ResumeLayout(false);
             this.interpOptsTab.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.completionActionPanel.ResumeLayout(false);
             this.completionActionPanel.PerformLayout();
             this.quickSettingsTab.ResumeLayout(false);
@@ -1824,6 +1915,11 @@
         private System.Windows.Forms.ComboBox outSpeedCombox;
         private System.Windows.Forms.PictureBox pictureBox5;
         private HTAlt.WinForms.HTButton aiInfoBtn;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        public System.Windows.Forms.ComboBox comboxOutputFormat;
+        public System.Windows.Forms.ComboBox comboxOutputCrf;
+        public System.Windows.Forms.ComboBox comboxOutputColors;
+        public System.Windows.Forms.ComboBox comboxOutputEncoder;
     }
 }
 

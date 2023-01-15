@@ -253,18 +253,19 @@ namespace Flowframes.Forms
 
         private void mp4Enc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string text = mp4Enc.Text.ToUpper().Remove(" ");
-
-            if (text.Contains(FfmpegUtils.Codec.H264.ToString().ToUpper()))
-                mp4CrfConfigKey = "h264Crf";
-
-            if (text.Contains(FfmpegUtils.Codec.H265.ToString().ToUpper()))
-                mp4CrfConfigKey = "h265Crf";
-
-            if (text.Contains(FfmpegUtils.Codec.Av1.ToString().ToUpper()))
-                mp4CrfConfigKey = "av1Crf";
-
-            mp4Crf.Value = Config.GetInt(mp4CrfConfigKey);
+            // string text = mp4Enc.Text.ToUpper().Remove(" ");
+            // 
+            // if (text.Contains(FfmpegUtils.Codec.H264.ToString().ToUpper()))
+            //     mp4CrfConfigKey = "h264Crf";
+            // 
+            // if (text.Contains(FfmpegUtils.Codec.H265.ToString().ToUpper()))
+            //     mp4CrfConfigKey = "h265Crf";
+            // 
+            // if (text.Contains(FfmpegUtils.Codec.Av1.ToString().ToUpper()))
+            //     mp4CrfConfigKey = "av1Crf";
+            // 
+            // mp4Crf.Value = Config.GetInt(mp4CrfConfigKey);
+            throw new NotImplementedException();
         }
 
         private void modelDownloaderBtn_Click(object sender, EventArgs e)

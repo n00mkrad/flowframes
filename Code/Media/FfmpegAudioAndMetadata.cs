@@ -29,9 +29,9 @@ namespace Flowframes.Media
 
             string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
 
-            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.currentSettings.outMode, GetAudioCodecs(inputVideo));
+            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.currentSettings.outSettings.Format, GetAudioCodecs(inputVideo));
             bool slowmo = I.currentSettings.outItsScale != 0 && I.currentSettings.outItsScale != 1;
-            string audioArgs = audioCompat && !slowmo ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.currentSettings.outMode, I.currentSettings.outItsScale);
+            string audioArgs = audioCompat && !slowmo ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.currentSettings.outSettings.Format, I.currentSettings.outItsScale);
 
             if (!audioCompat && !slowmo)
                 Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
@@ -46,7 +46,7 @@ namespace Flowframes.Media
             if (!subs || (subs && !Utils.ContainerSupportsSubs(containerExt)))
                 subArgs = "-sn";
 
-            bool isMkv = I.currentSettings.outMode == I.OutMode.VidMkv;
+            bool isMkv = I.currentSettings.outSettings.Format == Data.Enums.Output.Format.Mkv;
             string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
             string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
             string shortestArg = shortest ? "-shortest" : "";

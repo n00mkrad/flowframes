@@ -13,14 +13,14 @@ namespace Flowframes.Media
 {
     partial class FfmpegEncode : FfmpegCommands
     {
-        public static async Task FramesToVideo(string framesFile, string outPath, Interpolate.OutMode outMode, Fraction fps, Fraction resampleFps, float itsScale, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
+        public static async Task FramesToVideo(string framesFile, string outPath, ExportSettings settings, Fraction fps, Fraction resampleFps, float itsScale, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
 
             IoUtils.RenameExistingFile(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
-            string[] encArgs = Utils.GetEncArgs(Utils.GetCodec(outMode), (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat());
+            string[] encArgs = Utils.GetEncArgs(settings.Encoder, settings.PixelFormat, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat());
 
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
@@ -33,11 +33,11 @@ namespace Flowframes.Media
 
             string args = "";
 
-            for(int i = 0; i < encArgs.Length; i++)
+            for (int i = 0; i < encArgs.Length; i++)
             {
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                args += $"{pre} {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, Interpolate.currentSettings.outMode, isChunk)} {post} ";
+                args += $"{pre} {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
@@ -50,7 +50,7 @@ namespace Flowframes.Media
             return $"-r {fps}";
         }
 
-        public static string GetFfmpegExportArgsOut (Fraction resampleFps, VidExtraData extraData, Interpolate.OutMode outMode, bool isChunk = false)
+        public static string GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, ExportSettings settings, bool isChunk = false)
         {
             List<string> filters = new List<string>();
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
@@ -68,14 +68,14 @@ namespace Flowframes.Media
             if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
                 extraArgs += $" -aspect {extraData.displayRatio}";
 
-            if(!isChunk && outMode == Interpolate.OutMode.VidMp4)
+            if (!isChunk && settings.Format == Enums.Output.Format.Mp4)
                 extraArgs += $" -movflags +faststart";
 
             filters.Add(GetPadFilter());
             return filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "" + $" {extraArgs}";
         }
 
-        public static string GetConcatFileExt (string concatFilePath)
+        public static string GetConcatFileExt(string concatFilePath)
         {
             return Path.GetExtension(File.ReadAllLines(concatFilePath).FirstOrDefault().Split('\'')[1]);
         }
@@ -110,7 +110,7 @@ namespace Flowframes.Media
 
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.GetFloat().ToString().Replace(",", ".")} FPS...");
-            
+
             string framesFilename = Path.GetFileName(framesFile);
             string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();
             string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"" : "";

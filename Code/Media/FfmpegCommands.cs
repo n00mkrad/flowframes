@@ -24,12 +24,19 @@ namespace Flowframes
 
         public static int GetModulo ()
         {
-            return (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal) ? 8 : 2;     // FLAVR input needs to be divisible by 8
+            if (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal)
+                return 8;
+
+            return Interpolate.currentSettings.outSettings.Encoder.GetInfo().Modulo;
         }
 
         public static string GetPadFilter ()
         {
             int mod = GetModulo();
+
+            if (mod < 2)
+                return "";
+
             return $"pad=width=ceil(iw/{mod})*{mod}:height=ceil(ih/{mod})*{mod}:color=black@0";
         }
 

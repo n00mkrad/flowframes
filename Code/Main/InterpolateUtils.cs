@@ -121,18 +121,16 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                if (passes && s.outFps.GetFloat() < 1f || s.outFps.GetFloat() > 1000f)
-                {
-                    string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
-                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.GetFloat()}).\nMust be 1-1000.{imgSeqNote}");
-                    passes = false;
-                }
-
                 string fpsLimitValue = Config.Get(Config.Key.maxFps);
                 float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(Config.Get(Config.Key.maxFps)).GetFloat() : fpsLimitValue.GetFloat());
+                int maxFps = s.outSettings.Encoder.GetInfo().MaxFramerate;
 
-                if (s.outMode == I.OutMode.VidGif && s.outFps.GetFloat() > 50 && !(fpsLimit > 0 && fpsLimit <= 50))
-                    Logger.Log($"Warning: GIF will be encoded at 50 FPS instead of {s.outFps.GetFloat()} as the format doesn't support frame rates that high.");
+                if (passes && s.outFps.GetFloat() < 1f || (s.outFps.GetFloat() > maxFps && !(fpsLimit > 0 && fpsLimit <= maxFps)))
+                {
+                    string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
+                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.GetFloat()}).\nMust be 1-{maxFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");
+                    passes = false;
+                }
 
                 if (!passes)
                     I.Cancel("Invalid settings detected.", true);
@@ -222,20 +220,9 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> CheckEncoderValid(float interpFps)
+        public static async Task<bool> CheckEncoderValid()
         {
-            string enc = FfmpegUtils.GetEnc(FfmpegUtils.GetCodec(I.currentSettings.outMode));
-
-            float maxAv1Fps = 240; // SVT-AV1 only supports up to 240 FPS as of 2022-08
-            float maxFps = Config.GetFloat(Config.Key.maxFps);
-            float encodeFps = maxFps > 0 ? interpFps.Clamp(0, maxFps) : interpFps;
-
-            if (enc.ToLowerInvariant().Contains("av1") && encodeFps > maxAv1Fps)
-            {
-                UiUtils.ShowMessageBox($"The selected encoder only supports up to {maxAv1Fps} FPS!\nPlease use a different encoder or reduce the interpolation factor.", UiUtils.MessageType.Error);
-                I.Cancel();
-                return false;
-            }
+            string enc = I.currentSettings.outSettings.Encoder.ToString();
 
             if (enc.ToLowerInvariant().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
             {
@@ -302,7 +289,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (current.outMode == I.OutMode.VidGif)
+            if (current.outSettings.Format == Enums.Output.Format.Gif)
             {
                 Logger.Log($"Not Using AutoEnc: Using GIF output", true);
                 return false;

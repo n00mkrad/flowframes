@@ -22,7 +22,7 @@ namespace Flowframes.Main
     {
         
 
-        public static async Task ExportFrames(string path, string outFolder, I.OutMode mode, bool stepByStep)
+        public static async Task ExportFrames(string path, string outFolder, ExportSettings exportSettings, bool stepByStep)
         {
             if(Config.GetInt(Config.Key.sceneChangeFillMode) == 1)
             {
@@ -30,7 +30,7 @@ namespace Flowframes.Main
                 await Blend.BlendSceneChanges(frameFile);
             }
             
-            if (!mode.ToString().ToLowerInvariant().Contains("vid"))     // Copy interp frames out of temp folder and skip video export for image seq export
+            if (exportSettings.Encoder.GetInfo().IsImageSequence)     // Copy interp frames out of temp folder and skip video export for image seq export
             {
                 try
                 {
@@ -61,10 +61,10 @@ namespace Flowframes.Main
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
                 if (!dontEncodeFullFpsVid)
-                    await Encode(mode, path, Path.Combine(outFolder, await IoUtils.GetCurrentExportFilename(false, true)), I.currentSettings.outFps, new Fraction());
+                    await Encode(exportSettings, path, Path.Combine(outFolder, await IoUtils.GetCurrentExportFilename(false, true)), I.currentSettings.outFps, new Fraction());
 
                 if (fpsLimit)
-                    await Encode(mode, path, Path.Combine(outFolder, await IoUtils.GetCurrentExportFilename(true, true)), I.currentSettings.outFps, maxFps);
+                    await Encode(exportSettings, path, Path.Combine(outFolder, await IoUtils.GetCurrentExportFilename(true, true)), I.currentSettings.outFps, maxFps);
             }
             catch (Exception e)
             {
@@ -76,7 +76,7 @@ namespace Flowframes.Main
         public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
         {
             InterpSettings s = I.currentSettings;
-            string encArgs = FfmpegUtils.GetEncArgs(FfmpegUtils.GetCodec(s.outMode), (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.GetFloat(), true).FirstOrDefault();
+            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings.Encoder, s.outSettings.PixelFormat, (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.GetFloat(), true).FirstOrDefault();
 
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
@@ -84,7 +84,7 @@ namespace Flowframes.Main
 
             VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(s.inPath);
             string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
-            string extraArgsOut = FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outMode);
+            string extraArgsOut = FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outSettings);
 
             if (ffplay)
             {
@@ -196,7 +196,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Encode(I.OutMode mode, string framesPath, string outPath, Fraction fps, Fraction resampleFps)
+        static async Task Encode(ExportSettings settings, string framesPath, string outPath, Fraction fps, Fraction resampleFps)
         {
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.currentSettings.interpFactor));
 
@@ -207,14 +207,14 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (mode == I.OutMode.VidGif)
+            if (settings.Format == Enums.Output.Format.Gif)
             {
                 await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt(Config.Key.gifColors), resampleFps, I.currentSettings.outItsScale);
             }
             else
             {
                 VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
-                await FfmpegEncode.FramesToVideo(framesFile, outPath, mode, fps, resampleFps, I.currentSettings.outItsScale, extraData);
+                await FfmpegEncode.FramesToVideo(framesFile, outPath, settings, fps, resampleFps, I.currentSettings.outItsScale, extraData);
                 await MuxOutputVideo(I.currentSettings.inPath, outPath);
                 await Loop(outPath, await GetLoopTimes());
             }
@@ -228,7 +228,7 @@ namespace Flowframes.Main
 
         public static async Task ChunksToVideo(string tempFolder, string chunksFolder, string baseOutPath, bool isBackup = false)
         {
-            if (IoUtils.GetAmountOfFiles(chunksFolder, true, "*" + FfmpegUtils.GetExt(I.currentSettings.outMode)) < 1)
+            if (IoUtils.GetAmountOfFiles(chunksFolder, true, "*" + FfmpegUtils.GetExt(I.currentSettings.outSettings)) < 1)
             {
                 I.Cancel("No video chunks found - An error must have occured during chunk encoding!", AiProcess.hasShownError);
                 return;
@@ -289,7 +289,7 @@ namespace Flowframes.Main
                 await Loop(outPath, await GetLoopTimes());
         }
 
-        public static async Task EncodeChunk(string outPath, string interpDir, int chunkNo, I.OutMode mode, int firstFrameNum, int framesAmount)
+        public static async Task EncodeChunk(string outPath, string interpDir, int chunkNo, ExportSettings settings, int firstFrameNum, int framesAmount)
         {
             string framesFileFull = Path.Combine(I.currentSettings.tempFolder, Paths.GetFrameOrderFilename(I.currentSettings.interpFactor));
             string concatFile = Path.Combine(I.currentSettings.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
@@ -307,7 +307,7 @@ namespace Flowframes.Main
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
-            if (mode.ToString().ToLowerInvariant().StartsWith("img"))    // Image Sequence output mode, not video
+            if (settings.Encoder.GetInfo().IsImageSequence)    // Image Sequence output mode, not video
             {
                 string desiredFormat = Config.Get(Config.Key.imgSeqFormat);
                 string availableFormat = Path.GetExtension(IoUtils.GetFilesSorted(interpDir)[0]).Remove(".").ToUpper();
@@ -336,14 +336,14 @@ namespace Flowframes.Main
             else
             {
                 if (!dontEncodeFullFpsVid)
-                    await FfmpegEncode.FramesToVideo(concatFile, outPath, mode, I.currentSettings.outFps, new Fraction(), I.currentSettings.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode
+                    await FfmpegEncode.FramesToVideo(concatFile, outPath, settings, I.currentSettings.outFps, new Fraction(), I.currentSettings.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode
 
                 if (fpsLimit)
                 {
                     string filename = Path.GetFileName(outPath);
                     string newParentDir = outPath.GetParentDir() + Paths.fpsLimitSuffix;
                     outPath = Path.Combine(newParentDir, filename);
-                    await FfmpegEncode.FramesToVideo(concatFile, outPath, mode, I.currentSettings.outFps, maxFps, I.currentSettings.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                    await FfmpegEncode.FramesToVideo(concatFile, outPath, settings, I.currentSettings.outFps, maxFps, I.currentSettings.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
                 }
             }
 
