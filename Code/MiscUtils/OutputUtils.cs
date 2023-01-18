@@ -113,6 +113,7 @@ namespace Flowframes.MiscUtils
                     Codec = Codec.ProRes,
                     Name = "prores_ks",
                     PixelFormats = new List<PixFmt>() { PixFmt.Yuv422P10Le, PixFmt.Yuv444P10Le, PixFmt.Yuva444P10Le },
+                    PixelFormatDefault = PixFmt.Yuv422P10Le,
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.ProResProfile>(),
                     QualityDefault = (int)Quality.ProResProfile.Hq,
                 };
@@ -125,6 +126,7 @@ namespace Flowframes.MiscUtils
                     Codec = Codec.Gif,
                     Name = "gif",
                     PixelFormats = new List<PixFmt>() { PixFmt.Rgb8 },
+                    PixelFormatDefault = PixFmt.Rgb8,
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.GifColors>(),
                     QualityDefault = (int)Quality.GifColors.High128,
                     OverideExtension = "gif",
@@ -182,6 +184,7 @@ namespace Flowframes.MiscUtils
                     Codec = Codec.Png,
                     Name = "png",
                     PixelFormats = new List<PixFmt>() { PixFmt.Rgb24, PixFmt.Rgba },
+                    PixelFormatDefault = PixFmt.Rgb24,
                     Lossless = true,
                     IsImageSequence = true,
                     OverideExtension = "png",

@@ -12,8 +12,8 @@ namespace Flowframes.Data
             { Enums.Output.Format.Mov.ToString(), "MOV" },
             { Enums.Output.Format.Avi.ToString(), "AVI" },
             { Enums.Output.Format.Gif.ToString(), "GIF" },
-            { Enums.Output.Format.Images.ToString(), "Images" },
-            { Enums.Output.Format.Realtime.ToString(), "Real-time" },
+            { Enums.Output.Format.Images.ToString(), "Frames" },
+            { Enums.Output.Format.Realtime.ToString(), "Realtime" },
         };
 
         public static Dictionary<string, string> Encoder = new Dictionary<string, string>
@@ -23,10 +23,10 @@ namespace Flowframes.Data
             { Enums.Encoding.Encoder.SvtAv1.ToString(), "AV1" },
             { Enums.Encoding.Encoder.VpxVp9.ToString(), "VP9" },
             { Enums.Encoding.Encoder.ProResKs.ToString(), "ProRes" },
-            { Enums.Encoding.Encoder.Nvenc264.ToString(), "h264 (NVENC)" },
-            { Enums.Encoding.Encoder.Nvenc265.ToString(), "h265 (NVENC)" },
-            { Enums.Encoding.Encoder.NvencAv1.ToString(), "AV1 (NVENC)" },
-            { Enums.Encoding.Encoder.Gif.ToString(), "Animated GIF" },
+            { Enums.Encoding.Encoder.Nvenc264.ToString(), "h264 NVENC" },
+            { Enums.Encoding.Encoder.Nvenc265.ToString(), "h265 NVENC" },
+            { Enums.Encoding.Encoder.NvencAv1.ToString(), "AV1 NVENC" },
+            { Enums.Encoding.Encoder.Gif.ToString(), "Animation" },
             { Enums.Encoding.Encoder.Png.ToString(), "PNG" },
             { Enums.Encoding.Encoder.Jpeg.ToString(), "JPEG" },
             { Enums.Encoding.Encoder.Webp.ToString(), "WEBP" },

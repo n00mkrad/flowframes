@@ -95,33 +95,45 @@ namespace Flowframes
         {
             var outMode = ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat);
             comboxOutputEncoder.FillFromEnum(OutputUtils.GetAvailableEncoders(outMode), Strings.Encoder, 0);
-            comboxOutputEncoder.Visible = comboxOutputEncoder.Items.Count > 1;
+            comboxOutputEncoder.Visible = comboxOutputEncoder.Items.Count > 0;
 
             UpdateOutputEncodingUi();
         }
 
         private void UpdateOutputEncodingUi()
         {
+            var infoStrings = new List<string>() { "Format" };
             var encoder = ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder);
-            bool noEncoder = (int)encoder == -1;
+            bool hasEncoder = (int)encoder != -1;
 
-            comboxOutputQuality.Visible = !noEncoder;
-            comboxOutputColors.Visible = !noEncoder;
+            comboxOutputQuality.Visible = hasEncoder;
+            comboxOutputColors.Visible = hasEncoder;
 
-            if (noEncoder)
-                return;
+            if (hasEncoder)
+            {
+                infoStrings.Add("Codec");
+                EncoderInfoVideo info = OutputUtils.GetEncoderInfoVideo(encoder);
 
-            EncoderInfoVideo info = OutputUtils.GetEncoderInfoVideo(encoder);
+                bool adjustableQuality = !info.Lossless && info.QualityLevels != null && info.QualityLevels.Count > 0;
+                comboxOutputQuality.Visible = adjustableQuality;
+                comboxOutputQuality.Items.Clear();
 
-            comboxOutputQuality.Visible = !info.Lossless;
-            comboxOutputQuality.Items.Clear();
+                if (info.QualityLevels.Count > 0)
+                {
+                    infoStrings.Add("Quality");
+                    comboxOutputQuality.FillFromEnum(info.QualityLevels, Strings.VideoQuality, info.QualityDefault);
+                }
 
-            if(info.QualityLevels.Count > 0)
-                comboxOutputQuality.FillFromEnum(info.QualityLevels, Strings.VideoQuality, info.QualityDefault);
+                var pixelFormats = info.PixelFormats;
+                comboxOutputColors.Visible = pixelFormats.Count > 0;
+                comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, info.PixelFormatDefault);
+                comboxOutputColors.Width = adjustableQuality ? 117 : 223;
 
-            var pixelFormats = info.PixelFormats;
-            comboxOutputColors.Visible = pixelFormats.Count > 0;
-            comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, info.PixelFormatDefault);
+                if(pixelFormats.Count > 0)
+                    infoStrings.Add("Pixel Format");
+            }
+
+            labelOutput.Text = $"Set {string.Join(", ", infoStrings)}";
         }
 
         async Task Checks()
@@ -167,7 +179,7 @@ namespace Flowframes
                     aiModel.SelectedIndex = arg.Split('=').Last().GetInt();
 
                 if (arg.StartsWith("output-mode="))
-                    outModeCombox.SelectedIndex = arg.Split('=').Last().GetInt();
+                    comboxOutputFormat.SelectedIndex = arg.Split('=').Last().GetInt();
             }
         }
 
@@ -322,8 +334,6 @@ namespace Flowframes
             aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
             Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
-
-            ConfigParser.LoadComboxIndex(outModeCombox);
         }
 
         private string GetAiComboboxName(AI ai)
@@ -403,7 +413,7 @@ namespace Flowframes
 
         public void SetFormat(Enums.Output.Format format)
         {
-            outModeCombox.Text = Strings.OutputFormat.Get(format.ToString());
+            comboxOutputFormat.Text = Strings.OutputFormat.Get(format.ToString());
         }
 
         public AI GetAi()
@@ -753,17 +763,6 @@ namespace Flowframes
         private void debugBtn_Click(object sender, EventArgs e)
         {
             new DebugForm().ShowDialog();
-        }
-
-        private void encodingSettingsBtn_Click(object sender, EventArgs e)
-        {
-            new SettingsForm(4).ShowDialog();
-        }
-
-        private void outModeCombox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (initialized)
-                ConfigParser.SaveComboxIndex(outModeCombox);
         }
 
         private void fpsOutTbox_Leave(object sender, EventArgs e)
