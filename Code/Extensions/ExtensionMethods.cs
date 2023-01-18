@@ -300,27 +300,37 @@ namespace Flowframes
 
         public static void FillFromEnum<TEnum>(this ComboBox comboBox, Dictionary<string, string> stringMap = null, int defaultIndex = -1, List<TEnum> exclusionList = null) where TEnum : Enum
         {
-            if (stringMap == null)
-                stringMap = new Dictionary<string, string>();
-
             if (exclusionList == null)
                 exclusionList = new List<TEnum>();
 
-            comboBox.Items.Clear();
             var entriesToAdd = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Except(exclusionList);
-            comboBox.Items.AddRange(entriesToAdd.Select(x => stringMap.Get(x.ToString(), true)).ToArray());
-
-            if (defaultIndex >= 0)
-                comboBox.SelectedIndex = defaultIndex;
+            var strings = entriesToAdd.Select(x => stringMap.Get(x.ToString(), true));
+            comboBox.FillFromEnum(strings, stringMap, defaultIndex);
         }
 
         public static void FillFromEnum<TEnum>(this ComboBox comboBox, IEnumerable<TEnum> entries, Dictionary<string, string> stringMap = null, int defaultIndex = -1) where TEnum : Enum
+        {
+            var strings = entries.Select(x => stringMap.Get(x.ToString(), true));
+            comboBox.FillFromEnum(strings, stringMap, defaultIndex);
+        }
+
+        public static void FillFromEnum<TEnum>(this ComboBox comboBox, IEnumerable<TEnum> entries, Dictionary<string, string> stringMap, TEnum defaultEntry) where TEnum : Enum
         {
             if (stringMap == null)
                 stringMap = new Dictionary<string, string>();
 
             comboBox.Items.Clear();
             comboBox.Items.AddRange(entries.Select(x => stringMap.Get(x.ToString(), true)).ToArray());
+            comboBox.Text = stringMap.Get(defaultEntry.ToString(), true);
+        }
+
+        public static void FillFromEnum(this ComboBox comboBox, IEnumerable<string> entries, Dictionary<string, string> stringMap = null, int defaultIndex = -1)
+        {
+            if (stringMap == null)
+                stringMap = new Dictionary<string, string>();
+
+            comboBox.Items.Clear();
+            comboBox.Items.AddRange(entries.Select(x => stringMap.Get(x, true)).ToArray());
 
             if (defaultIndex >= 0 && comboBox.Items.Count > 0)
                 comboBox.SelectedIndex = defaultIndex;

@@ -105,17 +105,23 @@ namespace Flowframes
             var encoder = ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder);
             bool noEncoder = (int)encoder == -1;
 
-            comboxOutputCrf.Visible = !noEncoder;
+            comboxOutputQuality.Visible = !noEncoder;
             comboxOutputColors.Visible = !noEncoder;
 
             if (noEncoder)
                 return;
 
             EncoderInfoVideo info = OutputUtils.GetEncoderInfoVideo(encoder);
-            comboxOutputCrf.Visible = !info.Lossless;
+
+            comboxOutputQuality.Visible = !info.Lossless;
+            comboxOutputQuality.Items.Clear();
+
+            if(info.QualityLevels.Count > 0)
+                comboxOutputQuality.FillFromEnum(info.QualityLevels, Strings.VideoQuality, info.QualityDefault);
+
             var pixelFormats = info.PixelFormats;
             comboxOutputColors.Visible = pixelFormats.Count > 0;
-            comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, 0);
+            comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, info.PixelFormatDefault);
         }
 
         async Task Checks()
@@ -393,7 +399,7 @@ namespace Flowframes
         Enums.Output.Format GetOutputFormat { get { return ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat); } }
         Enums.Encoding.Encoder GetEncoder { get { return ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder); } }
         Enums.Encoding.PixelFormat GetPixelFormat { get { return ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(comboxOutputColors.Text, true, Strings.PixelFormat); } }
-        ExportSettings GetExportSettings { get { return new ExportSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat }; } }
+        OutputSettings GetExportSettings { get { return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat, Quality = comboxOutputQuality.Text }; } }
 
         public void SetFormat(Enums.Output.Format format)
         {

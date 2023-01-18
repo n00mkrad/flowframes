@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FfmpegUtils;
 
@@ -13,14 +14,14 @@ namespace Flowframes.Media
 {
     partial class FfmpegEncode : FfmpegCommands
     {
-        public static async Task FramesToVideo(string framesFile, string outPath, ExportSettings settings, Fraction fps, Fraction resampleFps, float itsScale, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
+        public static async Task FramesToVideo(string framesFile, string outPath, OutputSettings settings, Fraction fps, Fraction resampleFps, float itsScale, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
 
             IoUtils.RenameExistingFile(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
-            string[] encArgs = Utils.GetEncArgs(settings.Encoder, settings.PixelFormat, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat());
+            string[] encArgs = Utils.GetEncArgs(settings, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat());
 
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
@@ -50,7 +51,7 @@ namespace Flowframes.Media
             return $"-r {fps}";
         }
 
-        public static string GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, ExportSettings settings, bool isChunk = false)
+        public static string GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false)
         {
             List<string> filters = new List<string>();
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
@@ -70,6 +71,14 @@ namespace Flowframes.Media
 
             if (!isChunk && settings.Format == Enums.Output.Format.Mp4)
                 extraArgs += $" -movflags +faststart";
+
+            if(settings.Format == Enums.Output.Format.Gif)
+            {
+                string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();
+                int colors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
+                string paletteFilter = $"\"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"";
+                filters.Add(paletteFilter);
+            }
 
             filters.Add(GetPadFilter());
             return filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "" + $" {extraArgs}";

@@ -50,5 +50,26 @@ namespace Flowframes.Data
             { Enums.Encoding.PixelFormat.Rgb8.ToString(), "RGB 256-color" },
             { Enums.Encoding.PixelFormat.Rgba.ToString(), "RGBA 8-bit" },
         };
+
+        public static Dictionary<string, string> VideoQuality = new Dictionary<string, string>
+        {
+            { Enums.Encoding.Quality.Common.Lossless.ToString(), "Lossless" },
+            { Enums.Encoding.Quality.Common.VeryHigh.ToString(), "Very High" },
+            { Enums.Encoding.Quality.Common.High.ToString(), "High" },
+            { Enums.Encoding.Quality.Common.Medium.ToString(), "Medium" },
+            { Enums.Encoding.Quality.Common.Low.ToString(), "Low" },
+            { Enums.Encoding.Quality.Common.VeryLow.ToString(), "Very Low" },
+            { Enums.Encoding.Quality.ProResProfile.Proxy.ToString(), "Proxy" },
+            { Enums.Encoding.Quality.ProResProfile.Lt.ToString(), "LT" },
+            { Enums.Encoding.Quality.ProResProfile.Standard.ToString(), "Standard" },
+            { Enums.Encoding.Quality.ProResProfile.Hq.ToString(), "HQ" },
+            { Enums.Encoding.Quality.ProResProfile.Quad4.ToString(), "4444" },
+            { Enums.Encoding.Quality.ProResProfile.Quad4Xq.ToString(), "4444 XQ" },
+            { Enums.Encoding.Quality.GifColors.Max256.ToString(), "Max (256)" },
+            { Enums.Encoding.Quality.GifColors.High128.ToString(), "High (128)" },
+            { Enums.Encoding.Quality.GifColors.Medium64.ToString(), "Medium (64)" },
+            { Enums.Encoding.Quality.GifColors.Low32.ToString(), "Low (32)" },
+            { Enums.Encoding.Quality.GifColors.VeryLow16.ToString(), "Very Low (16)" },
+        };
     }
 }

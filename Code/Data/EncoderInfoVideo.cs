@@ -18,5 +18,7 @@ namespace Flowframes.Data
         public PixelFormat PixelFormatDefault { get; set; }
         public bool IsImageSequence { get; set; } = false;
         public string OverideExtension { get; set; } = "";
+        public List<string> QualityLevels { get; set; } = new List<string> ();
+        public int QualityDefault { get; set; } = 0;
     }
 }

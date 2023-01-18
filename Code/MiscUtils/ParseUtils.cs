@@ -34,5 +34,11 @@ namespace Flowframes.MiscUtils
 
             return (TEnum)(object)(-1);
         }
+
+        public static List<string> GetEnumStrings<TEnum>() where TEnum : Enum
+        {
+            var entries = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
+            return entries.Select(e => e.ToString()).ToList();
+        }
     }
 }

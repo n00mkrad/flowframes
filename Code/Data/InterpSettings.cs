@@ -25,7 +25,7 @@ namespace Flowframes
         public Fraction outFps;
         public float outItsScale;
         public float interpFactor;
-        public ExportSettings outSettings;
+        public OutputSettings outSettings;
         public ModelCollection.ModelInfo model;
 
         public string tempFolder;
@@ -46,7 +46,7 @@ namespace Flowframes
 
         public InterpSettings() { }
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, float interpFactorArg, float itsScale, ExportSettings outSettingsArg, ModelCollection.ModelInfo modelArg)
+        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, float interpFactorArg, float itsScale, OutputSettings outSettingsArg, ModelCollection.ModelInfo modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -95,7 +95,7 @@ namespace Flowframes
             inFps = new Fraction();
             interpFactor = 0;
             outFps = new Fraction();
-            outSettings = new ExportSettings();
+            outSettings = new OutputSettings();
             model = null;
             alpha = false;
             stepByStep = false;

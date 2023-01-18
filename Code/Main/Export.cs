@@ -22,7 +22,7 @@ namespace Flowframes.Main
     {
         
 
-        public static async Task ExportFrames(string path, string outFolder, ExportSettings exportSettings, bool stepByStep)
+        public static async Task ExportFrames(string path, string outFolder, OutputSettings exportSettings, bool stepByStep)
         {
             if(Config.GetInt(Config.Key.sceneChangeFillMode) == 1)
             {
@@ -76,7 +76,7 @@ namespace Flowframes.Main
         public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
         {
             InterpSettings s = I.currentSettings;
-            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings.Encoder, s.outSettings.PixelFormat, (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.GetFloat(), true).FirstOrDefault();
+            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings, (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.GetFloat(), true).FirstOrDefault();
 
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
@@ -196,7 +196,7 @@ namespace Flowframes.Main
             }
         }
 
-        static async Task Encode(ExportSettings settings, string framesPath, string outPath, Fraction fps, Fraction resampleFps)
+        static async Task Encode(OutputSettings settings, string framesPath, string outPath, Fraction fps, Fraction resampleFps)
         {
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.currentSettings.interpFactor));
 
@@ -209,7 +209,8 @@ namespace Flowframes.Main
 
             if (settings.Format == Enums.Output.Format.Gif)
             {
-                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, Config.GetInt(Config.Key.gifColors), resampleFps, I.currentSettings.outItsScale);
+                int paletteColors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
+                await FfmpegEncode.FramesToGifConcat(framesFile, outPath, fps, true, paletteColors, resampleFps, I.currentSettings.outItsScale);
             }
             else
             {
@@ -289,7 +290,7 @@ namespace Flowframes.Main
                 await Loop(outPath, await GetLoopTimes());
         }
 
-        public static async Task EncodeChunk(string outPath, string interpDir, int chunkNo, ExportSettings settings, int firstFrameNum, int framesAmount)
+        public static async Task EncodeChunk(string outPath, string interpDir, int chunkNo, OutputSettings settings, int firstFrameNum, int framesAmount)
         {
             string framesFileFull = Path.Combine(I.currentSettings.tempFolder, Paths.GetFrameOrderFilename(I.currentSettings.interpFactor));
             string concatFile = Path.Combine(I.currentSettings.tempFolder, Paths.GetFrameOrderFilenameChunk(firstFrameNum, firstFrameNum + framesAmount));
