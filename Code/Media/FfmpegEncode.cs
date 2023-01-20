@@ -1,6 +1,7 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
+using Flowframes.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,23 +39,28 @@ namespace Flowframes.Media
             {
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                args += $"{pre} {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
+                args += $"{pre} {await GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
-        public static string GetFfmpegExportArgsIn(Fraction fps, float itsScale)
+        public static async Task<string> GetFfmpegExportArgsIn(Fraction fps, float itsScale)
         {
+            var args = new List<string>();
+
             fps = fps / new Fraction(itsScale);
-            return $"-r {fps}";
+            args.Add($"-r {fps}");
+
+            return string.Join(" ", args);
         }
 
-        public static string GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false)
+        public static async Task<string> GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false)
         {
-            List<string> filters = new List<string>();
-            string extraArgs = Config.Get(Config.Key.ffEncArgs);
+            var beforeArgs = new List<string>();
+            var filters = new List<string>();
+            var extraArgs = new List<string> { Config.Get(Config.Key.ffEncArgs) };
 
             if (resampleFps.GetFloat() >= 0.1f)
                 filters.Add($"fps=fps={resampleFps}");
@@ -63,25 +69,36 @@ namespace Flowframes.Media
             {
                 Logger.Log($"Applying color transfer ({extraData.colorSpace}).", true, false, "ffmpeg");
                 filters.Add($"scale=out_color_matrix={extraData.colorSpace}");
-                extraArgs += $" -colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v {extraData.colorRange.Wrap()}";
+                extraArgs.Add($"-colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v {extraData.colorRange.Wrap()}");
             }
 
             if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
-                extraArgs += $" -aspect {extraData.displayRatio}";
+                extraArgs.Add($"-aspect {extraData.displayRatio}");
 
-            if (!isChunk && settings.Format == Enums.Output.Format.Mp4)
-                extraArgs += $" -movflags +faststart";
+            if (!isChunk && settings.Format == Enums.Output.Format.Mp4 || settings.Format == Enums.Output.Format.Mov)
+                extraArgs.Add($"-movflags +faststart");
 
-            if(settings.Format == Enums.Output.Format.Gif)
+            if (settings.Format == Enums.Output.Format.Gif)
             {
                 string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();
+                string palettePath = Path.Combine(Paths.GetSessionDataPath(), "palette.png");
+                string paletteFilter = $"[1:v]paletteuse=dither={dither}";
+
                 int colors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
-                string paletteFilter = $"\"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"";
-                filters.Add(paletteFilter);
+                await FfmpegExtract.GeneratePalette(Interpolate.currentMediaFile.ImportPath, palettePath, colors);
+
+                if (File.Exists(palettePath))
+                {
+                    beforeArgs.Add($"-i {palettePath.Wrap()}");
+                    filters.Add(paletteFilter);
+                }
             }
 
             filters.Add(GetPadFilter());
-            return filters.Count > 0 ? $"-vf {string.Join(",", filters)}" : "" + $" {extraArgs}";
+
+            return filters.Count > 0 ?
+                $"{string.Join(" ", beforeArgs)} -filter_complex [0:v]{string.Join("[vf],[vf]", filters.Where(f => !string.IsNullOrWhiteSpace(f)))}[vf] -map [vf] {string.Join(" ", extraArgs)}" :
+                $"{string.Join(" ", beforeArgs)} {string.Join(" ", extraArgs)}";
         }
 
         public static string GetConcatFileExt(string concatFilePath)

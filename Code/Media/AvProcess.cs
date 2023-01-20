@@ -102,6 +102,33 @@ namespace Flowframes
             return processOutput;
         }
 
+        public static string RunFfmpegSync(string args, string workingDir = "", LogMode logMode = LogMode.Hidden, string loglevel = "warning")
+        {
+            Process ffmpeg = OsUtils.NewProcess(true);
+            lastAvProcess = ffmpeg;
+
+            if (string.IsNullOrWhiteSpace(loglevel))
+                loglevel = defLogLevel;
+
+            string beforeArgs = $"-hide_banner -stats -loglevel {loglevel} -y";
+
+            if (!string.IsNullOrWhiteSpace(workingDir))
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
+            else
+                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg {beforeArgs} {args}";
+
+            if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
+            Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
+
+            ffmpeg.StartInfo.Arguments += " 2>&1";
+            ffmpeg.Start();
+            ffmpeg.PriorityClass = ProcessPriorityClass.BelowNormal;
+            string output = ffmpeg.StandardOutput.ReadToEnd();
+            ffmpeg.WaitForExit();
+            Logger.Log($"Synchronous ffmpeg output:\n{output}", true, false, "ffmpeg");
+            return output;
+        }
+
         public static string GetFfmpegDefaultArgs(string loglevel = "warning")
         {
             return $"-hide_banner -stats -loglevel {loglevel} -y";

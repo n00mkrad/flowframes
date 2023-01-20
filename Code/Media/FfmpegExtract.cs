@@ -99,7 +99,6 @@ namespace Flowframes.Media
             if (!alpha && compatible)
             {
                 await CopyImages(inPath, outPath, showLog);
-
             }
             else
             {
@@ -310,6 +309,12 @@ namespace Flowframes.Media
             string sseof = string.IsNullOrWhiteSpace(trim) ? "-sseof -1" : "";
             string args = $"{sseof} -i {inputFile.Wrap()} -update 1 {pixFmt} {sizeStr} {trim} {outputPath.Wrap()}";
             await RunFfmpeg(args, LogMode.Hidden);
+        }
+
+        public static async Task GeneratePalette (string inputFile, string outputPath, int colors = 256)
+        {
+            string args = $"-i {inputFile.Wrap()} -vf palettegen={colors} {outputPath.Wrap()}";
+            await Task.Run(() => AvProcess.RunFfmpegSync(args));
         }
     }
 }

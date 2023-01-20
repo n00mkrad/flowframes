@@ -26,7 +26,7 @@ namespace Flowframes.Data
             { Enums.Encoding.Encoder.Nvenc264.ToString(), "h264 NVENC" },
             { Enums.Encoding.Encoder.Nvenc265.ToString(), "h265 NVENC" },
             { Enums.Encoding.Encoder.NvencAv1.ToString(), "AV1 NVENC" },
-            { Enums.Encoding.Encoder.Gif.ToString(), "Animation" },
+            { Enums.Encoding.Encoder.Gif.ToString(), "GIF" },
             { Enums.Encoding.Encoder.Png.ToString(), "PNG" },
             { Enums.Encoding.Encoder.Jpeg.ToString(), "JPEG" },
             { Enums.Encoding.Encoder.Webp.ToString(), "WEBP" },
@@ -47,7 +47,7 @@ namespace Flowframes.Data
             { Enums.Encoding.PixelFormat.Yuv444P10Le.ToString(), "YUV 4:4:4 10-bit" },
             { Enums.Encoding.PixelFormat.Yuva444P10Le.ToString(), "YUVA 4:4:4 10-bit" },
             { Enums.Encoding.PixelFormat.Rgb24.ToString(), "RGB 8-bit" },
-            { Enums.Encoding.PixelFormat.Rgb8.ToString(), "RGB 256-color" },
+            { Enums.Encoding.PixelFormat.Pal8.ToString(), "256-color Palette" },
             { Enums.Encoding.PixelFormat.Rgba.ToString(), "RGBA 8-bit" },
         };
 

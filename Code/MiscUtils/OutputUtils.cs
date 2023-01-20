@@ -115,7 +115,7 @@ namespace Flowframes.MiscUtils
                     PixelFormats = new List<PixFmt>() { PixFmt.Yuv422P10Le, PixFmt.Yuv444P10Le, PixFmt.Yuva444P10Le },
                     PixelFormatDefault = PixFmt.Yuv422P10Le,
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.ProResProfile>(),
-                    QualityDefault = (int)Quality.ProResProfile.Hq,
+                    QualityDefault = (int)Quality.ProResProfile.Standard,
                 };
             }
 
@@ -125,12 +125,13 @@ namespace Flowframes.MiscUtils
                 {
                     Codec = Codec.Gif,
                     Name = "gif",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Rgb8 },
-                    PixelFormatDefault = PixFmt.Rgb8,
+                    PixelFormats = new List<PixFmt>() { PixFmt.Pal8 },
+                    PixelFormatDefault = PixFmt.Pal8,
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.GifColors>(),
                     QualityDefault = (int)Quality.GifColors.High128,
                     OverideExtension = "gif",
                     MaxFramerate = 50,
+                    Modulo = 1,
                 };
             }
 

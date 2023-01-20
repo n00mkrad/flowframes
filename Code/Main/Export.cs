@@ -83,8 +83,8 @@ namespace Flowframes.Main
             bool fpsLimit = maxFps.GetFloat() > 0f && s.outFps.GetFloat() > maxFps.GetFloat();
 
             VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(s.inPath);
-            string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
-            string extraArgsOut = FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outSettings);
+            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
+            string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outSettings);
 
             if (ffplay)
             {
@@ -99,7 +99,7 @@ namespace Flowframes.Main
             {
                 s.FullOutPath = Path.Combine(s.outPath, await IoUtils.GetCurrentExportFilename(fpsLimit, true));
                 IoUtils.RenameExistingFile(s.FullOutPath);
-                return $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} {s.FullOutPath.Wrap()}";
+                return $"{extraArgsIn} -i pipe: {extraArgsOut} {encArgs} {s.FullOutPath.Wrap()}";
             }
         }
 

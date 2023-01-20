@@ -268,7 +268,7 @@ namespace Flowframes.IO
             if (key == Key.imgSeqFormat)      return WriteDefault(key, "PNG");
             if (key == Key.aviColors)         return WriteDefault(key, "yuv420p");
             if (key == Key.gifColors)         return WriteDefault(key, "128 (High)");
-            if (key == Key.gifDitherType)     return WriteDefault(key, "bayer (Recommended)");
+            if (key == Key.gifDitherType)     return WriteDefault(key, "bayer");
             if (key == Key.minVidLength)      return WriteDefault(key, "5");
             // AI
             if (key == Key.uhdThresh)         return WriteDefault(key, "1600");

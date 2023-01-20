@@ -19,6 +19,14 @@ namespace Flowframes.Media
                 return;
             }
 
+            Data.Enums.Output.Format format = I.currentSettings.outSettings.Format;
+
+            if (format == Data.Enums.Output.Format.Gif || format == Data.Enums.Output.Format.Images)
+            {
+                Logger.Log("Warning: Output format does not support audio.");
+                return;
+            }
+
             string containerExt = Path.GetExtension(interpVideo);
             string tempPath = Path.Combine(tempFolder, $"vid{containerExt}");
             string outPath = Path.Combine(tempFolder, $"muxed{containerExt}");
