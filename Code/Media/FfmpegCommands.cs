@@ -50,7 +50,7 @@ namespace Flowframes
             IoUtils.RenameExistingFile(outPath);
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
-            string args = $" {loopStr} -fps_mode cfr -f concat -i {vfrFilename} -c copy -movflags +faststart -fflags +genpts {outPath.Wrap()}";
+            string args = $" {loopStr} -f concat -i {vfrFilename} -fps_mode cfr -c copy -movflags +faststart -fflags +genpts {outPath.Wrap()}";
             await RunFfmpeg(args, concatFile.GetParentDir(), LogMode.Hidden);
         }
 

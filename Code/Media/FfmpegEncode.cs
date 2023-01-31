@@ -39,7 +39,7 @@ namespace Flowframes.Media
             {
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                args += $"{pre} {await GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
+                args += $"{pre} {await GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {await GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
