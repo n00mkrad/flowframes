@@ -126,7 +126,8 @@ namespace Flowframes
 
                 var pixelFormats = info.PixelFormats;
                 comboxOutputColors.Visible = pixelFormats.Count > 0;
-                comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, info.PixelFormatDefault);
+                int defaultPixFmt = (int)info.PixelFormatDefault != -1 ? info.PixelFormats.IndexOf(info.PixelFormatDefault) : 0;
+                comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, defaultPixFmt);
                 comboxOutputColors.Width = adjustableQuality ? 117 : 223;
 
                 if(pixelFormats.Count > 0)
@@ -216,7 +217,12 @@ namespace Flowframes
         public InterpSettings GetCurrentSettings()
         {
             SetTab("interpolate");
-            return new InterpSettings(inputTbox.Text.Trim(), outputTbox.Text.Trim(), GetAi(), currInFpsDetected, currInFps, interpFactorCombox.GetFloat(), outSpeedCombox.GetInt().Clamp(1, 64), GetExportSettings, GetModel(GetAi()));
+            string inPath = inputTbox.Text.Trim();
+            string outPath = outputTbox.Text.Trim();
+            AI ai = GetAi();
+            float interpFactor = interpFactorCombox.GetFloat();
+            float itsScale = outSpeedCombox.GetInt().Clamp(1, 64);
+            return new InterpSettings(inPath, outPath, ai, currInFpsDetected, currInFps, interpFactor, itsScale, GetOutputSettings(), GetModel(ai));
         }
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
@@ -236,7 +242,7 @@ namespace Flowframes
             settings.inFps = currInFps;
             settings.interpFactor = interpFactorCombox.GetFloat();
             settings.outFps = settings.inFps * settings.interpFactor;
-            settings.outSettings = GetExportSettings;
+            settings.outSettings = GetOutputSettings();
             settings.model = GetModel(GetAi());
 
             return settings;
@@ -408,8 +414,19 @@ namespace Flowframes
 
         Enums.Output.Format GetOutputFormat { get { return ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat); } }
         Enums.Encoding.Encoder GetEncoder { get { return ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder); } }
-        Enums.Encoding.PixelFormat GetPixelFormat { get { return ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(comboxOutputColors.Text, true, Strings.PixelFormat); } }
-        OutputSettings GetExportSettings { get { return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat, Quality = comboxOutputQuality.Text }; } }
+
+        private Enums.Encoding.PixelFormat GetPixelFormat ()
+        {
+            if (!comboxOutputColors.Visible)
+                return (Enums.Encoding.PixelFormat)(-1);
+
+            return ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(comboxOutputColors.Text, true, Strings.PixelFormat);
+        }
+
+        public OutputSettings GetOutputSettings ()
+        {
+            return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat(), Quality = comboxOutputQuality.Text };
+        }
 
         public void SetFormat(Enums.Output.Format format)
         {

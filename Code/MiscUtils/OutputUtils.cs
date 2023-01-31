@@ -1,11 +1,7 @@
 ﻿using Flowframes.Data;
-using Flowframes.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using static Flowframes.Data.Enums.Encoding;
 using Encoder = Flowframes.Data.Enums.Encoding.Encoder;
 using PixFmt = Flowframes.Data.Enums.Encoding.PixelFormat;

@@ -171,15 +171,20 @@ namespace Flowframes.Media
             return false;
         }
 
-        public static string[] GetEncArgs(OutputSettings settings,  Size res, float fps, bool realtime = false) // Array contains as many entries as there are encoding passes. If "realtime" is true, force single pass.
+        public static string[] GetEncArgs(OutputSettings settings, Size res, float fps, bool realtime = false) // Array contains as many entries as there are encoding passes. If "realtime" is true, force single pass.
         {
             Encoder enc = settings.Encoder;
-            PixelFormat pixFmt = settings.PixelFormat;
             int keyint = 10;
-
             var args = new List<string>();
-
             EncoderInfoVideo info = OutputUtils.GetEncoderInfoVideo(enc);
+            PixelFormat pixFmt = settings.PixelFormat;
+
+            if (settings.Format == Enums.Output.Format.Realtime)
+                pixFmt = PixelFormat.Yuv444P;
+
+            if (pixFmt == (PixelFormat)(-1)) // No pixel format set in GUI
+                pixFmt = info.PixelFormatDefault != (PixelFormat)(-1) ? info.PixelFormatDefault : info.PixelFormats.First(); // Set default or fallback to first in list
+
             args.Add($"-c:v {info.Name}");
 
             if (enc == Encoder.X264 || enc == Encoder.X265 || enc == Encoder.SvtAv1 || enc == Encoder.VpxVp9 || enc == Encoder.Nvenc264 || enc == Encoder.Nvenc265 || enc == Encoder.NvencAv1)

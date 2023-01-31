@@ -88,7 +88,7 @@ namespace Flowframes.Main
 
             if (ffplay)
             {
-                encArgs = $"-pix_fmt {encArgs.Split("-pix_fmt ").Last()}";
+                encArgs = $"-pix_fmt yuv444p";
 
                 return 
                     $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} -f yuv4mpegpipe - | ffplay - " +

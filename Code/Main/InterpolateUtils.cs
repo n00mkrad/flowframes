@@ -256,6 +256,7 @@ namespace Flowframes.Main
             Logger.Log($"Un-rounded downscaled size: {(res.Width * factor).ToString("0.###")}x{(res.Height * factor).ToString("0.###")}", true);
             int width = RoundDivisibleBy((res.Width * factor).RoundToInt(), mod);
             int height = RoundDivisibleBy((res.Height * factor).RoundToInt(), mod);
+            res = new Size(width, height);
 
             if (print && factor < 1f)
                 Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{height}.");

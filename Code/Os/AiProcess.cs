@@ -112,7 +112,9 @@ namespace Flowframes.Os
                 Program.mainForm.SetStatus("Creating output video from frames...");
             }
 
-            Logger.Log(logStr);
+            if (Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime)
+                Logger.Log(logStr);
+
             processTime.Stop();
 
             if (!Interpolate.currentSettings.ai.Piped && interpFramesCount < 3)
@@ -339,7 +341,7 @@ namespace Flowframes.Os
 
         public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl, bool rt = false)
         {
-            if(Interpolate.canceled) return;
+            if (Interpolate.canceled) return;
 
             AI ai = Implementations.rifeNcnnVs;
             processTimeMulti.Restart();
@@ -368,7 +370,7 @@ namespace Flowframes.Os
             Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with certain Flowframes features, such as image sequence exporting.");
 
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            
+
             string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y {await Export.GetPipedFfmpegCmd(rt)}";
 
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
@@ -715,6 +717,6 @@ namespace Flowframes.Os
             InterpolationProgress.UpdateLastFrameFromInterpOutput(line);
         }
 
-        
+
     }
 }
