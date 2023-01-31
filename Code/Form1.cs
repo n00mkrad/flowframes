@@ -601,7 +601,7 @@ namespace Flowframes
                 Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]), true);
                 inputTbox.Text = files[0];
 
-                bool resume = (IoUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true, "*.json") > 0);
+                bool resume = Directory.Exists(files[0]) && IoUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true, "*.json") > 0;
                 AutoEncodeResume.resumeNextRun = resume;
 
                 if (resume)

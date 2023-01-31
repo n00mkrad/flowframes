@@ -206,6 +206,9 @@ namespace Flowframes.IO
         {
             try
             {
+				if (!Directory.Exists(path))
+					return 0;
+
                 DirectoryInfo d = new DirectoryInfo(path);
 				FileInfo[] files = null;
 
