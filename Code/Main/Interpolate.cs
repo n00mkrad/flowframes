@@ -101,7 +101,9 @@ namespace Flowframes
 
             if (canceled) return;
 
+            Program.mainForm.SetStatus("Running real-time interpolation...");
             await AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, "", currentSettings.interpFactor, currentSettings.model.Dir, true);
+            Program.mainForm.SetStatus("Ready");
             Program.mainForm.SetWorking(false);
         }
 
@@ -208,7 +210,6 @@ namespace Flowframes
             if (canceled) return;
 
             currentlyUsingAutoEnc = Utils.CanUseAutoEnc(stepByStep, currentSettings);
-
             IoUtils.CreateDir(outpath);
 
             List<Task> tasks = new List<Task>();

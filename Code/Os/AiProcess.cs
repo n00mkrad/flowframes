@@ -366,13 +366,8 @@ namespace Flowframes.Os
         {
             IoUtils.CreateDir(outPath);
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
-
-            Logger.Log($"Note: RIFE-NCNN-VS is experimental and may not work as expected with certain Flowframes features, such as image sequence exporting.");
-
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-
             string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y {await Export.GetPipedFfmpegCmd(rt)}";
-
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();
 
@@ -395,7 +390,7 @@ namespace Flowframes.Os
 
             if (rt)
             {
-                Logger.Log($"Starting. Use Space to pause, Left Arrow and Right Arrow to seek, albeit seeking takes some time.");
+                Logger.Log($"Starting. Use Space to pause, Left Arrow and Right Arrow to seek, though seeking can be slow.");
                 AiStartedRt(rifeNcnnVs, inPath);
             }
             else
