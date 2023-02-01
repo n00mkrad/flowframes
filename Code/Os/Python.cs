@@ -106,18 +106,25 @@ namespace Flowframes.Os
 
             return "";
         }
-        
-        public static bool IsPytorchReady ()
-        {
-            if (HasEmbeddedPyFolder())
-                return true;
 
+        private static bool? pytorchReadyCached = null;
+        
+        public static bool IsPytorchReady (bool clearCachedValue = false)
+        {
+            if (clearCachedValue)
+                pytorchReadyCached = null;
+
+            if (pytorchReadyCached != null)
+                return (bool)pytorchReadyCached;
+
+            bool pytorchReady = false;
+
+            bool hasPyFolder = HasEmbeddedPyFolder();
             string torchVer = GetPytorchVer();
 
-            if (!string.IsNullOrWhiteSpace(torchVer) && torchVer.Length <= 35 && !torchVer.Contains("ModuleNotFoundError"))
-                return true;
-            else
-                return false;
+            pytorchReady = hasPyFolder || (!string.IsNullOrWhiteSpace(torchVer) && torchVer.Length <= 35 && !torchVer.Contains("ModuleNotFoundError"));
+            pytorchReadyCached = pytorchReady;
+            return pytorchReady;
         }
 
         static string GetPytorchVer()
