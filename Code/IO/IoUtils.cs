@@ -52,6 +52,9 @@ namespace Flowframes.IO
 
 		public static string[] ReadLines(string path)
 		{
+			if (!File.Exists(path))
+				return new string[0];
+
 			List<string> lines = new List<string>();
 			using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 0x1000, FileOptions.SequentialScan))
 			

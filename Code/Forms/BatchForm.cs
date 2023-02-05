@@ -33,7 +33,8 @@ namespace Flowframes.Forms
             {
                 InterpSettings entry = Program.batchQueue.ElementAt(i);
                 string outFormat = Strings.OutputFormat.Get(entry.outSettings.Format.ToString());
-                string str = $"#{i+1}: {Path.GetFileName(entry.inPath).Trunc(40)} - {entry.inFps.GetFloat()} FPS => {entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {outFormat}";
+                string inPath = string.IsNullOrWhiteSpace(entry.inPath) ? "No Path" : Path.GetFileName(entry.inPath).Trunc(40);
+                string str = $"#{i+1}: {inPath} - {entry.inFps.GetFloat()} FPS => {entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {outFormat}";
                 taskList.Items.Add(str);
             }
         }
