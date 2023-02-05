@@ -89,9 +89,11 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.labelOutput = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.comboxOutputFormat = new System.Windows.Forms.ComboBox();
             this.comboxOutputEncoder = new System.Windows.Forms.ComboBox();
+            this.comboxOutputQuality = new System.Windows.Forms.ComboBox();
             this.comboxOutputColors = new System.Windows.Forms.ComboBox();
             this.aiInfoBtn = new HTAlt.WinForms.HTButton();
             this.outSpeedCombox = new System.Windows.Forms.ComboBox();
@@ -139,8 +141,8 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
-            this.comboxOutputQuality = new System.Windows.Forms.ComboBox();
-            this.labelOutput = new System.Windows.Forms.Label();
+            this.menuStripQueue = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addCurrentConfigurationToQueueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -166,6 +168,7 @@
             this.abtTab.SuspendLayout();
             this.busyControlsPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.menuStripQueue.SuspendLayout();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -542,6 +545,7 @@
             this.toolTip1.SetToolTip(this.queueBtn, "Open Queue");
             this.queueBtn.UseVisualStyleBackColor = false;
             this.queueBtn.Click += new System.EventHandler(this.queueBtn_Click);
+            this.queueBtn.MouseDown += new System.Windows.Forms.MouseEventHandler(this.queueBtn_MouseDown);
             // 
             // pictureBox4
             // 
@@ -937,6 +941,17 @@
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
+            // labelOutput
+            // 
+            this.labelOutput.AutoSize = true;
+            this.labelOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelOutput.ForeColor = System.Drawing.Color.Silver;
+            this.labelOutput.Location = new System.Drawing.Point(692, 161);
+            this.labelOutput.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
+            this.labelOutput.Name = "labelOutput";
+            this.labelOutput.Size = new System.Drawing.Size(0, 13);
+            this.labelOutput.TabIndex = 47;
+            // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.comboxOutputFormat);
@@ -993,6 +1008,19 @@
             this.comboxOutputEncoder.Size = new System.Drawing.Size(90, 23);
             this.comboxOutputEncoder.TabIndex = 50;
             this.comboxOutputEncoder.SelectedIndexChanged += new System.EventHandler(this.comboxOutputEncoder_SelectedIndexChanged);
+            // 
+            // comboxOutputQuality
+            // 
+            this.comboxOutputQuality.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.comboxOutputQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboxOutputQuality.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboxOutputQuality.ForeColor = System.Drawing.Color.White;
+            this.comboxOutputQuality.FormattingEnabled = true;
+            this.comboxOutputQuality.Location = new System.Drawing.Point(177, 0);
+            this.comboxOutputQuality.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.comboxOutputQuality.Name = "comboxOutputQuality";
+            this.comboxOutputQuality.Size = new System.Drawing.Size(100, 23);
+            this.comboxOutputQuality.TabIndex = 48;
             // 
             // comboxOutputColors
             // 
@@ -1680,29 +1708,19 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
-            // comboxOutputQuality
+            // menuStripQueue
             // 
-            this.comboxOutputQuality.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.comboxOutputQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboxOutputQuality.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboxOutputQuality.ForeColor = System.Drawing.Color.White;
-            this.comboxOutputQuality.FormattingEnabled = true;
-            this.comboxOutputQuality.Location = new System.Drawing.Point(177, 0);
-            this.comboxOutputQuality.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
-            this.comboxOutputQuality.Name = "comboxOutputQuality";
-            this.comboxOutputQuality.Size = new System.Drawing.Size(100, 23);
-            this.comboxOutputQuality.TabIndex = 48;
+            this.menuStripQueue.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addCurrentConfigurationToQueueToolStripMenuItem});
+            this.menuStripQueue.Name = "menuStripQueue";
+            this.menuStripQueue.Size = new System.Drawing.Size(269, 48);
             // 
-            // labelOutput
+            // addCurrentConfigurationToQueueToolStripMenuItem
             // 
-            this.labelOutput.AutoSize = true;
-            this.labelOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelOutput.ForeColor = System.Drawing.Color.Silver;
-            this.labelOutput.Location = new System.Drawing.Point(692, 161);
-            this.labelOutput.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
-            this.labelOutput.Name = "labelOutput";
-            this.labelOutput.Size = new System.Drawing.Size(0, 13);
-            this.labelOutput.TabIndex = 47;
+            this.addCurrentConfigurationToQueueToolStripMenuItem.Name = "addCurrentConfigurationToQueueToolStripMenuItem";
+            this.addCurrentConfigurationToQueueToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
+            this.addCurrentConfigurationToQueueToolStripMenuItem.Text = "Add Current Configuration to Queue";
+            this.addCurrentConfigurationToQueueToolStripMenuItem.Click += new System.EventHandler(this.addCurrentConfigurationToQueueToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1774,6 +1792,7 @@
             this.abtTab.ResumeLayout(false);
             this.busyControlsPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.menuStripQueue.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1892,6 +1911,8 @@
         public System.Windows.Forms.ComboBox comboxOutputEncoder;
         public System.Windows.Forms.ComboBox comboxOutputQuality;
         private System.Windows.Forms.Label labelOutput;
+        private System.Windows.Forms.ContextMenuStrip menuStripQueue;
+        private System.Windows.Forms.ToolStripMenuItem addCurrentConfigurationToQueueToolStripMenuItem;
     }
 }
 

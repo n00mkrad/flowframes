@@ -809,5 +809,17 @@ namespace Flowframes
         {
             UpdateOutputEncodingUi();
         }
+
+        private void queueBtn_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                menuStripQueue.Show(Cursor.Position);
+        }
+
+        private void addCurrentConfigurationToQueueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.batchQueue.Enqueue(Program.mainForm.GetCurrentSettings());
+            Application.OpenForms.Cast<Form>().Where(f => f is BatchForm).Select(f => (BatchForm)f).ToList().ForEach(f => f.RefreshGui());
+        }
     }
 }

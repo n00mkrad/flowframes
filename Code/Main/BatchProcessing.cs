@@ -59,6 +59,7 @@ namespace Flowframes.Main
             Logger.Log("Queue: Finished queue processing.");
             OsUtils.ShowNotificationIfInBackground("Flowframes Queue", "Finished queue processing.");
             SetBusy(false);
+            Program.mainForm.SetWorking(false);
             Program.mainForm.SetTab("interpolation");
             Program.mainForm.CompletionAction();
         }
