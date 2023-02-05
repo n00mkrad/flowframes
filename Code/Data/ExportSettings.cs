@@ -12,5 +12,6 @@ namespace Flowframes.Data
         public Enums.Encoding.Encoder Encoder { get; set; }
         public Enums.Encoding.PixelFormat PixelFormat { get; set; }
         public string Quality { get; set; } = "";
+        public string CustomQuality { get; set; } = "";
     }
 }

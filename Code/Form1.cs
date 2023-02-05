@@ -55,7 +55,6 @@ namespace Flowframes
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-            //UiUtils.InitCombox(outModeCombox, 0);
             InitOutputUi();
             UiUtils.InitCombox(aiModel, 2);
             // Video Utils
@@ -64,9 +63,10 @@ namespace Flowframes
             Program.mainForm = this;
             Logger.textbox = logBox;
             NvApi.Init();
-            InitAis();
             InterpolationProgress.preview = previewPicturebox;
             RemovePreviewIfDisabled();
+            await Checks();
+            InitAis();
             UpdateStepByStepControls();
             Initialized();
             HandleArgs();
@@ -78,11 +78,9 @@ namespace Flowframes
             if (Debugger.IsAttached)
             {
                 Logger.Log("Debugger is attached - Flowframes seems to be running within VS.");
-                // ...
             }
 
             completionAction.SelectedIndex = 0;
-            await Checks();
         }
 
         private void InitOutputUi()
@@ -96,7 +94,6 @@ namespace Flowframes
             var outMode = ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat);
             comboxOutputEncoder.FillFromEnum(OutputUtils.GetAvailableEncoders(outMode), Strings.Encoder, 0);
             comboxOutputEncoder.Visible = comboxOutputEncoder.Items.Count > 0;
-
             UpdateOutputEncodingUi();
         }
 
@@ -425,7 +422,8 @@ namespace Flowframes
 
         public OutputSettings GetOutputSettings ()
         {
-            return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat(), Quality = comboxOutputQuality.Text };
+            string custQ = textboxOutputQualityCust.Visible ? textboxOutputQualityCust.Text.Trim() : "";
+            return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat(), Quality = comboxOutputQuality.Text, CustomQuality = custQ };
         }
 
         public void SetFormat(Enums.Output.Format format)
@@ -820,6 +818,20 @@ namespace Flowframes
         {
             Program.batchQueue.Enqueue(Program.mainForm.GetCurrentSettings());
             Application.OpenForms.Cast<Form>().Where(f => f is BatchForm).Select(f => (BatchForm)f).ToList().ForEach(f => f.RefreshGui());
+        }
+
+        private void comboxOutputQuality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var qualityPreset = ParseUtils.GetEnum<Enums.Encoding.Quality.Common>(comboxOutputQuality.Text, true, Strings.VideoQuality);
+            bool cust = qualityPreset == Enums.Encoding.Quality.Common.Custom;
+            textboxOutputQualityCust.Visible = cust;
+            comboxOutputQuality.Margin = new System.Windows.Forms.Padding(0, 0, cust ? 0 : 6, 0);
+            comboxOutputQuality.Width = cust ? 70 : 100;
+
+            if (!cust)
+                textboxOutputQualityCust.Text = "";
+
+            Refresh();
         }
     }
 }

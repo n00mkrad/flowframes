@@ -376,5 +376,15 @@ namespace Flowframes
         {
             return OutputUtils.GetEncoderInfoVideo(enc);
         }
+
+        public static bool IsEmpty (this string s)
+        {
+            return string.IsNullOrWhiteSpace(s);
+        }
+
+        public static bool NotEmpty(this string s)
+        {
+            return !string.IsNullOrWhiteSpace(s);
+        }
     }
 }

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Win32Interop.Enums;
 using static Flowframes.Data.Enums.Encoding;
 using static Flowframes.Media.GetVideoInfo;
 using Stream = Flowframes.Data.Streams.Stream;
@@ -196,26 +197,26 @@ namespace Flowframes.Media
             if (enc == Encoder.X264)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" "); // TODO: Replace this ugly stuff with enums
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 args.Add($"-crf {crf} -preset {preset}");
             }
 
             if (enc == Encoder.X265)
             {
                 string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" "); // TODO: Replace this ugly stuff with enums
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 args.Add($"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset}");
             }
 
             if (enc == Encoder.SvtAv1)
             {
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 args.Add($"-crf {crf} {GetSvtAv1Speed()} -svtav1-params enable-qm=1:enable-overlays=1:enable-tf=0:scd=0");
             }
 
             if (enc == Encoder.VpxVp9)
             {
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
                 string t = GetTilingArgs(res, "-tile-columns ", "-tile-rows ");
 
@@ -234,19 +235,19 @@ namespace Flowframes.Media
 
             if (enc == Encoder.Nvenc264)
             {
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 args.Add($"-b:v 0 {(crf > 0 ? $"-cq {crf} -preset p7" : "-preset lossless")}");
             }
 
             if (enc == Encoder.Nvenc265)
             {
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 args.Add($"-b:v 0 {(crf > 0 ? $"-cq {crf} -preset p7" : "-preset lossless")}");
             }
 
             if (enc == Encoder.NvencAv1)
             {
-                int crf = OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), enc);
+                int crf = GetCrf(settings);
                 args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}"); // Lossless not supported as of Jan 2023!!
             }
 
@@ -261,6 +262,14 @@ namespace Flowframes.Media
             }
 
             return new string[] { string.Join(" ", args) };
+        }
+
+        private static int GetCrf(OutputSettings settings)
+        {
+            if (settings.CustomQuality.NotEmpty())
+                return settings.CustomQuality.GetInt();
+            else
+                return OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), settings.Encoder);
         }
 
         public static string GetTilingArgs(Size resolution, string colArg, string rowArg)
