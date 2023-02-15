@@ -17,8 +17,6 @@ using Flowframes.MiscUtils;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Flowframes.Media;
-using Flowframes.Utilities;
 
 #pragma warning disable IDE1006
 
@@ -249,6 +247,7 @@ namespace Flowframes
         {
             inputTbox.Text = entry.inPath;
             MainUiFunctions.SetOutPath(outputTbox, entry.outPath);
+            fpsInTbox.Text = entry.inFps.ToString();
             interpFactorCombox.Text = entry.interpFactor.ToString();
             aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == entry.ai.NameInternal).FirstOrDefault());
             SetFormat(entry.outSettings.Format);
@@ -830,6 +829,8 @@ namespace Flowframes
 
             if (!cust)
                 textboxOutputQualityCust.Text = "";
+            else
+                textboxOutputQualityCust.Focus();
 
             Refresh();
         }

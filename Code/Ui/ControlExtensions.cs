@@ -21,5 +21,14 @@ namespace Flowframes.Ui
         {
             LockWindowUpdate(IntPtr.Zero);
         }
+
+        public static List<Control> GetControls(this Control control)
+        {
+            List<Control> list = new List<Control>();
+            var controls = control.Controls.Cast<Control>().ToList();
+            list.AddRange(controls);
+            controls.ForEach(c => list.AddRange(c.GetControls()));
+            return list;
+        }
     }
 }

@@ -94,6 +94,7 @@
             this.comboxOutputFormat = new System.Windows.Forms.ComboBox();
             this.comboxOutputEncoder = new System.Windows.Forms.ComboBox();
             this.comboxOutputQuality = new System.Windows.Forms.ComboBox();
+            this.textboxOutputQualityCust = new System.Windows.Forms.TextBox();
             this.comboxOutputColors = new System.Windows.Forms.ComboBox();
             this.aiInfoBtn = new HTAlt.WinForms.HTButton();
             this.outSpeedCombox = new System.Windows.Forms.ComboBox();
@@ -143,7 +144,6 @@
             this.cancelBtn = new System.Windows.Forms.Button();
             this.menuStripQueue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCurrentConfigurationToQueueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textboxOutputQualityCust = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -962,7 +962,7 @@
             this.flowLayoutPanel1.Controls.Add(this.comboxOutputColors);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(281, 157);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(508, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(614, 23);
             this.flowLayoutPanel1.TabIndex = 46;
             // 
             // comboxOutputFormat
@@ -1024,6 +1024,21 @@
             this.comboxOutputQuality.Size = new System.Drawing.Size(100, 23);
             this.comboxOutputQuality.TabIndex = 48;
             this.comboxOutputQuality.SelectedIndexChanged += new System.EventHandler(this.comboxOutputQuality_SelectedIndexChanged);
+            // 
+            // textboxOutputQualityCust
+            // 
+            this.textboxOutputQualityCust.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textboxOutputQualityCust.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textboxOutputQualityCust.ForeColor = System.Drawing.Color.White;
+            this.textboxOutputQualityCust.Location = new System.Drawing.Point(283, 0);
+            this.textboxOutputQualityCust.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.textboxOutputQualityCust.MaxLength = 3;
+            this.textboxOutputQualityCust.MinimumSize = new System.Drawing.Size(4, 21);
+            this.textboxOutputQualityCust.Name = "textboxOutputQualityCust";
+            this.textboxOutputQualityCust.Size = new System.Drawing.Size(30, 23);
+            this.textboxOutputQualityCust.TabIndex = 52;
+            this.textboxOutputQualityCust.Text = "24";
+            this.textboxOutputQualityCust.Visible = false;
             // 
             // comboxOutputColors
             // 
@@ -1724,19 +1739,6 @@
             this.addCurrentConfigurationToQueueToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.addCurrentConfigurationToQueueToolStripMenuItem.Text = "Add Current Configuration to Queue";
             this.addCurrentConfigurationToQueueToolStripMenuItem.Click += new System.EventHandler(this.addCurrentConfigurationToQueueToolStripMenuItem_Click);
-            // 
-            // textboxOutputQualityCust
-            // 
-            this.textboxOutputQualityCust.AllowDrop = true;
-            this.textboxOutputQualityCust.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.textboxOutputQualityCust.ForeColor = System.Drawing.Color.White;
-            this.textboxOutputQualityCust.Location = new System.Drawing.Point(283, 0);
-            this.textboxOutputQualityCust.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
-            this.textboxOutputQualityCust.MinimumSize = new System.Drawing.Size(4, 21);
-            this.textboxOutputQualityCust.Name = "textboxOutputQualityCust";
-            this.textboxOutputQualityCust.Size = new System.Drawing.Size(30, 23);
-            this.textboxOutputQualityCust.TabIndex = 52;
-            this.textboxOutputQualityCust.Visible = false;
             // 
             // Form1
             // 

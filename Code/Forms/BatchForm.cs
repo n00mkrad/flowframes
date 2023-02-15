@@ -158,6 +158,10 @@ namespace Flowframes.Forms
 
                 current.inFpsDetected = await IoUtils.GetFpsFolderOrVideo(path);
                 current.inFps = current.inFpsDetected;
+
+                if(current.inFps.GetFloat() <= 0)
+                    current.inFps = InterpolateUtils.AskForFramerate(Name, false);
+
                 current.outFps = current.inFps * current.interpFactor;
 
                 Program.batchQueue.Enqueue(current);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using Flowframes.Data;
@@ -15,7 +14,7 @@ namespace Flowframes.Media
         {
             Logger.Log($"Getting media resolution ({path})", true);
 
-            long filesize = IoUtils.GetFilesize(path);
+            long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize);
 
             if (filesize > 0 && CacheContains(hash))

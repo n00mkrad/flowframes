@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using I = Flowframes.Interpolate;
 using Padding = Flowframes.Data.Padding;
 using static Flowframes.Magick.Dedupe;
+using System.Xml.Linq;
 
 namespace Flowframes.Main
 {
@@ -361,6 +362,14 @@ namespace Flowframes.Main
                 return (int)Math.Floor(factor) - 1;
             else
                 return factor.RoundToInt();
+        }
+
+        public static Fraction AskForFramerate (string mediaName, bool isImageSequence = true)
+        {
+            string text = $"Please enter a frame rate to use for{(isImageSequence ? " the image sequence" : "")} '{mediaName.Trunc(80)}'.";
+            PromptForm form = new PromptForm("Enter Frame Rate", text, "15");
+            form.ShowDialog();
+            return new Fraction(form.EnteredText);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Flowframes.Data;
 using Flowframes.IO;
@@ -20,7 +21,7 @@ namespace Flowframes.Media
         {
             Logger.Log($"Getting frame count ({path})", true);
 
-            long filesize = IoUtils.GetFilesize(path);
+            long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize);
 
             if (filesize > 0 && CacheContains(hash))
@@ -36,11 +37,22 @@ namespace Flowframes.Media
             int frameCount;
 
             if (IoUtils.IsPathDirectory(path))
-                frameCount = IoUtils.GetAmountOfFiles(path, false);
+            {
+                frameCount = IoUtils.GetAmountOfFiles(path, false); // Count frames based on image file amount
+            }
             else
-                frameCount = await FfmpegCommands.GetFrameCountAsync(path);
+            {
+                if (path.IsConcatFile())
+                {
+                    var lines = IoUtils.ReadFileLines(path);
+                    var filtered = lines.Where(l => l.StartsWith("file '"));
+                    frameCount = filtered.Count(); // Count frames from concat file
+                }
+                else
+                    frameCount = await FfmpegCommands.GetFrameCountAsync(path); // Count frames from video stream
+            }
 
-            if(frameCount > 0)
+            if (frameCount > 0)
             {
                 Logger.Log($"Adding hash with value {frameCount} to cache.", true);
                 cache.Add(hash, frameCount);
@@ -80,7 +92,7 @@ namespace Flowframes.Media
             return 0;
         }
 
-        public static void Clear ()
+        public static void Clear()
         {
             cache.Clear();
         }

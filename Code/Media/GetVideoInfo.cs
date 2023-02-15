@@ -94,7 +94,7 @@ namespace Flowframes.Media
 
         static async Task<string> GetOutputCached(string path, Process process, bool noCache = false)
         {
-            long filesize = IoUtils.GetFilesize(path);
+            long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize, process.StartInfo.Arguments);
 
             if (!noCache && filesize > 0 && CacheContains(hash, ref cmdCache))

@@ -392,13 +392,17 @@ namespace Flowframes.IO
 
 			try
 			{
-				size = FfmpegCommands.GetSize(path);
+				if (path.IsConcatFile())
+                    path = ReadFileFirstLine(path).Split('\'')[1].Split('\'')[0];
+
+                size = FfmpegCommands.GetSize(path);
 				Logger.Log($"Detected video size of {Path.GetFileName(path)} as {size.Width}x{size.Height}", true);
 			}
-			catch
+			catch (Exception ex)
 			{
 				Logger.Log("Failed to read video size!");
-			}
+				Logger.Log(ex.ToString(), true);
+            }
 
 			return size;
 		}
@@ -892,7 +896,20 @@ namespace Flowframes.IO
 			return size;
 		}
 
-		public static long GetFilesize(string path)
+        public static long GetPathSize(string path)
+        {
+            try
+            {
+				bool isFile = File.Exists(path);
+                return isFile ? GetFilesize(path) : GetDirSize(path, true);
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public static long GetFilesize(string path)
 		{
             try
             {
@@ -960,5 +977,32 @@ namespace Flowframes.IO
 			List<string> exts = fileInfos.Select(x => x.Extension).ToList();
 			return exts.Select(x => x).Distinct().ToArray();
 		}
-	}
+
+		public static string ReadFile(string path)
+		{
+            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (var streamReader = new StreamReader(fileStream))
+                {
+                    return streamReader.ReadToEnd();
+                }
+            }
+        }
+
+        public static string[] ReadFileLines(string path)
+        {
+            return ReadFile(path).SplitIntoLines();
+        }
+
+        public static string ReadFileFirstLine(string path)
+        {
+            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                using (var streamReader = new StreamReader(fileStream))
+                {
+                    return streamReader.ReadLine();
+                }
+            }
+        }
+    }
 }

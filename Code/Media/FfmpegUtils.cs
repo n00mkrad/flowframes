@@ -8,7 +8,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Win32Interop.Enums;
 using static Flowframes.Data.Enums.Encoding;
 using static Flowframes.Media.GetVideoInfo;
 using Stream = Flowframes.Data.Streams.Stream;
@@ -31,12 +30,15 @@ namespace Flowframes.Media
             return output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).Count();
         }
 
-        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction defaultFps, bool countFrames)
+        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction? defaultFps, bool countFrames)
         {
             List<Stream> streamList = new List<Stream>();
 
             try
             {
+                if (defaultFps == null)
+                    defaultFps = new Fraction(30, 1);
+
                 string output = await GetFfmpegInfoAsync(path, "Stream #0:");
                 string[] streams = output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).ToArray();
 
@@ -61,7 +63,7 @@ namespace Flowframes.Media
                             Size res = await GetMediaResolutionCached.GetSizeAsync(path);
                             Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
                             Size dar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "display_aspect_ratio", idx));
-                            Fraction fps = path.IsConcatFile() ? defaultFps : await IoUtils.GetVideoFramerate(path);
+                            Fraction fps = path.IsConcatFile() ? (Fraction)defaultFps : await IoUtils.GetVideoFramerate(path);
                             int frameCount = countFrames ? await GetFrameCountCached.GetFrameCountAsync(path) : 0;
                             VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount);
                             vStream.Index = idx;
@@ -457,25 +459,14 @@ namespace Flowframes.Media
                 return 0;
 
             Directory.CreateDirectory(outputPath.GetParentDir());
-
-            if (validExtensions == null)
-                validExtensions = new List<string>();
-
-            validExtensions = validExtensions.Select(x => x.Remove(".").ToLowerInvariant()).ToList(); // Ignore "." in extensions
-            string concatFileContent = "";
-            string[] files = IoUtils.GetFilesSorted(inputFilesDir);
-            int fileCount = 0;
-
+            validExtensions = validExtensions ?? new List<string>();
+            validExtensions = validExtensions.Select(x => x.Remove(".").Lower()).ToList(); // Ignore "." in extensions
+            var validFiles = IoUtils.GetFilesSorted(inputFilesDir).Where(f => validExtensions.Contains(Path.GetExtension(f).Replace(".", "").Lower()));
+            string fileContent = string.Join(Environment.NewLine, validFiles.Select(f => $"file '{f.Replace(@"\", "/")}'"));
             IoUtils.TryDeleteIfExists(outputPath);
-            StreamWriter concatFile = new StreamWriter(outputPath, append: true);
+            File.WriteAllText(outputPath, fileContent);
 
-            foreach (string file in files.Where(x => validExtensions.Contains(Path.GetExtension(x).Replace(".", "").ToLower())))
-            {
-                fileCount++;
-                concatFile.WriteLine($"file '{file.Replace(@"\", "/")}'\n");
-            }
-
-            return fileCount;
+            return validFiles.Count();
         }
 
         public static Size SizeFromString(string str, char delimiter = ':')

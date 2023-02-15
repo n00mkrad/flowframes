@@ -1,6 +1,7 @@
 ﻿using Flowframes.Data.Streams;
 using Flowframes.Forms;
 using Flowframes.IO;
+using Flowframes.Main;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
 using System;
@@ -56,11 +57,7 @@ namespace Flowframes.Data
                 Format = "Folder";
 
                 if (requestFpsInputIfUnset && InputRate == null)
-                {
-                    PromptForm form = new PromptForm("Enter Frame Rate", $"Please enter a frame rate to use for the image sequence '{Name.Trunc(80)}'.", "15");
-                    form.ShowDialog();
-                    InputRate = new Fraction(form.EnteredText);
-                }
+                    InputRate = InterpolateUtils.AskForFramerate(Name);
             }
             else
             {
@@ -105,7 +102,7 @@ namespace Flowframes.Data
                     await InitializeSequence();
 
                 await LoadFormatInfo(ImportPath);
-                AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, (Fraction)InputRate, countFrames);
+                AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, InputRate, countFrames);
                 VideoStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Video).Select(x => (VideoStream)x).ToList();
                 AudioStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Audio).Select(x => (AudioStream)x).ToList();
                 SubtitleStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Subtitle).Select(x => (SubtitleStream)x).ToList();

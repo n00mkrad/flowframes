@@ -81,14 +81,12 @@ namespace Flowframes.Main
                 return;
             }
 
-            string fname = Path.GetFileName(entry.inPath);
-            if (IoUtils.IsPathDirectory(entry.inPath)) fname = Path.GetDirectoryName(entry.inPath);
-            Logger.Log($"Queue: Processing {fname} ({entry.interpFactor}x {entry.ai.NameShort}).");
-
-            MediaFile mf = new MediaFile(entry.inPath);
+            MediaFile mf = new MediaFile(entry.inPath, false);
+            mf.InputRate = entry.inFps;
             await mf.Initialize();
-
             Interpolate.currentMediaFile = mf;
+
+            Logger.Log($"Queue: Processing {mf.Name} ({entry.interpFactor}x {entry.ai.NameShort}).");
 
             Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
             Interpolate.currentSettings = entry;
@@ -99,7 +97,7 @@ namespace Flowframes.Main
 
             Program.batchQueue.Dequeue();
             Program.mainForm.SetWorking(false);
-            Logger.Log($"Queue: Done processing {fname} ({entry.interpFactor}x {entry.ai.NameShort}).");
+            Logger.Log($"Queue: Done processing {mf.Name} ({entry.interpFactor}x {entry.ai.NameShort}).");
         }
 
         static void SetBusy(bool state)
