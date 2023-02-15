@@ -32,7 +32,7 @@ namespace Flowframes.Main
                 Logger.ClearLogBox();
 
             stopped = false;
-            Program.mainForm.SetTab("preview");
+            Program.mainForm.SetTab(Program.mainForm.previewTab.Name);
             int initTaskCount = Program.batchQueue.Count;
 
             for (int i = 0; i < initTaskCount; i++)
@@ -60,7 +60,7 @@ namespace Flowframes.Main
             OsUtils.ShowNotificationIfInBackground("Flowframes Queue", "Finished queue processing.");
             SetBusy(false);
             Program.mainForm.SetWorking(false);
-            Program.mainForm.SetTab("interpolation");
+            Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
             Program.mainForm.CompletionAction();
         }
 

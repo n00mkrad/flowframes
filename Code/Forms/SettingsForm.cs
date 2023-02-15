@@ -75,9 +75,6 @@ namespace Flowframes.Forms
 
         void SaveSettings ()
         {
-            // Clamp...
-            mp4Crf.Text = ((int)mp4Crf.Value).Clamp(0, 50).ToString();
-            vp9Crf.Text = ((int)vp9Crf.Value).Clamp(0, 63).ToString();
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
@@ -120,18 +117,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(maxFps);
             ConfigParser.SaveComboxIndex(loopMode);
             ConfigParser.SaveGuiElement(fixOutputDuration);
-            // Encoding
-            ConfigParser.SaveComboxIndex(mp4Enc);
-            ConfigParser.SaveComboxIndex(pixFmt);
-            Config.Set(mp4CrfConfigKey, mp4Crf.Value.ToString());
-            ConfigParser.SaveGuiElement(vp9Crf);
-            ConfigParser.SaveComboxIndex(proResProfile);
-            ConfigParser.SaveGuiElement(aviCodec);
-            ConfigParser.SaveGuiElement(aviColors);
-            ConfigParser.SaveGuiElement(gifColors);
-            ConfigParser.SaveGuiElement(gifDitherType);
-            ConfigParser.SaveGuiElement(imgSeqFormat);
-            ConfigParser.SaveComboxIndex(imgSeqQuality);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveComboxIndex(serverCombox);
@@ -179,17 +164,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(maxFps); 
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
-            // Encoding
-            ConfigParser.LoadComboxIndex(mp4Enc);
-            ConfigParser.LoadComboxIndex(pixFmt);
-            ConfigParser.LoadGuiElement(vp9Crf);
-            ConfigParser.LoadComboxIndex(proResProfile);
-            ConfigParser.LoadGuiElement(aviCodec);
-            ConfigParser.LoadGuiElement(aviColors);
-            ConfigParser.LoadGuiElement(gifColors);
-            ConfigParser.LoadGuiElement(gifDitherType);
-            ConfigParser.LoadGuiElement(imgSeqFormat);
-            ConfigParser.LoadComboxIndex(imgSeqQuality);
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadComboxIndex(serverCombox);
@@ -249,25 +223,6 @@ namespace Flowframes.Forms
             CheckModelCacheSize();
         }
 
-        string mp4CrfConfigKey;
-
-        private void mp4Enc_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // string text = mp4Enc.Text.ToUpper().Remove(" ");
-            // 
-            // if (text.Contains(FfmpegUtils.Codec.H264.ToString().ToUpper()))
-            //     mp4CrfConfigKey = "h264Crf";
-            // 
-            // if (text.Contains(FfmpegUtils.Codec.H265.ToString().ToUpper()))
-            //     mp4CrfConfigKey = "h265Crf";
-            // 
-            // if (text.Contains(FfmpegUtils.Codec.Av1.ToString().ToUpper()))
-            //     mp4CrfConfigKey = "av1Crf";
-            // 
-            // mp4Crf.Value = Config.GetInt(mp4CrfConfigKey);
-            throw new NotImplementedException();
-        }
-
         private void modelDownloaderBtn_Click(object sender, EventArgs e)
         {
             new ModelDownloadForm().ShowDialog();
@@ -288,11 +243,6 @@ namespace Flowframes.Forms
 
             await Config.Reset(3, this);
             SettingsForm_Load(null, null);
-        }
-
-        private void imgSeqFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            imgSeqQuality.Visible = imgSeqFormat.SelectedIndex != 0;
         }
     }
 }

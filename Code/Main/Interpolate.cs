@@ -273,7 +273,7 @@ namespace Flowframes
 
             AutoEncode.busy = false;
             Program.mainForm.SetWorking(false);
-            Program.mainForm.SetTab("interpolation");
+            Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
             Logger.LogIfLastLineDoesNotContainMsg("Canceled interpolation.");
 
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)

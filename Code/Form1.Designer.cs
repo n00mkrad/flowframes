@@ -1859,19 +1859,14 @@
         private HTAlt.WinForms.HTButton paypalBtn;
         private HTAlt.WinForms.HTButton patreonBtn;
         private HTAlt.WinForms.HTButton settingsBtn;
-        private System.Windows.Forms.TabPage interpOptsTab;
-        private System.Windows.Forms.TabPage quickSettingsTab;
-        private System.Windows.Forms.TabPage abtTab;
         private HTAlt.WinForms.HTButton browseOutBtn;
         private HTAlt.WinForms.HTButton browseInputFileBtn;
         private HTAlt.WinForms.HTButton browseInputBtn;
-        private System.Windows.Forms.TabPage previewTab;
         private System.Windows.Forms.PictureBox previewPicturebox;
         public HTAlt.WinForms.HTTabControl mainTabControl;
         private HTAlt.WinForms.HTButton queueBtn;
         private HTAlt.WinForms.HTButton htButton1;
         private HTAlt.WinForms.HTButton updateBtn;
-        private System.Windows.Forms.TabPage welcomeTab;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Label label15;
@@ -1933,6 +1928,11 @@
         private System.Windows.Forms.ContextMenuStrip menuStripQueue;
         private System.Windows.Forms.ToolStripMenuItem addCurrentConfigurationToQueueToolStripMenuItem;
         private System.Windows.Forms.TextBox textboxOutputQualityCust;
+        public System.Windows.Forms.TabPage interpOptsTab;
+        public System.Windows.Forms.TabPage quickSettingsTab;
+        public System.Windows.Forms.TabPage abtTab;
+        public System.Windows.Forms.TabPage previewTab;
+        public System.Windows.Forms.TabPage welcomeTab;
     }
 }
 

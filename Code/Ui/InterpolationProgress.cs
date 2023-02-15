@@ -50,7 +50,7 @@ namespace Flowframes.Ui
                 if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
                 {
                     if (firstProgUpd && Program.mainForm.IsInFocus())
-                        Program.mainForm.SetTab("preview");
+                        Program.mainForm.SetTab(Program.mainForm.previewTab.Name);
 
                     firstProgUpd = false;
                     string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + I.currentSettings.interpExt;

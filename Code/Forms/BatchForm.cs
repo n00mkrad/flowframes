@@ -160,7 +160,7 @@ namespace Flowframes.Forms
                 current.inFps = current.inFpsDetected;
 
                 if(current.inFps.GetFloat() <= 0)
-                    current.inFps = InterpolateUtils.AskForFramerate(Name, false);
+                    current.inFps = InterpolateUtils.AskForFramerate(new DirectoryInfo(path).Name, false);
 
                 current.outFps = current.inFps * current.interpFactor;
 

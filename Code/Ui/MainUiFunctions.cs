@@ -20,7 +20,7 @@ namespace Flowframes.Ui
         public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox, bool start = false)
         {
             
-            Program.mainForm.SetTab("interpolate");
+            Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
             Program.mainForm.ResetInputInfo();
             string path = inputTbox.Text.Trim();
 

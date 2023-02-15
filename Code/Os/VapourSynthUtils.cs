@@ -60,9 +60,10 @@ namespace Flowframes.Os
 
             if (s.InterpSettings.inputIsFrames || (s.Dedupe && !s.Realtime))
             {
-                string ext = Config.GetBool(Config.Key.jpegFrames) ? "jpg" : "png";
-                string first = Path.GetFileNameWithoutExtension(IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false).FirstOrDefault().FullName);
-                l.Add($"clip = core.imwri.Read(r'{Path.Combine(s.InterpSettings.framesFolder, $"%0{first.Length}d.{ext}")}', firstnum={first.GetInt()})"); // Load image sequence with imwri
+                FileInfo[] frames = IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false, "*.*");
+                string ext = frames.FirstOrDefault().Extension;
+                string first = Path.GetFileNameWithoutExtension(frames.FirstOrDefault().FullName);
+                l.Add($"clip = core.imwri.Read(r'{Path.Combine(s.InterpSettings.framesFolder, $"%0{first.Length}d{ext}")}', firstnum={first.GetInt()})"); // Load image sequence with imwri
                 l.Add($"clip = core.std.AssumeFPS(clip, fpsnum={s.InterpSettings.inFps.Numerator}, fpsden={s.InterpSettings.inFps.Denominator})"); // Set frame rate for img seq
             }
             else

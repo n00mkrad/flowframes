@@ -199,19 +199,14 @@ namespace Flowframes
 
         public void SetTab(string tabName)
         {
-            foreach (TabPage tab in mainTabControl.TabPages)
-            {
-                if (tab.Text.ToLowerInvariant() == tabName.ToLowerInvariant())
-                    mainTabControl.SelectedTab = tab;
-            }
-
+            mainTabControl.SelectedTab = mainTabControl.TabPages.Cast<TabPage>().Where(p => p.Name == tabName).FirstOrDefault();
             mainTabControl.Refresh();
             mainTabControl.Update();
         }
 
         public InterpSettings GetCurrentSettings()
         {
-            SetTab("interpolate");
+            SetTab(interpOptsTab.Name);
             string inPath = inputTbox.Text.Trim();
             string outPath = outputTbox.Text.Trim();
             AI ai = GetAi();
@@ -222,7 +217,7 @@ namespace Flowframes
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
         {
-            SetTab("interpolate");
+            SetTab(interpOptsTab.Name);
             string inPath = inputTbox.Text.Trim();
 
             if (settings.inPath != inPath)     // If path changed, get new instance
@@ -594,7 +589,7 @@ namespace Flowframes
             }
             else
             {
-                SetTab("interpolation");
+                SetTab(interpOptsTab.Name);
                 Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]), true);
                 inputTbox.Text = files[0];
 
@@ -616,7 +611,7 @@ namespace Flowframes
 
             if (dialog == DialogResult.Yes)
             {
-                SetTab("interpolation");
+                SetTab(interpOptsTab.Name);
                 Interpolate.Cancel();
             }
         }
@@ -673,7 +668,7 @@ namespace Flowframes
 
         private void welcomeLabel2_Click(object sender, EventArgs e)
         {
-            SetTab("interpolation");
+            SetTab(interpOptsTab.Name);
         }
 
         public void UpdateStepByStepControls()
@@ -688,7 +683,7 @@ namespace Flowframes
         private async void runStepBtn_Click(object sender, EventArgs e)
         {
             ValidateFactor();
-            SetTab("interpolate");
+            SetTab(interpOptsTab.Name);
             await InterpolateSteps.Run(stepSelector.Text);
         }
 
