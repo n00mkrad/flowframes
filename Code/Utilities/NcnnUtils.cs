@@ -39,7 +39,7 @@ namespace Flowframes.Utilities
 
         public static async Task<int> GetRifeNcnnGpuThreads(Size res, int gpuId, AI ai)
         {
-            int threads = 8;
+            int threads = Config.GetInt(Config.Key.ncnnThreads);
             //if (res.Width * res.Height > 2560 * 1440) threads = 4;
             // if (res.Width * res.Height > 3840 * 2160) threads = 1;
 
@@ -74,14 +74,14 @@ namespace Flowframes.Utilities
             return tilesizeStr;
         }
 
-        public static string GetNcnnThreads(bool forceSingleThread = false)
+        public static async Task<string> GetNcnnThreads(AI ai)
         {
             int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
-            int procThreads = Config.GetInt(Config.Key.ncnnThreads);
-            string progThreadsStr = $"{procThreads}";
+            int threads = await GetRifeNcnnGpuThreads(new Size(), Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt(), ai);
+            string progThreadsStr = $"{threads}";
 
             for (int i = 1; i < gpusAmount; i++)
-                progThreadsStr += $",{procThreads}";
+                progThreadsStr += $",{threads}";
 
             return $"{(forceSingleThread ? 1 : (Interpolate.currentlyUsingAutoEnc ? 2 : 4))}:{progThreadsStr}:4"; // Read threads: 1 for singlethreaded, 2 for autoenc, 4 if order is irrelevant
         }
