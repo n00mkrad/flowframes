@@ -83,7 +83,7 @@ namespace Flowframes.Utilities
             for (int i = 1; i < gpusAmount; i++)
                 progThreadsStr += $",{threads}";
 
-            return $"{(forceSingleThread ? 1 : (Interpolate.currentlyUsingAutoEnc ? 2 : 4))}:{progThreadsStr}:4"; // Read threads: 1 for singlethreaded, 2 for autoenc, 4 if order is irrelevant
+            return $"{(Interpolate.currentlyUsingAutoEnc ? 2 : 4)}:{progThreadsStr}:4"; // Read threads: 1 for singlethreaded, 2 for autoenc, 4 if order is irrelevant
         }
 
         public static async Task DeleteNcnnDupes(string dir, float factor)

@@ -1220,7 +1220,7 @@
             this.ncnnThreads.ForeColor = System.Drawing.Color.White;
             this.ncnnThreads.Location = new System.Drawing.Point(280, 98);
             this.ncnnThreads.Maximum = new decimal(new int[] {
-            4,
+            8,
             0,
             0,
             0});
