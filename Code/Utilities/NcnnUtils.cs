@@ -39,9 +39,9 @@ namespace Flowframes.Utilities
 
         public static async Task<int> GetRifeNcnnGpuThreads(Size res, int gpuId, AI ai)
         {
-            int threads = 3;
-            if (res.Width * res.Height > 2560 * 1440) threads = 2;
-            if (res.Width * res.Height > 3840 * 2160) threads = 1;
+            int threads = 8;
+            //if (res.Width * res.Height > 2560 * 1440) threads = 4;
+            // if (res.Width * res.Height > 3840 * 2160) threads = 1;
 
             if (threads != 1)
             {
