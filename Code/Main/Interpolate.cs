@@ -61,9 +61,14 @@ namespace Flowframes
             if (!currentlyUsingAutoEnc)
             {
                 if (currentSettings.ai.Piped)
-                    await Export.MuxPipedVideo(currentSettings.inPath, currentSettings.FullOutPath);
+                {
+                    if(!currentSettings.outSettings.Encoder.GetInfo().IsImageSequence)
+                        await Export.MuxPipedVideo(currentSettings.inPath, currentSettings.FullOutPath);
+                }
                 else
+                {
                     await Export.ExportFrames(currentSettings.interpFolder, currentSettings.outPath, currentSettings.outSettings, false);
+                }
             }
 
             if (!AutoEncodeResume.resumeNextRun && Config.GetBool(Config.Key.keepTempFolder) && IoUtils.GetAmountOfFiles(currentSettings.framesFolder, false) > 0)

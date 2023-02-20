@@ -372,6 +372,14 @@ namespace Flowframes
             return s.ToLowerInvariant();
         }
 
+        public static string Upper(this string s)
+        {
+            if (s == null)
+                return s;
+
+            return s.ToUpperInvariant();
+        }
+
         public static EncoderInfoVideo GetInfo (this Enums.Encoding.Encoder enc)
         {
             return OutputUtils.GetEncoderInfoVideo(enc);

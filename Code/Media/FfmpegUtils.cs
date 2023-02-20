@@ -255,12 +255,25 @@ namespace Flowframes.Media
 
             if (enc == Encoder.ProResKs)
             {
-                args.Add($"-profile:v {Config.GetInt(Config.Key.proResProfile)}");
+                var profile = ParseUtils.GetEnum<Quality.ProResProfile>(settings.Quality, true, Strings.VideoQuality);
+                args.Add($"-profile:v {OutputUtils.ProresProfiles[profile]}");
             }
 
             if (enc == Encoder.Gif)
             {
                 args.Add("-gifflags -offsetting");
+            }
+
+            if (enc == Encoder.Jpeg)
+            {
+                var qualityLevel = ParseUtils.GetEnum<Quality.JpegWebm>(settings.Quality, true, Strings.VideoQuality);
+                args.Add($"-q:v {OutputUtils.JpegQuality[qualityLevel]}");
+            }
+
+            if (enc == Encoder.Webp)
+            {
+                var qualityLevel = ParseUtils.GetEnum<Quality.JpegWebm>(settings.Quality, true, Strings.VideoQuality);
+                args.Add($"-q:v {OutputUtils.WebpQuality[qualityLevel]}");
             }
 
             return new string[] { string.Join(" ", args) };

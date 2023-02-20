@@ -47,7 +47,7 @@ namespace Flowframes
             if(showLog)
                 Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
 
-            IoUtils.RenameExistingFile(outPath);
+            IoUtils.RenameExistingFileOrDir(outPath);
             string loopStr = (looptimes > 0) ? $"-stream_loop {looptimes}" : "";
             string vfrFilename = Path.GetFileName(concatFile);
             string args = $" {loopStr} -f concat -i {vfrFilename} -fps_mode cfr -c copy -movflags +faststart -fflags +genpts {outPath.Wrap()}";
@@ -60,7 +60,7 @@ namespace Flowframes
             string ext = Path.GetExtension(inputFile);
             string loopSuffix = Config.Get(Config.Key.exportNamePatternLoop).Replace("[LOOPS]", $"{times}").Replace("[PLAYS]", $"{times + 1}");
             string outpath = $"{pathNoExt}{loopSuffix}{ext}";
-            IoUtils.RenameExistingFile(outpath);
+            IoUtils.RenameExistingFileOrDir(outpath);
             string args = $" -stream_loop {times} -i {inputFile.Wrap()} -c copy {outpath.Wrap()}";
             await RunFfmpeg(args, LogMode.Hidden);
 

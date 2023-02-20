@@ -20,7 +20,7 @@ namespace Flowframes.Media
             if (logMode != LogMode.Hidden)
                 Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
 
-            IoUtils.RenameExistingFile(outPath);
+            IoUtils.RenameExistingFileOrDir(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
             string[] encArgs = Utils.GetEncArgs(settings, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat());
 
@@ -106,12 +106,11 @@ namespace Flowframes.Media
             return Path.GetExtension(File.ReadAllLines(concatFilePath).FirstOrDefault().Split('\'')[1]);
         }
 
-        public static async Task FramesToFrames(string framesFile, string outDir, int startNo, Fraction fps, Fraction resampleFps, string format = "png", int lossyQ = 1, LogMode logMode = LogMode.OnlyLastLine)
+        public static async Task FramesToFrames(string framesFile, string outDir, int startNo, Fraction fps, Fraction resampleFps, Enums.Encoding.Encoder format = Enums.Encoding.Encoder.Png, int lossyQ = 1, LogMode logMode = LogMode.OnlyLastLine)
         {
             Directory.CreateDirectory(outDir);
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
-            format = format.ToLowerInvariant();
 
             if (Config.GetBool(Config.Key.allowSymlinkEncoding, true) && Symlinks.SymlinksAllowed())
             {
@@ -122,9 +121,9 @@ namespace Flowframes.Media
             string sn = $"-start_number {startNo}";
             string rate = fps.ToString().Replace(",", ".");
             string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
-            string compression = format == "png" ? pngCompr : $"-q:v {lossyQ}";
-            string codec = format == "webp" ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
-            string args = $"-r {rate} {inArg} {codec} {compression} {sn} {vf} -fps_mode passthrough \"{outDir}/%{Padding.interpFrames}d.{format}\"";
+            string compression = format == Enums.Encoding.Encoder.Png ? pngCompr : $"-q:v {lossyQ}";
+            string codec = format == Enums.Encoding.Encoder.Webp ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
+            string args = $"-r {rate} {inArg} {codec} {compression} {sn} {vf} -fps_mode passthrough \"{outDir}/%{Padding.interpFrames}d.{format.GetInfo().OverideExtension}\"";
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", true);
             IoUtils.TryDeleteIfExists(linksDir);
         }

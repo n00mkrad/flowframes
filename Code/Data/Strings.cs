@@ -70,6 +70,11 @@ namespace Flowframes.Data
             { Enums.Encoding.Quality.GifColors.Medium64.ToString(), "Medium (64)" },
             { Enums.Encoding.Quality.GifColors.Low32.ToString(), "Low (32)" },
             { Enums.Encoding.Quality.GifColors.VeryLow16.ToString(), "Very Low (16)" },
+            { Enums.Encoding.Quality.JpegWebm.ImgMax.ToString(), "Maximum" },
+            { Enums.Encoding.Quality.JpegWebm.ImgHigh.ToString(), "High" },
+            { Enums.Encoding.Quality.JpegWebm.ImgMed.ToString(), "Medium" },
+            { Enums.Encoding.Quality.JpegWebm.ImgLow.ToString(), "Low" },
+            { Enums.Encoding.Quality.JpegWebm.ImgLowest.ToString(), "Lowest" },
         };
     }
 }

@@ -500,24 +500,33 @@ namespace Flowframes.IO
 		/// <summary>
 		/// Add ".old" suffix to an existing file to avoid it getting overwritten. If one already exists, it will be ".old.old" etc.
 		/// </summary>
-		public static void RenameExistingFile(string path)
+		public static void RenameExistingFileOrDir(string path)
 		{
-			if (!File.Exists(path))
-				return;
-
             try
             {
-				string ext = Path.GetExtension(path);
-				string renamedPath = path;
+                if (File.Exists(path))
+                {
+                    string ext = Path.GetExtension(path);
+                    string renamedPath = path;
 
-				while (File.Exists(renamedPath))
-					renamedPath = Path.ChangeExtension(renamedPath, null) + ".old" + ext;
+                    while (File.Exists(renamedPath))
+                        renamedPath = Path.ChangeExtension(renamedPath, null) + ".old" + ext;
 
-				File.Move(path, renamedPath);
+                    File.Move(path, renamedPath);
+                }
+                else if (Directory.Exists(path))
+				{
+                    string renamedPath = path;
+
+                    while (Directory.Exists(renamedPath))
+                        renamedPath = renamedPath + ".old";
+
+                    Directory.Move(path, renamedPath);
+                }
 			}
 			catch(Exception e)
             {
-				Logger.Log($"RenameExistingFile: Failed to rename '{path}': {e.Message}", true);
+				Logger.Log($"RenameExistingFileOrDir: Failed to rename '{path}': {e.Message}", true);
 			}
 		}
 

@@ -176,7 +176,7 @@ namespace Flowframes
                 bool alphaModel = model.SupportsAlpha;
                 bool pngOutput = outSettings.Encoder == Enums.Encoding.Encoder.Png;
                 bool gifOutput = outSettings.Encoder == Enums.Encoding.Encoder.Gif;
-                bool proResAlpha = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && Config.GetInt(Config.Key.proResProfile) > 3; // TODO: CHECK IF WORKS WITH NEW ENCODING SETTINGS CODE
+                bool proResAlpha = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
                 bool outputSupportsAlpha = pngOutput || gifOutput || proResAlpha;
                 string ext = inputIsFrames ? Path.GetExtension(IoUtils.GetFilesSorted(inPath).First()).ToLowerInvariant() : Path.GetExtension(inPath).ToLowerInvariant();
                 alpha = (alphaModel && outputSupportsAlpha && (ext == ".gif" || ext == ".png" || ext == ".apng" || ext == ".mov"));
@@ -194,8 +194,8 @@ namespace Flowframes
         public void RefreshExtensions(FrameType type = FrameType.Both)
         {
             bool pngOutput = outSettings.Encoder == Enums.Encoding.Encoder.Png;
-            bool aviHqChroma = outSettings.Format == Enums.Output.Format.Avi && outSettings.PixelFormat != Enums.Encoding.PixelFormat.Yuv420P; // TODO: CHECK IF WORKS WITH NEW ENCODING SETTINGS CODE
-            bool proresHqChroma = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && Config.GetInt(Config.Key.proResProfile) > 3; // TODO: CHECK IF WORKS WITH NEW ENCODING SETTINGS CODE
+            bool aviHqChroma = outSettings.Format == Enums.Output.Format.Avi && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
+            bool proresHqChroma = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
 
             bool forceHqChroma = pngOutput || aviHqChroma || proresHqChroma;
 

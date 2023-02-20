@@ -259,15 +259,6 @@ namespace Flowframes.IO
             if (key == Key.jpegFrames)            return WriteDefault(key, "True");
             // Video Export
             if (key == Key.minOutVidLength)   return WriteDefault(key, "5");
-            if (key == Key.h264Crf)           return WriteDefault(key, "20");
-            if (key == Key.h265Crf)           return WriteDefault(key, "24");
-            if (key == Key.av1Crf)            return WriteDefault(key, "28");
-            if (key == Key.vp9Crf)            return WriteDefault(key, "28");
-            if (key == Key.proResProfile)     return WriteDefault(key, "2");
-            if (key == Key.aviCodec)          return WriteDefault(key, "ffv1");
-            if (key == Key.imgSeqFormat)      return WriteDefault(key, "PNG");
-            if (key == Key.aviColors)         return WriteDefault(key, "yuv420p");
-            if (key == Key.gifColors)         return WriteDefault(key, "128 (High)");
             if (key == Key.gifDitherType)     return WriteDefault(key, "bayer");
             if (key == Key.minVidLength)      return WriteDefault(key, "5");
             // AI
@@ -312,9 +303,6 @@ namespace Flowframes.IO
             autoEncMode,
             autoEncSafeBufferCuda,
             autoEncSafeBufferNcnn,
-            av1Crf,
-            aviCodec,
-            aviColors,
             clearLogOnInput,
             cmdDebugMode,
             compressedPyVersion,
@@ -334,12 +322,7 @@ namespace Flowframes.IO
             ffprobeFrameCount,
             fixOutputDuration,
             frameOrderDebug,
-            gifColors,
             gifDitherType,
-            h264Crf,
-            h265Crf,
-            imgSeqFormat,
-            imgSeqQuality,
             imgSeqSampleCount,
             jpegFrames,
             jpegInterp,
@@ -358,13 +341,10 @@ namespace Flowframes.IO
             maxVidHeight,
             minOutVidLength,
             minVidLength,
-            mp4Enc,
             mpdecimateMode,
             ncnnGpus,
             ncnnThreads,
             opusBitrate,
-            pixFmt,
-            proResProfile,
             processingMode,
             rifeCudaBufferSize,
             rifeCudaFp16,
@@ -379,7 +359,6 @@ namespace Flowframes.IO
             tempFolderLoc,
             torchGpus,
             uhdThresh,
-            vp9Crf,
             vsRtShowOsd,
             vsUseLsmash
         }

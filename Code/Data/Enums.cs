@@ -18,6 +18,7 @@
             public class Quality
             {
                 public enum Common { Lossless, VeryHigh, High, Medium, Low, VeryLow, Custom }
+                public enum JpegWebm { ImgMax, ImgHigh, ImgMed, ImgLow, ImgLowest }
                 public enum ProResProfile { Proxy, Lt, Standard, Hq, Quad4, Quad4Xq }
                 public enum GifColors { Max256, High128, Medium64, Low32, VeryLow16 }
             }

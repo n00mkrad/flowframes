@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Win32Interop.Enums;
 using static Flowframes.Data.Enums.Encoding;
 using Encoder = Flowframes.Data.Enums.Encoding.Encoder;
 using PixFmt = Flowframes.Data.Enums.Encoding.PixelFormat;
@@ -10,6 +11,8 @@ namespace Flowframes.MiscUtils
 {
     internal class OutputUtils
     {
+        public static readonly List<PixFmt> AlphaFormats = new List<PixFmt> { PixFmt.Rgba, PixFmt.Yuva420P, PixFmt.Yuva444P10Le };
+
         public static EncoderInfoVideo GetEncoderInfoVideo(Encoder encoder)
         {
             if (encoder == Encoder.X264)
@@ -195,6 +198,8 @@ namespace Flowframes.MiscUtils
                     Codec = Codec.Jpeg,
                     Name = "mjpeg",
                     PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv422P, PixFmt.Yuv444P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.JpegWebm>(),
+                    QualityDefault = (int)Quality.JpegWebm.ImgHigh,
                     IsImageSequence = true,
                     OverideExtension = "jpg",
                 };
@@ -207,6 +212,8 @@ namespace Flowframes.MiscUtils
                     Codec = Codec.Webp,
                     Name = "libwebp",
                     PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuva420P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.JpegWebm>(),
+                    QualityDefault = (int)Quality.JpegWebm.ImgHigh,
                     IsImageSequence = true,
                     OverideExtension = "webp",
                 };
@@ -282,5 +289,46 @@ namespace Flowframes.MiscUtils
             { Quality.Common.Low, 32 },
             { Quality.Common.VeryLow, 40 },
         };
+
+        public static Dictionary<Quality.ProResProfile, string> ProresProfiles = new Dictionary<Quality.ProResProfile, string>
+        {
+            { Quality.ProResProfile.Proxy, "proxy" },
+            { Quality.ProResProfile.Lt, "proxy" },
+            { Quality.ProResProfile.Standard, "standard" },
+            { Quality.ProResProfile.Hq, "hq" },
+            { Quality.ProResProfile.Quad4, "4444" },
+            { Quality.ProResProfile.Quad4Xq, "4444xq" },
+        };
+
+        public static Dictionary<Quality.JpegWebm, int> JpegQuality = new Dictionary<Quality.JpegWebm, int>
+        {
+            { Quality.JpegWebm.ImgMax, 1 },
+            { Quality.JpegWebm.ImgHigh, 3 },
+            { Quality.JpegWebm.ImgMed, 5 },
+            { Quality.JpegWebm.ImgLow, 11 },
+            { Quality.JpegWebm.ImgLowest, 31 },
+        };
+
+        public static Dictionary<Quality.JpegWebm, int> WebpQuality = new Dictionary<Quality.JpegWebm, int>
+        {
+            { Quality.JpegWebm.ImgMax, 100 },
+            { Quality.JpegWebm.ImgHigh, 90 },
+            { Quality.JpegWebm.ImgMed, 75 },
+            { Quality.JpegWebm.ImgLow, 40 },
+            { Quality.JpegWebm.ImgLowest, 0 },
+        };
+
+        public static int GetImgSeqQ (OutputSettings settings)
+        {
+            var qualityLevel = ParseUtils.GetEnum<Quality.JpegWebm>(settings.Quality, true, Strings.VideoQuality);
+
+            if (settings.Encoder == Encoder.Jpeg)
+                return JpegQuality[qualityLevel];
+
+            if (settings.Encoder == Encoder.Webp)
+                return WebpQuality[qualityLevel];
+
+            return -1;
+        }
     }
 }
