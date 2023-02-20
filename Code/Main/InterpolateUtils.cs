@@ -2,22 +2,16 @@
 using Flowframes.Data;
 using Flowframes.Forms;
 using Flowframes.IO;
-using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using I = Flowframes.Interpolate;
 using Padding = Flowframes.Data.Padding;
-using static Flowframes.Magick.Dedupe;
-using System.Xml.Linq;
 
 namespace Flowframes.Main
 {
@@ -29,7 +23,7 @@ namespace Flowframes.Main
 
             try
             {
-                lastFrameNum--;     // We have to do this as extracted frames start at 0, not 1
+                lastFrameNum--; // We have to do this as extracted frames start at 0, not 1
                 bool frameFolderInput = IoUtils.IsPathDirectory(I.currentSettings.inPath);
                 string targetPath = Path.Combine(I.currentSettings.framesFolder, lastFrameNum.ToString().PadLeft(Padding.inputFrames, '0') + I.currentSettings.framesExt);
                 if (File.Exists(targetPath)) return;
@@ -364,7 +358,7 @@ namespace Flowframes.Main
                 return factor.RoundToInt();
         }
 
-        public static Fraction AskForFramerate (string mediaName, bool isImageSequence = true)
+        public static Fraction AskForFramerate(string mediaName, bool isImageSequence = true)
         {
             string text = $"Please enter an input frame rate to use for{(isImageSequence ? " the image sequence" : "")} '{mediaName.Trunc(80)}'.";
             PromptForm form = new PromptForm("Enter Frame Rate", text, "15");
