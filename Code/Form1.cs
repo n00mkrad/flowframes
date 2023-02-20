@@ -181,14 +181,8 @@ namespace Flowframes
 
         void RemovePreviewIfDisabled()
         {
-            if (!Config.GetBool(Config.Key.disablePreview))
-                return;
-
-            foreach (TabPage tab in mainTabControl.TabPages)
-            {
-                if (tab.Text.Trim() == "Preview")
-                    mainTabControl.TabPages.Remove(tab);
-            }
+            if (Config.GetBool(Config.Key.disablePreview))
+                mainTabControl.TabPages.Cast<TabPage>().Where(p => p.Name == previewTab.Name).ToList().ForEach(t => mainTabControl.TabPages.Remove(t));
         }
 
         public HTTabControl GetMainTabControl() { return mainTabControl; }
