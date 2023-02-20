@@ -125,7 +125,7 @@ namespace Flowframes
                 comboxOutputColors.FillFromEnum(pixelFormats, Strings.PixelFormat, defaultPixFmt);
                 comboxOutputColors.Width = adjustableQuality ? 117 : 223;
 
-                if(pixelFormats.Count > 0)
+                if (pixelFormats.Count > 0)
                     infoStrings.Add("Pixel Format");
             }
 
@@ -195,11 +195,16 @@ namespace Flowframes
         public TextBox GetInputFpsTextbox() { return fpsInTbox; }
         public Button GetPauseBtn() { return pauseBtn; }
 
-        public bool IsInFocus() { return (ActiveForm == this); }
+        public bool IsInFocus() { return ActiveForm == this; }
 
         public void SetTab(string tabName)
         {
-            mainTabControl.SelectedTab = mainTabControl.TabPages.Cast<TabPage>().Where(p => p.Name == tabName).FirstOrDefault();
+            var targetTab = mainTabControl.TabPages.Cast<TabPage>().Where(p => p.Name == tabName).FirstOrDefault();
+
+            if (targetTab == null)
+                return;
+
+            mainTabControl.SelectedTab = targetTab;
             mainTabControl.Refresh();
             mainTabControl.Update();
         }
@@ -406,7 +411,7 @@ namespace Flowframes
         Enums.Output.Format GetOutputFormat { get { return ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat); } }
         Enums.Encoding.Encoder GetEncoder { get { return ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder); } }
 
-        private Enums.Encoding.PixelFormat GetPixelFormat ()
+        private Enums.Encoding.PixelFormat GetPixelFormat()
         {
             if (!comboxOutputColors.Visible)
                 return (Enums.Encoding.PixelFormat)(-1);
@@ -414,7 +419,7 @@ namespace Flowframes
             return ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(comboxOutputColors.Text, true, Strings.PixelFormat);
         }
 
-        public OutputSettings GetOutputSettings ()
+        public OutputSettings GetOutputSettings()
         {
             string custQ = textboxOutputQualityCust.Visible ? textboxOutputQualityCust.Text.Trim() : "";
             return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat(), Quality = comboxOutputQuality.Text, CustomQuality = custQ };
@@ -583,6 +588,7 @@ namespace Flowframes
 
             if (files.Length > 1)
             {
+                SetTab(interpOptsTab.Name);
                 queueBtn_Click(null, null);
                 if (BatchProcessing.currentBatchForm != null)
                     BatchProcessing.currentBatchForm.LoadDroppedPaths(files, start);
