@@ -26,7 +26,7 @@ However, the official RIFE implementation run best via its original Pytorch impl
 
 The requirements to run these are the following:
 
-* A **modern Nvidia GPU** (750 Ti, 900/1000/1600/2000/3000 Series).
+* A **modern Nvidia GPU** (750 Ti, 900/1000/1600/2000/3000/4000 Series).
 * A **Python** installation including Pytorch (1.5 or later) as well as the packages `opencv-python`, `sk-video`, `imageio`.
   * The Flowframes Installer will automatically download all dependencies by default if these requirements are not fullfilled.
 
