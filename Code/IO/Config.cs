@@ -360,7 +360,8 @@ namespace Flowframes.IO
             torchGpus,
             uhdThresh,
             vsRtShowOsd,
-            vsUseLsmash
+            vsUseLsmash,
+            lastOutputSettings,
         }
     }
 }

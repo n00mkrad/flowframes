@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 
 #pragma warning disable IDE1006
 
-namespace Flowframes
+namespace Flowframes.Forms.Main
 {
     public partial class Form1 : Form
     {
@@ -29,8 +29,9 @@ namespace Flowframes
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags); // PREVENT WINDOWS FROM GOING TO SLEEP
 
-        public bool initialized = false;
-        public bool quickSettingsInitialized = false;
+        private bool _initialized = false;
+        private bool _mainTabInitialized = false;
+        private bool _quickSettingsInitialized = false;
 
         public Form1()
         {
@@ -337,9 +338,18 @@ namespace Flowframes
             return ai.FriendlyName + " - " + ai.Description;
         }
 
+        private void InitializeMainTab ()
+        {
+            if (_mainTabInitialized)
+                return;
+
+            LoadOutputSettings();
+            _mainTabInitialized = true;
+        }
+
         public void Initialized()
         {
-            initialized = true;
+            _initialized = true;
             runBtn.Enabled = true;
         }
 
@@ -378,7 +388,7 @@ namespace Flowframes
                 Interpolate.currentSettings = GetCurrentSettings();
 
             AiProcessSuspend.Reset();
-
+            SaveOutputSettings();
 
             if (Interpolate.currentSettings.outSettings.Format == Enums.Output.Format.Realtime)
             {
@@ -391,57 +401,32 @@ namespace Flowframes
             }
         }
 
-        public ModelCollection.ModelInfo GetModel(AI currentAi)
+        private void SaveOutputSettings ()
         {
-            try
-            {
-                return AiModels.GetModels(currentAi).Models[aiModel.SelectedIndex];
-            }
-            catch
-            {
-                return null;
-            }
+            var strings = new List<string>();
+            if (comboxOutputFormat.Visible) strings.Add(comboxOutputFormat.Text);
+            if (comboxOutputEncoder.Visible) strings.Add(comboxOutputEncoder.Text);
+            if (comboxOutputQuality.Visible) strings.Add(comboxOutputQuality.Text);
+            if (comboxOutputColors.Visible) strings.Add(comboxOutputColors.Text);
+            Config.Set(Config.Key.lastOutputSettings, string.Join(",", strings));
         }
 
-        Enums.Output.Format GetOutputFormat { get { return ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat); } }
-        Enums.Encoding.Encoder GetEncoder { get { return ParseUtils.GetEnum<Enums.Encoding.Encoder>(comboxOutputEncoder.Text, true, Strings.Encoder); } }
-
-        private Enums.Encoding.PixelFormat GetPixelFormat()
+        private void LoadOutputSettings()
         {
-            if (!comboxOutputColors.Visible)
-                return (Enums.Encoding.PixelFormat)(-1);
+            string[] strings = Config.Get(Config.Key.lastOutputSettings).Split(',');
 
-            return ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(comboxOutputColors.Text, true, Strings.PixelFormat);
-        }
+            if (strings.Length < 4)
+                return;
 
-        public OutputSettings GetOutputSettings()
-        {
-            string custQ = textboxOutputQualityCust.Visible ? textboxOutputQualityCust.Text.Trim() : "";
-            return new OutputSettings() { Encoder = GetEncoder, Format = GetOutputFormat, PixelFormat = GetPixelFormat(), Quality = comboxOutputQuality.Text, CustomQuality = custQ };
+            if (comboxOutputFormat.Visible) comboxOutputFormat.Text = strings[0];
+            if (comboxOutputEncoder.Visible) comboxOutputEncoder.Text = strings[1];
+            if (comboxOutputQuality.Visible) comboxOutputQuality.Text = strings[2];
+            if (comboxOutputColors.Visible) comboxOutputColors.Text = strings[3];
         }
 
         public void SetFormat(Enums.Output.Format format)
         {
             comboxOutputFormat.Text = Strings.OutputFormat.Get(format.ToString());
-        }
-
-        public AI GetAi()
-        {
-            try
-            {
-                foreach (AI ai in Implementations.NetworksAll)
-                {
-                    if (GetAiComboboxName(ai) == aiCombox.Text)
-                        return ai;
-                }
-
-                Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer!");
-                return Implementations.NetworksAvailable[0];
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         void inputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -530,7 +515,7 @@ namespace Flowframes
 
             interpFactorCombox.SelectedIndex = 0;
 
-            if (initialized)
+            if (_initialized)
                 Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
@@ -690,8 +675,13 @@ namespace Flowframes
 
         private void mainTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!initialized) return;
-            aiCombox_SelectedIndexChanged(null, null);
+            if (!_initialized) return;
+
+            if(mainTabControl.SelectedTab == interpOptsTab)
+            {
+                aiCombox_SelectedIndexChanged(null, null);
+                InitializeMainTab();
+            }
         }
 
         private void trimCombox_SelectedIndexChanged(object sender, EventArgs e)
@@ -720,7 +710,7 @@ namespace Flowframes
 
         public void SaveQuickSettings(object sender, EventArgs e)
         {
-            if (!quickSettingsInitialized) return;
+            if (!_quickSettingsInitialized) return;
 
             if (Program.busy)
                 LoadQuickSettings();    // Discard any changes if busy
@@ -746,7 +736,7 @@ namespace Flowframes
             ConfigParser.LoadGuiElement(scnDetectValue);
             ConfigParser.LoadGuiElement(maxFps);
 
-            quickSettingsInitialized = true;
+            _quickSettingsInitialized = true;
         }
 
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)

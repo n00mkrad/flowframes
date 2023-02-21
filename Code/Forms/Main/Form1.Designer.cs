@@ -1,4 +1,4 @@
-﻿namespace Flowframes
+﻿namespace Flowframes.Forms.Main
 {
     partial class Form1
     {
