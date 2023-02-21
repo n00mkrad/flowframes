@@ -372,7 +372,7 @@ namespace Flowframes.Forms.Main
 
         private void browseOutBtn_Click(object sender, EventArgs e)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = inputTbox.Text.Trim(), IsFolderPicker = true };
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = outputTbox.Text.Trim(), IsFolderPicker = true };
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 outputTbox.Text = dialog.FileName;
