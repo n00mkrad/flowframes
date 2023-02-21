@@ -69,7 +69,6 @@ namespace Flowframes.Forms.Main
             UpdateStepByStepControls();
             Initialized();
             HandleArgs();
-            Text = $"Flowframes";
 
             if (Program.args.Contains("show-model-downloader"))
                 new ModelDownloadForm().ShowDialog();
