@@ -507,9 +507,9 @@
             this.statusLabel.Location = new System.Drawing.Point(8, 30);
             this.statusLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(38, 13);
+            this.statusLabel.Size = new System.Drawing.Size(61, 13);
             this.statusLabel.TabIndex = 7;
-            this.statusLabel.Text = "Ready";
+            this.statusLabel.Text = "Initializing...";
             // 
             // updateBtn
             // 

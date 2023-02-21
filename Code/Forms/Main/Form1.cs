@@ -351,6 +351,7 @@ namespace Flowframes.Forms.Main
         {
             _initialized = true;
             runBtn.Enabled = true;
+            SetStatus("Ready");
         }
 
         private void browseInputBtn_Click(object sender, EventArgs e)
@@ -380,7 +381,10 @@ namespace Flowframes.Forms.Main
         public async void runBtn_Click(object sender, EventArgs e)
         {
             if (Interpolate.currentMediaFile == null || !Interpolate.currentMediaFile.Initialized)
+            {
+                SetTab(interpOptsTab.Name);
                 return;
+            }
 
             ValidateFactor();
 
