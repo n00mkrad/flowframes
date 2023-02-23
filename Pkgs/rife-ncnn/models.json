@@ -1,26 +1,32 @@
 [
 {
 	"name": "RIFE 2.3",
-	"desc": "Old Model",
+	"desc": "Old V2 Model",
 	"dir": "rife-v2.3",
 	"fixedFactors": [2]
 },
 {
 	"name": "RIFE 4.0",
-	"desc": "New Fast General Model",
+	"desc": "V4 General Model",
 	"dir": "rife-v4",
 	"isDefault": "false"
 },
 {
 	"name": "RIFE 4.3",
-	"desc": "New Fast General Model",
+	"desc": "General Model",
 	"dir": "rife-v4.3",
 	"isDefault": "true"
 },
 {
 	"name": "RIFE 4.4",
-	"desc": "Latest Fast General Model",
+	"desc": "General Model",
 	"dir": "rife-v4.4",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.6",
+	"desc": "Latest General Model",
+	"dir": "rife-v4.6",
 	"isDefault": "true"
 },
 ]

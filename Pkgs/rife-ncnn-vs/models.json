@@ -22,6 +22,12 @@
 	"name": "RIFE 4.4",
 	"desc": "Latest Fast General Model",
 	"dir": "rife-v4.4",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.6",
+	"desc": "Latest General Model",
+	"dir": "rife-v4.6",
 	"isDefault": "true"
 },
 ]

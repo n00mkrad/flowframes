@@ -46,22 +46,29 @@
 },
 {
 	"name": "RIFE 4.0",
-	"desc": "New v4 General Model",
+	"desc": "v4 General Model",
 	"dir": "RIFE40",
 	"supportsAlpha": "true",
 	"isDefault": "false"
 },
 {
 	"name": "RIFE 4.3",
-	"desc": "New General Model",
+	"desc": "General Model",
 	"dir": "RIFE43",
 	"supportsAlpha": "true",
 	"isDefault": "false"
 },
 {
 	"name": "RIFE 4.4",
-	"desc": "Latest General Model",
+	"desc": "General Model",
 	"dir": "RIFE44",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.6",
+	"desc": "Latest General Model",
+	"dir": "RIFE46",
 	"supportsAlpha": "true",
 	"isDefault": "true"
 },
