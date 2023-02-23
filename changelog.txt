@@ -1,3 +1,16 @@
+Flowframes 1.40.0 Changelog:
+- New: Added RIFE 4.6 model
+- New: RIFE-NCNN-VS now supports image sequence output
+- Improved: Completely new and more flexible output format selection
+- Improved: You can now queue up a job by right-clicking the queue button
+- Improved: Updated ffmpeg, includes SVT-AV1 1.4.1 which speeds up encoding by ~12%
+- Improved: UI improvements, faster startup
+- Fixed: RIFE-NCNN-VS did not work with input resolutions not divisible by 2
+- Fixed: Queue does not work properly with image sequence inputs
+- Fixed: Queue keeps program in "busy" state after finishing
+- Fixed: Issues with certain system languages (e.g. Turkish)
+
+
 Flowframes 1.39.0 Changelog:
 - Added real-time interpolation output mode (with RIFE-NCNN-VS)
 - Added RIFE 4.4 and RIFE 4.3 models

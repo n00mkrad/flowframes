@@ -1,4 +1,4 @@
-1.39.0
+1.40.0
 https://www.patreon.com/posts/71960403
 1.36.0
 https://nmkd.itch.io/flowframes
