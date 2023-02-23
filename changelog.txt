@@ -1,6 +1,7 @@
 Flowframes 1.40.0 Changelog:
 - New: Added RIFE 4.6 model
 - New: RIFE-NCNN-VS now supports image sequence output
+- New: Added NVENC AV1 encoding option (Only for RTX 4000 series cards)
 - Improved: Completely new and more flexible output format selection
 - Improved: You can now queue up a job by right-clicking the queue button
 - Improved: Updated ffmpeg, includes SVT-AV1 1.4.1 which speeds up encoding by ~12%
