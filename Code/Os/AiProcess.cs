@@ -119,9 +119,16 @@ namespace Flowframes.Os
 
             if (!Interpolate.currentSettings.ai.Piped && interpFramesCount < 3)
             {
+                string amount = interpFramesCount > 0 ? $"Only {interpFramesCount}" : "No";
+
+                if (lastLogName.IsEmpty())
+                {
+                    Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created, and no log was written.");
+                    return;
+                }
+
                 string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), lastLogName + ".txt"));
                 string log = string.Join("\n", logLines.Reverse().Take(10).Reverse().Select(x => x.Split("]: ").Last()).ToList());
-                string amount = interpFramesCount > 0 ? $"Only {interpFramesCount}" : "No";
                 Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.\n\n\nLast 10 log lines:\n{log}\n\nCheck the log '{lastLogName}' for more details.");
                 return;
             }
