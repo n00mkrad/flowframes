@@ -163,10 +163,7 @@ namespace Flowframes.Forms.Main
                     outputTbox.Text = arg.Split('=').Last().Trim();
 
                 if (arg.StartsWith("factor="))
-                {
-                    float factor = arg.Split('=').Last().GetFloat();
-                    interpFactorCombox.Text = factor.ToString();
-                }
+                    interpFactorCombox.SelectedIndex = arg.Split('=').Last().GetInt();
 
                 if (arg.StartsWith("ai="))
                     aiCombox.SelectedIndex = arg.Split('=').Last().GetInt();
