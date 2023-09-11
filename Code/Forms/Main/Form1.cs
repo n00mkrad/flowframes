@@ -17,6 +17,10 @@ using Flowframes.MiscUtils;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static WinFormAnimation.AnimationFunctions;
+using System.Management;
+using System.Threading;
+using System.Timers;
 
 #pragma warning disable IDE1006
 
@@ -44,8 +48,168 @@ namespace Flowframes.Forms.Main
             AutoScaleMode = AutoScaleMode.None;
         }
 
+        public string ShowTotalPerformance(int sleeptime)
+        {
+            const int byteToHigherOrder = 1024 * 1024;
+            const int byteToHighestOrder = 1024 * 1024 * 1024;
+            int timeToSleep = sleeptime;
+            bool i = true;
+            
+
+            while(i == true) {
+                PerformanceCounter cpuCounter;
+                PerformanceCounter ramCounter;
+                cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+
+                string getCurrentCpuUsage(){
+                    cpuCounter.NextValue();
+                    System.Threading.Thread.Sleep(timeToSleep);
+                    return "CPU:"+ cpuCounter.NextValue().RoundToInt() + "%";
+                }
+
+                 string getCurrentRamUsage(){
+                    System.Threading.Thread.Sleep(timeToSleep);
+                    float totalram = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+                    float totalrambeautiful = (totalram/(byteToHigherOrder));
+                    float availableram = (ramCounter.NextValue());
+                    float usedram = (totalrambeautiful - availableram)/1024;
+                    string usedramtext = String.Format("{0:0.00}", usedram);
+                    float usedrampercent = (usedram / totalrambeautiful)* 1024 * 100;
+                    string beautifulpercent = String.Format("{0:0.00}", usedrampercent);
+                    return "RAM:" + usedramtext + " GB (" + beautifulpercent + "% used RAM)";
+                }
+
+
+                string GetCudaUsage()
+                {
+                    try
+                    {
+                        var category = new PerformanceCounterCategory("GPU Engine");
+                        var counterNames = category.GetInstanceNames();
+                        var gpuCounters = new List<PerformanceCounter>();
+                        var result = 0f;
+
+                        foreach (string counterName in counterNames)
+                        {
+                            if (counterName.EndsWith("engtype_Cuda"))
+                            {
+                                foreach (PerformanceCounter counter in category.GetCounters(counterName))
+                                {
+                                    if (counter.CounterName == "Utilization Percentage")
+                                    {
+                                        gpuCounters.Add(counter);
+                                    }
+                                }
+                            }
+                        }
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            _ = x.NextValue();
+                        });
+
+                        System.Threading.Thread.Sleep(timeToSleep);
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            result += x.NextValue();
+                        });
+                        string beautifulpercent = String.Format("{0:0.00}", result);
+                        return "CUDA: " + beautifulpercent + "%";
+                    }
+                    catch
+                    {
+                        return "0%";
+                    }
+                }
+
+
+                string GetCudaRamUsage()
+                {
+                    try
+                    {
+                        var category = new PerformanceCounterCategory("GPU Process Memory");
+                        var counterNames = category.GetInstanceNames();
+                        var gpuCounters = new List<PerformanceCounter>();
+                        var result = 0f;
+
+                        foreach (string counterName in counterNames)
+                        {
+                            if (counterName.EndsWith("phys_0"))
+                            {
+                                foreach (PerformanceCounter counter in category.GetCounters(counterName))
+                                {
+                                    if (counter.CounterName == "Dedicated Usage")
+                                    {
+                                        gpuCounters.Add(counter);
+                                    }
+                                }
+                            }
+                        }
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            _ = x.NextValue();
+                        });
+
+                        System.Threading.Thread.Sleep(timeToSleep);
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            result += x.NextValue();
+                        });
+                        string beautifulresult = String.Format("{0:0.00}", (result/(byteToHighestOrder)));
+                        return "GPU RAM: " + beautifulresult + " GB VRAM";
+                    }
+                    catch
+                    {
+                        return "0 MB";
+                    }
+                }
+
+
+                string DiskUsageSpeed()
+                {
+                    PerformanceCounter avgReadDisk;
+                    PerformanceCounter avgReadWrite;
+                    avgReadDisk = new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
+                    avgReadWrite = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
+                    avgReadDisk.NextValue();
+                    avgReadWrite.NextValue();
+                    System.Threading.Thread.Sleep(timeToSleep);
+                    string diskreadwrite =  "Disk Speed:" + (avgReadDisk.NextValue().RoundToInt() + avgReadWrite.NextValue().RoundToInt())/ byteToHigherOrder/2 + " MB/S";
+                    return diskreadwrite.ToString();
+                }
+
+                string performancecounter ="  " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed();
+                //Console.WriteLine(performancecounter);
+                return textBox1.Text = performancecounter ;
+               
+            }
+
+            return "";
+        }
+
+
+
+        private  async Task BackgroundTaskExecuter()
+        {
+            await Task.Run(() =>
+            {
+                while (true) {
+                    System.Threading.Thread.Sleep(500);
+                    ShowTotalPerformance(250);
+                }
+            });
+        }
+
+
         private async void Form1_Shown(object sender, EventArgs e)
         {
+
+            BackgroundTaskExecuter();
+
             Refresh();
             await Task.Delay(1);
 
@@ -327,6 +491,9 @@ namespace Flowframes.Forms.Main
                 aiCombox.Items.Add(GetAiComboboxName(ai));
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
+            string formatofInterp = Config.Get(Config.Key.formatofInterp);
+            string intelQSVDecode = Config.Get(Config.Key.intelQSVDecode);
+            lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
             aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
             Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
@@ -823,5 +990,13 @@ namespace Flowframes.Forms.Main
 
             Refresh();
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+          
+
+        }
+
+
     }
 }

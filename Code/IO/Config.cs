@@ -164,6 +164,11 @@ namespace Flowframes.IO
             return Get(key, Type.Int).GetInt();
         }
 
+        public static String GetString(Key key)
+        {
+            return Get(key, Type.String).ToString();
+        }
+
         public static int GetInt(Key key, int defaultVal)
         {
             WriteIfDoesntExist(key.ToString(), defaultVal.ToString());
@@ -244,6 +249,7 @@ namespace Flowframes.IO
             if (key == Key.disablePreview)        return WriteDefault(key, "True");
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
             if (key == Key.clearLogOnInput)       return WriteDefault(key, "True");
+            if (key == Key.tempFolderLoc)         return WriteDefault(key, "4");
             if (key == Key.tempDirCustom)         return WriteDefault(key, "D:/");
             if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[MODEL]-[FPS]fps");
             if (key == Key.exportNamePatternLoop) return WriteDefault(key, "-Loop[LOOPS]");
@@ -256,11 +262,18 @@ namespace Flowframes.IO
             if (key == Key.scnDetectValue)        return WriteDefault(key, "0.2");
             if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "1");
             if (key == Key.autoEncMode)           return WriteDefault(key, "2");
+            if (key == Key.intelQSVDecode)        return WriteDefault(key, "False");
             if (key == Key.jpegFrames)            return WriteDefault(key, "True");
+            if (key == Key.formatofInterp)        return WriteDefault(key, "png");
+            if (key == Key.lastUsedAiName)       return WriteDefault(key, "RIFE_CUDA");
+
+            
+
             // Video Export
-            if (key == Key.minOutVidLength)   return WriteDefault(key, "5");
-            if (key == Key.gifDitherType)     return WriteDefault(key, "bayer");
-            if (key == Key.minVidLength)      return WriteDefault(key, "5");
+            if (key == Key.minOutVidLength)     return WriteDefault(key, "5");
+            if (key == Key.gifDitherType)       return WriteDefault(key, "bayer");
+            if (key == Key.minVidLength)        return WriteDefault(key, "5");
+
             // AI
             if (key == Key.uhdThresh)         return WriteDefault(key, "1600");
             if (key == Key.torchGpus)         return WriteDefault(key, "0");
@@ -325,7 +338,8 @@ namespace Flowframes.IO
             gifDitherType,
             imgSeqSampleCount,
             jpegFrames,
-            jpegInterp,
+            formatofInterp,
+            intelQSVDecode,
             keepAspectRatio,
             keepAudio,
             keepColorSpace,

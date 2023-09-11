@@ -199,11 +199,16 @@ namespace Flowframes.Os
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             Directory.CreateDirectory(outPath);
             string uhdStr = await InterpolateUtils.UseUhd() ? "--UHD" : "";
-            string wthreads = $"--wthreads {2 * (int)interpFactor}";
+
+            int threadcount = Environment.ProcessorCount;
+            string wthreads = $"--wthreads {2*threadcount}";
+
+            //string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt(Config.Key.rifeCudaBufferSize, 200)}";
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
             string prec = Config.GetBool(Config.Key.rifeCudaFp16) ? "--fp16" : "";
-            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --multi {interpFactor} {uhdStr} {wthreads} {rbuffer} {prec}";
+            string imgformat = $"--imgformat {Config.GetString(Config.Key.formatofInterp)}";
+            string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --multi {interpFactor} {uhdStr} {wthreads} {rbuffer} {prec} {imgformat}";
 
             Process rifePy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifePy, 3500);
@@ -612,7 +617,7 @@ namespace Flowframes.Os
             lastLogName = ai.LogFilename;
             Logger.Log(line, true, false, ai.LogFilename);
 
-            string lastLogLines = string.Join("\n", Logger.GetSessionLogLastLines(lastLogName, 6).Select(x => $"[{x.Split("]: [").Skip(1).FirstOrDefault()}"));
+            //string lastLogLines = string.Join("\n", Logger.GetSessionLogLastLines(lastLogName, 6).Select(x => $"[{x.Split("]: [").Skip(1).FirstOrDefault()}"));
 
             if (ai.Backend == AI.AiBackend.Pytorch) // Pytorch specific
             {
@@ -647,7 +652,7 @@ namespace Flowframes.Os
                 if (!hasShownError && err && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A python error occured during interpolation!\nCheck the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
+                    //UiUtils.ShowMessageBox($"A python error occured during interpolation!\nCheck the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
                 }
             }
 
@@ -676,7 +681,7 @@ namespace Flowframes.Os
                 if (!hasShownError && err && line.MatchesWildcard("vk* failed"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A Vulkan error occured during interpolation!\n\n{lastLogLines}", UiUtils.MessageType.Error);
+                    //UiUtils.ShowMessageBox($"A Vulkan error occured during interpolation!\n\n{lastLogLines}", UiUtils.MessageType.Error);
                 }
             }
 
@@ -685,7 +690,7 @@ namespace Flowframes.Os
                 if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && line.ToLowerInvariant().Contains("fwrite() call failed"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
+                    //UiUtils.ShowMessageBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
                 }
 
                 if (!hasShownError && line.ToLowerInvariant().Contains("allocate memory failed"))

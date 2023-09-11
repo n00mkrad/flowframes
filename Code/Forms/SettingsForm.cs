@@ -5,6 +5,8 @@ using Flowframes.MiscUtils;
 using Flowframes.Ui;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -94,6 +96,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(keepMeta);
             ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveGuiElement(jpegFrames);
+            ConfigParser.SaveGuiElement(formatofInterp);
+            ConfigParser.SaveGuiElement(intelQSVDecode);
             ConfigParser.SaveComboxIndex(dedupMode);
             ConfigParser.SaveComboxIndex(mpdecimateMode);
             ConfigParser.SaveGuiElement(dedupThresh);
@@ -141,6 +145,8 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(keepMeta);
             ConfigParser.LoadGuiElement(enableAlpha);
             ConfigParser.LoadGuiElement(jpegFrames);
+            ConfigParser.SaveGuiElement(formatofInterp);
+            ConfigParser.LoadGuiElement(intelQSVDecode);
             ConfigParser.LoadComboxIndex(dedupMode);
             ConfigParser.LoadComboxIndex(mpdecimateMode);
             ConfigParser.LoadGuiElement(dedupThresh);
@@ -173,8 +179,8 @@ namespace Flowframes.Forms
 
         private void tempFolderLoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tempDirBrowseBtn.Visible = tempFolderLoc.SelectedIndex == 4;
-            tempDirCustom.Visible = tempFolderLoc.SelectedIndex == 4;
+            tempDirBrowseBtn.Visible = tempFolderLoc.SelectedIndex == 5;
+            tempDirCustom.Visible = tempFolderLoc.SelectedIndex == 5;
         }
 
         private void outFolderLoc_SelectedIndexChanged(object sender, EventArgs e)
@@ -243,6 +249,53 @@ namespace Flowframes.Forms
 
             await Config.Reset(3, this);
             SettingsForm_Load(null, null);
+        }
+
+        private void label63_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void autoEncBlockPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void titleLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }

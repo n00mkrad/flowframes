@@ -123,7 +123,20 @@ namespace Flowframes.Magick
             img2.Alpha(AlphaOption.Opaque);
             img2.Evaluate(Channels.Alpha, EvaluateOperator.Set, new Percentage(50));
             img1.Composite(img2, Gravity.Center, CompositeOperator.Over);
-            img1.Format = MagickFormat.Png24;
+            //img1.Format = MagickFormat.Png24;
+
+            if (Config.GetString(Config.Key.formatofInterp) == "png")
+            {
+                img1.Format = MagickFormat.Png24;
+            }
+            else
+            {
+                img1.Format = MagickFormat.Jpeg;
+            }
+
+
+            
+
             img1.Quality = 10;
             img1.Write(imgOutPath);
         }
@@ -150,7 +163,16 @@ namespace Flowframes.Magick
                     currentAlpha += alphaFraction;
 
                     img1Inst.Composite(img2Inst, Gravity.Center, CompositeOperator.Over);
-                    img1Inst.Format = MagickFormat.Png24;
+                    //img1Inst.Format = MagickFormat.Png24;
+
+                    if (Config.GetString(Config.Key.formatofInterp) == "png") 
+                    {
+                        img1Inst.Format = MagickFormat.Png24;
+                    }
+                    else { 
+                    img1Inst.Format = MagickFormat.Jpeg;
+                    }
+
                     img1Inst.Quality = 10;
                     img1Inst.Write(outPath);
                     await Task.Delay(1);

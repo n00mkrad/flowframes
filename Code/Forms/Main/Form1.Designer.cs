@@ -140,10 +140,11 @@
             this.stepSelector = new System.Windows.Forms.ComboBox();
             this.busyControlsPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.pauseBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.pauseBtn = new System.Windows.Forms.Button();
             this.menuStripQueue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCurrentConfigurationToQueueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -175,12 +176,12 @@
             // titleLabel
             // 
             this.titleLabel.AutoSize = true;
-            this.titleLabel.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.titleLabel.Font = new System.Drawing.Font("Yu Gothic UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titleLabel.ForeColor = System.Drawing.Color.White;
             this.titleLabel.Location = new System.Drawing.Point(12, 9);
             this.titleLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.titleLabel.Name = "titleLabel";
-            this.titleLabel.Size = new System.Drawing.Size(404, 40);
+            this.titleLabel.Size = new System.Drawing.Size(377, 37);
             this.titleLabel.TabIndex = 0;
             this.titleLabel.Text = "Flowframes Video Interpolator";
             // 
@@ -191,9 +192,9 @@
             this.aiModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aiModel.ForeColor = System.Drawing.Color.White;
             this.aiModel.FormattingEnabled = true;
-            this.aiModel.Location = new System.Drawing.Point(281, 126);
+            this.aiModel.Location = new System.Drawing.Point(235, 125);
             this.aiModel.Name = "aiModel";
-            this.aiModel.Size = new System.Drawing.Size(400, 23);
+            this.aiModel.Size = new System.Drawing.Size(446, 23);
             this.aiModel.TabIndex = 25;
             // 
             // aiCombox
@@ -203,9 +204,9 @@
             this.aiCombox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aiCombox.ForeColor = System.Drawing.Color.White;
             this.aiCombox.FormattingEnabled = true;
-            this.aiCombox.Location = new System.Drawing.Point(281, 7);
+            this.aiCombox.Location = new System.Drawing.Point(235, 7);
             this.aiCombox.Name = "aiCombox";
-            this.aiCombox.Size = new System.Drawing.Size(400, 23);
+            this.aiCombox.Size = new System.Drawing.Size(446, 23);
             this.aiCombox.TabIndex = 21;
             this.aiCombox.SelectedIndexChanged += new System.EventHandler(this.aiCombox_SelectedIndexChanged);
             // 
@@ -272,11 +273,11 @@
             // 
             this.fpsInTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.fpsInTbox.ForeColor = System.Drawing.Color.White;
-            this.fpsInTbox.Location = new System.Drawing.Point(281, 97);
+            this.fpsInTbox.Location = new System.Drawing.Point(235, 97);
             this.fpsInTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.fpsInTbox.Name = "fpsInTbox";
             this.fpsInTbox.ReadOnly = true;
-            this.fpsInTbox.Size = new System.Drawing.Size(100, 23);
+            this.fpsInTbox.Size = new System.Drawing.Size(146, 23);
             this.fpsInTbox.TabIndex = 8;
             this.fpsInTbox.Text = "0";
             this.fpsInTbox.TextChanged += new System.EventHandler(this.fpsInTbox_TextChanged);
@@ -308,13 +309,12 @@
             // 
             // outputTbox
             // 
-            this.outputTbox.AllowDrop = true;
             this.outputTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.outputTbox.ForeColor = System.Drawing.Color.White;
-            this.outputTbox.Location = new System.Drawing.Point(281, 67);
+            this.outputTbox.Location = new System.Drawing.Point(235, 67);
             this.outputTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.outputTbox.Name = "outputTbox";
-            this.outputTbox.Size = new System.Drawing.Size(400, 23);
+            this.outputTbox.Size = new System.Drawing.Size(446, 23);
             this.outputTbox.TabIndex = 4;
             this.outputTbox.DragDrop += new System.Windows.Forms.DragEventHandler(this.outputTbox_DragDrop);
             this.outputTbox.DragEnter += new System.Windows.Forms.DragEventHandler(this.outputTbox_DragEnter);
@@ -324,10 +324,10 @@
             this.inputTbox.AllowDrop = true;
             this.inputTbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.inputTbox.ForeColor = System.Drawing.Color.White;
-            this.inputTbox.Location = new System.Drawing.Point(281, 37);
+            this.inputTbox.Location = new System.Drawing.Point(235, 37);
             this.inputTbox.MinimumSize = new System.Drawing.Size(4, 21);
             this.inputTbox.Name = "inputTbox";
-            this.inputTbox.Size = new System.Drawing.Size(400, 23);
+            this.inputTbox.Size = new System.Drawing.Size(446, 23);
             this.inputTbox.TabIndex = 2;
             this.inputTbox.DragDrop += new System.Windows.Forms.DragEventHandler(this.inputTbox_DragDrop);
             this.inputTbox.DragEnter += new System.Windows.Forms.DragEventHandler(this.inputTbox_DragEnter);
@@ -412,14 +412,14 @@
             // 
             // runBtn
             // 
-            this.runBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.runBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.runBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.runBtn.Enabled = false;
             this.runBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.runBtn.ForeColor = System.Drawing.Color.White;
-            this.runBtn.Location = new System.Drawing.Point(12, 418);
+            this.runBtn.Location = new System.Drawing.Point(8, 357);
             this.runBtn.Name = "runBtn";
-            this.runBtn.Size = new System.Drawing.Size(203, 71);
+            this.runBtn.Size = new System.Drawing.Size(208, 77);
             this.runBtn.TabIndex = 2;
             this.runBtn.Text = "Interpolate!";
             this.runBtn.UseVisualStyleBackColor = false;
@@ -435,7 +435,7 @@
             this.progressCircle.InnerColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.progressCircle.InnerMargin = 2;
             this.progressCircle.InnerWidth = -1;
-            this.progressCircle.Location = new System.Drawing.Point(422, 12);
+            this.progressCircle.Location = new System.Drawing.Point(423, 6);
             this.progressCircle.MarqueeAnimationSpeed = 2000;
             this.progressCircle.Name = "progressCircle";
             this.progressCircle.OuterColor = System.Drawing.Color.Gray;
@@ -463,13 +463,13 @@
             this.logBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.logBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.logBox.ForeColor = System.Drawing.Color.White;
-            this.logBox.Location = new System.Drawing.Point(221, 357);
+            this.logBox.Location = new System.Drawing.Point(222, 321);
             this.logBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.logBox.Multiline = true;
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logBox.Size = new System.Drawing.Size(701, 111);
+            this.logBox.Size = new System.Drawing.Size(709, 86);
             this.logBox.TabIndex = 5;
             this.logBox.TabStop = false;
             this.logBox.Text = "Welcome to Flowframes!";
@@ -495,16 +495,16 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.statusLabel);
             this.panel1.Controls.Add(this.label12);
-            this.panel1.Location = new System.Drawing.Point(13, 357);
+            this.panel1.Location = new System.Drawing.Point(8, 321);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(203, 55);
+            this.panel1.Size = new System.Drawing.Size(208, 30);
             this.panel1.TabIndex = 6;
             // 
             // statusLabel
             // 
             this.statusLabel.AutoSize = true;
             this.statusLabel.ForeColor = System.Drawing.Color.White;
-            this.statusLabel.Location = new System.Drawing.Point(8, 30);
+            this.statusLabel.Location = new System.Drawing.Point(49, 7);
             this.statusLabel.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(61, 13);
@@ -521,7 +521,7 @@
             this.updateBtn.ForeColor = System.Drawing.Color.White;
             this.updateBtn.ImageIndex = 0;
             this.updateBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.updateBtn.Location = new System.Drawing.Point(790, 12);
+            this.updateBtn.Location = new System.Drawing.Point(790, 6);
             this.updateBtn.Name = "updateBtn";
             this.updateBtn.Size = new System.Drawing.Size(40, 40);
             this.updateBtn.TabIndex = 41;
@@ -539,7 +539,7 @@
             this.queueBtn.ForeColor = System.Drawing.Color.White;
             this.queueBtn.ImageIndex = 0;
             this.queueBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.queueBtn.Location = new System.Drawing.Point(836, 12);
+            this.queueBtn.Location = new System.Drawing.Point(836, 6);
             this.queueBtn.Name = "queueBtn";
             this.queueBtn.Size = new System.Drawing.Size(40, 40);
             this.queueBtn.TabIndex = 39;
@@ -593,7 +593,7 @@
             this.settingsBtn.ForeColor = System.Drawing.Color.White;
             this.settingsBtn.ImageIndex = 0;
             this.settingsBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.settingsBtn.Location = new System.Drawing.Point(882, 12);
+            this.settingsBtn.Location = new System.Drawing.Point(882, 6);
             this.settingsBtn.Name = "settingsBtn";
             this.settingsBtn.Size = new System.Drawing.Size(40, 40);
             this.settingsBtn.TabIndex = 38;
@@ -611,7 +611,7 @@
             this.patreonBtn.ForeColor = System.Drawing.Color.White;
             this.patreonBtn.ImageIndex = 0;
             this.patreonBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.patreonBtn.Location = new System.Drawing.Point(606, 12);
+            this.patreonBtn.Location = new System.Drawing.Point(606, 6);
             this.patreonBtn.Name = "patreonBtn";
             this.patreonBtn.Size = new System.Drawing.Size(40, 40);
             this.patreonBtn.TabIndex = 37;
@@ -629,7 +629,7 @@
             this.paypalBtn.ForeColor = System.Drawing.Color.White;
             this.paypalBtn.ImageIndex = 0;
             this.paypalBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.paypalBtn.Location = new System.Drawing.Point(559, 12);
+            this.paypalBtn.Location = new System.Drawing.Point(560, 6);
             this.paypalBtn.Name = "paypalBtn";
             this.paypalBtn.Size = new System.Drawing.Size(40, 40);
             this.paypalBtn.TabIndex = 36;
@@ -647,7 +647,7 @@
             this.discordBtn.ForeColor = System.Drawing.Color.White;
             this.discordBtn.ImageIndex = 0;
             this.discordBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.discordBtn.Location = new System.Drawing.Point(652, 12);
+            this.discordBtn.Location = new System.Drawing.Point(652, 6);
             this.discordBtn.Name = "discordBtn";
             this.discordBtn.Size = new System.Drawing.Size(40, 40);
             this.discordBtn.TabIndex = 35;
@@ -719,7 +719,7 @@
             this.debugBtn.ForeColor = System.Drawing.Color.White;
             this.debugBtn.ImageIndex = 0;
             this.debugBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.debugBtn.Location = new System.Drawing.Point(744, 12);
+            this.debugBtn.Location = new System.Drawing.Point(744, 9);
             this.debugBtn.Name = "debugBtn";
             this.debugBtn.Size = new System.Drawing.Size(40, 40);
             this.debugBtn.TabIndex = 75;
@@ -753,9 +753,9 @@
             // 
             this.longProgBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.longProgBar.BorderThickness = 0;
-            this.longProgBar.Location = new System.Drawing.Point(221, 474);
+            this.longProgBar.Location = new System.Drawing.Point(222, 413);
             this.longProgBar.Name = "longProgBar";
-            this.longProgBar.Size = new System.Drawing.Size(700, 15);
+            this.longProgBar.Size = new System.Drawing.Size(709, 20);
             this.longProgBar.TabIndex = 33;
             // 
             // mainTabControl
@@ -774,13 +774,13 @@
             this.mainTabControl.HoverTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(176)))), ((int)(((byte)(239)))));
             this.mainTabControl.HoverTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.HoverUnselectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
-            this.mainTabControl.Location = new System.Drawing.Point(13, 62);
+            this.mainTabControl.Location = new System.Drawing.Point(4, 62);
             this.mainTabControl.Name = "mainTabControl";
             this.mainTabControl.Padding = new System.Drawing.Point(14, 4);
             this.mainTabControl.SelectedIndex = 0;
             this.mainTabControl.SelectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
             this.mainTabControl.SelectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
-            this.mainTabControl.Size = new System.Drawing.Size(909, 289);
+            this.mainTabControl.Size = new System.Drawing.Size(927, 257);
             this.mainTabControl.TabIndex = 4;
             this.mainTabControl.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.mainTabControl.UnderBorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(70)))));
@@ -802,7 +802,7 @@
             this.welcomeTab.Location = new System.Drawing.Point(4, 27);
             this.welcomeTab.Name = "welcomeTab";
             this.welcomeTab.Padding = new System.Windows.Forms.Padding(3);
-            this.welcomeTab.Size = new System.Drawing.Size(901, 258);
+            this.welcomeTab.Size = new System.Drawing.Size(919, 226);
             this.welcomeTab.TabIndex = 4;
             this.welcomeTab.Text = "Welcome";
             // 
@@ -828,7 +828,7 @@
             this.panel8.Location = new System.Drawing.Point(593, 57);
             this.panel8.Margin = new System.Windows.Forms.Padding(5);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(300, 193);
+            this.panel8.Size = new System.Drawing.Size(326, 161);
             this.panel8.TabIndex = 4;
             // 
             // patronsLabel
@@ -862,7 +862,7 @@
             this.panel6.Location = new System.Drawing.Point(8, 57);
             this.panel6.Margin = new System.Windows.Forms.Padding(5);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(575, 193);
+            this.panel6.Size = new System.Drawing.Size(575, 161);
             this.panel6.TabIndex = 3;
             // 
             // newsLabel
@@ -936,7 +936,7 @@
             this.interpOptsTab.Location = new System.Drawing.Point(4, 27);
             this.interpOptsTab.Name = "interpOptsTab";
             this.interpOptsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpOptsTab.Size = new System.Drawing.Size(901, 258);
+            this.interpOptsTab.Size = new System.Drawing.Size(919, 226);
             this.interpOptsTab.TabIndex = 0;
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
@@ -960,9 +960,9 @@
             this.flowLayoutPanel1.Controls.Add(this.comboxOutputQuality);
             this.flowLayoutPanel1.Controls.Add(this.textboxOutputQualityCust);
             this.flowLayoutPanel1.Controls.Add(this.comboxOutputColors);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(281, 157);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(235, 160);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(614, 23);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(449, 23);
             this.flowLayoutPanel1.TabIndex = 46;
             // 
             // comboxOutputFormat
@@ -984,7 +984,7 @@
             this.comboxOutputFormat.Location = new System.Drawing.Point(0, 0);
             this.comboxOutputFormat.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.comboxOutputFormat.Name = "comboxOutputFormat";
-            this.comboxOutputFormat.Size = new System.Drawing.Size(75, 23);
+            this.comboxOutputFormat.Size = new System.Drawing.Size(93, 23);
             this.comboxOutputFormat.TabIndex = 47;
             this.comboxOutputFormat.SelectedIndexChanged += new System.EventHandler(this.comboxOutputFormat_SelectedIndexChanged);
             // 
@@ -1004,10 +1004,10 @@
             "Animated GIF (Only supports up to 50 FPS)",
             "Image Sequence (PNG, JPG, WEBP)",
             "Real-time Interpolation (Video only)"});
-            this.comboxOutputEncoder.Location = new System.Drawing.Point(81, 0);
+            this.comboxOutputEncoder.Location = new System.Drawing.Point(99, 0);
             this.comboxOutputEncoder.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.comboxOutputEncoder.Name = "comboxOutputEncoder";
-            this.comboxOutputEncoder.Size = new System.Drawing.Size(90, 23);
+            this.comboxOutputEncoder.Size = new System.Drawing.Size(96, 23);
             this.comboxOutputEncoder.TabIndex = 50;
             this.comboxOutputEncoder.SelectedIndexChanged += new System.EventHandler(this.comboxOutputEncoder_SelectedIndexChanged);
             // 
@@ -1018,7 +1018,7 @@
             this.comboxOutputQuality.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboxOutputQuality.ForeColor = System.Drawing.Color.White;
             this.comboxOutputQuality.FormattingEnabled = true;
-            this.comboxOutputQuality.Location = new System.Drawing.Point(177, 0);
+            this.comboxOutputQuality.Location = new System.Drawing.Point(201, 0);
             this.comboxOutputQuality.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.comboxOutputQuality.Name = "comboxOutputQuality";
             this.comboxOutputQuality.Size = new System.Drawing.Size(100, 23);
@@ -1030,7 +1030,7 @@
             this.textboxOutputQualityCust.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.textboxOutputQualityCust.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textboxOutputQualityCust.ForeColor = System.Drawing.Color.White;
-            this.textboxOutputQualityCust.Location = new System.Drawing.Point(283, 0);
+            this.textboxOutputQualityCust.Location = new System.Drawing.Point(307, 0);
             this.textboxOutputQualityCust.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.textboxOutputQualityCust.MaxLength = 3;
             this.textboxOutputQualityCust.MinimumSize = new System.Drawing.Size(4, 21);
@@ -1047,10 +1047,10 @@
             this.comboxOutputColors.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboxOutputColors.ForeColor = System.Drawing.Color.White;
             this.comboxOutputColors.FormattingEnabled = true;
-            this.comboxOutputColors.Location = new System.Drawing.Point(319, 0);
+            this.comboxOutputColors.Location = new System.Drawing.Point(343, 0);
             this.comboxOutputColors.Margin = new System.Windows.Forms.Padding(0);
             this.comboxOutputColors.Name = "comboxOutputColors";
-            this.comboxOutputColors.Size = new System.Drawing.Size(117, 23);
+            this.comboxOutputColors.Size = new System.Drawing.Size(103, 23);
             this.comboxOutputColors.TabIndex = 49;
             // 
             // aiInfoBtn
@@ -1088,10 +1088,10 @@
             // 
             this.completionActionPanel.Controls.Add(this.completionAction);
             this.completionActionPanel.Controls.Add(this.label25);
-            this.completionActionPanel.Location = new System.Drawing.Point(681, 218);
+            this.completionActionPanel.Location = new System.Drawing.Point(689, 197);
             this.completionActionPanel.Margin = new System.Windows.Forms.Padding(0);
             this.completionActionPanel.Name = "completionActionPanel";
-            this.completionActionPanel.Size = new System.Drawing.Size(220, 40);
+            this.completionActionPanel.Size = new System.Drawing.Size(220, 33);
             this.completionActionPanel.TabIndex = 42;
             // 
             // completionAction
@@ -1108,7 +1108,7 @@
             "Sleep",
             "Hibernate",
             "Shutdown"});
-            this.completionAction.Location = new System.Drawing.Point(84, 11);
+            this.completionAction.Location = new System.Drawing.Point(84, 4);
             this.completionAction.Name = "completionAction";
             this.completionAction.Size = new System.Drawing.Size(130, 23);
             this.completionAction.TabIndex = 40;
@@ -1119,7 +1119,7 @@
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label25.ForeColor = System.Drawing.Color.Silver;
-            this.label25.Location = new System.Drawing.Point(10, 15);
+            this.label25.Location = new System.Drawing.Point(10, 8);
             this.label25.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(68, 13);
@@ -1222,7 +1222,7 @@
             this.quickSettingsTab.Location = new System.Drawing.Point(4, 27);
             this.quickSettingsTab.Name = "quickSettingsTab";
             this.quickSettingsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.quickSettingsTab.Size = new System.Drawing.Size(901, 258);
+            this.quickSettingsTab.Size = new System.Drawing.Size(919, 226);
             this.quickSettingsTab.TabIndex = 1;
             this.quickSettingsTab.Text = "Quick Settings";
             this.quickSettingsTab.Enter += new System.EventHandler(this.LoadQuickSettings);
@@ -1578,7 +1578,7 @@
             this.previewTab.Location = new System.Drawing.Point(4, 27);
             this.previewTab.Margin = new System.Windows.Forms.Padding(0);
             this.previewTab.Name = "previewTab";
-            this.previewTab.Size = new System.Drawing.Size(901, 258);
+            this.previewTab.Size = new System.Drawing.Size(919, 226);
             this.previewTab.TabIndex = 3;
             this.previewTab.Text = "Preview";
             // 
@@ -1602,7 +1602,7 @@
             this.previewPicturebox.Location = new System.Drawing.Point(0, 0);
             this.previewPicturebox.Margin = new System.Windows.Forms.Padding(0);
             this.previewPicturebox.Name = "previewPicturebox";
-            this.previewPicturebox.Size = new System.Drawing.Size(901, 258);
+            this.previewPicturebox.Size = new System.Drawing.Size(919, 226);
             this.previewPicturebox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.previewPicturebox.TabIndex = 0;
             this.previewPicturebox.TabStop = false;
@@ -1615,7 +1615,7 @@
             this.abtTab.Location = new System.Drawing.Point(4, 27);
             this.abtTab.Name = "abtTab";
             this.abtTab.Padding = new System.Windows.Forms.Padding(3);
-            this.abtTab.Size = new System.Drawing.Size(901, 258);
+            this.abtTab.Size = new System.Drawing.Size(919, 226);
             this.abtTab.TabIndex = 2;
             this.abtTab.Text = "About";
             // 
@@ -1630,7 +1630,7 @@
             this.htButton1.ForeColor = System.Drawing.Color.White;
             this.htButton1.ImageIndex = 0;
             this.htButton1.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
-            this.htButton1.Location = new System.Drawing.Point(698, 9);
+            this.htButton1.Location = new System.Drawing.Point(698, 6);
             this.htButton1.Name = "htButton1";
             this.htButton1.Size = new System.Drawing.Size(40, 40);
             this.htButton1.TabIndex = 40;
@@ -1642,10 +1642,10 @@
             this.runStepBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.runStepBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.runStepBtn.ForeColor = System.Drawing.Color.White;
-            this.runStepBtn.Location = new System.Drawing.Point(12, 442);
+            this.runStepBtn.Location = new System.Drawing.Point(8, 382);
             this.runStepBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.runStepBtn.Name = "runStepBtn";
-            this.runStepBtn.Size = new System.Drawing.Size(203, 47);
+            this.runStepBtn.Size = new System.Drawing.Size(208, 52);
             this.runStepBtn.TabIndex = 42;
             this.runStepBtn.Text = "Run This Step";
             this.runStepBtn.UseVisualStyleBackColor = false;
@@ -1664,52 +1664,36 @@
             "2) Run Interpolation",
             "3) Export",
             "4) Cleanup & Reset"});
-            this.stepSelector.Location = new System.Drawing.Point(12, 418);
+            this.stepSelector.Location = new System.Drawing.Point(8, 357);
             this.stepSelector.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.stepSelector.Name = "stepSelector";
-            this.stepSelector.Size = new System.Drawing.Size(203, 24);
+            this.stepSelector.Size = new System.Drawing.Size(208, 24);
             this.stepSelector.TabIndex = 73;
             // 
             // busyControlsPanel
             // 
             this.busyControlsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.busyControlsPanel.Controls.Add(this.tableLayoutPanel1);
-            this.busyControlsPanel.Location = new System.Drawing.Point(12, 418);
+            this.busyControlsPanel.Location = new System.Drawing.Point(8, 357);
             this.busyControlsPanel.Name = "busyControlsPanel";
-            this.busyControlsPanel.Size = new System.Drawing.Size(203, 71);
+            this.busyControlsPanel.Size = new System.Drawing.Size(208, 77);
             this.busyControlsPanel.TabIndex = 74;
             this.busyControlsPanel.Visible = false;
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51F));
-            this.tableLayoutPanel1.Controls.Add(this.pauseBtn, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cancelBtn, 0, 0);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.63326F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.36675F));
+            this.tableLayoutPanel1.Controls.Add(this.cancelBtn, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.pauseBtn, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(203, 71);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(208, 77);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // pauseBtn
-            // 
-            this.pauseBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pauseBtn.BackgroundImage = global::Flowframes.Properties.Resources.baseline_pause_white_48dp;
-            this.pauseBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pauseBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkOrange;
-            this.pauseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pauseBtn.ForeColor = System.Drawing.Color.DarkOrange;
-            this.pauseBtn.Location = new System.Drawing.Point(126, 10);
-            this.pauseBtn.Name = "pauseBtn";
-            this.pauseBtn.Size = new System.Drawing.Size(50, 50);
-            this.pauseBtn.TabIndex = 1;
-            this.pauseBtn.UseVisualStyleBackColor = true;
-            this.pauseBtn.Visible = false;
-            this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
             // 
             // cancelBtn
             // 
@@ -1719,12 +1703,28 @@
             this.cancelBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Firebrick;
             this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancelBtn.ForeColor = System.Drawing.Color.Firebrick;
-            this.cancelBtn.Location = new System.Drawing.Point(24, 10);
+            this.cancelBtn.Location = new System.Drawing.Point(112, 9);
             this.cancelBtn.Name = "cancelBtn";
-            this.cancelBtn.Size = new System.Drawing.Size(50, 50);
+            this.cancelBtn.Size = new System.Drawing.Size(86, 59);
             this.cancelBtn.TabIndex = 0;
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
+            // 
+            // pauseBtn
+            // 
+            this.pauseBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pauseBtn.BackgroundImage = global::Flowframes.Properties.Resources.baseline_pause_white_48dp;
+            this.pauseBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pauseBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkOrange;
+            this.pauseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pauseBtn.ForeColor = System.Drawing.Color.DarkOrange;
+            this.pauseBtn.Location = new System.Drawing.Point(13, 9);
+            this.pauseBtn.Name = "pauseBtn";
+            this.pauseBtn.Size = new System.Drawing.Size(76, 59);
+            this.pauseBtn.TabIndex = 1;
+            this.pauseBtn.UseVisualStyleBackColor = true;
+            this.pauseBtn.Visible = false;
+            this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
             // 
             // menuStripQueue
             // 
@@ -1740,18 +1740,35 @@
             this.addCurrentConfigurationToQueueToolStripMenuItem.Text = "Add Current Configuration to Queue";
             this.addCurrentConfigurationToQueueToolStripMenuItem.Click += new System.EventHandler(this.addCurrentConfigurationToQueueToolStripMenuItem_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox1.ForeColor = System.Drawing.Color.White;
+            this.textBox1.Location = new System.Drawing.Point(8, 440);
+            this.textBox1.MinimumSize = new System.Drawing.Size(4, 21);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(923, 24);
+            this.textBox1.TabIndex = 76;
+            this.textBox1.TabStop = false;
+            this.textBox1.Text = "  Status: Calculating performance metrics!";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.ClientSize = new System.Drawing.Size(934, 501);
+            this.ClientSize = new System.Drawing.Size(934, 466);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.runBtn);
+            this.Controls.Add(this.runStepBtn);
             this.Controls.Add(this.debugBtn);
             this.Controls.Add(this.busyControlsPanel);
-            this.Controls.Add(this.runBtn);
             this.Controls.Add(this.stepSelector);
-            this.Controls.Add(this.runStepBtn);
             this.Controls.Add(this.updateBtn);
             this.Controls.Add(this.htButton1);
             this.Controls.Add(this.queueBtn);
@@ -1919,20 +1936,21 @@
         private System.Windows.Forms.ComboBox outSpeedCombox;
         private System.Windows.Forms.PictureBox pictureBox5;
         private HTAlt.WinForms.HTButton aiInfoBtn;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        public System.Windows.Forms.ComboBox comboxOutputFormat;
-        public System.Windows.Forms.ComboBox comboxOutputColors;
-        public System.Windows.Forms.ComboBox comboxOutputEncoder;
-        public System.Windows.Forms.ComboBox comboxOutputQuality;
         private System.Windows.Forms.Label labelOutput;
         private System.Windows.Forms.ContextMenuStrip menuStripQueue;
         private System.Windows.Forms.ToolStripMenuItem addCurrentConfigurationToQueueToolStripMenuItem;
-        private System.Windows.Forms.TextBox textboxOutputQualityCust;
         public System.Windows.Forms.TabPage interpOptsTab;
         public System.Windows.Forms.TabPage quickSettingsTab;
         public System.Windows.Forms.TabPage abtTab;
         public System.Windows.Forms.TabPage previewTab;
         public System.Windows.Forms.TabPage welcomeTab;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        public System.Windows.Forms.ComboBox comboxOutputFormat;
+        public System.Windows.Forms.ComboBox comboxOutputEncoder;
+        public System.Windows.Forms.ComboBox comboxOutputQuality;
+        private System.Windows.Forms.TextBox textboxOutputQualityCust;
+        public System.Windows.Forms.ComboBox comboxOutputColors;
     }
 }
 

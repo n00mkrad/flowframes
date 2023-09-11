@@ -5,11 +5,14 @@ using Flowframes.MiscUtils;
 using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Win32Interop.Enums;
+using Win32Interop.Structs;
 using static Flowframes.AvProcess;
 
 namespace Flowframes.Media
@@ -32,7 +35,9 @@ namespace Flowframes.Media
 
             string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString(Config.Key.scnDetectValue)})'\"";
             string rateArg = (rate.GetFloat() > 0) ? $"-r {rate}" : "";
-            string args = $"{GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -fps_mode passthrough -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
+
+            string args = $"{GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -fps_mode  passthrough -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
+            
 
             LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, inputIsFrames ? "panic" : "warning", true);
@@ -72,6 +77,8 @@ namespace Flowframes.Media
             return args;
         }
 
+
+
         public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, Fraction rate, bool deDupe, bool delSrc, Size size, string format)
         {
             Logger.Log("Extracting video frames from input video...");
@@ -82,7 +89,28 @@ namespace Flowframes.Media
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate.GetFloat() > 0) ? $" -r {rate}" : "";
-            string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} -fps_mode passthrough {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
+
+            //QSV Related Settings
+            //Check if IntelQSVDecode is set to "1" in config file, than enable this just for image extraction. If set to "0" default, then it will use cpu for extraction.
+            string qsvArg1 = "-hwaccel qsv -qsv_device 1 -c:v h264_qsv";
+            int threadcount = Environment.ProcessorCount;
+            string qsvArg2 = "-threads ";
+            string qsvArg3 = threadcount.ToString();
+            string qsvArg4 = "-vcodec mjpeg_qsv";
+            
+
+            string args;
+
+            if (Config.GetString(Config.Key.intelQSVDecode) == "True")
+                {
+                 args = $"{GetTrimArg(true)} {qsvArg1} -i {inputFile.Wrap()} {qsvArg2} {qsvArg3} {qsvArg4} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
+            }
+            else
+            {
+                 args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} -fps_mode passthrough {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
+            }
+
+
             LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, true);
             int amount = IoUtils.GetAmountOfFiles(framesDir, false, "*" + format);
