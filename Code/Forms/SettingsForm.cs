@@ -24,6 +24,7 @@ namespace Flowframes.Forms
             AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
             settingsTabList.SelectedIndex = index;
+            
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -36,6 +37,8 @@ namespace Flowframes.Forms
             initialized = true;
             Task.Run(() => CheckModelCacheSize());
         }
+
+
 
         void InitServers()
         {
@@ -96,6 +99,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(keepMeta);
             ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveGuiElement(jpegFrames);
+            //ConfigParser.SaveGuiElement(formatofInterp);
             ConfigParser.SaveGuiElement(formatofInterp);
             ConfigParser.SaveGuiElement(intelQSVDecode);
             ConfigParser.SaveComboxIndex(dedupMode);
@@ -145,7 +149,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(keepMeta);
             ConfigParser.LoadGuiElement(enableAlpha);
             ConfigParser.LoadGuiElement(jpegFrames);
-            ConfigParser.SaveGuiElement(formatofInterp);
+            ConfigParser.LoadGuiElement(formatofInterp);
             ConfigParser.LoadGuiElement(intelQSVDecode);
             ConfigParser.LoadComboxIndex(dedupMode);
             ConfigParser.LoadComboxIndex(mpdecimateMode);
@@ -267,11 +271,6 @@ namespace Flowframes.Forms
         }
 
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-           
-        }
-
         private void autoEncBlockPanel_Paint(object sender, PaintEventArgs e)
         {
 
@@ -296,6 +295,11 @@ namespace Flowframes.Forms
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             
+        }
+
+        private void formatofInterp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

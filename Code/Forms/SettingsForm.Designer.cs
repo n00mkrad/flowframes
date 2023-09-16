@@ -67,7 +67,6 @@ namespace Flowframes.Forms
             this.intelQSVDecode = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
             this.mpdecimateMode = new System.Windows.Forms.ComboBox();
-            this.formatofInterp = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.autoEncBlockPanel = new System.Windows.Forms.Panel();
@@ -165,6 +164,7 @@ namespace Flowframes.Forms
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
+            this.formatofInterp = new System.Windows.Forms.ComboBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -563,11 +563,11 @@ namespace Flowframes.Forms
             // tabListPage2
             // 
             this.tabListPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.tabListPage2.Controls.Add(this.formatofInterp);
             this.tabListPage2.Controls.Add(this.label13);
             this.tabListPage2.Controls.Add(this.intelQSVDecode);
             this.tabListPage2.Controls.Add(this.label12);
             this.tabListPage2.Controls.Add(this.mpdecimateMode);
-            this.tabListPage2.Controls.Add(this.formatofInterp);
             this.tabListPage2.Controls.Add(this.label11);
             this.tabListPage2.Controls.Add(this.label10);
             this.tabListPage2.Controls.Add(this.autoEncBlockPanel);
@@ -662,30 +662,6 @@ namespace Flowframes.Forms
             this.mpdecimateMode.Name = "mpdecimateMode";
             this.mpdecimateMode.Size = new System.Drawing.Size(135, 21);
             this.mpdecimateMode.TabIndex = 28;
-            // 
-            // formatofInterp
-            // 
-            this.formatofInterp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.formatofInterp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.formatofInterp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.formatofInterp.ForeColor = System.Drawing.Color.White;
-            this.formatofInterp.FormattingEnabled = true;
-            this.formatofInterp.Items.AddRange(new object[] {
-            "jpg",
-            "png"});
-            this.formatofInterp.Location = new System.Drawing.Point(280, 132);
-            this.formatofInterp.Name = "formatofInterp";
-            this.formatofInterp.Size = new System.Drawing.Size(61, 21);
-            this.formatofInterp.TabIndex = 98;
-
-            if (Config.GetString(Config.Key.formatofInterp) == "png") {
-            this.formatofInterp.SelectedIndex = 1;
-            }
-            else {
-            this.formatofInterp.SelectedIndex = 0;
-            }
-
-            this.formatofInterp.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label11
             // 
@@ -1874,6 +1850,22 @@ namespace Flowframes.Forms
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
+            // formatofInterp
+            // 
+            this.formatofInterp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.formatofInterp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.formatofInterp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.formatofInterp.ForeColor = System.Drawing.Color.White;
+            this.formatofInterp.FormattingEnabled = true;
+            this.formatofInterp.Items.AddRange(new object[] {
+            "jpg",
+            "png"});
+            this.formatofInterp.Location = new System.Drawing.Point(281, 132);
+            this.formatofInterp.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.formatofInterp.Name = "formatofInterp";
+            this.formatofInterp.Size = new System.Drawing.Size(55, 21);
+            this.formatofInterp.TabIndex = 103;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2041,7 +2033,6 @@ namespace Flowframes.Forms
         private System.Windows.Forms.ComboBox serverCombox;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.ComboBox formatofInterp;
         protected Cyotek.Windows.Forms.TabListPage tabListPage2;
         private System.Windows.Forms.Panel mpDedupePanel;
         private System.Windows.Forms.NumericUpDown dedupThresh;
@@ -2050,5 +2041,6 @@ namespace Flowframes.Forms
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox intelQSVDecode;
+        private System.Windows.Forms.ComboBox formatofInterp;
     }
 }

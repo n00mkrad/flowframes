@@ -53,22 +53,26 @@ namespace Flowframes.Forms.Main
             const int byteToHigherOrder = 1024 * 1024;
             const int byteToHighestOrder = 1024 * 1024 * 1024;
             int timeToSleep = sleeptime;
-            bool i = true;
             
-
-            while(i == true) {
-                PerformanceCounter cpuCounter;
-                PerformanceCounter ramCounter;
-                cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+            while(true) {
 
                 string getCurrentCpuUsage(){
-                    cpuCounter.NextValue();
-                    System.Threading.Thread.Sleep(timeToSleep);
-                    return "CPU:"+ cpuCounter.NextValue().RoundToInt() + "%";
-                }
+                    try
+                    {
+                        PerformanceCounter cpuCounter;
+                        cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                        cpuCounter.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep);
+                        return "CPU:" + cpuCounter.NextValue().RoundToInt() + "%";
+                    }
+
+                    catch (Exception ex) { return "CPU: ERROR"; }
+                    }
 
                  string getCurrentRamUsage(){
+                    try{
+                    PerformanceCounter ramCounter;
+                    ramCounter = new PerformanceCounter("Memory", "Available MBytes");
                     System.Threading.Thread.Sleep(timeToSleep);
                     float totalram = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
                     float totalrambeautiful = (totalram/(byteToHigherOrder));
@@ -78,7 +82,9 @@ namespace Flowframes.Forms.Main
                     float usedrampercent = (usedram / totalrambeautiful)* 1024 * 100;
                     string beautifulpercent = String.Format("{0:0.00}", usedrampercent);
                     return "RAM:" + usedramtext + " GB (" + beautifulpercent + "% used RAM)";
-                }
+                    }
+                    catch (Exception ex){return "RAM: ERROR";}
+                    }   
 
 
                 string GetCudaUsage()
@@ -120,7 +126,7 @@ namespace Flowframes.Forms.Main
                     }
                     catch
                     {
-                        return "0%";
+                        return "CUDA: ERROR";
                     }
                 }
 
@@ -133,9 +139,7 @@ namespace Flowframes.Forms.Main
                         var counterNames = category.GetInstanceNames();
                         var gpuCounters = new List<PerformanceCounter>();
                         var result = 0f;
-
-                        foreach (string counterName in counterNames)
-                        {
+                        foreach (string counterName in counterNames) {
                             if (counterName.EndsWith("phys_0"))
                             {
                                 foreach (PerformanceCounter counter in category.GetCounters(counterName))
@@ -154,7 +158,6 @@ namespace Flowframes.Forms.Main
                         });
 
                         System.Threading.Thread.Sleep(timeToSleep);
-
                         gpuCounters.ForEach(x =>
                         {
                             result += x.NextValue();
@@ -164,31 +167,57 @@ namespace Flowframes.Forms.Main
                     }
                     catch
                     {
-                        return "0 MB";
+                        return "GPU RAM: ERROR";
                     }
                 }
 
 
                 string DiskUsageSpeed()
                 {
-                    PerformanceCounter avgReadDisk;
-                    PerformanceCounter avgReadWrite;
-                    avgReadDisk = new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
-                    avgReadWrite = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
-                    avgReadDisk.NextValue();
-                    avgReadWrite.NextValue();
-                    System.Threading.Thread.Sleep(timeToSleep);
-                    string diskreadwrite =  "Disk Speed:" + (avgReadDisk.NextValue().RoundToInt() + avgReadWrite.NextValue().RoundToInt())/ byteToHigherOrder/2 + " MB/S";
-                    return diskreadwrite.ToString();
+                    try
+                    {
+                        PerformanceCounter avgReadDisk;
+                        PerformanceCounter avgReadWrite;
+                        avgReadDisk = new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
+                        avgReadWrite = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
+
+                        avgReadDisk.NextValue();
+                        avgReadWrite.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep/5);
+                        float speed1 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
+
+                        avgReadDisk.NextValue();
+                        avgReadWrite.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep /5);
+                        float speed2 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
+
+
+                        avgReadDisk.NextValue();
+                        avgReadWrite.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep /5);
+                        float speed3 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
+
+
+                        avgReadDisk.NextValue();
+                        avgReadWrite.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep /5);
+                        float speed4 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
+
+                        int speed5 = ((speed1.RoundToInt() + speed2.RoundToInt() + speed3.RoundToInt() + speed4.RoundToInt()) /4);
+
+
+                        string diskreadwrite = "Disk Speed:" + speed5 / byteToHigherOrder + " MB/S";
+                        return diskreadwrite.ToString();
+                    }
+                    catch (Exception ex){ return "Disk Speed: ERROR";}
                 }
 
-                string performancecounter ="  " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed();
+
+
+                string performancecounter ="  Status: " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed();
                 //Console.WriteLine(performancecounter);
                 return textBox1.Text = performancecounter ;
-               
-            }
-
-            return "";
+             }
         }
 
 
@@ -198,8 +227,8 @@ namespace Flowframes.Forms.Main
             await Task.Run(() =>
             {
                 while (true) {
-                    System.Threading.Thread.Sleep(500);
-                    ShowTotalPerformance(250);
+                    System.Threading.Thread.Sleep(2000);
+                    ShowTotalPerformance(125);
                 }
             });
         }
@@ -491,8 +520,7 @@ namespace Flowframes.Forms.Main
                 aiCombox.Items.Add(GetAiComboboxName(ai));
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
-            string formatofInterp = Config.Get(Config.Key.formatofInterp);
-            string intelQSVDecode = Config.Get(Config.Key.intelQSVDecode);
+
             lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
             aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
@@ -816,7 +844,6 @@ namespace Flowframes.Forms.Main
                 InterpolationProgress.bigPreviewForm.SetImage(previewPicturebox.Image);
             }
         }
-
         private async void updateBtn_Click(object sender, EventArgs e)
         {
             new UpdaterForm().ShowDialog();
@@ -865,7 +892,6 @@ namespace Flowframes.Forms.Main
                 trimEndBox.Text = FormatUtils.MsToTimestamp(currInDuration);
             }
         }
-
         private void trimResetBtn_Click(object sender, EventArgs e)
         {
             trimCombox_SelectedIndexChanged(null, null);
@@ -939,7 +965,17 @@ namespace Flowframes.Forms.Main
         {
             float inFps = fpsInTbox.GetFloat();
             float outFps = fpsOutTbox.GetFloat();
-            var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);
+            decimal targetFactorRounded = 0;
+            if (targetFactorRounded == 0)
+            {
+                targetFactorRounded = 0;
+            }
+
+            else
+            {
+                 targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);
+            }
+
             interpFactorCombox.Text = $"{targetFactorRounded}";
             ValidateFactor();
             fpsOutTbox.Text = $"{inFps * interpFactorCombox.GetFloat()} FPS";

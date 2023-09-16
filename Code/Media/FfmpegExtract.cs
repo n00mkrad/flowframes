@@ -96,7 +96,7 @@ namespace Flowframes.Media
             int threadcount = Environment.ProcessorCount;
             string qsvArg2 = "-threads ";
             string qsvArg3 = threadcount.ToString();
-            string qsvArg4 = "-vcodec mjpeg_qsv";
+            string qsvArg4 = "-vcodec mjpeg_qsv -qscale:v 2";
             
 
             string args;

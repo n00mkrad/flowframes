@@ -134,10 +134,7 @@ namespace Flowframes.Magick
                 img1.Format = MagickFormat.Jpeg;
             }
 
-
-            
-
-            img1.Quality = 10;
+            img1.Quality = 100;
             img1.Write(imgOutPath);
         }
 
@@ -173,7 +170,7 @@ namespace Flowframes.Magick
                     img1Inst.Format = MagickFormat.Jpeg;
                     }
 
-                    img1Inst.Quality = 10;
+                    img1Inst.Quality = 100;
                     img1Inst.Write(outPath);
                     await Task.Delay(1);
                 }

@@ -265,9 +265,7 @@ namespace Flowframes.IO
             if (key == Key.intelQSVDecode)        return WriteDefault(key, "False");
             if (key == Key.jpegFrames)            return WriteDefault(key, "True");
             if (key == Key.formatofInterp)        return WriteDefault(key, "png");
-            if (key == Key.lastUsedAiName)       return WriteDefault(key, "RIFE_CUDA");
-
-            
+            if (key == Key.lastUsedAiName)        return WriteDefault(key, "RIFE_CUDA");
 
             // Video Export
             if (key == Key.minOutVidLength)     return WriteDefault(key, "5");
