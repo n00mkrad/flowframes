@@ -21,6 +21,7 @@ using static WinFormAnimation.AnimationFunctions;
 using System.Management;
 using System.Threading;
 using System.Timers;
+using System.Media;
 
 #pragma warning disable IDE1006
 
@@ -475,9 +476,60 @@ namespace Flowframes.Forms.Main
             inputInfo.Text = str;
         }
 
+        public void playSystemSound()
+        {
+            string selectedVariable = (Config.GetString(Config.Key.systemSoundActivated));
+
+            switch (selectedVariable)
+            {
+                case "None":
+                    Console.WriteLine("None system sound will be played.");
+                    break;
+
+                case "Asterisk":
+                    SystemSounds.Asterisk.Play();
+                    break;
+
+                case "Beep":
+                    SystemSounds.Beep.Play();
+                    break;
+
+                case "Exclamation":
+                    SystemSounds.Exclamation.Play();
+                    break;
+
+                case "Hand":
+                    SystemSounds.Hand.Play();
+                    break;
+
+                case "Question":
+                    SystemSounds.Question.Play();
+                    break;
+
+                case "Custom":
+                    try { 
+                    System.Media.SoundPlayer player = new System.Media.SoundPlayer(Config.GetString(Config.Key.playSoundCustom));
+                    player.Play();
+                    }
+
+                    catch {
+                        Console.WriteLine("Not a valid system sound.");
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine("None system sound will be played.");
+                    break;
+            }
+        }
+
+
+
         public void InterpolationDone()
         {
             SetStatus("Done interpolating!");
+            playSystemSound();
+
 
             if (!BatchProcessing.busy)
                 CompletionAction();

@@ -34,6 +34,7 @@ namespace Flowframes.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.label40 = new System.Windows.Forms.Label();
             this.custOutDirBrowseBtn = new HTAlt.WinForms.HTButton();
             this.custOutDir = new System.Windows.Forms.TextBox();
             this.outFolderLoc = new System.Windows.Forms.ComboBox();
@@ -63,6 +64,7 @@ namespace Flowframes.Forms
             this.maxVidHeight = new System.Windows.Forms.ComboBox();
             this.label31 = new System.Windows.Forms.Label();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
+            this.formatofInterp = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.intelQSVDecode = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -111,6 +113,13 @@ namespace Flowframes.Forms
             this.keepAudio = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.aiOptsPage = new Cyotek.Windows.Forms.TabListPage();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.wthreads = new System.Windows.Forms.NumericUpDown();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.rifeCudaBufferSize = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
             this.label66 = new System.Windows.Forms.Label();
             this.rifeCudaFp16 = new System.Windows.Forms.CheckBox();
             this.label65 = new System.Windows.Forms.Label();
@@ -135,6 +144,10 @@ namespace Flowframes.Forms
             this.label5 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
+            this.playSoundCustomBtn = new System.Windows.Forms.Button();
+            this.playSoundCustom = new System.Windows.Forms.TextBox();
+            this.systemSoundActivated = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.label73 = new System.Windows.Forms.Label();
             this.fixOutputDuration = new System.Windows.Forms.CheckBox();
             this.label72 = new System.Windows.Forms.Label();
@@ -164,7 +177,7 @@ namespace Flowframes.Forms
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.formatofInterp = new System.Windows.Forms.ComboBox();
+            this.htButton1 = new HTAlt.WinForms.HTButton();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -175,6 +188,8 @@ namespace Flowframes.Forms
             ((System.ComponentModel.ISupportInitialize)(this.dedupThresh)).BeginInit();
             this.magickDedupePanel.SuspendLayout();
             this.aiOptsPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.wthreads)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rifeCudaBufferSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).BeginInit();
             this.vidExportTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
@@ -201,6 +216,8 @@ namespace Flowframes.Forms
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.htButton1);
+            this.generalTab.Controls.Add(this.label40);
             this.generalTab.Controls.Add(this.custOutDirBrowseBtn);
             this.generalTab.Controls.Add(this.custOutDir);
             this.generalTab.Controls.Add(this.outFolderLoc);
@@ -233,6 +250,16 @@ namespace Flowframes.Forms
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 512);
             this.generalTab.Text = "Application";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(10, 281);
+            this.label40.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(105, 13);
+            this.label40.TabIndex = 94;
+            this.label40.Text = "Performance Presets";
             // 
             // custOutDirBrowseBtn
             // 
@@ -613,6 +640,24 @@ namespace Flowframes.Forms
             this.tabListPage2.Name = "tabListPage2";
             this.tabListPage2.Size = new System.Drawing.Size(762, 512);
             this.tabListPage2.Text = "Interpolation";
+            // 
+            // formatofInterp
+            // 
+            this.formatofInterp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.formatofInterp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.formatofInterp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.formatofInterp.ForeColor = System.Drawing.Color.White;
+            this.formatofInterp.FormattingEnabled = true;
+            this.formatofInterp.Items.AddRange(new object[] {
+            "bmp",
+            "jpg",
+            "png",
+            "webp"});
+            this.formatofInterp.Location = new System.Drawing.Point(281, 132);
+            this.formatofInterp.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.formatofInterp.Name = "formatofInterp";
+            this.formatofInterp.Size = new System.Drawing.Size(55, 21);
+            this.formatofInterp.TabIndex = 103;
             // 
             // label13
             // 
@@ -1167,6 +1212,13 @@ namespace Flowframes.Forms
             // aiOptsPage
             // 
             this.aiOptsPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.aiOptsPage.Controls.Add(this.label38);
+            this.aiOptsPage.Controls.Add(this.label37);
+            this.aiOptsPage.Controls.Add(this.wthreads);
+            this.aiOptsPage.Controls.Add(this.label23);
+            this.aiOptsPage.Controls.Add(this.label19);
+            this.aiOptsPage.Controls.Add(this.rifeCudaBufferSize);
+            this.aiOptsPage.Controls.Add(this.label17);
             this.aiOptsPage.Controls.Add(this.label66);
             this.aiOptsPage.Controls.Add(this.rifeCudaFp16);
             this.aiOptsPage.Controls.Add(this.label65);
@@ -1194,6 +1246,108 @@ namespace Flowframes.Forms
             this.aiOptsPage.Name = "aiOptsPage";
             this.aiOptsPage.Size = new System.Drawing.Size(762, 512);
             this.aiOptsPage.Text = "AI Specific Options";
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.ForeColor = System.Drawing.Color.Silver;
+            this.label38.Location = new System.Drawing.Point(586, 272);
+            this.label38.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(84, 13);
+            this.label38.TabIndex = 90;
+            this.label38.Text = "Cores/Threads: ";
+            this.label38.TextChanged += new System.EventHandler(this.label38_TextChanged);
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.ForeColor = System.Drawing.Color.Silver;
+            this.label37.Location = new System.Drawing.Point(375, 272);
+            this.label37.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(201, 13);
+            this.label37.TabIndex = 89;
+            this.label37.Text = "Value should be number of cores times 2.";
+            // 
+            // wthreads
+            // 
+            this.wthreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.wthreads.ForeColor = System.Drawing.Color.White;
+            this.wthreads.Location = new System.Drawing.Point(280, 265);
+            this.wthreads.Maximum = new decimal(new int[] {
+            512,
+            0,
+            0,
+            0});
+            this.wthreads.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.wthreads.Name = "wthreads";
+            this.wthreads.Size = new System.Drawing.Size(77, 20);
+            this.wthreads.TabIndex = 88;
+            this.wthreads.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(11, 265);
+            this.label23.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(82, 13);
+            this.label23.TabIndex = 87;
+            this.label23.Text = "Rife W-Threads";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.ForeColor = System.Drawing.Color.Silver;
+            this.label19.Location = new System.Drawing.Point(375, 240);
+            this.label19.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(359, 13);
+            this.label19.TabIndex = 86;
+            this.label19.Text = "Recommended between 200 to 400. Might improve Performance a little bit.";
+            // 
+            // rifeCudaBufferSize
+            // 
+            this.rifeCudaBufferSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.rifeCudaBufferSize.ForeColor = System.Drawing.Color.White;
+            this.rifeCudaBufferSize.Location = new System.Drawing.Point(280, 233);
+            this.rifeCudaBufferSize.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.rifeCudaBufferSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.rifeCudaBufferSize.Name = "rifeCudaBufferSize";
+            this.rifeCudaBufferSize.Size = new System.Drawing.Size(77, 20);
+            this.rifeCudaBufferSize.TabIndex = 85;
+            this.rifeCudaBufferSize.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(11, 235);
+            this.label17.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(108, 13);
+            this.label17.TabIndex = 84;
+            this.label17.Text = "Rife Cuda Buffer Size";
             // 
             // label66
             // 
@@ -1230,7 +1384,7 @@ namespace Flowframes.Forms
             // 
             this.label35.AutoSize = true;
             this.label35.ForeColor = System.Drawing.Color.Silver;
-            this.label35.Location = new System.Drawing.Point(412, 291);
+            this.label35.Location = new System.Drawing.Point(412, 327);
             this.label35.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(258, 13);
@@ -1241,7 +1395,7 @@ namespace Flowframes.Forms
             // 
             this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
             this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel12.Location = new System.Drawing.Point(378, 287);
+            this.panel12.Location = new System.Drawing.Point(378, 319);
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(21, 21);
             this.panel12.TabIndex = 78;
@@ -1261,7 +1415,7 @@ namespace Flowframes.Forms
             "1024",
             "1536",
             "2048"});
-            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 287);
+            this.dainNcnnTilesize.Location = new System.Drawing.Point(280, 319);
             this.dainNcnnTilesize.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
             this.dainNcnnTilesize.Name = "dainNcnnTilesize";
             this.dainNcnnTilesize.Size = new System.Drawing.Size(87, 21);
@@ -1270,7 +1424,7 @@ namespace Flowframes.Forms
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(10, 290);
+            this.label27.Location = new System.Drawing.Point(10, 338);
             this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(93, 13);
@@ -1281,7 +1435,7 @@ namespace Flowframes.Forms
             // 
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label26.Location = new System.Drawing.Point(10, 260);
+            this.label26.Location = new System.Drawing.Point(10, 305);
             this.label26.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(151, 16);
@@ -1294,7 +1448,7 @@ namespace Flowframes.Forms
             this.ncnnThreads.ForeColor = System.Drawing.Color.White;
             this.ncnnThreads.Location = new System.Drawing.Point(280, 98);
             this.ncnnThreads.Maximum = new decimal(new int[] {
-            8,
+            16,
             0,
             0,
             0});
@@ -1478,6 +1632,10 @@ namespace Flowframes.Forms
             // 
             this.vidExportTab.AutoScroll = true;
             this.vidExportTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.vidExportTab.Controls.Add(this.playSoundCustomBtn);
+            this.vidExportTab.Controls.Add(this.playSoundCustom);
+            this.vidExportTab.Controls.Add(this.systemSoundActivated);
+            this.vidExportTab.Controls.Add(this.label14);
             this.vidExportTab.Controls.Add(this.label73);
             this.vidExportTab.Controls.Add(this.fixOutputDuration);
             this.vidExportTab.Controls.Add(this.label72);
@@ -1496,6 +1654,59 @@ namespace Flowframes.Forms
             this.vidExportTab.Name = "vidExportTab";
             this.vidExportTab.Size = new System.Drawing.Size(762, 512);
             this.vidExportTab.Text = "Export Options";
+            // 
+            // playSoundCustomBtn
+            // 
+            this.playSoundCustomBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.playSoundCustomBtn.Location = new System.Drawing.Point(647, 155);
+            this.playSoundCustomBtn.Name = "playSoundCustomBtn";
+            this.playSoundCustomBtn.Size = new System.Drawing.Size(75, 23);
+            this.playSoundCustomBtn.TabIndex = 89;
+            this.playSoundCustomBtn.Text = "Browse";
+            this.playSoundCustomBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.playSoundCustomBtn.UseVisualStyleBackColor = false;
+            this.playSoundCustomBtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.playSoundCustomBtn_MouseClick);
+            // 
+            // playSoundCustom
+            // 
+            this.playSoundCustom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.playSoundCustom.ForeColor = System.Drawing.Color.White;
+            this.playSoundCustom.Location = new System.Drawing.Point(386, 157);
+            this.playSoundCustom.Name = "playSoundCustom";
+            this.playSoundCustom.Size = new System.Drawing.Size(255, 20);
+            this.playSoundCustom.TabIndex = 88;
+            this.playSoundCustom.TextChanged += new System.EventHandler(this.playSoundCustom_TextChanged);
+            // 
+            // systemSoundActivated
+            // 
+            this.systemSoundActivated.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.systemSoundActivated.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.systemSoundActivated.ForeColor = System.Drawing.Color.White;
+            this.systemSoundActivated.FormattingEnabled = true;
+            this.systemSoundActivated.Items.AddRange(new object[] {
+            "None",
+            "Alarm",
+            "Asterisk",
+            "Beep",
+            "Exclamation",
+            "Hand",
+            "Question",
+            "Custom"});
+            this.systemSoundActivated.Location = new System.Drawing.Point(280, 157);
+            this.systemSoundActivated.Name = "systemSoundActivated";
+            this.systemSoundActivated.Size = new System.Drawing.Size(100, 21);
+            this.systemSoundActivated.TabIndex = 87;
+            this.systemSoundActivated.SelectedValueChanged += new System.EventHandler(this.systemSoundActivated_SelectedValueChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(10, 160);
+            this.label14.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(129, 13);
+            this.label14.TabIndex = 85;
+            this.label14.Text = "Play Sound when finished";
             // 
             // label73
             // 
@@ -1850,21 +2061,19 @@ namespace Flowframes.Forms
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
-            // formatofInterp
+            // htButton1
             // 
-            this.formatofInterp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.formatofInterp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.formatofInterp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.formatofInterp.ForeColor = System.Drawing.Color.White;
-            this.formatofInterp.FormattingEnabled = true;
-            this.formatofInterp.Items.AddRange(new object[] {
-            "jpg",
-            "png"});
-            this.formatofInterp.Location = new System.Drawing.Point(281, 132);
-            this.formatofInterp.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
-            this.formatofInterp.Name = "formatofInterp";
-            this.formatofInterp.Size = new System.Drawing.Size(55, 21);
-            this.formatofInterp.TabIndex = 103;
+            this.htButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.htButton1.FlatAppearance.BorderSize = 0;
+            this.htButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.htButton1.ForeColor = System.Drawing.Color.White;
+            this.htButton1.Location = new System.Drawing.Point(280, 276);
+            this.htButton1.Name = "htButton1";
+            this.htButton1.Size = new System.Drawing.Size(206, 23);
+            this.htButton1.TabIndex = 95;
+            this.htButton1.Text = "Performance Settings";
+            this.htButton1.UseVisualStyleBackColor = false;
+            this.htButton1.Click += new System.EventHandler(this.htButton1_Click);
             // 
             // SettingsForm
             // 
@@ -1896,6 +2105,8 @@ namespace Flowframes.Forms
             this.magickDedupePanel.ResumeLayout(false);
             this.aiOptsPage.ResumeLayout(false);
             this.aiOptsPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.wthreads)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rifeCudaBufferSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).EndInit();
             this.vidExportTab.ResumeLayout(false);
             this.vidExportTab.PerformLayout();
@@ -2042,5 +2253,18 @@ namespace Flowframes.Forms
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox intelQSVDecode;
         private System.Windows.Forms.ComboBox formatofInterp;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.NumericUpDown rifeCudaBufferSize;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ComboBox systemSoundActivated;
+        private System.Windows.Forms.Button playSoundCustomBtn;
+        private System.Windows.Forms.TextBox playSoundCustom;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.NumericUpDown wthreads;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label label40;
+        private HTAlt.WinForms.HTButton htButton1;
     }
 }

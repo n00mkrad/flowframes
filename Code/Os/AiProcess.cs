@@ -199,19 +199,15 @@ namespace Flowframes.Os
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             Directory.CreateDirectory(outPath);
             string uhdStr = await InterpolateUtils.UseUhd() ? "--UHD" : "";
-
-            int threadcount = Environment.ProcessorCount;
-            string wthreads = $"--wthreads {2*threadcount}";
-
-            //string wthreads = $"--wthreads {2 * (int)interpFactor}";
-            string rbuffer = $"--rbuffer {Config.GetInt(Config.Key.rifeCudaBufferSize, 200)}";
+            string wthreads = $"--wthreads {Config.GetString(Config.Key.wthreads)}";
+            string rbuffer = $"--rbuffer {Config.GetString(Config.Key.rifeCudaBufferSize)}";
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
             string prec = Config.GetBool(Config.Key.rifeCudaFp16) ? "--fp16" : "";
             string imgformat = $"--imgformat {Config.GetString(Config.Key.formatofInterp)}";
             string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --multi {interpFactor} {uhdStr} {wthreads} {rbuffer} {prec} {imgformat}";
 
             Process rifePy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
-            AiStarted(rifePy, 3500);
+            AiStarted(rifePy, 1500);
             SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";

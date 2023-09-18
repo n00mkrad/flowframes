@@ -125,13 +125,25 @@ namespace Flowframes.Magick
             img1.Composite(img2, Gravity.Center, CompositeOperator.Over);
             //img1.Format = MagickFormat.Png24;
 
-            if (Config.GetString(Config.Key.formatofInterp) == "png")
+            var imgformat = Config.GetString(Config.Key.formatofInterp);
+
+            switch (imgformat)
             {
-                img1.Format = MagickFormat.Png24;
-            }
-            else
-            {
-                img1.Format = MagickFormat.Jpeg;
+                case "png":
+                    img1.Format = MagickFormat.Png24;
+                    break;
+                case "jpg":
+                    img1.Format = MagickFormat.Jpeg;
+                    break;
+                case "bmp":
+                    img1.Format = MagickFormat.Bmp;
+                    break;
+                case "webp":
+                    img1.Format = MagickFormat.WebP;
+                    break;
+                default:
+                    img1.Format = MagickFormat.Png24;
+                    break;
             }
 
             img1.Quality = 100;
@@ -162,12 +174,25 @@ namespace Flowframes.Magick
                     img1Inst.Composite(img2Inst, Gravity.Center, CompositeOperator.Over);
                     //img1Inst.Format = MagickFormat.Png24;
 
-                    if (Config.GetString(Config.Key.formatofInterp) == "png") 
+                    var imgformat = Config.GetString(Config.Key.formatofInterp);
+
+                    switch (imgformat)
                     {
-                        img1Inst.Format = MagickFormat.Png24;
-                    }
-                    else { 
-                    img1Inst.Format = MagickFormat.Jpeg;
+                        case "png":
+                            img1Inst.Format = MagickFormat.Png24;
+                            break;
+                        case "jpg":
+                            img1Inst.Format = MagickFormat.Jpeg;
+                            break;
+                        case "bmp":
+                            img1Inst.Format = MagickFormat.Bmp;
+                            break;
+                        case "webp":
+                            img1Inst.Format = MagickFormat.WebP;
+                            break;
+                        default:
+                            img1Inst.Format = MagickFormat.Png24;
+                            break;
                     }
 
                     img1Inst.Quality = 100;

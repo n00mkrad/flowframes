@@ -3,13 +3,18 @@ using Flowframes.IO;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.Ui;
+using Microsoft.VisualBasic;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
+using System.Management;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 #pragma warning disable IDE1006
 
@@ -34,6 +39,7 @@ namespace Flowframes.Forms
 
             InitServers();
             LoadSettings();
+            changeTextofCores();
             initialized = true;
             Task.Run(() => CheckModelCacheSize());
         }
@@ -76,6 +82,7 @@ namespace Flowframes.Forms
             SaveSettings();
             Program.mainForm.UpdateStepByStepControls();
             Program.mainForm.LoadQuickSettings();
+            
         }
 
         void SaveSettings ()
@@ -93,13 +100,13 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(exportNamePattern);
             ConfigParser.SaveGuiElement(exportNamePatternLoop);
             ConfigParser.SaveGuiElement(disablePreview);
+           
             // Interpolation
             ConfigParser.SaveGuiElement(keepAudio);
             ConfigParser.SaveGuiElement(keepSubs);
             ConfigParser.SaveGuiElement(keepMeta);
             ConfigParser.SaveGuiElement(enableAlpha);
             ConfigParser.SaveGuiElement(jpegFrames);
-            //ConfigParser.SaveGuiElement(formatofInterp);
             ConfigParser.SaveGuiElement(formatofInterp);
             ConfigParser.SaveGuiElement(intelQSVDecode);
             ConfigParser.SaveComboxIndex(dedupMode);
@@ -118,13 +125,16 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(ncnnGpus);
             ConfigParser.SaveGuiElement(ncnnThreads);
             ConfigParser.SaveGuiElement(uhdThresh);
+            ConfigParser.SaveGuiElement(rifeCudaBufferSize);
             ConfigParser.SaveGuiElement(rifeCudaFp16);
+            ConfigParser.SaveGuiElement(wthreads);
             ConfigParser.SaveGuiElement(dainNcnnTilesize, ConfigParser.StringMode.Int);
             // Export
             ConfigParser.SaveGuiElement(minOutVidLength, ConfigParser.StringMode.Int);
             ConfigParser.SaveGuiElement(maxFps);
             ConfigParser.SaveComboxIndex(loopMode);
             ConfigParser.SaveGuiElement(fixOutputDuration);
+            ConfigParser.SaveGuiElement(systemSoundActivated); ConfigParser.SaveGuiElement(playSoundCustom);
             // Debugging
             ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveComboxIndex(serverCombox);
@@ -168,12 +178,16 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ncnnThreads);
             ConfigParser.LoadGuiElement(uhdThresh);
             ConfigParser.LoadGuiElement(rifeCudaFp16);
+            ConfigParser.LoadGuiElement(wthreads);
+            ConfigParser.LoadGuiElement(rifeCudaBufferSize);
             ConfigParser.LoadGuiElement(dainNcnnTilesize);
             // Export
             ConfigParser.LoadGuiElement(minOutVidLength);
             ConfigParser.LoadGuiElement(maxFps); 
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
+            ConfigParser.LoadGuiElement(systemSoundActivated); ConfigParser.LoadGuiElement(playSoundCustom);
+
             // Debugging
             ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadComboxIndex(serverCombox);
@@ -186,6 +200,8 @@ namespace Flowframes.Forms
             tempDirBrowseBtn.Visible = tempFolderLoc.SelectedIndex == 5;
             tempDirCustom.Visible = tempFolderLoc.SelectedIndex == 5;
         }
+
+
 
         private void outFolderLoc_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -300,6 +316,95 @@ namespace Flowframes.Forms
         private void formatofInterp_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void playSoundCustom_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void playSoundCustomBtn_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                InitialDirectory = playSoundCustom.Text.Trim(),
+                Title = "Browse Text Files",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "wav",
+                Filter = "WAVE (Uncompressed Audio)|*.wav",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                playSoundCustom.Text = openFileDialog1.FileName;
+            }
+
+            ConfigParser.SaveGuiElement(playSoundCustom);
+        }
+
+        private void systemSoundActivated_SelectedValueChanged(object sender, EventArgs e)
+        {
+            playSoundCustom.Visible = systemSoundActivated.SelectedIndex == 7;
+            playSoundCustomBtn.Visible = systemSoundActivated.SelectedIndex == 7;
+        }
+
+        private void changeTextofCores() {
+            int coreCount = 0;
+            foreach (var item in new ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            {
+                coreCount += int.Parse(item["NumberOfCores"].ToString());
+            }
+
+            int threadcustom = Environment.ProcessorCount;
+            string customtext = "System Cores/Threads:"+ coreCount + "/"+ threadcustom;
+            label38.Text = customtext; 
+        }
+
+        private void label38_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void changePreset ()
+        {
+           
+                    DialogResult dialog2 = UiUtils.ShowMessageBox($"Are you sure you want to change to PERFORMANCE?", "Are you sure?", MessageBoxButtons.YesNo);
+                    if (dialog2 == DialogResult.No)
+                        return;
+                    Config.Reset(3, this);
+
+                    Config.Set(Config.Key.autoEncMode, "0");
+                    Config.Set(Config.Key.tempFolderLoc, "0");
+                    Config.Set(Config.Key.intelQSVDecode, "True");
+                    Config.Set(Config.Key.jpegFrames, "True");
+                    Config.Set(Config.Key.formatofInterp, "jpg");
+                    Config.Set(Config.Key.rifeCudaFp16, "True");
+                    Config.Set(Config.Key.rifeCudaBufferSize, "400");
+                    int threadcount = Environment.ProcessorCount;
+                    Config.Set(Config.Key.wthreads, (threadcount*3).ToString());
+                    Config.Set(Config.Key.lastOutputSettings, "MP4,h264 NVENC,Very High,YUV 4:2:0 8-bit");
+                    Config.Set(Config.Key.lastUsedAiName, "RIFE_CUDA");
+
+                    SettingsForm_Load(null, null);
+                    
+
+            
+        }
+
+
+
+        private void htButton1_Click(object sender, EventArgs e)
+        {
+            changePreset();
         }
     }
 }

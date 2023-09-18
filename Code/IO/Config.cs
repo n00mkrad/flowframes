@@ -253,6 +253,8 @@ namespace Flowframes.IO
             if (key == Key.tempDirCustom)         return WriteDefault(key, "D:/");
             if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[MODEL]-[FPS]fps");
             if (key == Key.exportNamePatternLoop) return WriteDefault(key, "-Loop[LOOPS]");
+            
+
             // Interpolation
             if (key == Key.dedupThresh)           return WriteDefault(key, "2");
             if (key == Key.keepAudio)             return WriteDefault(key, "True");
@@ -271,13 +273,21 @@ namespace Flowframes.IO
             if (key == Key.minOutVidLength)     return WriteDefault(key, "5");
             if (key == Key.gifDitherType)       return WriteDefault(key, "bayer");
             if (key == Key.minVidLength)        return WriteDefault(key, "5");
+            if (key == Key.systemSoundActivated) return WriteDefault(key, "None");
+            if (key == Key.playSoundCustom) return WriteDefault(key, "D:/");
 
             // AI
             if (key == Key.uhdThresh)         return WriteDefault(key, "1600");
             if (key == Key.torchGpus)         return WriteDefault(key, "0");
             if (key == Key.ncnnGpus)          return WriteDefault(key, "0");
-            if (key == Key.ncnnThreads)       return WriteDefault(key, "4");
+            if (key == Key.ncnnThreads)       return WriteDefault(key, "8");
+            if (key == Key.rifeCudaBufferSize) return WriteDefault(key, "200");
+
+            int threadcount = Environment.ProcessorCount;
+            if (key == Key.wthreads)           return WriteDefault(key, (threadcount*2).ToString());
+            
             if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
+
             // Debug / Other / Experimental
             if (key == Key.ffEncPreset)   return WriteDefault(key, "fast");
             if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "True");
@@ -357,6 +367,7 @@ namespace Flowframes.IO
             ncnnGpus,
             ncnnThreads,
             opusBitrate,
+            playSoundCustom,
             processingMode,
             rifeCudaBufferSize,
             rifeCudaFp16,
@@ -367,12 +378,14 @@ namespace Flowframes.IO
             scnDetect,
             scnDetectValue,
             silentDevmodeCheck,
+            systemSoundActivated,
             tempDirCustom,
             tempFolderLoc,
             torchGpus,
             uhdThresh,
             vsRtShowOsd,
             vsUseLsmash,
+            wthreads,
             lastOutputSettings,
         }
     }
