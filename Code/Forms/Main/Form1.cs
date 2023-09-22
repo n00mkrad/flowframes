@@ -17,6 +17,15 @@ using Flowframes.MiscUtils;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static WinFormAnimation.AnimationFunctions;
+using System.Management;
+using System.Timers;
+using System.Media;
+using System.Windows.Controls.Primitives;
+using Flowframes.Properties;
+using Win32Interop.Enums;
+using Flowframes.Forms.Main;
+using Flowframes.Media;
 
 #pragma warning disable IDE1006
 
@@ -44,8 +53,165 @@ namespace Flowframes.Forms.Main
             AutoScaleMode = AutoScaleMode.None;
         }
 
+        public string ShowTotalPerformance(int sleeptime)
+        {
+            const int byteToHigherOrder = 1024 * 1024;
+            const int byteToHighestOrder = 1024 * 1024 * 1024;
+            int timeToSleep = sleeptime;
+
+            string getCurrentCpuUsage(){
+                    try
+                    {
+                        PerformanceCounter cpuCounter;
+                        cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                        cpuCounter.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep);
+                        return "CPU:" + cpuCounter.NextValue().RoundToInt() + "%";
+                    }
+                    catch (Exception ex) { return "CPU: ERROR"; }
+                    }
+
+                 string getCurrentRamUsage(){
+                    try{
+                    PerformanceCounter ramCounter;
+                    ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                    System.Threading.Thread.Sleep(timeToSleep);
+                    float totalram = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+                    float totalrambeautiful = (totalram/(byteToHigherOrder));
+                    float availableram = (ramCounter.NextValue());
+                    float usedram = (totalrambeautiful - availableram)/1024;
+                    string usedramtext = String.Format("{0:0.00}", usedram);
+                    float usedrampercent = (usedram / totalrambeautiful)* 1024 * 100;
+                    string beautifulpercent = String.Format("{0:0.00}", usedrampercent);
+                    return "RAM:" + usedramtext + " GB (" + beautifulpercent + "% used RAM)";
+                    }
+                    catch (Exception ex){return "RAM: ERROR";}
+                    }   
+
+                string GetCudaUsage()
+                {
+                    try
+                    {
+                        var category = new PerformanceCounterCategory("GPU Engine");
+                        var counterNames = category.GetInstanceNames();
+                        var gpuCounters = new List<PerformanceCounter>();
+                        var result = 0f;
+
+                        foreach (string counterName in counterNames)
+                        {
+                            if (counterName.EndsWith("engtype_Cuda"))
+                            {
+                                foreach (PerformanceCounter counter in category.GetCounters(counterName))
+                                {
+                                    if (counter.CounterName == "Utilization Percentage")
+                                    {
+                                        gpuCounters.Add(counter);
+                                    }
+                                }
+                            }
+                        }
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            _ = x.NextValue();
+                        });
+
+                        System.Threading.Thread.Sleep(timeToSleep);
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            result += x.NextValue();
+                        });
+                        string beautifulpercent = String.Format("{0:0.00}", result);
+                        return "CUDA: " + beautifulpercent + "%";
+                    }
+                    catch
+                    {
+                        return "CUDA: ERROR";
+                    }
+                }
+
+                string GetCudaRamUsage()
+                {
+                    try
+                    {
+                        var category = new PerformanceCounterCategory("GPU Process Memory");
+                        var counterNames = category.GetInstanceNames();
+                        var gpuCounters = new List<PerformanceCounter>();
+                        var result = 0f;
+                        foreach (string counterName in counterNames) {
+                            if (counterName.EndsWith("phys_0"))
+                            {
+                                foreach (PerformanceCounter counter in category.GetCounters(counterName))
+                                {
+                                    if (counter.CounterName == "Dedicated Usage")
+                                    {
+                                        gpuCounters.Add(counter);
+                                    }
+                                }
+                            }
+                        }
+
+                        gpuCounters.ForEach(x =>
+                        {
+                            _ = x.NextValue();
+                        });
+
+                        System.Threading.Thread.Sleep(timeToSleep);
+                        gpuCounters.ForEach(x =>
+                        {
+                            result += x.NextValue();
+                        });
+                        string beautifulresult = String.Format("{0:0.00}", (result/(byteToHighestOrder)));
+                        return "GPU RAM: " + beautifulresult + " GB VRAM";
+                    }
+                    catch
+                    {
+                        return "GPU RAM: ERROR";
+                    }
+                }
+
+                string DiskUsageSpeed()
+                {
+                    try
+                    {
+                        PerformanceCounter avgReadDisk;
+                        PerformanceCounter avgReadWrite;
+                        avgReadDisk = new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
+                        avgReadWrite = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
+                        avgReadDisk.NextValue();
+                        avgReadWrite.NextValue();
+                        System.Threading.Thread.Sleep(timeToSleep/5);
+                        float speed1 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
+                        int speed5 = speed1.RoundToInt();
+
+                        string diskreadwrite = "Disk Speed:" + speed5 / byteToHigherOrder + " MB/S";
+                        return diskreadwrite.ToString();
+                    }
+                    catch (Exception ex){ return "Disk Speed: ERROR";}
+                }
+
+                string performancecounter ="  Status: " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed();
+                //Console.WriteLine(performancecounter);
+                return textBox1.Text = performancecounter ;
+        }
+
+        private  async Task BackgroundTaskExecuter()
+        {
+            await Task.Run(() =>
+            {
+                while (true) {
+                    System.Threading.Thread.Sleep(2000);
+                    ShowTotalPerformance(125);
+                   }
+            });
+        }
+
         private async void Form1_Shown(object sender, EventArgs e)
         {
+
+            BackgroundTaskExecuter();
+
             Refresh();
             await Task.Delay(1);
 
@@ -282,9 +448,83 @@ namespace Flowframes.Forms.Main
             inputInfo.Text = str;
         }
 
+        public void Reset()
+        {
+            ResetAi((Config.GetString(Config.Key.lastUsedAiName)));
+            ResetTextBoxes();
+            LoadOutputSettings();
+        }
+
+        public void ResetTextBoxes()
+        {
+            inputTbox.Text = "";
+            outputTbox.Text = "";
+            fpsInTbox.Text = "0";
+            interpFactorCombox.SelectedIndex = 0;
+            fpsOutTbox.Text = "0 FPS";
+            outSpeedCombox.SelectedIndex = 0;
+        }
+
+        public void ResetAi(string lastusedAI)
+        {
+        string lastUsedAiName = lastusedAI;
+        aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
+        if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
+        Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
+        }
+
+        public void playSystemSound()
+        {
+            string selectedVariable = (Config.GetString(Config.Key.systemSoundActivated));
+
+            switch (selectedVariable)
+            {
+                case "None":
+                    Console.WriteLine("None system sound will be played.");
+                    break;
+
+                case "Asterisk":
+                    SystemSounds.Asterisk.Play();
+                    break;
+
+                case "Beep":
+                    SystemSounds.Beep.Play();
+                    break;
+
+                case "Exclamation":
+                    SystemSounds.Exclamation.Play();
+                    break;
+
+                case "Hand":
+                    SystemSounds.Hand.Play();
+                    break;
+
+                case "Question":
+                    SystemSounds.Question.Play();
+                    break;
+
+                case "Custom":
+                    try { 
+                    System.Media.SoundPlayer player = new System.Media.SoundPlayer(Config.GetString(Config.Key.playSoundCustom));
+                    player.Play();
+                    }
+
+                    catch {
+                        Console.WriteLine("Not a valid system sound.");
+                    }
+                    break;
+
+                default:
+                    Console.WriteLine("None system sound will be played.");
+                    break;
+            }
+        }
+
         public void InterpolationDone()
         {
             SetStatus("Done interpolating!");
+            playSystemSound();
+
 
             if (!BatchProcessing.busy)
                 CompletionAction();
@@ -327,6 +567,8 @@ namespace Flowframes.Forms.Main
                 aiCombox.Items.Add(GetAiComboboxName(ai));
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
+
+            lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
             aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
             if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
             Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
@@ -414,7 +656,7 @@ namespace Flowframes.Forms.Main
             Config.Set(Config.Key.lastOutputSettings, string.Join(",", strings));
         }
 
-        private void LoadOutputSettings()
+        public void LoadOutputSettings()
         {
             string[] strings = Config.Get(Config.Key.lastOutputSettings).Split(',');
 
@@ -649,7 +891,6 @@ namespace Flowframes.Forms.Main
                 InterpolationProgress.bigPreviewForm.SetImage(previewPicturebox.Image);
             }
         }
-
         private async void updateBtn_Click(object sender, EventArgs e)
         {
             new UpdaterForm().ShowDialog();
@@ -698,7 +939,6 @@ namespace Flowframes.Forms.Main
                 trimEndBox.Text = FormatUtils.MsToTimestamp(currInDuration);
             }
         }
-
         private void trimResetBtn_Click(object sender, EventArgs e)
         {
             trimCombox_SelectedIndexChanged(null, null);
@@ -772,7 +1012,17 @@ namespace Flowframes.Forms.Main
         {
             float inFps = fpsInTbox.GetFloat();
             float outFps = fpsOutTbox.GetFloat();
-            var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);
+            decimal targetFactorRounded = 0;
+            if (targetFactorRounded == 0)
+            {
+                targetFactorRounded = 0;
+            }
+
+            else
+            {
+                 targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);
+            }
+
             interpFactorCombox.Text = $"{targetFactorRounded}";
             ValidateFactor();
             fpsOutTbox.Text = $"{inFps * interpFactorCombox.GetFloat()} FPS";
@@ -822,6 +1072,16 @@ namespace Flowframes.Forms.Main
                 textboxOutputQualityCust.Focus();
 
             Refresh();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+          
+        }
+
+        public void htButton2_Click(object sender, EventArgs e)
+        {
+            Reset();
         }
     }
 }

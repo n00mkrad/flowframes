@@ -102,6 +102,7 @@ namespace Flowframes
             _inputResolution = new Size(0, 0);
             framesExt = "";
             interpExt = "";
+            
 
             Dictionary<string, string> entries = new Dictionary<string, string>();
 
@@ -214,12 +215,17 @@ namespace Flowframes
                 if (type == FrameType.Both || type == FrameType.Import)
                     framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".png");
 
-                if (type == FrameType.Both || type == FrameType.Interp)
-                    interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
+                if (type == FrameType.Both || type == FrameType.Interp) { 
+                    if (Config.GetString(Config.Key.formatofInterp) == "png") {interpExt = ".png";};
+                    if (Config.GetString(Config.Key.formatofInterp) == "jpg") {interpExt = ".jpg";};
+                    if (Config.GetString(Config.Key.formatofInterp) == "bmp") {interpExt = ".bmp";};
+                    if (Config.GetString(Config.Key.formatofInterp) == "webp") {interpExt = ".webp";};
+                }
             }
 
             Logger.Log($"RefreshExtensions - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
         }
+
 
         public string Serialize ()
         {

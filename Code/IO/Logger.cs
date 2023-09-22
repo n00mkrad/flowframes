@@ -3,10 +3,16 @@ using Flowframes.Ui;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management.Instrumentation;
+using System.Reflection;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using DT = System.DateTime;
 
 namespace Flowframes
@@ -19,6 +25,7 @@ namespace Flowframes
         public static long id;
 
         private static Dictionary<string, string> sessionLogs = new Dictionary<string, string>();
+
         private static string _lastUi = "";
         public static string LastUiLine { get { return _lastUi; } }
         private static string _lastLog = "";
@@ -40,7 +47,10 @@ namespace Flowframes
             }
         }
 
+
         private static ConcurrentQueue<LogEntry> logQueue = new ConcurrentQueue<LogEntry>();
+
+
 
         public static void Log(string msg, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {
@@ -101,6 +111,49 @@ namespace Flowframes
             LogToFile(msg, false, entry.filename);
         }
 
+
+        /*public static void LogToFile(string logStr, bool noLineBreak, string filename){
+         if (string.IsNullOrWhiteSpace(filename))
+          filename = defaultLogName;
+
+          if (Path.GetExtension(filename) != ".txt")
+          filename = Path.ChangeExtension(filename, "txt");
+
+           file = Path.Combine(Paths.GetLogPath(), filename);
+           logStr = logStr.Replace(Environment.NewLine, " ").TrimWhitespaces();
+           string time = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss");
+
+           try
+            {
+            string appendStr = noLineBreak ? $" {logStr}" : $"{Environment.NewLine}[{id.ToString().PadLeft(8, '0')}] [{time}]: {logStr}";
+            sessionLogs[filename] = (sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : "") + appendStr;
+            File.AppendAllText(file, appendStr);
+            id++;
+            }
+
+            catch{
+            // this if fine, i forgot why
+             }
+            }
+
+
+            public static string GetSessionLog(string filename)
+            {
+                if (!filename.Contains(".txt"))
+                    filename = Path.ChangeExtension(filename, "txt");
+
+                if (sessionLogs.ContainsKey(filename))
+                    return sessionLogs[filename].ToString();
+                else
+                    return "";
+            }*/
+
+
+        /////////////////////
+        ///This will write into the log file just every 5 seconds once.
+        private static StringBuilder buffer = new StringBuilder();
+        private static DateTime lastWriteTime = DateTime.MinValue;
+
         public static void LogToFile(string logStr, bool noLineBreak, string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
@@ -116,15 +169,23 @@ namespace Flowframes
             try
             {
                 string appendStr = noLineBreak ? $" {logStr}" : $"{Environment.NewLine}[{id.ToString().PadLeft(8, '0')}] [{time}]: {logStr}";
-                sessionLogs[filename] = (sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : "") + appendStr;
-                File.AppendAllText(file, appendStr);
+                buffer.Append(appendStr);
                 id++;
+
+                // If at least 10 seconds have elapsed since last write, write to file and clear buffer
+                if ((DateTime.Now - lastWriteTime).TotalSeconds >= 5)
+                {
+                    File.AppendAllText(file, buffer.ToString());
+                    buffer.Clear();
+                    lastWriteTime = DateTime.Now;
+                }
             }
             catch
             {
                 // this if fine, i forgot why
             }
         }
+        /////////////////////
 
         public static string GetSessionLog(string filename)
         {
@@ -132,17 +193,17 @@ namespace Flowframes
                 filename = Path.ChangeExtension(filename, "txt");
 
             if (sessionLogs.ContainsKey(filename))
-                return sessionLogs[filename];
+                return sessionLogs[filename].ToString();
             else
                 return "";
         }
 
         public static List<string> GetSessionLogLastLines(string filename, int linesCount = 5)
-        {
-            string log = GetSessionLog(filename);
-            string[] lines = log.SplitIntoLines();
-            return lines.Reverse().Take(linesCount).Reverse().ToList();
-        }
+                {
+                    string log = GetSessionLog(filename);
+                    string[] lines = log.SplitIntoLines();
+                    return lines.Reverse().Take(linesCount).Reverse().ToList();
+                }
 
         public static void LogIfLastLineDoesNotContainMsg(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
         {

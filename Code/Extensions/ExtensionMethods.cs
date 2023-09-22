@@ -129,13 +129,24 @@ namespace Flowframes
             return i;
         }
 
-        public static string[] SplitIntoLines(this string str)
+/*        public static string[] SplitIntoLines(this string str)
         {
             if (string.IsNullOrWhiteSpace(str))
                 return new string[0];
 
             return Regex.Split(str, "\r\n|\r|\n");
+        }*/
+
+        public static string[] SplitIntoLines(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return new string[0];
+
+            return str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
         }
+
+
+
 
         public static string Trunc(this string inStr, int maxChars, bool addEllipsis = true)
         {

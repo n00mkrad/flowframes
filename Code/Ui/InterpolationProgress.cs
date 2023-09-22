@@ -90,6 +90,9 @@ namespace Flowframes.Ui
             }
         }
 
+
+
+
         public static async void GetProgressFromFfmpegLog(string logFile, int target)
         {
             targetFrames = target;

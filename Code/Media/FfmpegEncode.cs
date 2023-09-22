@@ -95,7 +95,7 @@ namespace Flowframes.Media
             }
 
             filters.Add(GetPadFilter());
-            filters = filters.Where(f => f.IsNotEmpty()).ToList();
+            filters = filters.Where(f => f.NotEmpty()).ToList();
 
             return filters.Count > 0 ?
                 $"{string.Join(" ", beforeArgs)} -filter_complex [0:v]{string.Join("[vf],[vf]", filters.Where(f => !string.IsNullOrWhiteSpace(f)))}[vf] -map [vf] {string.Join(" ", extraArgs)}" :

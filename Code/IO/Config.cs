@@ -1,10 +1,12 @@
 ﻿using Flowframes.Forms;
+using Flowframes.Forms.Main;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Flowframes.IO
 {
@@ -31,6 +33,8 @@ namespace Flowframes.IO
                 await Task.Delay(100);
                 cachedValues.Clear();
                 await Task.Delay(100);
+                //Since this setting is not in the gui, this will never get initializied, if resetted. So needed to add here.
+                Set(Key.lastOutputSettings, "MP4,h264,Very High,YUV 4:2:0 8-bit");
 
                 if (settingsForm != null)
                     settingsForm.Enabled = true;
@@ -164,6 +168,11 @@ namespace Flowframes.IO
             return Get(key, Type.Int).GetInt();
         }
 
+        public static String GetString(Key key)
+        {
+            return Get(key, Type.String).ToString();
+        }
+
         public static int GetInt(Key key, int defaultVal)
         {
             WriteIfDoesntExist(key.ToString(), defaultVal.ToString());
@@ -244,9 +253,12 @@ namespace Flowframes.IO
             if (key == Key.disablePreview)        return WriteDefault(key, "True");
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
             if (key == Key.clearLogOnInput)       return WriteDefault(key, "True");
+            if (key == Key.tempFolderLoc)         return WriteDefault(key, "4");
             if (key == Key.tempDirCustom)         return WriteDefault(key, "D:/");
             if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[MODEL]-[FPS]fps");
             if (key == Key.exportNamePatternLoop) return WriteDefault(key, "-Loop[LOOPS]");
+            
+
             // Interpolation
             if (key == Key.dedupThresh)           return WriteDefault(key, "2");
             if (key == Key.keepAudio)             return WriteDefault(key, "True");
@@ -256,17 +268,32 @@ namespace Flowframes.IO
             if (key == Key.scnDetectValue)        return WriteDefault(key, "0.2");
             if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "1");
             if (key == Key.autoEncMode)           return WriteDefault(key, "2");
+            if (key == Key.intelQSVDecode)        return WriteDefault(key, "False");
             if (key == Key.jpegFrames)            return WriteDefault(key, "True");
+            if (key == Key.formatofInterp)        return WriteDefault(key, "png");
+            if (key == Key.lastUsedAiName)        return WriteDefault(key, "RIFE_CUDA");
+            if (key == Key.lastOutputSettings)    return WriteDefault(key, "MP4,h264,Very High,YUV 4:2:0 8-bit");
+            if (key == Key.alwaysWaitForAutoEnc) return WriteDefault(key, "False");
+
             // Video Export
-            if (key == Key.minOutVidLength)   return WriteDefault(key, "5");
-            if (key == Key.gifDitherType)     return WriteDefault(key, "bayer");
-            if (key == Key.minVidLength)      return WriteDefault(key, "5");
+            if (key == Key.minOutVidLength)     return WriteDefault(key, "5");
+            if (key == Key.gifDitherType)       return WriteDefault(key, "bayer");
+            if (key == Key.minVidLength)        return WriteDefault(key, "5");
+            if (key == Key.systemSoundActivated) return WriteDefault(key, "None");
+            if (key == Key.playSoundCustom) return WriteDefault(key, "D:/");
+
             // AI
             if (key == Key.uhdThresh)         return WriteDefault(key, "1600");
             if (key == Key.torchGpus)         return WriteDefault(key, "0");
             if (key == Key.ncnnGpus)          return WriteDefault(key, "0");
-            if (key == Key.ncnnThreads)       return WriteDefault(key, "4");
+            if (key == Key.ncnnThreads)       return WriteDefault(key, "8");
+            if (key == Key.rifeCudaBufferSize) return WriteDefault(key, "200");
+
+            int threadcount = Environment.ProcessorCount;
+            if (key == Key.wthreads)           return WriteDefault(key, (threadcount*2).ToString());
+            
             if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
+
             // Debug / Other / Experimental
             if (key == Key.ffEncPreset)   return WriteDefault(key, "fast");
             if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "True");
@@ -325,7 +352,8 @@ namespace Flowframes.IO
             gifDitherType,
             imgSeqSampleCount,
             jpegFrames,
-            jpegInterp,
+            formatofInterp,
+            intelQSVDecode,
             keepAspectRatio,
             keepAudio,
             keepColorSpace,
@@ -345,6 +373,7 @@ namespace Flowframes.IO
             ncnnGpus,
             ncnnThreads,
             opusBitrate,
+            playSoundCustom,
             processingMode,
             rifeCudaBufferSize,
             rifeCudaFp16,
@@ -355,12 +384,14 @@ namespace Flowframes.IO
             scnDetect,
             scnDetectValue,
             silentDevmodeCheck,
+            systemSoundActivated,
             tempDirCustom,
             tempFolderLoc,
             torchGpus,
             uhdThresh,
             vsRtShowOsd,
             vsUseLsmash,
+            wthreads,
             lastOutputSettings,
         }
     }

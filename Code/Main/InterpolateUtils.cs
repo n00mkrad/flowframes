@@ -81,6 +81,9 @@ namespace Flowframes.Main
                 basePath = Paths.GetExeDir();
 
             if (Config.GetInt(Config.Key.tempFolderLoc) == 4)
+                basePath = Path.GetTempPath() + "FlowFrames";
+
+            if (Config.GetInt(Config.Key.tempFolderLoc) == 5)
             {
                 string custPath = Config.Get(Config.Key.tempDirCustom);
 
