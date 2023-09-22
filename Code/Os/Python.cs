@@ -19,7 +19,15 @@ namespace Flowframes.Os
 
         public static async Task CheckCompression ()
         {
-            if(HasEmbeddedPyFolder() && (Config.Get(Config.Key.compressedPyVersion) != Updater.GetInstalledVer().ToString()))
+            // Check if file exist, if not, then go as usual, if yes, the no compression is done.
+            string filePath = (Paths.GetDataPath() + "\\FilesHaveBeenCompress.ini");  
+            int pythonHasBeenCompressed = 0;
+            if (System.IO.File.Exists(filePath))
+            {
+                 pythonHasBeenCompressed = 1;
+            }
+
+            if (HasEmbeddedPyFolder() && (Config.Get(Config.Key.compressedPyVersion) != Updater.GetInstalledVer().ToString()) && pythonHasBeenCompressed == 0)
             {
                 Program.mainForm.SetWorking(true, false);
                 Stopwatch sw = new Stopwatch();
@@ -50,6 +58,8 @@ namespace Flowframes.Os
                     }
                     Config.Set("compressedPyVersion", Updater.GetInstalledVer().ToString());
                     Logger.Log("Done compressing python runtime.");
+                    // Create() creates a file at pathName if not existing
+                    FileStream fs = File.Create(filePath);
                     Logger.WriteToFile(compactOutput, true, "compact");
                 }
                 catch { }

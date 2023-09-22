@@ -89,6 +89,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.interpOptsTab = new System.Windows.Forms.TabPage();
+            this.htButton2 = new HTAlt.WinForms.HTButton();
             this.labelOutput = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.comboxOutputFormat = new System.Windows.Forms.ComboBox();
@@ -417,9 +418,9 @@
             this.runBtn.Enabled = false;
             this.runBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.runBtn.ForeColor = System.Drawing.Color.White;
-            this.runBtn.Location = new System.Drawing.Point(8, 357);
+            this.runBtn.Location = new System.Drawing.Point(4, 357);
             this.runBtn.Name = "runBtn";
-            this.runBtn.Size = new System.Drawing.Size(208, 77);
+            this.runBtn.Size = new System.Drawing.Size(250, 77);
             this.runBtn.TabIndex = 2;
             this.runBtn.Text = "Interpolate!";
             this.runBtn.UseVisualStyleBackColor = false;
@@ -463,13 +464,13 @@
             this.logBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.logBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.logBox.ForeColor = System.Drawing.Color.White;
-            this.logBox.Location = new System.Drawing.Point(222, 321);
+            this.logBox.Location = new System.Drawing.Point(260, 321);
             this.logBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.logBox.Multiline = true;
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logBox.Size = new System.Drawing.Size(709, 86);
+            this.logBox.Size = new System.Drawing.Size(671, 86);
             this.logBox.TabIndex = 5;
             this.logBox.TabStop = false;
             this.logBox.Text = "Welcome to Flowframes!";
@@ -495,9 +496,9 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.statusLabel);
             this.panel1.Controls.Add(this.label12);
-            this.panel1.Location = new System.Drawing.Point(8, 321);
+            this.panel1.Location = new System.Drawing.Point(4, 321);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(208, 30);
+            this.panel1.Size = new System.Drawing.Size(250, 30);
             this.panel1.TabIndex = 6;
             // 
             // statusLabel
@@ -753,9 +754,9 @@
             // 
             this.longProgBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.longProgBar.BorderThickness = 0;
-            this.longProgBar.Location = new System.Drawing.Point(222, 413);
+            this.longProgBar.Location = new System.Drawing.Point(260, 413);
             this.longProgBar.Name = "longProgBar";
-            this.longProgBar.Size = new System.Drawing.Size(709, 20);
+            this.longProgBar.Size = new System.Drawing.Size(671, 20);
             this.longProgBar.TabIndex = 33;
             // 
             // mainTabControl
@@ -774,13 +775,13 @@
             this.mainTabControl.HoverTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(82)))), ((int)(((byte)(176)))), ((int)(((byte)(239)))));
             this.mainTabControl.HoverTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(63)))), ((int)(((byte)(70)))));
             this.mainTabControl.HoverUnselectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
-            this.mainTabControl.Location = new System.Drawing.Point(4, 62);
+            this.mainTabControl.Location = new System.Drawing.Point(4, 52);
             this.mainTabControl.Name = "mainTabControl";
             this.mainTabControl.Padding = new System.Drawing.Point(14, 4);
             this.mainTabControl.SelectedIndex = 0;
             this.mainTabControl.SelectedTabButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(151)))), ((int)(((byte)(234)))));
             this.mainTabControl.SelectedTabColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
-            this.mainTabControl.Size = new System.Drawing.Size(927, 257);
+            this.mainTabControl.Size = new System.Drawing.Size(927, 267);
             this.mainTabControl.TabIndex = 4;
             this.mainTabControl.TextColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.mainTabControl.UnderBorderTabLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(70)))));
@@ -802,7 +803,7 @@
             this.welcomeTab.Location = new System.Drawing.Point(4, 27);
             this.welcomeTab.Name = "welcomeTab";
             this.welcomeTab.Padding = new System.Windows.Forms.Padding(3);
-            this.welcomeTab.Size = new System.Drawing.Size(919, 226);
+            this.welcomeTab.Size = new System.Drawing.Size(919, 236);
             this.welcomeTab.TabIndex = 4;
             this.welcomeTab.Text = "Welcome";
             // 
@@ -825,10 +826,10 @@
             this.panel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.panel8.Controls.Add(this.patronsLabel);
             this.panel8.Controls.Add(this.label21);
-            this.panel8.Location = new System.Drawing.Point(593, 57);
+            this.panel8.Location = new System.Drawing.Point(593, 49);
             this.panel8.Margin = new System.Windows.Forms.Padding(5);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(326, 161);
+            this.panel8.Size = new System.Drawing.Size(326, 169);
             this.panel8.TabIndex = 4;
             // 
             // patronsLabel
@@ -859,10 +860,10 @@
             this.panel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.panel6.Controls.Add(this.newsLabel);
             this.panel6.Controls.Add(this.label15);
-            this.panel6.Location = new System.Drawing.Point(8, 57);
+            this.panel6.Location = new System.Drawing.Point(8, 49);
             this.panel6.Margin = new System.Windows.Forms.Padding(5);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(575, 161);
+            this.panel6.Size = new System.Drawing.Size(575, 169);
             this.panel6.TabIndex = 3;
             // 
             // newsLabel
@@ -903,6 +904,7 @@
             // 
             this.interpOptsTab.AllowDrop = true;
             this.interpOptsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.interpOptsTab.Controls.Add(this.htButton2);
             this.interpOptsTab.Controls.Add(this.labelOutput);
             this.interpOptsTab.Controls.Add(this.flowLayoutPanel1);
             this.interpOptsTab.Controls.Add(this.aiInfoBtn);
@@ -936,11 +938,25 @@
             this.interpOptsTab.Location = new System.Drawing.Point(4, 27);
             this.interpOptsTab.Name = "interpOptsTab";
             this.interpOptsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.interpOptsTab.Size = new System.Drawing.Size(919, 226);
+            this.interpOptsTab.Size = new System.Drawing.Size(919, 236);
             this.interpOptsTab.TabIndex = 0;
             this.interpOptsTab.Text = "Interpolation";
             this.interpOptsTab.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.interpOptsTab.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // htButton2
+            // 
+            this.htButton2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.htButton2.FlatAppearance.BorderSize = 0;
+            this.htButton2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.htButton2.ForeColor = System.Drawing.Color.White;
+            this.htButton2.Location = new System.Drawing.Point(690, 95);
+            this.htButton2.Name = "htButton2";
+            this.htButton2.Size = new System.Drawing.Size(205, 23);
+            this.htButton2.TabIndex = 81;
+            this.htButton2.Text = "Reset";
+            this.htButton2.UseVisualStyleBackColor = false;
+            this.htButton2.Click += new System.EventHandler(this.htButton2_Click);
             // 
             // labelOutput
             // 
@@ -1222,7 +1238,7 @@
             this.quickSettingsTab.Location = new System.Drawing.Point(4, 27);
             this.quickSettingsTab.Name = "quickSettingsTab";
             this.quickSettingsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.quickSettingsTab.Size = new System.Drawing.Size(919, 226);
+            this.quickSettingsTab.Size = new System.Drawing.Size(919, 236);
             this.quickSettingsTab.TabIndex = 1;
             this.quickSettingsTab.Text = "Quick Settings";
             this.quickSettingsTab.Enter += new System.EventHandler(this.LoadQuickSettings);
@@ -1578,7 +1594,7 @@
             this.previewTab.Location = new System.Drawing.Point(4, 27);
             this.previewTab.Margin = new System.Windows.Forms.Padding(0);
             this.previewTab.Name = "previewTab";
-            this.previewTab.Size = new System.Drawing.Size(919, 226);
+            this.previewTab.Size = new System.Drawing.Size(919, 236);
             this.previewTab.TabIndex = 3;
             this.previewTab.Text = "Preview";
             // 
@@ -1602,7 +1618,7 @@
             this.previewPicturebox.Location = new System.Drawing.Point(0, 0);
             this.previewPicturebox.Margin = new System.Windows.Forms.Padding(0);
             this.previewPicturebox.Name = "previewPicturebox";
-            this.previewPicturebox.Size = new System.Drawing.Size(919, 226);
+            this.previewPicturebox.Size = new System.Drawing.Size(919, 236);
             this.previewPicturebox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.previewPicturebox.TabIndex = 0;
             this.previewPicturebox.TabStop = false;
@@ -1615,7 +1631,7 @@
             this.abtTab.Location = new System.Drawing.Point(4, 27);
             this.abtTab.Name = "abtTab";
             this.abtTab.Padding = new System.Windows.Forms.Padding(3);
-            this.abtTab.Size = new System.Drawing.Size(919, 226);
+            this.abtTab.Size = new System.Drawing.Size(919, 236);
             this.abtTab.TabIndex = 2;
             this.abtTab.Text = "About";
             // 
@@ -1642,10 +1658,10 @@
             this.runStepBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.runStepBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.runStepBtn.ForeColor = System.Drawing.Color.White;
-            this.runStepBtn.Location = new System.Drawing.Point(8, 382);
+            this.runStepBtn.Location = new System.Drawing.Point(4, 382);
             this.runStepBtn.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.runStepBtn.Name = "runStepBtn";
-            this.runStepBtn.Size = new System.Drawing.Size(208, 52);
+            this.runStepBtn.Size = new System.Drawing.Size(250, 52);
             this.runStepBtn.TabIndex = 42;
             this.runStepBtn.Text = "Run This Step";
             this.runStepBtn.UseVisualStyleBackColor = false;
@@ -1664,27 +1680,27 @@
             "2) Run Interpolation",
             "3) Export",
             "4) Cleanup & Reset"});
-            this.stepSelector.Location = new System.Drawing.Point(8, 357);
+            this.stepSelector.Location = new System.Drawing.Point(4, 357);
             this.stepSelector.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.stepSelector.Name = "stepSelector";
-            this.stepSelector.Size = new System.Drawing.Size(208, 24);
+            this.stepSelector.Size = new System.Drawing.Size(250, 24);
             this.stepSelector.TabIndex = 73;
             // 
             // busyControlsPanel
             // 
             this.busyControlsPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.busyControlsPanel.Controls.Add(this.tableLayoutPanel1);
-            this.busyControlsPanel.Location = new System.Drawing.Point(8, 357);
+            this.busyControlsPanel.Location = new System.Drawing.Point(4, 357);
             this.busyControlsPanel.Name = "busyControlsPanel";
-            this.busyControlsPanel.Size = new System.Drawing.Size(208, 77);
+            this.busyControlsPanel.Size = new System.Drawing.Size(250, 77);
             this.busyControlsPanel.TabIndex = 74;
             this.busyControlsPanel.Visible = false;
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.63326F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.36675F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.cancelBtn, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.pauseBtn, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1692,7 +1708,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(208, 77);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(250, 77);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // cancelBtn
@@ -1703,9 +1719,9 @@
             this.cancelBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Firebrick;
             this.cancelBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancelBtn.ForeColor = System.Drawing.Color.Firebrick;
-            this.cancelBtn.Location = new System.Drawing.Point(112, 9);
+            this.cancelBtn.Location = new System.Drawing.Point(136, 9);
             this.cancelBtn.Name = "cancelBtn";
-            this.cancelBtn.Size = new System.Drawing.Size(86, 59);
+            this.cancelBtn.Size = new System.Drawing.Size(103, 59);
             this.cancelBtn.TabIndex = 0;
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
@@ -1718,9 +1734,9 @@
             this.pauseBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DarkOrange;
             this.pauseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.pauseBtn.ForeColor = System.Drawing.Color.DarkOrange;
-            this.pauseBtn.Location = new System.Drawing.Point(13, 9);
+            this.pauseBtn.Location = new System.Drawing.Point(14, 9);
             this.pauseBtn.Name = "pauseBtn";
-            this.pauseBtn.Size = new System.Drawing.Size(76, 59);
+            this.pauseBtn.Size = new System.Drawing.Size(96, 59);
             this.pauseBtn.TabIndex = 1;
             this.pauseBtn.UseVisualStyleBackColor = true;
             this.pauseBtn.Visible = false;
@@ -1745,12 +1761,12 @@
             this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.textBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(8, 440);
+            this.textBox1.Location = new System.Drawing.Point(4, 440);
             this.textBox1.MinimumSize = new System.Drawing.Size(4, 21);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(923, 24);
+            this.textBox1.Size = new System.Drawing.Size(927, 24);
             this.textBox1.TabIndex = 76;
             this.textBox1.TabStop = false;
             this.textBox1.Text = "  Status: Calculating performance metrics!";
@@ -1951,6 +1967,7 @@
         public System.Windows.Forms.ComboBox comboxOutputQuality;
         private System.Windows.Forms.TextBox textboxOutputQualityCust;
         public System.Windows.Forms.ComboBox comboxOutputColors;
+        private HTAlt.WinForms.HTButton htButton2;
     }
 }
 

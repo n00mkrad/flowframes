@@ -19,9 +19,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using static WinFormAnimation.AnimationFunctions;
 using System.Management;
-using System.Threading;
 using System.Timers;
 using System.Media;
+using System.Windows.Controls.Primitives;
+using Flowframes.Properties;
+using Win32Interop.Enums;
+using Flowframes.Forms.Main;
+using Flowframes.Media;
 
 #pragma warning disable IDE1006
 
@@ -54,10 +58,8 @@ namespace Flowframes.Forms.Main
             const int byteToHigherOrder = 1024 * 1024;
             const int byteToHighestOrder = 1024 * 1024 * 1024;
             int timeToSleep = sleeptime;
-            
-            while(true) {
 
-                string getCurrentCpuUsage(){
+            string getCurrentCpuUsage(){
                     try
                     {
                         PerformanceCounter cpuCounter;
@@ -66,7 +68,6 @@ namespace Flowframes.Forms.Main
                         System.Threading.Thread.Sleep(timeToSleep);
                         return "CPU:" + cpuCounter.NextValue().RoundToInt() + "%";
                     }
-
                     catch (Exception ex) { return "CPU: ERROR"; }
                     }
 
@@ -86,7 +87,6 @@ namespace Flowframes.Forms.Main
                     }
                     catch (Exception ex){return "RAM: ERROR";}
                     }   
-
 
                 string GetCudaUsage()
                 {
@@ -131,7 +131,6 @@ namespace Flowframes.Forms.Main
                     }
                 }
 
-
                 string GetCudaRamUsage()
                 {
                     try
@@ -172,7 +171,6 @@ namespace Flowframes.Forms.Main
                     }
                 }
 
-
                 string DiskUsageSpeed()
                 {
                     try
@@ -181,31 +179,11 @@ namespace Flowframes.Forms.Main
                         PerformanceCounter avgReadWrite;
                         avgReadDisk = new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
                         avgReadWrite = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
-
                         avgReadDisk.NextValue();
                         avgReadWrite.NextValue();
                         System.Threading.Thread.Sleep(timeToSleep/5);
                         float speed1 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
-
-                        avgReadDisk.NextValue();
-                        avgReadWrite.NextValue();
-                        System.Threading.Thread.Sleep(timeToSleep /5);
-                        float speed2 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
-
-
-                        avgReadDisk.NextValue();
-                        avgReadWrite.NextValue();
-                        System.Threading.Thread.Sleep(timeToSleep /5);
-                        float speed3 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
-
-
-                        avgReadDisk.NextValue();
-                        avgReadWrite.NextValue();
-                        System.Threading.Thread.Sleep(timeToSleep /5);
-                        float speed4 = avgReadDisk.NextValue() + avgReadWrite.NextValue();
-
-                        int speed5 = ((speed1.RoundToInt() + speed2.RoundToInt() + speed3.RoundToInt() + speed4.RoundToInt()) /4);
-
+                        int speed5 = speed1.RoundToInt();
 
                         string diskreadwrite = "Disk Speed:" + speed5 / byteToHigherOrder + " MB/S";
                         return diskreadwrite.ToString();
@@ -213,15 +191,10 @@ namespace Flowframes.Forms.Main
                     catch (Exception ex){ return "Disk Speed: ERROR";}
                 }
 
-
-
                 string performancecounter ="  Status: " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed();
                 //Console.WriteLine(performancecounter);
                 return textBox1.Text = performancecounter ;
-             }
         }
-
-
 
         private  async Task BackgroundTaskExecuter()
         {
@@ -230,10 +203,9 @@ namespace Flowframes.Forms.Main
                 while (true) {
                     System.Threading.Thread.Sleep(2000);
                     ShowTotalPerformance(125);
-                }
+                   }
             });
         }
-
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
@@ -476,6 +448,31 @@ namespace Flowframes.Forms.Main
             inputInfo.Text = str;
         }
 
+        public void Reset()
+        {
+            ResetAi((Config.GetString(Config.Key.lastUsedAiName)));
+            ResetTextBoxes();
+            LoadOutputSettings();
+        }
+
+        public void ResetTextBoxes()
+        {
+            inputTbox.Text = "";
+            outputTbox.Text = "";
+            fpsInTbox.Text = "0";
+            interpFactorCombox.SelectedIndex = 0;
+            fpsOutTbox.Text = "0 FPS";
+            outSpeedCombox.SelectedIndex = 0;
+        }
+
+        public void ResetAi(string lastusedAI)
+        {
+        string lastUsedAiName = lastusedAI;
+        aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(x => x.NameInternal == lastUsedAiName).FirstOrDefault());
+        if (aiCombox.SelectedIndex < 0) aiCombox.SelectedIndex = 0;
+        Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
+        }
+
         public void playSystemSound()
         {
             string selectedVariable = (Config.GetString(Config.Key.systemSoundActivated));
@@ -522,8 +519,6 @@ namespace Flowframes.Forms.Main
                     break;
             }
         }
-
-
 
         public void InterpolationDone()
         {
@@ -661,7 +656,7 @@ namespace Flowframes.Forms.Main
             Config.Set(Config.Key.lastOutputSettings, string.Join(",", strings));
         }
 
-        private void LoadOutputSettings()
+        public void LoadOutputSettings()
         {
             string[] strings = Config.Get(Config.Key.lastOutputSettings).Split(',');
 
@@ -1082,9 +1077,11 @@ namespace Flowframes.Forms.Main
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
           
-
         }
 
-
+        public void htButton2_Click(object sender, EventArgs e)
+        {
+            Reset();
+        }
     }
 }

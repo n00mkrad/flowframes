@@ -1,10 +1,12 @@
 ﻿using Flowframes.Forms;
+using Flowframes.Forms.Main;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Flowframes.IO
 {
@@ -31,6 +33,8 @@ namespace Flowframes.IO
                 await Task.Delay(100);
                 cachedValues.Clear();
                 await Task.Delay(100);
+                //Since this setting is not in the gui, this will never get initializied, if resetted. So needed to add here.
+                Set(Key.lastOutputSettings, "MP4,h264,Very High,YUV 4:2:0 8-bit");
 
                 if (settingsForm != null)
                     settingsForm.Enabled = true;
@@ -268,6 +272,8 @@ namespace Flowframes.IO
             if (key == Key.jpegFrames)            return WriteDefault(key, "True");
             if (key == Key.formatofInterp)        return WriteDefault(key, "png");
             if (key == Key.lastUsedAiName)        return WriteDefault(key, "RIFE_CUDA");
+            if (key == Key.lastOutputSettings)    return WriteDefault(key, "MP4,h264,Very High,YUV 4:2:0 8-bit");
+            if (key == Key.alwaysWaitForAutoEnc) return WriteDefault(key, "False");
 
             // Video Export
             if (key == Key.minOutVidLength)     return WriteDefault(key, "5");
