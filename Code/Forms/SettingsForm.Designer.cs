@@ -157,6 +157,8 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnResetHwEnc = new HTAlt.WinForms.HTButton();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -193,6 +195,8 @@
             // generalTab
             // 
             this.generalTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.generalTab.Controls.Add(this.btnResetHwEnc);
+            this.generalTab.Controls.Add(this.label10);
             this.generalTab.Controls.Add(this.custOutDirBrowseBtn);
             this.generalTab.Controls.Add(this.custOutDir);
             this.generalTab.Controls.Add(this.outFolderLoc);
@@ -1775,6 +1779,30 @@
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 250);
+            this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(186, 13);
+            this.label10.TabIndex = 94;
+            this.label10.Text = "Manage Detected Hardware Features";
+            // 
+            // btnResetHwEnc
+            // 
+            this.btnResetHwEnc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnResetHwEnc.FlatAppearance.BorderSize = 0;
+            this.btnResetHwEnc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnResetHwEnc.ForeColor = System.Drawing.Color.White;
+            this.btnResetHwEnc.Location = new System.Drawing.Point(280, 245);
+            this.btnResetHwEnc.Name = "btnResetHwEnc";
+            this.btnResetHwEnc.Size = new System.Drawing.Size(206, 23);
+            this.btnResetHwEnc.TabIndex = 95;
+            this.btnResetHwEnc.Text = "Re-Detected Hardware Encoders";
+            this.btnResetHwEnc.UseVisualStyleBackColor = false;
+            this.btnResetHwEnc.Click += new System.EventHandler(this.btnResetHwEnc_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1945,5 +1973,7 @@
         private System.Windows.Forms.Label label78;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox serverCombox;
+        private HTAlt.WinForms.HTButton btnResetHwEnc;
+        private System.Windows.Forms.Label label10;
     }
 }

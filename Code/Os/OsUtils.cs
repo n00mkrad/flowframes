@@ -310,5 +310,23 @@ namespace Flowframes.Os
 
             return string.Join(", ", gpus);
         }
+
+        public static string GetPathVar(string additionalPath = null)
+        {
+            return GetPathVar(new[] { additionalPath });
+        }
+
+        public static string GetPathVar(IEnumerable<string> additionalPaths)
+        {
+            var paths = Environment.GetEnvironmentVariable("PATH").Split(';');
+            List<string> newPaths = new List<string>();
+
+            if (paths != null)
+                newPaths.AddRange(additionalPaths.Where(p => p.IsNotEmpty()));
+
+            newPaths.AddRange(paths.Where(x => x.Lower().Replace("\\", "/").StartsWith("c:/windows")).ToList());
+
+            return string.Join(";", newPaths.Select(x => x.Replace("\\", "/"))) + ";";
+        }
     }
 }

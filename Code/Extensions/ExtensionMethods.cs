@@ -390,7 +390,7 @@ namespace Flowframes
             return string.IsNullOrWhiteSpace(s);
         }
 
-        public static bool NotEmpty(this string s)
+        public static bool IsNotEmpty(this string s)
         {
             return !string.IsNullOrWhiteSpace(s);
         }

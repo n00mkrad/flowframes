@@ -1,7 +1,12 @@
 ﻿using Flowframes.Data;
+using Flowframes.IO;
+using Flowframes.Os;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Win32Interop.Enums;
 using static Flowframes.Data.Enums.Encoding;
 using Encoder = Flowframes.Data.Enums.Encoding.Encoder;
@@ -101,6 +106,32 @@ namespace Flowframes.MiscUtils
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     PixelFormatDefault = PixFmt.Yuv420P10Le,
+                    HwAccelerated = true,
+                };
+            }
+
+            if (encoder == Encoder.Amf264)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.H264,
+                    Name = "h264_amf",
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
+                    QualityDefault = (int)Quality.Common.VeryHigh,
+                    HwAccelerated = true,
+                };
+            }
+
+            if (encoder == Encoder.Amf265)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.H265,
+                    Name = "hevc_amf",
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
+                    QualityDefault = (int)Quality.Common.VeryHigh,
                     HwAccelerated = true,
                 };
             }
@@ -242,8 +273,20 @@ namespace Flowframes.MiscUtils
         {
             var allEncoders = Enum.GetValues(typeof(Encoder)).Cast<Encoder>();
             var supportedCodecs = GetSupportedCodecs(format);
-            var availableEncoders = supportedCodecs.SelectMany(codec => allEncoders.Where(enc => enc.GetInfo().Codec == codec));
-            return availableEncoders.ToList();
+            var availableEncoders = supportedCodecs.SelectMany(codec => allEncoders.Where(enc => enc.GetInfo().Codec == codec)).ToList();
+            RemoveIncompatibleEncoders(ref availableEncoders, new[] { Encoder.Nvenc264, Encoder.Nvenc265, Encoder.NvencAv1, Encoder.Amf264, Encoder.Amf265 });
+            return availableEncoders;
+        }
+
+        private static void RemoveIncompatibleEncoders (ref List<Encoder> encoders, IEnumerable<Encoder> encodersToCheck)
+        {
+            var availHwEncs = Config.Get(Config.Key.SupportedHwEncoders).Split(',');
+
+            foreach(Encoder enc in encodersToCheck)
+            {
+                if (encoders.Contains(enc) && !availHwEncs.Contains(enc.GetInfo().Name))
+                    encoders.Remove(enc);
+            }
         }
 
         public static int GetCrf (Quality.Common qualityLevel, Encoder encoder)

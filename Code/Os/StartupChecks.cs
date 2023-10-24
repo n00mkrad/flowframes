@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.IO;
@@ -123,6 +124,31 @@ namespace Flowframes.Os
 
                 IoUtils.TryDeleteIfExists(devmodeBatchPath);
             }
+        }
+
+        public static async Task DetectHwEncoders ()
+        {
+            if (Config.GetBool(Config.Key.PerformedHwEncCheck))
+                return;
+
+            Logger.Log($"Detecting hardare encoding support...");
+            var encoders = new[] { "h264_nvenc", "hevc_nvenc", "av1_nvenc", "h264_amf", "hevc_amf" };
+            var compatEncoders = new List<string>();
+
+            foreach(string e in encoders)
+            {
+                bool compat = await FfmpegCommands.IsEncoderCompatible(e);
+
+                if (compat)
+                {
+                    compatEncoders.Add(e);
+                    Logger.Log($"HW Encoder supported: {e}", true);
+                }
+            }
+
+            Logger.Log($"Available hardware encoders: {string.Join(", ", compatEncoders.Select(e => e.Replace("_", " ").Upper()))}");
+            Config.Set(Config.Key.SupportedHwEncoders, string.Join(",", compatEncoders));
+            Config.Set(Config.Key.PerformedHwEncCheck, true.ToString());
         }
     }
 }

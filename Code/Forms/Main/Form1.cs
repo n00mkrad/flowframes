@@ -54,7 +54,7 @@ namespace Flowframes.Forms.Main
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-            InitOutputUi();
+            
             UiUtils.InitCombox(aiModel, 2);
             // Video Utils
             UiUtils.InitCombox(trimCombox, 0);
@@ -65,6 +65,7 @@ namespace Flowframes.Forms.Main
             InterpolationProgress.preview = previewPicturebox;
             RemovePreviewIfDisabled();
             await Checks();
+            InitOutputUi();
             InitAis();
             UpdateStepByStepControls();
             Initialized();
@@ -84,6 +85,14 @@ namespace Flowframes.Forms.Main
         private void InitOutputUi()
         {
             comboxOutputFormat.FillFromEnum<Enums.Output.Format>(Strings.OutputFormat, 0);
+            UpdateOutputUi();
+        }
+
+        public async void ResetOutputUi ()
+        {
+            comboxOutputEncoder.Items.Clear();
+            Config.Set(Config.Key.PerformedHwEncCheck, false.ToString());
+            await StartupChecks.DetectHwEncoders();
             UpdateOutputUi();
         }
 
@@ -143,6 +152,7 @@ namespace Flowframes.Forms.Main
                 Task.Run(() => Servers.Init());
                 await Python.CheckCompression();
                 await StartupChecks.SymlinksCheck();
+                await StartupChecks.DetectHwEncoders();
             }
             catch (Exception e)
             {

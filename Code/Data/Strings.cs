@@ -26,6 +26,8 @@ namespace Flowframes.Data
             { Enums.Encoding.Encoder.Nvenc264.ToString(), "h264 NVENC" },
             { Enums.Encoding.Encoder.Nvenc265.ToString(), "h265 NVENC" },
             { Enums.Encoding.Encoder.NvencAv1.ToString(), "AV1 NVENC" },
+            { Enums.Encoding.Encoder.Amf264.ToString(), "h264 AMF" },
+            { Enums.Encoding.Encoder.Amf265.ToString(), "h265 AMF" },
             { Enums.Encoding.Encoder.Gif.ToString(), "GIF" },
             { Enums.Encoding.Encoder.Png.ToString(), "PNG" },
             { Enums.Encoding.Encoder.Jpeg.ToString(), "JPEG" },

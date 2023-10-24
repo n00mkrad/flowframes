@@ -217,7 +217,7 @@ namespace Flowframes.Main
 
         public static async Task<bool> CheckEncoderValid()
         {
-            string enc = I.currentSettings.outSettings.Encoder.ToString();
+            string enc = I.currentSettings.outSettings.Encoder.GetInfo().Name;
 
             if (enc.ToLowerInvariant().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
             {

@@ -13,7 +13,7 @@ namespace Flowframes.Forms.Main
     {
         Enums.Output.Format OutputFormat { get { return ParseUtils.GetEnum<Enums.Output.Format>(comboxOutputFormat.Text, true, Strings.OutputFormat); } }
 
-        Enums.Encoding.Encoder Encoder
+        Enums.Encoding.Encoder CurrentEncoder
         {
             get
             {
@@ -24,7 +24,7 @@ namespace Flowframes.Forms.Main
             }
         }
 
-        Enums.Encoding.PixelFormat PixelFormat
+        Enums.Encoding.PixelFormat CurrentPixFmt
         {
             get
             {
@@ -68,7 +68,7 @@ namespace Flowframes.Forms.Main
         public OutputSettings GetOutputSettings()
         {
             string custQ = textboxOutputQualityCust.Visible ? textboxOutputQualityCust.Text.Trim() : "";
-            return new OutputSettings() { Encoder = Encoder, Format = OutputFormat, PixelFormat = PixelFormat, Quality = comboxOutputQuality.Text, CustomQuality = custQ };
+            return new OutputSettings() { Encoder = CurrentEncoder, Format = OutputFormat, PixelFormat = CurrentPixFmt, Quality = comboxOutputQuality.Text, CustomQuality = custQ };
         }
     }
 }

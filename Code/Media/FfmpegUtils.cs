@@ -2,8 +2,11 @@
 using Flowframes.Data.Streams;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
+using Flowframes.Os;
+using Flowframes.Properties;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,6 +21,9 @@ namespace Flowframes.Media
     {
         private readonly static FfprobeMode showStreams = FfprobeMode.ShowStreams;
         private readonly static FfprobeMode showFormat = FfprobeMode.ShowFormat;
+
+        public static List<Encoder> CompatibleHwEncoders = new List<Encoder>();
+        public static bool NvencSupportsBFrames = false;
 
         public static async Task<int> GetStreamCount(string path)
         {
@@ -174,7 +180,7 @@ namespace Flowframes.Media
             return false;
         }
 
-        public static string[] GetEncArgs(OutputSettings settings, Size res, float fps, bool realtime = false) // Array contains as many entries as there are encoding passes. If "realtime" is true, force single pass.
+        public static string[] GetEncArgs(OutputSettings settings, Size res, float fps, bool forceSinglePass = false) // Array contains as many entries as there are encoding passes.
         {
             Encoder enc = settings.Encoder;
             int keyint = 10;
@@ -222,7 +228,7 @@ namespace Flowframes.Media
                 string qualityStr = (crf > 0) ? $"-crf {crf}" : "-lossless 1";
                 string t = GetTilingArgs(res, "-tile-columns ", "-tile-rows ");
 
-                if (realtime) // Force 1-pass
+                if (forceSinglePass) // Force 1-pass
                 {
                     args.Add($"-b:v 0 {qualityStr} {GetVp9Speed()} {t} -row-mt 1");
                 }
@@ -253,6 +259,18 @@ namespace Flowframes.Media
                 args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}"); // Lossless not supported as of Jan 2023!!
             }
 
+            if (enc == Encoder.Amf264)
+            {
+                int crf = GetCrf(settings);
+                args.Add($"-b:v 0 -rc cqp -qp_i {crf} -qp_p {crf} -quality 2");
+            }
+
+            if (enc == Encoder.Amf265)
+            {
+                int crf = GetCrf(settings);
+                args.Add($"-b:v 0 -rc cqp -qp_i {crf} -qp_p {crf} -quality 2");
+            }
+
             if (enc == Encoder.ProResKs)
             {
                 var profile = ParseUtils.GetEnum<Quality.ProResProfile>(settings.Quality, true, Strings.VideoQuality);
@@ -281,7 +299,7 @@ namespace Flowframes.Media
 
         private static int GetCrf(OutputSettings settings)
         {
-            if (settings.CustomQuality.NotEmpty())
+            if (settings.CustomQuality.IsNotEmpty())
                 return settings.CustomQuality.GetInt();
             else
                 return OutputUtils.GetCrf(ParseUtils.GetEnum<Quality.Common>(settings.Quality, true, Strings.VideoQuality), settings.Encoder);

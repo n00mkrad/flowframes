@@ -325,7 +325,7 @@ namespace Flowframes.Os
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLowerInvariant()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLowerInvariant()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {await NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
 
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
 
@@ -580,7 +580,7 @@ namespace Flowframes.Os
             string ttaStr = ""; // Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             ifrnetNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.ifrnetNcnn)}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {await NcnnUtils.GetNcnnThreads(Implementations.ifrnetNcnn)}";
 
             Logger.Log("cmd.exe " + ifrnetNcnn.StartInfo.Arguments, true);
 

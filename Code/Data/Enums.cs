@@ -12,7 +12,7 @@
         public class Encoding
         {
             public enum Codec { H264, H265, AV1, VP9, ProRes, Gif, Png, Jpeg, Webp, Ffv1, Huffyuv, Magicyuv, Rawvideo }
-            public enum Encoder { X264, X265, SvtAv1, VpxVp9, Nvenc264, Nvenc265, NvencAv1, ProResKs, Gif, Png, Jpeg, Webp, Ffv1, Huffyuv, Magicyuv, Rawvideo }
+            public enum Encoder { X264, X265, SvtAv1, VpxVp9, Nvenc264, Nvenc265, NvencAv1, Amf264, Amf265, ProResKs, Gif, Png, Jpeg, Webp, Ffv1, Huffyuv, Magicyuv, Rawvideo }
             public enum PixelFormat { Yuv420P, Yuva420P, Yuv420P10Le, Yuv422P, Yuv422P10Le, Yuv444P, Yuv444P10Le, Yuva444P10Le, Rgb24, Rgba, Pal8 };
 
             public class Quality

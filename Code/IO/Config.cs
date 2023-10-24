@@ -362,6 +362,8 @@ namespace Flowframes.IO
             vsRtShowOsd,
             vsUseLsmash,
             lastOutputSettings,
+            PerformedHwEncCheck,
+            SupportedHwEncoders,
         }
     }
 }

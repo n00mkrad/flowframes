@@ -972,15 +972,6 @@
             this.comboxOutputFormat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboxOutputFormat.ForeColor = System.Drawing.Color.White;
             this.comboxOutputFormat.FormattingEnabled = true;
-            this.comboxOutputFormat.Items.AddRange(new object[] {
-            "MP4 Video (h264, h265, AV1)",
-            "MKV Video (h264, h265, AV1) (Best Audio/Subtitles Support)",
-            "WEBM Video (Google VP9)",
-            "MOV Video (Apple ProRes)",
-            "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
-            "Animated GIF (Only supports up to 50 FPS)",
-            "Image Sequence (PNG, JPG, WEBP)",
-            "Real-time Interpolation (Video only)"});
             this.comboxOutputFormat.Location = new System.Drawing.Point(0, 0);
             this.comboxOutputFormat.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.comboxOutputFormat.Name = "comboxOutputFormat";
@@ -995,15 +986,6 @@
             this.comboxOutputEncoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboxOutputEncoder.ForeColor = System.Drawing.Color.White;
             this.comboxOutputEncoder.FormattingEnabled = true;
-            this.comboxOutputEncoder.Items.AddRange(new object[] {
-            "MP4 Video (h264, h265, AV1)",
-            "MKV Video (h264, h265, AV1) (Best Audio/Subtitles Support)",
-            "WEBM Video (Google VP9)",
-            "MOV Video (Apple ProRes)",
-            "AVI Video (ffv1, huffyuv, magicyuv, rawvideo)",
-            "Animated GIF (Only supports up to 50 FPS)",
-            "Image Sequence (PNG, JPG, WEBP)",
-            "Real-time Interpolation (Video only)"});
             this.comboxOutputEncoder.Location = new System.Drawing.Point(81, 0);
             this.comboxOutputEncoder.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.comboxOutputEncoder.Name = "comboxOutputEncoder";

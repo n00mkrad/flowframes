@@ -244,5 +244,11 @@ namespace Flowframes.Forms
             await Config.Reset(3, this);
             SettingsForm_Load(null, null);
         }
+
+        private void btnResetHwEnc_Click(object sender, EventArgs e)
+        {
+            Close();
+            Program.mainForm.ResetOutputUi();
+        }
     }
 }
