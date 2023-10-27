@@ -136,6 +136,32 @@ namespace Flowframes.MiscUtils
                 };
             }
 
+            if (encoder == Encoder.Qsv264)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.H264,
+                    Name = "h264_qsv",
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
+                    QualityDefault = (int)Quality.Common.VeryHigh,
+                    HwAccelerated = true,
+                };
+            }
+
+            if (encoder == Encoder.Qsv265)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.H265,
+                    Name = "hevc_qsv",
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
+                    QualityDefault = (int)Quality.Common.VeryHigh,
+                    HwAccelerated = true,
+                };
+            }
+
             if (encoder == Encoder.ProResKs)
             {
                 return new EncoderInfoVideo
@@ -274,7 +300,11 @@ namespace Flowframes.MiscUtils
             var allEncoders = Enum.GetValues(typeof(Encoder)).Cast<Encoder>();
             var supportedCodecs = GetSupportedCodecs(format);
             var availableEncoders = supportedCodecs.SelectMany(codec => allEncoders.Where(enc => enc.GetInfo().Codec == codec)).ToList();
-            RemoveIncompatibleEncoders(ref availableEncoders, new[] { Encoder.Nvenc264, Encoder.Nvenc265, Encoder.NvencAv1, Encoder.Amf264, Encoder.Amf265 });
+            RemoveIncompatibleEncoders(ref availableEncoders, new[] { 
+                Encoder.Nvenc264, Encoder.Nvenc265, Encoder.NvencAv1,
+                Encoder.Amf264, Encoder.Amf265,
+                Encoder.Qsv264, Encoder.Qsv265,
+            });
             return availableEncoders;
         }
 
@@ -306,6 +336,8 @@ namespace Flowframes.MiscUtils
                 multiplier = 1.15f;
             if (encoder == Encoder.NvencAv1)
                 multiplier = 1.3f;
+            if (encoder == Encoder.Qsv265)
+                multiplier = 0.8f;
 
             return (baseCrf * multiplier).RoundToInt();
         }

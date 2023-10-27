@@ -271,6 +271,18 @@ namespace Flowframes.Media
                 args.Add($"-b:v 0 -rc cqp -qp_i {crf} -qp_p {crf} -quality 2");
             }
 
+            if (enc == Encoder.Qsv264)
+            {
+                int crf = GetCrf(settings);
+                args.Add($"-preset veryslow -global_quality {crf}");
+            }
+
+            if (enc == Encoder.Qsv265)
+            {
+                int crf = GetCrf(settings);
+                args.Add($"-preset veryslow -global_quality {crf}");
+            }
+
             if (enc == Encoder.ProResKs)
             {
                 var profile = ParseUtils.GetEnum<Quality.ProResProfile>(settings.Quality, true, Strings.VideoQuality);
