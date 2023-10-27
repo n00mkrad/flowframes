@@ -90,7 +90,8 @@ namespace Flowframes.Os
             if (sc)
                 l.Add($"clip = core.misc.SCDetect(clip=clip, threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
 
-            l.Add($"clip = core.rife.RIFE(clip, multiplier={s.Factor.ToStringDot()}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
+            Fraction outFps = s.InterpSettings.inFps * s.Factor;
+            l.Add($"clip = core.rife.RIFE(clip, fps_num={outFps.Numerator}, fps_den={outFps.Denominator}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
 
             if (s.Dedupe && !s.Realtime)
                 l.Add(GetRedupeLines(s));
