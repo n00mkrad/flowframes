@@ -273,13 +273,13 @@ namespace Flowframes.Media
 
             if (enc == Encoder.Qsv264)
             {
-                int crf = GetCrf(settings);
+                int crf = GetCrf(settings).Clamp(1, 51);
                 args.Add($"-preset veryslow -global_quality {crf}");
             }
 
             if (enc == Encoder.Qsv265)
             {
-                int crf = GetCrf(settings);
+                int crf = GetCrf(settings).Clamp(1, 51);
                 args.Add($"-preset veryslow -global_quality {crf}");
             }
 
