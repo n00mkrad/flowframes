@@ -26,6 +26,10 @@ using Flowframes.Properties;
 using Win32Interop.Enums;
 using Flowframes.Forms.Main;
 using Flowframes.Media;
+using System.Threading;
+using DiskDetector.Models;
+using System.Runtime.Remoting.Lifetime;
+using NvAPIWrapper.GPU;
 
 #pragma warning disable IDE1006
 
@@ -189,9 +193,53 @@ namespace Flowframes.Forms.Main
                         return diskreadwrite.ToString();
                     }
                     catch (Exception ex){ return "Disk Speed: ERROR";}
-                }
+            }
 
-                string performancecounter ="  Status: " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed();
+            string GetCPUTemp()
+            {
+                try
+                {
+                    string[] thermalZones = new PerformanceCounterCategory("Thermal Zone Information").GetInstanceNames();
+                    foreach (string thermalZone in thermalZones)
+                    {
+                        if (thermalZone.StartsWith(@"\_TZ.TZ"))
+                        {
+                            PerformanceCounter avgCPUTemp = new PerformanceCounter("Thermal Zone Information", "Temperature", thermalZone);
+                            avgCPUTemp.NextValue();
+                            System.Threading.Thread.Sleep(timeToSleep / 5);
+                            float temp1 = avgCPUTemp.NextValue();
+                            double v = (temp1 - 273.15);
+                            float temp2 = (float)v;
+                            int temp3 = temp2.RoundToInt();
+                            string avgCPUTempBeautiful = "CPU Temp:" + temp3 + " °C";
+                            return avgCPUTempBeautiful.ToString();
+                        }
+                    }
+                }
+                catch (Exception ex) { return "CPU Temp: ERROR"; }
+                return "No Thermal Zone Found";
+            }
+
+            string GetGPUTemp()
+            {
+                try
+                {
+
+                    PhysicalGPU[] gpus = PhysicalGPU.GetPhysicalGPUs();
+                    foreach (PhysicalGPU gpu in gpus)
+                    {
+                        Console.WriteLine(gpu.FullName);
+                        foreach (GPUThermalSensor sensor in gpu.ThermalInformation.ThermalSensors)
+                        {
+                           return "GPU Temp: " + sensor.CurrentTemperature + " °C";
+                        }
+                    }
+                    return "GPU Temp: ERROR";
+                }
+                catch (Exception ex) { return "GPU Temp: ERROR"; }
+            }
+
+                string performancecounter ="  Status: " + getCurrentCpuUsage() + " | " + getCurrentRamUsage() + " | " + GetCudaUsage() + " | " + GetCudaRamUsage() + " | " + DiskUsageSpeed() + " | " + GetCPUTemp() + " | " + GetGPUTemp();
                 //Console.WriteLine(performancecounter);
                 return textBox1.Text = performancecounter ;
         }
@@ -1082,6 +1130,11 @@ namespace Flowframes.Forms.Main
         public void htButton2_Click(object sender, EventArgs e)
         {
             Reset();
+        }
+
+        private void panel6_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

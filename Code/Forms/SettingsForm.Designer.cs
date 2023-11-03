@@ -34,6 +34,7 @@ namespace Flowframes.Forms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.htButton8 = new HTAlt.WinForms.HTButton();
             this.htButton7 = new HTAlt.WinForms.HTButton();
             this.htButton6 = new HTAlt.WinForms.HTButton();
             this.htButton5 = new HTAlt.WinForms.HTButton();
@@ -185,7 +186,6 @@ namespace Flowframes.Forms
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.htButton8 = new HTAlt.WinForms.HTButton();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -266,6 +266,23 @@ namespace Flowframes.Forms
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 512);
             this.generalTab.Text = "Application";
+            // 
+            // htButton8
+            // 
+            this.htButton8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.htButton8.FlatAppearance.BorderSize = 0;
+            this.htButton8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.htButton8.ForeColor = System.Drawing.Color.White;
+            this.htButton8.Location = new System.Drawing.Point(542, 316);
+            this.htButton8.Name = "htButton8";
+            this.htButton8.Size = new System.Drawing.Size(98, 23);
+            this.htButton8.TabIndex = 103;
+            this.htButton8.Text = "Save Disk space";
+            this.toolTip1.SetToolTip(this.htButton8, "Optimal Settings for people who will take Quality\r\nover Performance, but more rad" +
+        "ical and this might\r\nget your drive full very easily. An uncompressed \r\nmovie up" +
+        "scaled will literrally take 1TB alone\r\n");
+            this.htButton8.UseVisualStyleBackColor = false;
+            this.htButton8.Click += new System.EventHandler(this.htButton8_Click);
             // 
             // htButton7
             // 
@@ -1392,9 +1409,9 @@ namespace Flowframes.Forms
             this.label38.Location = new System.Drawing.Point(562, 252);
             this.label38.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(84, 13);
+            this.label38.Size = new System.Drawing.Size(72, 13);
             this.label38.TabIndex = 90;
-            this.label38.Text = "Cores/Threads: ";
+            this.label38.Text = "Your System: ";
             this.label38.TextChanged += new System.EventHandler(this.label38_TextChanged);
             // 
             // label37
@@ -2198,23 +2215,6 @@ namespace Flowframes.Forms
             this.toolTip1.SetToolTip(this.resetBtn, "Reset To Default");
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
-            // 
-            // htButton8
-            // 
-            this.htButton8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.htButton8.FlatAppearance.BorderSize = 0;
-            this.htButton8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.htButton8.ForeColor = System.Drawing.Color.White;
-            this.htButton8.Location = new System.Drawing.Point(542, 316);
-            this.htButton8.Name = "htButton8";
-            this.htButton8.Size = new System.Drawing.Size(98, 23);
-            this.htButton8.TabIndex = 103;
-            this.htButton8.Text = "Save Disk space";
-            this.toolTip1.SetToolTip(this.htButton8, "Optimal Settings for people who will take Quality\r\nover Performance, but more rad" +
-        "ical and this might\r\nget your drive full very easily. An uncompressed \r\nmovie up" +
-        "scaled will literrally take 1TB alone\r\n");
-            this.htButton8.UseVisualStyleBackColor = false;
-            this.htButton8.Click += new System.EventHandler(this.htButton8_Click);
             // 
             // SettingsForm
             // 

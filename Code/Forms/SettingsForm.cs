@@ -370,7 +370,7 @@ namespace Flowframes.Forms
             }
 
             int threadcustom = Environment.ProcessorCount;
-            string customtext = "System Cores/Threads:" + coreCount + "/" + threadcustom;
+            string customtext = "Your System: " + coreCount + "/" + threadcustom + " (C/T)";
             label38.Text = customtext;
         }
 
