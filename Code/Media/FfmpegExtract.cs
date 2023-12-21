@@ -81,7 +81,7 @@ namespace Flowframes.Media
             string mpStr = deDupe ? ((Config.GetInt(Config.Key.mpdecimateMode) == 0) ? mpDecDef : mpDecAggr) : "";
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
-            string rateArg = (rate.GetFloat() > 0) ? $" -fps_mode cfr -r {rate}" : "-fps_mode passthrough";
+            string rateArg = (rate.GetFloat() > 0 && !deDupe) ? $" -fps_mode cfr -r {rate}" : "-fps_mode passthrough";
             string args = $"{GetTrimArg(true)} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\"";
             LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, true);
