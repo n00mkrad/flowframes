@@ -1,13 +1,8 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
-using Flowframes.Os;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Win32Interop.Enums;
 using static Flowframes.Data.Enums.Encoding;
 using Encoder = Flowframes.Data.Enums.Encoding.Encoder;
 using PixFmt = Flowframes.Data.Enums.Encoding.PixelFormat;
@@ -68,6 +63,7 @@ namespace Flowframes.MiscUtils
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     MaxFramerate = 240,
+                    Lossless = null,
                 };
             }
 
@@ -107,6 +103,7 @@ namespace Flowframes.MiscUtils
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     PixelFormatDefault = PixFmt.Yuv420P10Le,
                     HwAccelerated = true,
+                    Lossless = null,
                 };
             }
 
@@ -120,6 +117,7 @@ namespace Flowframes.MiscUtils
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     HwAccelerated = true,
+                    Lossless = null,
                 };
             }
 
@@ -133,6 +131,7 @@ namespace Flowframes.MiscUtils
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     HwAccelerated = true,
+                    Lossless = null,
                 };
             }
 
@@ -146,6 +145,7 @@ namespace Flowframes.MiscUtils
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     HwAccelerated = true,
+                    Lossless = null,
                 };
             }
 
@@ -159,6 +159,7 @@ namespace Flowframes.MiscUtils
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     HwAccelerated = true,
+                    Lossless = null,
                 };
             }
 

@@ -118,14 +118,15 @@ namespace Flowframes.Forms.Main
                 infoStrings.Add("Codec");
                 EncoderInfoVideo info = OutputUtils.GetEncoderInfoVideo(encoder);
 
-                bool adjustableQuality = !info.Lossless && info.QualityLevels != null && info.QualityLevels.Count > 0;
+                bool adjustableQuality = !(info.Lossless == true) && info.QualityLevels != null && info.QualityLevels.Count > 0;
                 comboxOutputQuality.Visible = adjustableQuality;
                 comboxOutputQuality.Items.Clear();
 
                 if (info.QualityLevels.Count > 0)
                 {
                     infoStrings.Add("Quality");
-                    comboxOutputQuality.FillFromEnum(info.QualityLevels, Strings.VideoQuality, info.QualityDefault);
+                    var exclude = info.Lossless == null ? new List<string> { Enums.Encoding.Quality.Common.Lossless.ToString() } : null;
+                    comboxOutputQuality.FillFromStrings(info.QualityLevels, Strings.VideoQuality, info.QualityDefault, exclude);
                 }
 
                 var pixelFormats = info.PixelFormats;

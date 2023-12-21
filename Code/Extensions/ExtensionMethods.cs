@@ -305,13 +305,13 @@ namespace Flowframes
 
             var entriesToAdd = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Except(exclusionList);
             var strings = entriesToAdd.Select(x => stringMap.Get(x.ToString(), true));
-            comboBox.FillFromEnum(strings, stringMap, defaultIndex);
+            comboBox.FillFromStrings(strings, stringMap, defaultIndex);
         }
 
         public static void FillFromEnum<TEnum>(this ComboBox comboBox, IEnumerable<TEnum> entries, Dictionary<string, string> stringMap = null, int defaultIndex = -1) where TEnum : Enum
         {
             var strings = entries.Select(x => stringMap.Get(x.ToString(), true));
-            comboBox.FillFromEnum(strings, stringMap, defaultIndex);
+            comboBox.FillFromStrings(strings, stringMap, defaultIndex);
         }
 
         public static void FillFromEnum<TEnum>(this ComboBox comboBox, IEnumerable<TEnum> entries, Dictionary<string, string> stringMap, TEnum defaultEntry) where TEnum : Enum
@@ -324,13 +324,16 @@ namespace Flowframes
             comboBox.Text = stringMap.Get(defaultEntry.ToString(), true);
         }
 
-        public static void FillFromEnum(this ComboBox comboBox, IEnumerable<string> entries, Dictionary<string, string> stringMap = null, int defaultIndex = -1)
+        public static void FillFromStrings(this ComboBox comboBox, IEnumerable<string> entries, Dictionary<string, string> stringMap = null, int defaultIndex = -1, IEnumerable<string> exclusionList = null)
         {
             if (stringMap == null)
                 stringMap = new Dictionary<string, string>();
 
+            if (exclusionList == null)
+                exclusionList = new List<string>();
+
             comboBox.Items.Clear();
-            comboBox.Items.AddRange(entries.Select(x => stringMap.Get(x, true)).ToArray());
+            comboBox.Items.AddRange(entries.Select(x => stringMap.Get(x, true)).Except(exclusionList).ToArray());
 
             if (defaultIndex >= 0 && comboBox.Items.Count > 0)
                 comboBox.SelectedIndex = defaultIndex;

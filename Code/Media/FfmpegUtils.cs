@@ -256,7 +256,7 @@ namespace Flowframes.Media
             if (enc == Encoder.NvencAv1)
             {
                 int crf = GetCrf(settings);
-                args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}"); // Lossless not supported as of Jan 2023!!
+                args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}");
             }
 
             if (enc == Encoder.Amf264)
