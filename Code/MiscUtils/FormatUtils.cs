@@ -27,28 +27,26 @@ namespace Flowframes.MiscUtils
             }
         }
 
-        public static string Time(long milliseconds)
+        public static string Time(long milliseconds, bool allowMs = true)
         {
-            double secs = (milliseconds / 1000f);
-            if (milliseconds <= 1000)
-            {
-                return milliseconds + "ms";
-            }
-            return secs.ToString("0.00") + "s";
+            return Time(TimeSpan.FromMilliseconds(milliseconds), allowMs);
         }
 
-        public static string Time (TimeSpan span, bool allowMs = true)
+        public static string Time(TimeSpan span, bool allowMs = true)
         {
-            if(span.TotalHours >= 1f)
+            if (span.TotalHours >= 1f)
                 return span.ToString(@"hh\:mm\:ss");
 
             if (span.TotalMinutes >= 1f)
                 return span.ToString(@"mm\:ss");
 
             if (span.TotalSeconds >= 1f || !allowMs)
-                return span.ToString(@"ss".TrimStart('0').PadLeft(1, '0')) + "s";
+            {
+                string format = span.TotalSeconds < 10f ? @"%s\.f" : @"%s";
+                return span.ToString(format) + "s";
+            }
 
-            return span.ToString(@"fff").TrimStart('0').PadLeft(1, '0') + "ms";
+            return span.ToString(@"fff") + "ms";
         }
 
         public static string TimeSw(Stopwatch sw)
