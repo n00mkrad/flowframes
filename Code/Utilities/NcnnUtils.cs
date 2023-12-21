@@ -8,16 +8,20 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Flowframes.Utilities
 {
     class NcnnUtils
     {
+        public static Dictionary<int, int> GpuIdsQueueCounts = null;
+
         /// <summary> Get amount of GPU Compute Queues (VK) for each GPU </summary>
         public static async Task<Dictionary<int, int>> GetNcnnGpuComputeQueueCounts ()
         {
+            if(GpuIdsQueueCounts != null)
+                return GpuIdsQueueCounts;
+
             Dictionary<int, int> queueCounts = new Dictionary<int, int>(); // int gpuId, int queueCount
 
             Process rifeNcnn = OsUtils.NewProcess(true);
@@ -34,6 +38,7 @@ namespace Flowframes.Utilities
                 queueCounts[gpuId] = queueCount;
             }
 
+            GpuIdsQueueCounts = queueCounts;
             return queueCounts;
         }
 
