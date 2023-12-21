@@ -13,7 +13,6 @@ using Microsoft.VisualBasic.Devices;
 using Flowframes.MiscUtils;
 using System.Linq;
 using Tulpep.NotificationWindow;
-using System.Threading;
 
 namespace Flowframes.Os
 {
@@ -284,31 +283,35 @@ namespace Flowframes.Os
 
         public static string GetGpus ()
         {
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+            List<string> gpusVk = new List<string>();
+            List<string> gpusNv = new List<string>();
 
-            List<string> gpus = new List<string>();
-
-            foreach (ManagementObject mo in searcher.Get())
+            if(VulkanUtils.VkDevices != null)
             {
-                foreach (PropertyData property in mo.Properties)
-                {
-                    if (property.Name == "Description")
-                    {
-                        string gpuName = property.Value.ToString();
-
-                        if (!gpuName.ToLowerInvariant().Contains("microsoft"))   // To ignore pseudo-GPUs like on vServers, RDP sessions, etc. (e.g. "Microsoft Basic Display Adapter")
-                        {
-                            gpus.Add(gpuName);
-                            Logger.Log($"[GetGpus] Found GPU: {property.Value}", true);
-                        }
-                    }
-                }
-                //string gpuName = queryObj["Name"].ToString();
-                //gpus.Add(gpuName);
-                //Logger.Log($"[GetGpus] Found GPU: {gpuName}", true);
+                gpusVk.AddRange(VulkanUtils.VkDevices.Select(d => $"{d.Name.Remove("NVIDIA ").Remove("GeForce ").Remove("AMD ").Remove("Intel ").Remove("(TM)")} ({d.Id})"));
             }
 
-            return string.Join(", ", gpus);
+            if(NvApi.gpuList != null && NvApi.gpuList.Any())
+            {
+                gpusNv.AddRange(NvApi.gpuList.Select(d => $"{d.FullName.Remove("NVIDIA ").Remove("GeForce ")} ({NvApi.gpuList.IndexOf(d)})"));
+            }
+
+            if (!gpusVk.Any() && !gpusNv.Any())
+                return "No GPUs detected.";
+
+            string s = "";
+
+            if (gpusVk.Any())
+            {
+                s += $"Vulkan GPUs: {string.Join(", ", gpusVk)}";
+            }
+
+            if (gpusNv.Any())
+            {
+                s += $" - CUDA GPUs: {string.Join(", ", gpusNv)}";
+            }
+
+            return s;
         }
 
         public static string GetPathVar(string additionalPath = null)
