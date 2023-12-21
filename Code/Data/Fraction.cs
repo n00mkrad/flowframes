@@ -46,7 +46,6 @@ namespace Flowframes.Data
             Numerator = (value * 10000f).RoundToInt();
             Denominator = 10000;
             this = GetReduced();
-            Logger.Log($"Converted float {value} to Fraction {this}", true);
         }
 
         public Fraction(string text)
@@ -71,7 +70,7 @@ namespace Flowframes.Data
                 }
             }
 
-            Logger.Log($"Fraction from String: Fraction(\"{text}\") => {Numerator}/{Denominator}", true);
+            Console.WriteLine($"Fraction from String: Fraction(\"{text}\") => {Numerator}/{Denominator}", true);
         }
 
         private static long GetGreatestCommonDenominator(long a, long b)

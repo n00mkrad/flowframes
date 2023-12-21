@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.Data;
+using Flowframes.MiscUtils;
 
 namespace Flowframes.Ui
 {
@@ -43,14 +44,10 @@ namespace Flowframes.Ui
             await Interpolate.currentMediaFile.Initialize();
             Program.mainForm.currInDuration = Interpolate.currentMediaFile.DurationMs;
             Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
-            string fpsStr = "Not Found";
             Fraction fps = Interpolate.currentMediaFile.VideoStreams.Count > 0 ? Interpolate.currentMediaFile.VideoStreams[0].Rate : new Fraction();
+            string fpsStr = fps.GetFloat() > 0 ? FormatUtils.Fraction(fps) : "Not Found";
             Program.mainForm.currInFpsDetected = fps;
             fpsInTbox.Text = fps.GetString();
-
-            if (fps.GetFloat() > 0)
-                fpsStr = $"{fps} (~{fps.GetFloat()})";
-
             Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}", false, true);
             Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.GetFloat() > 0 && !Config.GetBool("allowCustomInputRate", false));
             Program.mainForm.currInFps = fps;

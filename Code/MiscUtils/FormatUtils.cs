@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flowframes.Data;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -101,7 +102,7 @@ namespace Flowframes.MiscUtils
                 {
                     ms = hours * 3600000 + minutes * 60000 + seconds * 1000;
                 }
-                
+
                 return ms;
             }
             catch (Exception e)
@@ -144,7 +145,7 @@ namespace Flowframes.MiscUtils
             string outStr = "";
 
             strings = strings.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-            if(distinct)
+            if (distinct)
                 strings = strings.Distinct().ToArray();
 
             for (int i = 0; i < strings.Length; i++)
@@ -157,7 +158,7 @@ namespace Flowframes.MiscUtils
             return outStr;
         }
 
-        public static System.Drawing.Size ParseSize (string str)
+        public static System.Drawing.Size ParseSize(string str)
         {
             try
             {
@@ -170,13 +171,13 @@ namespace Flowframes.MiscUtils
             }
         }
 
-        public static string BeautifyFfmpegStats (string line)
+        public static string BeautifyFfmpegStats(string line)
         {
             line = line.Remove("q=-0.0").Remove("q=-1.0").Remove("size=N/A").Remove("bitrate=N/A").Replace("frame=", "Frame: ")
                     .Replace("fps=", "FPS: ").Replace("q=", "QP: ").Replace("time=", "Time: ").Replace("speed=", "Relative Speed: ")
                     .Replace("bitrate=", "Bitrate: ").Replace("Lsize=", "Size: ").Replace("size=", "Size: ").TrimWhitespaces();
 
-            if(!line.Contains("Bitrate: ") && line.Contains(" 0x"))
+            if (!line.Contains("Bitrate: ") && line.Contains(" 0x"))
                 line = line.Split(" QP: ").FirstOrDefault().Trim() + " (Analysing...)";
 
             return line;
@@ -188,6 +189,20 @@ namespace Flowframes.MiscUtils
                 return codec.ToUpper();
             else
                 return codec.ToTitleCase();
+        }
+
+        /// <summary> Show fraction in a nicely readable way, including a decimal approximation. Tilde symbol will be added before the approx number unless <paramref name="showTildeForApprox"/> is False. </summary>
+        public static string Fraction(Fraction f, bool showTildeForApprox = true)
+        {
+            // No need to show "24/1" since we can just show "24"
+            if (f.Denominator == 1)
+                return f.Numerator.ToString();
+
+            // If number is actually fractional, show the fraction as well as the approx. decimal number
+            string decimalStr = f.GetFloat().ToString("0.###");
+            bool isPrecise = decimalStr == f.GetFloat().ToString("0.####"); // If 0.___ matches with 0.____ it means we have enough decimal places and thus it's precise
+            string t = showTildeForApprox && !isPrecise ? "~" : "";
+            return $"{f} ({t}{decimalStr})";
         }
     }
 }
