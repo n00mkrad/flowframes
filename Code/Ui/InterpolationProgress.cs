@@ -135,7 +135,7 @@ namespace Flowframes.Ui
             interpolatedInputFramesCount = ((frames / I.currentSettings.interpFactor).RoundToInt() - 1);
             //ResumeUtils.Save();
             frames = frames.Clamp(0, target);
-            int percent = (int)Math.Round(((float)frames / target) * 100f);
+            int percent = (int)Math.Round(((float)frames / target) * 100f * Interpolate.InterpProgressMultiplier);
             Program.mainForm.SetProgress(percent);
 
             float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);

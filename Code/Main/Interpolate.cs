@@ -26,6 +26,7 @@ namespace Flowframes
         public static InterpSettings currentSettings;
         public static MediaFile currentMediaFile;
         public static bool canceled = false;
+        public static float InterpProgressMultiplier = 1f;
         static Stopwatch sw = new Stopwatch();
 
         public static async Task Start()
@@ -149,6 +150,8 @@ namespace Flowframes
                     Logger.Log($"Deduplication: Kept {framesLeft} frames.");
                 else
                     Logger.Log($"Deduplication: Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.");
+
+                // InterpProgressMultiplier = (currentMediaFile.FrameCount / (float)framesLeft);
             }
 
             if (!Config.GetBool("allowConsecutiveSceneChanges", true))

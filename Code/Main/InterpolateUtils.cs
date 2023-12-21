@@ -117,7 +117,7 @@ namespace Flowframes.Main
                 }
 
                 string fpsLimitValue = Config.Get(Config.Key.maxFps);
-                float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(Config.Get(Config.Key.maxFps)).GetFloat() : fpsLimitValue.GetFloat());
+                float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(fpsLimitValue).GetFloat() : fpsLimitValue.GetFloat());
                 int maxFps = s.outSettings.Encoder.GetInfo().MaxFramerate;
 
                 if (passes && s.outFps.GetFloat() < 1f || (s.outFps.GetFloat() > maxFps && !(fpsLimit > 0 && fpsLimit <= maxFps)))
@@ -126,6 +126,13 @@ namespace Flowframes.Main
                     UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.GetFloat()}).\nMust be 1-{maxFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");
                     passes = false;
                 }
+
+                float fpsLimitFloat = fpsLimitValue.GetFloat();
+
+                if (fpsLimitFloat > 0)
+                    Interpolate.InterpProgressMultiplier = s.outFps.GetFloat() / fpsLimitFloat;
+                else
+                    Interpolate.InterpProgressMultiplier = 1f;
 
                 if (!passes)
                     I.Cancel("Invalid settings detected.", true);

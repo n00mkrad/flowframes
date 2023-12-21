@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using Flowframes.IO;
 using ImageMagick;
-using Flowframes.Os;
-using Flowframes.Data;
-using System.Drawing;
-using Paths = Flowframes.IO.Paths;
 using Newtonsoft.Json;
 
 namespace Flowframes.Magick
@@ -117,7 +113,7 @@ namespace Flowframes.Magick
 								}
 							}
 
-							System.Threading.Interlocked.Increment(ref statsFramesDeleted);
+							Interlocked.Increment(ref statsFramesDeleted);
 
 							if (j+1 == framePaths.Length)
 								return;
@@ -126,7 +122,7 @@ namespace Flowframes.Magick
 						}
 
 
-						System.Threading.Interlocked.Increment(ref statsFramesKept);
+						Interlocked.Increment(ref statsFramesKept);
 
 						// this frame is different, stop testing agaisnt 'i'
 						// all the frames between i and j are dupes, we can skip them
@@ -206,8 +202,14 @@ namespace Flowframes.Magick
 			Logger.Log($"[Deduplication]{testStr} Done. Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.", false, true);
 
 			if (statsFramesKept <= 0)
-				Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");
-		}
+			{
+                Interpolate.Cancel("No frames were left after de-duplication!\n\nTry decreasing the de-duplication threshold.");
+            }
+			else
+			{
+                // Interpolate.InterpProgressMultiplier = (framePaths.Length / (float)framesLeft);
+            }
+        }
 		static float GetDifference(MagickImage img1, MagickImage img2)
 		{
 			double err = img1.Compare(img2, ErrorMetric.Fuzz);
