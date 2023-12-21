@@ -288,8 +288,10 @@ namespace Flowframes
         public static async Task Cleanup(bool ignoreKeepSetting = false, int retriesLeft = 3, bool isRetry = false)
         {
             if ((!ignoreKeepSetting && Config.GetBool(Config.Key.keepTempFolder)) || !Program.busy) return;
+
             if (!isRetry)
                 Logger.Log("Deleting temporary files...");
+
             try
             {
                 await Task.Run(async () => { Directory.Delete(currentSettings.tempFolder, true); });

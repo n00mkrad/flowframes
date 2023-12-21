@@ -122,6 +122,7 @@ namespace Flowframes
                 }
 
                 IoUtils.GetFilesSorted(Paths.GetPkgPath(), false, "*.log*").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
+                IoUtils.GetFilesSorted(Path.Combine(Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%"), "CrashDumps"), false, "rife*.exe.*.dmp").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
             }
             catch (Exception e)
             {
