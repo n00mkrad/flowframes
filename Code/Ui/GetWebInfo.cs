@@ -56,7 +56,6 @@ namespace Flowframes.Ui
                     if (i == 0 || line.Length < 10 || values.Length < 5) continue;
                     string name = values[0].Trim();
                     string status = values[4].Trim();
-                    // float amount = float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture);
                     string tier = values[9].Trim();
 
                     if (status.Contains("Active"))

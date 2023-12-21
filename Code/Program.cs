@@ -7,6 +7,7 @@ using Flowframes.Os;
 using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -35,6 +36,12 @@ namespace Flowframes
         [STAThread]
         static void Main()
         {
+            var culture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+
             Paths.Init();
             Config.Init();
             Cleanup();
