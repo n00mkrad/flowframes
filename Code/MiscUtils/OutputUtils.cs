@@ -321,25 +321,19 @@ namespace Flowframes.MiscUtils
 
         public static int GetCrf (Quality.Common qualityLevel, Encoder encoder)
         {
-            int baseCrf = Crfs[qualityLevel];
-            float multiplier = 1f;
+            var encoderMultipliers = new Dictionary<Encoder, float>
+            {
+                { Encoder.X265, 1.0f },
+                { Encoder.VpxVp9, 1.3f },
+                { Encoder.SvtAv1, 1.3f },
+                { Encoder.Nvenc264, 1.1f },
+                { Encoder.Nvenc265, 1.15f },
+                { Encoder.NvencAv1, 1.3f },
+                { Encoder.Qsv265, 0.8f }
+            };
 
-            if (encoder == Encoder.X265)
-                multiplier = 1.0f;
-            if (encoder == Encoder.VpxVp9)
-                multiplier = 1.3f;
-            if (encoder == Encoder.SvtAv1)
-                multiplier = 1.3f;
-            if (encoder == Encoder.Nvenc264)
-                multiplier = 1.1f;
-            if (encoder == Encoder.Nvenc265)
-                multiplier = 1.15f;
-            if (encoder == Encoder.NvencAv1)
-                multiplier = 1.3f;
-            if (encoder == Encoder.Qsv265)
-                multiplier = 0.8f;
-
-            return (baseCrf * multiplier).RoundToInt();
+            float multiplier = encoderMultipliers.TryGetValue(encoder, out float value) ? value : 1.0f;
+            return (int)Math.Round(Crfs[qualityLevel] * multiplier);
         }
 
         public static int GetGifColors (Quality.GifColors qualityLevel)
