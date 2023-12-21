@@ -146,12 +146,13 @@ namespace Flowframes
                 float percentDeleted = ((float)framesDeleted / currentMediaFile.FrameCount) * 100f;
                 string keptPercent = $"{(100f - percentDeleted).ToString("0.0")}%";
 
-                if (QuickSettingsTab.trimEnabled)
-                    Logger.Log($"Deduplication: Kept {framesLeft} frames.");
-                else
-                    Logger.Log($"Deduplication: Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.");
-
-                // InterpProgressMultiplier = (currentMediaFile.FrameCount / (float)framesLeft);
+                if (framesDeleted > 0)
+                {
+                    if (QuickSettingsTab.trimEnabled)
+                        Logger.Log($"Deduplication: Kept {framesLeft} frames.");
+                    else
+                        Logger.Log($"Deduplication: Kept {framesLeft} ({keptPercent}) frames, deleted {framesDeleted} frames.");
+                }
             }
 
             if (!Config.GetBool("allowConsecutiveSceneChanges", true))
