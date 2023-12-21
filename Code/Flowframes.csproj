@@ -309,6 +309,12 @@
     <Reference Include="Tulpep.NotificationWindow, Version=1.1.38.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Tulpep.NotificationWindow.1.1.38\lib\net40\Tulpep.NotificationWindow.dll</HintPath>
     </Reference>
+    <Reference Include="Vulkan, Version=0.0.6850.37785, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\VulkanSharp.0.1.10\lib\net452\Vulkan.dll</HintPath>
+    </Reference>
+    <Reference Include="Vulkan.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\VulkanSharp.0.1.10\lib\net452\Vulkan.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="Win32Interop.Dwmapi, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Win32Interop.Dwmapi.1.0.1\lib\Win32Interop.Dwmapi.dll</HintPath>
     </Reference>
@@ -475,6 +481,7 @@
     <Compile Include="Os\StartupChecks.cs" />
     <Compile Include="Os\Updater.cs" />
     <Compile Include="Os\VapourSynthUtils.cs" />
+    <Compile Include="Os\VulkanUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscUtils\FormatUtils.cs" />

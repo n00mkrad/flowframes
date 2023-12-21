@@ -14,51 +14,13 @@ namespace Flowframes.Utilities
 {
     class NcnnUtils
     {
-        public static Dictionary<int, int> GpuIdsQueueCounts = null;
-
-        /// <summary> Get amount of GPU Compute Queues (VK) for each GPU </summary>
-        public static async Task<Dictionary<int, int>> GetNcnnGpuComputeQueueCounts ()
-        {
-            if(GpuIdsQueueCounts != null)
-                return GpuIdsQueueCounts;
-
-            Dictionary<int, int> queueCounts = new Dictionary<int, int>(); // int gpuId, int queueCount
-
-            Process rifeNcnn = OsUtils.NewProcess(true);
-            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D  {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir)} & rife-ncnn-vulkan.exe -i dummydir -o dummydir";
-
-            string output = await Task.Run(() => OsUtils.GetProcStdOut(rifeNcnn, true));
-            var queueLines = output.SplitIntoLines().Where(x => x.MatchesWildcard(@"*queueC=*queue*"));
-
-            foreach (var line in queueLines)
-            {
-                int gpuId = line.Split(' ')[0].GetInt();
-                int queueCount = line.Split("queue")[1].Split('[')[1].Split(']')[0].GetInt();
-                Logger.Log($"NCNN: Found GPU {gpuId} with compute queue count {queueCount}", true);
-                queueCounts[gpuId] = queueCount;
-            }
-
-            GpuIdsQueueCounts = queueCounts;
-            return queueCounts;
-        }
-
-        public static async Task<int> GetRifeNcnnGpuThreads(Size res, int gpuId, AI ai)
+        public static int GetRifeNcnnGpuThreads(Size res, int gpuId, AI ai)
         {
             int threads = Config.GetInt(Config.Key.ncnnThreads);
-            //if (res.Width * res.Height > 2560 * 1440) threads = 4;
-            // if (res.Width * res.Height > 3840 * 2160) threads = 1;
+            int maxThreads = VulkanUtils.GetMaxNcnnThreads(gpuId);
 
-            if (threads != 1)
-            {
-                var queueDict = await GetNcnnGpuComputeQueueCounts();
-                int maxThreads = queueDict.ContainsKey(gpuId) ? queueDict[gpuId] : 1;
-                threads = threads.Clamp(1, maxThreads); // To avoid exceeding the max queue count
-                Logger.Log($"Using {threads}/{maxThreads} GPU threads.", true, false, ai.LogFilename);
-            }
-            else
-            {
-                Logger.Log($"Using {threads} GPU thread.", true, false, ai.LogFilename);
-            }
+            threads = threads.Clamp(1, maxThreads); // To avoid exceeding the max queue count
+            Logger.Log($"Using {threads}/{maxThreads} GPU compute threads.", true, false, ai.LogFilename);
 
             return threads;
         }
@@ -79,15 +41,11 @@ namespace Flowframes.Utilities
             return tilesizeStr;
         }
 
-        public static async Task<string> GetNcnnThreads(AI ai)
+        public static string GetNcnnThreads(AI ai)
         {
-            int gpusAmount = Config.Get(Config.Key.ncnnGpus).Split(',').Length;
-            int threads = await GetRifeNcnnGpuThreads(new Size(), Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt(), ai);
-            string progThreadsStr = $"{threads}";
-
-            for (int i = 1; i < gpusAmount; i++)
-                progThreadsStr += $",{threads}";
-
+            List<int> enabledGpuIds = Config.Get(Config.Key.ncnnGpus).Split(',').Select(s => s.GetInt()).ToList(); // Get GPU IDs
+            List<int> gpuThreadCounts = enabledGpuIds.Select(g => GetRifeNcnnGpuThreads(new Size(), g, ai)).ToList(); // Get max thread count for each GPU
+            string progThreadsStr = string.Join(",", gpuThreadCounts);
             return $"{(Interpolate.currentlyUsingAutoEnc ? 2 : 4)}:{progThreadsStr}:4"; // Read threads: 1 for singlethreaded, 2 for autoenc, 4 if order is irrelevant
         }
 

@@ -61,6 +61,7 @@ namespace Flowframes.Forms.Main
 
             Program.mainForm = this;
             Logger.textbox = logBox;
+            VulkanUtils.Init();
             NvApi.Init();
             InterpolationProgress.preview = previewPicturebox;
             RemovePreviewIfDisabled();
