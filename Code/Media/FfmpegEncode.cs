@@ -1,13 +1,10 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
-using Flowframes.Properties;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FfmpegUtils;
 
@@ -67,8 +64,7 @@ namespace Flowframes.Media
 
             if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllValues())
             {
-                Logger.Log($"Applying color transfer ({extraData.colorSpace}).", true, false, "ffmpeg");
-                filters.Add($"scale=out_color_matrix={extraData.colorSpace}");
+                Logger.Log($"Using color data: Space {extraData.colorSpace}; Primaries {extraData.colorPrimaries}; Transfer {extraData.colorTransfer}; Range {extraData.colorRange}", true, false, "ffmpeg");
                 extraArgs.Add($"-colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v {extraData.colorRange.Wrap()}");
             }
 
