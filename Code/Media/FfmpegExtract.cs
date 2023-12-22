@@ -43,30 +43,56 @@ namespace Flowframes.Media
 
         static string GetImgArgs(string extension, bool includePixFmt = true, bool alpha = false)
         {
-            extension = extension.ToLowerInvariant().Remove(".").Replace("jpeg", "jpg");
-            string pixFmt = "-pix_fmt rgb24";
+            extension = extension.Lower().Remove(".").Replace("jpeg", "jpg");
+
+            string pixFmt = "yuv420p";
+
+            if (Interpolate.currentMediaFile != null && Interpolate.currentMediaFile.VideoStreams.Any())
+            {
+                pixFmt = Interpolate.currentMediaFile.VideoStreams.First().PixelFormat.Lower();
+            }
+
+            bool inputHighBitDepth = pixFmt.Contains("p10") || pixFmt.Contains("p16");
+            bool outputHighBitDepth = Interpolate.currentSettings.outSettings.PixelFormat.ToString().Lower().Contains("p10");
+
             string args = "";
 
-            if (extension.Contains("png"))
+            if (extension == "png")
             {
-                pixFmt = alpha ? "rgba" : "rgb24";
-                args = $"{pngCompr}";
+                pixFmt = alpha ? "rgba" : "rgb24"; // PNG can't use YUV so we overwrite it with RGB
+                args = pngCompr;
             }
-
-            if (extension.Contains("jpg"))
+            else if (extension == "jpg")
             {
-                pixFmt = "yuv420p";
+                // Fallback to YUV420P if not in list of supported formats
+                if (!new[] { "yuvj420p", "yuvj422p", "yuvj444p", "yuv420p", "yuv422p", "yuv444p" }.Contains(pixFmt))
+                {
+                    pixFmt = "yuv420p";
+                }
+
                 args = $"-q:v 1";
             }
-
-            if (extension.Contains("webp"))
+            else if (extension == "tiff")
             {
-                pixFmt = "yuv420p";
+                // Fallback to YUV420P if not in list of supported formats
+                if (!new[] { "rgb24", "rgb48le", "pal8", "rgba", "yuv420p", "yuv422p", "yuv440p", "yuv444p" }.Contains(pixFmt))
+                {
+                    pixFmt = inputHighBitDepth && outputHighBitDepth ? "rgb48le" : "yuv420p";
+                }
+            }
+            else if (extension == "webp")
+            {
+                // Fallback to YUV420P if not in list of supported formats
+                if (!new[] { "bgra", "yuv420p", "yuva420p" }.Contains(pixFmt))
+                {
+                    pixFmt = "yuv420p";
+                }
+
                 args = $"-q:v 100";
             }
 
             if (includePixFmt)
-                args += $" -pix_fmt {pixFmt} -color_range full";
+                args += $" -pix_fmt {pixFmt}";
 
             return args;
         }
@@ -105,7 +131,7 @@ namespace Flowframes.Media
             }
         }
 
-        public static async Task CopyImages (string inpath, string outpath, bool showLog)
+        public static async Task CopyImages(string inpath, string outpath, bool showLog)
         {
             if (showLog) Logger.Log($"Loading images from {new DirectoryInfo(inpath).Name}...");
             Directory.CreateDirectory(outpath);
@@ -129,14 +155,15 @@ namespace Flowframes.Media
             else
             {
                 Logger.Log($"Symlink Import disabled, copying input frames...", true);
-                await Task.Run(async () => {
+                await Task.Run(async () =>
+                {
                     foreach (KeyValuePair<string, string> moveFromToPair in moveFromTo)
                         File.Copy(moveFromToPair.Key, moveFromToPair.Value);
                 });
             }
         }
 
-        static bool AreImagesCompatible (string inpath, int maxHeight)
+        static bool AreImagesCompatible(string inpath, int maxHeight)
         {
             NmkdStopwatch sw = new NmkdStopwatch();
             string[] validExtensions = Filetypes.imagesInterpCompat; // = new string[] { ".jpg", ".jpeg", ".png" };
@@ -310,7 +337,7 @@ namespace Flowframes.Media
             await RunFfmpeg(args, LogMode.Hidden);
         }
 
-        public static async Task GeneratePalette (string inputFile, string outputPath, int colors = 256)
+        public static async Task GeneratePalette(string inputFile, string outputPath, int colors = 256)
         {
             string args = $"-i {inputFile.Wrap()} -vf palettegen={colors} {outputPath.Wrap()}";
             await Task.Run(() => AvProcess.RunFfmpegSync(args));

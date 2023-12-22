@@ -58,7 +58,9 @@ namespace Flowframes.Os
             l.Add($"inputPath = r'{inputPath}'");
             l.Add($"");
 
-            if (s.InterpSettings.inputIsFrames || (s.Dedupe && !s.Realtime))
+            bool loadFrames = s.InterpSettings.inputIsFrames || (s.Dedupe && !s.Realtime);
+
+            if (loadFrames)
             {
                 FileInfo[] frames = IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false, "*.*");
                 string ext = frames.FirstOrDefault().Extension;
@@ -85,7 +87,7 @@ namespace Flowframes.Os
                 l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
             }
 
-            l.Add(GetScaleLines(s));
+            l.Add(GetScaleLines(s, loadFrames));
 
             if (sc)
                 l.Add($"clip = core.misc.SCDetect(clip=clip, threshold={s.SceneDetectSensitivity.ToStringDot()})"); // Scene detection
@@ -96,7 +98,7 @@ namespace Flowframes.Os
             if (s.Dedupe && !s.Realtime)
                 l.Add(GetRedupeLines(s));
 
-            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=cMatrix)"); // Convert RGB to YUV
+            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s={(loadFrames ? "'470bg'" : "cMatrix")})"); // Convert RGB to YUV. Always use 470bg if input is frames
 
             if (!s.Dedupe) // Ignore trimming code when using deduping that that already handles trimming in the frame order file
             {
@@ -131,7 +133,7 @@ namespace Flowframes.Os
             return vpyPath;
         }
 
-        static string GetScaleLines(VsSettings settings)
+        static string GetScaleLines(VsSettings settings, bool loadFrames)
         {
             InterpSettings interp = settings.InterpSettings;
             bool resize = !interp.ScaledResolution.IsEmpty && interp.ScaledResolution != interp.InputResolution;
@@ -141,7 +143,7 @@ namespace Flowframes.Os
             s += $"cMatrix = '709'\n";
             s += $"\n";
 
-            if (!interp.inputIsFrames)
+            if (!loadFrames)
             {
                 s += "try:\n";
                 s += "    m = clip.get_frame(0).props._Matrix\n";

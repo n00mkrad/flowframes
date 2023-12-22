@@ -54,7 +54,7 @@ namespace Flowframes.Forms.Main
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-            
+
             UiUtils.InitCombox(aiModel, 2);
             // Video Utils
             UiUtils.InitCombox(trimCombox, 0);
@@ -89,7 +89,7 @@ namespace Flowframes.Forms.Main
             UpdateOutputUi();
         }
 
-        public async void ResetOutputUi ()
+        public async void ResetOutputUi()
         {
             comboxOutputEncoder.Items.Clear();
             Config.Set(Config.Key.PerformedHwEncCheck, false.ToString());
@@ -218,12 +218,23 @@ namespace Flowframes.Forms.Main
         public InterpSettings GetCurrentSettings()
         {
             SetTab(interpOptsTab.Name);
-            string inPath = inputTbox.Text.Trim();
-            string outPath = outputTbox.Text.Trim();
             AI ai = GetAi();
-            float interpFactor = interpFactorCombox.GetFloat();
-            float itsScale = outSpeedCombox.GetInt().Clamp(1, 64);
-            return new InterpSettings(inPath, outPath, ai, currInFpsDetected, currInFps, interpFactor, itsScale, GetOutputSettings(), GetModel(ai));
+
+            var s = new InterpSettings()
+            {
+                inPath = inputTbox.Text.Trim(),
+                outPath = outputTbox.Text.Trim(),
+                ai = ai,
+                inFpsDetected = currInFpsDetected,
+                inFps = currInFps,
+                interpFactor = interpFactorCombox.GetFloat(),
+                outItsScale = outSpeedCombox.GetInt().Clamp(1, 64),
+                outSettings = GetOutputSettings(),
+                model = GetModel(ai),
+            };
+
+            s.InitArgs();
+            return s;
         }
 
         public InterpSettings UpdateCurrentSettings(InterpSettings settings)
@@ -349,7 +360,7 @@ namespace Flowframes.Forms.Main
             return ai.FriendlyName + " - " + ai.Description;
         }
 
-        private void InitializeMainTab ()
+        private void InitializeMainTab()
         {
             if (_mainTabInitialized)
                 return;
@@ -416,7 +427,7 @@ namespace Flowframes.Forms.Main
             }
         }
 
-        private void SaveOutputSettings ()
+        private void SaveOutputSettings()
         {
             var strings = new List<string>();
             if (comboxOutputFormat.Visible) strings.Add(comboxOutputFormat.Text);
@@ -692,7 +703,7 @@ namespace Flowframes.Forms.Main
         {
             if (!_initialized) return;
 
-            if(mainTabControl.SelectedTab == interpOptsTab)
+            if (mainTabControl.SelectedTab == interpOptsTab)
             {
                 aiCombox_SelectedIndexChanged(null, null);
                 InitializeMainTab();

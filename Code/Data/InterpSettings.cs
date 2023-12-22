@@ -20,6 +20,7 @@ namespace Flowframes
         public string outPath;
         public string FullOutPath { get; set; } = "";
         public AI ai;
+        public string inPixFmt = "yuv420p";
         public Fraction inFps;
         public Fraction inFpsDetected;
         public Fraction outFps;
@@ -54,10 +55,16 @@ namespace Flowframes
             inFpsDetected = inFpsDetectedArg;
             inFps = inFpsArg;
             interpFactor = interpFactorArg;
-            outFps = inFpsArg * (double)interpFactorArg;
             outItsScale = itsScale;
             outSettings = outSettingsArg;
             model = modelArg;
+
+            InitArgs();
+        }
+
+        public void InitArgs ()
+        {
+            outFps = inFps * (double)interpFactor;
 
             alpha = false;
             stepByStep = false;
@@ -204,7 +211,7 @@ namespace Flowframes
             if (alpha || forceHqChroma)     // Force PNG if alpha is enabled, or output is not 4:2:0 subsampled
             {
                 if(type == FrameType.Both || type == FrameType.Import)
-                    framesExt = ".png";
+                    framesExt = ".tiff";
 
                 if (type == FrameType.Both || type == FrameType.Interp)
                     interpExt = ".png";
@@ -212,7 +219,7 @@ namespace Flowframes
             else
             {
                 if (type == FrameType.Both || type == FrameType.Import)
-                    framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".png");
+                    framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".tiff");
 
                 if (type == FrameType.Both || type == FrameType.Interp)
                     interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
