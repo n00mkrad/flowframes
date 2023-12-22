@@ -20,7 +20,7 @@ namespace Flowframes.Os
     {
         public static string GetProcStdOut(Process proc, bool includeStdErr = false, ProcessPriorityClass priority = ProcessPriorityClass.BelowNormal)
         {
-            if (includeStdErr)
+            if (includeStdErr && !proc.StartInfo.Arguments.EndsWith("2>&1"))
                 proc.StartInfo.Arguments += " 2>&1";
 
             proc.Start();
