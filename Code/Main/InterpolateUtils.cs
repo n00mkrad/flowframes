@@ -129,7 +129,7 @@ namespace Flowframes.Main
 
                 float fpsLimitFloat = fpsLimitValue.GetFloat();
 
-                if (fpsLimitFloat > 0)
+                if (fpsLimitFloat > 0 && fpsLimitFloat < s.outFps.GetFloat())
                     Interpolate.InterpProgressMultiplier = s.outFps.GetFloat() / fpsLimitFloat;
                 else
                     Interpolate.InterpProgressMultiplier = 1f;
