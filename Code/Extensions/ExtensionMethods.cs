@@ -11,6 +11,8 @@ using Flowframes.Data;
 using System.Management.Automation;
 using System.Drawing;
 using Flowframes.MiscUtils;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
 
 namespace Flowframes
 {
@@ -395,6 +397,19 @@ namespace Flowframes
         public static bool IsNotEmpty(this string s)
         {
             return !string.IsNullOrWhiteSpace(s);
+        }
+
+        public static string ToJson(this object o, bool indent = false, bool ignoreErrors = true)
+        {
+            var settings = new JsonSerializerSettings();
+
+            if (ignoreErrors)
+                settings.Error = (s, e) => { e.ErrorContext.Handled = true; };
+
+            // Serialize enums as strings.
+            settings.Converters.Add(new StringEnumConverter());
+
+            return JsonConvert.SerializeObject(o, indent ? Formatting.Indented : Formatting.None, settings);
         }
     }
 }
