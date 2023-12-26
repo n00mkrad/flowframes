@@ -89,10 +89,12 @@ namespace Flowframes.Main
 
             if (ffplay)
             {
-                encArgs = $"-pix_fmt yuv444p";
+                bool useNutPipe = true; // TODO: Make this bool a config flag
+                encArgs = useNutPipe ? "-c:v rawvideo -pix_fmt rgba" : $"-pix_fmt yuv444p16";
+                string format = useNutPipe ? "nut" : "yuv4mpegpipe";
 
                 return
-                    $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} -f yuv4mpegpipe - | ffplay - " +
+                    $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} -f {format} - | ffplay - " +
                     $"-autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} " +
                     $"-window_title \"Flowframes Realtime Interpolation ({s.inFps.GetString()} FPS x{s.interpFactor} = {s.outFps.GetString()} FPS) ({s.model.Name})\" ";
             }
