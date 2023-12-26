@@ -98,7 +98,8 @@ namespace Flowframes.Os
             if (s.Dedupe && !s.Realtime)
                 l.Add(GetRedupeLines(s));
 
-            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s={(loadFrames ? "'470bg'" : "cMatrix")})"); // Convert RGB to YUV. Always use 470bg if input is frames
+            bool use470bg = loadFrames && Interpolate.currentMediaFile.Format.Upper() != "GIF";
+            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s={(use470bg ? "'470bg'" : "cMatrix")})"); // Convert RGB to YUV. Always use 470bg if input is YUV frames
 
             if (!s.Dedupe) // Ignore trimming code when using deduping that that already handles trimming in the frame order file
             {

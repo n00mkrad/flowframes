@@ -49,7 +49,8 @@ namespace Flowframes.Media
 
             if (Interpolate.currentMediaFile != null && Interpolate.currentMediaFile.VideoStreams.Any())
             {
-                pixFmt = Interpolate.currentMediaFile.VideoStreams.First().PixelFormat.Lower();
+                pixFmt = Interpolate.currentMediaFile.VideoStreams.First().PixelFormat;
+                pixFmt = SimplifyPixFmt(pixFmt);
             }
 
             bool inputHighBitDepth = pixFmt.Contains("p10") || pixFmt.Contains("p16");
@@ -65,7 +66,7 @@ namespace Flowframes.Media
             else if (extension == "jpg")
             {
                 // Fallback to YUV420P if not in list of supported formats
-                if (!new[] { "yuvj420p", "yuvj422p", "yuvj444p", "yuv420p", "yuv422p", "yuv444p" }.Contains(pixFmt))
+                if (!new[] { "yuv420p", "yuv422p", "yuv444p" }.Contains(pixFmt))
                 {
                     pixFmt = "yuv420p";
                 }
@@ -95,6 +96,14 @@ namespace Flowframes.Media
                 args += $" -pix_fmt {pixFmt}";
 
             return args;
+        }
+
+        private static string SimplifyPixFmt (string pixFmt)
+        {
+            pixFmt = pixFmt.Lower();
+            pixFmt = pixFmt.Replace("yuvj", "yuv");
+            pixFmt = pixFmt.Replace("bgra", "rgba");
+            return pixFmt;
         }
 
         public static async Task VideoToFrames(string inputFile, string framesDir, bool alpha, Fraction rate, bool deDupe, bool delSrc, Size size, string format)

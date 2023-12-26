@@ -1,6 +1,5 @@
 ﻿using Flowframes.IO;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Flowframes.Data
@@ -18,6 +17,8 @@ namespace Flowframes.Data
 
         private readonly string[] validColorSpaces = new string[] { "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100",
             "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", "arib-std-b67" };
+
+        public VidExtraData () { }
 
         public VidExtraData(string ffprobeOutput)
         {
