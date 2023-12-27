@@ -10,9 +10,10 @@ namespace Flowframes.Data.Streams
         public Size Resolution { get; }
         public Size Sar { get; }
         public Size Dar { get; }
-        public Fraction Rate { get; }
+        public FpsInfo FpsInfo { get; }
+        public Fraction Rate { get => FpsInfo.Fps; }
 
-        public VideoStream(string language, string title, string codec, string codecLong, string pixFmt, int kbits, Size resolution, Size sar, Size dar, Fraction rate, int frameCount)
+        public VideoStream(string language, string title, string codec, string codecLong, string pixFmt, int kbits, Size resolution, Size sar, Size dar, FpsInfo fpsInf, int frameCount)
         {
             base.Type = StreamType.Video;
             Codec = codec;
@@ -22,7 +23,7 @@ namespace Flowframes.Data.Streams
             Resolution = resolution;
             Sar = sar;
             Dar = dar;
-            Rate = rate;
+            FpsInfo = fpsInf;
             FrameCount = frameCount;
             Language = language;
             Title = title;

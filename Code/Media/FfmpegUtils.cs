@@ -69,7 +69,7 @@ namespace Flowframes.Media
                             Size res = await GetMediaResolutionCached.GetSizeAsync(path);
                             Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
                             Size dar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "display_aspect_ratio", idx));
-                            Fraction fps = path.IsConcatFile() ? (Fraction)defaultFps : await IoUtils.GetVideoFramerate(path);
+                            FpsInfo fps = await GetFps(path, streamStr, idx, (Fraction)defaultFps);
                             int frameCount = countFrames ? await GetFrameCountCached.GetFrameCountAsync(path) : 0;
                             VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount);
                             vStream.Index = idx;
@@ -163,6 +163,30 @@ namespace Flowframes.Media
                 Program.mainForm.SetProgress(0);
 
             return streamList;
+        }
+
+        private static async Task<FpsInfo> GetFps (string path, string streamStr, int streamIdx, Fraction defaultFps)
+        {
+            if (path.IsConcatFile())
+                return new FpsInfo(defaultFps);
+
+            if (streamStr.Contains("fps, ") && streamStr.Contains(" tbr"))
+            {
+                string fps = streamStr.Split(", ").Where(s => s.Contains(" fps")).First().Trim().Split(' ')[0];
+                string tbr = streamStr.Split("fps, ")[1].Split(" tbr")[0].Trim();
+
+                var info = new FpsInfo(new Fraction(tbr));
+
+                if(tbr != fps)
+                {
+                    string avgFpsStr = await GetFfprobeInfoAsync(path, showStreams, "avg_frame_rate", streamIdx);
+                    info.AverageFps = new Fraction(avgFpsStr);
+                }
+
+                return info;
+            }
+
+            return new FpsInfo(await IoUtils.GetVideoFramerate(path));
         }
 
         public static async Task<bool> IsSubtitleBitmapBased(string path, int streamIndex, string codec = "")

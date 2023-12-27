@@ -101,25 +101,27 @@ namespace Flowframes.Os
 
         public static void KillProcessTree(int pid)
         {
-            ManagementObjectSearcher processSearcher = new ManagementObjectSearcher
-              ("Select * From Win32_Process Where ParentProcessID=" + pid);
-            ManagementObjectCollection processCollection = processSearcher.Get();
+            // Get a list of all currently running processes
+            Process[] runningProcesses = Process.GetProcesses();
 
-            try
+            // Check if the process with the given pid is running
+            Process proc = Process.GetProcesses().FirstOrDefault(p => p.Id == pid);
+
+            if (proc != null && !proc.HasExited)
             {
-                Process proc = Process.GetProcessById(pid);
-                if (!proc.HasExited) proc.Kill();
+                proc.Kill();
             }
-            catch (ArgumentException)
-            {
-                // Process already exited.
-            }
+
+            // Query to find child processes
+            ManagementObjectSearcher processSearcher = new ManagementObjectSearcher($"Select * From Win32_Process Where ParentProcessID={pid}");
+            ManagementObjectCollection processCollection = processSearcher.Get();
 
             if (processCollection != null)
             {
                 foreach (ManagementObject mo in processCollection)
                 {
-                    KillProcessTree(Convert.ToInt32(mo["ProcessID"])); //kill child processes(also kills childrens of childrens etc.)
+                    // Recursively kill child processes
+                    KillProcessTree(Convert.ToInt32(mo["ProcessID"]));
                 }
             }
         }

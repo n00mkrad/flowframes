@@ -60,7 +60,7 @@ namespace Flowframes.Media
             var extraArgs = new List<string> { Config.Get(Config.Key.ffEncArgs) };
 
             if (resampleFps.GetFloat() >= 0.1f)
-                filters.Add($"fps=fps={resampleFps}");
+                filters.Add($"fps={resampleFps}");
 
             if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllValues())
             {

@@ -345,6 +345,7 @@
     <Compile Include="Data\Enums.cs" />
     <Compile Include="Data\ExportSettings.cs" />
     <Compile Include="Data\Filetypes.cs" />
+    <Compile Include="Data\FpsInfo.cs" />
     <Compile Include="Data\MediaFile.cs" />
     <Compile Include="Data\ModelCollection.cs" />
     <Compile Include="Data\Servers.cs" />
