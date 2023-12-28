@@ -1,12 +1,10 @@
 ﻿using Flowframes.Media;
 using Flowframes.Data;
 using Flowframes.IO;
-using Flowframes.Main;
 using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +14,6 @@ namespace Flowframes
 {
     class FfmpegCommands
     {
-        //public static string padFilter = "pad=width=ceil(iw/2)*2:height=ceil(ih/2)*2:color=black@0";
         public static string hdrFilter = @"-vf zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
         public static string pngCompr = "-compression_level 3";
 
