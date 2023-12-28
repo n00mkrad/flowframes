@@ -13,6 +13,7 @@ using System.Drawing;
 using Flowframes.MiscUtils;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
+using Win32Interop.Structs;
 
 namespace Flowframes
 {
@@ -39,7 +40,7 @@ namespace Flowframes
 
         public static int GetInt(this string str)
         {
-            if (str == null || str.Length < 1)
+            if (str == null || str.Length < 1 || str.Contains("\n") || str == "N/A" || !str.Any(char.IsDigit))
                 return 0;
 
             try
