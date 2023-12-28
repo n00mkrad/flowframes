@@ -4,6 +4,7 @@ using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Properties;
+using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -69,8 +70,8 @@ namespace Flowframes.Media
                             Size res = await GetMediaResolutionCached.GetSizeAsync(path);
                             Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
                             Size dar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "display_aspect_ratio", idx));
-                            FpsInfo fps = await GetFps(path, streamStr, idx, (Fraction)defaultFps);
                             int frameCount = countFrames ? await GetFrameCountCached.GetFrameCountAsync(path) : 0;
+                            FpsInfo fps = await GetFps(path, streamStr, idx, (Fraction)defaultFps, frameCount);
                             VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount);
                             vStream.Index = idx;
                             vStream.IsDefault = def;
@@ -165,7 +166,7 @@ namespace Flowframes.Media
             return streamList;
         }
 
-        private static async Task<FpsInfo> GetFps (string path, string streamStr, int streamIdx, Fraction defaultFps)
+        private static async Task<FpsInfo> GetFps(string path, string streamStr, int streamIdx, Fraction defaultFps, int frameCount)
         {
             if (path.IsConcatFile())
                 return new FpsInfo(defaultFps);
@@ -174,19 +175,43 @@ namespace Flowframes.Media
             {
                 string fps = streamStr.Split(", ").Where(s => s.Contains(" fps")).First().Trim().Split(' ')[0];
                 string tbr = streamStr.Split("fps, ")[1].Split(" tbr")[0].Trim();
+                long durationMs = Interpolate.currentMediaFile.DurationMs;
+                float fpsCalc = (float)frameCount / (durationMs / 1000f);
+                fpsCalc = (float)Math.Round(fpsCalc, 5);
 
-                var info = new FpsInfo(new Fraction(tbr));
+                var info = new FpsInfo(new Fraction(fps.GetFloat())); // Set both true FPS and average FPS to this number for now
 
-                if(tbr != fps)
+                Logger.Log($"FPS: {fps} - TBR: {tbr} - Est. FPS: {fpsCalc.ToString("0.#####")}", true);
+
+                if (tbr != fps)
                 {
-                    string avgFpsStr = await GetFfprobeInfoAsync(path, showStreams, "avg_frame_rate", streamIdx);
-                    info.AverageFps = new Fraction(avgFpsStr);
+                    info.SpecifiedFps = new Fraction(tbr); // Change FPS to TBR if they mismatch
+                }
+
+                float fpsEstTolerance = GetFpsEstimationTolerance(durationMs);
+
+                if (Math.Abs(fps.GetFloat() - fpsCalc) > fpsEstTolerance)
+                {
+                    Logger.Log($"Detected FPS {fps} is not within tolerance (+-{fpsEstTolerance}) of calculated FPS ({fpsCalc}), using estimated FPS.", true);
+                    info.Fps = new Fraction(fpsCalc); // Change true FPS to the estimated FPS if the estimate does not match the specified FPS
                 }
 
                 return info;
             }
 
             return new FpsInfo(await IoUtils.GetVideoFramerate(path));
+        }
+
+        private static float GetFpsEstimationTolerance (long videoDurationMs)
+        {
+            if (videoDurationMs < 300) return 5.0f;
+            if (videoDurationMs < 1000) return 2.5f;
+            if (videoDurationMs < 2500) return 1.0f;
+            if (videoDurationMs < 5000) return 0.75f;
+            if (videoDurationMs < 10000) return 0.5f;
+            if (videoDurationMs < 20000) return 0.25f;
+
+            return 0.1f;
         }
 
         public static async Task<bool> IsSubtitleBitmapBased(string path, int streamIndex, string codec = "")
@@ -540,6 +565,9 @@ namespace Flowframes.Media
         {
             try
             {
+                if (str.IsEmpty() || str.Length < 3 || !str.Contains(delimiter))
+                    return new Size();
+
                 string[] nums = str.Remove(" ").Trim().Split(delimiter);
                 return new Size(nums[0].GetInt(), nums[1].GetInt());
             }

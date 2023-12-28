@@ -58,7 +58,6 @@ namespace Flowframes.Ui
             await PrintResolution(path);
             await Task.Delay(10);
             InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
-            // File.WriteAllText("media.json", Interpolate.currentMediaFile.ToJson(true));
 
             if(AutoEncodeResume.resumeNextRun)
                 Logger.Log($"Incomplete interpolation detected. Flowframes will resume the interpolation.");

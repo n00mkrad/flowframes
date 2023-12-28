@@ -82,11 +82,11 @@ namespace Flowframes.Main
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             bool fpsLimit = maxFps.GetFloat() > 0f && s.outFps.GetFloat() > maxFps.GetFloat();
 
-            Logger.Log($"VFR Ratio: {I.currentMediaFile.VideoStreams.First().FpsInfo.VfrRatio}");
+            // Logger.Log($"VFR Ratio: {I.currentMediaFile.VideoStreams.First().FpsInfo.VfrRatio} ({I.currentMediaFile.VideoStreams.First().FpsInfo.Fps} FPS Specified, {I.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps} FPS Avg)");
 
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
             VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);
-            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale * I.currentMediaFile.VideoStreams.First().FpsInfo.VfrRatioInverse);
+            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
             string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outSettings);
 
             if (ffplay)

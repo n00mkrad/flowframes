@@ -3,22 +3,22 @@
     public class FpsInfo
     {
         public Fraction Fps { get; set; }
-        public Fraction AverageFps { get; set; }
-        public float VfrRatio { get => AverageFps.GetFloat() / Fps.GetFloat(); }
-        public float VfrRatioInverse { get => Fps.GetFloat() / AverageFps.GetFloat(); }
+        public Fraction SpecifiedFps { get; set; }
+        public float VfrRatio { get => Fps.GetFloat() / SpecifiedFps.GetFloat(); }
+        public float VfrRatioInverse { get => SpecifiedFps.GetFloat() / Fps.GetFloat(); }
 
         public FpsInfo() { }
 
         public FpsInfo(Fraction fps)
         {
             Fps = fps;
-            AverageFps = fps;
+            SpecifiedFps = fps;
         }
 
-        public FpsInfo(Fraction fps, Fraction avgFps)
+        public FpsInfo(Fraction fps, Fraction specifiedFps)
         {
             Fps = fps;
-            AverageFps = avgFps;
+            SpecifiedFps = specifiedFps;
         }
     }
 }
