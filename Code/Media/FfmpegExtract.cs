@@ -112,7 +112,7 @@ namespace Flowframes.Media
             Logger.Log($"VideoToFrames() - Alpha: {alpha} - Rate: {rate} - Size: {size} - Format: {format}", true, false, "ffmpeg");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             IoUtils.CreateDir(framesDir);
-            string mpStr = deDupe ? ((Config.GetInt(Config.Key.mpdecimateMode) == 0) ? mpDecDef : mpDecAggr) : "";
+            string mpStr = deDupe ? GetMpdecimate(true) : "";
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
             string rateArg = (rate.GetFloat() > 0 && !deDupe) ? $" -fps_mode cfr -r {rate}" : "-fps_mode passthrough";
