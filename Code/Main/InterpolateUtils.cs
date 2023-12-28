@@ -69,26 +69,34 @@ namespace Flowframes.Main
 
         public static string GetTempFolderLoc(string inPath, string outPath)
         {
-            string basePath = inPath.GetParentDir();
+            string basePath = Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA"), "Temp", "Flowframes");
+            int tempFolderLoc = Config.GetInt(Config.Key.tempFolderLoc);
 
-            if (Config.GetInt(Config.Key.tempFolderLoc) == 1)
-                basePath = outPath.GetParentDir();
-
-            if (Config.GetInt(Config.Key.tempFolderLoc) == 2)
-                basePath = outPath;
-
-            if (Config.GetInt(Config.Key.tempFolderLoc) == 3)
-                basePath = Paths.GetExeDir();
-
-            if (Config.GetInt(Config.Key.tempFolderLoc) == 4)
+            switch (tempFolderLoc)
             {
-                string custPath = Config.Get(Config.Key.tempDirCustom);
+                case 1:
+                    basePath = inPath.GetParentDir();
+                    break;
 
-                if (IoUtils.IsDirValid(custPath))
-                    basePath = custPath;
+                case 2:
+                    basePath = outPath;
+                    break;
+
+                case 3:
+                    basePath = Paths.GetSessionDataPath();
+                    break;
+
+                case 4:
+                    string custPath = Config.Get(Config.Key.tempDirCustom);
+                    if (IoUtils.IsDirValid(custPath))
+                    {
+                        basePath = custPath;
+                    }
+                    break;
             }
 
-            return Path.Combine(basePath, Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + "-temp");
+            string folderName = Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + ".tmp";
+            return Path.Combine(basePath, folderName);
         }
 
         public static bool InputIsValid(InterpSettings s)

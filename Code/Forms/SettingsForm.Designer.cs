@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.settingsTabList = new Cyotek.Windows.Forms.TabList();
             this.generalTab = new Cyotek.Windows.Forms.TabListPage();
+            this.btnResetHwEnc = new HTAlt.WinForms.HTButton();
+            this.label10 = new System.Windows.Forms.Label();
             this.custOutDirBrowseBtn = new HTAlt.WinForms.HTButton();
             this.custOutDir = new System.Windows.Forms.TextBox();
             this.outFolderLoc = new System.Windows.Forms.ComboBox();
@@ -157,8 +159,6 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.label10 = new System.Windows.Forms.Label();
-            this.btnResetHwEnc = new HTAlt.WinForms.HTButton();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.info1)).BeginInit();
@@ -229,6 +229,30 @@
             this.generalTab.Name = "generalTab";
             this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "Application";
+            // 
+            // btnResetHwEnc
+            // 
+            this.btnResetHwEnc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnResetHwEnc.FlatAppearance.BorderSize = 0;
+            this.btnResetHwEnc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnResetHwEnc.ForeColor = System.Drawing.Color.White;
+            this.btnResetHwEnc.Location = new System.Drawing.Point(280, 245);
+            this.btnResetHwEnc.Name = "btnResetHwEnc";
+            this.btnResetHwEnc.Size = new System.Drawing.Size(206, 23);
+            this.btnResetHwEnc.TabIndex = 95;
+            this.btnResetHwEnc.Text = "Re-Detected Hardware Encoders";
+            this.btnResetHwEnc.UseVisualStyleBackColor = false;
+            this.btnResetHwEnc.Click += new System.EventHandler(this.btnResetHwEnc_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 250);
+            this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(186, 13);
+            this.label10.TabIndex = 94;
+            this.label10.Text = "Manage Detected Hardware Features";
             // 
             // custOutDirBrowseBtn
             // 
@@ -493,9 +517,9 @@
             this.tempFolderLoc.ForeColor = System.Drawing.Color.White;
             this.tempFolderLoc.FormattingEnabled = true;
             this.tempFolderLoc.Items.AddRange(new object[] {
+            "Windows Temp Folder",
             "Same As Input Directory",
-            "Parent Directory Of Output Folder",
-            "Inside Output Folder",
+            "Same As Output Directory",
             "Flowframes Program Folder",
             "Custom..."});
             this.tempFolderLoc.Location = new System.Drawing.Point(280, 67);
@@ -1778,30 +1802,6 @@
             this.toolTip1.SetToolTip(this.resetBtn, "Reset To Default");
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 250);
-            this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(186, 13);
-            this.label10.TabIndex = 94;
-            this.label10.Text = "Manage Detected Hardware Features";
-            // 
-            // btnResetHwEnc
-            // 
-            this.btnResetHwEnc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnResetHwEnc.FlatAppearance.BorderSize = 0;
-            this.btnResetHwEnc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnResetHwEnc.ForeColor = System.Drawing.Color.White;
-            this.btnResetHwEnc.Location = new System.Drawing.Point(280, 245);
-            this.btnResetHwEnc.Name = "btnResetHwEnc";
-            this.btnResetHwEnc.Size = new System.Drawing.Size(206, 23);
-            this.btnResetHwEnc.TabIndex = 95;
-            this.btnResetHwEnc.Text = "Re-Detected Hardware Encoders";
-            this.btnResetHwEnc.UseVisualStyleBackColor = false;
-            this.btnResetHwEnc.Click += new System.EventHandler(this.btnResetHwEnc_Click);
             // 
             // SettingsForm
             // 
