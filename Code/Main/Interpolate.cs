@@ -45,7 +45,7 @@ namespace Flowframes
             Program.mainForm.SetStatus("Starting...");
             sw.Restart();
 
-            if (!AutoEncodeResume.resumeNextRun && !(currentSettings.ai.Piped && !currentSettings.inputIsFrames && Config.GetInt(Config.Key.dedupMode) == 0))
+            if (!AutoEncodeResume.resumeNextRun && !(currentSettings.ai.Piped && !currentSettings.inputIsFrames /* && Config.GetInt(Config.Key.dedupMode) == 0) */))
             {
                 await GetFrames();
                 if (canceled) return;
@@ -75,6 +75,7 @@ namespace Flowframes
             if (!AutoEncodeResume.resumeNextRun && Config.GetBool(Config.Key.keepTempFolder) && IoUtils.GetAmountOfFiles(currentSettings.framesFolder, false) > 0)
                 await Task.Run(async () => { await FrameRename.Unrename(); });
 
+            IoUtils.DeleteIfSmallerThanKb(currentSettings.FullOutPath);
             await Done();
         }
 
@@ -180,7 +181,7 @@ namespace Flowframes
 
             if (!Config.GetBool(Config.Key.enableLoop))
             {
-                await Utils.CopyLastFrame(currentMediaFile.FrameCount);
+                // await Utils.CopyLastFrame(currentMediaFile.FrameCount);
             }
             else
             {
@@ -199,14 +200,18 @@ namespace Flowframes
 
             bool dedupe = Config.GetInt(Config.Key.dedupMode) != 0;
 
-            if (!ai.Piped || (ai.Piped && currentSettings.inputIsFrames) || (ai.Piped && dedupe))
+            if (!ai.Piped || (ai.Piped && currentSettings.inputIsFrames))
             {
-                await Task.Run(async () => { await Dedupe.CreateDupesFile(currentSettings.framesFolder, currentMediaFile.FrameCount, currentSettings.framesExt); });
+                await Task.Run(async () => { await Dedupe.CreateDupesFile(currentSettings.framesFolder, currentSettings.framesExt); });
                 await Task.Run(async () => { await FrameRename.Rename(); });
+            }
+            else if (ai.Piped && dedupe)
+            {
+                await Task.Run(async () => { await Dedupe.CreateFramesFileVideo(currentSettings.inPath, Config.GetBool(Config.Key.enableLoop)); });
             }
 
             if (!ai.Piped || (ai.Piped && dedupe))
-                await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(currentSettings.framesFolder, Config.GetBool(Config.Key.enableLoop), currentSettings.interpFactor); });
+                await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(currentSettings.tempFolder, Config.GetBool(Config.Key.enableLoop), currentSettings.interpFactor); });
 
             if (currentSettings.model.FixedFactors.Count() > 0 && (currentSettings.interpFactor != (int)currentSettings.interpFactor || !currentSettings.model.FixedFactors.Contains(currentSettings.interpFactor.RoundToInt())))
                 Cancel($"The selected model does not support {currentSettings.interpFactor}x interpolation.\n\nSupported Factors: {currentSettings.model.GetFactorsString()}");

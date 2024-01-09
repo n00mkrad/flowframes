@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Flowframes.Data
+﻿namespace Flowframes.Data
 {
     public class EncoderInfo
     {
-        public string Name { get; set; } = "unknown";
+        public virtual string FfmpegName { get; set; } = "";
 
         public EncoderInfo() { }
 
         public EncoderInfo(string name)
         {
-            Name = name;
+            FfmpegName = name;
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using static Flowframes.Data.Enums.Encoding;
 
 namespace Flowframes.Data
@@ -20,5 +16,16 @@ namespace Flowframes.Data
         public string OverideExtension { get; set; } = "";
         public List<string> QualityLevels { get; set; } = new List<string> ();
         public int QualityDefault { get; set; } = 0;
+        public string Name
+        {
+            get
+            {
+                return FfmpegName.IsEmpty() ? Codec.ToString().Lower() : FfmpegName;
+            }
+            set
+            {
+                FfmpegName = value;
+            }
+        }
     }
 }

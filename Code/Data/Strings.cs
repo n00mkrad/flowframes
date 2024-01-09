@@ -34,6 +34,7 @@ namespace Flowframes.Data
             { Enums.Encoding.Encoder.Png.ToString(), "PNG" },
             { Enums.Encoding.Encoder.Jpeg.ToString(), "JPEG" },
             { Enums.Encoding.Encoder.Webp.ToString(), "WEBP" },
+            { Enums.Encoding.Encoder.Tiff.ToString(), "TIFF" },
             { Enums.Encoding.Encoder.Ffv1.ToString(), "FFV1" },
             { Enums.Encoding.Encoder.Huffyuv.ToString(), "HuffYUV" },
             { Enums.Encoding.Encoder.Magicyuv.ToString(), "MagicYUV" },
@@ -50,9 +51,15 @@ namespace Flowframes.Data
             { Enums.Encoding.PixelFormat.Yuv444P.ToString(), "YUV 4:4:4 8-bit" },
             { Enums.Encoding.PixelFormat.Yuv444P10Le.ToString(), "YUV 4:4:4 10-bit" },
             { Enums.Encoding.PixelFormat.Yuva444P10Le.ToString(), "YUVA 4:4:4 10-bit" },
+            { Enums.Encoding.PixelFormat.Yuv444P12Le.ToString(), "YUV 4:4:4 12-bit" },
+            { Enums.Encoding.PixelFormat.Yuv444P16Le.ToString(), "YUV 4:4:4 16-bit" },
             { Enums.Encoding.PixelFormat.Rgb24.ToString(), "RGB 8-bit" },
-            { Enums.Encoding.PixelFormat.Pal8.ToString(), "256-color Palette" },
             { Enums.Encoding.PixelFormat.Rgba.ToString(), "RGBA 8-bit" },
+            { Enums.Encoding.PixelFormat.Rgb48Le.ToString(), "RGB 12-bit LE" },
+            { Enums.Encoding.PixelFormat.Rgb48Be.ToString(), "RGB 12-bit BE" },
+            { Enums.Encoding.PixelFormat.Rgba64Le.ToString(), "RGBA 16-bit LE" },
+            { Enums.Encoding.PixelFormat.Rgba64Be.ToString(), "RGBA 16-bit BE" },
+            { Enums.Encoding.PixelFormat.Pal8.ToString(), "256-color Palette" },
         };
 
         public static Dictionary<string, string> VideoQuality = new Dictionary<string, string>

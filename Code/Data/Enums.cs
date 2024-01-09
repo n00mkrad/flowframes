@@ -5,15 +5,19 @@
         public class Output
         {
             public enum Format { Mp4, Mkv, Webm, Mov, Avi, Gif, Images, Realtime };
-            public enum ImageFormat { Png, Jpeg, Webp };
+            public enum ImageFormat { Png, Jpeg, Webp, Tiff };
             public enum Dithering { None, Bayer, FloydSteinberg };
         }
 
         public class Encoding
         {
-            public enum Codec { H264, H265, AV1, VP9, ProRes, Gif, Png, Jpeg, Webp, Ffv1, Huffyuv, Magicyuv, Rawvideo }
-            public enum Encoder { X264, X265, SvtAv1, VpxVp9, Nvenc264, Nvenc265, NvencAv1, Amf264, Amf265, Qsv264, Qsv265, ProResKs, Gif, Png, Jpeg, Webp, Ffv1, Huffyuv, Magicyuv, Rawvideo }
-            public enum PixelFormat { Yuv420P, Yuva420P, Yuv420P10Le, Yuv422P, Yuv422P10Le, Yuv444P, Yuv444P10Le, Yuva444P10Le, Rgb24, Rgba, Pal8 };
+            public enum Codec { H264, H265, AV1, VP9, ProRes, Gif, Png, Jpeg, Webp, Tiff, Ffv1, Huffyuv, Magicyuv, Rawvideo }
+            public enum Encoder { X264, X265, SvtAv1, VpxVp9, Nvenc264, Nvenc265, NvencAv1, Amf264, Amf265, Qsv264, Qsv265, ProResKs, Gif, Png, Jpeg, Webp, Tiff, Ffv1, Huffyuv, Magicyuv, Rawvideo }
+            public enum PixelFormat
+            { 
+                Yuv420P, Yuva420P, Yuv420P10Le, Yuv422P, Yuv422P10Le, Yuv444P, Yuv444P10Le, Yuva444P10Le, Yuv444P12Le, Yuv444P16Le, P010Le, P016Le, // YUV & similar
+                Rgb24, Rgba, Rgb48Le, Rgb48Be, Rgba64Le, Rgba64Be, Pal8 // RGB & other
+            };
 
             public class Quality
             {
