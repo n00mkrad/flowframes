@@ -294,7 +294,7 @@ namespace Flowframes.MiscUtils
                 case Enums.Output.Format.Mp4: return new List<Codec> { Codec.H264, Codec.H265, Codec.AV1 };
                 case Enums.Output.Format.Mkv: return new List<Codec> { Codec.H264, Codec.H265, Codec.AV1, Codec.VP9 };
                 case Enums.Output.Format.Webm: return new List<Codec> { Codec.VP9, Codec.AV1 };
-                case Enums.Output.Format.Mov: return new List<Codec> { Codec.ProRes };
+                case Enums.Output.Format.Mov: return new List<Codec> { Codec.ProRes, Codec.H264 };
                 case Enums.Output.Format.Avi: return new List<Codec> { Codec.Ffv1, Codec.Huffyuv, Codec.Magicyuv, Codec.Rawvideo };
                 case Enums.Output.Format.Gif: return new List<Codec> { Codec.Gif };
                 case Enums.Output.Format.Images: return new List<Codec> { Codec.Png, Codec.Jpeg, Codec.Webp, Codec.Tiff };
