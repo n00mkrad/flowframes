@@ -87,6 +87,13 @@ namespace Flowframes.Forms.Main
         {
             comboxOutputFormat.FillFromEnum<Enums.Output.Format>(Strings.OutputFormat, 0);
             UpdateOutputUi();
+
+            if (Debugger.IsAttached)
+            {
+                Logger.Log($"Formats: {string.Join(", ", Enum.GetValues(typeof(Enums.Output.Format)).Cast<Enums.Output.Format>().Select(e => Strings.OutputFormat.Get(e.ToString())))}", true);
+                Logger.Log($"Encoders: {string.Join(", ", Enum.GetValues(typeof(Enums.Encoding.Encoder)).Cast<Enums.Encoding.Encoder>().Select(e => Strings.Encoder.Get(e.ToString())))}", true);
+                Logger.Log($"Pixel Formats: {string.Join(", ", Enum.GetValues(typeof(Enums.Encoding.PixelFormat)).Cast<Enums.Encoding.PixelFormat>().Select(e => Strings.PixelFormat.Get(e.ToString())))}", true);
+            }
         }
 
         public async void ResetOutputUi()

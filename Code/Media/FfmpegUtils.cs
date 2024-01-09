@@ -238,7 +238,7 @@ namespace Flowframes.Media
             PixelFormat pixFmt = settings.PixelFormat;
 
             if (settings.Format == Enums.Output.Format.Realtime)
-                pixFmt = PixelFormat.Yuv444P;
+                pixFmt = PixelFormat.Yuv444P16Le;
 
             if (pixFmt == (PixelFormat)(-1)) // No pixel format set in GUI
                 pixFmt = info.PixelFormatDefault != (PixelFormat)(-1) ? info.PixelFormatDefault : info.PixelFormats.First(); // Set default or fallback to first in list
@@ -247,9 +247,6 @@ namespace Flowframes.Media
 
             if (enc == Encoder.X264 || enc == Encoder.X265 || enc == Encoder.SvtAv1 || enc == Encoder.VpxVp9 || enc == Encoder.Nvenc264 || enc == Encoder.Nvenc265 || enc == Encoder.NvencAv1)
                 args.Add(GetKeyIntArg(fps, keyint));
-
-            if (pixFmt != (PixelFormat)(-1))
-                args.Add($"-pix_fmt {pixFmt.ToString().Lower()}");
 
             if (enc == Encoder.X264)
             {
@@ -290,22 +287,28 @@ namespace Flowframes.Media
                 }
             }
 
+            // Fix NVENC pixel formats
+            if (enc.ToString().StartsWith("Nvenc"))
+            {
+                if (pixFmt == PixelFormat.Yuv420P10Le) pixFmt = PixelFormat.P010Le;
+            }
+
             if (enc == Encoder.Nvenc264)
             {
                 int crf = GetCrf(settings);
-                args.Add($"-b:v 0 {(crf > 0 ? $"-cq {crf} -preset p7" : "-preset lossless")}");
+                args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}");
             }
 
             if (enc == Encoder.Nvenc265)
             {
                 int crf = GetCrf(settings);
-                args.Add($"-b:v 0 {(crf > 0 ? $"-cq {crf} -preset p7" : "-preset lossless")}");
+                args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}");
             }
 
             if (enc == Encoder.NvencAv1)
             {
                 int crf = GetCrf(settings);
-                args.Add($"-b:v 0 -preset p7 {(crf > 0 ? $"-cq {crf}" : "-tune lossless")}");
+                args.Add($"-b:v 0 -preset p7 -cq {crf}");
             }
 
             if (enc == Encoder.Amf264)
@@ -354,6 +357,9 @@ namespace Flowframes.Media
                 var qualityLevel = ParseUtils.GetEnum<Quality.JpegWebm>(settings.Quality, true, Strings.VideoQuality);
                 args.Add($"-q:v {OutputUtils.WebpQuality[qualityLevel]}");
             }
+
+            if (pixFmt != (PixelFormat)(-1))
+                args.Add($"-pix_fmt {pixFmt.ToString().Lower()}");
 
             return new string[] { string.Join(" ", args) };
         }

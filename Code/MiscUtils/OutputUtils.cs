@@ -39,19 +39,6 @@ namespace Flowframes.MiscUtils
                 };
             }
 
-            if (encoder == Encoder.Nvenc264)
-            {
-                return new EncoderInfoVideo
-                {
-                    Codec = Codec.H264,
-                    Name = "h264_nvenc",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P },
-                    QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
-                    QualityDefault = (int)Quality.Common.VeryHigh,
-                    HwAccelerated = true,
-                };
-            }
-
             if (encoder == Encoder.SvtAv1)
             {
                 return new EncoderInfoVideo
@@ -76,6 +63,19 @@ namespace Flowframes.MiscUtils
                     PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P, PixFmt.Yuv444P10Le },
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
+                };
+            }
+
+            if (encoder == Encoder.Nvenc264)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.H264,
+                    Name = "h264_nvenc",
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P },
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
+                    QualityDefault = (int)Quality.Common.VeryHigh,
+                    HwAccelerated = true,
                 };
             }
 
@@ -181,7 +181,6 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Gif,
-                    Name = "gif",
                     PixelFormats = new List<PixFmt>() { PixFmt.Pal8 },
                     PixelFormatDefault = PixFmt.Pal8,
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.GifColors>(),
@@ -197,8 +196,7 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Ffv1,
-                    Name = "ffv1",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv422P, PixFmt.Yuv422P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P10Le },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv422P, PixFmt.Yuv422P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P10Le, PixFmt.Yuv444P12Le, PixFmt.Yuv444P16Le, PixFmt.Rgb48Le, PixFmt.Rgba64Le },
                     Lossless = true,
                 };
             }
@@ -208,8 +206,7 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Huffyuv,
-                    Name = "huffyuv",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv422P, PixFmt.Rgb24 },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv422P, PixFmt.Rgb24, PixFmt.Rgba },
                     Lossless = true,
                 };
             }
@@ -219,7 +216,6 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Magicyuv,
-                    Name = "magicyuv",
                     PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv422P, PixFmt.Yuv444P },
                     Lossless = true,
                 };
@@ -230,7 +226,6 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Rawvideo,
-                    Name = "rawvideo",
                     Lossless = true,
                 };
             }
@@ -240,8 +235,7 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Png,
-                    Name = "png",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Rgb24, PixFmt.Rgba },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Rgb24, PixFmt.Rgba, PixFmt.Rgb48Be, PixFmt.Rgba64Be },
                     PixelFormatDefault = PixFmt.Rgb24,
                     Lossless = true,
                     IsImageSequence = true,
@@ -269,11 +263,24 @@ namespace Flowframes.MiscUtils
                 {
                     Codec = Codec.Webp,
                     Name = "libwebp",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuva420P },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuva420P, PixFmt.Rgba }, // Actually only supports BGRA not RGBA, but ffmpeg will auto-pick that
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.JpegWebm>(),
                     QualityDefault = (int)Quality.JpegWebm.ImgHigh,
                     IsImageSequence = true,
                     OverideExtension = "webp",
+                };
+            }
+
+            if (encoder == Encoder.Tiff)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.Tiff,
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv422P, PixFmt.Yuv444P, PixFmt.Yuv444P16Le, PixFmt.Rgb24, PixFmt.Rgba, PixFmt.Rgb48Le, PixFmt.Rgba64Le },
+                    PixelFormatDefault = PixFmt.Rgb24,
+                    Lossless = true,
+                    IsImageSequence = true,
+                    OverideExtension = "tiff",
                 };
             }
 
@@ -290,7 +297,7 @@ namespace Flowframes.MiscUtils
                 case Enums.Output.Format.Mov: return new List<Codec> { Codec.ProRes };
                 case Enums.Output.Format.Avi: return new List<Codec> { Codec.Ffv1, Codec.Huffyuv, Codec.Magicyuv, Codec.Rawvideo };
                 case Enums.Output.Format.Gif: return new List<Codec> { Codec.Gif };
-                case Enums.Output.Format.Images: return new List<Codec> { Codec.Png, Codec.Jpeg, Codec.Webp };
+                case Enums.Output.Format.Images: return new List<Codec> { Codec.Png, Codec.Jpeg, Codec.Webp, Codec.Tiff };
                 case Enums.Output.Format.Realtime: return new List<Codec> { };
                 default: return new List<Codec> { };
             }
