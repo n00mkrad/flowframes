@@ -92,9 +92,9 @@ namespace Flowframes.Ui
                 return new DialogResult();
             }
 
-            MessageBoxIcon icon = MessageBoxIcon.Information;
-            if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
-            else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
+//            MessageBoxIcon icon = MessageBoxIcon.Information;
+//            if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
+//            else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
 
             MessageForm form = new MessageForm(text, type.ToString());
             form.ShowDialog();
