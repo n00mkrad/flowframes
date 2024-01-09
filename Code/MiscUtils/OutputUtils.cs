@@ -276,7 +276,7 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Tiff,
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv422P, PixFmt.Yuv444P, PixFmt.Yuv444P16Le, PixFmt.Rgb24, PixFmt.Rgba, PixFmt.Rgb48Le, PixFmt.Rgba64Le },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv422P, PixFmt.Yuv444P, PixFmt.Rgb24, PixFmt.Rgba, PixFmt.Rgb48Le, PixFmt.Rgba64Le },
                     PixelFormatDefault = PixFmt.Rgb24,
                     Lossless = true,
                     IsImageSequence = true,
