@@ -8,6 +8,8 @@ using System.Threading;
 using Flowframes.IO;
 using ImageMagick;
 using Newtonsoft.Json;
+using Flowframes.Os;
+using System.Windows.Controls;
 
 namespace Flowframes.Magick
 {
@@ -224,14 +226,14 @@ namespace Flowframes.Magick
             return GetDifference(GetImage(img1Path), GetImage(img2Path));
         }
 
-        public static async Task CreateDupesFile(string framesPath, int lastFrameNum, string ext)
+        public static async Task CreateDupesFile(string framesPath, string ext)
         {
             bool debug = Config.GetBool("dupeScanDebug", false);
 
             FileInfo[] frameFiles = IoUtils.GetFileInfosSorted(framesPath, false, "*" + ext);
 
             if (debug)
-                Logger.Log($"Running CreateDupesFile for '{framesPath}' ({frameFiles.Length} files), lastFrameNum = {lastFrameNum}, ext = {ext}.", true, false, "dupes");
+                Logger.Log($"Running CreateDupesFile for '{framesPath}' ({frameFiles.Length} files), ext = {ext}.", true, false, "dupes");
 
             Dictionary<string, List<string>> frames = new Dictionary<string, List<string>>();
 
@@ -257,7 +259,55 @@ namespace Flowframes.Magick
                 }
             }
 
-            File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), JsonConvert.SerializeObject(frames, Formatting.Indented));
+            File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), frames.ToJson(true));
+        }
+
+        public static async Task CreateFramesFileVideo(string videoPath, bool loop)
+        {
+            if (!Directory.Exists(Interpolate.currentSettings.tempFolder))
+                Directory.CreateDirectory(Interpolate.currentSettings.tempFolder);
+
+            Process ffmpeg = OsUtils.NewProcess(true);
+            string baseCmd = $"/C cd /D {Path.Combine(IO.Paths.GetPkgPath(), IO.Paths.audioVideoDir).Wrap()}";
+            string mpDec = FfmpegCommands.GetMpdecimate((int)FfmpegCommands.MpDecSensitivity.Normal, false);
+            ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
+            List<string> ffmpegOutputLines = (await Task.Run(() => OsUtils.GetProcStdOut(ffmpeg, true))).SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
+
+            var frames = new Dictionary<int, List<int>>();
+            var frameNums = new List<int>();
+            int lastKeepFrameNum = 0;
+
+            for (int frameIdx = 0; frameIdx < ffmpegOutputLines.Count; frameIdx++)
+            {
+                string line = ffmpegOutputLines[frameIdx];
+                bool drop = frameIdx != 0 && line.Contains(" drop ") && !line.Contains(" keep ");
+                // Console.WriteLine($"[Frame {frameIdx.ToString().PadLeft(6, '0')}] {(drop ? "DROP" : "KEEP")}");
+                // frameNums.Add(lastKeepFrameNum);
+
+                if (!drop)
+                {
+                    if (!frames.ContainsKey(frameIdx) || frames[frameIdx] == null)
+                    {
+                        frames[frameIdx] = new List<int>();
+                    }
+
+                    lastKeepFrameNum = frameIdx;
+                }
+                else
+                {
+                    frames[lastKeepFrameNum].Add(frameIdx);
+                }
+            }
+
+            var inputFrames = new List<int>(frames.Keys);
+
+            if (loop)
+            {
+                inputFrames.Add(inputFrames.First());
+            }
+
+            File.WriteAllText(Path.Combine(Interpolate.currentSettings.tempFolder, "input.json"), inputFrames.ToJson(true));
+            File.WriteAllText(Path.Combine(Interpolate.currentSettings.tempFolder, "dupes.test.json"), frames.ToJson(true));
         }
     }
 }

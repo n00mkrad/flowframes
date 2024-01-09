@@ -848,6 +848,9 @@ namespace Flowframes.IO
 
 		public static FileInfo[] GetFileInfosSorted(string path, bool recursive = false, string pattern = "*")
 		{
+			if(!Directory.Exists(path))
+				return new FileInfo[0];
+
 			SearchOption opt = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 			DirectoryInfo dir = new DirectoryInfo(path);
 			return dir.GetFiles(pattern, opt).OrderBy(x => x.Name).ToArray();

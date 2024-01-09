@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.Os
 {
@@ -58,7 +56,7 @@ namespace Flowframes.Os
             l.Add($"inputPath = r'{inputPath}'");
             l.Add($"");
 
-            bool loadFrames = s.InterpSettings.inputIsFrames || (s.Dedupe && !s.Realtime);
+            bool loadFrames = s.InterpSettings.inputIsFrames;
 
             if (loadFrames)
             {
@@ -74,6 +72,8 @@ namespace Flowframes.Os
                 l.Add($"if os.path.isdir(r'{s.InterpSettings.tempFolder}'):");
                 l.Add($"    indexFilePath = r'{Path.Combine(s.InterpSettings.tempFolder, "cache.lwi")}'");
                 l.Add($"clip = core.lsmas.LWLibavSource(inputPath, cachefile=indexFilePath)"); // Load video with lsmash
+                l.Add("clip = core.text.FrameNum(clip, alignment=7)");
+                l.Add(GetDedupeLines(s));
             }
 
             if (trim)
@@ -187,6 +187,30 @@ namespace Flowframes.Os
             return s;
         }
 
+        static string GetDedupeLines(VsSettings settings)
+        {
+            string s = "";
+
+            string inputJsonPath = Path.Combine(settings.InterpSettings.tempFolder, "input.json");
+
+            if (!File.Exists(inputJsonPath))
+                return s;
+
+            s += "reorderedClip = clip[0]\n";
+            s += "\n";
+            s += $"with open(r'{inputJsonPath}') as json_file:\n";
+            s += "    frameList = json.load(json_file)\n";
+            s += "    \n";
+            s += "    for i in frameList:\n";
+            s += "        reorderedClip = reorderedClip + clip[i]\n";
+            s += "\n";
+            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
+            s += "clip = core.text.FrameNum(clip, alignment=4)\n";
+            s += "\n";
+
+            return s;
+        }
+
         static string GetRedupeLines(VsSettings settings)
         {
             string s = "";
@@ -201,6 +225,7 @@ namespace Flowframes.Os
             s += "            reorderedClip = reorderedClip + clip[i]\n";
             s += "\n";
             s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
+            s += "clip = core.text.FrameNum(clip, alignment=1)\n";
             s += "\n";
 
             return s;
