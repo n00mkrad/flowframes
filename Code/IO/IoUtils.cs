@@ -506,6 +506,11 @@ namespace Flowframes.IO
                 TryDeleteIfExists(path);
                 return true;
             }
+            else if (Directory.Exists(path) && GetDirSize(path, true) < thresholdKb)
+            {
+                TryDeleteIfExists(path);
+                return true;
+            }
 
             return false;
         }

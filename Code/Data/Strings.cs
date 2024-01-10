@@ -35,6 +35,7 @@ namespace Flowframes.Data
             { Enums.Encoding.Encoder.Jpeg.ToString(), "JPEG" },
             { Enums.Encoding.Encoder.Webp.ToString(), "WEBP" },
             { Enums.Encoding.Encoder.Tiff.ToString(), "TIFF" },
+            { Enums.Encoding.Encoder.Exr.ToString(), "EXR" },
             { Enums.Encoding.Encoder.Ffv1.ToString(), "FFV1" },
             { Enums.Encoding.Encoder.Huffyuv.ToString(), "HuffYUV" },
             { Enums.Encoding.Encoder.Magicyuv.ToString(), "MagicYUV" },
@@ -60,6 +61,8 @@ namespace Flowframes.Data
             { Enums.Encoding.PixelFormat.Rgba64Le.ToString(), "RGBA 16-bit LE" },
             { Enums.Encoding.PixelFormat.Rgba64Be.ToString(), "RGBA 16-bit BE" },
             { Enums.Encoding.PixelFormat.Pal8.ToString(), "256-color Palette" },
+            { Enums.Encoding.PixelFormat.Gbrpf32Le.ToString(),  "RGB 32-bit Float" },
+            { Enums.Encoding.PixelFormat.Gbrapf32Le.ToString(), "RGBA 32-bit Float" },
         };
 
         public static Dictionary<string, string> VideoQuality = new Dictionary<string, string>
