@@ -87,7 +87,14 @@ namespace Flowframes.MiscUtils
         {
             try
             {
+                if (timestamp.IsEmpty() || timestamp == "N/A")
+                    return 0;
+
                 string[] values = timestamp.Split(':');
+
+                if (values.Length < 3)
+                    return 0;
+
                 int hours = int.Parse(values[0]);
                 int minutes = int.Parse(values[1]);
                 int seconds = int.Parse(values[2].Split('.')[0]);

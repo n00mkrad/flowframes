@@ -291,7 +291,9 @@ namespace Flowframes.MiscUtils
                     Codec = Codec.Exr,
                     PixelFormats = new List<PixFmt>() { PixFmt.Gbrpf32Le, PixFmt.Gbrapf32Le },
                     PixelFormatDefault = PixFmt.Gbrpf32Le,
-                    Lossless = true,
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.ExrPrecision>(),
+                    QualityDefault = (int)Quality.ExrPrecision.Half,
+                    Lossless = false,
                     IsImageSequence = true,
                     OverideExtension = "exr",
                 };

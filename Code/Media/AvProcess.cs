@@ -150,10 +150,12 @@ namespace Flowframes
             Process ffprobe = OsUtils.NewProcess(!show);
             NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
 
-            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe -v {settings.LogLevel} {settings.Args}";
+            bool concat = settings.Args.Split(" \"").Last().Remove("\"").Trim().EndsWith(".concat");
+            string args = $"-v {settings.LogLevel} {(concat ? "-f concat -safe 0 " : "")}{settings.Args}";
+            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe {args}";
 
             if (settings.LoggingMode != LogMode.Hidden) Logger.Log("Running FFprobe...", false);
-            Logger.Log($"ffprobe -v {settings.LogLevel} {settings.Args}", true, false, "ffmpeg");
+            Logger.Log($"ffprobe {args}", true, false, "ffmpeg");
 
             if (!asyncOutput)
                 return await Task.Run(() => OsUtils.GetProcStdOut(ffprobe));

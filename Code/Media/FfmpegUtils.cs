@@ -358,6 +358,11 @@ namespace Flowframes.Media
                 args.Add($"-q:v {OutputUtils.WebpQuality[qualityLevel]}");
             }
 
+            if (enc == Encoder.Exr)
+            {
+                args.Add($"-format {settings.Quality.Lower()}");
+            }
+
             if (pixFmt != (PixelFormat)(-1))
                 args.Add($"-pix_fmt {pixFmt.ToString().Lower()}");
 
