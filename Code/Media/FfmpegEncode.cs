@@ -89,6 +89,10 @@ namespace Flowframes.Media
                     filters.Add(paletteFilter);
                 }
             }
+            else if (settings.Encoder == Enums.Encoding.Encoder.Exr)
+            {
+                filters.Add($"zscale=transfer=linear,format={settings.PixelFormat.ToString().Lower()}".Wrap());
+            }
 
             filters.Add(GetPadFilter());
             filters = filters.Where(f => f.IsNotEmpty()).ToList();

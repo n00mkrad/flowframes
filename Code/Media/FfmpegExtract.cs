@@ -202,37 +202,40 @@ namespace Flowframes.Media
             int sampleCount = Config.GetInt(Config.Key.imgSeqSampleCount, 10);
             Image[] randomSamples = files.OrderBy(arg => Guid.NewGuid()).Take(sampleCount).Select(x => IoUtils.GetImage(x.FullName)).ToArray();
 
-            bool allSameSize = randomSamples.All(i => i.Size == randomSamples.First().Size);
-
-            if (!allSameSize)
+            if(files.All(f => f != null))
             {
-                Logger.Log($"Sequence not compatible: Not all images have the same dimensions.", true);
-                return false;
-            }
+                bool allSameSize = randomSamples.All(i => i.Size == randomSamples.First().Size);
 
-            int div = GetModulo();
-            bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
+                if (!allSameSize)
+                {
+                    Logger.Log($"Sequence not compatible: Not all images have the same dimensions.", true);
+                    return false;
+                }
 
-            if (!allDivBy2)
-            {
-                Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
-                return false;
-            }
+                int div = GetModulo();
+                bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
 
-            bool allSmallEnough = randomSamples.All(i => (i.Height <= maxHeight));
+                if (!allDivBy2)
+                {
+                    Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
+                    return false;
+                }
 
-            if (!allSmallEnough)
-            {
-                Logger.Log($"Sequence not compatible: Image dimensions above max size.", true);
-                return false;
-            }
+                bool allSmallEnough = randomSamples.All(i => (i.Height <= maxHeight));
 
-            bool all24Bit = randomSamples.All(i => (i.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb));
+                if (!allSmallEnough)
+                {
+                    Logger.Log($"Sequence not compatible: Image dimensions above max size.", true);
+                    return false;
+                }
 
-            if (!all24Bit)
-            {
-                Logger.Log($"Sequence not compatible: Some images are not 24-bit (8bpp).", true);
-                return false;
+                // bool all24Bit = randomSamples.All(i => (i.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb));
+                // 
+                // if (!all24Bit)
+                // {
+                //     Logger.Log($"Sequence not compatible: Some images are not 24-bit (8bpp).", true);
+                //     return false;
+                // }
             }
 
             Interpolate.currentSettings.framesExt = files.First().Extension;

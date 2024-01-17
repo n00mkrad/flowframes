@@ -88,6 +88,12 @@ namespace Flowframes.Main
             string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
             string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outSettings);
 
+            if(s.outSettings.Encoder == Enums.Encoding.Encoder.Exr)
+            {
+                extraArgsIn += " -color_trc bt709 -color_primaries bt709 -colorspace bt709";
+            }
+
+
             if (ffplay)
             {
                 bool useNutPipe = true; // TODO: Make this bool a config flag

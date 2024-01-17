@@ -284,6 +284,21 @@ namespace Flowframes.MiscUtils
                 };
             }
 
+            if (encoder == Encoder.Exr)
+            {
+                return new EncoderInfoVideo
+                {
+                    Codec = Codec.Exr,
+                    PixelFormats = new List<PixFmt>() { PixFmt.Gbrpf32Le, PixFmt.Gbrapf32Le },
+                    PixelFormatDefault = PixFmt.Gbrpf32Le,
+                    QualityLevels = ParseUtils.GetEnumStrings<Quality.ExrPrecision>(),
+                    QualityDefault = (int)Quality.ExrPrecision.Half,
+                    Lossless = false,
+                    IsImageSequence = true,
+                    OverideExtension = "exr",
+                };
+            }
+
             return new EncoderInfoVideo();
         }
 
@@ -297,7 +312,7 @@ namespace Flowframes.MiscUtils
                 case Enums.Output.Format.Mov: return new List<Codec> { Codec.ProRes, Codec.H264 };
                 case Enums.Output.Format.Avi: return new List<Codec> { Codec.Ffv1, Codec.Huffyuv, Codec.Magicyuv, Codec.Rawvideo };
                 case Enums.Output.Format.Gif: return new List<Codec> { Codec.Gif };
-                case Enums.Output.Format.Images: return new List<Codec> { Codec.Png, Codec.Jpeg, Codec.Webp, Codec.Tiff };
+                case Enums.Output.Format.Images: return new List<Codec> { Codec.Png, Codec.Jpeg, Codec.Webp, Codec.Tiff, Codec.Exr };
                 case Enums.Output.Format.Realtime: return new List<Codec> { };
                 default: return new List<Codec> { };
             }
