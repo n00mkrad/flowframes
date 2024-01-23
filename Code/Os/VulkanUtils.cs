@@ -26,26 +26,35 @@ namespace Flowframes.Os
         {
             var sw = new NmkdStopwatch();
             VkDevices = new List<VkDevice>();
-            Instance vkInstance = new Instance(new InstanceCreateInfo());
-            PhysicalDevice[] physicalDevices = vkInstance.EnumeratePhysicalDevices();
 
-            for (int idx = 0; idx < physicalDevices.Length; idx++)
+            try
             {
-                PhysicalDevice device = physicalDevices[idx];
+                Instance vkInstance = new Instance(new InstanceCreateInfo());
+                PhysicalDevice[] physicalDevices = vkInstance.EnumeratePhysicalDevices();
 
-                // Get queue families and find the one with Compute support but no Graphics support. This is the one that gives us the correct thread count to use for NCNN etc.
-                QueueFamilyProperties[] queueFamilies = device.GetQueueFamilyProperties();
-                var validQueueFamilies = queueFamilies.Where(q => q.QueueFlags.HasFlag(QueueFlags.Compute) && !q.QueueFlags.HasFlag(QueueFlags.Graphics));
-                int compQueues = validQueueFamilies.Any() ? (int)validQueueFamilies.First().QueueCount : 0;
+                for (int idx = 0; idx < physicalDevices.Length; idx++)
+                {
+                    PhysicalDevice device = physicalDevices[idx];
 
-                string name = device.GetProperties().DeviceName;
-                VkDevices.Add(new VkDevice { Id = idx, Name = name, ComputeQueueCount = compQueues });
-                Logger.Log($"[VK] Found Vulkan device: {VkDevices.Last()}", true);
+                    // Get queue families and find the one with Compute support but no Graphics support. This is the one that gives us the correct thread count to use for NCNN etc.
+                    QueueFamilyProperties[] queueFamilies = device.GetQueueFamilyProperties();
+                    var validQueueFamilies = queueFamilies.Where(q => q.QueueFlags.HasFlag(QueueFlags.Compute) && !q.QueueFlags.HasFlag(QueueFlags.Graphics));
+                    int compQueues = validQueueFamilies.Any() ? (int)validQueueFamilies.First().QueueCount : 0;
+
+                    string name = device.GetProperties().DeviceName;
+                    VkDevices.Add(new VkDevice { Id = idx, Name = name, ComputeQueueCount = compQueues });
+                    Logger.Log($"[VK] Found Vulkan device: {VkDevices.Last()}", true);
+                }
+
+                // Clean up Vulkan resources
+                vkInstance.Destroy();
+                Logger.Log($"[VK] Vulkan device check took {sw.ElapsedMs} ms", true);
             }
-
-            // Clean up Vulkan resources
-            vkInstance.Destroy();
-            Logger.Log($"[VK] Vulkan device check took {sw.ElapsedMs} ms", true);
+            catch(Exception ex)
+            {
+                Logger.Log($"Vulkan Error: {ex.Message}", true);
+                Logger.Log($"Vulkan initialization failed. NCNN implementations might not work, or run on the CPU.");
+            }
         }
 
         public static int GetMaxNcnnThreads(int deviceId)
