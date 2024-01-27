@@ -21,7 +21,6 @@ namespace Flowframes.Media
     class FfmpegUtils
     {
         private readonly static FfprobeMode showStreams = FfprobeMode.ShowStreams;
-        private readonly static FfprobeMode showFormat = FfprobeMode.ShowFormat;
 
         public static List<Encoder> CompatibleHwEncoders = new List<Encoder>();
         public static bool NvencSupportsBFrames = false;

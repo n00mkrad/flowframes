@@ -1,19 +1,17 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.Extensions;
+using Flowframes.IO;
+using Flowframes.Main;
+using Flowframes.MiscUtils;
+using Flowframes.Ui;
+using Flowframes.Utilities;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Flowframes.Ui;
-using Flowframes.Main;
-using Flowframes.Data;
-using Flowframes.MiscUtils;
-using System.Collections.Generic;
-using ImageMagick;
 using Paths = Flowframes.IO.Paths;
-using Flowframes.Media;
-using System.Drawing;
-using Flowframes.Utilities;
 
 namespace Flowframes.Os
 {
@@ -314,7 +312,6 @@ namespace Flowframes.Os
         static async Task RunRifeNcnnProcess(string inPath, float factor, string outPath, string mdl)
         {
             Directory.CreateDirectory(outPath);
-            string logFileName = "rife-ncnn-log";
             Process rifeNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, factor);
@@ -336,6 +333,7 @@ namespace Flowframes.Os
             }
 
             rifeNcnn.Start();
+            rifeNcnn.PriorityClass = ProcessPriorityClass.BelowNormal;
 
             if (!OsUtils.ShowHiddenCmd())
             {
@@ -343,7 +341,7 @@ namespace Flowframes.Os
                 rifeNcnn.BeginErrorReadLine();
             }
 
-            while (!rifeNcnn.HasExited) await Task.Delay(1);
+            await rifeNcnn.WaitForExitAsync();
         }
 
         public static async Task RunRifeNcnnVs(string framesPath, string outPath, float factor, string mdl, bool rt = false)

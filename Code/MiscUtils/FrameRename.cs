@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Flowframes.Data;
-using Flowframes.IO;
 
 namespace Flowframes.MiscUtils
 {
@@ -24,6 +21,8 @@ namespace Flowframes.MiscUtils
 
         public static async Task Unrename()
         {
+            if (!framesAreRenamed) return;
+
             Stopwatch sw = new Stopwatch();
             sw.Restart();
 
