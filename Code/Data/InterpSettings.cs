@@ -89,7 +89,7 @@ namespace Flowframes
 
             _inputResolution = new Size(0, 0);
 
-            RefreshExtensions();
+            RefreshExtensions(ai: ai);
         }
 
         public InterpSettings (string serializedData)
@@ -197,32 +197,32 @@ namespace Flowframes
 
         public enum FrameType { Import, Interp, Both };
 
-        public void RefreshExtensions(FrameType type = FrameType.Both)
+        public void RefreshExtensions(FrameType type = FrameType.Both, AI ai = null)
         {
+            if(ai == null)
+            {
+                if (Interpolate.currentSettings == null)
+                    return;
+
+                ai = Interpolate.currentSettings.ai;
+            }
+
             bool pngOutput = outSettings.Encoder == Enums.Encoding.Encoder.Png;
             bool aviHqChroma = outSettings.Format == Enums.Output.Format.Avi && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
             bool proresHqChroma = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
-
             bool forceHqChroma = pngOutput || aviHqChroma || proresHqChroma;
+            bool tiffSupport = !ai.NameInternal.Upper().EndsWith("NCNN"); // NCNN binaries can't load TIFF (unlike OpenCV, ffmpeg etc)
+            string losslessExt = tiffSupport ? ".tiff" : ".png";
+            bool allowJpegImport = Config.GetBool(Config.Key.jpegFrames) && !(alpha || forceHqChroma); // Force PNG if alpha is enabled, or output is not 4:2:0 subsampled
+            bool allowJpegExport = Config.GetBool(Config.Key.jpegInterp) && !(alpha || forceHqChroma);
 
             Logger.Log($"RefreshExtensions({type}) - alpha = {alpha} pngOutput = {pngOutput} aviHqChroma = {aviHqChroma} proresHqChroma = {proresHqChroma}", true);
 
-            if (alpha || forceHqChroma)     // Force PNG if alpha is enabled, or output is not 4:2:0 subsampled
-            {
-                if(type == FrameType.Both || type == FrameType.Import)
-                    framesExt = ".tiff";
+            if (type == FrameType.Both || type == FrameType.Import)
+                framesExt = allowJpegImport ? ".jpg" : losslessExt;
 
-                if (type == FrameType.Both || type == FrameType.Interp)
-                    interpExt = ".png";
-            }
-            else
-            {
-                if (type == FrameType.Both || type == FrameType.Import)
-                    framesExt = (Config.GetBool(Config.Key.jpegFrames) ? ".jpg" : ".tiff");
-
-                if (type == FrameType.Both || type == FrameType.Interp)
-                    interpExt = (Config.GetBool(Config.Key.jpegInterp) ? ".jpg" : ".png");
-            }
+            if (type == FrameType.Both || type == FrameType.Interp)
+                interpExt = allowJpegExport ? ".jpg" : ".png";
 
             Logger.Log($"RefreshExtensions - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
         }
