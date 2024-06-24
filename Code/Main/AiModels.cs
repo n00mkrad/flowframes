@@ -19,8 +19,7 @@ namespace Flowframes.Main
 
             if (!File.Exists(modelsFile))
             {
-                Logger.Log($"File does not exist: {modelsFile}", true);
-                Logger.Log($"Error: File models.json is missing for {ai.NameInternal}, can't load AI models for this implementation!");
+                Logger.Log($"Error: '{modelsFile}' is missing for {ai.NameInternal}, can't load AI models for this implementation!", true);
                 return new ModelCollection(ai);
             }
 

@@ -23,8 +23,15 @@ namespace Flowframes.IO
     {
         public static Image GetImage(string path, bool allowMagickFallback = true, bool log = true)
         {
+            var incompatibleExtensions = new List<string>() { "EXR" };
+
             try
             {
+                string ext = new FileInfo(path).Extension.TrimStart('.').ToUpper();
+
+                if (incompatibleExtensions.Contains(ext))
+                    return null;
+
                 using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
                     return Image.FromStream(stream);
             }

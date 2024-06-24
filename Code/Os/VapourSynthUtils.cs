@@ -4,6 +4,7 @@ using Flowframes.MiscUtils;
 using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -72,7 +73,7 @@ namespace Flowframes.Os
                 l.Add($"if os.path.isdir(r'{s.InterpSettings.tempFolder}'):");
                 l.Add($"    indexFilePath = r'{Path.Combine(s.InterpSettings.tempFolder, "cache.lwi")}'");
                 l.Add($"clip = core.lsmas.LWLibavSource(inputPath, cachefile=indexFilePath)"); // Load video with lsmash
-                l.Add("clip = core.text.FrameNum(clip, alignment=7)");
+                l.Add(Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=7)" : "");
                 l.Add(GetDedupeLines(s));
             }
 
@@ -104,7 +105,8 @@ namespace Flowframes.Os
             if (s.Dedupe && !s.Realtime)
                 l.Add(GetRedupeLines(s));
 
-            bool use470bg = loadFrames && Interpolate.currentMediaFile.Format.Upper() != "GIF";
+            Console.WriteLine($"In Format: {Interpolate.currentMediaFile.Format.Upper()}");
+            bool use470bg = loadFrames && !new[] { "GIF", "EXR" }.Contains(Interpolate.currentMediaFile.Format.Upper());
             l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s={(use470bg ? "'470bg'" : "cMatrix")})"); // Convert RGB to YUV. Always use 470bg if input is YUV frames
 
             if (!s.Dedupe) // Ignore trimming code when using deduping that that already handles trimming in the frame order file
@@ -205,7 +207,7 @@ namespace Flowframes.Os
             s += "        reorderedClip = reorderedClip + clip[i]\n";
             s += "\n";
             s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
-            s += "clip = core.text.FrameNum(clip, alignment=4)\n";
+            s += Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=4)\n" : "";
             s += "\n";
 
             return s;
@@ -225,7 +227,7 @@ namespace Flowframes.Os
             s += "            reorderedClip = reorderedClip + clip[i]\n";
             s += "\n";
             s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
-            s += "clip = core.text.FrameNum(clip, alignment=1)\n";
+            s += Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=1)\n" : "";
             s += "\n";
 
             return s;

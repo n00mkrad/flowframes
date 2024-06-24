@@ -55,6 +55,7 @@ namespace Flowframes.Data
                 Name = DirectoryInfo.Name;
                 SourcePath = DirectoryInfo.FullName;
                 Format = "Folder";
+                IoUtils.GetFileInfosSorted(SourcePath, false, "*.*").Take(1).ToList().ForEach(f => Format = f.Extension.Trim('.'));
 
                 if (requestFpsInputIfUnset && InputRate == null)
                     InputRate = InterpolateUtils.AskForFramerate(Name);
