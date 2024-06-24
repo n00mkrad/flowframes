@@ -163,8 +163,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Drawing.Common.5.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Drawing.Common.8.0.6\lib\net462\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
@@ -566,6 +566,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlowframesLogo2021.ico" />
+    <None Include="Resources\baseline_settings_white_48dp_40px.png" />
+    <None Include="Resources\baseline_queue_white_48dp_40px.png" />
+    <None Include="Resources\baseline_system_update_alt_white_48dp_40px.png" />
+    <None Include="Resources\baseline_list_alt_white_48dp_40px.png" />
+    <None Include="Resources\discordNew40px.png" />
+    <None Include="Resources\patreon256pxColored_40px.png" />
+    <None Include="Resources\patreon40pxColored.png" />
+    <None Include="Resources\paypal40px.png" />
     <None Include="Resources\paypal256px.png" />
     <None Include="Resources\discordNew.png" />
     <None Include="Resources\baseline_restart_alt_white_48dp.png" />

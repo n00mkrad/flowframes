@@ -514,13 +514,12 @@
             // updateBtn
             // 
             this.updateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.updateBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_system_update_alt_white_48dp;
+            this.updateBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_system_update_alt_white_48dp_40px;
             this.updateBtn.DrawImage = true;
             this.updateBtn.FlatAppearance.BorderSize = 0;
             this.updateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.updateBtn.ForeColor = System.Drawing.Color.White;
             this.updateBtn.ImageIndex = 0;
-            this.updateBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.updateBtn.Location = new System.Drawing.Point(790, 12);
             this.updateBtn.Name = "updateBtn";
             this.updateBtn.Size = new System.Drawing.Size(40, 40);
@@ -532,13 +531,12 @@
             // queueBtn
             // 
             this.queueBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.queueBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_queue_white_48dp;
+            this.queueBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_queue_white_48dp_40px;
             this.queueBtn.DrawImage = true;
             this.queueBtn.FlatAppearance.BorderSize = 0;
             this.queueBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.queueBtn.ForeColor = System.Drawing.Color.White;
             this.queueBtn.ImageIndex = 0;
-            this.queueBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.queueBtn.Location = new System.Drawing.Point(836, 12);
             this.queueBtn.Name = "queueBtn";
             this.queueBtn.Size = new System.Drawing.Size(40, 40);
@@ -586,13 +584,12 @@
             // settingsBtn
             // 
             this.settingsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.settingsBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_settings_white_48dp;
+            this.settingsBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_settings_white_48dp_40px;
             this.settingsBtn.DrawImage = true;
             this.settingsBtn.FlatAppearance.BorderSize = 0;
             this.settingsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.settingsBtn.ForeColor = System.Drawing.Color.White;
             this.settingsBtn.ImageIndex = 0;
-            this.settingsBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.settingsBtn.Location = new System.Drawing.Point(882, 12);
             this.settingsBtn.Name = "settingsBtn";
             this.settingsBtn.Size = new System.Drawing.Size(40, 40);
@@ -604,13 +601,12 @@
             // patreonBtn
             // 
             this.patreonBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.patreonBtn.ButtonImage = global::Flowframes.Properties.Resources.patreon256pxColored;
+            this.patreonBtn.ButtonImage = global::Flowframes.Properties.Resources.patreon256pxColored_40px;
             this.patreonBtn.DrawImage = true;
             this.patreonBtn.FlatAppearance.BorderSize = 0;
             this.patreonBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.patreonBtn.ForeColor = System.Drawing.Color.White;
             this.patreonBtn.ImageIndex = 0;
-            this.patreonBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.patreonBtn.Location = new System.Drawing.Point(606, 12);
             this.patreonBtn.Name = "patreonBtn";
             this.patreonBtn.Size = new System.Drawing.Size(40, 40);
@@ -622,13 +618,12 @@
             // paypalBtn
             // 
             this.paypalBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.paypalBtn.ButtonImage = global::Flowframes.Properties.Resources.paypal256px;
+            this.paypalBtn.ButtonImage = global::Flowframes.Properties.Resources.paypal40px;
             this.paypalBtn.DrawImage = true;
             this.paypalBtn.FlatAppearance.BorderSize = 0;
             this.paypalBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.paypalBtn.ForeColor = System.Drawing.Color.White;
             this.paypalBtn.ImageIndex = 0;
-            this.paypalBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.paypalBtn.Location = new System.Drawing.Point(559, 12);
             this.paypalBtn.Name = "paypalBtn";
             this.paypalBtn.Size = new System.Drawing.Size(40, 40);
@@ -640,13 +635,12 @@
             // discordBtn
             // 
             this.discordBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.discordBtn.ButtonImage = global::Flowframes.Properties.Resources.discordNew;
+            this.discordBtn.ButtonImage = ((System.Drawing.Image)(resources.GetObject("discordBtn.ButtonImage")));
             this.discordBtn.DrawImage = true;
             this.discordBtn.FlatAppearance.BorderSize = 0;
             this.discordBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.discordBtn.ForeColor = System.Drawing.Color.White;
             this.discordBtn.ImageIndex = 0;
-            this.discordBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.discordBtn.Location = new System.Drawing.Point(652, 12);
             this.discordBtn.Name = "discordBtn";
             this.discordBtn.Size = new System.Drawing.Size(40, 40);
@@ -712,13 +706,12 @@
             // debugBtn
             // 
             this.debugBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.debugBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_list_alt_white_48dp;
+            this.debugBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_list_alt_white_48dp_40px;
             this.debugBtn.DrawImage = true;
             this.debugBtn.FlatAppearance.BorderSize = 0;
             this.debugBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.debugBtn.ForeColor = System.Drawing.Color.White;
             this.debugBtn.ImageIndex = 0;
-            this.debugBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.debugBtn.Location = new System.Drawing.Point(744, 12);
             this.debugBtn.Name = "debugBtn";
             this.debugBtn.Size = new System.Drawing.Size(40, 40);
@@ -1613,7 +1606,6 @@
             this.htButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.htButton1.ForeColor = System.Drawing.Color.White;
             this.htButton1.ImageIndex = 0;
-            this.htButton1.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.htButton1.Location = new System.Drawing.Point(698, 9);
             this.htButton1.Name = "htButton1";
             this.htButton1.Size = new System.Drawing.Size(40, 40);

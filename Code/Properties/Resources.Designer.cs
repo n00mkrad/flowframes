@@ -19,7 +19,7 @@ namespace Flowframes.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -143,6 +143,16 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap baseline_list_alt_white_48dp_40px {
+            get {
+                object obj = ResourceManager.GetObject("baseline_list_alt_white_48dp_40px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap baseline_pause_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_pause_white_48dp", resourceCulture);
@@ -166,6 +176,16 @@ namespace Flowframes.Properties {
         internal static System.Drawing.Bitmap baseline_queue_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_queue_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_queue_white_48dp_40px {
+            get {
+                object obj = ResourceManager.GetObject("baseline_queue_white_48dp_40px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,6 +223,16 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap baseline_settings_white_48dp_40px {
+            get {
+                object obj = ResourceManager.GetObject("baseline_settings_white_48dp_40px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap baseline_stop_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_stop_white_48dp", resourceCulture);
@@ -216,6 +246,16 @@ namespace Flowframes.Properties {
         internal static System.Drawing.Bitmap baseline_system_update_alt_white_48dp {
             get {
                 object obj = ResourceManager.GetObject("baseline_system_update_alt_white_48dp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_system_update_alt_white_48dp_40px {
+            get {
+                object obj = ResourceManager.GetObject("baseline_system_update_alt_white_48dp_40px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -275,6 +315,16 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap discordNew40px {
+            get {
+                object obj = ResourceManager.GetObject("discordNew40px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap flowframesIcoNew_512px {
             get {
                 object obj = ResourceManager.GetObject("flowframesIcoNew_512px", resourceCulture);
@@ -305,9 +355,29 @@ namespace Flowframes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap patreon256pxColored_40px {
+            get {
+                object obj = ResourceManager.GetObject("patreon256pxColored_40px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap paypal256px {
             get {
                 object obj = ResourceManager.GetObject("paypal256px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap paypal40px {
+            get {
+                object obj = ResourceManager.GetObject("paypal40px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -87,8 +87,8 @@ namespace Flowframes.Data
 
                 if (pytorchAvailable)
                     return NetworksAll;
-                else
-                    return NetworksAll.Where(x => x.Backend != AI.AiBackend.Pytorch).ToList();
+                
+                return NetworksAll.Where(x => x.Backend != AI.AiBackend.Pytorch).ToList();
             }
         }
 
