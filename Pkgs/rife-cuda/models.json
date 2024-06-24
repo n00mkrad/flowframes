@@ -53,22 +53,71 @@
 },
 {
 	"name": "RIFE 4.3",
-	"desc": "General Model",
+	"desc": "v4 General Model",
 	"dir": "RIFE43",
 	"supportsAlpha": "true",
 	"isDefault": "false"
 },
 {
 	"name": "RIFE 4.4",
-	"desc": "General Model",
+	"desc": "v4 General Model",
 	"dir": "RIFE44",
 	"supportsAlpha": "true",
 	"isDefault": "false"
 },
 {
 	"name": "RIFE 4.6",
-	"desc": "Latest General Model",
+	"desc": "v4 General Model",
 	"dir": "RIFE46",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.7",
+	"desc": "v4 General Model",
+	"dir": "RIFE47",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.6",
+	"desc": "v4 General Model",
+	"dir": "RIFE48",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.9",
+	"desc": "v4 General Model",
+	"dir": "RIFE49",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.10.1",
+	"desc": "v4 General Model",
+	"dir": "RIFE410",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.11.1",
+	"desc": "v4 General Model",
+	"dir": "RIFE411",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.12.2",
+	"desc": "v4 General Model",
+	"dir": "RIFE412",
+	"supportsAlpha": "true",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.13.2",
+	"desc": "v4 General Model",
+	"dir": "RIFE413",
 	"supportsAlpha": "true",
 	"isDefault": "true"
 },
