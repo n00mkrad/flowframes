@@ -1,16 +1,15 @@
-﻿using Flowframes.Media;
-using Flowframes.Data;
+﻿using Flowframes.Data;
 using Flowframes.IO;
+using Flowframes.Media;
 using Flowframes.MiscUtils;
+using Flowframes.Os;
+using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Flowframes.Ui;
-using Flowframes.Os;
 
 namespace Flowframes.Main
 {
@@ -67,7 +66,7 @@ namespace Flowframes.Main
                 Logger.Log($"[AE] Starting AutoEncode MainLoop - Chunk Size: {chunkSize} Frames - Safety Buffer: {safetyBufferFrames} Frames", true);
                 int chunkNo = AutoEncodeResume.encodedChunks + 1;
                 string encFile = Path.Combine(interpFramesPath.GetParentDir(), Paths.GetFrameOrderFilename(Interpolate.currentSettings.interpFactor));
-                interpFramesLines = IoUtils.ReadLines(encFile).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
+                interpFramesLines = IoUtils.ReadLines(encFile).Where(x => x.StartsWith("file ")).Select(x => x.Split('/').Last().Remove("'").Split('#').First()).ToArray();     // Array with frame filenames
 
                 while (!Interpolate.canceled && GetInterpFramesAmount() < 2)
                     await Task.Delay(1000);
@@ -78,7 +77,7 @@ namespace Flowframes.Main
                 {
                     if (Interpolate.canceled) return;
 
-                    if (paused)
+                    if (paused || InterpolationProgress.lastFrame == 0)
                     {
                         await Task.Delay(200);
                         continue;
@@ -229,12 +228,16 @@ namespace Flowframes.Main
 
         static int GetChunkSize(int targetFramesAmount)
         {
-            if (targetFramesAmount > 100000) return 4800;
+            /*if (targetFramesAmount > 100000) return 4800;
             if (targetFramesAmount > 50000) return 2400;
             if (targetFramesAmount > 20000) return 1200;
             if (targetFramesAmount > 5000) return 600;
             if (targetFramesAmount > 1000) return 300;
-            return 150;
+            return 150;*/
+            int round = (int)Math.Floor(targetFramesAmount / 2400f);
+            if (round == 0)
+                round = 1;
+            return Math.Min(round * 600, 6000);
         }
 
         static int GetInterpFramesAmount()
