@@ -1,33 +1,22 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Extensions;
+using Flowframes.IO;
+using Flowframes.Media;
+using Flowframes.MiscUtils;
 using Flowframes.Os;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Flowframes.MiscUtils;
-using Microsoft.VisualBasic;
-using Flowframes.Media;
-using System.Windows.Input;
 
 namespace Flowframes
 {
     class AvProcess
     {
         public static Process lastAvProcess;
-        public static Stopwatch timeSinceLastOutput = new Stopwatch();
-
-        public static string lastOutputFfmpeg;
-
         public enum LogMode { Visible, OnlyLastLine, Hidden }
-        static LogMode currentLogMode;
-        static bool showProgressBar;
 
         static readonly string defLogLevel = "warning";
-
         public static void Kill()
         {
             if (lastAvProcess == null) return;
@@ -93,7 +82,7 @@ namespace Flowframes
                 ffmpeg.BeginErrorReadLine();
             }
 
-            while (!ffmpeg.HasExited) await Task.Delay(10);
+            await ffmpeg.WaitForExitAsync();
             while (reliableOutput && timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
 
             if (progressBar)
@@ -176,7 +165,7 @@ namespace Flowframes
                 ffprobe.BeginErrorReadLine();
             }
 
-            while (!ffprobe.HasExited) await Task.Delay(10);
+            await ffprobe.WaitForExitAsync();
             while (timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
 
             return processOutput;

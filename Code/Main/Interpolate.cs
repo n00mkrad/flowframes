@@ -122,7 +122,7 @@ namespace Flowframes
             if (Config.GetBool(Config.Key.scnDetect) && !currentSettings.ai.Piped)
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FfmpegExtract.ExtractSceneChanges(currentSettings.inPath, Path.Combine(currentSettings.tempFolder, Paths.scenesDir), currentSettings.inFpsDetected, currentSettings.inputIsFrames, currentSettings.framesExt);
+                await FfmpegExtract.ExtractSceneChanges(currentSettings.inPath, Path.Combine(currentSettings.tempFolder, Paths.scenesDir), currentSettings.inFps, currentSettings.inputIsFrames, currentSettings.framesExt);
             }
 
             if (!currentSettings.inputIsFrames)        // Extract if input is video, import if image sequence
@@ -138,7 +138,7 @@ namespace Flowframes
             currentSettings.RefreshExtensions(InterpSettings.FrameType.Import);
             bool mpdecimate = Config.GetInt(Config.Key.dedupMode) == 2;
             Size res = await Utils.GetOutputResolution(inPath, true, true);
-            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, currentSettings.inFpsDetected, mpdecimate, false, res, currentSettings.framesExt);
+            await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, currentSettings.inFps, mpdecimate, false, res, currentSettings.framesExt);
 
             if (mpdecimate)
             {
