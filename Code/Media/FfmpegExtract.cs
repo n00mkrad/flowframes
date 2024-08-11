@@ -106,7 +106,8 @@ namespace Flowframes.Media
             string mpStr = deDupe ? GetMpdecimate(true) : "";
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
-            string rateArg = (rate.GetFloat() > 0 && !deDupe) ? $" -fps_mode cfr -r {rate}" : "-fps_mode passthrough";
+            bool allowCfr = rate.GetFloat() > 0 && !deDupe && Path.GetExtension(inputFile).Lower() != ".gif"; // Forcing CFR on GIFs causes issues // TODO: Maybe never use CFR???
+            string rateArg = allowCfr ? $" -fps_mode cfr -r {rate}" : "-fps_mode passthrough";
             string args = $"{GetTrimArg(true)} -itsscale {Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.VfrRatio} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\""; LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, true);
             int amount = IoUtils.GetAmountOfFiles(framesDir, false, "*" + format);
