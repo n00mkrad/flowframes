@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.Ui;
 using System;
@@ -129,6 +130,9 @@ namespace Flowframes.Os
 
         static string GetPytorchVer()
         {
+            if(Implementations.DisablePython)
+                return "";
+
             try
             {
                 Process py = OsUtils.NewProcess(true);

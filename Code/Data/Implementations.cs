@@ -6,6 +6,8 @@ namespace Flowframes.Data
 {
     class Implementations
     {
+        public static bool DisablePython = false;
+
         public static AI rifeCuda = new AI()
         {
             Backend = AI.AiBackend.Pytorch,
@@ -70,7 +72,6 @@ namespace Flowframes.Data
             SupportedFactors = new int[] { 2 },
         };
 
-
         public static List<AI> NetworksAll
         {
             get
@@ -83,7 +84,7 @@ namespace Flowframes.Data
         {
             get
             {
-                bool pytorchAvailable = Python.IsPytorchReady();
+                bool pytorchAvailable = !DisablePython && Python.IsPytorchReady();
 
                 if (pytorchAvailable)
                     return NetworksAll;

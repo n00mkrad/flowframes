@@ -5,6 +5,7 @@ using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Ui;
+using NDesk.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -48,6 +49,20 @@ namespace Flowframes
 
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+            var opts = new OptionSet
+            {
+                { "np|no_python", "Disable Python implementations", v => Implementations.DisablePython = v != null },
+            };
+
+            try
+            {
+                opts.Parse(Environment.GetCommandLineArgs());
+            }
+            catch (OptionException e)
+            {
+                Logger.Log($"Error parsing CLI option: {e.Message}", true);
+            }
 
             Task.Run(() => DiskSpaceCheckLoop());
             fileArgs = Environment.GetCommandLineArgs().Where(a => a[0] != '-' && File.Exists(a)).ToList().Skip(1).ToArray();
