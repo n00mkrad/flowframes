@@ -2,12 +2,9 @@
 using Flowframes.IO;
 using Flowframes.MiscUtils;
 using Flowframes.Ui;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Flowframes.Os
 {
@@ -20,50 +17,51 @@ namespace Flowframes.Os
 
         public static async Task CheckCompression ()
         {
-            if(HasEmbeddedPyFolder() && (Config.Get(Config.Key.compressedPyVersion) != Updater.GetInstalledVer().ToString()))
+            if (Implementations.DisablePython || !HasEmbeddedPyFolder() || (Config.Get(Config.Key.compressedPyVersion) == Updater.GetInstalledVer().ToString()))
+                return;
+
+            Program.mainForm.SetWorking(true, false);
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+            try
             {
-                Program.mainForm.SetWorking(true, false);
-                Stopwatch sw = new Stopwatch();
-                sw.Restart();
-                try
+                bool shownPatienceMsg = false;
+                Logger.Log("Compressing python runtime. This only needs to be done once.");
+                compactOutput = "";
+                Process compact = OsUtils.NewProcess(true);
+                compact.StartInfo.Arguments = $"/C compact /C /S:{GetPyFolder().Wrap()} /EXE:LZX";
+                compact.OutputDataReceived += new DataReceivedEventHandler(CompactOutputHandler);
+                compact.ErrorDataReceived += new DataReceivedEventHandler(CompactOutputHandler);
+                compact.Start();
+                compact.BeginOutputReadLine();
+                compact.BeginErrorReadLine();
+
+                while (!compact.HasExited)
                 {
-                    bool shownPatienceMsg = false;
-                    Logger.Log("Compressing python runtime. This only needs to be done once.");
-                    compactOutput = "";
-                    Process compact = OsUtils.NewProcess(true);
-                    compact.StartInfo.Arguments = $"/C compact /C /S:{GetPyFolder().Wrap()} /EXE:LZX";
-                    compact.OutputDataReceived += new DataReceivedEventHandler(CompactOutputHandler);
-                    compact.ErrorDataReceived += new DataReceivedEventHandler(CompactOutputHandler);
-                    compact.Start();
-                    compact.BeginOutputReadLine();
-                    compact.BeginErrorReadLine();
+                    await Task.Delay(500);
 
-                    while (!compact.HasExited)
+                    if (sw.ElapsedMilliseconds > 10000)
                     {
+                        Logger.Log($"This can take up to a few minutes, but only needs to be done once. (Elapsed: {FormatUtils.Time(sw.Elapsed)})", false, shownPatienceMsg);
+                        shownPatienceMsg = true;
                         await Task.Delay(500);
-                        if(sw.ElapsedMilliseconds > 10000)
-                        {
-                            Logger.Log($"This can take up to a few minutes, but only needs to be done once. (Elapsed: {FormatUtils.Time(sw.Elapsed)})", false, shownPatienceMsg);
-                            shownPatienceMsg = true;
-                            await Task.Delay(500);
-                        }
-
                     }
-                    Config.Set("compressedPyVersion", Updater.GetInstalledVer().ToString());
-                    Logger.Log("Done compressing python runtime.");
-                    Logger.WriteToFile(compactOutput, true, "compact");
                 }
-                catch { }
-                Program.mainForm.SetWorking(false);
+
+                Config.Set("compressedPyVersion", Updater.GetInstalledVer().ToString());
+                Logger.Log("Done compressing python runtime.");
+                Logger.WriteToFile(compactOutput, true, "compact");
             }
+            catch { }
+            Program.mainForm.SetWorking(false);
         }
 
         static void CompactOutputHandler (object sendingProcess, DataReceivedEventArgs outLine)
         {
             if (outLine == null || outLine.Data == null)
                 return;
-            string line = outLine.Data;
-            compactOutput = compactOutput + line + "\n";
+
+            compactOutput = $"{compactOutput}{outLine.Data}\n";
         }
 
         public static string GetPyCmd (bool unbufferedStdOut = true, bool quiet = false)
