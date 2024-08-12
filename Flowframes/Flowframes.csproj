@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdamsLair.WinForms" Version="1.1.18" />
+    <PackageReference Include="AdamsLair.WinForms.PopupControl" Version="1.0.1" />
+    <PackageReference Include="CircularProgressBar" Version="2.8.0.16" />
+    <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="CyotekTabList" Version="2.0.0" />
+    <PackageReference Include="diskdetector-net" Version="0.3.2" />
+    <PackageReference Include="HTAlt.Standart" Version="0.1.6" />
+    <PackageReference Include="HTAlt.WinForms" Version="0.1.6" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.21.1" />
+    <PackageReference Include="Magick.NET.Core" Version="4.1.0" />
+    <PackageReference Include="NDesk.Options" Version="0.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NvAPIWrapper.Net" Version="0.8.1.101" />
+    <PackageReference Include="PagedControl" Version="2.2.0" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="TabControl" Version="2.1.2" />
+    <PackageReference Include="Tulpep.NotificationWindow" Version="1.1.38" />
+    <PackageReference Include="VulkanSharp" Version="0.1.10" />
+    <PackageReference Include="Win32Interop.Dwmapi" Version="1.0.1" />
+    <PackageReference Include="Win32Interop.Gdi32" Version="1.0.1" />
+    <PackageReference Include="Win32Interop.Kernel32" Version="1.0.1" />
+    <PackageReference Include="Win32Interop.User32" Version="1.0.1" />
+    <PackageReference Include="Win32Interop.Uxtheme" Version="1.0.1" />
+    <PackageReference Include="WindowsAPICodePack-Core" Version="1.1.1" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="WinFormAnimation" Version="1.6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\nmkd-utils\NmkdUtils\NmkdUtils.csproj" />
+  </ItemGroup>
+
+    <PropertyGroup>
+    	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
+
+</Project>
