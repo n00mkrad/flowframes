@@ -31,6 +31,19 @@ namespace Flowframes.Os
                 Application.Exit();
             }
 
+            // Attempt to create an empty new folder in exe dir to check if we have permissions
+            try
+            {
+                string testDir = Path.Combine(Paths.GetExeDir(), "test.tmp");
+                Directory.CreateDirectory(Path.Combine(Paths.GetExeDir(), testDir));
+                Directory.Delete(Path.Combine(Paths.GetExeDir(), testDir));
+            }
+            catch (Exception e)
+            {
+                UiUtils.ShowMessageBox($"Flowframes does not have permission to write to its own directory!\nPlease move it to a different folder.\n\nCurrent install directory: {Paths.GetExeDir()}", UiUtils.MessageType.Error);
+                Application.Exit();
+            }
+
             string winVer = OsUtils.GetWindowsVer();
             Logger.Log($"Running {winVer}", true);
 
