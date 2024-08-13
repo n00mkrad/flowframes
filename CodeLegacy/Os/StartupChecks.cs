@@ -14,54 +14,39 @@ namespace Flowframes.Os
     {
         static bool IsWin10Or11()
         {
-            string osInfoStr = OsUtils.TryGetOs();
+            string winVer = OsUtils.GetWindowsVer();
 
-            if (string.IsNullOrWhiteSpace(osInfoStr))
-                return true;    // If it fails, assume we are on Win10
+            if (winVer.IsEmpty())
+                return true;    // If it fails, return true for future-proofing
 
-            string[] osInfo = osInfoStr.Split(" | ");
-            string version = osInfo[0].Remove("Microsoft").Trim();
-
-            return (version.ToLowerInvariant().Contains("windows 10") || version.ToLowerInvariant().Contains("windows 11"));
-        }
-
-        static bool Is32Bit()
-        {
-            string osInfoStr = OsUtils.TryGetOs();
-
-            if (string.IsNullOrWhiteSpace(osInfoStr))
-                return false;    // If it fails, assume we are on 64bit
-
-            string[] osInfo = osInfoStr.Split(" | ");
-            string arch = osInfo[1].Trim();
-            return arch.Contains("32");
+            return winVer.Lower().Contains("windows 10") || winVer.Lower().Contains("windows 11");
         }
 
         public static void CheckOs()
         {
-            if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().ToLowerInvariant().Contains("temp"))
+            if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().Lower().Contains("\\temp"))
             {
-                UiUtils.ShowMessageBox("You seem to be running Flowframes out of an archive.\nPlease extract the whole archive first!", UiUtils.MessageType.Error);
+                UiUtils.ShowMessageBox("You seem to be running Flowframes out of a compressed archive.\nPlease extract the whole archive first!", UiUtils.MessageType.Error);
                 IoUtils.TryDeleteIfExists(Paths.GetDataPath());
                 Application.Exit();
             }
 
-            string[] osInfo = OsUtils.TryGetOs().Split(" | ");
-            string version = osInfo[0].Remove("Microsoft").Trim();
+            string winVer = OsUtils.GetWindowsVer();
+            Logger.Log($"Running {winVer}", true);
 
-            if (Is32Bit() && !Config.GetBool("allow32Bit", false))
+            if (!Environment.Is64BitOperatingSystem && !Config.GetBool("allow32Bit", false))
             {
-                UiUtils.ShowMessageBox("This application is not compatible with 32 bit operating systems!", UiUtils.MessageType.Error);
+                UiUtils.ShowMessageBox("This application is not compatible with 32-bit operating systems!", UiUtils.MessageType.Error);
                 Application.Exit();
             }
 
-            if (string.IsNullOrWhiteSpace(version))
+            if (winVer.IsEmpty())
                 return;
 
-            if (!version.ToLowerInvariant().Contains("windows 10") && !version.ToLowerInvariant().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
+            if (!winVer.ToLowerInvariant().Contains("windows 10") && !winVer.ToLowerInvariant().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
             {
-                UiUtils.ShowMessageBox($"This application was made for Windows 10/11 and is not officially compatible with {version}.\n\n" +
-                                $"Use it at your own risk and do NOT ask for support as long as your are on {version}.", UiUtils.MessageType.Warning);
+                UiUtils.ShowMessageBox($"This application was made for Windows 10/11 and is not officially compatible with {winVer}.\n\n" +
+                                $"Use it at your own risk and do NOT ask for support as long as your are on {winVer}.", UiUtils.MessageType.Warning);
             }
         }
 
@@ -73,7 +58,7 @@ namespace Flowframes.Os
             bool silent = Config.GetBool("silentDevmodeCheck", true);
             string ver = Updater.GetInstalledVer().ToString();
             bool symlinksAllowed = Symlinks.SymlinksAllowed();
-            Logger.Log($"SymlinksAllowed: {symlinksAllowed}", true);
+            Logger.Log($"Symlinks allowed: {symlinksAllowed}", true);
 
             if (!symlinksAllowed && Config.Get(Config.Key.askedForDevModeVersion) != ver)
             {

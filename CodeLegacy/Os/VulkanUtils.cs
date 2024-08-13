@@ -48,7 +48,7 @@ namespace Flowframes.Os
 
                 // Clean up Vulkan resources
                 vkInstance.Destroy();
-                Logger.Log($"[VK] Vulkan device check took {sw.ElapsedMs} ms", true);
+                Logger.Log($"[VK] Vulkan device check completed after {sw.ElapsedMs} ms", true);
             }
             catch(Exception ex)
             {

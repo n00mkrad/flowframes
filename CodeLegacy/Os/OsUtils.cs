@@ -13,6 +13,7 @@ using Microsoft.VisualBasic.Devices;
 using Flowframes.MiscUtils;
 using System.Linq;
 using Tulpep.NotificationWindow;
+using System.Runtime.InteropServices;
 
 namespace Flowframes.Os
 {
@@ -71,7 +72,7 @@ namespace Flowframes.Os
 
             try
             {
-                if(proc == null)
+                if (proc == null)
                 {
                     Logger.Log($"IsProcessHidden was called but proc is null, defaulting to {defaultVal}", true);
                     return defaultVal;
@@ -90,7 +91,7 @@ namespace Flowframes.Os
             {
                 Logger.Log($"IsProcessHidden errored, defaulting to {defaultVal}: {e.Message}", true);
                 return defaultVal;
-            } 
+            }
         }
 
         public static Process NewProcess(bool hidden, string filename = "cmd.exe")
@@ -181,31 +182,28 @@ namespace Flowframes.Os
             }
         }
 
-        public static string TryGetOs()
+        public static string GetWindowsVer()
         {
-            string info = "";
+            string os = RuntimeInformation.OSDescription;
 
-            try
+            if (os.StartsWith("Microsoft Windows 6.1"))
+                return "Windows 7";
+            
+            if (os.StartsWith("Microsoft Windows 6.2"))
+                return "Windows 8";
+
+            if (os.StartsWith("Microsoft Windows 6.3"))
+                return "Windows 8.1";
+
+            if (os.StartsWith("Microsoft Windows 10.0"))
             {
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
-                {
-                    ManagementObjectCollection information = searcher.Get();
-
-                    if (information != null)
-                    {
-                        foreach (ManagementObject obj in information)
-                            info = $"{obj["Caption"]} | {obj["OSArchitecture"]}";
-                    }
-
-                    info = info.Replace("NT 5.1.2600", "XP").Replace("NT 5.2.3790", "Server 2003");
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log("TryGetOs Error: " + e.Message, true);
+                int buildNum = os.Split("Microsoft Windows 10.0").Last().GetInt();
+                // Assuming build numbers for distinguishing Windows 10 and 11 - Windows 10: Builds 10240 to 19044 - Windows 11: Builds 22000 and above
+                return buildNum >= 22000 ? "Windows 11" : "Windows 10";
             }
 
-            return info;
+            return "";
+            // return os.Replace("Microsoft ", ""); // Fallback to raw description without "Microsoft "
         }
 
         public static IEnumerable<Process> GetChildProcesses(Process process)
@@ -244,11 +242,11 @@ namespace Flowframes.Os
 
             if (onlyLastLine)
                 output = output.SplitIntoLines().LastOrDefault();
-            
+
             return output;
         }
 
-        public static void Shutdown ()
+        public static void Shutdown()
         {
             Process proc = NewProcess(true);
             proc.StartInfo.Arguments = "/C shutdown -s -t 0";
@@ -275,7 +273,7 @@ namespace Flowframes.Os
             popupNotifier.Popup();
         }
 
-        public static void ShowNotificationIfInBackground (string title, string text)
+        public static void ShowNotificationIfInBackground(string title, string text)
         {
             if (Program.mainForm.IsInFocus())
                 return;
@@ -283,17 +281,17 @@ namespace Flowframes.Os
             ShowNotification(title, text);
         }
 
-        public static string GetGpus ()
+        public static string GetGpus()
         {
             List<string> gpusVk = new List<string>();
             List<string> gpusNv = new List<string>();
 
-            if(VulkanUtils.VkDevices != null)
+            if (VulkanUtils.VkDevices != null)
             {
                 gpusVk.AddRange(VulkanUtils.VkDevices.Select(d => $"{d.Name.Remove("NVIDIA ").Remove("GeForce ").Remove("AMD ").Remove("Intel ").Remove("(TM)")} ({d.Id})"));
             }
 
-            if(NvApi.gpuList != null && NvApi.gpuList.Any())
+            if (NvApi.gpuList != null && NvApi.gpuList.Any())
             {
                 gpusNv.AddRange(NvApi.gpuList.Select(d => $"{d.FullName.Remove("NVIDIA ").Remove("GeForce ")} ({NvApi.gpuList.IndexOf(d)})"));
             }
