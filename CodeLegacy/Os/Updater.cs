@@ -4,6 +4,7 @@ using Flowframes.IO;
 using Flowframes.Ui;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,8 +27,12 @@ namespace Flowframes.Os
         {
             try
             {
-                string verStr = IoUtils.ReadLines(Paths.GetVerPath())[0];
-                return new Version(verStr);
+                var verLines = IoUtils.ReadLines(Paths.GetVerPath());
+
+                if(!verLines.Where(s => s.IsNotEmpty()).Any())
+                    return new Version(0, 0, 0);
+
+                return new Version(verLines.First());
             }
             catch (Exception e)
             {
