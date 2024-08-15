@@ -54,7 +54,6 @@ namespace Flowframes.Forms.Main
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-
             UiUtils.InitCombox(aiModel, 2);
             // Video Utils
             UiUtils.InitCombox(trimCombox, 0);
@@ -162,11 +161,11 @@ namespace Flowframes.Forms.Main
                 await Python.CheckCompression();
                 await StartupChecks.SymlinksCheck();
                 await StartupChecks.DetectHwEncoders();
+
             }
             catch (Exception e)
             {
-                Logger.Log("Non-critical error while performing online checks. See logs for details.");
-                Logger.Log($"{e.Message}\n{e.StackTrace}", true);
+                Logger.Log($"Checks Error: {e.Message}\n{e.StackTrace}", true);
             }
         }
 

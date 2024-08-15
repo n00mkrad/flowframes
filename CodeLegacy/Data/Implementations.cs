@@ -6,8 +6,6 @@ namespace Flowframes.Data
 {
     class Implementations
     {
-        public static bool DisablePython = false;
-
         public static AI rifeCuda = new AI()
         {
             Backend = AI.AiBackend.Pytorch,
@@ -84,7 +82,7 @@ namespace Flowframes.Data
         {
             get
             {
-                bool pytorchAvailable = !DisablePython && Python.IsPytorchReady();
+                bool pytorchAvailable = !Python.DisablePython && Python.IsPytorchReady();
 
                 if (pytorchAvailable)
                     return NetworksAll;

@@ -10,6 +10,8 @@ namespace Flowframes.Os
 {
     class Python
     {
+        public static bool DisablePython = false;
+
         static bool hasCheckedSysPy = false;
         static bool sysPyInstalled = false;
 
@@ -17,7 +19,7 @@ namespace Flowframes.Os
 
         public static async Task CheckCompression ()
         {
-            if (Implementations.DisablePython || !HasEmbeddedPyFolder() || (Config.Get(Config.Key.compressedPyVersion) == Updater.GetInstalledVer().ToString()))
+            if (DisablePython || !HasEmbeddedPyFolder() || (Config.Get(Config.Key.compressedPyVersion) == Updater.GetInstalledVer().ToString()))
                 return;
 
             Program.mainForm.SetWorking(true, false);
@@ -110,6 +112,9 @@ namespace Flowframes.Os
         
         public static bool IsPytorchReady (bool clearCachedValue = false)
         {
+            if (DisablePython)
+                return false;
+
             if (clearCachedValue)
                 pytorchReadyCached = null;
 
@@ -128,7 +133,7 @@ namespace Flowframes.Os
 
         static string GetPytorchVer()
         {
-            if(Implementations.DisablePython)
+            if(DisablePython)
                 return "";
 
             try

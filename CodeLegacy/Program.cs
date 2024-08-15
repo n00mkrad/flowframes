@@ -52,7 +52,7 @@ namespace Flowframes
 
             var opts = new OptionSet
             {
-                { "np|no_python", "Disable Python implementations", v => Implementations.DisablePython = v != null },
+                { "np|no_python", "Disable Python implementations", v => Python.DisablePython = v != null },
             };
 
             try

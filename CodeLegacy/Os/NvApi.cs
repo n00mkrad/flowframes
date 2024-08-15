@@ -1,4 +1,5 @@
-﻿using NvAPIWrapper;
+﻿using Flowframes.MiscUtils;
+using NvAPIWrapper;
 using NvAPIWrapper.GPU;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Flowframes.Os
         {
             try
             {
+                var sw = new NmkdStopwatch();
                 NVIDIA.Initialize();
                 PhysicalGPU[] gpus = PhysicalGPU.GetPhysicalGPUs();
 
@@ -31,7 +33,7 @@ namespace Flowframes.Os
 
                 string gpuNamesList = string.Join(", ", gpuNames);
 
-                Logger.Log($"Initialized Nvidia API. GPU{(gpus.Length > 1 ? "s" : "")}: {gpuNamesList}", true);
+                Logger.Log($"Initialized Nvidia API in {sw.ElapsedMs} ms. GPU{(gpus.Length > 1 ? "s" : "")}: {gpuNamesList}", true);
             }
             catch (Exception e)
             {
