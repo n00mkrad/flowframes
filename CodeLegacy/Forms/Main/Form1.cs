@@ -1,5 +1,4 @@
-﻿using Flowframes.Forms;
-using Flowframes.IO;
+﻿using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.Os;
 using Flowframes.Ui;
@@ -57,7 +56,6 @@ namespace Flowframes.Forms.Main
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-            UiUtils.InitCombox(aiModel, 2);
             // Video Utils
             UiUtils.InitCombox(trimCombox, 0);
 
@@ -177,28 +175,35 @@ namespace Flowframes.Forms.Main
         void HandleArgs()
         {
 
-            if (Program.fileArgs.Length > 0)
-                DragDropHandler(Program.fileArgs.Where(x => IoUtils.IsFileValid(x)).ToArray());
+            if (Program.Cli.ValidFiles.Any())
+                DragDropHandler(Program.Cli.ValidFiles.ToArray());
 
-            foreach (string arg in Program.args)
+            if (Program.Cli.InterpAi != (Implementations.Ai)(-1))
             {
-                if (arg.StartsWith("out="))
-                    outputTbox.Text = arg.Split('=').Last().Trim();
+                string name = Implementations.GetAi(Program.Cli.InterpAi).NameInternal;
+                aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(ai => ai.NameInternal == name).FirstOrDefault());
+            }
 
-                if (arg.StartsWith("factor="))
-                {
-                    float factor = arg.Split('=').Last().GetFloat();
-                    interpFactorCombox.Text = factor.ToString();
-                }
+            if (Program.Cli.InterpFactor > 0)
+            {
+                interpFactorCombox.Text = Program.Cli.InterpFactor.ToString();
+                ValidateFactor();
+            }
 
-                if (arg.StartsWith("ai="))
-                    aiCombox.SelectedIndex = arg.Split('=').Last().GetInt();
+            if(Program.Cli.OutputFormat != (Enums.Output.Format)(-1))
+            {
+                SetFormat(Program.Cli.OutputFormat);
+            }
 
-                if (arg.StartsWith("model="))
-                    aiModel.SelectedIndex = arg.Split('=').Last().GetInt();
+            if (Program.Cli.InterpModel.IsNotEmpty())
+            {
+                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Program.Cli.InterpModel))?.index ?? -1;
+            }
 
-                if (arg.StartsWith("output-mode="))
-                    comboxOutputFormat.SelectedIndex = arg.Split('=').Last().GetInt();
+            if (Program.Cli.OutputDir.IsNotEmpty())
+            {
+                outputTbox.Text = Program.Cli.OutputDir;
+                Directory.CreateDirectory(Program.Cli.OutputDir);
             }
         }
 
@@ -326,7 +331,7 @@ namespace Flowframes.Forms.Main
 
         public void CompletionAction()
         {
-            if (Program.args.Contains("quit-when-done"))
+            if (Program.Cli.ExitWhenDone)
                 Application.Exit();
 
             if (completionAction.SelectedIndex == 1)
@@ -601,7 +606,7 @@ namespace Flowframes.Forms.Main
         {
             if (Program.busy) return;
 
-            bool start = Program.initialRun && Program.args.Contains("start");
+            bool start = Program.initialRun && Program.Cli.InterpStart;
 
             if (files.Length > 1)
             {
@@ -806,6 +811,10 @@ namespace Flowframes.Forms.Main
         {
             float inFps = fpsInTbox.GetFloat();
             float outFps = fpsOutTbox.GetFloat();
+
+            if(inFps == 0 || outFps == 0)
+                return;
+
             var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);
             interpFactorCombox.Text = $"{targetFactorRounded}";
             ValidateFactor();

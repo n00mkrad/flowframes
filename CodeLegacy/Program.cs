@@ -1,5 +1,4 @@
 ﻿using Flowframes.Data;
-using Flowframes.Forms;
 using Flowframes.Forms.Main;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
@@ -37,6 +36,14 @@ namespace Flowframes
         public static class Cli
         {
             public static bool ShowMdlDownloader = false;
+            public static bool ExitWhenDone = false;
+            public static bool InterpStart = false;
+            public static float InterpFactor = -1f;
+            public static Implementations.Ai InterpAi = (Implementations.Ai)(-1);
+            public static Enums.Output.Format OutputFormat = Enums.Output.Format.Mp4;
+            public static string InterpModel = "";
+            public static string OutputDir = "";
+            public static List<string> ValidFiles = new List<string>();
         }
 
         [STAThread]
@@ -68,25 +75,43 @@ namespace Flowframes
             Logger.Log($"Files: {(fileArgs.Length > 0 ? string.Join(", ", fileArgs) : "None")}", true);
             Logger.Log($"Args: {(args.Length > 0 ? string.Join(", ", args) : "None")}", true);
 
+            HandleCli();
+            LaunchGui();
+        }
+
+        private static void HandleCli ()
+        {
+            string ais = string.Join(", ", Enum.GetNames(typeof(Implementations.Ai)));
+            string formats = string.Join(", ", Enum.GetNames(typeof(Enums.Output.Format)));
+
             var opts = new OptionSet
             {
                 { "np|no_python", "Disable Python implementations", v => Python.DisablePython = v != null },
                 { "md|open_model_downloader", "Open model downloader GUI on startup", v => Cli.ShowMdlDownloader = v != null },
+                { "e|exit", "Exit automatically after interpolation has finished", v => Cli.ExitWhenDone = v != null },
+                { "s|start", "Start interpolation automatically if valid parameters are provided", v => Cli.InterpStart = v != null },
+                { "f|factor=", "Interpolation factor", v => Cli.InterpFactor = v.GetFloat() },
+                { "a|ai=", $"Interpolation AI implementation to use (Option: {ais})", v => Cli.InterpAi = ParseUtils.GetEnum<Implementations.Ai>(v.Trim().Replace("_", "")) },
+                { "m|model=", $"AI model to use", v => Cli.InterpModel = v.Trim() },
+                { "v|video_format=", $"Output video format to use (Options: {formats})", v => Cli.OutputFormat = ParseUtils.GetEnum<Enums.Output.Format>(v.Trim()) },
+                { "o|output_dir=", $"Output folder to save the interpolated video in", v => Cli.OutputDir = v.Trim() },
+                { "<>", "Input file(s)", Cli.ValidFiles.Add },
             };
 
             try
             {
                 opts.Parse(Environment.GetCommandLineArgs());
+                Cli.ValidFiles = Cli.ValidFiles.Skip(1).Where(f => File.Exists(f)).ToList();
+                Logger.Log($"Parsed CLI: Start {Cli.InterpStart}, Exit {Cli.ExitWhenDone}, Factor {Cli.InterpFactor}, AI {Cli.InterpAi}, Model '{Cli.InterpModel}', " +
+                    $"Video Format {Cli.OutputFormat}, Output Dir '{Cli.OutputDir}', No Python {Python.DisablePython}, MdlDl {Cli.ShowMdlDownloader}", true);
             }
             catch (OptionException e)
             {
-                Logger.Log($"Error parsing CLI option: {e.Message}", true);
+                Logger.Log($"Error parsing CLI options: {e.Message}", true);
             }
-
-            LaunchGui();
         }
 
-        static void LaunchGui()
+        private static void LaunchGui()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -97,14 +122,14 @@ namespace Flowframes
             Application.Run(mainForm);
         }
 
-        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             string text = $"Unhandled Thread Exception!\n\n{e.Exception.Message}\n\nStack Trace:\n{e.Exception.StackTrace}\n\n" +
                 $"The error has been copied to the clipboard. Please inform the developer about this.";
             ShowUnhandledError(text);
         }
 
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception ex = e.ExceptionObject as Exception;
             string text = $"Unhandled UI Exception!\n\n{ex.Message}\n\nStack Trace:\n{ex.StackTrace}\n\n" +
@@ -112,7 +137,7 @@ namespace Flowframes
             ShowUnhandledError(text);
         }
 
-        static void ShowUnhandledError(string text)
+        private static void ShowUnhandledError(string text)
         {
             UiUtils.ShowMessageBox(text, UiUtils.MessageType.Error);
             Clipboard.SetText(text);
@@ -165,7 +190,7 @@ namespace Flowframes
         /// <summary>
         /// Continuously checks disk space in order to pause interpolation if disk space is running low. Is quite fast (sub 1ms)
         /// </summary>
-        static async Task DiskSpaceCheckLoop()
+        private static async Task DiskSpaceCheckLoop()
         {
             while (true)
             {
