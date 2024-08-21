@@ -194,7 +194,7 @@ namespace Flowframes
             }
         }
 
-        public static async Task RunAi(string outpath, AI ai, bool stepByStep = false)
+        public static async Task RunAi(string outpath, AiInfo ai, bool stepByStep = false)
         {
             if (canceled) return;
 

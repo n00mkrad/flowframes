@@ -30,7 +30,7 @@ namespace Flowframes.Ui
             return true;
         }
 
-        public static ComboBox LoadAiModelsIntoGui(ComboBox combox, AI ai)
+        public static ComboBox LoadAiModelsIntoGui(ComboBox combox, AiInfo ai)
         {
             combox.Items.Clear();
 

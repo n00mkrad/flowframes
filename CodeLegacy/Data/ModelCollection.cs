@@ -9,12 +9,12 @@ namespace Flowframes.Data
 {
     public class ModelCollection
     {
-        public AI Ai { get; set; } = null;
+        public AiInfo Ai { get; set; } = null;
         public List<ModelInfo> Models { get; set; } = new List<ModelInfo>();
 
         public class ModelInfo
         {
-            public AI Ai { get; set; } = null;
+            public AiInfo Ai { get; set; } = null;
             public string Name { get; set; } = "";
             public string Desc { get; set; } = "";
             public string Dir { get; set; } = "";
@@ -36,12 +36,12 @@ namespace Flowframes.Data
             }
         }
 
-        public ModelCollection(AI ai)
+        public ModelCollection(AiInfo ai)
         {
             Ai = ai;
         }
 
-        public ModelCollection(AI ai, string jsonContentOrPath)
+        public ModelCollection(AiInfo ai, string jsonContentOrPath)
         {
             Ai = ai;
 

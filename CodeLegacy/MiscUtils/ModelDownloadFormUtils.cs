@@ -19,7 +19,7 @@ namespace Flowframes.MiscUtils
         {
 			form.SetDownloadBtnEnabled(true);
 			canceled = false;
-			List<AI> ais = new List<AI>();
+			List<AiInfo> ais = new List<AiInfo>();
 
 			if (rifeC) ais.Add(Implementations.rifeCuda);
 			if (rifeN) ais.Add(Implementations.rifeNcnn);
@@ -36,7 +36,7 @@ namespace Flowframes.MiscUtils
 			await Task.Delay(10);
 			UpdateProgressBar();
 
-			foreach (AI ai in ais)
+			foreach (AiInfo ai in ais)
 				await DownloadForAi(ai);
 
 			form.SetWorking(false);
@@ -44,7 +44,7 @@ namespace Flowframes.MiscUtils
 			form.SetDownloadBtnEnabled(false);
 		}
 
-        public static async Task DownloadForAi(AI ai)
+        public static async Task DownloadForAi(AiInfo ai)
         {
 			ModelCollection modelCollection = AiModels.GetModels(ai);
 
@@ -72,11 +72,11 @@ namespace Flowframes.MiscUtils
 			ModelDownloader.canceled = true;
 		}
 
-		public static int GetTaskCount (List<AI> ais)
+		public static int GetTaskCount (List<AiInfo> ais)
         {
 			int count = 0;
 
-			foreach(AI ai in ais)
+			foreach(AiInfo ai in ais)
             {
 				ModelCollection modelCollection = AiModels.GetModels(ai);
 				count += modelCollection.Models.Count;

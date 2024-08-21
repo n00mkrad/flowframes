@@ -157,7 +157,7 @@ namespace Flowframes.Os
 
         public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
         {
-            AI ai = Implementations.rifeCuda;
+            AiInfo ai = Implementations.rifeCuda;
 
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
@@ -232,7 +232,7 @@ namespace Flowframes.Os
 
         public static async Task RunFlavrCuda(string framesPath, float interpFactor, string mdl)
         {
-            AI ai = Implementations.flavrCuda;
+            AiInfo ai = Implementations.flavrCuda;
 
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
@@ -292,7 +292,7 @@ namespace Flowframes.Os
 
         public static async Task RunRifeNcnn(string framesPath, string outPath, float factor, string mdl)
         {
-            AI ai = Implementations.rifeNcnn;
+            AiInfo ai = Implementations.rifeNcnn;
             processTimeMulti.Restart();
 
             try
@@ -350,7 +350,7 @@ namespace Flowframes.Os
         {
             if (Interpolate.canceled) return;
 
-            AI ai = Implementations.rifeNcnnVs;
+            AiInfo ai = Implementations.rifeNcnnVs;
             processTimeMulti.Restart();
 
             try
@@ -429,7 +429,7 @@ namespace Flowframes.Os
 
         public static async Task RunDainNcnn(string framesPath, string outPath, float factor, string mdl, int tilesize)
         {
-            AI ai = Implementations.dainNcnn;
+            AiInfo ai = Implementations.dainNcnn;
 
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
@@ -484,7 +484,7 @@ namespace Flowframes.Os
 
         public static async Task RunXvfiCuda(string framesPath, float interpFactor, string mdl)
         {
-            AI ai = Implementations.xvfiCuda;
+            AiInfo ai = Implementations.xvfiCuda;
 
             if (Interpolate.currentlyUsingAutoEnc)      // Ensure AutoEnc is not paused
                 AutoEncode.paused = false;
@@ -548,7 +548,7 @@ namespace Flowframes.Os
 
         public static async Task RunIfrnetNcnn(string framesPath, string outPath, float factor, string mdl)
         {
-            AI ai = Implementations.ifrnetNcnn;
+            AiInfo ai = Implementations.ifrnetNcnn;
 
             processTimeMulti.Restart();
 
@@ -601,7 +601,7 @@ namespace Flowframes.Os
             while (!ifrnetNcnn.HasExited) await Task.Delay(1);
         }
 
-        static void LogOutput(string line, AI ai, bool err = false)
+        static void LogOutput(string line, AiInfo ai, bool err = false)
         {
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
@@ -614,7 +614,7 @@ namespace Flowframes.Os
 
             string lastLogLines = string.Join("\n", Logger.GetSessionLogLastLines(lastLogName, 6).Select(x => $"[{x.Split("]: [").Skip(1).FirstOrDefault()}"));
 
-            if (ai.Backend == AI.AiBackend.Pytorch) // Pytorch specific
+            if (ai.Backend == AiInfo.AiBackend.Pytorch) // Pytorch specific
             {
                 if (line.Contains("ff:nocuda-cpu"))
                     Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
@@ -651,7 +651,7 @@ namespace Flowframes.Os
                 }
             }
 
-            if (ai.Backend == AI.AiBackend.Ncnn) // NCNN specific
+            if (ai.Backend == AiInfo.AiBackend.Ncnn) // NCNN specific
             {
                 if (!hasShownError && err && line.MatchesWildcard("vk*Instance* failed"))
                 {

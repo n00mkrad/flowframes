@@ -155,7 +155,7 @@ namespace Flowframes.Ui
 
         public static float ValidateInterpFactor (float factor)
         {
-            AI ai = Program.mainForm.GetAi();
+            AiInfo ai = Program.mainForm.GetAi();
 
             if (ai.NameInternal == Implementations.rifeNcnn.NameInternal && !Program.mainForm.GetModel(ai).Dir.Contains("v4"))
             {
@@ -165,23 +165,23 @@ namespace Flowframes.Ui
                 return 2;
             }
 
-            if (ai.FactorSupport == AI.InterpFactorSupport.Fixed)
+            if (ai.FactorSupport == AiInfo.InterpFactorSupport.Fixed)
             {
                 int closest = ai.SupportedFactors.Min(i => (Math.Abs(factor.RoundToInt() - i), i)).i;
                 return (float)closest;
             }
 
-            if(ai.FactorSupport == AI.InterpFactorSupport.AnyPowerOfTwo)
+            if(ai.FactorSupport == AiInfo.InterpFactorSupport.AnyPowerOfTwo)
             {
                 return ToNearestPow2(factor.RoundToInt()).Clamp(2, 128);
             }
 
-            if(ai.FactorSupport == AI.InterpFactorSupport.AnyInteger)
+            if(ai.FactorSupport == AiInfo.InterpFactorSupport.AnyInteger)
             {
                 return factor.RoundToInt().Clamp(2, 128);
             }
 
-            if(ai.FactorSupport == AI.InterpFactorSupport.AnyFloat)
+            if(ai.FactorSupport == AiInfo.InterpFactorSupport.AnyFloat)
             {
                 return factor.Clamp(2, 128);
             }

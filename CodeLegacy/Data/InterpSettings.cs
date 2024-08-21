@@ -18,7 +18,7 @@ namespace Flowframes
         public string inPath;
         public string outPath;
         public string FullOutPath { get; set; } = "";
-        public AI ai;
+        public AiInfo ai;
         public string inPixFmt = "yuv420p";
         public Fraction inFps;
         public Fraction inFpsDetected;
@@ -46,7 +46,7 @@ namespace Flowframes
 
         public InterpSettings() { }
 
-        public InterpSettings(string inPathArg, string outPathArg, AI aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, float interpFactorArg, float itsScale, OutputSettings outSettingsArg, ModelCollection.ModelInfo modelArg)
+        public InterpSettings(string inPathArg, string outPathArg, AiInfo aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, float interpFactorArg, float itsScale, OutputSettings outSettingsArg, ModelCollection.ModelInfo modelArg)
         {
             inPath = inPathArg;
             outPath = outPathArg;
@@ -197,7 +197,7 @@ namespace Flowframes
 
         public enum FrameType { Import, Interp, Both };
 
-        public void RefreshExtensions(FrameType type = FrameType.Both, AI ai = null)
+        public void RefreshExtensions(FrameType type = FrameType.Both, AiInfo ai = null)
         {
             if(ai == null)
             {

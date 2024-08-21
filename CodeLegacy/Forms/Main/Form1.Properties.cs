@@ -35,7 +35,7 @@ namespace Flowframes.Forms.Main
             }
         }
 
-        public ModelCollection.ModelInfo GetModel(AI currentAi)
+        public ModelCollection.ModelInfo GetModel(AiInfo currentAi)
         {
             try
             {
@@ -47,11 +47,11 @@ namespace Flowframes.Forms.Main
             }
         }
 
-        public AI GetAi()
+        public AiInfo GetAi()
         {
             try
             {
-                foreach (AI ai in Implementations.NetworksAll)
+                foreach (AiInfo ai in Implementations.NetworksAll)
                 {
                     if (GetAiComboboxName(ai) == aiCombox.Text)
                         return ai;

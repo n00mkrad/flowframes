@@ -14,7 +14,7 @@ namespace Flowframes.Utilities
 {
     class NcnnUtils
     {
-        public static int GetRifeNcnnGpuThreads(Size res, int gpuId, AI ai)
+        public static int GetRifeNcnnGpuThreads(Size res, int gpuId, AiInfo ai)
         {
             int threads = Config.GetInt(Config.Key.ncnnThreads);
             int maxThreads = VulkanUtils.GetMaxNcnnThreads(gpuId);
@@ -41,7 +41,7 @@ namespace Flowframes.Utilities
             return tilesizeStr;
         }
 
-        public static string GetNcnnThreads(AI ai)
+        public static string GetNcnnThreads(AiInfo ai)
         {
             List<int> enabledGpuIds = Config.Get(Config.Key.ncnnGpus).Split(',').Select(s => s.GetInt()).ToList(); // Get GPU IDs
             List<int> gpuThreadCounts = enabledGpuIds.Select(g => GetRifeNcnnGpuThreads(new Size(), g, ai)).ToList(); // Get max thread count for each GPU

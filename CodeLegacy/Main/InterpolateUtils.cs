@@ -154,7 +154,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static bool CheckAiAvailable(AI ai, ModelCollection.ModelInfo model)
+        public static bool CheckAiAvailable(AiInfo ai, ModelCollection.ModelInfo model)
         {
             if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.PkgDir), true) < 1)
             {
@@ -195,7 +195,7 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static void ShowWarnings(float factor, AI ai)
+        public static void ShowWarnings(float factor, AiInfo ai)
         {
             if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
                 Logger.Log($"Warning: The CMD window for interpolation is enabled. This will disable Auto-Encode and the progress bar!");

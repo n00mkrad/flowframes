@@ -12,7 +12,7 @@ namespace Flowframes.Main
 {
     class AiModels
     {
-        public static ModelCollection GetModels (AI ai)
+        public static ModelCollection GetModels (AiInfo ai)
         {
             string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
             string modelsFile = Path.Combine(pkgPath, "models.json");
@@ -35,7 +35,7 @@ namespace Flowframes.Main
             return modelCollection;
         }
 
-        public static List<string> GetCustomModels(AI ai)
+        public static List<string> GetCustomModels(AiInfo ai)
         {
             string pkgPath = Path.Combine(Paths.GetPkgPath(), ai.PkgDir);
             List<string> custModels = new List<string>();
@@ -49,7 +49,7 @@ namespace Flowframes.Main
             return custModels;
         }
 
-        public static ModelCollection.ModelInfo GetModelByName(AI ai, string modelName)
+        public static ModelCollection.ModelInfo GetModelByName(AiInfo ai, string modelName)
         {
             ModelCollection modelCollection = GetModels(ai);
 
@@ -62,7 +62,7 @@ namespace Flowframes.Main
             return null;
         }
 
-        public static ModelCollection.ModelInfo GetModelByDir(AI ai, string dirName)
+        public static ModelCollection.ModelInfo GetModelByDir(AiInfo ai, string dirName)
         {
             ModelCollection modelCollection = GetModels(ai);
 

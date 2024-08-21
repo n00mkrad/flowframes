@@ -341,7 +341,7 @@
     <Reference Include="System.Management.Automation" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\AI.cs" />
+    <Compile Include="Data\AiInfo.cs" />
     <Compile Include="Data\AudioTrack.cs" />
     <Compile Include="Data\EncoderInfo.cs" />
     <Compile Include="Data\EncoderInfoVideo.cs" />

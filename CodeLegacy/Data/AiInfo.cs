@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Flowframes.Data
 {
-    public class AI
+    public class AiInfo
     {
         public enum AiBackend { Pytorch, Ncnn, Tensorflow, Other }
         public AiBackend Backend { get; set; } = AiBackend.Pytorch;
@@ -26,9 +26,9 @@ namespace Flowframes.Data
 
         public string LogFilename { get { return PkgDir + "-log"; } }
 
-        public AI () { }
+        public AiInfo () { }
 
-        public AI(AiBackend backend, string aiName, string longName, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
+        public AiInfo(AiBackend backend, string aiName, string longName, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
         {
             Backend = backend;
             NameInternal = aiName;

@@ -158,7 +158,7 @@ namespace Flowframes.Os
             if (!Config.GetBool("fetchModelsFromRepo", false))
                 return;
 
-            foreach (AI ai in Implementations.NetworksAll)
+            foreach (AiInfo ai in Implementations.NetworksAll)
             {
                 try
                 {

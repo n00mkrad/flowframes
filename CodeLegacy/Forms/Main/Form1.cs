@@ -229,7 +229,7 @@ namespace Flowframes.Forms.Main
         public InterpSettings GetCurrentSettings()
         {
             SetTab(interpOptsTab.Name);
-            AI ai = GetAi();
+            AiInfo ai = GetAi();
 
             var s = new InterpSettings()
             {
@@ -357,7 +357,7 @@ namespace Flowframes.Forms.Main
         {
             bool pytorchAvailable = Python.IsPytorchReady();
 
-            foreach (AI ai in Implementations.NetworksAvailable)
+            foreach (AiInfo ai in Implementations.NetworksAvailable)
                 aiCombox.Items.Add(GetAiComboboxName(ai));
 
             string lastUsedAiName = Config.Get(Config.Key.lastUsedAiName);
@@ -366,7 +366,7 @@ namespace Flowframes.Forms.Main
             Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
         }
 
-        private string GetAiComboboxName(AI ai)
+        private string GetAiComboboxName(AiInfo ai)
         {
             return ai.FriendlyName + " - " + ai.Description;
         }
@@ -556,7 +556,7 @@ namespace Flowframes.Forms.Main
                 Config.Set(Config.Key.lastUsedAiName, GetAi().NameInternal);
 
             interpFactorCombox_SelectedIndexChanged(null, null);
-            fpsOutTbox.ReadOnly = GetAi().FactorSupport != AI.InterpFactorSupport.AnyFloat;
+            fpsOutTbox.ReadOnly = GetAi().FactorSupport != AiInfo.InterpFactorSupport.AnyFloat;
         }
 
         public void UpdateAiModelCombox()

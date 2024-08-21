@@ -6,79 +6,96 @@ namespace Flowframes.Data
 {
     class Implementations
     {
-        public static AI rifeCuda = new AI()
+        public enum Ai
         {
-            Backend = AI.AiBackend.Pytorch,
+            RifeCuda,
+            RifeNcnn,
+            RifeNcnnVs,
+            FlavrCuda,
+            DainNcnn,
+            XvfiCuda,
+            IfrnetNcnn,
+        }
+
+        public static AiInfo rifeCuda = new AiInfo()
+        {
+            Backend = AiInfo.AiBackend.Pytorch,
             NameInternal = "RIFE_CUDA",
             NameLong = "Real-Time Intermediate Flow Estimation",
-            FactorSupport = AI.InterpFactorSupport.AnyInteger,
-            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+            FactorSupport = AiInfo.InterpFactorSupport.AnyInteger,
+            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // Generates numbers from 2 to 16
         };
 
-        public static AI rifeNcnn = new AI()
+        public static AiInfo rifeNcnn = new AiInfo()
         {
-            Backend = AI.AiBackend.Ncnn,
+            Backend = AiInfo.AiBackend.Ncnn,
             NameInternal = "RIFE_NCNN",
             NameLong = "Real-Time Intermediate Flow Estimation",
-            FactorSupport = AI.InterpFactorSupport.AnyFloat,
-            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+            FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
+            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // Generates numbers from 2 to 16
         };
 
-        public static AI rifeNcnnVs = new AI()
+        public static AiInfo rifeNcnnVs = new AiInfo()
         {
-            Backend = AI.AiBackend.Ncnn,
+            Backend = AiInfo.AiBackend.Ncnn,
             NameInternal = "RIFE_NCNN_VS",
             NameLong = "Real-Time Intermediate Flow Estimation",
-            FactorSupport = AI.InterpFactorSupport.AnyFloat,
-            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+            FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
+            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // Generates numbers from 2 to 16
             Piped = true
         };
 
-        public static AI flavrCuda = new AI()
+        public static AiInfo flavrCuda = new AiInfo()
         {
-            Backend = AI.AiBackend.Pytorch,
+            Backend = AiInfo.AiBackend.Pytorch,
             NameInternal = "FLAVR_CUDA",
             NameLong = "Flow-Agnostic Video Representations",
-            FactorSupport = AI.InterpFactorSupport.Fixed,
+            FactorSupport = AiInfo.InterpFactorSupport.Fixed,
             SupportedFactors = new int[] { 2, 4, 8 },
         };
 
-        public static AI dainNcnn = new AI()
+        public static AiInfo dainNcnn = new AiInfo()
         {
-            Backend = AI.AiBackend.Ncnn,
+            Backend = AiInfo.AiBackend.Ncnn,
             NameInternal = "DAIN_NCNN",
             NameLong = "Depth-Aware Video Frame Interpolation",
-            FactorSupport = AI.InterpFactorSupport.AnyFloat,
-            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8 },
+            FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
+            SupportedFactors = Enumerable.Range(2, 7).ToArray(),  // Generates numbers from 2 to 8
         };
 
-        public static AI xvfiCuda = new AI()
+        public static AiInfo xvfiCuda = new AiInfo()
         {
-            Backend = AI.AiBackend.Pytorch,
+            Backend = AiInfo.AiBackend.Pytorch,
             NameInternal = "XVFI_CUDA",
             NameLong = "eXtreme Video Frame Interpolation",
-            FactorSupport = AI.InterpFactorSupport.AnyInteger,
-            SupportedFactors = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+            FactorSupport = AiInfo.InterpFactorSupport.AnyInteger,
+            SupportedFactors = Enumerable.Range(2, 9).ToArray(),  // Generates numbers from 2 to 10
         };
 
-        public static AI ifrnetNcnn = new AI()
+        public static AiInfo ifrnetNcnn = new AiInfo()
         {
-            Backend = AI.AiBackend.Ncnn,
+            Backend = AiInfo.AiBackend.Ncnn,
             NameInternal = "IFRNet_NCNN",
             NameLong = "Intermediate Feature Refine Network",
-            FactorSupport = AI.InterpFactorSupport.Fixed,
+            FactorSupport = AiInfo.InterpFactorSupport.Fixed,
             SupportedFactors = new int[] { 2 },
         };
 
-        public static List<AI> NetworksAll
+        // Lookup table
+        private static readonly Dictionary<Ai, AiInfo> AiLookup = new Dictionary<Ai, AiInfo>
         {
-            get
-            {
-                return new List<AI> { rifeNcnnVs, rifeNcnn, rifeCuda, flavrCuda, dainNcnn, xvfiCuda, /* ifrnetNcnn */ };
-            }
-        }
+            { Ai.RifeCuda, rifeCuda },
+            { Ai.RifeNcnn, rifeNcnn },
+            { Ai.RifeNcnnVs, rifeNcnnVs },
+            { Ai.FlavrCuda, flavrCuda },
+            { Ai.DainNcnn, dainNcnn },
+            { Ai.XvfiCuda, xvfiCuda },
+            { Ai.IfrnetNcnn, ifrnetNcnn }
+        };
 
-        public static List<AI> NetworksAvailable
+        public static List<AiInfo> NetworksAll => AiLookup.Values.ToList();
+
+        public static List<AiInfo> NetworksAvailable
         {
             get
             {
@@ -86,20 +103,31 @@ namespace Flowframes.Data
 
                 if (pytorchAvailable)
                     return NetworksAll;
-                
-                return NetworksAll.Where(x => x.Backend != AI.AiBackend.Pytorch).ToList();
+
+                return NetworksAll.Where(x => x.Backend != AiInfo.AiBackend.Pytorch).ToList();
             }
         }
 
-        public static AI GetAi(string aiName)
+        // Legacy: Get by name
+        public static AiInfo GetAi(string aiName)
         {
-            foreach (AI ai in NetworksAll)
+            foreach (var ai in NetworksAll)
             {
                 if (ai.NameInternal == aiName)
                     return ai;
             }
 
-            Logger.Log($"AI implementation lookup failed! This should not happen! Please tell the developer! (Implementations.cs)");
+            Logger.Log($"AI implementation lookup failed for '{aiName}'! This should not happen! Please tell the developer!");
+            return NetworksAll[0];
+        }
+
+        // New: Use enums
+        public static AiInfo GetAi(Ai ai)
+        {
+            if (AiLookup.TryGetValue(ai, out AiInfo aiObj))
+                return aiObj;
+
+            Logger.Log($"AI implementation lookup failed for '{ai}'! This should not happen! Please tell the developer!");
             return NetworksAll[0];
         }
     }
