@@ -34,25 +34,44 @@ namespace Flowframes
 
         public static Queue<InterpSettings> batchQueue = new Queue<InterpSettings>();
 
+        public static class Cli
+        {
+            public static bool ShowMdlDownloader = false;
+        }
+
         [STAThread]
         static void Main()
         {
+            // Force culture to en-US across entire application (to avoid number parsing issues etc)
             var culture = new CultureInfo("en-US");
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-            Paths.Init();
-            Config.Init();
-            Cleanup();
+            // Catch unhandled exceptions across application
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            // Set up TLS for web requests - Not sure if needed, but seemed to help with web request problems
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+            Paths.Init();
+            Config.Init();
+
+            Task.Run(() => DiskSpaceCheckLoop());
+            fileArgs = Environment.GetCommandLineArgs().Where(a => a[0] != '-' && File.Exists(a)).ToList().Skip(1).ToArray();
+            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
+            Logger.Log($"Command Line: {Environment.CommandLine}", true);
+            Logger.Log($"Files: {(fileArgs.Length > 0 ? string.Join(", ", fileArgs) : "None")}", true);
+            Logger.Log($"Args: {(args.Length > 0 ? string.Join(", ", args) : "None")}", true);
 
             var opts = new OptionSet
             {
                 { "np|no_python", "Disable Python implementations", v => Python.DisablePython = v != null },
+                { "md|open_model_downloader", "Open model downloader GUI on startup", v => Cli.ShowMdlDownloader = v != null },
             };
 
             try
@@ -64,26 +83,17 @@ namespace Flowframes
                 Logger.Log($"Error parsing CLI option: {e.Message}", true);
             }
 
-            Task.Run(() => DiskSpaceCheckLoop());
-            fileArgs = Environment.GetCommandLineArgs().Where(a => a[0] != '-' && File.Exists(a)).ToList().Skip(1).ToArray();
-            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
-            Logger.Log($"Command Line: {Environment.CommandLine}", true);
-            Logger.Log($"Files: {(fileArgs.Length > 0 ? string.Join(", ", fileArgs) : "None")}", true);
-            Logger.Log($"Args: {(args.Length > 0 ? string.Join(", ", args) : "None")}", true);
-
-            LaunchMainForm();
+            LaunchGui();
         }
 
-        static void LaunchMainForm()
+        static void LaunchGui()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            bool showMdlDownloader = Cli.ShowMdlDownloader || args.Contains("show-model-downloader"); // The latter check may be needed for legacy reasons
 
-            mainForm = new Form1();
+            mainForm = new Form1() { ShowModelDownloader = showMdlDownloader };
             Application.Run(mainForm);
         }
 
@@ -152,52 +162,57 @@ namespace Flowframes
             }
         }
 
+        /// <summary>
+        /// Continuously checks disk space in order to pause interpolation if disk space is running low. Is quite fast (sub 1ms)
+        /// </summary>
         static async Task DiskSpaceCheckLoop()
         {
             while (true)
             {
-                if (busy)
+                if (!busy || Interpolate.currentSettings == null || !Directory.Exists(Interpolate.currentSettings.tempFolder))
                 {
-                    try
+                    await Task.Delay(5000);
+                    continue;
+                }
+
+                try
+                {
+                    string drivePath = Interpolate.currentSettings.tempFolder.Substring(0, 2);
+                    long mb = IoUtils.GetDiskSpace(Interpolate.currentSettings.tempFolder);
+                    int nextWaitTimeMs = ((int)mb).Clamp(1000, 20000); // Check runs more often the less space there is (min 1s, max 20s interval)
+                    bool lowDiskSpace = mb < (Config.GetInt(Config.Key.lowDiskSpacePauseGb, 5) * 1024);
+                    bool tooLowDiskSpace = mb < (Config.GetInt(Config.Key.lowDiskSpaceCancelGb, 2) * 1024);
+                    string spaceGb = (mb / 1024f).ToString("0.0");
+
+                    // Logger.Log($"Disk space check for '{drivePath}/': {spaceGb} GB free, next check in {nextWaitTimeMs / 1024} sec", true);
+
+                    if (!Interpolate.canceled && (AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) && lowDiskSpace)
                     {
-                        if (Interpolate.currentSettings == null || Interpolate.currentSettings.tempFolder.Length < 3)
-                            return;
-
-                        string drivePath = Interpolate.currentSettings.tempFolder.Substring(0, 2);
-                        long mb = IoUtils.GetDiskSpace(Interpolate.currentSettings.tempFolder);
-
-                        Logger.Log($"Disk space check for '{drivePath}/': {(mb / 1024f).ToString("0.0")} GB free.", true);
-
-                        bool lowDiskSpace = mb < (Config.GetInt(Config.Key.lowDiskSpacePauseGb, 5) * 1024);
-                        bool tooLowDiskSpace = mb < (Config.GetInt(Config.Key.lowDiskSpaceCancelGb, 2) * 1024);
-                        string spaceGb = (mb / 1024f).ToString("0.0");
-
-                        if (!Interpolate.canceled && (AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) && lowDiskSpace)
+                        if (tooLowDiskSpace)
                         {
-                            if (tooLowDiskSpace)
-                            {
-                                Interpolate.Cancel($"Not enough disk space on '{drivePath}/' ({spaceGb} GB)!");
-                            }
-                            else
-                            {
-                                bool showMsg = !AiProcessSuspend.aiProcFrozen;
-                                AiProcessSuspend.SuspendIfRunning();
+                            Interpolate.Cancel($"Not enough disk space for temporary files on '{drivePath}/' ({spaceGb} GB)!");
+                        }
+                        else
+                        {
+                            bool showMsg = !AiProcessSuspend.aiProcFrozen;
+                            AiProcessSuspend.SuspendIfRunning();
 
-                                if (showMsg)
-                                {
-                                    UiUtils.ShowMessageBox($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
-                                    $"Please either clear up some disk space or cancel the interpolation.", UiUtils.MessageType.Warning);
-                                }
+                            if (showMsg)
+                            {
+                                UiUtils.ShowMessageBox($"Interpolation has been paused because you are running out of disk space on '{drivePath}/' ({spaceGb} GB)!\n\n" +
+                                $"Please either clear up some disk space or cancel the interpolation.", UiUtils.MessageType.Warning);
                             }
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Log($"Disk space check failed: {e.Message}", true);
-                    }
-                }
 
-                await Task.Delay(15000);
+                    await Task.Delay(nextWaitTimeMs);
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"Disk space check failed: {e.Message}", true);
+                    await Task.Delay(5000);
+                }
             }
         }
     }

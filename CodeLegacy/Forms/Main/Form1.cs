@@ -33,6 +33,8 @@ namespace Flowframes.Forms.Main
         private bool _mainTabInitialized = false;
         private bool _quickSettingsInitialized = false;
 
+        public bool ShowModelDownloader = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -50,6 +52,7 @@ namespace Flowframes.Forms.Main
             await Task.Delay(1);
 
             StartupChecks.CheckOs();
+            Program.Cleanup();
 
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
@@ -71,12 +74,14 @@ namespace Flowframes.Forms.Main
             Initialized();
             HandleArgs();
 
-            if (Program.args.Contains("show-model-downloader"))
+            if (ShowModelDownloader)
+            {
                 new ModelDownloadForm().ShowDialog();
+            }
 
             if (Debugger.IsAttached)
             {
-                Logger.Log("Debugger is attached - Flowframes seems to be running within VS.");
+                Logger.Log("Debugger is attached.");
             }
 
             completionAction.SelectedIndex = 0;
