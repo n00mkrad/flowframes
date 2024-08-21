@@ -53,7 +53,16 @@ namespace Flowframes.Data
             try
             {
                 string[] numbers = text.Split('/');
-                Numerator = numbers[0].GetInt();
+
+                // Check if split is only 1 items (probably integer number)
+                if (numbers.Length == 1)
+                {
+                    Numerator = numbers[0].GetFloat().RoundToInt();
+                    Denominator = 1;
+                    return;
+                }
+
+                Numerator = numbers[0].GetFloat().RoundToInt();
                 Denominator = numbers[1].GetInt();
             }
             catch
@@ -66,7 +75,7 @@ namespace Flowframes.Data
                 catch
                 {
                     Numerator = 0;
-                    Denominator = 0;
+                    Denominator = 1;
                 }
             }
 
