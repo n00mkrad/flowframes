@@ -48,6 +48,10 @@ namespace Flowframes
             public static string InterpModel = "";
             public static string OutputDir = "";
             public static int MaxHeight = -1;
+            public static bool? Loop = false;
+            public static bool? FixSceneChanges = false;
+            public static float FixSceneChangeVal = -1f;
+            public static float MaxOutFps = -1f;
             public static List<string> ValidFiles = new List<string>();
         }
 
@@ -134,6 +138,22 @@ namespace Flowframes
                 {
                     "h|max_height=", $"Max video size (pixels height). Larger videos will be downscaled.",
                     v => Cli.MaxHeight = v.GetInt()
+                },
+                {
+                    "l|loop", $"Enable loop output mode",
+                    v => Cli.Loop = v != null ? true : (bool?)null
+                },
+                {
+                    "scn|fix_scene_changes", $"Do not interpolate scene cuts to avoid artifacts",
+                    v => Cli.FixSceneChanges = v != null ? true : (bool?)null
+                },
+                {
+                    "scnv|scene_change_sensitivity=", $"Scene change sensitivity, lower is more sensitive (e.g. 0.18)",
+                    v => Cli.FixSceneChangeVal = v.GetFloat()
+                },
+                {
+                    "fps|max_fps=", $"Maximum FPS of output video, if the interpolation factor results in a higher FPS, it will be reduced to this value",
+                    v => Cli.MaxOutFps = v.GetFloat()
                 },
                 {
                     "o|output_dir=", "Output folder to save the interpolated video in",

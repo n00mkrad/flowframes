@@ -227,6 +227,26 @@ namespace Flowframes.Forms.Main
             {
                 Config.Set(Config.Key.maxVidHeight, Program.Cli.MaxHeight.ToString());
             }
+
+            if (Program.Cli.Loop != null)
+            {
+                Config.Set(Config.Key.enableLoop, ((bool)Program.Cli.Loop).ToString());
+            }
+
+            if (Program.Cli.FixSceneChanges != null)
+            {
+                Config.Set(Config.Key.scnDetect, ((bool)Program.Cli.Loop).ToString());
+            }
+
+            if (Program.Cli.FixSceneChangeVal > 0f)
+            {
+                Config.Set(Config.Key.scnDetectValue, Program.Cli.FixSceneChangeVal.ToString());
+            }
+
+            if (Program.Cli.MaxOutFps >= 1f)
+            {
+                Config.Set(Config.Key.maxFps, Program.Cli.MaxOutFps.ToString());
+            }
         }
 
         void RemovePreviewIfDisabled()
