@@ -1,4 +1,5 @@
 ﻿using Flowframes.Data;
+using Flowframes.Extensions;
 using Flowframes.Forms.Main;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
@@ -21,7 +22,6 @@ namespace Flowframes
 {
     static class Program
     {
-        public static string[] fileArgs = new string[0];
         public static string[] args = new string[0];
         public static bool initialRun = true;
         public static Form1 mainForm;
@@ -35,7 +35,9 @@ namespace Flowframes
 
         public static class Cli
         {
+            public static bool DisablePython = false;
             public static bool ShowMdlDownloader = false;
+            public static bool DontSaveConfig = false;
             public static bool ExitWhenDone = false;
             public static bool InterpStart = false;
             public static float InterpFactor = -1f;
@@ -69,11 +71,8 @@ namespace Flowframes
             Config.Init();
 
             Task.Run(() => DiskSpaceCheckLoop());
-            fileArgs = Environment.GetCommandLineArgs().Where(a => a[0] != '-' && File.Exists(a)).ToList().Skip(1).ToArray();
             args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
-            Logger.Log($"Files: {(fileArgs.Length > 0 ? string.Join(", ", fileArgs) : "None")}", true);
-            Logger.Log($"Args: {(args.Length > 0 ? string.Join(", ", args) : "None")}", true);
 
             HandleCli();
             LaunchGui();
@@ -86,8 +85,9 @@ namespace Flowframes
 
             var opts = new OptionSet
             {
-                { "np|no_python", "Disable Python implementations", v => Python.DisablePython = v != null },
+                { "np|no_python", "Disable Python implementations", v => Cli.DisablePython = v != null },
                 { "md|open_model_downloader", "Open model downloader GUI on startup", v => Cli.ShowMdlDownloader = v != null },
+                { "nc|no_config_save", "Do not save anything in config during this session", v => Cli.DontSaveConfig = v != null },
                 { "e|exit", "Exit automatically after interpolation has finished", v => Cli.ExitWhenDone = v != null },
                 { "s|start", "Start interpolation automatically if valid parameters are provided", v => Cli.InterpStart = v != null },
                 { "f|factor=", "Interpolation factor", v => Cli.InterpFactor = v.GetFloat() },
@@ -100,10 +100,15 @@ namespace Flowframes
 
             try
             {
-                opts.Parse(Environment.GetCommandLineArgs());
+                if (!opts.TryParseOptions(Environment.GetCommandLineArgs()))
+                    return;
+
                 Cli.ValidFiles = Cli.ValidFiles.Skip(1).Where(f => File.Exists(f)).ToList();
                 Logger.Log($"Parsed CLI: Start {Cli.InterpStart}, Exit {Cli.ExitWhenDone}, Factor {Cli.InterpFactor}, AI {Cli.InterpAi}, Model '{Cli.InterpModel}', " +
                     $"Video Format {Cli.OutputFormat}, Output Dir '{Cli.OutputDir}', No Python {Python.DisablePython}, MdlDl {Cli.ShowMdlDownloader}", true);
+
+                Python.DisablePython = Cli.DisablePython;
+                Config.NoWrite = Cli.DontSaveConfig;
             }
             catch (OptionException e)
             {

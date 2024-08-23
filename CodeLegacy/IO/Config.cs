@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -11,7 +10,8 @@ namespace Flowframes.IO
     class Config
     {
         private static string configPath;
-        public static Dictionary<string, string> cachedValues = new Dictionary<string, string>();
+        public static Dictionary<string, string> CachedValues = new Dictionary<string, string>();
+        public static bool NoWrite = false;
 
         public static void Init()
         {
@@ -29,7 +29,7 @@ namespace Flowframes.IO
 
                 File.Delete(configPath);
                 await Task.Delay(100);
-                cachedValues.Clear();
+                CachedValues.Clear();
                 await Task.Delay(100);
 
                 if (settingsForm != null)
@@ -52,7 +52,7 @@ namespace Flowframes.IO
         public static void Set(string str, string value)
         {
             Reload();
-            cachedValues[str] = value;
+            CachedValues[str] = value;
             WriteConfig();
         }
 
@@ -61,14 +61,17 @@ namespace Flowframes.IO
             Reload();
 
             foreach(KeyValuePair<string, string> entry in keyValuePairs)
-                cachedValues[entry.Key] = entry.Value;
+                CachedValues[entry.Key] = entry.Value;
 
             WriteConfig();
         }
 
         private static void WriteConfig()
         {
-            SortedDictionary<string, string> cachedValuesSorted = new SortedDictionary<string, string>(cachedValues);
+            if (NoWrite)
+                return;
+
+            SortedDictionary<string, string> cachedValuesSorted = new SortedDictionary<string, string>(CachedValues);
             File.WriteAllText(configPath, JsonConvert.SerializeObject(cachedValuesSorted, Formatting.Indented));
         }
 
@@ -85,7 +88,7 @@ namespace Flowframes.IO
                 foreach (KeyValuePair<string, string> entry in deserializedConfig)
                     newDict.Add(entry.Key, entry.Value);
 
-                cachedValues = newDict; // Use temp dict and only copy it back if no exception was thrown
+                CachedValues = newDict; // Use temp dict and only copy it back if no exception was thrown
             }
             catch (Exception e)
             {
@@ -118,8 +121,8 @@ namespace Flowframes.IO
 
             try
             {
-                if (cachedValues.ContainsKey(keyStr))
-                    return cachedValues[keyStr];
+                if (CachedValues.ContainsKey(keyStr))
+                    return CachedValues[keyStr];
 
                 return WriteDefaultValIfExists(key.ToString(), type);
             }
@@ -221,7 +224,7 @@ namespace Flowframes.IO
 
         static void WriteIfDoesntExist (string key, string val)
         {
-            if (cachedValues.ContainsKey(key.ToString()))
+            if (CachedValues.ContainsKey(key.ToString()))
                 return;
 
             Set(key, val);

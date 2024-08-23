@@ -84,7 +84,7 @@ namespace Flowframes.Ui
 
             grid.Rows.Clear();
 
-            foreach (KeyValuePair<string, string> keyValuePair in Config.cachedValues)
+            foreach (KeyValuePair<string, string> keyValuePair in Config.CachedValues)
             {
                 grid.Rows.Add(keyValuePair.Key, keyValuePair.Value);
             }

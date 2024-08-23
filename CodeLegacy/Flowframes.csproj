@@ -368,6 +368,7 @@
     <Compile Include="Data\QueryInfo.cs" />
     <Compile Include="Data\ResumeState.cs" />
     <Compile Include="Data\SubtitleTrack.cs" />
+    <Compile Include="Extensions\ArgParseExtensions.cs" />
     <Compile Include="Extensions\ProcessExtensions.cs" />
     <Compile Include="Forms\BatchForm.cs">
       <SubType>Form</SubType>
