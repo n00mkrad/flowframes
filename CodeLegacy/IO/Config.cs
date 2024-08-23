@@ -51,14 +51,14 @@ namespace Flowframes.IO
 
         public static void Set(string str, string value)
         {
-            Reload();
+            // Reload();
             CachedValues[str] = value;
             WriteConfig();
         }
 
         public static void Set(Dictionary<string, string> keyValuePairs)
         {
-            Reload();
+            // Reload();
 
             foreach(KeyValuePair<string, string> entry in keyValuePairs)
                 CachedValues[entry.Key] = entry.Value;

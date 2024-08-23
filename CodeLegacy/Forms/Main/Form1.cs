@@ -205,6 +205,28 @@ namespace Flowframes.Forms.Main
                 outputTbox.Text = Program.Cli.OutputDir;
                 Directory.CreateDirectory(Program.Cli.OutputDir);
             }
+
+            if (Program.Cli.InterpModel.IsNotEmpty())
+            {
+                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Program.Cli.InterpModel))?.index ?? -1;
+            }
+
+            if (Program.Cli.Encoder != (Enums.Encoding.Encoder)(-1))
+            {
+                comboxOutputEncoder.SelectedIndex = comboxOutputEncoder.Items.Cast<string>().Select((item, index) => new { item, index })
+                    .FirstOrDefault(x => x.item == Strings.Encoder[Program.Cli.Encoder.ToString()])?.index ?? -1;
+            }
+
+            if (Program.Cli.PixFmt != (Enums.Encoding.PixelFormat)(-1))
+            {
+                comboxOutputEncoder.SelectedIndex = comboxOutputEncoder.Items.Cast<string>().Select((item, index) => new { item, index })
+                    .FirstOrDefault(x => x.item == Strings.PixelFormat[Program.Cli.PixFmt.ToString()])?.index ?? -1;
+            }
+
+            if (Program.Cli.MaxHeight >= 64 && Program.Cli.MaxHeight <= 16384)
+            {
+                Config.Set(Config.Key.maxVidHeight, Program.Cli.MaxHeight.ToString());
+            }
         }
 
         void RemovePreviewIfDisabled()

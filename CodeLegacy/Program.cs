@@ -43,8 +43,11 @@ namespace Flowframes
             public static float InterpFactor = -1f;
             public static Implementations.Ai InterpAi = (Implementations.Ai)(-1);
             public static Enums.Output.Format OutputFormat = Enums.Output.Format.Mp4;
+            public static Enums.Encoding.Encoder Encoder = (Enums.Encoding.Encoder)(-1);
+            public static Enums.Encoding.PixelFormat PixFmt = (Enums.Encoding.PixelFormat)(-1);
             public static string InterpModel = "";
             public static string OutputDir = "";
+            public static int MaxHeight = -1;
             public static List<string> ValidFiles = new List<string>();
         }
 
@@ -80,30 +83,83 @@ namespace Flowframes
 
         private static void HandleCli ()
         {
-            string ais = string.Join(", ", Enum.GetNames(typeof(Implementations.Ai)));
-            string formats = string.Join(", ", Enum.GetNames(typeof(Enums.Output.Format)));
+            string GetEnums<T>() => string.Join(", ", Enum.GetNames(typeof(T)));
 
             var opts = new OptionSet
             {
-                { "np|no_python", "Disable Python implementations", v => Cli.DisablePython = v != null },
-                { "md|open_model_downloader", "Open model downloader GUI on startup", v => Cli.ShowMdlDownloader = v != null },
-                { "nc|no_config_save", "Do not save anything in config during this session", v => Cli.DontSaveConfig = v != null },
-                { "e|exit", "Exit automatically after interpolation has finished", v => Cli.ExitWhenDone = v != null },
-                { "s|start", "Start interpolation automatically if valid parameters are provided", v => Cli.InterpStart = v != null },
-                { "f|factor=", "Interpolation factor", v => Cli.InterpFactor = v.GetFloat() },
-                { "a|ai=", $"Interpolation AI implementation to use (Option: {ais})", v => Cli.InterpAi = ParseUtils.GetEnum<Implementations.Ai>(v.Trim().Replace("_", "")) },
-                { "m|model=", $"AI model to use", v => Cli.InterpModel = v.Trim() },
-                { "v|video_format=", $"Output video format to use (Options: {formats})", v => Cli.OutputFormat = ParseUtils.GetEnum<Enums.Output.Format>(v.Trim()) },
-                { "o|output_dir=", $"Output folder to save the interpolated video in", v => Cli.OutputDir = v.Trim() },
-                { "<>", "Input file(s)", Cli.ValidFiles.Add },
+                {
+                    "np|no_python", "Disable Python implementations",
+                    v => Cli.DisablePython = v != null
+                },
+                {
+                    "md|open_model_downloader", "Open model downloader GUI on startup",
+                    v => Cli.ShowMdlDownloader = v != null
+                },
+                {
+                    "nc|no_config_save", "Do not save anything in config during this session",
+                    v => Cli.DontSaveConfig = v != null
+                },
+                {
+                    "e|exit", "Exit automatically after interpolation has finished",
+                    v => Cli.ExitWhenDone = v != null
+                },
+                {
+                    "s|start", "Start interpolation automatically if valid parameters are provided",
+                    v => Cli.InterpStart = v != null
+                },
+                {
+                    "f|factor=", "Interpolation factor",
+                    v => Cli.InterpFactor = v.GetFloat()
+                },
+                {
+                    "a|ai=", $"Interpolation AI implementation to use (Option: {GetEnums<Implementations.Ai>()})",
+                    v => Cli.InterpAi = ParseUtils.GetEnum<Implementations.Ai>(v.Trim().Replace("_", ""))
+                },
+                {
+                    "m|model=", "AI model to use",
+                    v => Cli.InterpModel = v.Trim()
+                },
+                {
+                    "vf|video_format=", $"Output video format to use (Options: {GetEnums<Enums.Output.Format>()})",
+                    v => Cli.OutputFormat = ParseUtils.GetEnum<Enums.Output.Format>(v.Trim())
+                },
+                {
+                    "ve|video_encoder=", $"Output video encoder to use (Options: {GetEnums<Enums.Encoding.Encoder>()})",
+                    v => Cli.Encoder = ParseUtils.GetEnum<Enums.Encoding.Encoder>(v.Trim())
+                },
+                {
+                    "pf|pixel_format=", $"Output pixel format to use (Options: {GetEnums<Enums.Encoding.PixelFormat>()})",
+                    v => Cli.PixFmt = ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(v.Trim())
+                },
+                {
+                    "h|max_height=", $"Max video size (pixels height). Larger videos will be downscaled.",
+                    v => Cli.MaxHeight = v.GetInt()
+                },
+                {
+                    "o|output_dir=", "Output folder to save the interpolated video in",
+                    v => Cli.OutputDir = v.Trim()
+                },
+                {
+                    "<>", "Input file(s)",
+                    Cli.ValidFiles.Add
+                },
             };
+
+            try
+            {
+                opts.Parse(Environment.GetCommandLineArgs());
+            }
+            catch (OptionException e)
+            {
+                Logger.Log($"Error parsing CLI option: {e.Message}", true);
+            }
 
             try
             {
                 if (!opts.TryParseOptions(Environment.GetCommandLineArgs()))
                     return;
 
-                Cli.ValidFiles = Cli.ValidFiles.Skip(1).Where(f => File.Exists(f)).ToList();
+                Cli.ValidFiles = Cli.ValidFiles.Where(f => File.Exists(f) && Path.GetExtension(f).Lower() != ".exe").Distinct().ToList();
                 Logger.Log($"Parsed CLI: Start {Cli.InterpStart}, Exit {Cli.ExitWhenDone}, Factor {Cli.InterpFactor}, AI {Cli.InterpAi}, Model '{Cli.InterpModel}', " +
                     $"Video Format {Cli.OutputFormat}, Output Dir '{Cli.OutputDir}', No Python {Python.DisablePython}, MdlDl {Cli.ShowMdlDownloader}", true);
 

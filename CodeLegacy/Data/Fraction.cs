@@ -52,6 +52,13 @@ namespace Flowframes.Data
         {
             try
             {
+                if (text.IsEmpty())
+                {
+                    Numerator = 0;
+                    Denominator = 1;
+                    return;
+                }
+
                 string[] numbers = text.Split('/');
 
                 // Check if split is only 1 items (probably integer number)
