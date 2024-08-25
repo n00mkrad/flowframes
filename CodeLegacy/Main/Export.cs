@@ -249,7 +249,7 @@ namespace Flowframes.Main
                     await MergeChunks(tempConcatFile, outPath, isBackup);
 
                     if (!isBackup)
-                        Task.Run(async () => { await IoUtils.TryDeleteIfExistsAsync(IoUtils.FilenameSuffix(outPath, Paths.backupSuffix)); });
+                        await IoUtils.TryDeleteIfExistsAsync(IoUtils.FilenameSuffix(outPath, Paths.backupSuffix));
                 }
             }
             catch (Exception e)

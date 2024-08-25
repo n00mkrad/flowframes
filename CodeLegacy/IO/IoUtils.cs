@@ -157,10 +157,7 @@ namespace Flowframes.IO
         /// </summary>
         public static async Task<bool> DeleteContentsOfDirAsync(string path)
         {
-            ulong taskId = BackgroundTaskManager.Add($"DeleteContentsOfDirAsync {path}");
-            bool returnVal = await Task.Run(async () => { return DeleteContentsOfDir(path); });
-            BackgroundTaskManager.Remove(taskId);
-            return returnVal;
+            return await Task.Run(() => DeleteContentsOfDir(path));
         }
 
         /// <summary>
@@ -442,10 +439,7 @@ namespace Flowframes.IO
 
                 path = renamedPath;
 
-                ulong taskId = BackgroundTaskManager.Add($"TryDeleteIfExistsAsync {path}");
-                bool returnVal = await Task.Run(async () => { return TryDeleteIfExists(path); });
-                BackgroundTaskManager.Remove(taskId);
-                return returnVal;
+                return await TryDeleteIfExistsAsync(path);
             }
             catch (Exception e)
             {

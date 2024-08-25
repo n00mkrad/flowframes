@@ -308,8 +308,8 @@ namespace Flowframes.Media
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             bool isPng = (Path.GetExtension(outPath).ToLowerInvariant() == ".png");
             string comprArg = isPng ? pngCompr : "";
-            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
-            string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {GetPadFilter()} {outPath.Wrap()}";
+            string pixFmt = isPng ? $"rgb24 {comprArg}" : "yuv420p -color_range full";
+            string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} -pix_fmt {pixFmt} -vf {GetPadFilter()} {outPath.Wrap()}";
             await RunFfmpeg(args, LogMode.Hidden);
         }
 
@@ -317,8 +317,8 @@ namespace Flowframes.Media
         {
             bool isPng = (Path.GetExtension(outputPath).ToLowerInvariant() == ".png");
             string comprArg = isPng ? pngCompr : "";
-            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
-            string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
+            string pixFmt = isPng ? $"rgb24 {comprArg}" : "yuv420p -color_range full";
+            string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 -update 1 -pix_fmt {pixFmt} {outputPath.Wrap()}";
             await RunFfmpeg(args, LogMode.Hidden);
         }
 
@@ -332,11 +332,11 @@ namespace Flowframes.Media
 
             bool isPng = (Path.GetExtension(outputPath).ToLowerInvariant() == ".png");
             string comprArg = isPng ? pngCompr : "";
-            string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
+            string pixFmt = isPng ? $"rgb24 {comprArg}" : "yuv420p -color_range full";
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
             string trim = QuickSettingsTab.trimEnabled ? $"-ss {QuickSettingsTab.GetTrimEndMinusOne()} -to {QuickSettingsTab.trimEnd}" : "";
             string sseof = string.IsNullOrWhiteSpace(trim) ? "-sseof -1" : "";
-            string args = $"{sseof} -i {inputFile.Wrap()} -update 1 {pixFmt} {sizeStr} {trim} {outputPath.Wrap()}";
+            string args = $"{sseof} -i {inputFile.Wrap()} -update 1 -pix_fmt {pixFmt} {sizeStr} {trim} {outputPath.Wrap()}";
             await RunFfmpeg(args, LogMode.Hidden);
         }
 

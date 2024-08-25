@@ -99,11 +99,11 @@ namespace Flowframes.Media
 
             if (!noCache && filesize > 0 && CacheContains(hash, ref cmdCache))
             {
-                Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' cached, won't re-run.", true, false, "ffmpeg");
+                // Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' cached, won't re-run.", true, false, "ffmpeg");
                 return GetFromCache(hash, ref cmdCache);
             }
 
-            Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' not cached, running.", true, false, "ffmpeg");
+            Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' (not cached)", true, false, "ffmpeg");
             string output = await OsUtils.GetOutputAsync(process);
             cmdCache.Add(hash, output);
             return output;

@@ -434,9 +434,6 @@ namespace Flowframes.Media
 
         public static bool ContainerSupportsAllAudioFormats(Enums.Output.Format outFormat, List<string> codecs)
         {
-            if (codecs.Count < 1)
-                Logger.Log($"Warning: ContainerSupportsAllAudioFormats() was called, but codec list has {codecs.Count} entries.", true, false, "ffmpeg");
-
             foreach (string format in codecs)
             {
                 if (!ContainerSupportsAudioFormat(outFormat, format))
@@ -538,17 +535,20 @@ namespace Flowframes.Media
         {
             containerExt = containerExt.Remove(".");
 
-            if (containerExt == "mp4" || containerExt == "mov") return "mov_text";
-            if (containerExt == "webm") return "webvtt";
+            if (containerExt == "mp4" || containerExt == "mov")
+                return "mov_text";
+
+            if (containerExt == "webm")
+                return "webvtt";
 
             return "copy";    // Default: Copy subs
         }
 
         public static bool ContainerSupportsSubs(string containerExt, bool showWarningIfNotSupported = true)
         {
-            containerExt = containerExt.Remove(".");
+            containerExt = containerExt.Lower().Remove(".");
             bool supported = (containerExt == "mp4" || containerExt == "mkv" || containerExt == "webm" || containerExt == "mov");
-            Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
+            // Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
 
             if (showWarningIfNotSupported && Config.GetBool(Config.Key.keepSubs) && !supported)
                 Logger.Log($"Warning: {containerExt.ToUpper()} exports do not include subtitles.");

@@ -613,13 +613,10 @@ namespace Flowframes.Forms.Main
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!Program.busy && !BackgroundTaskManager.IsBusy())
+            if (!Program.busy)
                 return;
 
             string reason = "";
-
-            if (BackgroundTaskManager.IsBusy())
-                reason = "Some background tasks have not finished yet.";
 
             if (Program.busy)
                 reason = "The program is still busy.";
