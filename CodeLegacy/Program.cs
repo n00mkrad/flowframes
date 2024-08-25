@@ -1,11 +1,7 @@
-﻿using Flowframes.Data;
-using Flowframes.Extensions;
-using Flowframes.Forms.Main;
+﻿using Flowframes.Forms.Main;
 using Flowframes.IO;
-using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Ui;
-using NDesk.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -33,28 +29,6 @@ namespace Flowframes
 
         public static Queue<InterpSettings> batchQueue = new Queue<InterpSettings>();
 
-        public static class Cli
-        {
-            public static bool DisablePython = false;
-            public static bool ShowMdlDownloader = false;
-            public static bool DontSaveConfig = false;
-            public static bool ExitWhenDone = false;
-            public static bool InterpStart = false;
-            public static float InterpFactor = -1f;
-            public static Implementations.Ai InterpAi = (Implementations.Ai)(-1);
-            public static Enums.Output.Format OutputFormat = Enums.Output.Format.Mp4;
-            public static Enums.Encoding.Encoder Encoder = (Enums.Encoding.Encoder)(-1);
-            public static Enums.Encoding.PixelFormat PixFmt = (Enums.Encoding.PixelFormat)(-1);
-            public static string InterpModel = "";
-            public static string OutputDir = "";
-            public static int MaxHeight = -1;
-            public static bool? Loop = false;
-            public static bool? FixSceneChanges = false;
-            public static float FixSceneChangeVal = -1f;
-            public static float MaxOutFps = -1f;
-            public static List<string> ValidFiles = new List<string>();
-        }
-
         [STAThread]
         static void Main()
         {
@@ -75,121 +49,14 @@ namespace Flowframes
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             Paths.Init();
+            Cli.HandleCli();
             Config.Init();
 
             Task.Run(() => DiskSpaceCheckLoop());
             args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
 
-            HandleCli();
             LaunchGui();
-        }
-
-        private static void HandleCli ()
-        {
-            string GetEnums<T>() => string.Join(", ", Enum.GetNames(typeof(T)));
-
-            var opts = new OptionSet
-            {
-                {
-                    "np|no_python", "Disable Python implementations",
-                    v => Cli.DisablePython = v != null
-                },
-                {
-                    "md|open_model_downloader", "Open model downloader GUI on startup",
-                    v => Cli.ShowMdlDownloader = v != null
-                },
-                {
-                    "nc|no_config_save", "Do not save anything in config during this session",
-                    v => Cli.DontSaveConfig = v != null
-                },
-                {
-                    "e|exit", "Exit automatically after interpolation has finished",
-                    v => Cli.ExitWhenDone = v != null
-                },
-                {
-                    "s|start", "Start interpolation automatically if valid parameters are provided",
-                    v => Cli.InterpStart = v != null
-                },
-                {
-                    "f|factor=", "Interpolation factor",
-                    v => Cli.InterpFactor = v.GetFloat()
-                },
-                {
-                    "a|ai=", $"Interpolation AI implementation to use (Option: {GetEnums<Implementations.Ai>()})",
-                    v => Cli.InterpAi = ParseUtils.GetEnum<Implementations.Ai>(v.Trim().Replace("_", ""))
-                },
-                {
-                    "m|model=", "AI model to use",
-                    v => Cli.InterpModel = v.Trim()
-                },
-                {
-                    "vf|video_format=", $"Output video format to use (Options: {GetEnums<Enums.Output.Format>()})",
-                    v => Cli.OutputFormat = ParseUtils.GetEnum<Enums.Output.Format>(v.Trim())
-                },
-                {
-                    "ve|video_encoder=", $"Output video encoder to use (Options: {GetEnums<Enums.Encoding.Encoder>()})",
-                    v => Cli.Encoder = ParseUtils.GetEnum<Enums.Encoding.Encoder>(v.Trim())
-                },
-                {
-                    "pf|pixel_format=", $"Output pixel format to use (Options: {GetEnums<Enums.Encoding.PixelFormat>()})",
-                    v => Cli.PixFmt = ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(v.Trim())
-                },
-                {
-                    "h|max_height=", $"Max video size (pixels height). Larger videos will be downscaled.",
-                    v => Cli.MaxHeight = v.GetInt()
-                },
-                {
-                    "l|loop", $"Enable loop output mode",
-                    v => Cli.Loop = v != null ? true : (bool?)null
-                },
-                {
-                    "scn|fix_scene_changes", $"Do not interpolate scene cuts to avoid artifacts",
-                    v => Cli.FixSceneChanges = v != null ? true : (bool?)null
-                },
-                {
-                    "scnv|scene_change_sensitivity=", $"Scene change sensitivity, lower is more sensitive (e.g. 0.18)",
-                    v => Cli.FixSceneChangeVal = v.GetFloat()
-                },
-                {
-                    "fps|max_fps=", $"Maximum FPS of output video, if the interpolation factor results in a higher FPS, it will be reduced to this value",
-                    v => Cli.MaxOutFps = v.GetFloat()
-                },
-                {
-                    "o|output_dir=", "Output folder to save the interpolated video in",
-                    v => Cli.OutputDir = v.Trim()
-                },
-                {
-                    "<>", "Input file(s)",
-                    Cli.ValidFiles.Add
-                },
-            };
-
-            try
-            {
-                opts.Parse(Environment.GetCommandLineArgs());
-            }
-            catch (OptionException e)
-            {
-                Logger.Log($"Error parsing CLI option: {e.Message}", true);
-            }
-
-            try
-            {
-                if (!opts.TryParseOptions(Environment.GetCommandLineArgs()))
-                    return;
-
-                Cli.ValidFiles = Cli.ValidFiles.Where(f => File.Exists(f) && Path.GetExtension(f).Lower() != ".exe").Distinct().ToList();
-                Logger.Log($"Parsed CLI: Start {Cli.InterpStart}, Exit {Cli.ExitWhenDone}, Factor {Cli.InterpFactor}, AI {Cli.InterpAi}, Model '{Cli.InterpModel}', " +
-                    $"Video Format {Cli.OutputFormat}, Output Dir '{Cli.OutputDir}', No Python {Python.DisablePython}, MdlDl {Cli.ShowMdlDownloader}", true);
-
-                Python.DisablePython = Cli.DisablePython;
-                Config.NoWrite = Cli.DontSaveConfig;
-            }
-            catch (OptionException e)
-            {
-                Logger.Log($"Error parsing CLI options: {e.Message}", true);
-            }
         }
 
         private static void LaunchGui()
@@ -199,7 +66,7 @@ namespace Flowframes
 
             bool showMdlDownloader = Cli.ShowMdlDownloader || args.Contains("show-model-downloader"); // The latter check may be needed for legacy reasons
 
-            mainForm = new Form1() { ShowModelDownloader = showMdlDownloader };
+            mainForm = new Form1() { ShowModelDownloader = showMdlDownloader, Enabled = false };
             Application.Run(mainForm);
         }
 

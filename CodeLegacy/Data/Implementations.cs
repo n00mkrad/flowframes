@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Flowframes.Data
 {
-    class Implementations
+    public class Implementations
     {
         public enum Ai
         {

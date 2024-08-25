@@ -175,77 +175,77 @@ namespace Flowframes.Forms.Main
         void HandleArgs()
         {
 
-            if (Program.Cli.ValidFiles.Any())
-                DragDropHandler(Program.Cli.ValidFiles.ToArray());
+            if (Cli.ValidFiles.Any())
+                DragDropHandler(Cli.ValidFiles.ToArray());
 
-            if (Program.Cli.InterpAi != (Implementations.Ai)(-1))
+            if (Cli.InterpAi != (Implementations.Ai)(-1))
             {
-                string name = Implementations.GetAi(Program.Cli.InterpAi).NameInternal;
+                string name = Implementations.GetAi(Cli.InterpAi).NameInternal;
                 aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(ai => ai.NameInternal == name).FirstOrDefault());
             }
 
-            if (Program.Cli.InterpFactor > 0)
+            if (Cli.InterpFactor > 0)
             {
-                interpFactorCombox.Text = Program.Cli.InterpFactor.ToString();
+                interpFactorCombox.Text = Cli.InterpFactor.ToString();
                 ValidateFactor();
             }
 
-            if(Program.Cli.OutputFormat != (Enums.Output.Format)(-1))
+            if(Cli.OutputFormat != (Enums.Output.Format)(-1))
             {
-                SetFormat(Program.Cli.OutputFormat);
+                SetFormat(Cli.OutputFormat);
             }
 
-            if (Program.Cli.InterpModel.IsNotEmpty())
+            if (Cli.InterpModel.IsNotEmpty())
             {
-                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Program.Cli.InterpModel))?.index ?? -1;
+                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Cli.InterpModel))?.index ?? -1;
             }
 
-            if (Program.Cli.OutputDir.IsNotEmpty())
+            if (Cli.OutputDir.IsNotEmpty())
             {
-                outputTbox.Text = Program.Cli.OutputDir;
-                Directory.CreateDirectory(Program.Cli.OutputDir);
+                outputTbox.Text = Cli.OutputDir;
+                Directory.CreateDirectory(Cli.OutputDir);
             }
 
-            if (Program.Cli.InterpModel.IsNotEmpty())
+            if (Cli.InterpModel.IsNotEmpty())
             {
-                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Program.Cli.InterpModel))?.index ?? -1;
+                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Cli.InterpModel))?.index ?? -1;
             }
 
-            if (Program.Cli.Encoder != (Enums.Encoding.Encoder)(-1))
+            if (Cli.Encoder != (Enums.Encoding.Encoder)(-1))
             {
                 comboxOutputEncoder.SelectedIndex = comboxOutputEncoder.Items.Cast<string>().Select((item, index) => new { item, index })
-                    .FirstOrDefault(x => x.item == Strings.Encoder[Program.Cli.Encoder.ToString()])?.index ?? -1;
+                    .FirstOrDefault(x => x.item == Strings.Encoder[Cli.Encoder.ToString()])?.index ?? -1;
             }
 
-            if (Program.Cli.PixFmt != (Enums.Encoding.PixelFormat)(-1))
+            if (Cli.PixFmt != (Enums.Encoding.PixelFormat)(-1))
             {
                 comboxOutputEncoder.SelectedIndex = comboxOutputEncoder.Items.Cast<string>().Select((item, index) => new { item, index })
-                    .FirstOrDefault(x => x.item == Strings.PixelFormat[Program.Cli.PixFmt.ToString()])?.index ?? -1;
+                    .FirstOrDefault(x => x.item == Strings.PixelFormat[Cli.PixFmt.ToString()])?.index ?? -1;
             }
 
-            if (Program.Cli.MaxHeight >= 64 && Program.Cli.MaxHeight <= 16384)
+            if (Cli.MaxHeight >= 64 && Cli.MaxHeight <= 16384)
             {
-                Config.Set(Config.Key.maxVidHeight, Program.Cli.MaxHeight.ToString());
+                Config.Set(Config.Key.maxVidHeight, Cli.MaxHeight.ToString());
             }
 
-            if (Program.Cli.Loop != null)
+            if (Cli.Loop != null)
             {
-                Config.Set(Config.Key.enableLoop, ((bool)Program.Cli.Loop).ToString());
+                Config.Set(Config.Key.enableLoop, ((bool)Cli.Loop).ToString());
             }
 
-            if (Program.Cli.FixSceneChanges != null)
+            if (Cli.FixSceneChanges != null)
             {
-                Config.Set(Config.Key.scnDetect, ((bool)Program.Cli.Loop).ToString());
+                Config.Set(Config.Key.scnDetect, ((bool)Cli.Loop).ToString());
             }
 
-            if (Program.Cli.FixSceneChangeVal > 0f)
+            if (Cli.FixSceneChangeVal > 0f)
             {
-                Config.Set(Config.Key.scnDetectValue, Program.Cli.FixSceneChangeVal.ToString());
+                Config.Set(Config.Key.scnDetectValue, Cli.FixSceneChangeVal.ToString());
             }
 
-            if (Program.Cli.MaxOutFps >= 1f)
+            if (Cli.MaxOutFps >= 1f)
             {
-                Config.Set(Config.Key.maxFps, Program.Cli.MaxOutFps.ToString());
+                Config.Set(Config.Key.maxFps, Cli.MaxOutFps.ToString());
             }
         }
 
@@ -373,7 +373,7 @@ namespace Flowframes.Forms.Main
 
         public void CompletionAction()
         {
-            if (Program.Cli.ExitWhenDone)
+            if (Cli.ExitWhenDone)
                 Application.Exit();
 
             if (completionAction.SelectedIndex == 1)
@@ -648,7 +648,7 @@ namespace Flowframes.Forms.Main
         {
             if (Program.busy) return;
 
-            bool start = Program.initialRun && Program.Cli.InterpStart;
+            bool start = Program.initialRun && Cli.InterpStart;
 
             if (files.Length > 1)
             {
