@@ -373,7 +373,7 @@ namespace Flowframes.Forms.Main
 
         public void CompletionAction()
         {
-            if (Cli.ExitWhenDone)
+            if (Cli.AutoRun)
                 Application.Exit();
 
             if (completionAction.SelectedIndex == 1)
@@ -645,7 +645,7 @@ namespace Flowframes.Forms.Main
         {
             if (Program.busy) return;
 
-            bool start = Program.initialRun && Cli.InterpStart;
+            bool start = Program.initialRun && Cli.AutoRun;
 
             if (files.Length > 1)
             {

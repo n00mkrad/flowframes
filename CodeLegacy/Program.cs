@@ -66,7 +66,7 @@ namespace Flowframes
 
             bool showMdlDownloader = Cli.ShowMdlDownloader || args.Contains("show-model-downloader"); // The latter check may be needed for legacy reasons
 
-            mainForm = new Form1() { ShowModelDownloader = showMdlDownloader, Enabled = false };
+            mainForm = new Form1() { ShowModelDownloader = showMdlDownloader, Enabled = !Cli.AutoRun };
             Application.Run(mainForm);
         }
 

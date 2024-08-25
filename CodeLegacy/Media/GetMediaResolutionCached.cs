@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Flowframes.Data;
 using Flowframes.IO;
@@ -12,19 +14,14 @@ namespace Flowframes.Media
 
         public static async Task<Size> GetSizeAsync(string path)
         {
-            Logger.Log($"Getting media resolution ({path})", true);
-
             long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize);
 
             if (filesize > 0 && CacheContains(hash))
             {
-                Logger.Log($"Cache contains this hash, using cached value.", true);
-                return GetFromCache(hash);
-            }
-            else
-            {
-                Logger.Log($"Hash not cached, reading resolution.", true);
+                Size cachedVal = GetFromCache(hash);
+                Logger.Log($"Resolution of '{Path.GetFileName(path)}': {cachedVal.Width}x{cachedVal.Height} [Cached]", true);
+                return cachedVal;
             }
 
             Size size;
@@ -32,29 +29,21 @@ namespace Flowframes.Media
 
             if(size.Width > 0 && size.Height > 0)
             {
-                Logger.Log($"Adding hash with value {size} to cache.", true);
                 cache.Add(hash, size);
             }
 
+            Logger.Log($"Resolution of '{Path.GetFileName(path)}': {size.Width}x{size.Height}", true);
             return size;
         }
 
         private static bool CacheContains(QueryInfo hash)
         {
-            foreach (KeyValuePair<QueryInfo, Size> entry in cache)
-                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
-                    return true;
-
-            return false;
+            return cache.Any(entry => entry.Key.path == hash.path && entry.Key.filesize == hash.filesize);
         }
 
         private static Size GetFromCache(QueryInfo hash)
         {
-            foreach (KeyValuePair<QueryInfo, Size> entry in cache)
-                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
-                    return entry.Value;
-
-            return new Size();
+            return cache.Where(entry => entry.Key.path == hash.path && entry.Key.filesize == hash.filesize).Select(entry => entry.Value).FirstOrDefault();
         }
 
         public static void Clear()

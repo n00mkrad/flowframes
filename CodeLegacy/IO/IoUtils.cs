@@ -368,47 +368,40 @@ namespace Flowframes.IO
 
         public static async Task<Size> GetVideoOrFramesRes(string path)
         {
-            Size res = new Size();
-
             try
             {
                 if (!IsPathDirectory(path))     // If path is video
                 {
-                    res = GetVideoRes(path);
+                    return GetVideoRes(path);
                 }
                 else     // Path is frame folder
                 {
                     Image thumb = await MainUiFunctions.GetThumbnail(path);
-                    res = new Size(thumb.Width, thumb.Height);
+                    return new Size(thumb.Width, thumb.Height);
                 }
             }
             catch (Exception e)
             {
-                Logger.Log("GetVideoOrFramesRes Error: " + e.Message);
+                Logger.Log($"GetVideoOrFramesRes Error: {e.Message}");
+                return new Size();
             }
-
-            return res;
         }
 
         public static Size GetVideoRes(string path)
         {
-            Size size = new Size(0, 0);
-
             try
             {
                 if (path.IsConcatFile())
                     path = ReadFileFirstLine(path).Split('\'')[1].Split('\'')[0];
 
-                size = FfmpegCommands.GetSize(path);
-                Logger.Log($"Detected video size of {Path.GetFileName(path)} as {size.Width}x{size.Height}", true);
+                return FfmpegCommands.GetSize(path);
             }
             catch (Exception ex)
             {
                 Logger.Log("Failed to read video size!");
                 Logger.Log(ex.ToString(), true);
+                return new Size();
             }
-
-            return size;
         }
 
         /// <summary>

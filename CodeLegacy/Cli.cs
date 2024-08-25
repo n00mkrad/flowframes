@@ -18,8 +18,7 @@ namespace Flowframes
         public static bool DisablePython = false;
         public static bool ShowMdlDownloader = false;
         public static bool DontSaveConfig = false;
-        public static bool ExitWhenDone = false;
-        public static bool InterpStart = false;
+        public static bool AutoRun = false;
         public static float InterpFactor = -1f;
         public static Implementations.Ai InterpAi = (Implementations.Ai)(-1);
         public static Enums.Output.Format OutputFormat = Enums.Output.Format.Mp4;
@@ -60,19 +59,15 @@ namespace Flowframes
                     v => DontSaveConfig = v != null
                 },
                 {
-                    "e|exit", "Exit automatically after interpolation has finished",
-                    v => ExitWhenDone = v != null
-                },
-                {
-                    "s|start", "Start interpolation automatically if valid parameters are provided",
-                    v => InterpStart = v != null
+                    "a|autorun", "Start interpolation automatically if valid parameters are provided and exit afterwards",
+                    v => AutoRun = v != null
                 },
                 {
                     "f|factor=", "Interpolation factor",
                     v => InterpFactor = v.GetFloat()
                 },
                 {
-                    "a|ai=", $"Interpolation AI implementation to use (Option: {GetEnums<Implementations.Ai>()})",
+                    "ai=", $"Interpolation AI implementation to use (Option: {GetEnums<Implementations.Ai>()})",
                     v => InterpAi = ParseUtils.GetEnum<Implementations.Ai>(v.Trim().Replace("_", ""))
                 },
                 {
