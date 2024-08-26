@@ -20,51 +20,60 @@ namespace Flowframes.Ui
     {
         public static async Task InitInput (TextBox outputTbox, TextBox inputTbox, TextBox fpsInTbox, bool start = false)
         {
-            
-            Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
-            Program.mainForm.ResetInputInfo();
-            string path = inputTbox.Text.Trim();
+            Program.mainForm.Enabled = false;
 
-            GetFrameCountCached.Clear();
-            GetMediaResolutionCached.Clear();
+            try
+            {
+                Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
+                Program.mainForm.ResetInputInfo();
+                string path = inputTbox.Text.Trim();
 
-            if (Config.GetBool(Config.Key.clearLogOnInput))
-                Logger.ClearLogBox();
+                GetFrameCountCached.Clear();
+                GetMediaResolutionCached.Clear();
 
-            SetOutPath(outputTbox, inputTbox.Text.Trim().GetParentDir());
+                if (Config.GetBool(Config.Key.clearLogOnInput))
+                    Logger.ClearLogBox();
 
-            Program.lastInputPath = path;
-            Program.lastInputPathIsSsd = OsUtils.DriveIsSSD(path);
+                SetOutPath(outputTbox, inputTbox.Text.Trim().GetParentDir());
 
-            if (!Program.lastInputPathIsSsd)
-                Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
+                Program.lastInputPath = path;
+                Program.lastInputPathIsSsd = OsUtils.DriveIsSSD(path);
 
-            Logger.Log("Importing file...");
-            Interpolate.currentMediaFile = new MediaFile(path);
-            await Interpolate.currentMediaFile.Initialize();
-            Program.mainForm.currInDuration = Interpolate.currentMediaFile.DurationMs;
-            Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
-            Fraction fps = Interpolate.currentMediaFile.VideoStreams.Count > 0 ? Interpolate.currentMediaFile.VideoStreams[0].Rate : new Fraction();
-            string fpsStr = fps.GetFloat() > 0 ? FormatUtils.Fraction(fps) : "Not Found";
-            Program.mainForm.currInFpsDetected = fps;
-            fpsInTbox.Text = fps.GetString();
-            Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}", false, true);
-            Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.GetFloat() > 0 && !Config.GetBool("allowCustomInputRate", false));
-            Program.mainForm.currInFps = fps;
-            Program.mainForm.currInFrames = Interpolate.currentMediaFile.FrameCount;
-            Program.mainForm.UpdateInputInfo();
-            CheckExistingFolder(path, outputTbox.Text.Trim());
-            await Task.Delay(10);
-            await PrintResolution(path);
-            await Task.Delay(10);
-            // InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
+                if (!Program.lastInputPathIsSsd)
+                    Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
 
-            if(AutoEncodeResume.resumeNextRun)
-                Logger.Log($"Incomplete interpolation detected. Flowframes will resume the interpolation.");
+                Logger.Log("Importing file...");
+                Interpolate.currentMediaFile = new MediaFile(path);
+                await Interpolate.currentMediaFile.Initialize();
+                Program.mainForm.currInDuration = Interpolate.currentMediaFile.DurationMs;
+                Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
+                Fraction fps = Interpolate.currentMediaFile.VideoStreams.Count > 0 ? Interpolate.currentMediaFile.VideoStreams[0].Rate : new Fraction();
+                string fpsStr = fps.GetFloat() > 0 ? FormatUtils.Fraction(fps) : "Not Found";
+                Program.mainForm.currInFpsDetected = fps;
+                fpsInTbox.Text = fps.GetString();
+                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}", false, true);
+                Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.GetFloat() > 0 && !Config.GetBool("allowCustomInputRate", false));
+                Program.mainForm.currInFps = fps;
+                Program.mainForm.currInFrames = Interpolate.currentMediaFile.FrameCount;
+                Program.mainForm.UpdateInputInfo();
+                CheckExistingFolder(path, outputTbox.Text.Trim());
+                // await Task.Delay(10);
+                await PrintResolution(path);
+                // await Task.Delay(10);
+                // InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
 
-            if (start)
-                Program.mainForm.runBtn_Click(null, null);
-                
+                if (AutoEncodeResume.resumeNextRun)
+                    Logger.Log($"Incomplete interpolation detected. Flowframes will resume the interpolation.");
+
+                if (start)
+                    Program.mainForm.runBtn_Click(null, null);
+            }
+            catch { }
+
+            if (!Cli.AutoRun)
+            {
+                Program.mainForm.Enabled = true;
+            }
         }
 
         public static bool SetOutPath (TextBox outputTbox, string outPath)
