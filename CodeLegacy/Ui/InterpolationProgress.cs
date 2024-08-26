@@ -49,8 +49,8 @@ namespace Flowframes.Ui
             {
                 if (!progressPaused && AiProcess.processTime.IsRunning && Directory.Exists(currentOutdir))
                 {
-                    if (firstProgUpd && Program.mainForm.IsInFocus())
-                        Program.mainForm.SetTab(Program.mainForm.previewTab.Name);
+                    // if (firstProgUpd && Program.mainForm.IsInFocus())
+                    //     Program.mainForm.SetTab(Program.mainForm.previewTab.Name);
 
                     firstProgUpd = false;
                     string lastFramePath = currentOutdir + "\\" + lastFrame.ToString("00000000") + I.currentSettings.interpExt;
@@ -161,9 +161,9 @@ namespace Flowframes.Ui
 
             try
             {
-                if (!string.IsNullOrWhiteSpace(latestFramePath) && frames > currentFactor)
+                if (latestFramePath.IsNotEmpty() && frames > currentFactor)
                 {
-                    if (bigPreviewForm == null && !preview.Visible  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
+                    if (bigPreviewForm == null && (preview == null || !preview.Visible)  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
                     if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
                     Image img = IoUtils.GetImage(latestFramePath, false, false);
                     SetPreviewImg(img);
@@ -196,15 +196,13 @@ namespace Flowframes.Ui
 
         public static void SetPreviewImg(Image img)
         {
-            if (img == null)
+            if (img == null || preview == null)
                 return;
 
             timeSinceLastPreviewUpdate.Restart();
 
             preview.Image = img;
-
-            if (bigPreviewForm != null)
-                bigPreviewForm.SetImage(img);
+            bigPreviewForm?.SetImage(img);
         }
     }
 }

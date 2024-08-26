@@ -131,9 +131,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.trimEndBox = new System.Windows.Forms.TextBox();
             this.trimCombox = new System.Windows.Forms.ComboBox();
-            this.previewTab = new System.Windows.Forms.TabPage();
-            this.label22 = new System.Windows.Forms.Label();
-            this.previewPicturebox = new System.Windows.Forms.PictureBox();
             this.abtTab = new System.Windows.Forms.TabPage();
             this.htButton1 = new HTAlt.WinForms.HTButton();
             this.runStepBtn = new System.Windows.Forms.Button();
@@ -164,8 +161,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dedupThresh)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).BeginInit();
             this.trimPanel.SuspendLayout();
-            this.previewTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).BeginInit();
             this.abtTab.SuspendLayout();
             this.busyControlsPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -759,7 +754,6 @@
             this.mainTabControl.Controls.Add(this.welcomeTab);
             this.mainTabControl.Controls.Add(this.interpOptsTab);
             this.mainTabControl.Controls.Add(this.quickSettingsTab);
-            this.mainTabControl.Controls.Add(this.previewTab);
             this.mainTabControl.Controls.Add(this.abtTab);
             this.mainTabControl.DisableClose = true;
             this.mainTabControl.DisableDragging = true;
@@ -1547,44 +1541,6 @@
             this.trimCombox.TabIndex = 61;
             this.trimCombox.SelectedIndexChanged += new System.EventHandler(this.trimCombox_SelectedIndexChanged);
             // 
-            // previewTab
-            // 
-            this.previewTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.previewTab.Controls.Add(this.label22);
-            this.previewTab.Controls.Add(this.previewPicturebox);
-            this.previewTab.Location = new System.Drawing.Point(4, 27);
-            this.previewTab.Margin = new System.Windows.Forms.Padding(0);
-            this.previewTab.Name = "previewTab";
-            this.previewTab.Size = new System.Drawing.Size(901, 258);
-            this.previewTab.TabIndex = 3;
-            this.previewTab.Text = "Preview";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.ForeColor = System.Drawing.Color.Silver;
-            this.label22.Location = new System.Drawing.Point(5, 5);
-            this.label22.Margin = new System.Windows.Forms.Padding(3);
-            this.label22.MaximumSize = new System.Drawing.Size(160, 0);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(158, 30);
-            this.label22.TabIndex = 38;
-            this.label22.Text = "Click on the preview to open it in a separate window.";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // previewPicturebox
-            // 
-            this.previewPicturebox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.previewPicturebox.Image = global::Flowframes.Properties.Resources.baseline_image_white_48dp_4x_25pcAlpha;
-            this.previewPicturebox.Location = new System.Drawing.Point(0, 0);
-            this.previewPicturebox.Margin = new System.Windows.Forms.Padding(0);
-            this.previewPicturebox.Name = "previewPicturebox";
-            this.previewPicturebox.Size = new System.Drawing.Size(901, 258);
-            this.previewPicturebox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.previewPicturebox.TabIndex = 0;
-            this.previewPicturebox.TabStop = false;
-            this.previewPicturebox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.previewPicturebox_MouseClick);
-            // 
             // abtTab
             // 
             this.abtTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
@@ -1745,6 +1701,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
+            this.Opacity = 0D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Flowframes";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -1781,9 +1738,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).EndInit();
             this.trimPanel.ResumeLayout(false);
             this.trimPanel.PerformLayout();
-            this.previewTab.ResumeLayout(false);
-            this.previewTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.previewPicturebox)).EndInit();
             this.abtTab.ResumeLayout(false);
             this.busyControlsPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -1838,7 +1792,6 @@
         private HTAlt.WinForms.HTButton browseOutBtn;
         private HTAlt.WinForms.HTButton browseInputFileBtn;
         private HTAlt.WinForms.HTButton browseInputBtn;
-        private System.Windows.Forms.PictureBox previewPicturebox;
         public HTAlt.WinForms.HTTabControl mainTabControl;
         private HTAlt.WinForms.HTButton queueBtn;
         private HTAlt.WinForms.HTButton htButton1;
@@ -1853,7 +1806,6 @@
         private System.Windows.Forms.Label welcomeLabel2;
         private System.Windows.Forms.Button runStepBtn;
         private System.Windows.Forms.ComboBox stepSelector;
-        private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label inputInfo;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label10;
@@ -1907,7 +1859,6 @@
         public System.Windows.Forms.TabPage interpOptsTab;
         public System.Windows.Forms.TabPage quickSettingsTab;
         public System.Windows.Forms.TabPage abtTab;
-        public System.Windows.Forms.TabPage previewTab;
         public System.Windows.Forms.TabPage welcomeTab;
     }
 }

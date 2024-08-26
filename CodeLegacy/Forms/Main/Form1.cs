@@ -47,6 +47,7 @@ namespace Flowframes.Forms.Main
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            new SplashForm().Show();
             Refresh();
             await Task.Delay(1);
 
@@ -63,14 +64,12 @@ namespace Flowframes.Forms.Main
             Logger.textbox = logBox;
             VulkanUtils.Init();
             NvApi.Init();
-            InterpolationProgress.preview = previewPicturebox;
-            RemovePreviewIfDisabled();
             await Checks();
             InitOutputUi();
             InitAis();
             UpdateStepByStepControls();
-            Initialized();
             HandleArgs();
+            Initialized();
 
             if (ShowModelDownloader)
             {
@@ -249,12 +248,6 @@ namespace Flowframes.Forms.Main
             }
         }
 
-        void RemovePreviewIfDisabled()
-        {
-            if (Config.GetBool(Config.Key.disablePreview))
-                mainTabControl.TabPages.Cast<TabPage>().Where(p => p.Name == previewTab.Name).ToList().ForEach(t => mainTabControl.TabPages.Remove(t));
-        }
-
         public HTTabControl GetMainTabControl() { return mainTabControl; }
         public TextBox GetInputFpsTextbox() { return fpsInTbox; }
         public Button GetPauseBtn() { return pauseBtn; }
@@ -429,6 +422,8 @@ namespace Flowframes.Forms.Main
 
         public void Initialized()
         {
+            Application.OpenForms.OfType<SplashForm>().ToList().ForEach(f => f.Close());
+            Opacity = 1.0f;
             _initialized = true;
             runBtn.Enabled = true;
             SetStatus("Ready");
@@ -715,16 +710,6 @@ namespace Flowframes.Forms.Main
             else
             {
                 new BatchForm().Show();
-            }
-        }
-
-        private void previewPicturebox_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (InterpolationProgress.bigPreviewForm == null)
-            {
-                InterpolationProgress.bigPreviewForm = new BigPreviewForm();
-                InterpolationProgress.bigPreviewForm.Show();
-                InterpolationProgress.bigPreviewForm.SetImage(previewPicturebox.Image);
             }
         }
 

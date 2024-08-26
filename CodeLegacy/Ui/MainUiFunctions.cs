@@ -57,7 +57,7 @@ namespace Flowframes.Ui
             await Task.Delay(10);
             await PrintResolution(path);
             await Task.Delay(10);
-            InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
+            // InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
 
             if(AutoEncodeResume.resumeNextRun)
                 Logger.Log($"Incomplete interpolation detected. Flowframes will resume the interpolation.");

@@ -32,7 +32,6 @@ namespace Flowframes.Main
                 Logger.ClearLogBox();
 
             stopped = false;
-            Program.mainForm.SetTab(Program.mainForm.previewTab.Name);
             int initTaskCount = Program.batchQueue.Count;
 
             for (int i = 0; i < initTaskCount; i++)
