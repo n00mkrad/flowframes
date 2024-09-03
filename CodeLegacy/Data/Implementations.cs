@@ -23,7 +23,7 @@ namespace Flowframes.Data
             NameInternal = "RIFE_CUDA",
             NameLong = "Real-Time Intermediate Flow Estimation",
             FactorSupport = AiInfo.InterpFactorSupport.AnyInteger,
-            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // Generates numbers from 2 to 16
+            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // 2 to 16
         };
 
         public static AiInfo rifeNcnn = new AiInfo()
@@ -32,7 +32,7 @@ namespace Flowframes.Data
             NameInternal = "RIFE_NCNN",
             NameLong = "Real-Time Intermediate Flow Estimation",
             FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
-            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // Generates numbers from 2 to 16
+            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // 2 to 16
         };
 
         public static AiInfo rifeNcnnVs = new AiInfo()
@@ -41,7 +41,7 @@ namespace Flowframes.Data
             NameInternal = "RIFE_NCNN_VS",
             NameLong = "Real-Time Intermediate Flow Estimation",
             FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
-            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // Generates numbers from 2 to 16
+            SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // 2 to 16
             Piped = true
         };
 
@@ -60,7 +60,7 @@ namespace Flowframes.Data
             NameInternal = "DAIN_NCNN",
             NameLong = "Depth-Aware Video Frame Interpolation",
             FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
-            SupportedFactors = Enumerable.Range(2, 7).ToArray(),  // Generates numbers from 2 to 8
+            SupportedFactors = Enumerable.Range(2, 7).ToArray(),  // 2 to 8
         };
 
         public static AiInfo xvfiCuda = new AiInfo()
@@ -69,7 +69,7 @@ namespace Flowframes.Data
             NameInternal = "XVFI_CUDA",
             NameLong = "eXtreme Video Frame Interpolation",
             FactorSupport = AiInfo.InterpFactorSupport.AnyInteger,
-            SupportedFactors = Enumerable.Range(2, 9).ToArray(),  // Generates numbers from 2 to 10
+            SupportedFactors = Enumerable.Range(2, 9).ToArray(),  // 2 to 10
         };
 
         public static AiInfo ifrnetNcnn = new AiInfo()
@@ -90,7 +90,7 @@ namespace Flowframes.Data
             { Ai.FlavrCuda, flavrCuda },
             { Ai.DainNcnn, dainNcnn },
             { Ai.XvfiCuda, xvfiCuda },
-            { Ai.IfrnetNcnn, ifrnetNcnn }
+            /* { Ai.IfrnetNcnn, ifrnetNcnn }, */
         };
 
         public static List<AiInfo> NetworksAll => AiLookup.Values.ToList();

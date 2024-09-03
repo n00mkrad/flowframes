@@ -21,14 +21,14 @@ namespace Flowframes
         public static bool AutoRun = false;
         public static float InterpFactor = -1f;
         public static Implementations.Ai InterpAi = (Implementations.Ai)(-1);
-        public static Enums.Output.Format OutputFormat = Enums.Output.Format.Mp4;
+        public static Enums.Output.Format OutputFormat = (Enums.Output.Format)(-1);
         public static Enums.Encoding.Encoder Encoder = (Enums.Encoding.Encoder)(-1);
         public static Enums.Encoding.PixelFormat PixFmt = (Enums.Encoding.PixelFormat)(-1);
         public static string InterpModel = "";
         public static string OutputDir = "";
         public static int MaxHeight = -1;
-        public static bool? Loop = false;
-        public static bool? FixSceneChanges = false;
+        public static bool? Loop = null;
+        public static bool? FixSceneChanges = null;
         public static float FixSceneChangeVal = -1f;
         public static float MaxOutFps = -1f;
         public static List<string> ValidFiles = new List<string>();
@@ -40,7 +40,7 @@ namespace Flowframes
         {
             string GetEnums<T>() => string.Join(", ", Enum.GetNames(typeof(T)));
 
-            var opts = new OptionSet
+            var optsSet = new OptionSet
             {
                 {
                     "c|console", "Show console",
@@ -87,16 +87,16 @@ namespace Flowframes
                     v => PixFmt = ParseUtils.GetEnum<Enums.Encoding.PixelFormat>(v.Trim())
                 },
                 {
-                    "h|max_height=", $"Max video size (pixels height). Larger videos will be downscaled.",
+                    "mh|max_height=", $"Max video size in height pixels. Larger videos will be downscaled. (Example: 720)",
                     v => MaxHeight = v.GetInt()
                 },
                 {
-                    "l|loop", $"Enable loop output mode",
-                    v => Loop = v != null ? true : (bool?)null
+                    "l|loop=", $"Enable loop output mode",
+                    v => Loop = v.GetBoolCli()
                 },
                 {
-                    "scn|fix_scene_changes", $"Do not interpolate scene cuts to avoid artifacts",
-                    v => FixSceneChanges = v != null ? true : (bool?)null
+                    "scn|fix_scene_changes=", $"Do not interpolate scene cuts to avoid artifacts",
+                    v => FixSceneChanges = v.GetBoolCli()
                 },
                 {
                     "scnv|scene_change_sensitivity=", $"Scene change sensitivity, lower is more sensitive (e.g. 0.18)",
@@ -116,6 +116,8 @@ namespace Flowframes
                 },
             };
 
+            var opts = new ArgParseExtensions.Options() { OptionsSet = optsSet, BasicUsage = "<OPTIONS> <FILE(S)>", AddHelpArg = true };
+
             try
             {
                 if (!opts.TryParseOptions(Environment.GetCommandLineArgs()))
@@ -124,10 +126,12 @@ namespace Flowframes
                 if (!ShowConsole)
                     FreeConsole();
 
-                ValidFiles = ValidFiles.Where(f => File.Exists(f) && Path.GetExtension(f).Lower() != ".exe").Distinct().ToList();
-
                 Python.DisablePython = DisablePython;
                 Config.NoWrite = DontSaveConfig;
+
+                ValidFiles = ValidFiles.Where(f => File.Exists(f) && Path.GetExtension(f).Lower() != ".exe").Distinct().ToList();
+                AutoRun = AutoRun && ValidFiles.Any(); // Only AutoRun if valid files are provided
+                DontSaveConfig = DontSaveConfig || AutoRun; // Never save config in AutoRun mode
             }
             catch (OptionException e)
             {

@@ -290,6 +290,9 @@ namespace Flowframes
             Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
             Logger.LogIfLastLineDoesNotContainMsg("Canceled interpolation.");
 
+            if(Cli.ShowConsole)
+                Application.Exit();
+
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
                 UiUtils.ShowMessageBox($"Canceled:\n\n{reason}");
         }

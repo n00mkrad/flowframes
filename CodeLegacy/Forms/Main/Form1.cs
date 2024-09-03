@@ -173,77 +173,93 @@ namespace Flowframes.Forms.Main
 
         void HandleArgs()
         {
+            // Input & interpolation settings
 
             if (Cli.ValidFiles.Any())
+            {
+                Logger.Log($"[CLI] Loading file(s): {string.Join(", ", Cli.ValidFiles)}", true);
                 DragDropHandler(Cli.ValidFiles.ToArray());
+            }
 
             if (Cli.InterpAi != (Implementations.Ai)(-1))
             {
                 string name = Implementations.GetAi(Cli.InterpAi).NameInternal;
                 aiCombox.SelectedIndex = Implementations.NetworksAvailable.IndexOf(Implementations.NetworksAvailable.Where(ai => ai.NameInternal == name).FirstOrDefault());
+                Logger.Log($"[CLI] Using AI implementation '{aiCombox.Text}' ('{Cli.InterpAi}')", true);
+
+            }
+
+            if (Cli.InterpModel.IsNotEmpty())
+            {
+                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Cli.InterpModel))?.index ?? -1;
+                Logger.Log($"[CLI] Using interpolation model '{aiModel.Text}'", true);
             }
 
             if (Cli.InterpFactor > 0)
             {
                 interpFactorCombox.Text = Cli.InterpFactor.ToString();
                 ValidateFactor();
+                Logger.Log($"[CLI] Using interpolation factor {interpFactorCombox.Text}", true);
             }
 
-            if(Cli.OutputFormat != (Enums.Output.Format)(-1))
-            {
-                SetFormat(Cli.OutputFormat);
-            }
-
-            if (Cli.InterpModel.IsNotEmpty())
-            {
-                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Cli.InterpModel))?.index ?? -1;
-            }
+            // Output
 
             if (Cli.OutputDir.IsNotEmpty())
             {
                 outputTbox.Text = Cli.OutputDir;
-                Directory.CreateDirectory(Cli.OutputDir);
+                Directory.CreateDirectory(outputTbox.Text);
+                Logger.Log($"[CLI] Using output directory '{outputTbox.Text}'", true);
             }
 
-            if (Cli.InterpModel.IsNotEmpty())
+            if (Cli.OutputFormat != (Enums.Output.Format)(-1))
             {
-                aiModel.SelectedIndex = aiModel.Items.Cast<string>().Select((item, index) => new { item, index }).FirstOrDefault(x => x.item.Contains(Cli.InterpModel))?.index ?? -1;
+                SetFormat(Cli.OutputFormat);
+                Logger.Log($"[CLI] Using output format '{comboxOutputFormat.Text}'", true);
             }
 
             if (Cli.Encoder != (Enums.Encoding.Encoder)(-1))
             {
                 comboxOutputEncoder.SelectedIndex = comboxOutputEncoder.Items.Cast<string>().Select((item, index) => new { item, index })
                     .FirstOrDefault(x => x.item == Strings.Encoder[Cli.Encoder.ToString()])?.index ?? -1;
+                Logger.Log($"[CLI] Using video encoder {comboxOutputEncoder.Text} ('{Cli.Encoder}')", true);
             }
 
             if (Cli.PixFmt != (Enums.Encoding.PixelFormat)(-1))
             {
-                comboxOutputEncoder.SelectedIndex = comboxOutputEncoder.Items.Cast<string>().Select((item, index) => new { item, index })
+                comboxOutputColors.SelectedIndex = comboxOutputColors.Items.Cast<string>().Select((item, index) => new { item, index })
                     .FirstOrDefault(x => x.item == Strings.PixelFormat[Cli.PixFmt.ToString()])?.index ?? -1;
+                Logger.Log($"[CLI] Using color format {comboxOutputColors.Text} ('{Cli.PixFmt}')", true);
             }
+
+            // Video processing settings
 
             if (Cli.MaxHeight >= 64 && Cli.MaxHeight <= 16384)
             {
+                Logger.Log($"[CLI] Set max video height to {Cli.MaxHeight} px", true);
                 Config.Set(Config.Key.maxVidHeight, Cli.MaxHeight.ToString());
             }
 
             if (Cli.Loop != null)
             {
+                Logger.Log($"[CLI] Set loop mode to {(Cli.Loop == true ? "Enabled" : "Disabled")}", true);
                 Config.Set(Config.Key.enableLoop, ((bool)Cli.Loop).ToString());
             }
 
             if (Cli.FixSceneChanges != null)
             {
-                Config.Set(Config.Key.scnDetect, ((bool)Cli.Loop).ToString());
+                Logger.Log($"[CLI] Set scene change fix mode to {(Cli.FixSceneChanges == true ? "Enabled" : "Disabled")}", true);
+                Config.Set(Config.Key.scnDetect, ((bool)Cli.FixSceneChanges).ToString());
             }
 
             if (Cli.FixSceneChangeVal > 0f)
             {
+                Logger.Log($"[CLI] Set scene change sensitivity value to {Cli.FixSceneChangeVal}", true);
                 Config.Set(Config.Key.scnDetectValue, Cli.FixSceneChangeVal.ToString());
             }
 
             if (Cli.MaxOutFps >= 1f)
             {
+                Logger.Log($"[CLI] Set max output (encoding) FPS to {Cli.MaxOutFps}", true);
                 Config.Set(Config.Key.maxFps, Cli.MaxOutFps.ToString());
             }
         }

@@ -86,6 +86,9 @@ namespace Flowframes.Ui
         {
             Logger.Log($"MessageBox: {text} ({type}){(BatchProcessing.busy ? "[Batch Mode - Will not display messagebox]" : "")}", true);
 
+            if(Cli.ShowConsole)
+                return DialogResult.OK;
+
             if (BatchProcessing.busy)
             {
                 Logger.Log(text);

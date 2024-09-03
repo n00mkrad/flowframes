@@ -106,6 +106,12 @@ namespace Flowframes.Main
                 bool passes = true;
                 bool isFile = !IoUtils.IsPathDirectory(s.inPath);
 
+                if (passes && IoUtils.IsPathOneDrive(s.inPath) || IoUtils.IsPathOneDrive(s.outPath))
+                {
+                    UiUtils.ShowMessageBox("OneDrive paths are not supported. Please use a local path instead.");
+                    passes = false;
+                }
+
                 if ((passes && isFile && !IoUtils.IsFileValid(s.inPath)) || (!isFile && !IoUtils.IsDirValid(s.inPath)))
                 {
                     UiUtils.ShowMessageBox("Input path is not valid!");
@@ -118,9 +124,9 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                if (passes && s.tempFolder.StartsWith(@"\\"))
+                if (passes && s.tempFolder.StartsWith(@"\\") || IoUtils.IsPathOneDrive(s.tempFolder))
                 {
-                    UiUtils.ShowMessageBox("Flowframes does not support UNC/Network paths as a temp folder!\nPlease use a local path instead.");
+                    UiUtils.ShowMessageBox("Flowframes does not support network paths as a temp folder!\nPlease use a local path instead.");
                     passes = false;
                 }
 

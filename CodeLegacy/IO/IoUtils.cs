@@ -127,6 +127,11 @@ namespace Flowframes.IO
                 return IsFileValid(path);
         }
 
+        public static bool IsPathOneDrive(string path)
+        {
+            return path.Lower().Replace("\\", "/").MatchesWildcard("*:/users/*/onedrive*");
+        }
+
         public static void CopyDir(string sourceDirectory, string targetDirectory, bool move = false)
         {
             Directory.CreateDirectory(targetDirectory);
