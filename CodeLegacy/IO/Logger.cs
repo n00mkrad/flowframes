@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DT = System.DateTime;
 
@@ -18,7 +17,8 @@ namespace Flowframes
         public const string defaultLogName = "sessionlog";
         public static long id;
 
-        private static Dictionary<string, string> sessionLogs = new Dictionary<string, string>();
+        private const int maxLogSize = 100;
+        private static Dictionary<string, List<string>> sessionLogs = new Dictionary<string, List<string>>();
         private static string _lastUi = "";
         public static string LastUiLine { get { return _lastUi; } }
         private static string _lastLog = "";
@@ -116,7 +116,11 @@ namespace Flowframes
             try
             {
                 string appendStr = noLineBreak ? $" {logStr}" : $"{Environment.NewLine}[{id.ToString().PadLeft(8, '0')}] [{time}]: {logStr}";
-                sessionLogs[filename] = (sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : "") + appendStr;
+                List<string> sessionLog = sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : new List<string>();
+                sessionLog.Add(appendStr);
+                if (sessionLog.Count > maxLogSize)
+                    sessionLog.RemoveAt(0);
+                sessionLogs[filename] = sessionLog;
                 File.AppendAllText(file, appendStr);
                 id++;
             }
@@ -126,7 +130,7 @@ namespace Flowframes
             }
         }
 
-        public static string GetSessionLog(string filename)
+        public static List<string> GetSessionLog(string filename)
         {
             if (!filename.Contains(".txt"))
                 filename = Path.ChangeExtension(filename, "txt");
@@ -134,14 +138,13 @@ namespace Flowframes
             if (sessionLogs.ContainsKey(filename))
                 return sessionLogs[filename];
             else
-                return "";
+                return new List<string>();
         }
 
         public static List<string> GetSessionLogLastLines(string filename, int linesCount = 5)
         {
-            string log = GetSessionLog(filename);
-            string[] lines = log.SplitIntoLines();
-            return lines.Reverse().Take(linesCount).Reverse().ToList();
+            var lines = GetSessionLog(filename);
+            return lines.ToArray().Reverse().Take(linesCount).Reverse().ToList();
         }
 
         public static void LogIfLastLineDoesNotContainMsg(string s, bool hidden = false, bool replaceLastLine = false, string filename = "")
