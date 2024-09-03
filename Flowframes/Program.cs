@@ -66,7 +66,7 @@ namespace Flowframes
 
             Task.Run(() => DiskSpaceCheckLoop());
             fileArgs = Environment.GetCommandLineArgs().Where(a => a[0] != '-' && File.Exists(a)).ToList().Skip(1).ToArray();
-            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
+            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).Lower()).ToArray();
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
             Logger.Log($"Files: {(fileArgs.Length > 0 ? string.Join(", ", fileArgs) : "None")}", true);
             Logger.Log($"Args: {(args.Length > 0 ? string.Join(", ", args) : "None")}", true);

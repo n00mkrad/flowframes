@@ -22,7 +22,7 @@ namespace Flowframes.Magick
             int counter = 0;
             foreach (string file in files)
             {
-                if (print) Logger.Log("Converting " + Path.GetFileName(file) + " to " + format.ToString().StripNumbers().ToUpper(), false, true);
+                if (print) Logger.Log("Converting " + Path.GetFileName(file) + " to " + format.ToString().StripNumbers().Upper(), false, true);
                 MagickImage img = new MagickImage(file);
                 img.Format = format;
                 img.Quality = quality;

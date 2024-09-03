@@ -65,7 +65,7 @@ namespace Flowframes.Media
                             string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
                             string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
                             string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
-                            string pixFmt = (await GetFfprobeInfoAsync(path, showStreams, "pix_fmt", idx)).ToUpper();
+                            string pixFmt = (await GetFfprobeInfoAsync(path, showStreams, "pix_fmt", idx)).Upper();
                             int kbits = (await GetFfprobeInfoAsync(path, showStreams, "bit_rate", idx)).GetInt() / 1024;
                             Size res = await GetMediaResolutionCached.GetSizeAsync(path);
                             Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
@@ -86,7 +86,7 @@ namespace Flowframes.Media
                             string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
                             string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
                             string profile = await GetFfprobeInfoAsync(path, showStreams, "profile", idx);
-                            if (codec.ToLowerInvariant() == "dts" && profile != "unknown") codec = profile;
+                            if (codec.Lower() == "dts" && profile != "unknown") codec = profile;
                             string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
                             int kbits = (await GetFfprobeInfoAsync(path, showStreams, "bit_rate", idx)).GetInt() / 1024;
                             int sampleRate = (await GetFfprobeInfoAsync(path, showStreams, "sample_rate", idx)).GetInt();
@@ -250,14 +250,14 @@ namespace Flowframes.Media
 
             if (enc == Encoder.X264)
             {
-                string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" "); // TODO: Replace this ugly stuff with enums
+                string preset = Config.Get(Config.Key.ffEncPreset).Lower().Remove(" "); // TODO: Replace this ugly stuff with enums
                 int crf = GetCrf(settings);
                 args.Add($"-crf {crf} -preset {preset}");
             }
 
             if (enc == Encoder.X265)
             {
-                string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" "); // TODO: Replace this ugly stuff with enums
+                string preset = Config.Get(Config.Key.ffEncPreset).Lower().Remove(" "); // TODO: Replace this ugly stuff with enums
                 int crf = GetCrf(settings);
                 args.Add($"{(crf > 0 ? $"-crf {crf}" : "-x265-params lossless=1")} -preset {preset}");
             }
@@ -402,7 +402,7 @@ namespace Flowframes.Media
 
         static string GetVp9Speed()
         {
-            string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" ");
+            string preset = Config.Get(Config.Key.ffEncPreset).Lower().Remove(" ");
             string arg = "";
 
             if (preset == "veryslow") arg = "0";
@@ -418,7 +418,7 @@ namespace Flowframes.Media
 
         static string GetSvtAv1Speed()
         {
-            string preset = Config.Get(Config.Key.ffEncPreset).ToLowerInvariant().Remove(" ");
+            string preset = Config.Get(Config.Key.ffEncPreset).Lower().Remove(" ");
             string arg = "8";
 
             if (preset == "veryslow") arg = "3";
@@ -548,10 +548,10 @@ namespace Flowframes.Media
         {
             containerExt = containerExt.Lower().Remove(".");
             bool supported = (containerExt == "mp4" || containerExt == "mkv" || containerExt == "webm" || containerExt == "mov");
-            // Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.ToUpper()}", true);
+            // Logger.Log($"Subtitles {(supported ? "are supported" : "not supported")} by {containerExt.Upper()}", true);
 
             if (showWarningIfNotSupported && Config.GetBool(Config.Key.keepSubs) && !supported)
-                Logger.Log($"Warning: {containerExt.ToUpper()} exports do not include subtitles.");
+                Logger.Log($"Warning: {containerExt.Upper()} exports do not include subtitles.");
 
             return supported;
         }

@@ -53,7 +53,7 @@ namespace Flowframes
             Config.Init();
 
             Task.Run(() => DiskSpaceCheckLoop());
-            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).ToLowerInvariant()).ToArray();
+            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).Lower()).ToArray();
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
 
             LaunchGui();

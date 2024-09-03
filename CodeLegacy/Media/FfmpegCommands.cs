@@ -241,7 +241,7 @@ namespace Flowframes
             try
             {
                 string[] lines = info.SplitIntoLines();
-                string lastLine = lines.Last().ToLowerInvariant();
+                string lastLine = lines.Last().Lower();
                 return lastLine.Substring(0, lastLine.IndexOf("fps")).GetInt();
             }
             catch

@@ -56,7 +56,7 @@ namespace Flowframes.Os
             if (winVer.IsEmpty())
                 return;
 
-            if (!winVer.ToLowerInvariant().Contains("windows 10") && !winVer.ToLowerInvariant().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
+            if (!winVer.Lower().Contains("windows 10") && !winVer.Lower().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
             {
                 UiUtils.ShowMessageBox($"This application was made for Windows 10/11 and is not officially compatible with {winVer}.\n\n" +
                                 $"Use it at your own risk and do NOT ask for support as long as your are on {winVer}.", UiUtils.MessageType.Warning);

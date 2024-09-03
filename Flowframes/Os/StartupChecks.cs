@@ -22,7 +22,7 @@ namespace Flowframes.Os
             string[] osInfo = osInfoStr.Split(" | ");
             string version = osInfo[0].Remove("Microsoft").Trim();
 
-            return (version.ToLowerInvariant().Contains("windows 10") || version.ToLowerInvariant().Contains("windows 11"));
+            return (version.Lower().Contains("windows 10") || version.Lower().Contains("windows 11"));
         }
 
         static bool Is32Bit()
@@ -39,7 +39,7 @@ namespace Flowframes.Os
 
         public static void CheckOs()
         {
-            if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().ToLowerInvariant().Contains("temp"))
+            if (!File.Exists(Paths.GetVerPath()) && Paths.GetExeDir().Lower().Contains("temp"))
             {
                 UiUtils.ShowMessageBox("You seem to be running Flowframes out of an archive.\nPlease extract the whole archive first!", UiUtils.MessageType.Error);
                 IoUtils.TryDeleteIfExists(Paths.GetDataPath());
@@ -58,7 +58,7 @@ namespace Flowframes.Os
             if (string.IsNullOrWhiteSpace(version))
                 return;
 
-            if (!version.ToLowerInvariant().Contains("windows 10") && !version.ToLowerInvariant().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
+            if (!version.Lower().Contains("windows 10") && !version.Lower().Contains("windows 11") && !Config.GetBool("ignoreIncompatibleOs", false))
             {
                 UiUtils.ShowMessageBox($"This application was made for Windows 10/11 and is not officially compatible with {version}.\n\n" +
                                 $"Use it at your own risk and do NOT ask for support as long as your are on {version}.", UiUtils.MessageType.Warning);

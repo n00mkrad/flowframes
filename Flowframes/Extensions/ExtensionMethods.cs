@@ -249,7 +249,7 @@ namespace Flowframes
         {
             try
             {
-                return Path.GetExtension(filePath)?.ToLowerInvariant() == ".concat";
+                return Path.GetExtension(filePath)?.Lower() == ".concat";
             }
             catch
             {
@@ -367,7 +367,7 @@ namespace Flowframes
             if (s == null)
                 return s;
 
-            return s.ToLowerInvariant();
+            return s.Lower();
         }
 
         public static string Upper(this string s)

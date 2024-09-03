@@ -148,10 +148,10 @@ namespace Flowframes.Os
                 var detectedDrives = Detector.DetectFixedDrives(QueryType.SeekPenalty);
                 if (detectedDrives.Count != 0)
                 {
-                    char pathDriveLetter = (path[0].ToString().ToUpper())[0];
+                    char pathDriveLetter = (path[0].ToString().Upper())[0];
                     foreach (var detectedDrive in detectedDrives)
                     {
-                        if (detectedDrive.DriveLetter == pathDriveLetter && detectedDrive.HardwareType.ToString().ToLowerInvariant().Trim() == "ssd")
+                        if (detectedDrive.DriveLetter == pathDriveLetter && detectedDrive.HardwareType.ToString().Lower().Trim() == "ssd")
                             return true;
                     }
                 }

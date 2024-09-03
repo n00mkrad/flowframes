@@ -79,13 +79,13 @@ namespace Flowframes.Media
                 if (stripKeyName)
                 {
 
-                    List<string> filtered = output.SplitIntoLines().Where(x => x.ToLowerInvariant().Contains(lineFilter.ToLowerInvariant())).ToList();    // Filter
+                    List<string> filtered = output.SplitIntoLines().Where(x => x.Lower().Contains(lineFilter.Lower())).ToList();    // Filter
                     filtered = filtered.Select(x => string.Join("", x.Split('=').Skip(1))).ToList();    // Ignore everything before (and including) the first '=' sign
                     output = string.Join("\n", filtered);
                 }
                 else
                 {
-                    output = string.Join("\n", output.SplitIntoLines().Where(x => x.ToLowerInvariant().Contains(lineFilter.ToLowerInvariant())).ToArray());
+                    output = string.Join("\n", output.SplitIntoLines().Where(x => x.Lower().Contains(lineFilter.Lower())).ToArray());
                 }
             }
 

@@ -176,7 +176,7 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (I.currentSettings.ai.NameInternal.ToUpper().Contains("CUDA") && NvApi.gpuList.Count < 1)
+            if (I.currentSettings.ai.NameInternal.Upper().Contains("CUDA") && NvApi.gpuList.Count < 1)
             {
                 UiUtils.ShowMessageBox("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", UiUtils.MessageType.Error);
 
@@ -240,7 +240,7 @@ namespace Flowframes.Main
         {
             string enc = I.currentSettings.outSettings.Encoder.GetInfo().Name;
 
-            if (enc.ToLowerInvariant().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
+            if (enc.Lower().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
             {
                 UiUtils.ShowMessageBox("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", UiUtils.MessageType.Error);
                 I.Cancel();

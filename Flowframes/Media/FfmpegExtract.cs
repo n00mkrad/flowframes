@@ -307,7 +307,7 @@ namespace Flowframes.Media
         public static async Task ImportSingleImage(string inputFile, string outPath, Size size)
         {
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";
-            bool isPng = (Path.GetExtension(outPath).ToLowerInvariant() == ".png");
+            bool isPng = (Path.GetExtension(outPath).Lower() == ".png");
             string comprArg = isPng ? pngCompr : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string args = $"-i {inputFile.Wrap()} {comprArg} {sizeStr} {pixFmt} -vf {GetPadFilter()} {outPath.Wrap()}";
@@ -316,7 +316,7 @@ namespace Flowframes.Media
 
         public static async Task ExtractSingleFrame(string inputFile, string outputPath, int frameNum)
         {
-            bool isPng = (Path.GetExtension(outputPath).ToLowerInvariant() == ".png");
+            bool isPng = (Path.GetExtension(outputPath).Lower() == ".png");
             string comprArg = isPng ? pngCompr : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string args = $"-i {inputFile.Wrap()} -vf \"select=eq(n\\,{frameNum})\" -vframes 1 {pixFmt} {outputPath.Wrap()}";
@@ -331,7 +331,7 @@ namespace Flowframes.Media
             if (IoUtils.IsPathDirectory(outputPath))
                 outputPath = Path.Combine(outputPath, "last.png");
 
-            bool isPng = (Path.GetExtension(outputPath).ToLowerInvariant() == ".png");
+            bool isPng = (Path.GetExtension(outputPath).Lower() == ".png");
             string comprArg = isPng ? pngCompr : "";
             string pixFmt = "-pix_fmt " + (isPng ? $"rgb24 {comprArg}" : "yuvj420p");
             string sizeStr = (size.Width > 1 && size.Height > 1) ? $"-s {size.Width}x{size.Height}" : "";

@@ -66,7 +66,7 @@ namespace Flowframes.Data
                 Name = FileInfo.Name;
                 SourcePath = FileInfo.FullName;
                 ImportPath = FileInfo.FullName;
-                Format = FileInfo.Extension.Remove(".").ToUpper();
+                Format = FileInfo.Extension.Remove(".").Upper();
                 InputRate = new Fraction(-1, 1);
             }
 

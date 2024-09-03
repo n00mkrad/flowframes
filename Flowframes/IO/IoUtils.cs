@@ -27,7 +27,7 @@ namespace Flowframes.IO
 
             try
             {
-                string ext = new FileInfo(path).Extension.TrimStart('.').ToUpper();
+                string ext = new FileInfo(path).Extension.TrimStart('.').Upper();
 
                 if (incompatibleExtensions.Contains(ext))
                     return null;
@@ -328,7 +328,7 @@ namespace Flowframes.IO
         public static async Task<Fraction> GetVideoFramerate(string path)
         {
             string[] preferFfmpegReadoutFormats = new string[] { ".gif", ".png", ".apng", ".webp" };
-            bool preferFfmpegReadout = preferFfmpegReadoutFormats.Contains(Path.GetExtension(path).ToLowerInvariant());
+            bool preferFfmpegReadout = preferFfmpegReadoutFormats.Contains(Path.GetExtension(path).Lower());
 
             Fraction fps = new Fraction();
 
@@ -620,7 +620,7 @@ namespace Flowframes.IO
             filename = filename.Replace("[NAME]", inName);
             filename = filename.Replace("[FULLNAME]", Path.GetFileName(curr.inPath));
             filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
-            filename = filename.Replace("[AI]", curr.ai.NameShort.ToUpper());
+            filename = filename.Replace("[AI]", curr.ai.NameShort.Upper());
             filename = filename.Replace("[MODEL]", curr.model.Name.Remove(" "));
             filename = filename.Replace("[FPS]", fps.ToStringDot("0.###"));
             filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
@@ -766,7 +766,7 @@ namespace Flowframes.IO
                 {
                     MD5 md5 = MD5.Create();
                     var hash = md5.ComputeHash(stream);
-                    hashStr = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    hashStr = BitConverter.ToString(hash).Replace("-", "").Lower();
                 }
 
                 if (hashType == Hash.CRC32)

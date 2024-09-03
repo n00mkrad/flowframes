@@ -7,75 +7,27 @@
 	"fixedFactors": [2]
 },
 {
-	"name": "RIFE 4.0",
-	"desc": "v4 General Model",
-	"dir": "rife-v4",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.3",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.3",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.4",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.4",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.6",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.6",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.7",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.7",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.8",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.8",
-	"isDefault": "false"
-},
-{
 	"name": "RIFE 4.9",
 	"desc": "v4 General Model",
 	"dir": "rife-v4.9",
 	"isDefault": "false"
 },
 {
-	"name": "RIFE 4.10",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.10",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.11",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.11",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.12",
-	"desc": "v4 General Model",
-	"dir": "rife-v4.12",
-	"isDefault": "false"
-},
-{
-	"name": "RIFE 4.12 Lite",
-	"desc": "Small v4 General Model",
-	"dir": "rife-v4.12_lite",
-	"isDefault": "false"
-},
-{
 	"name": "RIFE 4.13",
 	"desc": "v4 General Model",
 	"dir": "rife-v4.13",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.18",
+	"desc": "v4 Model - Recommended for real-world video",
+	"dir": "rife-v4.18",
+	"isDefault": "false"
+},
+{
+	"name": "RIFE 4.22",
+	"desc": "v4 Model - Recommended for anime video",
+	"dir": "rife-v4.22",
 	"isDefault": "true"
 },
 ]

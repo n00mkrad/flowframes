@@ -193,7 +193,7 @@ namespace Flowframes.MiscUtils
         public static string CapsIfShort(string codec, int capsIfShorterThan = 5)
         {
             if (codec.Length < capsIfShorterThan)
-                return codec.ToUpper();
+                return codec.Upper();
             else
                 return codec.ToTitleCase();
         }

@@ -13,7 +13,7 @@ namespace Flowframes.Data
         {
             streamIndex = streamNum;
             lang = metaStr.Trim().Replace("_", ".").Replace(" ", ".");
-            //langFriendly = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(metaStr.ToLowerInvariant().Trim().Replace("_", ".").Replace(" ", "."));
+            //langFriendly = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(metaStr.Lower().Trim().Replace("_", ".").Replace(" ", "."));
             encoding = encodingStr.Trim();
         }
     }

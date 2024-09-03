@@ -15,7 +15,7 @@ namespace Flowframes.Utilities
     {
         public static int GetColorPrimaries(string s) // Defined by the "Color primaries" section of ISO/IEC 23091-4/ITU-T H.273
         {
-            s = s.Trim().ToLowerInvariant();
+            s = s.Trim().Lower();
             if (s == "bt709") return 1;
             if (s == "bt470m") return 4;
             if (s == "bt470bg") return 5;
@@ -31,7 +31,7 @@ namespace Flowframes.Utilities
 
         public static int GetColorTransfer(string s) // Defined by the "Transfer characteristics" section of ISO/IEC 23091-4/ITU-T H.273
         {
-            s = s.Trim().ToLowerInvariant();
+            s = s.Trim().Lower();
             if (s == "bt709") return 1;
             if (s == "gamma22" || s == "bt470m") return 4;
             if (s == "gamma28" || s == "bt470bg") return 5; // BT.470 System B, G (historical)
@@ -53,7 +53,7 @@ namespace Flowframes.Utilities
 
         public static int GetMatrixCoeffs(string s) // Defined by the "Matrix coefficients" section of ISO/IEC 23091-4/ITU-T H.27
         {
-            s = s.Trim().ToLowerInvariant();
+            s = s.Trim().Lower();
             if (s == "bt709") return 1;
             if (s == "fcc") return 4; // US FCC 73.628
             if (s == "bt470bg") return 5; // BT.470 System B, G (historical)
@@ -71,7 +71,7 @@ namespace Flowframes.Utilities
 
         public static int GetColorRange(string s) // Defined by the "Matrix coefficients" section of ISO/IEC 23091-4/ITU-T H.27
         {
-            s = s.Trim().ToLowerInvariant();
+            s = s.Trim().Lower();
             if (s == "tv") return 1; // TV
             if (s == "pc") return 2; // PC/Full
             return 0; // Fallback: Unspecified

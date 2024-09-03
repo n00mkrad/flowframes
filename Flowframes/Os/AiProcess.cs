@@ -140,8 +140,8 @@ namespace Flowframes.Os
                 {
                     if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
                     {
-                        if (Logger.LastLogLine.ToLowerInvariant().Contains("frame: "))
-                            Logger.Log(FormatUtils.BeautifyFfmpegStats(Logger.LastLogLine), false, Logger.LastUiLine.ToLowerInvariant().Contains("frame"));
+                        if (Logger.LastLogLine.Lower().Contains("frame: "))
+                            Logger.Log(FormatUtils.BeautifyFfmpegStats(Logger.LastLogLine), false, Logger.LastUiLine.Lower().Contains("frame"));
                     }
 
                     if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
@@ -326,7 +326,7 @@ namespace Flowframes.Os
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.ToLowerInvariant()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.Lower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
 
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
 
@@ -458,7 +458,7 @@ namespace Flowframes.Os
             SetProgressCheck(outPath, factor);
             int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt());
 
-            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.ToLowerInvariant()}" +
+            string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.Lower()}" +
                 $" -t {NcnnUtils.GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j 2:1:2";
 
             dain.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
@@ -620,26 +620,26 @@ namespace Flowframes.Os
                 if (line.Contains("ff:nocuda-cpu"))
                     Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
-                if (!hasShownError && err && line.ToLowerInvariant().Contains("modulenotfounderror"))
+                if (!hasShownError && err && line.Lower().Contains("modulenotfounderror"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"A python module is missing.\nCheck {ai.LogFilename} for details.\n\n{line}", UiUtils.MessageType.Error);
                 }
 
-                if (!hasShownError && line.ToLowerInvariant().Contains("no longer supports this gpu"))
+                if (!hasShownError && line.Lower().Contains("no longer supports this gpu"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"Your GPU seems to be outdated and is not supported!\n\n{line}", UiUtils.MessageType.Error);
                 }
 
-                if (!hasShownError && line.ToLowerInvariant().Contains("error(s) in loading state_dict"))
+                if (!hasShownError && line.Lower().Contains("error(s) in loading state_dict"))
                 {
                     hasShownError = true;
                     string msg = (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
                     UiUtils.ShowMessageBox($"Error loading the AI model!\n\n{line}{msg}", UiUtils.MessageType.Error);
                 }
 
-                if (!hasShownError && line.ToLowerInvariant().Contains("unicodeencodeerror"))
+                if (!hasShownError && line.Lower().Contains("unicodeencodeerror"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"It looks like your path contains invalid characters - remove them and try again!\n\n{line}", UiUtils.MessageType.Error);
@@ -683,32 +683,32 @@ namespace Flowframes.Os
 
             if (ai.Piped) // VS specific
             {
-                if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && line.ToLowerInvariant().Contains("fwrite() call failed"))
+                if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && line.Lower().Contains("fwrite() call failed"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
                 }
 
-                if (!hasShownError && line.ToLowerInvariant().Contains("allocate memory failed"))
+                if (!hasShownError && line.Lower().Contains("allocate memory failed"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"Out of memory!\nTry reducing your RAM usage by closing some programs.\n\n{line}", UiUtils.MessageType.Error);
                 }
 
-                if (!hasShownError && line.ToLowerInvariant().Contains("vapoursynth.error:"))
+                if (!hasShownError && line.Lower().Contains("vapoursynth.error:"))
                 {
                     hasShownError = true;
                     UiUtils.ShowMessageBox($"VapourSynth Error:\n\n{line}", UiUtils.MessageType.Error);
                 }
             }
 
-            if (!hasShownError && err && line.ToLowerInvariant().Contains("out of memory"))
+            if (!hasShownError && err && line.Lower().Contains("out of memory"))
             {
                 hasShownError = true;
                 UiUtils.ShowMessageBox($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}", UiUtils.MessageType.Error);
             }
 
-            if (!hasShownError && line.ToLowerInvariant().Contains("illegal memory access"))
+            if (!hasShownError && line.Lower().Contains("illegal memory access"))
             {
                 hasShownError = true;
                 UiUtils.ShowMessageBox($"Your GPU appears to be unstable! If you have an overclock enabled, please disable it!\n\n{line}", UiUtils.MessageType.Error);
