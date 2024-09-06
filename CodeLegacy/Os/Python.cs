@@ -144,8 +144,6 @@ namespace Flowframes.Os
                 py.Start();
                 py.WaitForExit();
                 string output = py.StandardOutput.ReadToEnd();
-                string err = py.StandardError.ReadToEnd();
-                if (!string.IsNullOrWhiteSpace(err)) output += "\n" + err;
                 Logger.Log("[DepCheck] Pytorch Check Output: " + output.Trim(), true);
                 return output;
             }

@@ -15,7 +15,7 @@ namespace Flowframes
     public class Cli
     {
         public static bool ShowConsole = false;
-        public static bool DisablePython = false;
+        public static bool DisablePython = true;
         public static bool ShowMdlDownloader = false;
         public static bool DontSaveConfig = false;
         public static bool AutoRun = false;
@@ -49,6 +49,10 @@ namespace Flowframes
                 {
                     "np|no_python", "Disable Python implementations",
                     v => DisablePython = v != null
+                },
+                {
+                    "py|enable_python", "Enable Python implementations",
+                    v => DisablePython = !(v != null)
                 },
                 {
                     "md|open_model_downloader", "Open model downloader GUI on startup",
