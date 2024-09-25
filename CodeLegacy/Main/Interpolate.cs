@@ -122,7 +122,7 @@ namespace Flowframes
             if (Config.GetBool(Config.Key.scnDetect) && !currentSettings.ai.Piped)
             {
                 Program.mainForm.SetStatus("Extracting scenes from video...");
-                await FfmpegExtract.ExtractSceneChanges(currentSettings.inPath, Path.Combine(currentSettings.tempFolder, Paths.scenesDir), currentSettings.inFpsDetected, currentSettings.inputIsFrames, currentSettings.framesExt);
+                await FfmpegExtract.ExtractSceneChanges(currentSettings.inPath, Path.Combine(currentSettings.tempFolder, Paths.scenesDir), new Fraction(), currentSettings.inputIsFrames, currentSettings.framesExt);
             }
 
             if (!currentSettings.inputIsFrames)        // Extract if input is video, import if image sequence
@@ -272,17 +272,19 @@ namespace Flowframes
 
             if (!currentSettings.stepByStep && !Config.GetBool(Config.Key.keepTempFolder))
             {
-                if (!BatchProcessing.busy && IoUtils.GetAmountOfFiles(Path.Combine(currentSettings.tempFolder, Paths.resumeDir), true) > 0)
-                {
-                    DialogResult dialogResult = UiUtils.ShowMessageBox($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
+                Task.Run(async () => { await IoUtils.TryDeleteIfExistsAsync(currentSettings.tempFolder); });
 
-                    if (dialogResult == DialogResult.Yes)
-                        Task.Run(async () => { await IoUtils.TryDeleteIfExistsAsync(currentSettings.tempFolder); });
-                }
-                else
-                {
-                    Task.Run(async () => { await IoUtils.TryDeleteIfExistsAsync(currentSettings.tempFolder); });
-                }
+                // if (!BatchProcessing.busy && IoUtils.GetAmountOfFiles(Path.Combine(currentSettings.tempFolder, Paths.resumeDir), true) > 0)
+                // {
+                //     DialogResult dialogResult = UiUtils.ShowMessageBox($"Delete the temp folder (Yes) or keep it for resuming later (No)?", "Delete temporary files?", MessageBoxButtons.YesNo);
+                // 
+                //     if (dialogResult == DialogResult.Yes)
+                //         Task.Run(async () => { await IoUtils.TryDeleteIfExistsAsync(currentSettings.tempFolder); });
+                // }
+                // else
+                // {
+                //     Task.Run(async () => { await IoUtils.TryDeleteIfExistsAsync(currentSettings.tempFolder); });
+                // }
             }
 
             AutoEncode.busy = false;

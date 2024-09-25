@@ -38,9 +38,6 @@
             this.custOutDir = new System.Windows.Forms.TextBox();
             this.outFolderLoc = new System.Windows.Forms.ComboBox();
             this.label78 = new System.Windows.Forms.Label();
-            this.label77 = new System.Windows.Forms.Label();
-            this.disablePreview = new System.Windows.Forms.CheckBox();
-            this.label76 = new System.Windows.Forms.Label();
             this.modelDownloaderBtn = new HTAlt.WinForms.HTButton();
             this.exportNamePatternLoop = new System.Windows.Forms.TextBox();
             this.label69 = new System.Windows.Forms.Label();
@@ -191,6 +188,7 @@
             this.settingsTabList.Name = "settingsTabList";
             this.settingsTabList.Size = new System.Drawing.Size(920, 427);
             this.settingsTabList.TabIndex = 0;
+            this.settingsTabList.SelectedIndexChanged += new System.EventHandler(this.settingsTabList_SelectedIndexChanged);
             // 
             // generalTab
             // 
@@ -201,9 +199,6 @@
             this.generalTab.Controls.Add(this.custOutDir);
             this.generalTab.Controls.Add(this.outFolderLoc);
             this.generalTab.Controls.Add(this.label78);
-            this.generalTab.Controls.Add(this.label77);
-            this.generalTab.Controls.Add(this.disablePreview);
-            this.generalTab.Controls.Add(this.label76);
             this.generalTab.Controls.Add(this.modelDownloaderBtn);
             this.generalTab.Controls.Add(this.exportNamePatternLoop);
             this.generalTab.Controls.Add(this.label69);
@@ -236,7 +231,7 @@
             this.btnResetHwEnc.FlatAppearance.BorderSize = 0;
             this.btnResetHwEnc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnResetHwEnc.ForeColor = System.Drawing.Color.White;
-            this.btnResetHwEnc.Location = new System.Drawing.Point(280, 245);
+            this.btnResetHwEnc.Location = new System.Drawing.Point(280, 215);
             this.btnResetHwEnc.Name = "btnResetHwEnc";
             this.btnResetHwEnc.Size = new System.Drawing.Size(206, 23);
             this.btnResetHwEnc.TabIndex = 95;
@@ -247,7 +242,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 250);
+            this.label10.Location = new System.Drawing.Point(10, 220);
             this.label10.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(186, 13);
@@ -303,43 +298,13 @@
             this.label78.TabIndex = 90;
             this.label78.Text = "Default Output Location";
             // 
-            // label77
-            // 
-            this.label77.AutoSize = true;
-            this.label77.ForeColor = System.Drawing.Color.Silver;
-            this.label77.Location = new System.Drawing.Point(308, 190);
-            this.label77.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label77.Name = "label77";
-            this.label77.Size = new System.Drawing.Size(270, 13);
-            this.label77.TabIndex = 89;
-            this.label77.Text = "You need to restart the application to apply this change.";
-            // 
-            // disablePreview
-            // 
-            this.disablePreview.AutoSize = true;
-            this.disablePreview.Location = new System.Drawing.Point(280, 190);
-            this.disablePreview.Name = "disablePreview";
-            this.disablePreview.Size = new System.Drawing.Size(15, 14);
-            this.disablePreview.TabIndex = 88;
-            this.disablePreview.UseVisualStyleBackColor = true;
-            // 
-            // label76
-            // 
-            this.label76.AutoSize = true;
-            this.label76.Location = new System.Drawing.Point(10, 190);
-            this.label76.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(105, 13);
-            this.label76.TabIndex = 87;
-            this.label76.Text = "Disable Preview Tab";
-            // 
             // modelDownloaderBtn
             // 
             this.modelDownloaderBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.modelDownloaderBtn.FlatAppearance.BorderSize = 0;
             this.modelDownloaderBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.modelDownloaderBtn.ForeColor = System.Drawing.Color.White;
-            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 215);
+            this.modelDownloaderBtn.Location = new System.Drawing.Point(492, 185);
             this.modelDownloaderBtn.Name = "modelDownloaderBtn";
             this.modelDownloaderBtn.Size = new System.Drawing.Size(206, 23);
             this.modelDownloaderBtn.TabIndex = 86;
@@ -414,7 +379,7 @@
             this.clearModelCacheBtn.FlatAppearance.BorderSize = 0;
             this.clearModelCacheBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearModelCacheBtn.ForeColor = System.Drawing.Color.White;
-            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 215);
+            this.clearModelCacheBtn.Location = new System.Drawing.Point(280, 185);
             this.clearModelCacheBtn.Name = "clearModelCacheBtn";
             this.clearModelCacheBtn.Size = new System.Drawing.Size(206, 23);
             this.clearModelCacheBtn.TabIndex = 79;
@@ -425,7 +390,7 @@
             // label64
             // 
             this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(10, 220);
+            this.label64.Location = new System.Drawing.Point(10, 190);
             this.label64.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(165, 13);
@@ -1788,13 +1753,12 @@
             // resetBtn
             // 
             this.resetBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.resetBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_restart_alt_white_48dp;
+            this.resetBtn.ButtonImage = global::Flowframes.Properties.Resources.baseline_restart_alt_white_48dp_40px;
             this.resetBtn.DrawImage = true;
             this.resetBtn.FlatAppearance.BorderSize = 0;
             this.resetBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.resetBtn.ForeColor = System.Drawing.Color.White;
             this.resetBtn.ImageIndex = 0;
-            this.resetBtn.ImageSizeMode = HTAlt.WinForms.HTButton.ButtonImageSizeMode.Zoom;
             this.resetBtn.Location = new System.Drawing.Point(889, 12);
             this.resetBtn.Name = "resetBtn";
             this.resetBtn.Size = new System.Drawing.Size(40, 40);
@@ -1964,9 +1928,6 @@
         private System.Windows.Forms.Label label58;
         private System.Windows.Forms.Panel autoEncBlockPanel;
         private HTAlt.WinForms.HTButton resetBtn;
-        private System.Windows.Forms.CheckBox disablePreview;
-        private System.Windows.Forms.Label label76;
-        private System.Windows.Forms.Label label77;
         private HTAlt.WinForms.HTButton custOutDirBrowseBtn;
         private System.Windows.Forms.TextBox custOutDir;
         private System.Windows.Forms.ComboBox outFolderLoc;

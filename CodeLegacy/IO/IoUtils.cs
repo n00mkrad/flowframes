@@ -436,8 +436,8 @@ namespace Flowframes.IO
                 }
 
                 path = renamedPath;
-
-                return await TryDeleteIfExistsAsync(path);
+                TryDeleteIfExists(path);
+                return true;
             }
             catch (Exception e)
             {
@@ -446,8 +446,7 @@ namespace Flowframes.IO
                 if (retries > 0)
                 {
                     await Task.Delay(2000);
-                    retries -= 1;
-                    return await TryDeleteIfExistsAsync(path, retries);
+                    return await TryDeleteIfExistsAsync(path, retries - 1);
                 }
                 else
                 {
@@ -459,7 +458,7 @@ namespace Flowframes.IO
         /// <summary>
         /// Delete a path if it exists. Works for files and directories. Returns success status.
         /// </summary>
-        public static bool TryDeleteIfExists(string path)      // Returns true if no exception occurs
+        public static bool TryDeleteIfExists(string path) // Returns true if no exception occurs
         {
             try
             {

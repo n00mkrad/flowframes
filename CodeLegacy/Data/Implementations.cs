@@ -9,8 +9,8 @@ namespace Flowframes.Data
         public enum Ai
         {
             RifeCuda,
-            RifeNcnn,
             RifeNcnnVs,
+            RifeNcnn,
             FlavrCuda,
             DainNcnn,
             XvfiCuda,
@@ -85,8 +85,8 @@ namespace Flowframes.Data
         private static readonly Dictionary<Ai, AiInfo> AiLookup = new Dictionary<Ai, AiInfo>
         {
             { Ai.RifeCuda, rifeCuda },
-            { Ai.RifeNcnn, rifeNcnn },
             { Ai.RifeNcnnVs, rifeNcnnVs },
+            { Ai.RifeNcnn, rifeNcnn },
             { Ai.FlavrCuda, flavrCuda },
             { Ai.DainNcnn, dainNcnn },
             { Ai.XvfiCuda, xvfiCuda },

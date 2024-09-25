@@ -87,7 +87,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(keepTempFolder);
             ConfigParser.SaveGuiElement(exportNamePattern);
             ConfigParser.SaveGuiElement(exportNamePatternLoop);
-            ConfigParser.SaveGuiElement(disablePreview);
             // Interpolation
             ConfigParser.SaveGuiElement(keepAudio);
             ConfigParser.SaveGuiElement(keepSubs);
@@ -134,7 +133,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(keepTempFolder);
             ConfigParser.LoadGuiElement(exportNamePattern);
             ConfigParser.LoadGuiElement(exportNamePatternLoop);
-            ConfigParser.LoadGuiElement(disablePreview);
             // Interpolation
             ConfigParser.LoadGuiElement(keepAudio);
             ConfigParser.LoadGuiElement(keepSubs);
@@ -249,6 +247,18 @@ namespace Flowframes.Forms
         {
             Close();
             Program.mainForm.ResetOutputUi();
+        }
+
+        private bool _sizeFixApplied = false;
+
+        private void settingsTabList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_sizeFixApplied)
+            {
+                Size = new Size(Width + 1, Height + 1);
+                Size = new Size(Width - 1, Height - 1);
+                _sizeFixApplied = true;
+            }
         }
     }
 }

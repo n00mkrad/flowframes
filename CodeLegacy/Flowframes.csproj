@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props" Condition="Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props')" />
+  <Import Project="packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props" Condition="Exists('packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" />
+  <Import Project="packages\ILRepack.2.0.34\build\ILRepack.props" Condition="Exists('packages\ILRepack.2.0.34\build\ILRepack.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -87,9 +88,6 @@
     <Reference Include="CircularProgressBar, Version=2.8.0.16, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
       <HintPath>packages\CircularProgressBar.2.8.0.16\lib\net40\CircularProgressBar.dll</HintPath>
     </Reference>
-    <Reference Include="Costura, Version=5.8.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
-      <HintPath>packages\Costura.Fody.5.8.0-alpha0098\lib\netstandard1.0\Costura.dll</HintPath>
-    </Reference>
     <Reference Include="Crc32.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc0b95cf99bf4e99, processorArchitecture=MSIL">
       <HintPath>packages\Crc32.NET.1.2.0\lib\net20\Crc32.NET.dll</HintPath>
     </Reference>
@@ -106,13 +104,23 @@
     <Reference Include="HTAlt.Standart, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\HTAlt.Standart.0.1.6\lib\netstandard2.0\HTAlt.Standart.dll</HintPath>
     </Reference>
-    <Reference Include="Magick.NET-Q8-AnyCPU, Version=13.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-      <HintPath>packages\Magick.NET-Q8-AnyCPU.13.10.0\lib\netstandard20\Magick.NET-Q8-AnyCPU.dll</HintPath>
+    <Reference Include="Magick.NET-Q8-x64, Version=13.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=AMD64">
+      <HintPath>packages\Magick.NET-Q8-x64.13.10.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
     </Reference>
     <Reference Include="Magick.NET.Core, Version=13.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
       <HintPath>packages\Magick.NET.Core.13.10.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Build.Framework.15.9.20\lib\net46\Microsoft.Build.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Build.Utilities.Core.15.9.20\lib\net46\Microsoft.Build.Utilities.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.VisualStudio.Setup.Configuration.Interop.1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>True</Private>
@@ -150,7 +158,11 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Console.4.3.1\lib\net46\System.Console.dll</HintPath>
       <Private>True</Private>
@@ -579,6 +591,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlowframesLogo2021.ico" />
+    <None Include="Resources\baseline_restart_alt_white_48dp_40px.png" />
     <None Include="Resources\baseline_settings_white_48dp_40px.png" />
     <None Include="Resources\baseline_queue_white_48dp_40px.png" />
     <None Include="Resources\baseline_system_update_alt_white_48dp_40px.png" />
@@ -626,13 +639,19 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
-    <Error Condition="!Exists('packages\Fody.6.8.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Fody.6.8.1\build\Fody.targets'))" />
-    <Error Condition="!Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets'))" />
-    <Error Condition="!Exists('packages\Magick.NET-Q8-AnyCPU.13.10.0\build\netstandard20\Magick.NET-Q8-AnyCPU.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Magick.NET-Q8-AnyCPU.13.10.0\build\netstandard20\Magick.NET-Q8-AnyCPU.targets'))" />
+    <Error Condition="!Exists('packages\ILRepack.2.0.34\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.2.0.34\build\ILRepack.props'))" />
+    <Error Condition="!Exists('packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props'))" />
+    <Error Condition="!Exists('packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
+  </Target>
+  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <WorkingDirectory>$(MSBuildThisFileDirectory)bin\x64\Release</WorkingDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <RepackAssemblies Include="$(WorkingDirectory)\*.dll" Exclude="$(WorkingDirectory)\*Native*.dll" />
+    </ItemGroup>
+    <ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).exe" OutputAssembly="$(AssemblyName).exe" InputAssemblies="@(RepackAssemblies)" WilcardInputAssemblies="true" WorkingDirectory="$(WorkingDirectory)" />
   </Target>
   <Import Project="packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
-  <Import Project="packages\Fody.6.8.1\build\Fody.targets" Condition="Exists('packages\Fody.6.8.1\build\Fody.targets')" />
-  <Import Project="packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets" Condition="Exists('packages\Costura.Fody.5.8.0-alpha0098\build\Costura.Fody.targets')" />
-  <Import Project="packages\Magick.NET-Q8-AnyCPU.13.10.0\build\netstandard20\Magick.NET-Q8-AnyCPU.targets" Condition="Exists('packages\Magick.NET-Q8-AnyCPU.13.10.0\build\netstandard20\Magick.NET-Q8-AnyCPU.targets')" />
+  <Import Project="packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
 </Project>
