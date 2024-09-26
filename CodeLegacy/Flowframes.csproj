@@ -517,6 +517,7 @@
     <Compile Include="Ui\QuickSettingsTab.cs" />
     <Compile Include="Utilities\ColorDataUtils.cs" />
     <Compile Include="Utilities\NcnnUtils.cs" />
+    <Compile Include="Utilities\RollingAverage.cs" />
     <EmbeddedResource Include="Forms\Main\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>

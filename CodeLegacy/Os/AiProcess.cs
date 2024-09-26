@@ -104,7 +104,7 @@ namespace Flowframes.Os
             if (!Interpolate.currentSettings.ai.Piped)
                 InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
 
-            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Peak Output FPS: {InterpolationProgress.peakFpsOut.ToString("0.00")}";
+            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Output FPS: {InterpolationProgress.LastFps.ToString("0.0")}";
 
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
             {
@@ -113,7 +113,7 @@ namespace Flowframes.Os
             }
 
             if (Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime)
-                Logger.Log(logStr);
+                Logger.Log(logStr, replaceLastLine: Logger.LastUiLine.Contains("FPS"));
 
             processTime.Stop();
 

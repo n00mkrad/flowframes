@@ -33,7 +33,9 @@ namespace Flowframes.Ui
             progCheckRunning = true;
             deletedFramesCount = 0;
             lastFrame = 0;
-            peakFpsOut = 0f;
+            LastFps = 0f;
+            _framesAtTime = null;
+            _fpsRollAvg.Reset();
             Program.mainForm.SetProgress(0);
         }
 
@@ -125,9 +127,9 @@ namespace Flowframes.Ui
         }
 
         public static int interpolatedInputFramesCount;
-        public static float peakFpsOut;
-
-        public static int previewUpdateRateMs = 200;
+        public static float LastFps;
+        private static Tuple<int, DateTime> _framesAtTime = null;
+        private static Utilities.RollingAverage<float> _fpsRollAvg = new Utilities.RollingAverage<float>(10);
 
         public static void UpdateInterpProgress(int frames, int target, string latestFramePath = "")
         {
@@ -136,43 +138,48 @@ namespace Flowframes.Ui
             //ResumeUtils.Save();
             target = (target / Interpolate.InterpProgressMultiplier).RoundToInt();
             frames = frames.Clamp(0, target);
-            int percent = (int)Math.Round(((float)frames / target) * 100f);
+
+            if (_framesAtTime == null)
+            {
+                _framesAtTime = new Tuple<int, DateTime>(frames, DateTime.Now);
+            }
+
+            if (frames > _framesAtTime.Item1 && frames > 0)
+            {
+                float fpsCurrent = (frames - _framesAtTime.Item1) / (float)(DateTime.Now - _framesAtTime.Item2).TotalSeconds;
+                _fpsRollAvg.AddDataPoint(fpsCurrent);
+                _framesAtTime = new Tuple<int, DateTime>(frames, DateTime.Now);
+            }
+
+            int percent = (((float)frames / target) * 100f).RoundToInt();
             Program.mainForm.SetProgress(percent);
 
-            float generousTime = ((AiProcess.processTime.ElapsedMilliseconds - AiProcess.lastStartupTimeMs) / 1000f);
-            float fps = ((float)frames / generousTime).Clamp(0, 9999);
-            string fpsIn = (fps / currentFactor).ToString("0.00");
-            string fpsOut = fps.ToString("0.00");
+            float fps = _fpsRollAvg.CurrentSize > 2 ? (float)_fpsRollAvg.Average : 0f;
+            string fpsIn = (fps / currentFactor).ToString("0.0");
+            string fpsOut = fps.ToString("0.0");
+            LastFps = fps;
 
-            if (fps > peakFpsOut)
-                peakFpsOut = fps;
+            float eta = fps == 0f ? 0f : (target - frames) * (1f / fps); // ETA = Remaining frames * seconds per frame. Set to 0 if FPS is 0 to avoid div. by zero
+            string etaStr = eta > 3f ? $" - ETA: {FormatUtils.Time(TimeSpan.FromSeconds(eta), false)}" : "";
+            string timeStr = AiProcess.processTime.ElapsedMilliseconds > 0 ? $" - Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)}" : "";
 
-            float secondsPerFrame = generousTime / (float)frames;
-            int framesLeft = target - frames;
-            float eta = framesLeft * secondsPerFrame;
-            string etaStr = FormatUtils.Time(new TimeSpan(0, 0, eta.RoundToInt()), false);
+            bool replaceLine = Logger.LastUiLine.MatchesWildcard("Interpolated*/* Frames *");
 
-            bool replaceLine = Regex.Split(Logger.textbox.Text, "\r\n|\r|\n").Last().Contains("Average Speed: ");
-
-            string logStr = $"Interpolated {frames}/{target} Frames ({percent}%) - Average Speed: {fpsIn} FPS In / {fpsOut} FPS Out - ";
-            logStr += $"Time: {FormatUtils.Time(AiProcess.processTime.Elapsed)} - ETA: {etaStr}";
+            string logStr = $"Interpolated {frames}/{target} Frames ({percent}%) - Speed: {fpsIn} FPS In / {fpsOut} FPS Out{timeStr}{etaStr}";
             if (AutoEncode.busy) logStr += " - Encoding...";
             Logger.Log(logStr, false, replaceLine);
 
-            try
-            {
-                if (latestFramePath.IsNotEmpty() && frames > currentFactor)
-                {
-                    if (bigPreviewForm == null && (preview == null || !preview.Visible)  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
-                    if (timeSinceLastPreviewUpdate.IsRunning && timeSinceLastPreviewUpdate.ElapsedMilliseconds < previewUpdateRateMs) return;
-                    Image img = IoUtils.GetImage(latestFramePath, false, false);
-                    SetPreviewImg(img);
-                }
-            }
-            catch (Exception e)
-            {
-                //Logger.Log("Error updating preview: " + e.Message, true);
-            }
+            // try
+            // {
+            //     if (latestFramePath.IsNotEmpty() && frames > currentFactor)
+            //     {
+            //         if (bigPreviewForm == null && (preview == null || !preview.Visible)  /* ||Program.mainForm.WindowState != FormWindowState.Minimized */ /* || !Program.mainForm.IsInFocus()*/) return;        // Skip if the preview is not visible or the form is not in focus
+            //     }
+            // }
+            // catch (Exception e)
+            // {
+            //     //Logger.Log("Error updating preview: " + e.Message, true);
+            // }
         }
 
         public static async Task DeleteInterpolatedInputFrames()
@@ -193,16 +200,5 @@ namespace Flowframes.Ui
         }
 
         public static Stopwatch timeSinceLastPreviewUpdate = new Stopwatch();
-
-        public static void SetPreviewImg(Image img)
-        {
-            if (img == null || preview == null)
-                return;
-
-            timeSinceLastPreviewUpdate.Restart();
-
-            preview.Image = img;
-            bigPreviewForm?.SetImage(img);
-        }
     }
 }
