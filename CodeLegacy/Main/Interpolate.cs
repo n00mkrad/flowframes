@@ -292,7 +292,7 @@ namespace Flowframes
             Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
             Logger.LogIfLastLineDoesNotContainMsg("Canceled interpolation.");
 
-            if(Cli.ShowConsole)
+            if(Cli.AutoRun)
                 Application.Exit();
 
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
