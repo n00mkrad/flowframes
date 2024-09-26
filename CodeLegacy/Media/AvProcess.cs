@@ -140,6 +140,11 @@ namespace Flowframes
             public LogMode LoggingMode { get; set; } = LogMode.Hidden;
             public string LogLevel { get; set; } = "panic";
             public bool SetBusy { get; set; } = false;
+
+            public FfprobeSettings(string args = "")
+            {
+                Args = args;
+            }
         }
 
         public static async Task<string> RunFfprobe(FfprobeSettings settings, bool asyncOutput = false)
@@ -195,12 +200,12 @@ namespace Flowframes
             return output;
         }
 
-        static string GetAvDir()
+        public static string GetAvDir()
         {
             return Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
         }
 
-        static string GetCmdArg()
+        public static string GetCmdArg()
         {
             return "/C";
         }

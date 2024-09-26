@@ -481,6 +481,7 @@
     <Compile Include="MiscUtils\NmkdStopwatch.cs" />
     <Compile Include="MiscUtils\OutputUtils.cs" />
     <Compile Include="MiscUtils\ParseUtils.cs" />
+    <Compile Include="NUtilsTemp.cs" />
     <Compile Include="Os\AiProcess.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="Forms\Main\Form1.cs">

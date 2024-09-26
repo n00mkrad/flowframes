@@ -93,12 +93,15 @@ namespace Flowframes
 
         public static async Task<long> GetDurationMs(string inputFile)
         {
-            Logger.Log($"GetDuration({inputFile}) - Reading Duration using ffprobe.", true, false, "ffmpeg");
-            string args = $"-select_streams v:0 -show_entries format=duration -of csv=s=x:p=0 -sexagesimal {inputFile.Wrap()}";
-            FfprobeSettings settings = new FfprobeSettings() { Args = args };
-            string output = await RunFfprobe(settings);
+            Logger.Log($"GetDuration({inputFile}) - Reading duration by demuxing.", true, false, "ffmpeg");
+            string args = $"ffmpeg -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null NUL";
+            string output = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {args}");
 
-            return FormatUtils.TimestampToMs(output);
+            if (!output.MatchesWildcard("*time=* *"))
+                return 0;
+
+            output = output.Split("time=")[1].Split(" ")[0];
+            return (long)TimeSpan.ParseExact(output, @"hh\:mm\:ss\.ff", null).TotalMilliseconds;
         }
 
         public static async Task<Fraction> GetFramerate(string inputFile, bool preferFfmpeg = false)
