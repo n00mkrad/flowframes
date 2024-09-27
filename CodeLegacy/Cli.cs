@@ -42,10 +42,10 @@ namespace Flowframes
 
             var optsSet = new OptionSet
             {
-                {
-                    "c|console", "Show console",
-                    v => ShowConsole = v != null
-                },
+                // {
+                //     "c|console", "Show console",
+                //     v => ShowConsole = v != null
+                // },
                 {
                     "np|no_python", "Disable Python implementations",
                     v => DisablePython = v != null
@@ -127,8 +127,8 @@ namespace Flowframes
                 if (!opts.TryParseOptions(Environment.GetCommandLineArgs()))
                     return;
 
-                if (!ShowConsole)
-                    FreeConsole();
+                // if (!ShowConsole)
+                //     FreeConsole();
 
                 Python.DisablePython = DisablePython;
                 Config.NoWrite = DontSaveConfig;

@@ -53,7 +53,6 @@ namespace Flowframes
             Config.Init();
 
             Task.Run(() => DiskSpaceCheckLoop());
-            args = Environment.GetCommandLineArgs().Where(a => a[0] == '-').Select(x => x.Trim().Substring(1).Lower()).ToArray();
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
 
             LaunchGui();
@@ -64,7 +63,7 @@ namespace Flowframes
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            bool showMdlDownloader = Cli.ShowMdlDownloader || args.Contains("show-model-downloader"); // The latter check may be needed for legacy reasons
+            bool showMdlDownloader = Cli.ShowMdlDownloader; // The latter check may be needed for legacy reasons
 
             mainForm = new Form1() { ShowModelDownloader = showMdlDownloader, Enabled = !Cli.AutoRun };
             Application.Run(mainForm);
