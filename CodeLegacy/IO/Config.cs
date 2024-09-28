@@ -72,7 +72,21 @@ namespace Flowframes.IO
                 return;
 
             SortedDictionary<string, string> cachedValuesSorted = new SortedDictionary<string, string>(CachedValues);
-            File.WriteAllText(configPath, JsonConvert.SerializeObject(cachedValuesSorted, Formatting.Indented));
+
+            // Retry every 100ms up to 10 times in case of an exception
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    File.WriteAllText(configPath, JsonConvert.SerializeObject(cachedValuesSorted, Formatting.Indented));
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"Failed to write config{(i < 10 ? ", will retry." : " and out of retries!")} {e.Message}", true);
+                    Task.Delay(100).Wait();
+                }
+            }
         }
 
         private static void Reload()
