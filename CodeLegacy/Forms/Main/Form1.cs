@@ -34,9 +34,31 @@ namespace Flowframes.Forms.Main
 
         public bool ShowModelDownloader = false;
 
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                if (Program.CmdMode)
+                {
+                    const int WS_EX_TOOLWINDOW = 0x80;
+                    cp.ExStyle |= WS_EX_TOOLWINDOW; // Makes the window not appear in Alt-Tab
+                }
+                return cp;
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
+
+            new SplashForm().Show();
+
+            if (Program.CmdMode)
+            {
+                ShowInTaskbar = false;
+                Opacity = 0;
+            }
         }
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -47,7 +69,6 @@ namespace Flowframes.Forms.Main
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            new SplashForm().Show();
             Refresh();
             await Task.Delay(1);
 
@@ -439,7 +460,10 @@ namespace Flowframes.Forms.Main
         public void Initialized()
         {
             Application.OpenForms.OfType<SplashForm>().ToList().ForEach(f => f.Close());
-            Opacity = 1.0f;
+
+            if (!Program.CmdMode)
+                Opacity = 1.0f;
+
             _initialized = true;
             runBtn.Enabled = true;
             SetStatus("Ready");
@@ -852,7 +876,7 @@ namespace Flowframes.Forms.Main
             float inFps = fpsInTbox.GetFloat();
             float outFps = fpsOutTbox.GetFloat();
 
-            if(inFps == 0 || outFps == 0)
+            if (inFps == 0 || outFps == 0)
                 return;
 
             var targetFactorRounded = Math.Round((Decimal)(outFps / inFps), 3, MidpointRounding.AwayFromZero);

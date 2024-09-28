@@ -43,7 +43,7 @@ namespace Flowframes.Ui
         {
             try
             {
-                Logger.Log("Parsing Patrons from CSV...", true);
+                // Logger.Log("Parsing Patrons from CSV...", true);
                 List<string> goldPatrons = new List<string>();
                 List<string> silverPatrons = new List<string>();
                 string str = "Gold:\n";
@@ -68,7 +68,7 @@ namespace Flowframes.Ui
                     }
                 }
 
-                Logger.Log($"Found {goldPatrons.Count} Gold Patrons, {silverPatrons.Count} Silver Patrons", true);
+                // Logger.Log($"Found {goldPatrons.Count} Gold Patrons, {silverPatrons.Count} Silver Patrons", true);
 
                 foreach (string pat in goldPatrons)
                     str += pat + "\n";

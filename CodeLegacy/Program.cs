@@ -28,10 +28,13 @@ namespace Flowframes
         public static bool lastInputPathIsSsd;
 
         public static Queue<InterpSettings> batchQueue = new Queue<InterpSettings>();
+        public static bool CmdMode = false;
 
         [STAThread]
         static void Main()
         {
+            CmdMode = new FileInfo(Paths.GetExe()).Name.Contains("Cmd");
+
             // Force culture to en-US across entire application (to avoid number parsing issues etc)
             var culture = new CultureInfo("en-US");
             Thread.CurrentThread.CurrentCulture = culture;

@@ -1,18 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30413.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flowframes", "Flowframes.csproj", "{389E42DD-A163-49D7-9E0A-AE41090A07B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		ConsoleRelease|Any CPU = ConsoleRelease|Any CPU
+		ConsoleRelease|x64 = ConsoleRelease|x64
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.ConsoleRelease|Any CPU.ActiveCfg = ConsoleRelease|Any CPU
+		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.ConsoleRelease|Any CPU.Build.0 = ConsoleRelease|Any CPU
+		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.ConsoleRelease|x64.ActiveCfg = ConsoleRelease|x64
+		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.ConsoleRelease|x64.Build.0 = ConsoleRelease|x64
 		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{389E42DD-A163-49D7-9E0A-AE41090A07B3}.Debug|x64.ActiveCfg = Debug|x64

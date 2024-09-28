@@ -53,14 +53,19 @@
             this.ClientSize = new System.Drawing.Size(480, 220);
             this.Controls.Add(this.loadingTextLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(480, 220);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(480, 220);
             this.Name = "SplashForm";
+            this.Opacity = 0D;
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SplashForm";
+            this.Text = "Flowframes";
+            this.TopMost = true;
             this.UseWaitCursor = true;
+            this.Load += new System.EventHandler(this.SplashForm_Load);
             this.ResumeLayout(false);
 
         }
