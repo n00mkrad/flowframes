@@ -76,7 +76,7 @@ namespace Flowframes
                         CreateNoWindow = true,
                     };
 
-                    Logger.Log($"{startInfo.FileName} {startInfo.Arguments}");
+                    Logger.Log($"{startInfo.FileName} {startInfo.Arguments}", hidden: true);
 
                     using (Process process = new Process { StartInfo = startInfo })
                     {
