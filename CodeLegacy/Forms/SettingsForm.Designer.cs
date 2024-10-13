@@ -73,8 +73,6 @@
             this.label63 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.keepMeta = new System.Windows.Forms.CheckBox();
-            this.sceneChangeFillMode = new System.Windows.Forms.ComboBox();
-            this.label71 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.enableAlpha = new System.Windows.Forms.CheckBox();
             this.label25 = new System.Windows.Forms.Label();
@@ -560,8 +558,6 @@
             this.tabListPage2.Controls.Add(this.label63);
             this.tabListPage2.Controls.Add(this.label18);
             this.tabListPage2.Controls.Add(this.keepMeta);
-            this.tabListPage2.Controls.Add(this.sceneChangeFillMode);
-            this.tabListPage2.Controls.Add(this.label71);
             this.tabListPage2.Controls.Add(this.label4);
             this.tabListPage2.Controls.Add(this.enableAlpha);
             this.tabListPage2.Controls.Add(this.label25);
@@ -593,7 +589,7 @@
             // 
             // autoEncBlockPanel
             // 
-            this.autoEncBlockPanel.Location = new System.Drawing.Point(4, 330);
+            this.autoEncBlockPanel.Location = new System.Drawing.Point(4, 300);
             this.autoEncBlockPanel.Name = "autoEncBlockPanel";
             this.autoEncBlockPanel.Size = new System.Drawing.Size(755, 86);
             this.autoEncBlockPanel.TabIndex = 94;
@@ -602,7 +598,7 @@
             // 
             this.label70.AutoSize = true;
             this.label70.ForeColor = System.Drawing.Color.Silver;
-            this.label70.Location = new System.Drawing.Point(308, 390);
+            this.label70.Location = new System.Drawing.Point(308, 360);
             this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(443, 13);
@@ -613,7 +609,7 @@
             // alwaysWaitForAutoEnc
             // 
             this.alwaysWaitForAutoEnc.AutoSize = true;
-            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 390);
+            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 360);
             this.alwaysWaitForAutoEnc.Name = "alwaysWaitForAutoEnc";
             this.alwaysWaitForAutoEnc.Size = new System.Drawing.Size(15, 14);
             this.alwaysWaitForAutoEnc.TabIndex = 92;
@@ -622,7 +618,7 @@
             // label58
             // 
             this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(10, 390);
+            this.label58.Location = new System.Drawing.Point(10, 360);
             this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(229, 13);
@@ -633,7 +629,7 @@
             // 
             this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox2.Location = new System.Drawing.Point(536, 357);
+            this.pictureBox2.Location = new System.Drawing.Point(536, 327);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(29, 21);
             this.pictureBox2.TabIndex = 90;
@@ -644,7 +640,7 @@
             // 
             this.label41.AutoSize = true;
             this.label41.ForeColor = System.Drawing.Color.Silver;
-            this.label41.Location = new System.Drawing.Point(578, 360);
+            this.label41.Location = new System.Drawing.Point(578, 330);
             this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(158, 13);
@@ -662,7 +658,7 @@
             "Disabled",
             "Enabled (Only Video)",
             "Enabled (Complete - With Audio, Subtitles)"});
-            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 357);
+            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 327);
             this.autoEncBackupMode.Name = "autoEncBackupMode";
             this.autoEncBackupMode.Size = new System.Drawing.Size(250, 21);
             this.autoEncBackupMode.TabIndex = 88;
@@ -670,7 +666,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(10, 360);
+            this.label16.Location = new System.Drawing.Point(10, 330);
             this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(114, 13);
@@ -728,31 +724,6 @@
             this.keepMeta.TabIndex = 81;
             this.keepMeta.Text = "Keep Metadata (MKV)";
             this.keepMeta.UseVisualStyleBackColor = true;
-            // 
-            // sceneChangeFillMode
-            // 
-            this.sceneChangeFillMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.sceneChangeFillMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sceneChangeFillMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sceneChangeFillMode.ForeColor = System.Drawing.Color.White;
-            this.sceneChangeFillMode.FormattingEnabled = true;
-            this.sceneChangeFillMode.Items.AddRange(new object[] {
-            "Basic (Duplicate Previous Frame)",
-            "Fancy (Blend To Next Scene)"});
-            this.sceneChangeFillMode.Location = new System.Drawing.Point(280, 267);
-            this.sceneChangeFillMode.Name = "sceneChangeFillMode";
-            this.sceneChangeFillMode.Size = new System.Drawing.Size(250, 21);
-            this.sceneChangeFillMode.TabIndex = 80;
-            // 
-            // label71
-            // 
-            this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(10, 270);
-            this.label71.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(124, 13);
-            this.label71.TabIndex = 79;
-            this.label71.Text = "Scene Change Fix Mode";
             // 
             // label4
             // 
@@ -827,7 +798,7 @@
             // sbsAllowAutoEnc
             // 
             this.sbsAllowAutoEnc.AutoSize = true;
-            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 330);
+            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 300);
             this.sbsAllowAutoEnc.Name = "sbsAllowAutoEnc";
             this.sbsAllowAutoEnc.Size = new System.Drawing.Size(15, 14);
             this.sbsAllowAutoEnc.TabIndex = 72;
@@ -846,7 +817,7 @@
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(10, 330);
+            this.label53.Location = new System.Drawing.Point(10, 300);
             this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label53.Name = "label53";
             this.label53.Size = new System.Drawing.Size(203, 13);
@@ -864,7 +835,7 @@
             "Disabled",
             "Enabled (Keep Interpolated Frames)",
             "Enabled (Delete Frames Once Encoded)"});
-            this.autoEncMode.Location = new System.Drawing.Point(280, 297);
+            this.autoEncMode.Location = new System.Drawing.Point(280, 267);
             this.autoEncMode.Name = "autoEncMode";
             this.autoEncMode.Size = new System.Drawing.Size(250, 21);
             this.autoEncMode.TabIndex = 70;
@@ -873,7 +844,7 @@
             // label49
             // 
             this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(10, 300);
+            this.label49.Location = new System.Drawing.Point(10, 270);
             this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label49.Name = "label49";
             this.label49.Size = new System.Drawing.Size(206, 13);
@@ -1908,8 +1879,6 @@
         private System.Windows.Forms.TextBox exportNamePatternLoop;
         private System.Windows.Forms.Label label69;
         private System.Windows.Forms.Label label68;
-        private System.Windows.Forms.ComboBox sceneChangeFillMode;
-        private System.Windows.Forms.Label label71;
         private System.Windows.Forms.Label label73;
         private System.Windows.Forms.CheckBox fixOutputDuration;
         private System.Windows.Forms.Label label72;

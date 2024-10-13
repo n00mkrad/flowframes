@@ -271,7 +271,7 @@ namespace Flowframes.IO
             if (key == Key.keepMeta)              return WriteDefault(key, "True");
             if (key == Key.scnDetect)             return WriteDefault(key, "True");
             if (key == Key.scnDetectValue)        return WriteDefault(key, "0.2");
-            if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "1");
+            if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "0");
             if (key == Key.autoEncMode)           return WriteDefault(key, "2");
             if (key == Key.jpegFrames)            return WriteDefault(key, "True");
             // Video Export

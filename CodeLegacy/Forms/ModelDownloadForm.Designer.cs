@@ -43,6 +43,8 @@ namespace Flowframes.Forms
             this.dainNcnn = new System.Windows.Forms.CheckBox();
             this.flavrCuda = new System.Windows.Forms.CheckBox();
             this.xvfiCuda = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // longProgBar
@@ -170,7 +172,8 @@ namespace Flowframes.Forms
             this.rifeCuda.AutoSize = true;
             this.rifeCuda.Checked = true;
             this.rifeCuda.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.rifeCuda.Location = new System.Drawing.Point(12, 203);
+            this.rifeCuda.Location = new System.Drawing.Point(0, 3);
+            this.rifeCuda.Margin = new System.Windows.Forms.Padding(0, 3, 6, 3);
             this.rifeCuda.Name = "rifeCuda";
             this.rifeCuda.Size = new System.Drawing.Size(83, 17);
             this.rifeCuda.TabIndex = 95;
@@ -183,7 +186,8 @@ namespace Flowframes.Forms
             this.rifeNcnn.AutoSize = true;
             this.rifeNcnn.Checked = true;
             this.rifeNcnn.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.rifeNcnn.Location = new System.Drawing.Point(101, 203);
+            this.rifeNcnn.Location = new System.Drawing.Point(89, 3);
+            this.rifeNcnn.Margin = new System.Windows.Forms.Padding(0, 3, 6, 3);
             this.rifeNcnn.Name = "rifeNcnn";
             this.rifeNcnn.Size = new System.Drawing.Size(84, 17);
             this.rifeNcnn.TabIndex = 96;
@@ -196,7 +200,8 @@ namespace Flowframes.Forms
             this.dainNcnn.AutoSize = true;
             this.dainNcnn.Checked = true;
             this.dainNcnn.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.dainNcnn.Location = new System.Drawing.Point(191, 203);
+            this.dainNcnn.Location = new System.Drawing.Point(179, 3);
+            this.dainNcnn.Margin = new System.Windows.Forms.Padding(0, 3, 6, 3);
             this.dainNcnn.Name = "dainNcnn";
             this.dainNcnn.Size = new System.Drawing.Size(86, 17);
             this.dainNcnn.TabIndex = 97;
@@ -209,7 +214,8 @@ namespace Flowframes.Forms
             this.flavrCuda.AutoSize = true;
             this.flavrCuda.Checked = true;
             this.flavrCuda.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.flavrCuda.Location = new System.Drawing.Point(283, 203);
+            this.flavrCuda.Location = new System.Drawing.Point(271, 3);
+            this.flavrCuda.Margin = new System.Windows.Forms.Padding(0, 3, 6, 3);
             this.flavrCuda.Name = "flavrCuda";
             this.flavrCuda.Size = new System.Drawing.Size(93, 17);
             this.flavrCuda.TabIndex = 98;
@@ -222,12 +228,25 @@ namespace Flowframes.Forms
             this.xvfiCuda.AutoSize = true;
             this.xvfiCuda.Checked = true;
             this.xvfiCuda.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.xvfiCuda.Location = new System.Drawing.Point(382, 203);
+            this.xvfiCuda.Location = new System.Drawing.Point(370, 3);
+            this.xvfiCuda.Margin = new System.Windows.Forms.Padding(0, 3, 6, 3);
             this.xvfiCuda.Name = "xvfiCuda";
             this.xvfiCuda.Size = new System.Drawing.Size(82, 17);
             this.xvfiCuda.TabIndex = 99;
             this.xvfiCuda.Text = "XVFI CUDA";
             this.xvfiCuda.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.rifeCuda);
+            this.flowLayoutPanel1.Controls.Add(this.rifeNcnn);
+            this.flowLayoutPanel1.Controls.Add(this.dainNcnn);
+            this.flowLayoutPanel1.Controls.Add(this.flavrCuda);
+            this.flowLayoutPanel1.Controls.Add(this.xvfiCuda);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 204);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(600, 29);
+            this.flowLayoutPanel1.TabIndex = 100;
             // 
             // ModelDownloadForm
             // 
@@ -235,11 +254,7 @@ namespace Flowframes.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(624, 301);
-            this.Controls.Add(this.xvfiCuda);
-            this.Controls.Add(this.flavrCuda);
-            this.Controls.Add(this.dainNcnn);
-            this.Controls.Add(this.rifeNcnn);
-            this.Controls.Add(this.rifeCuda);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.cancelBtn);
@@ -255,6 +270,8 @@ namespace Flowframes.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Model Downloader";
             this.Load += new System.EventHandler(this.ModelDownloadForm_Load);
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -270,10 +287,11 @@ namespace Flowframes.Forms
         private HTAlt.WinForms.HTButton closeBtn;
         private HTAlt.WinForms.HTButton cancelBtn;
         private System.Windows.Forms.Label statusLabel;
-        private System.Windows.Forms.CheckBox rifeCuda;
-        private System.Windows.Forms.CheckBox rifeNcnn;
-        private System.Windows.Forms.CheckBox dainNcnn;
-        private System.Windows.Forms.CheckBox flavrCuda;
-        private System.Windows.Forms.CheckBox xvfiCuda;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        public System.Windows.Forms.CheckBox rifeCuda;
+        public System.Windows.Forms.CheckBox rifeNcnn;
+        public System.Windows.Forms.CheckBox dainNcnn;
+        public System.Windows.Forms.CheckBox flavrCuda;
+        public System.Windows.Forms.CheckBox xvfiCuda;
     }
 }

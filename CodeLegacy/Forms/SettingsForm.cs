@@ -99,7 +99,7 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(enableLoop);
             ConfigParser.SaveGuiElement(scnDetect);
             ConfigParser.SaveGuiElement(scnDetectValue);
-            ConfigParser.SaveComboxIndex(sceneChangeFillMode);
+            // ConfigParser.SaveComboxIndex(sceneChangeFillMode);
             ConfigParser.SaveComboxIndex(autoEncMode);
             ConfigParser.SaveComboxIndex(autoEncBackupMode);
             ConfigParser.SaveGuiElement(sbsAllowAutoEnc);
@@ -145,7 +145,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(enableLoop);
             ConfigParser.LoadGuiElement(scnDetect);
             ConfigParser.LoadGuiElement(scnDetectValue);
-            ConfigParser.LoadComboxIndex(sceneChangeFillMode);
+            // ConfigParser.LoadComboxIndex(sceneChangeFillMode);
             ConfigParser.LoadComboxIndex(autoEncMode);
             ConfigParser.LoadComboxIndex(autoEncBackupMode);
             ConfigParser.LoadGuiElement(sbsAllowAutoEnc);

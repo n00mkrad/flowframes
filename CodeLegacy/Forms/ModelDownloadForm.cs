@@ -1,4 +1,5 @@
-﻿using Flowframes.MiscUtils;
+﻿using Flowframes.Data;
+using Flowframes.MiscUtils;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,14 @@ namespace Flowframes.Forms
 
         private void ModelDownloadForm_Load(object sender, EventArgs e)
         {
+            var availImplems = Implementations.NetworksAvailable.Select(ai => ai.NameInternal.Replace("_", "").Lower());
 
+            void SetChecked(CheckBox cb)
+            {
+                cb.Visible = availImplems.Contains(cb.Name.Lower());
+            }
+
+            new List<Control> { rifeCuda, rifeNcnn, dainNcnn, flavrCuda, xvfiCuda }.ForEach(cb => SetChecked((CheckBox)cb));
         }
 
         public void SetWorking(bool state, bool allowCancel = true)
@@ -63,11 +71,11 @@ namespace Flowframes.Forms
         private void downloadModelsBtn_Click(object sender, EventArgs e)
         {
             ModelDownloadFormUtils.form = this;
-            bool rifeC = rifeCuda.Checked;
-            bool rifeN = rifeNcnn.Checked;
-            bool dainN = dainNcnn.Checked;
-            bool flavrC = flavrCuda.Checked;
-            bool xvfiC = xvfiCuda.Checked;
+            bool rifeC = rifeCuda.Visible && rifeCuda.Checked;
+            bool rifeN = rifeNcnn.Visible && rifeNcnn.Checked;
+            bool dainN = dainNcnn.Visible && dainNcnn.Checked;
+            bool flavrC = flavrCuda.Visible && flavrCuda.Checked;
+            bool xvfiC = xvfiCuda.Visible && xvfiCuda.Checked;
             ModelDownloadFormUtils.DownloadModels(rifeC, rifeN, dainN, flavrC, xvfiC);
         }
 
