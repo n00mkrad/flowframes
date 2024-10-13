@@ -599,7 +599,7 @@ namespace Flowframes.IO
             InterpSettings curr = Interpolate.currentSettings;
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-            float fps = fpsLimit ? maxFps.GetFloat() : curr.outFps.GetFloat();
+            float fps = fpsLimit ? maxFps.Float : curr.outFps.Float;
 
             Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, true);
             string pattern = Config.Get(Config.Key.exportNamePattern);
@@ -664,14 +664,14 @@ namespace Flowframes.IO
                 {
                     Fraction dirFps = GetVideoFramerateForDir(path);
 
-                    if (dirFps.GetFloat() > 0)
+                    if (dirFps.Float > 0)
                         return dirFps;
                 }
                 else
                 {
                     Fraction vidFps = await GetVideoFramerate(path);
 
-                    if (vidFps.GetFloat() > 0)
+                    if (vidFps.Float > 0)
                         return vidFps;
                 }
             }

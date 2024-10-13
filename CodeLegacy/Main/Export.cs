@@ -57,7 +57,7 @@ namespace Flowframes.Main
             {
                 string max = Config.Get(Config.Key.maxFps);
                 Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-                bool fpsLimit = maxFps.GetFloat() > 0f && I.currentSettings.outFps.GetFloat() > maxFps.GetFloat();
+                bool fpsLimit = maxFps.Float > 0f && I.currentSettings.outFps.Float > maxFps.Float;
                 bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
                 if (!dontEncodeFullFpsVid)
@@ -76,11 +76,11 @@ namespace Flowframes.Main
         public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
         {
             InterpSettings s = I.currentSettings;
-            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings, (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.GetFloat(), true).FirstOrDefault();
+            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings, (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.Float, true).FirstOrDefault();
 
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-            bool fpsLimit = maxFps.GetFloat() > 0f && s.outFps.GetFloat() > maxFps.GetFloat();
+            bool fpsLimit = maxFps.Float > 0f && s.outFps.Float > maxFps.Float;
 
             // Logger.Log($"VFR Ratio: {I.currentMediaFile.VideoStreams.First().FpsInfo.VfrRatio} ({I.currentMediaFile.VideoStreams.First().FpsInfo.Fps} FPS Specified, {I.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps} FPS Avg)");
 
@@ -129,7 +129,7 @@ namespace Flowframes.Main
             string availableFormat = Path.GetExtension(IoUtils.GetFilesSorted(framesPath, "*.*")[0]).Remove(".").Upper();
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-            bool fpsLimit = maxFps.GetFloat() > 0f && I.currentSettings.outFps.GetFloat() > maxFps.GetFloat();
+            bool fpsLimit = maxFps.Float > 0f && I.currentSettings.outFps.Float > maxFps.Float;
             bool dontEncodeFullFpsSeq = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.currentSettings.interpFactor));
 
@@ -293,7 +293,7 @@ namespace Flowframes.Main
 
             string max = Config.Get(Config.Key.maxFps);
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-            bool fpsLimit = maxFps.GetFloat() != 0 && I.currentSettings.outFps.GetFloat() > maxFps.GetFloat();
+            bool fpsLimit = maxFps.Float != 0 && I.currentSettings.outFps.Float > maxFps.Float;
             VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
@@ -354,9 +354,9 @@ namespace Flowframes.Main
         {
             int times = -1;
             int minLength = Config.GetInt(Config.Key.minOutVidLength);
-            int minFrameCount = (minLength * I.currentSettings.outFps.GetFloat()).RoundToInt();
+            int minFrameCount = (minLength * I.currentSettings.outFps.Float).RoundToInt();
             int outFrames = (I.currentMediaFile.FrameCount * I.currentSettings.interpFactor).RoundToInt();
-            if (outFrames / I.currentSettings.outFps.GetFloat() < minLength)
+            if (outFrames / I.currentSettings.outFps.Float < minLength)
                 times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
             times--;    // Not counting the 1st play (0 loops)
             if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing

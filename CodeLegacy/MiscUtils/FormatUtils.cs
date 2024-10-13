@@ -206,8 +206,8 @@ namespace Flowframes.MiscUtils
                 return f.Numerator.ToString();
 
             // If number is actually fractional, show the fraction as well as the approx. decimal number
-            string decimalStr = f.GetFloat().ToString("0.###");
-            bool isPrecise = decimalStr == f.GetFloat().ToString("0.####"); // If 0.___ matches with 0.____ it means we have enough decimal places and thus it's precise
+            string decimalStr = f.Float.ToString("0.###");
+            bool isPrecise = decimalStr == f.Float.ToString("0.####"); // If 0.___ matches with 0.____ it means we have enough decimal places and thus it's precise
             string t = showTildeForApprox && !isPrecise ? "~" : "";
             return $"{f} ({t}{decimalStr})";
         }

@@ -30,7 +30,7 @@ namespace Flowframes.Media
             }
 
             string scnDetect = $"-vf \"select='gt(scene,{Config.GetFloatString(Config.Key.scnDetectValue)})'\"";
-            string rateArg = (rate.GetFloat() > 0) ? $"-fps_mode cfr -r {rate}" : "-fps_mode passthrough";
+            string rateArg = (rate.Float > 0) ? $"-fps_mode cfr -r {rate}" : "-fps_mode passthrough";
             string args = $"{GetTrimArg(true)} {inArg} {GetImgArgs(format)} {rateArg} {scnDetect} -frame_pts 1 -s 256x144 {GetTrimArg(false)} \"{outDir}/%{Padding.inputFrames}d{format}\"";
 
             LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
@@ -106,7 +106,7 @@ namespace Flowframes.Media
             string mpStr = deDupe ? GetMpdecimate(true) : "";
             string filters = FormatUtils.ConcatStrings(new[] { GetPadFilter(), mpStr });
             string vf = filters.Length > 2 ? $"-vf {filters}" : "";
-            bool allowCfr = rate.GetFloat() > 0 && !deDupe && Path.GetExtension(inputFile).Lower() != ".gif"; // Forcing CFR on GIFs causes issues // TODO: Maybe never use CFR???
+            bool allowCfr = rate.Float > 0 && !deDupe && Path.GetExtension(inputFile).Lower() != ".gif"; // Forcing CFR on GIFs causes issues // TODO: Maybe never use CFR???
             string rateArg = allowCfr ? $" -fps_mode cfr -r {rate}" : "-fps_mode passthrough";
             string args = $"{GetTrimArg(true)} -itsscale {Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.VfrRatio} -i {inputFile.Wrap()} {GetImgArgs(format, true, alpha)} {rateArg} -frame_pts 1 {vf} {sizeStr} {GetTrimArg(false)} \"{framesDir}/%{Padding.inputFrames}d{format}\""; LogMode logMode = Interpolate.currentMediaFile.FrameCount > 50 ? LogMode.OnlyLastLine : LogMode.Hidden;
             await RunFfmpeg(args, logMode, true);

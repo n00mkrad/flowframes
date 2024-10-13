@@ -85,8 +85,6 @@ namespace Flowframes.Data
                     Denominator = 1;
                 }
             }
-
-            Console.WriteLine($"Fraction from String: Fraction(\"{text}\") => {Numerator}/{Denominator}", true);
         }
 
         private static long GetGreatestCommonDenominator(long a, long b)
@@ -248,33 +246,19 @@ namespace Flowframes.Data
             return new Fraction(fraction1 * fraction2.GetReciprocal()).GetReduced();
         }
 
-
-        public double ToDouble()
-        {
-            return (double)this.Numerator / this.Denominator;
-        }
+        public double Double() => (double)Numerator / Denominator;
 
         public override string ToString()
         {
-            return Numerator + "/" + Denominator;
+            return $"{Numerator}/{Denominator}";
         }
 
-        public float GetFloat()
-        {
-            if (Denominator < 1)    // Avoid div by zero
-                return 0f;
+        public float Float => Denominator < 1 ? 0f : (float)Numerator / (float)Denominator;
+        public long Long => Denominator < 1 ? 0L : (long)Numerator / (long)Denominator;
 
-            return (float)Numerator / (float)Denominator;
-        }
-
-        public long GetLong()
+        public string GetString(string format = "0.#####")
         {
-            return (long)Numerator / (long)Denominator;
-        }
-
-        public string GetString()
-        {
-            return ((float)Numerator / Denominator).ToString();
+            return ((float)Numerator / Denominator).ToString(format);
         }
     }
 }

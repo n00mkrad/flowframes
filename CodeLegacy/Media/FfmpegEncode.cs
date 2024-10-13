@@ -15,11 +15,11 @@ namespace Flowframes.Media
         public static async Task FramesToVideo(string framesFile, string outPath, OutputSettings settings, Fraction fps, Fraction resampleFps, float itsScale, VidExtraData extraData, LogMode logMode = LogMode.OnlyLastLine, bool isChunk = false)
         {
             if (logMode != LogMode.Hidden)
-                Logger.Log((resampleFps.GetFloat() <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
+                Logger.Log((resampleFps.Float <= 0) ? "Encoding video..." : $"Encoding video resampled to {resampleFps.GetString()} FPS...");
 
             IoUtils.RenameExistingFileOrDir(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
-            string[] encArgs = Utils.GetEncArgs(settings, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.GetFloat());
+            string[] encArgs = Utils.GetEncArgs(settings, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.Float);
 
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
@@ -59,7 +59,7 @@ namespace Flowframes.Media
             var filters = new List<string>();
             var extraArgs = new List<string> { Config.Get(Config.Key.ffEncArgs) };
 
-            if (resampleFps.GetFloat() >= 0.1f)
+            if (resampleFps.Float >= 0.1f)
                 filters.Add($"fps={resampleFps}");
 
             if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllValues())
@@ -122,7 +122,7 @@ namespace Flowframes.Media
 
             string sn = $"-start_number {startNo}";
             string rate = fps.ToString().Replace(",", ".");
-            string vf = (resampleFps.GetFloat() < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
+            string vf = (resampleFps.Float < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
             string compression = format == Enums.Encoding.Encoder.Png ? pngCompr : $"-q:v {lossyQ}";
             string codec = format == Enums.Encoding.Encoder.Webp ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
             string args = $"-r {rate} {inArg} {codec} {compression} {sn} {vf} -fps_mode passthrough \"{outDir}/%{Padding.interpFrames}d.{format.GetInfo().OverideExtension}\"";
@@ -132,16 +132,16 @@ namespace Flowframes.Media
 
         public static async Task FramesToGifConcat(string framesFile, string outPath, Fraction rate, bool palette, int colors, Fraction resampleFps, float itsScale, LogMode logMode = LogMode.OnlyLastLine)
         {
-            if (rate.GetFloat() > 50f && (resampleFps.GetFloat() > 50f || resampleFps.GetFloat() < 1))
+            if (rate.Float > 50f && (resampleFps.Float > 50f || resampleFps.Float < 1))
                 resampleFps = new Fraction(50, 1);  // Force limit framerate as encoding above 50 will cause problems
 
             if (logMode != LogMode.Hidden)
-                Logger.Log((resampleFps.GetFloat() <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.GetFloat().ToString().Replace(",", ".")} FPS...");
+                Logger.Log((resampleFps.Float <= 0) ? $"Encoding GIF..." : $"Encoding GIF resampled to {resampleFps.Float.ToString().Replace(",", ".")} FPS...");
 
             string framesFilename = Path.GetFileName(framesFile);
             string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();
             string paletteFilter = palette ? $"-vf \"split[s0][s1];[s0]palettegen={colors}[p];[s1][p]paletteuse=dither={dither}\"" : "";
-            string fpsFilter = (resampleFps.GetFloat() <= 0) ? "" : $"fps=fps={resampleFps}";
+            string fpsFilter = (resampleFps.Float <= 0) ? "" : $"fps=fps={resampleFps}";
             string vf = FormatUtils.ConcatStrings(new string[] { paletteFilter, fpsFilter });
             string extraArgs = Config.Get(Config.Key.ffEncArgs);
             rate = rate / new Fraction(itsScale);

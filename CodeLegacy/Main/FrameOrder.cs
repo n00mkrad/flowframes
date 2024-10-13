@@ -88,7 +88,7 @@ namespace Flowframes.Main
 
             for (int i = 0; i < targetFrameCount; i++)
             {
-                float currentFrameTime = 1 + (step * i).GetFloat();
+                float currentFrameTime = 1 + (step * i).Float;
                 int sourceFrameIdx = (int)Math.Floor(currentFrameTime) - 1;
 
                 framesList.Add(i);
@@ -272,7 +272,7 @@ namespace Flowframes.Main
             {
                 if (Interpolate.canceled) return;
 
-                float currentFrameTime = 1 + (step * i).GetFloat();
+                float currentFrameTime = 1 + (step * i).Float;
                 int sourceFrameIdx = (int)Math.Floor(currentFrameTime) - 1;
                 float timestep = (currentFrameTime - (int)Math.Floor(currentFrameTime));
                 bool sceneChange = (sceneDetection && (sourceFrameIdx + 1) < FrameRename.importFilenames.Length && sceneFrames.Contains(GetNameNoExt(FrameRename.importFilenames[sourceFrameIdx + 1])));

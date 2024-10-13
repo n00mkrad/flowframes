@@ -387,7 +387,7 @@ namespace Flowframes.Forms.Main
         public void UpdateInputInfo()
         {
             string str = $"Size: {(!currInRes.IsEmpty ? $"{currInRes.Width}x{currInRes.Height}" : "Unknown")} - ";
-            str += $"FPS: {(currInFpsDetected.GetFloat() > 0f ? FormatUtils.Fraction(currInFpsDetected) : "Unknown")} - ";
+            str += $"FPS: {(currInFpsDetected.Float > 0f ? FormatUtils.Fraction(currInFpsDetected) : "Unknown")} - ";
             str += $"Frames: {(currInFrames > 0 ? $"{currInFrames}" : "Unknown")} - ";
             str += $"Duration: {(currInDuration > 0 ? FormatUtils.MsToTimestamp(currInDuration) : "Unknown")}";
             inputInfo.Text = str;

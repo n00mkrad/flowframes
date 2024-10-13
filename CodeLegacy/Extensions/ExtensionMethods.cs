@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.Data;
 using System.Management.Automation;
@@ -13,7 +12,6 @@ using System.Drawing;
 using Flowframes.MiscUtils;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
-using Win32Interop.Structs;
 
 namespace Flowframes
 {
@@ -427,6 +425,12 @@ namespace Flowframes
             settings.Converters.Add(new StringEnumConverter());
 
             return JsonConvert.SerializeObject(o, indent ? Formatting.Indented : Formatting.None, settings);
+        }
+
+        // TODO: Remove once NmkdUtils has been adopted
+        public static bool EqualsRoughly(this float a, float b, float tolerance = 0.0001f)
+        {
+            return Math.Abs(a - b) < tolerance;
         }
     }
 }

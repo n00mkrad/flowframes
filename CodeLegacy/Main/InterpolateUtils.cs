@@ -131,20 +131,20 @@ namespace Flowframes.Main
                 }
 
                 string fpsLimitValue = Config.Get(Config.Key.maxFps);
-                float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(fpsLimitValue).GetFloat() : fpsLimitValue.GetFloat());
+                float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(fpsLimitValue).Float : fpsLimitValue.GetFloat());
                 int maxFps = s.outSettings.Encoder.GetInfo().MaxFramerate;
 
-                if (passes && s.outFps.GetFloat() < 1f || (s.outFps.GetFloat() > maxFps && !(fpsLimit > 0 && fpsLimit <= maxFps)))
+                if (passes && s.outFps.Float < 1f || (s.outFps.Float > maxFps && !(fpsLimit > 0 && fpsLimit <= maxFps)))
                 {
                     string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
-                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.GetFloat()}).\nMust be 1-{maxFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");
+                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.Float}).\nMust be 1-{maxFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");
                     passes = false;
                 }
 
                 float fpsLimitFloat = fpsLimitValue.GetFloat();
 
-                if (fpsLimitFloat > 0 && fpsLimitFloat < s.outFps.GetFloat())
-                    Interpolate.InterpProgressMultiplier = s.outFps.GetFloat() / fpsLimitFloat;
+                if (fpsLimitFloat > 0 && fpsLimitFloat < s.outFps.Float)
+                    Interpolate.InterpProgressMultiplier = s.outFps.Float / fpsLimitFloat;
                 else
                     Interpolate.InterpProgressMultiplier = 1f;
 

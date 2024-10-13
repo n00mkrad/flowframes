@@ -95,12 +95,12 @@ namespace Flowframes
         {
             Logger.Log($"GetDuration({inputFile}) - Reading duration by demuxing.", true, false, "ffmpeg");
             string args = $"ffmpeg -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null NUL";
-            string output = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {args}");
+            var outputLines = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {args}").SplitIntoLines().Where(l => l.IsNotEmpty() && l.MatchesWildcard("*time=* *"));
 
-            if (!output.MatchesWildcard("*time=* *"))
+            if (outputLines == null || outputLines.Count() == 0)
                 return 0;
 
-            output = output.Split("time=")[1].Split(" ")[0];
+            string output = outputLines.Last().Split("time=")[1].Split(" ")[0];
             return (long)TimeSpan.ParseExact(output, @"hh\:mm\:ss\.ff", null).TotalMilliseconds;
         }
 
@@ -145,14 +145,14 @@ namespace Flowframes
 
             if (preferFfmpeg)
             {
-                if (ffmpegFps.GetFloat() > 0)
+                if (ffmpegFps.Float > 0)
                     return ffmpegFps;
                 else
                     return ffprobeFps;
             }
             else
             {
-                if (ffprobeFps.GetFloat() > 0)
+                if (ffprobeFps.Float > 0)
                     return ffprobeFps;
                 else
                     return ffmpegFps;

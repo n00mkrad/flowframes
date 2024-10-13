@@ -173,27 +173,31 @@ namespace Flowframes.Media
 
             if (streamStr.Contains("fps, ") && streamStr.Contains(" tbr"))
             {
-                string fps = streamStr.Split(", ").Where(s => s.Contains(" fps")).First().Trim().Split(' ')[0];
-                string tbr = streamStr.Split("fps, ")[1].Split(" tbr")[0].Trim();
+                float ffmpegFps = streamStr.Split(", ").Where(s => s.Contains(" fps")).First().Trim().Split(' ')[0].GetFloat();
+                float ffmpegTbr = streamStr.Split("fps, ")[1].Split(" tbr")[0].GetFloat();
+                var ffprobeFps = new Fraction(await GetFfprobeInfoAsync(path, showStreams, "r_frame_rate", streamIdx));
+                var ffprobeFpsAvg = new Fraction(await GetFfprobeInfoAsync(path, showStreams, "avg_frame_rate", streamIdx));
                 long durationMs = Interpolate.currentMediaFile.DurationMs;
-                float fpsCalc = (float)frameCount / (durationMs / 1000f);
-                fpsCalc = (float)Math.Round(fpsCalc, 5);
+                float calculatedFps = (float)Math.Round(frameCount / (durationMs / 1000f), 5);
 
-                var info = new FpsInfo(new Fraction(fps.GetFloat())); // Set both true FPS and average FPS to this number for now
+                Fraction fps = ffprobeFps.Float > 0f ? ffprobeFps : new Fraction(ffmpegFps);
+                Fraction avgFps = ffprobeFpsAvg.Float > 0f ? ffprobeFpsAvg : new Fraction(ffmpegTbr);
 
-                Logger.Log($"FPS: {fps} - TBR: {tbr} - Est. FPS: {fpsCalc.ToString("0.#####")}", true);
+                Logger.Log($"Ffprobe FPS: {ffprobeFps} ({ffprobeFps.GetString()}) - Ffprobe Avg FPS: {ffprobeFpsAvg} ({ffprobeFpsAvg.GetString()}) - Ffmpeg FPS: {ffmpegFps} - Ffmpeg TBR: {ffmpegTbr} - Est. FPS: {calculatedFps.ToString("0.#####")}", true);
 
-                if (tbr != fps)
+                var info = new FpsInfo(fps); // Set both true FPS and average FPS to this number, assuming they match
+
+                if (!avgFps.Float.EqualsRoughly(fps.Float, 0.01f))
                 {
-                    info.SpecifiedFps = new Fraction(tbr); // Change FPS to TBR if they mismatch
+                    info.SpecifiedFps = new Fraction(avgFps); // Change FPS to TBR if they mismatch
                 }
 
                 float fpsEstTolerance = GetFpsEstimationTolerance(durationMs);
 
-                if (Math.Abs(fps.GetFloat() - fpsCalc) > fpsEstTolerance)
+                if (Math.Abs(fps.Float - calculatedFps) > fpsEstTolerance)
                 {
-                    Logger.Log($"Detected FPS {fps} is not within tolerance (+-{fpsEstTolerance}) of calculated FPS ({fpsCalc}), using estimated FPS.", true);
-                    info.Fps = new Fraction(fpsCalc); // Change true FPS to the estimated FPS if the estimate does not match the specified FPS
+                    Logger.Log($"Detected FPS {fps} is not within tolerance (+-{fpsEstTolerance}) of calculated FPS ({calculatedFps}), using estimated FPS.", true);
+                    info.Fps = new Fraction(calculatedFps); // Change true FPS to the estimated FPS if the estimate does not match the specified FPS
                 }
 
                 return info;

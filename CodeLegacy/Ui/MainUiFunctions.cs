@@ -48,11 +48,11 @@ namespace Flowframes.Ui
                 Program.mainForm.currInDuration = Interpolate.currentMediaFile.DurationMs;
                 Program.mainForm.currInDurationCut = Program.mainForm.currInDuration;
                 Fraction fps = Interpolate.currentMediaFile.VideoStreams.Count > 0 ? Interpolate.currentMediaFile.VideoStreams[0].Rate : new Fraction();
-                string fpsStr = fps.GetFloat() > 0 ? FormatUtils.Fraction(fps) : "Not Found";
+                string fpsStr = fps.Float > 0 ? FormatUtils.Fraction(fps) : "Not Found";
                 Program.mainForm.currInFpsDetected = fps;
                 fpsInTbox.Text = fps.GetString();
                 Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}", false, true);
-                Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.GetFloat() > 0 && !Config.GetBool("allowCustomInputRate", false));
+                Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.Float > 0 && !Config.GetBool("allowCustomInputRate", false));
                 Program.mainForm.currInFps = fps;
                 Program.mainForm.currInFrames = Interpolate.currentMediaFile.FrameCount;
                 Program.mainForm.UpdateInputInfo();

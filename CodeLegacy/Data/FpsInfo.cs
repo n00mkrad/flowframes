@@ -4,8 +4,8 @@
     {
         public Fraction Fps { get; set; }
         public Fraction SpecifiedFps { get; set; }
-        public float VfrRatio { get => Fps.GetFloat() / SpecifiedFps.GetFloat(); }
-        public float VfrRatioInverse { get => SpecifiedFps.GetFloat() / Fps.GetFloat(); }
+        public float VfrRatio { get => Fps.Float / SpecifiedFps.Float; }
+        public float VfrRatioInverse { get => SpecifiedFps.Float / Fps.Float; }
 
         public FpsInfo() { }
 

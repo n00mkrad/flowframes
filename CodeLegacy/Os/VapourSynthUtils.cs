@@ -43,8 +43,8 @@ namespace Flowframes.Os
             long frameCount = (long)Interpolate.currentMediaFile.FrameCount;
 
             bool trim = QuickSettingsTab.trimEnabled;
-            long srcTrimStartFrame = trim ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.GetFloat())) : 0;
-            long srcTrimEndFrame = trim && QuickSettingsTab.doTrimEnd ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimEnd) / 1000f * s.InterpSettings.inFps.GetFloat())) - 1 : frameCount - 1;
+            long srcTrimStartFrame = trim ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.Float)) : 0;
+            long srcTrimEndFrame = trim && QuickSettingsTab.doTrimEnd ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimEnd) / 1000f * s.InterpSettings.inFps.Float)) - 1 : frameCount - 1;
 
             if(trim)
                 frameCount = srcTrimEndFrame - srcTrimStartFrame;
