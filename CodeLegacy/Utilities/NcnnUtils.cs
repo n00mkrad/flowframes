@@ -4,9 +4,7 @@ using Flowframes.Main;
 using Flowframes.Os;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +15,7 @@ namespace Flowframes.Utilities
         public static int GetRifeNcnnGpuThreads(Size res, int gpuId, AiInfo ai)
         {
             int threads = Config.GetInt(Config.Key.ncnnThreads);
-            int maxThreads = VulkanUtils.GetMaxNcnnThreads(gpuId);
+            int maxThreads = VulkanUtils.GetMaxNcnnThreads(gpuId).Clamp(1, 64);
 
             threads = threads.Clamp(1, maxThreads); // To avoid exceeding the max queue count
             Logger.Log($"Using {threads}/{maxThreads} GPU compute threads.", true, false, ai.LogFilename);

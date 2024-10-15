@@ -175,7 +175,18 @@ namespace Flowframes.IO
                 Logger.Log($"Downloaded \"{modelDir}\" model files.", !log, true);
 
                 if (!(await AreFilesValid(aiDir, modelDir)))
+                {
                     Interpolate.Cancel($"Model files are invalid! Please try again.");
+                    return;
+                }
+
+                if (ai.NameInternal == Implementations.rifeNcnn.NameInternal)
+                {
+                    string modelPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir, modelDir);
+                    string ncnnModelPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, modelDir);
+                    Logger.Log($"Copying {modelPath} to {ncnnModelPath}", true);
+                    IoUtils.CopyDir(modelPath, ncnnModelPath);
+                }
             }
             catch (Exception e)
             {

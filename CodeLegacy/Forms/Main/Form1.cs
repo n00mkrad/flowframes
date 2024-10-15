@@ -92,11 +92,6 @@ namespace Flowframes.Forms.Main
             HandleArgs();
             Initialized();
 
-            if (ShowModelDownloader)
-            {
-                new ModelDownloadForm().ShowDialog();
-            }
-
             if (Debugger.IsAttached)
             {
                 Logger.Log("Debugger is attached.");
@@ -461,12 +456,17 @@ namespace Flowframes.Forms.Main
         {
             Application.OpenForms.OfType<SplashForm>().ToList().ForEach(f => f.Close());
 
-            if (!Program.CmdMode)
-                Opacity = 1.0f;
-
             _initialized = true;
             runBtn.Enabled = true;
             SetStatus("Ready");
+
+            if (ShowModelDownloader)
+            {
+                new ModelDownloadForm().ShowDialog();
+            }
+
+            if (!Program.CmdMode)
+                Opacity = 1.0f;
         }
 
         private void browseInputBtn_Click(object sender, EventArgs e)
