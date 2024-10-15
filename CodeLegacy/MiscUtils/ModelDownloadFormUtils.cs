@@ -41,6 +41,11 @@ namespace Flowframes.MiscUtils
 			form.SetWorking(false);
 			form.SetStatus($"Done.");
 			form.SetDownloadBtnEnabled(false);
+
+			if (Cli.CloseMdlDownloaderWhenDone)
+			{
+				form.Close();
+            }
 		}
 
         public static async Task DownloadForAi(AiInfo ai)

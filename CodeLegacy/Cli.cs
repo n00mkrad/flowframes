@@ -17,6 +17,7 @@ namespace Flowframes
         public static bool ShowConsole = false;
         public static bool DisablePython = true;
         public static bool ShowMdlDownloader = false;
+        public static bool CloseMdlDownloaderWhenDone = false;
         public static bool DontSaveConfig = false;
         public static bool AutoRun = false;
         public static float InterpFactor = -1f;
@@ -57,6 +58,10 @@ namespace Flowframes
                 {
                     "md|open_model_downloader", "Open model downloader GUI on startup",
                     v => ShowMdlDownloader = v != null
+                },
+                {
+                    "mdc|close_model_downloader", "Close model downloader GUI after downloads have finished",
+                    v => CloseMdlDownloaderWhenDone = v != null
                 },
                 {
                     "nc|no_config_save", "Do not save anything in config during this session",

@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.IO;
+using Flowframes.MiscUtils;
 using Flowframes.Ui;
+using Enc = Flowframes.Data.Enums.Encoding.Encoder;
 
 namespace Flowframes.Os
 {
@@ -130,10 +132,11 @@ namespace Flowframes.Os
                 return;
 
             Logger.Log($"Detecting hardare encoding support...");
-            var encoders = new[] { "h264_nvenc", "hevc_nvenc", "av1_nvenc", "h264_amf", "hevc_amf" };
+            var encoders = new[] { Enc.Nvenc264, Enc.Nvenc265, Enc.NvencAv1, Enc.Qsv264, Enc.Qsv265, Enc.Amf264, Enc.Amf265 };
+            var encoderNames = encoders.Select(x => OutputUtils.GetEncoderInfoVideo(x).Name);
             var compatEncoders = new List<string>();
 
-            foreach(string e in encoders)
+            foreach(string e in encoderNames)
             {
                 bool compat = await FfmpegCommands.IsEncoderCompatible(e);
 
