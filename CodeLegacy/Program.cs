@@ -132,6 +132,12 @@ namespace Flowframes
                 string crashDumpsDir = Path.Combine(Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%"), "CrashDumps");
                 IoUtils.GetFilesSorted(crashDumpsDir, false, "rife*.exe.*.dmp").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
                 IoUtils.GetFilesSorted(crashDumpsDir, false, "flowframes*.exe.*.dmp").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
+
+                string installerTempDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlowframesInstallerTemp");
+                if (Directory.Exists(installerTempDir) && (DateTime.Now - Directory.GetLastWriteTime(installerTempDir)).TotalDays > 1d)
+                {
+                    IoUtils.TryDeleteIfExists(installerTempDir);
+                }
             }
             catch (Exception e)
             {
