@@ -1,4 +1,5 @@
-﻿using Flowframes.MiscUtils;
+﻿using Flowframes.IO;
+using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,9 @@ namespace Flowframes.Os
                     var validQueueFamilies = queueFamilies.Where(q => q.QueueFlags.HasFlag(QueueFlags.Compute) && !q.QueueFlags.HasFlag(QueueFlags.Graphics));
                     int compQueues = validQueueFamilies.Any() ? (int)validQueueFamilies.First().QueueCount : 0;
 
+                    if(compQueues <= 0)
+                        continue;
+
                     string name = device.GetProperties().DeviceName;
                     VkDevices.Add(new VkDevice { Id = idx, Name = name, ComputeQueueCount = compQueues });
                     Logger.Log($"[VK] Found Vulkan device: {VkDevices.Last()}", true);
@@ -49,6 +53,13 @@ namespace Flowframes.Os
                 // Clean up Vulkan resources
                 vkInstance.Destroy();
                 Logger.Log($"[VK] Vulkan device check completed after {sw.ElapsedMs} ms", true);
+
+                if (VkDevices.Count == 0)
+                    return;
+
+                // Set the device that has the most compute queues as default GPU
+                var maxQueuesDevice = VkDevices.OrderByDescending(d => d.ComputeQueueCount).First();
+                Config.Set(Config.Key.ncnnGpus, $"{maxQueuesDevice.Id}");
             }
             catch(Exception ex)
             {
