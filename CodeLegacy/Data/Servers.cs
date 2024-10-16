@@ -1,4 +1,5 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Forms;
+using Flowframes.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,12 @@ namespace Flowframes.Data
             }
         }
 
-        public static async Task Init(ComboBox comboBox = null)
+        public static async Task InitAsync ()
+        {
+            await Task.Run(() => Init());
+        }
+
+        public static void Init(ComboBox comboBox = null)
         {
             Dictionary<string[], long> serversPings = new Dictionary<string[], long>();
 

@@ -53,9 +53,6 @@ namespace Flowframes.Forms.Main
         {
             InitializeComponent();
 
-            var splash = new SplashForm("Starting Flowframes...");
-            splash.Show();
-
             if (Program.CmdMode)
             {
                 ShowInTaskbar = false;
@@ -173,14 +170,14 @@ namespace Flowframes.Forms.Main
         {
             try
             {
-                Task.Run(() => Updater.UpdateModelList());
+                // Task.Run(() => Updater.UpdateModelList());
                 Task.Run(() => Updater.AsyncUpdateCheck());
                 Task.Run(() => GetWebInfo.LoadNews(newsLabel));
                 Task.Run(() => GetWebInfo.LoadPatronListCsv(patronsLabel));
-                Task.Run(() => Servers.Init());
-                await Python.CheckCompression();
+                await Servers.InitAsync();
                 await StartupChecks.SymlinksCheck();
                 await HwEncCheck.DetectHwEncoders();
+                await Python.CheckCompression();
             }
             catch (Exception e)
             {

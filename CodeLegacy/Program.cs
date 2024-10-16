@@ -1,4 +1,5 @@
-﻿using Flowframes.Forms.Main;
+﻿using Flowframes.Forms;
+using Flowframes.Forms.Main;
 using Flowframes.IO;
 using Flowframes.Os;
 using Flowframes.Ui;
@@ -33,7 +34,19 @@ namespace Flowframes
         [STAThread]
         static void Main()
         {
-            CmdMode = new FileInfo(Paths.GetExe()).Name.Contains("Cmd");
+            // Catch unhandled exceptions across application
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            Cli.HandleCli();
+            CmdMode = Paths.GetExe().EndsWith("Cmd.exe");
+
+            // Show splash screen
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            var splash = new SplashForm("Starting Flowframes...");
+            splash.Show();
 
             // Force culture to en-US across entire application (to avoid number parsing issues etc)
             var culture = new CultureInfo("en-US");
@@ -42,19 +55,12 @@ namespace Flowframes
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-            // Catch unhandled exceptions across application
-            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
             // Set up TLS for web requests - Not sure if needed, but seemed to help with web request problems
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             Paths.Init();
-            Cli.HandleCli();
             Config.Init();
-
             Task.Run(() => DiskSpaceCheckLoop());
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
 
@@ -63,11 +69,7 @@ namespace Flowframes
 
         private static void LaunchGui()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
             bool showMdlDownloader = Cli.ShowMdlDownloader; // The latter check may be needed for legacy reasons
-
             mainForm = new Form1() { ShowModelDownloader = showMdlDownloader, Enabled = !Cli.AutoRun };
             Application.Run(mainForm);
         }
@@ -150,6 +152,8 @@ namespace Flowframes
         /// </summary>
         private static async Task DiskSpaceCheckLoop()
         {
+            await Task.Delay(5000);
+
             while (true)
             {
                 if (!busy || Interpolate.currentSettings == null || !Directory.Exists(Interpolate.currentSettings.tempFolder))
