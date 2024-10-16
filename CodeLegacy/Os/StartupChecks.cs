@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.IO;
-using Flowframes.MiscUtils;
 using Flowframes.Ui;
-using Enc = Flowframes.Data.Enums.Encoding.Encoder;
 
 namespace Flowframes.Os
 {
@@ -124,32 +120,6 @@ namespace Flowframes.Os
 
                 IoUtils.TryDeleteIfExists(devmodeBatchPath);
             }
-        }
-
-        public static async Task DetectHwEncoders ()
-        {
-            if (Config.GetBool(Config.Key.PerformedHwEncCheck))
-                return;
-
-            Logger.Log($"Detecting hardare encoding support...");
-            var encoders = new[] { Enc.Nvenc264, Enc.Nvenc265, Enc.NvencAv1, Enc.Qsv264, Enc.Qsv265, Enc.Amf264, Enc.Amf265 };
-            var encoderNames = encoders.Select(x => OutputUtils.GetEncoderInfoVideo(x).Name);
-            var compatEncoders = new List<string>();
-
-            foreach(string e in encoderNames)
-            {
-                bool compat = await FfmpegCommands.IsEncoderCompatible(e);
-
-                if (compat)
-                {
-                    compatEncoders.Add(e);
-                    Logger.Log($"HW Encoder supported: {e}", true);
-                }
-            }
-
-            Logger.Log($"Available hardware encoders: {string.Join(", ", compatEncoders.Select(e => e.Replace("_", " ").Upper()))}");
-            Config.Set(Config.Key.SupportedHwEncoders, string.Join(",", compatEncoders));
-            Config.Set(Config.Key.PerformedHwEncCheck, true.ToString());
         }
     }
 }

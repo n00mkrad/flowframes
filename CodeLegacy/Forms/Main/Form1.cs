@@ -16,6 +16,7 @@ using Flowframes.MiscUtils;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Flowframes.Media;
 
 #pragma warning disable IDE1006
 
@@ -118,7 +119,7 @@ namespace Flowframes.Forms.Main
         {
             comboxOutputEncoder.Items.Clear();
             Config.Set(Config.Key.PerformedHwEncCheck, false.ToString());
-            await StartupChecks.DetectHwEncoders();
+            await HwEncCheck.DetectHwEncoders();
             UpdateOutputUi();
         }
 
@@ -179,8 +180,7 @@ namespace Flowframes.Forms.Main
                 Task.Run(() => Servers.Init());
                 await Python.CheckCompression();
                 await StartupChecks.SymlinksCheck();
-                await StartupChecks.DetectHwEncoders();
-
+                await HwEncCheck.DetectHwEncoders();
             }
             catch (Exception e)
             {

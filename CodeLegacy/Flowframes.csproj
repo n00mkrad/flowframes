@@ -493,6 +493,7 @@
     <Compile Include="Media\GetFrameCountCached.cs" />
     <Compile Include="Media\GetMediaResolutionCached.cs" />
     <Compile Include="Media\GetVideoInfo.cs" />
+    <Compile Include="Media\HwEncCheck.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
     <Compile Include="MiscUtils\ModelDownloadFormUtils.cs" />

@@ -1,16 +1,19 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace Flowframes.Forms
 {
     public partial class SplashForm : Form
     {
-        public static SplashForm Inst;
+        public enum TextSize { Small, Medium, Large }
+        private static readonly string[] fontPresets = { "Yu Gothic UI, 14pt", "Yu Gothic UI, 18pt", "Yu Gothic UI, 21.75pt" };
 
-        public SplashForm(string status = "")
+        public SplashForm(string status = "", bool topMost = true, TextSize textSize = TextSize.Large)
         {
-            Inst = this;
             InitializeComponent();
             SetStatus(status);
+            TopMost = topMost;
+            statusLabel.Font = (Font)new FontConverter().ConvertFromInvariantString(fontPresets[(int)textSize]);
         }
 
         private void SplashForm_Load(object sender, System.EventArgs e)
