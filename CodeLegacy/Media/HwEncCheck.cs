@@ -16,8 +16,7 @@ namespace Flowframes.Media
                 return;
 
             Logger.Log($"Detecting hardare encoding support...");
-            SplashForm statusForm = new SplashForm("Checking hardware encoders...", textSize: SplashForm.TextSize.Medium);
-            statusForm.Show();
+            var statusForm = new SplashForm("Checking hardware encoders...", textSize: SplashForm.TextSize.Medium);
 
             var previousMainFormOpacity = Program.mainForm.Opacity;
 

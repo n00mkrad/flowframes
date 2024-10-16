@@ -450,9 +450,14 @@ namespace Flowframes.Forms.Main
             _mainTabInitialized = true;
         }
 
-        public void Initialized()
+        public static void CloseAllSplashForms ()
         {
             Application.OpenForms.OfType<SplashForm>().ToList().ForEach(f => f.Close());
+        }
+
+        public void Initialized()
+        {
+            CloseAllSplashForms();
 
             _initialized = true;
             runBtn.Enabled = true;

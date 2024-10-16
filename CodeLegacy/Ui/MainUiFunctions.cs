@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
+using Flowframes.Forms;
+using Flowframes.Forms.Main;
 
 namespace Flowframes.Ui
 {
@@ -34,10 +36,12 @@ namespace Flowframes.Ui
                 if (Config.GetBool(Config.Key.clearLogOnInput))
                     Logger.ClearLogBox();
 
+                var importSplash = new SplashForm("Importing...", topMost: false);
+
                 SetOutPath(outputTbox, inputTbox.Text.Trim().GetParentDir());
 
                 Program.lastInputPath = path;
-                Program.lastInputPathIsSsd = OsUtils.DriveIsSSD(path);
+                Program.lastInputPathIsSsd = Config.GetBool("checkInputFileDriveType", false) && OsUtils.DriveIsSSD(path);
 
                 if (!Program.lastInputPathIsSsd)
                     Logger.Log("Your file seems to be on an HDD or USB device. It is recommended to interpolate videos on an SSD drive for best performance.");
@@ -69,6 +73,8 @@ namespace Flowframes.Ui
                     Program.mainForm.runBtn_Click(null, null);
             }
             catch { }
+
+            Form1.CloseAllSplashForms();
 
             if (!Cli.AutoRun)
             {

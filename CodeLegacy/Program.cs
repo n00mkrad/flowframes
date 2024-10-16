@@ -46,7 +46,6 @@ namespace Flowframes
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var splash = new SplashForm("Starting Flowframes...");
-            splash.Show();
 
             // Force culture to en-US across entire application (to avoid number parsing issues etc)
             var culture = new CultureInfo("en-US");
@@ -61,8 +60,8 @@ namespace Flowframes
 
             Paths.Init();
             Config.Init();
-            Task.Run(() => DiskSpaceCheckLoop());
             Logger.Log($"Command Line: {Environment.CommandLine}", true);
+            Task.Run(() => DiskSpaceCheckLoop());
 
             LaunchGui();
         }
