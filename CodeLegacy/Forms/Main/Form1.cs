@@ -52,7 +52,8 @@ namespace Flowframes.Forms.Main
         {
             InitializeComponent();
 
-            new SplashForm().Show();
+            var splash = new SplashForm("Starting Flowframes...");
+            splash.Show();
 
             if (Program.CmdMode)
             {

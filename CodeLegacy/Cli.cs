@@ -43,10 +43,6 @@ namespace Flowframes
 
             var optsSet = new OptionSet
             {
-                // {
-                //     "c|console", "Show console",
-                //     v => ShowConsole = v != null
-                // },
                 {
                     "np|no_python", "Disable Python implementations",
                     v => DisablePython = v != null

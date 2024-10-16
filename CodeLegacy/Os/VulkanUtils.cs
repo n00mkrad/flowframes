@@ -43,7 +43,7 @@ namespace Flowframes.Os
 
                     string name = device.GetProperties().DeviceName;
                     VkDevices.Add(new VkDevice { Id = idx, Name = name, ComputeQueueCount = compQueues });
-                    Logger.Log($"[VK] Found Vulkan device: {VkDevices.Last()} ({compQueues} Compute Queues)", true);
+                    Logger.Log($"[VK] Found Vulkan device: {VkDevices.Last()}", true);
                 }
 
                 // Clean up Vulkan resources

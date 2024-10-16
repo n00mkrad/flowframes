@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.loadingTextLabel = new System.Windows.Forms.Label();
+            this.statusLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // loadingTextLabel
+            // statusLabel
             // 
-            this.loadingTextLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.loadingTextLabel.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.loadingTextLabel.ForeColor = System.Drawing.Color.White;
-            this.loadingTextLabel.Location = new System.Drawing.Point(0, 0);
-            this.loadingTextLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
-            this.loadingTextLabel.Name = "loadingTextLabel";
-            this.loadingTextLabel.Size = new System.Drawing.Size(480, 220);
-            this.loadingTextLabel.TabIndex = 2;
-            this.loadingTextLabel.Text = "Starting Flowframes...";
-            this.loadingTextLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.loadingTextLabel.UseWaitCursor = true;
+            this.statusLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.statusLabel.Font = new System.Drawing.Font("Yu Gothic UI", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.ForeColor = System.Drawing.Color.White;
+            this.statusLabel.Location = new System.Drawing.Point(0, 0);
+            this.statusLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(480, 220);
+            this.statusLabel.TabIndex = 2;
+            this.statusLabel.Text = "Starting Flowframes...";
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.statusLabel.UseWaitCursor = true;
             // 
             // SplashForm
             // 
@@ -51,7 +51,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.ClientSize = new System.Drawing.Size(480, 220);
-            this.Controls.Add(this.loadingTextLabel);
+            this.Controls.Add(this.statusLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(480, 220);
@@ -72,6 +72,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Label loadingTextLabel;
+        public System.Windows.Forms.Label statusLabel;
     }
 }
