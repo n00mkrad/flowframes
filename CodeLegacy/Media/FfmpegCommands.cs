@@ -91,17 +91,59 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task<long> GetDurationMs(string inputFile)
+        public static async Task<long> GetDurationMs(string inputFile, bool demuxInsteadOfPacketTs = false)
         {
-            Logger.Log($"GetDuration({inputFile}) - Reading duration by demuxing.", true, false, "ffmpeg");
-            string args = $"ffmpeg -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null NUL";
-            var outputLines = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {args}").SplitIntoLines().Where(l => l.IsNotEmpty() && l.MatchesWildcard("*time=* *"));
+            Logger.Log($"GetDuration({inputFile}) - Reading duration by checking metadata.", true, false, "ffmpeg");
+            string argsMeta = $"ffprobe -v quiet -show_streams -select_streams v:0 -show_entries stream=duration {inputFile.Wrap()}";
+            var outputLinesMeta = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsMeta}").SplitIntoLines();
 
-            if (outputLines == null || outputLines.Count() == 0)
-                return 0;
+            foreach (string line in outputLinesMeta.Where(l => l.MatchesWildcard("*?=?*")))
+            {
+                var split = line.Split('=');
+                string key = split[0];
+                string value = split[1];
 
-            string output = outputLines.Last().Split("time=")[1].Split(" ")[0];
-            return (long)TimeSpan.ParseExact(output, @"hh\:mm\:ss\.ff", null).TotalMilliseconds;
+                if(value.Contains("N/A"))
+                    continue;
+
+                if (key == "duration")
+                {
+                    return (long)TimeSpan.FromSeconds(value.GetFloat()).TotalMilliseconds;
+                }
+                else if (key == "TAG:DURATION")
+                {
+                    string[] tsSplit = value.Split(':');
+                    int hours = tsSplit[0].GetInt();
+                    int minutes = tsSplit[1].GetInt();
+                    float seconds = tsSplit[2].GetFloat();
+                    return (long)TimeSpan.FromHours(hours).Add(TimeSpan.FromMinutes(minutes)).Add(TimeSpan.FromSeconds(seconds)).TotalMilliseconds;
+                }
+            }
+
+            if (demuxInsteadOfPacketTs)
+            {
+                Logger.Log($"GetDuration({inputFile}) - Reading duration by demuxing.", true, false, "ffmpeg");
+                string argsDemux = $"ffmpeg -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null NUL";
+                var outputLinesDemux = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsDemux}").SplitIntoLines().Where(l => l.IsNotEmpty() && l.MatchesWildcard("*time=* *"));
+
+                if (outputLinesDemux == null || outputLinesDemux.Count() == 0)
+                    return 0;
+
+                string output = outputLinesDemux.Last().Split("time=")[1].Split(" ")[0];
+                return (long)TimeSpan.ParseExact(output, @"hh\:mm\:ss\.ff", null).TotalMilliseconds;
+            }
+            else
+            {
+                Logger.Log($"GetDuration({inputFile}) - Reading duration using packet timestamps.", true, false, "ffmpeg");
+                string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=dts_time -of csv=p=0 {inputFile.Wrap()}";
+                var outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
+
+                if (outputLinesPackets == null || outputLinesPackets.Count == 0)
+                    return 0;
+
+                string lastTimestamp = outputLinesPackets.Last().Split('=').Last();
+                return (long)TimeSpan.FromSeconds(lastTimestamp.GetFloat()).TotalMilliseconds;
+            }
         }
 
         public static async Task<Fraction> GetFramerate(string inputFile, bool preferFfmpeg = false)
@@ -208,14 +250,13 @@ namespace Flowframes
 
         public static async Task<int> ReadFrameCountFfprobePacketCount(string filePath)
         {
-            FfprobeSettings settings = new FfprobeSettings() { Args = $"-select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}", LoggingMode = LogMode.Hidden, LogLevel = "error" };
-            string output = await RunFfprobe(settings);
-            string[] lines = output.SplitIntoLines().Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            string args = $"ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}";
+            var outputLines = (await Task.Run(() => NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {args}"))).SplitIntoLines().Where(l => l.IsNotEmpty());
 
-            if (lines == null || lines.Length < 1)
+            if (outputLines == null || !outputLines.Any())
                 return 0;
 
-            return lines.Last().GetInt();
+            return outputLines.Last().GetInt();
         }
 
         public static async Task<int> ReadFrameCountFfprobe(string filePath)

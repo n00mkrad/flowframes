@@ -178,7 +178,7 @@ namespace Flowframes.Media
                 var ffprobeFps = new Fraction(await GetFfprobeInfoAsync(path, showStreams, "r_frame_rate", streamIdx));
                 var ffprobeFpsAvg = new Fraction(await GetFfprobeInfoAsync(path, showStreams, "avg_frame_rate", streamIdx));
                 long durationMs = Interpolate.currentMediaFile.DurationMs;
-                float calculatedFps = (float)Math.Round(frameCount / (durationMs / 1000f), 5);
+                float calculatedFps = (float)Math.Round(frameCount / (durationMs / 1000f), 2);
 
                 Fraction fps = ffprobeFps.Float > 0f ? ffprobeFps : new Fraction(ffmpegFps);
                 Fraction avgFps = ffprobeFpsAvg.Float > 0f ? ffprobeFpsAvg : new Fraction(ffmpegTbr);
