@@ -63,6 +63,7 @@ namespace Flowframes.Media
             var beforeArgs = new List<string>();
             var filters = new List<string>();
             var extraArgs = new List<string> { Config.Get(Config.Key.ffEncArgs) };
+            var mf = Interpolate.currentMediaFile;
 
             if (resampleFps.Float >= 0.1f)
                 filters.Add($"fps={resampleFps}");
@@ -86,7 +87,7 @@ namespace Flowframes.Media
                 string paletteFilter = $"[1:v]paletteuse=dither={dither}";
 
                 int colors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
-                await FfmpegExtract.GeneratePalette(Interpolate.currentMediaFile.ImportPath, palettePath, colors);
+                await FfmpegExtract.GeneratePalette(mf.ImportPath, palettePath, colors);
 
                 if (File.Exists(palettePath))
                 {
@@ -96,15 +97,20 @@ namespace Flowframes.Media
             }
             else if (settings.Encoder == Enums.Encoding.Encoder.Exr)
             {
-                if(Interpolate.currentMediaFile.Format.Upper() != "EXR")
+                if(mf.Format.Upper() != "EXR")
                     filters.Add($"zscale=transfer=linear,format={settings.PixelFormat.ToString().Lower()}".Wrap());
             }
 
-            filters.Add(GetPadFilter());
+            // Only if encoder is not GIF and width and height are not divisible by 2
+            if (settings.Encoder != Enums.Encoding.Encoder.Gif && (mf.VideoStreams[0].Resolution.Width % 2 != 0 || mf.VideoStreams[0].Resolution.Height % 2 != 0))
+            {
+                filters.Add(GetPadFilter());
+            }
+            
             filters = filters.Where(f => f.IsNotEmpty()).ToList();
 
             return filters.Count > 0 ?
-                $"{string.Join(" ", beforeArgs)} -filter_complex [0:v]{string.Join("[vf],[vf]", filters.Where(f => !string.IsNullOrWhiteSpace(f)))}[vf] -map [vf] {string.Join(" ", extraArgs)}" :
+                $"{string.Join(" ", beforeArgs)} -filter_complex [0:v]{string.Join("[vf],[vf]", filters.Where(f => f.IsNotEmpty()))}[vf] -map [vf] {string.Join(" ", extraArgs)}" :
                 $"{string.Join(" ", beforeArgs)} {string.Join(" ", extraArgs)}";
         }
 
