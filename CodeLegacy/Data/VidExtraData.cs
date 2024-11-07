@@ -15,6 +15,9 @@ namespace Flowframes.Data
         // Aspect Ratio
         public string displayRatio = "";
 
+        // Rotation
+        public int Rotation = 0;
+
         private readonly string[] validColorSpaces = new string[] { "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100",
             "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", "arib-std-b67" };
 
@@ -23,37 +26,44 @@ namespace Flowframes.Data
         public VidExtraData(string ffprobeOutput)
         {
             string[] lines = ffprobeOutput.SplitIntoLines();
-
-            if (!Config.GetBool(Config.Key.keepColorSpace, true))
-                return;
+            bool keepColorSpace = Config.GetBool(Config.Key.keepColorSpace, true);
 
             foreach (string line in lines)
             {
-                if (line.Contains("color_range"))
+                if(line.StartsWith("rotation="))
                 {
-                    colorRange = line.Split('=').LastOrDefault();
+                    Rotation = line.Split('=').LastOrDefault().GetInt();
                     continue;
                 }
 
-                if (line.Contains("color_space"))
+                if (keepColorSpace)
                 {
-                    colorSpace = line.Split('=').LastOrDefault();
-                    continue;
+                    if (line.StartsWith("color_range"))
+                    {
+                        colorRange = line.Split('=').LastOrDefault().Lower();
+                        continue;
+                    }
+
+                    if (line.StartsWith("color_space"))
+                    {
+                        colorSpace = line.Split('=').LastOrDefault().Lower();
+                        continue;
+                    }
+
+                    if (line.StartsWith("color_transfer"))
+                    {
+                        colorTransfer = line.Split('=').LastOrDefault().Lower();
+                        continue;
+                    }
+
+                    if (line.StartsWith("color_primaries"))
+                    {
+                        colorPrimaries = line.Split('=').LastOrDefault().Lower();
+                        continue;
+                    }
                 }
 
-                if (line.Contains("color_transfer"))
-                {
-                    colorTransfer = line.Split('=').LastOrDefault();
-                    continue;
-                }
-
-                if (line.Contains("color_primaries"))
-                {
-                    colorPrimaries = line.Split('=').LastOrDefault();
-                    continue;
-                }
-
-                if (line.Contains("display_aspect_ratio") && Config.GetBool(Config.Key.keepAspectRatio, true))
+                if (line.StartsWith("display_aspect_ratio") && Config.GetBool(Config.Key.keepAspectRatio, true))
                 {
                     displayRatio = line.Split('=').LastOrDefault();
                     continue;
@@ -76,7 +86,7 @@ namespace Flowframes.Data
             }
             else
             {
-                colorTransfer = colorTransfer.Replace("bt470bg", "gamma28").Replace("bt470m", "gamma28");    // https://forum.videohelp.com/threads/394596-Color-Matrix
+                colorTransfer = colorTransfer.Replace("bt470bg", "gamma28").Replace("bt470m", "gamma28"); // https://forum.videohelp.com/threads/394596-Color-Matrix
             }
 
             if (!validColorSpaces.Contains(colorPrimaries.Trim()))
@@ -86,24 +96,7 @@ namespace Flowframes.Data
             }  
         }
 
-        public bool HasAnyValues ()
-        {
-            if (!string.IsNullOrWhiteSpace(colorSpace))
-                return true;
-
-            if (!string.IsNullOrWhiteSpace(colorRange))
-                return true;
-
-            if (!string.IsNullOrWhiteSpace(colorTransfer))
-                return true;
-
-            if (!string.IsNullOrWhiteSpace(colorPrimaries))
-                return true;
-
-            return false;
-        }
-
-        public bool HasAllValues()
+        public bool HasAllColorValues()
         {
             if (string.IsNullOrWhiteSpace(colorSpace))
                 return false;

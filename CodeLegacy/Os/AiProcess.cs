@@ -374,7 +374,7 @@ namespace Flowframes.Os
             IoUtils.CreateDir(outPath);
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -y {await Export.GetPipedFfmpegCmd(rt)}";
+            string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -loglevel warning -stats -y {await Export.GetPipedFfmpegCmd(rt)}";
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();
 

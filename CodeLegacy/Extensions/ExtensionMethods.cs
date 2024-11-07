@@ -17,13 +17,17 @@ namespace Flowframes
 {
     public static class ExtensionMethods
     {
-        public static string TrimNumbers(this string s, bool allowDotComma = false)
+        /// <summary> Remove anything from a string that is not a number, optionally allowing scientific notation (<paramref name="allowScientific"/>) </summary>
+        public static string TrimNumbers(this string s, bool allowDotComma = false, bool allowScientific = false)
         {
-            if (!allowDotComma)
-                s = Regex.Replace(s, "[^0-9]", "");
-            else
-                s = Regex.Replace(s, "[^.,0-9]", "");
-            return s.Trim();
+            if (s == null)
+                return s;
+
+            // string og = s;
+            string regex = $@"[^{(allowDotComma ? ".," : "")}0-9\-{(allowScientific ? "e" : "")}]";
+            s = Regex.Replace(s, regex, "").Trim();
+            // Logger.Log($"Trimmed {og} -> {s} - Pattern: {regex}", true);
+            return s;
         }
 
         public static int GetInt(this TextBox textbox)
@@ -43,7 +47,8 @@ namespace Flowframes
 
             try
             {
-                return int.Parse(str.TrimNumbers());
+                str = str.TrimNumbers(allowDotComma: false);
+                return int.Parse(str);
             }
             catch (Exception e)
             {
@@ -92,11 +97,11 @@ namespace Flowframes
 
         public static float GetFloat(this string str)
         {
-            if (str == null || str.Length < 1)
+            if (str.Length < 1 || str == null)
                 return 0f;
 
             string num = str.TrimNumbers(true).Replace(",", ".");
-            float.TryParse(num, out float value);
+            float.TryParse(num, NumberStyles.Any, CultureInfo.InvariantCulture, out float value);
             return value;
         }
 

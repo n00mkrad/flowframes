@@ -25,9 +25,14 @@ namespace Flowframes.Data
 
             public ModelInfo() { }
 
-            public string GetUiString()
+            public string GetUiString(bool addRecommendedStr = false)
             {
-                return $"{Name} - {Desc}{(SupportsAlpha ? " (Supports Transparency)" : "")}{(FixedFactors.Count() > 0 ? $" ({GetFactorsString()})" : "")}{(IsDefault ? " (Recommended)" : "")}";
+                string s = $"{Name} - {Desc}{(SupportsAlpha ? " - Transparency Support" : "")}{(FixedFactors.Count() > 0 ? $" ({GetFactorsString()})" : "")}";
+
+                if(addRecommendedStr && IsDefault)
+                    s += " (Recommended)";
+
+                return s;
             }
 
             public string GetFactorsString ()

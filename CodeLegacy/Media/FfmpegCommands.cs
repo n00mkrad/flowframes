@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
+using System.Drawing.Imaging;
 
 namespace Flowframes
 {
@@ -18,8 +19,8 @@ namespace Flowframes
         public static string pngCompr = "-compression_level 3";
 
         public enum MpDecSensitivity { Normal = 4, High = 20, VeryHigh = 32, Extreme = 40 }
-        
-        public static string GetMpdecimate (int sensitivity = 4, bool wrap = true)
+
+        public static string GetMpdecimate(int sensitivity = 4, bool wrap = true)
         {
             string mpd = $"mpdecimate=hi=64*1024:lo=64*{sensitivity}:frac=1.0";
             return wrap ? mpd.Wrap() : mpd;
@@ -33,7 +34,7 @@ namespace Flowframes
             return wrap ? mpd.Wrap() : mpd;
         }
 
-        public static int GetModulo ()
+        public static int GetModulo()
         {
             if (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal)
                 return 8;
@@ -41,7 +42,7 @@ namespace Flowframes
             return Interpolate.currentSettings.outSettings.Encoder.GetInfo().Modulo;
         }
 
-        public static string GetPadFilter ()
+        public static string GetPadFilter()
         {
             int mod = GetModulo();
 
@@ -55,7 +56,7 @@ namespace Flowframes
         {
             Logger.Log($"ConcatVideos('{Path.GetFileName(concatFile)}', '{outPath}', {looptimes})", true, false, "ffmpeg");
 
-            if(showLog)
+            if (showLog)
                 Logger.Log($"Merging videos...", false, Logger.GetLastLine().Contains("frame"));
 
             IoUtils.RenameExistingFileOrDir(outPath);
@@ -91,32 +92,35 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task<long> GetDurationMs(string inputFile, bool demuxInsteadOfPacketTs = false)
+        public static async Task<long> GetDurationMs(string inputFile, MediaFile mediaFile, bool demuxInsteadOfPacketTs = false, bool allowDurationFromMetadata = true)
         {
-            Logger.Log($"GetDuration({inputFile}) - Reading duration by checking metadata.", true, false, "ffmpeg");
-            string argsMeta = $"ffprobe -v quiet -show_streams -select_streams v:0 -show_entries stream=duration {inputFile.Wrap()}";
-            var outputLinesMeta = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsMeta}").SplitIntoLines();
-
-            foreach (string line in outputLinesMeta.Where(l => l.MatchesWildcard("*?=?*")))
+            if (allowDurationFromMetadata)
             {
-                var split = line.Split('=');
-                string key = split[0];
-                string value = split[1];
+                Logger.Log($"GetDuration({inputFile}) - Reading duration by checking metadata.", true, false, "ffmpeg");
+                string argsMeta = $"ffprobe -v quiet -show_streams -select_streams v:0 -show_entries stream=duration {inputFile.Wrap()}";
+                var outputLinesMeta = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsMeta}").SplitIntoLines();
 
-                if(value.Contains("N/A"))
-                    continue;
+                foreach (string line in outputLinesMeta.Where(l => l.MatchesWildcard("*?=?*")))
+                {
+                    var split = line.Split('=');
+                    string key = split[0];
+                    string value = split[1];
 
-                if (key == "duration")
-                {
-                    return (long)TimeSpan.FromSeconds(value.GetFloat()).TotalMilliseconds;
-                }
-                else if (key == "TAG:DURATION")
-                {
-                    string[] tsSplit = value.Split(':');
-                    int hours = tsSplit[0].GetInt();
-                    int minutes = tsSplit[1].GetInt();
-                    float seconds = tsSplit[2].GetFloat();
-                    return (long)TimeSpan.FromHours(hours).Add(TimeSpan.FromMinutes(minutes)).Add(TimeSpan.FromSeconds(seconds)).TotalMilliseconds;
+                    if (value.Contains("N/A"))
+                        continue;
+
+                    if (key == "duration")
+                    {
+                        return (long)TimeSpan.FromSeconds(value.GetFloat()).TotalMilliseconds;
+                    }
+                    else if (key == "TAG:DURATION")
+                    {
+                        string[] tsSplit = value.Split(':');
+                        int hours = tsSplit[0].GetInt();
+                        int minutes = tsSplit[1].GetInt();
+                        float seconds = tsSplit[2].GetFloat();
+                        return (long)TimeSpan.FromHours(hours).Add(TimeSpan.FromMinutes(minutes)).Add(TimeSpan.FromSeconds(seconds)).TotalMilliseconds;
+                    }
                 }
             }
 
@@ -135,14 +139,78 @@ namespace Flowframes
             else
             {
                 Logger.Log($"GetDuration({inputFile}) - Reading duration using packet timestamps.", true, false, "ffmpeg");
-                string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=dts_time -of csv=p=0 {inputFile.Wrap()}";
+                string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=pts_time -of csv=p=0 {inputFile.Wrap()}";
                 var outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
 
                 if (outputLinesPackets == null || outputLinesPackets.Count == 0)
                     return 0;
 
+                CheckVfr(inputFile, mediaFile);
                 string lastTimestamp = outputLinesPackets.Last().Split('=').Last();
                 return (long)TimeSpan.FromSeconds(lastTimestamp.GetFloat()).TotalMilliseconds;
+            }
+        }
+
+        public static void CheckVfr (string inputFile, MediaFile mediaFile, List<string> outputLinesPackets = null)
+        {
+            if (mediaFile.InputTimestamps.Any())
+                return;
+
+            Logger.Log($"Checking frame timing...", true, false, "ffmpeg");
+
+            if(outputLinesPackets == null)
+            {
+                string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=pts_time -read_intervals \"%+120\" -of csv=p=0 {inputFile.Wrap()}";
+                outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
+            }
+
+            var timestamps = new List<float>();
+            var timestampDurations = new List<float>();
+            var timestampDurationsRes = new List<float>();
+
+            foreach (string line in outputLinesPackets)
+            {
+                timestamps.Add(line.GetFloat());
+            }
+
+            timestamps = timestamps.OrderBy(x => x).ToList();
+
+            for (int i = 1; i < (timestamps.Count - 1); i++)
+            {
+                float diff = Math.Abs(timestamps[i] - timestamps[i - 1]);
+                timestampDurations.Add(diff);
+
+                // if (diff > 0)
+                // {
+                //     Console.WriteLine($"Duration of {timestamps.Count}: {diff * 1000f} ms ({1f / diff} FPS)");
+                // }
+            }
+            // 
+            // var tsResampleTest = Interpolate.currentMediaFile.ResampleTimestamps(timestamps, 2.5f);
+            // 
+            // for (int i = 1; i < (tsResampleTest.Count - 1); i++)
+            // {
+            //     float diff = Math.Abs(tsResampleTest[i] - tsResampleTest[i - 1]);
+            //     timestampDurationsRes.Add(diff);
+            // 
+            //     if (diff > 0)
+            //     {
+            //         Console.WriteLine($"Resampled duration of {tsResampleTest.Count}: {diff * 1000f} ms ({1f / diff} FPS)");
+            //     }
+            // }
+
+            mediaFile.InputTimestamps = new List<float>(timestamps);
+
+            float maxDeviationMs = (timestampDurations.Max() - timestampDurations.Min()) * 1000f;
+            float maxDeviationPercent = ((timestampDurations.Max() / timestampDurations.Min()) * 100f) - 100;
+            // float maxDeviationMsResampled = (timestampDurationsRes.Max() - timestampDurationsRes.Min()) * 1000f;
+            Logger.Log($"Min ts duration: {timestampDurations.Min() * 1000f} ms - Max ts duration: {timestampDurations.Max() * 1000f} ms - Biggest deviation: {maxDeviationMs.ToString("0.##")} ms", hidden: true);
+            // Logger.Log($"Resampled - Min ts duration: {timestampDurationsRes.Min() * 1000f} ms - Max ts duration: {timestampDurationsRes.Max() * 1000f} ms - Biggest deviation: {maxDeviationMsResampled.ToString("0.##")} ms", hidden: true);
+
+            if (maxDeviationPercent > 20f)
+            {
+                Logger.Log($"Max timestamp deviation is {maxDeviationPercent.ToString("0.##")}% or {maxDeviationMs} ms - Assuming VFR input!", hidden: true);
+                mediaFile.IsVfr = true;
             }
         }
 
@@ -180,7 +248,7 @@ namespace Flowframes
                     }
                 }
             }
-            catch(Exception ffmpegEx)
+            catch (Exception ffmpegEx)
             {
                 Logger.Log("GetFramerate ffmpeg Error: " + ffmpegEx.Message, true, false);
             }
@@ -207,7 +275,7 @@ namespace Flowframes
             string args = $" -v panic -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
             string[] outputLines = GetFfprobeOutput(args).SplitIntoLines();
 
-            foreach(string line in outputLines)
+            foreach (string line in outputLines)
             {
                 if (!line.Contains("x") || line.Trim().Length < 3)
                     continue;

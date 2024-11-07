@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Stream = Flowframes.Data.Streams.Stream;
 
@@ -40,6 +39,8 @@ namespace Flowframes.Data
         public long CreationTime;
         public bool Initialized = false;
         public bool SequenceInitialized = false;
+        public bool IsVfr = false;
+        public List<float> InputTimestamps = new List<float>();
 
         public int FileCount = 1;
         public int FrameCount { get { return VideoStreams.Count > 0 ? VideoStreams[0].FrameCount : 0; } }
@@ -103,7 +104,7 @@ namespace Flowframes.Data
                     await InitializeSequence();
 
                 await LoadFormatInfo(ImportPath);
-                AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, InputRate, countFrames);
+                AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, InputRate, countFrames, this);
                 VideoStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Video).Select(x => (VideoStream)x).ToList();
                 AudioStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Audio).Select(x => (AudioStream)x).ToList();
                 SubtitleStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Subtitle).Select(x => (SubtitleStream)x).ToList();
@@ -123,9 +124,39 @@ namespace Flowframes.Data
         {
             Title = await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "TAG:title");
             Language = await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "TAG:language");
-            DurationMs = (await FfmpegCommands.GetDurationMs(path));
+            DurationMs = await FfmpegCommands.GetDurationMs(path, this);
+            FfmpegCommands.CheckVfr(path, this);
             StreamCount = await FfmpegUtils.GetStreamCount(path);
             TotalKbits = (await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "bit_rate")).GetInt() / 1000;
+        }
+
+        public List<float> GetResampledTimestamps(List<float> timestamps, double factor)
+        {
+            int originalCount = timestamps.Count;
+            int newCount = (int)Math.Round(originalCount * factor);
+            List<float> resampledTimestamps = new List<float>();
+
+            for (int i = 0; i < newCount; i++)
+            {
+                double x = i / factor;
+
+                if (x >= originalCount - 1)
+                {
+                    resampledTimestamps.Add(timestamps[originalCount - 1]);
+                }
+                else
+                {
+                    int index = (int)Math.Floor(x);
+                    double fraction = x - index;
+                    float startTime = timestamps[index];
+                    float endTime = timestamps[index + 1];
+
+                    float interpolatedTime = (float)(startTime + (endTime - startTime) * fraction);
+                    resampledTimestamps.Add(interpolatedTime);
+                }
+            }
+
+            return resampledTimestamps;
         }
 
         public string GetName()

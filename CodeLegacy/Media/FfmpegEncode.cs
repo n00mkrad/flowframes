@@ -43,12 +43,17 @@ namespace Flowframes.Media
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
-        public static async Task<string> GetFfmpegExportArgsIn(Fraction fps, float itsScale)
+        public static async Task<string> GetFfmpegExportArgsIn(Fraction fps, float itsScale, int rotation = 0)
         {
             var args = new List<string>();
 
             fps = fps / new Fraction(itsScale);
             args.Add($"-r {fps}");
+            
+            if(rotation != 0)
+            {
+                args.Add($"-display_rotation {rotation}");
+            }
 
             return string.Join(" ", args);
         }
@@ -62,7 +67,7 @@ namespace Flowframes.Media
             if (resampleFps.Float >= 0.1f)
                 filters.Add($"fps={resampleFps}");
 
-            if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllValues())
+            if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllColorValues())
             {
                 Logger.Log($"Using color data: Space {extraData.colorSpace}; Primaries {extraData.colorPrimaries}; Transfer {extraData.colorTransfer}; Range {extraData.colorRange}", true, false, "ffmpeg");
                 extraArgs.Add($"-colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v {extraData.colorRange.Wrap()}");

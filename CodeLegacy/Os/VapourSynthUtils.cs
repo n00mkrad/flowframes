@@ -46,7 +46,7 @@ namespace Flowframes.Os
             long srcTrimStartFrame = trim ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.Float)) : 0;
             long srcTrimEndFrame = trim && QuickSettingsTab.doTrimEnd ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimEnd) / 1000f * s.InterpSettings.inFps.Float)) - 1 : frameCount - 1;
 
-            if(trim)
+            if (trim)
                 frameCount = srcTrimEndFrame - srcTrimStartFrame;
 
             int endDupeCount = s.Factor.RoundToInt() - 1;
@@ -78,7 +78,7 @@ namespace Flowframes.Os
             }
 
             if (trim)
-                l.Add($"clip = clip.std.Trim({srcTrimStartFrame}, {srcTrimEndFrame})");
+                l.Add($"clip = clip.std.Trim({srcTrimStartFrame}, {srcTrimEndFrame}) # Trim");
 
             l.Add($"");
 
@@ -100,7 +100,9 @@ namespace Flowframes.Os
                 outFps = Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps * s.Factor;
             }
 
-            l.Add($"clip = core.rife.RIFE(clip, fps_num={outFps.Numerator}, fps_den={outFps.Denominator}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
+            Fraction factorFrac = new Fraction(s.Factor);
+            string interpStr = Interpolate.currentMediaFile.IsVfr ? $"factor_num={factorFrac.Numerator}, factor_den={factorFrac.Denominator}" : $"fps_num={outFps.Numerator}, fps_den={outFps.Denominator}";
+            l.Add($"clip = core.rife.RIFE(clip, {interpStr}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
 
             if (s.Dedupe && !s.Realtime)
                 l.Add(GetRedupeLines(s));
@@ -113,21 +115,23 @@ namespace Flowframes.Os
             {
                 if (s.Loop)
                 {
-                    l.Add($"clip = clip.std.Trim(0, {targetFrameCountMatchDuration - 1})"); // -1 because we use index, not count
+                    l.Add($"clip = clip.std.Trim(0, {targetFrameCountMatchDuration - 1}) # Trim, loop enabled"); // -1 because we use index, not count
                 }
                 else
                 {
                     if (!s.MatchDuration)
-                        l.Add($"clip = clip.std.Trim(0, {targetFrameCountTrue - 1})"); // -1 because we use index, not count
+                        l.Add($"clip = clip.std.Trim(0, {targetFrameCountTrue - 1}) # Trim, loop disabled, duration matching disabled"); // -1 because we use index, not count
                 }
             }
 
-            if(s.Realtime && s.Loop)
+            if (s.Realtime && s.Loop)
                 l.AddRange(new List<string> { $"clip = clip.std.Loop(0)", "" }); // Can't loop piped video so we loop it before piping it to ffplay
 
-            if(s.Realtime && s.Osd)
+            if (s.Realtime && s.Osd)
                 l.Add(GetOsdLines());
 
+            l.Add(Debugger.IsAttached ? "clip = core.text.Text(clip, str(len(clip)), alignment=4)" : "");
+            l.Add(Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=1)" : "");
             l.Add($"clip.set_output()"); // Set output
             l.Add("");
 
@@ -206,7 +210,7 @@ namespace Flowframes.Os
             s += "    for i in frameList:\n";
             s += "        reorderedClip = reorderedClip + clip[i]\n";
             s += "\n";
-            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
+            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1) # Dedupe trim\n";
             s += Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=4)\n" : "";
             s += "\n";
 
@@ -226,7 +230,7 @@ namespace Flowframes.Os
             s += "        if(i < clip.num_frames):\n";
             s += "            reorderedClip = reorderedClip + clip[i]\n";
             s += "\n";
-            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1)\n";
+            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1) # Redupe trim\n";
             s += Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=1)\n" : "";
             s += "\n";
 
@@ -275,9 +279,9 @@ namespace Flowframes.Os
         {
             int seekStep = 10;
 
-            if(videoLengthSeconds >  2 * 60) seekStep = 20;
-            if(videoLengthSeconds >  5 * 60) seekStep = 30;
-            if(videoLengthSeconds > 15 * 60) seekStep = 60;
+            if (videoLengthSeconds > 2 * 60) seekStep = 20;
+            if (videoLengthSeconds > 5 * 60) seekStep = 30;
+            if (videoLengthSeconds > 15 * 60) seekStep = 60;
 
             return seekStep;
         }

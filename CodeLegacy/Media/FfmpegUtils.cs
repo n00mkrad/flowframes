@@ -37,7 +37,7 @@ namespace Flowframes.Media
             return output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).Count();
         }
 
-        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction? defaultFps, bool countFrames)
+        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction? defaultFps, bool countFrames, MediaFile mediaFile = null)
         {
             List<Stream> streamList = new List<Stream>();
 
@@ -71,10 +71,8 @@ namespace Flowframes.Media
                             Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
                             Size dar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "display_aspect_ratio", idx));
                             int frameCount = countFrames ? await GetFrameCountCached.GetFrameCountAsync(path) : 0;
-                            FpsInfo fps = await GetFps(path, streamStr, idx, (Fraction)defaultFps, frameCount);
-                            VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount);
-                            vStream.Index = idx;
-                            vStream.IsDefault = def;
+                            FpsInfo fps = await GetFps(path, streamStr, idx, (Fraction)defaultFps, frameCount, allowFpsOverride: !mediaFile.IsVfr);
+                            VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount) { Index = idx, IsDefault = def };
                             Logger.Log($"Added video stream: {vStream}", true);
                             streamList.Add(vStream);
                             continue;
@@ -166,7 +164,7 @@ namespace Flowframes.Media
             return streamList;
         }
 
-        private static async Task<FpsInfo> GetFps(string path, string streamStr, int streamIdx, Fraction defaultFps, int frameCount)
+        private static async Task<FpsInfo> GetFps(string path, string streamStr, int streamIdx, Fraction defaultFps, int frameCount, bool allowFpsOverride = false)
         {
             if (path.IsConcatFile())
                 return new FpsInfo(defaultFps);
@@ -194,7 +192,7 @@ namespace Flowframes.Media
 
                 float fpsEstTolerance = GetFpsEstimationTolerance(durationMs);
 
-                if (Math.Abs(fps.Float - calculatedFps) > fpsEstTolerance)
+                if (allowFpsOverride && Math.Abs(fps.Float - calculatedFps) > fpsEstTolerance)
                 {
                     Logger.Log($"Detected FPS {fps} is not within tolerance (+-{fpsEstTolerance}) of calculated FPS ({calculatedFps}), using estimated FPS.", true);
                     info.Fps = new Fraction(calculatedFps); // Change true FPS to the estimated FPS if the estimate does not match the specified FPS
@@ -206,7 +204,7 @@ namespace Flowframes.Media
             return new FpsInfo(await IoUtils.GetVideoFramerate(path));
         }
 
-        private static float GetFpsEstimationTolerance (long videoDurationMs)
+        private static float GetFpsEstimationTolerance(long videoDurationMs)
         {
             if (videoDurationMs < 300) return 5.0f;
             if (videoDurationMs < 1000) return 2.5f;

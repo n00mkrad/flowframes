@@ -86,14 +86,13 @@ namespace Flowframes.Main
 
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
             VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);
-            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale);
+            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale, extraData.Rotation);
             string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? maxFps : new Fraction(), extraData, s.outSettings);
 
             if(s.outSettings.Encoder == Enums.Encoding.Encoder.Exr)
             {
                 extraArgsIn += " -color_trc bt709 -color_primaries bt709 -colorspace bt709";
             }
-
 
             if (ffplay)
             {
@@ -391,6 +390,33 @@ namespace Flowframes.Main
             {
                 Logger.Log("Failed to merge audio/subtitles with output video!", !showLog);
                 Logger.Log("MergeAudio() Exception: " + e.Message, true);
+            }
+        }
+
+        public static void MuxTimestamps (string vidPath)
+        {
+            Logger.Log($"Muxing timestamps for '{vidPath}'", hidden: true);
+            var resampledTs = I.currentMediaFile.GetResampledTimestamps(I.currentMediaFile.InputTimestamps, I.currentSettings.interpFactor);
+            var tsFileLines = new List<string>() { "# timecode format v2" };
+
+            for (int i = 0; i < (resampledTs.Count - 1); i++)
+            {
+                tsFileLines.Add((resampledTs[i] * 1000f).ToString("0.000000"));
+            }
+
+            string tsFile = Path.Combine(Paths.GetSessionDataPath(), "ts.out.txt");
+            File.WriteAllLines(tsFile, tsFileLines);
+            string outPath = Path.ChangeExtension(vidPath, ".tmp.mkv");
+            string args = $"mkvmerge --output {outPath.Wrap()} --timestamps \"0:{tsFile}\" {vidPath.Wrap()}";
+            var outputMux = NUtilsTemp.OsUtils.RunCommand($"cd /D {Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir).Wrap()} && {args}");
+            Logger.Log(outputMux, hidden: true);
+
+            // Check if file exists and is not too small (min. 80% of input file)
+            if (File.Exists(outPath) && ((double)new FileInfo(outPath).Length / (double)new FileInfo(vidPath).Length) > 0.8d)
+            {
+                Logger.Log($"Deleting '{vidPath}' and moving '{outPath}' to '{vidPath}'", hidden: true);
+                File.Delete(vidPath);
+                File.Move(outPath, vidPath);
             }
         }
     }

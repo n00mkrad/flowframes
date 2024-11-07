@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FfmpegUtils;
 using I = Flowframes.Interpolate;
+using Flowframes.Main;
 
 namespace Flowframes.Media
 {
@@ -58,6 +59,11 @@ namespace Flowframes.Media
             string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
             string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
             string shortestArg = shortest ? "-shortest" : "";
+
+            if (I.currentMediaFile.IsVfr)
+            {
+                Export.MuxTimestamps(tempPath);
+            }
 
             if (QuickSettingsTab.trimEnabled)
             {
