@@ -262,7 +262,7 @@ namespace Flowframes.IO
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
             if (key == Key.clearLogOnInput)       return WriteDefault(key, "True");
             if (key == Key.tempDirCustom)         return WriteDefault(key, "D:/");
-            if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[AI]-[MODEL]-[FPS]fps");
+            if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[MODEL]-[FPS]fps");
             if (key == Key.exportNamePatternLoop) return WriteDefault(key, "-Loop[LOOPS]");
             // Interpolation
             if (key == Key.dedupThresh)           return WriteDefault(key, "2");

@@ -74,11 +74,12 @@ namespace Flowframes.Data
             Size = GetSize();
         }
 
-        public async Task InitializeSequence()
+        public void InitializeSequence()
         {
             try
             {
-                if (SequenceInitialized) return;
+                if (SequenceInitialized)
+                    return;
 
                 string seqPath = Path.Combine(Paths.GetFrameSeqPath(), CreationTime.ToString(), "frames.concat");
                 string chosenExt = IoUtils.GetUniqueExtensions(SourcePath).FirstOrDefault();
@@ -101,7 +102,7 @@ namespace Flowframes.Data
             try
             {
                 if (IsDirectory && !SequenceInitialized)
-                    await InitializeSequence();
+                    InitializeSequence();
 
                 await LoadFormatInfo(ImportPath);
                 AllStreams = await FfmpegUtils.GetStreams(ImportPath, progressBar, StreamCount, InputRate, countFrames, this);
@@ -122,11 +123,19 @@ namespace Flowframes.Data
 
         private async Task LoadFormatInfo(string path)
         {
+            StreamCount = await FfmpegUtils.GetStreamCount(path);
+
+            // If input is a sequence, there's not much metadata to check
+            if (path.IsConcatFile())
+            {
+                DurationMs = (long)(FileCount * 1000 / ((Fraction)InputRate).Float); // Estimate duration using specified FPS and frame count
+                return;
+            }
+
             Title = await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "TAG:title");
             Language = await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "TAG:language");
             DurationMs = await FfmpegCommands.GetDurationMs(path, this);
             FfmpegCommands.CheckVfr(path, this);
-            StreamCount = await FfmpegUtils.GetStreamCount(path);
             TotalKbits = (await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "bit_rate")).GetInt() / 1000;
         }
 

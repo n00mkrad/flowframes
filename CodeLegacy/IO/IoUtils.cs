@@ -594,7 +594,7 @@ namespace Flowframes.IO
             }
         }
 
-        public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool withExt)
+        public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool isImgSeq = false, bool includeExt = true)
         {
             InterpSettings curr = Interpolate.currentSettings;
             string max = Config.Get(Config.Key.maxFps);
@@ -605,7 +605,7 @@ namespace Flowframes.IO
             string pattern = Config.Get(Config.Key.exportNamePattern);
             string inName = Interpolate.currentSettings.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
             bool encodeBoth = Config.GetInt(Config.Key.maxFpsMode) == 0;
-            bool addSuffix = fpsLimit && (!pattern.Contains("[FPS]") && !pattern.Contains("[ROUNDFPS]")) && encodeBoth;
+            bool addFpsLimitSuffix = fpsLimit && (!pattern.Contains("[FPS]") && !pattern.Contains("[ROUNDFPS]")) && encodeBoth;
             string filename = pattern;
 
             filename = filename.Replace("[NAME]", inName);
@@ -618,11 +618,17 @@ namespace Flowframes.IO
             filename = filename.Replace("[RES]", $"{outRes.Width}x{outRes.Height}");
             filename = filename.Replace("[H]", $"{outRes.Height}p");
 
-            if (addSuffix)
+            if (addFpsLimitSuffix)
+            {
                 filename += Paths.fpsLimitSuffix;
+            }
 
-            if (withExt)
-                filename += FfmpegUtils.GetExt(curr.outSettings);
+            if (includeExt)
+            {
+                string ext = FfmpegUtils.GetExt(curr.outSettings);
+                ext = isImgSeq ? ext.Replace(".", "-") : ext;
+                filename += ext;
+            }
 
             return filename;
         }

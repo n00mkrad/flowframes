@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Win32Interop.Enums;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FfmpegUtils;
 
@@ -131,13 +132,19 @@ namespace Flowframes.Media
                     inArg = $"-i {Path.GetFileName(framesFile) + Paths.symlinksSuffix}/%{Padding.interpFrames}d{GetConcatFileExt(framesFile)}";
             }
 
-            string sn = $"-start_number {startNo}";
-            string rate = fps.ToString().Replace(",", ".");
-            string vf = (resampleFps.Float < 0.1f) ? "" : $"-vf fps=fps={resampleFps}";
-            string compression = format == Enums.Encoding.Encoder.Png ? pngCompr : $"-q:v {lossyQ}";
-            string codec = format == Enums.Encoding.Encoder.Webp ? "-c:v libwebp" : ""; // Specify libwebp to avoid putting all frames into single animated WEBP
-            string args = $"-r {rate} {inArg} {codec} {compression} {sn} {vf} -fps_mode passthrough \"{outDir}/%{Padding.interpFrames}d.{format.GetInfo().OverideExtension}\"";
-            await RunFfmpeg(args, framesFile.GetParentDir(), logMode, "error", true);
+            var ffArgs = new List<string>()
+            {
+                $"-r {fps.ToString().Replace(",", ".")}", // Rate
+                inArg,
+                format == Enums.Encoding.Encoder.Webp ? "-c:v libwebp" : "", // Codec - Specify libwebp to avoid putting all frames into single animated WEBP
+                format == Enums.Encoding.Encoder.Png ? pngCompr : $"-q:v {lossyQ}", // Compression
+                $"-start_number {startNo}",
+                resampleFps.Float < 0.1f ? "" : $"-vf fps=fps={resampleFps}", // FPS Resample
+                "-fps_mode passthrough",
+                $"{outDir}/%{Padding.interpFrames}d.{format.GetInfo().OverideExtension}".Wrap(),
+            };
+
+            await RunFfmpeg(string.Join(" ", ffArgs.Where(s => s.IsNotEmpty())), framesFile.GetParentDir(), logMode, "error", true);
             IoUtils.TryDeleteIfExists(linksDir);
         }
 

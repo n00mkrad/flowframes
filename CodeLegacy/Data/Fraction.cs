@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Navigation;
 
 namespace Flowframes.Data
 {
@@ -59,13 +58,27 @@ namespace Flowframes.Data
                     return;
                 }
 
+                text = text.Replace(':', '/'); // Replace colon with slash in case someone thinks it's a good idea to write a fraction like that
                 string[] numbers = text.Split('/');
 
-                // Check if split is only 1 items (probably integer number)
+                // If split is only 1 item, it's a single number, not a fraction
                 if (numbers.Length == 1)
                 {
-                    Numerator = numbers[0].GetFloat().RoundToInt();
-                    Denominator = 1;
+                    float numFloat = numbers[0].GetFloat();
+                    int numInt = numFloat.RoundToInt();
+
+                    // If parsed float is equal to the rounded int, it's a whole number
+                    if (numbers[0].GetFloat().EqualsRoughly(numInt))
+                    {
+                        Numerator = numInt;
+                        Denominator = 1;
+                    }
+                    else
+                    {
+                        // Use float constructor if not a whole number
+                        this = new Fraction(numFloat);
+                    }
+                   
                     return;
                 }
 

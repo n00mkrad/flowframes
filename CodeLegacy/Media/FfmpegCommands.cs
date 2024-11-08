@@ -94,6 +94,9 @@ namespace Flowframes
 
         public static async Task<long> GetDurationMs(string inputFile, MediaFile mediaFile, bool demuxInsteadOfPacketTs = false, bool allowDurationFromMetadata = true)
         {
+            if (mediaFile.IsDirectory)
+                return 0;
+
             if (allowDurationFromMetadata)
             {
                 Logger.Log($"GetDuration({inputFile}) - Reading duration by checking metadata.", true, false, "ffmpeg");

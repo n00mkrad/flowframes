@@ -351,7 +351,7 @@ namespace Flowframes.Media
             if (enc == Encoder.Jpeg)
             {
                 var qualityLevel = ParseUtils.GetEnum<Quality.JpegWebm>(settings.Quality, true, Strings.VideoQuality);
-                args.Add($"-q:v {OutputUtils.JpegQuality[qualityLevel]}");
+                args.Add($"-q:v {OutputUtils.JpegQuality[qualityLevel]} -color_range full");
             }
 
             if (enc == Encoder.Webp)
