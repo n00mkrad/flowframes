@@ -110,7 +110,7 @@ namespace Flowframes.Media
             filters = filters.Where(f => f.IsNotEmpty()).ToList();
 
             return filters.Count > 0 ?
-                $"{string.Join(" ", beforeArgs)} -filter_complex [0:v]{string.Join("[vf],[vf]", filters.Where(f => f.IsNotEmpty()))}[vf] -map [vf] {string.Join(" ", extraArgs)}" :
+                $"{string.Join(" ", beforeArgs)} -filter_complex [0:v]{string.Join("[vf],[vf]", filters)}[vf] -map [vf] {string.Join(" ", extraArgs)}" :
                 $"{string.Join(" ", beforeArgs)} {string.Join(" ", extraArgs)}";
         }
 
