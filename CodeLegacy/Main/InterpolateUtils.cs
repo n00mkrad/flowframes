@@ -381,8 +381,8 @@ namespace Flowframes.Main
 
         public static Fraction AskForFramerate(string mediaName, bool isImageSequence = true)
         {
-            string text = $"Please enter an input frame rate to use for{(isImageSequence ? " the image sequence" : "")} '{mediaName.Trunc(80)}'.";
-            PromptForm form = new PromptForm("Enter Frame Rate", text, "15");
+            string text = $"Please enter the source frame rate for{(isImageSequence ? " the image sequence" : "")} '{mediaName.Trunc(80)}'.";
+            var form = new PromptForm("Enter Frame Rate", text, "15");
             form.ShowDialog();
             return new Fraction(form.EnteredText);
         }

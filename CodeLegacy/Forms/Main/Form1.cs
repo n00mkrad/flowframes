@@ -674,12 +674,14 @@ namespace Flowframes.Forms.Main
 
         private void Form1_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
 
-        private void Form1_DragDrop(object sender, DragEventArgs e)
+        private async void Form1_DragDrop(object sender, DragEventArgs e)
         {
-            DragDropHandler((string[])e.Data.GetData(DataFormats.FileDrop));
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            await Task.Delay(1); // Release drop
+            DragDropHandler(files);
         }
 
-        public void DragDropHandler(string[] files)
+        public void DragDropHandler(string[] files, bool first = true)
         {
             if (Program.busy) return;
 
@@ -689,13 +691,12 @@ namespace Flowframes.Forms.Main
             {
                 SetTab(interpOptsTab.Name);
                 queueBtn_Click(null, null);
-                if (BatchProcessing.currentBatchForm != null)
-                    BatchProcessing.currentBatchForm.LoadDroppedPaths(files, start);
+                BatchProcessing.currentBatchForm?.LoadDroppedPaths(files, start);
             }
             else
             {
                 SetTab(interpOptsTab.Name);
-                Logger.Log("Selected video/directory: " + Path.GetFileName(files[0]), true);
+                Logger.Log($"Selected video/directory: {Path.GetFileName(files[0])}", true);
                 inputTbox.Text = files[0];
 
                 bool resume = Directory.Exists(files[0]) && IoUtils.GetAmountOfFiles(Path.Combine(files[0], Paths.resumeDir), true, "*.json") > 0;
