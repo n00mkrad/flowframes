@@ -54,6 +54,8 @@ namespace Flowframes.Data
             { Enums.Encoding.PixelFormat.Yuva444P10Le.ToString(), "YUVA 4:4:4 10-bit" },
             { Enums.Encoding.PixelFormat.Yuv444P12Le.ToString(), "YUV 4:4:4 12-bit" },
             { Enums.Encoding.PixelFormat.Yuv444P16Le.ToString(), "YUV 4:4:4 16-bit" },
+            { Enums.Encoding.PixelFormat.P010Le.ToString(), "YUV 4:2:0 10-bit" }, // HW enc specific
+            { Enums.Encoding.PixelFormat.P016Le.ToString(), "YUV 4:2:0 16-bit" }, // HW enc specific
             { Enums.Encoding.PixelFormat.Rgb24.ToString(), "RGB 8-bit" },
             { Enums.Encoding.PixelFormat.Rgba.ToString(), "RGBA 8-bit" },
             { Enums.Encoding.PixelFormat.Rgb48Le.ToString(), "RGB 12-bit LE" },
