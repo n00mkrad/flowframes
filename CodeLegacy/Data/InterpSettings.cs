@@ -3,13 +3,13 @@ using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
-using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Flowframes
 {
@@ -33,10 +33,49 @@ namespace Flowframes
         public string interpFolder;
         public bool inputIsFrames;
 
-        private Size _inputResolution;
-        public Size InputResolution { get { RefreshInputRes(); return _inputResolution; } }
-        public Size ScaledResolution { get { return InterpolateUtils.GetOutputResolution(InputResolution, false); } }
-        public Size ScaledPaddedResolution { get { return InterpolateUtils.GetOutputResolution(InputResolution, true); } }
+        private Size _inputResolution = new Size();
+        public Size InputResolution
+        {
+            get
+            {
+                if (_inputResolution.IsEmpty)
+                    _inputResolution = GetMediaResolutionCached.GetSizeAsync(inPath).Result;
+                return _inputResolution;
+            }
+        }
+
+        private Size _outputResolution = new Size();
+        public Size OutputResolution
+        {
+            get
+            {
+                if (_outputResolution.IsEmpty)
+                    _outputResolution = InterpolateUtils.GetInterpolationResolution(FfmpegCommands.ModuloMode.ForEncoding, InputResolution);
+                return _outputResolution;
+            }
+        }
+
+        private Size _scaledResolution = new Size();
+        public Size ScaledResolution
+        {
+            get
+            {
+                if (_scaledResolution.IsEmpty)
+                    _scaledResolution = InterpolateUtils.GetInterpolationResolution(FfmpegCommands.ModuloMode.Disabled, InputResolution);
+                return _scaledResolution;
+            }
+        }
+
+        private Size _interpResolution = new Size();
+        public Size InterpResolution
+        {
+            get
+            {
+                if (_interpResolution.IsEmpty)
+                    _interpResolution = InterpolateUtils.GetInterpolationResolution(FfmpegCommands.ModuloMode.ForInterpolation, InputResolution);
+                return _interpResolution;
+            }
+        }
 
         public bool alpha;
         public bool stepByStep;
@@ -169,12 +208,6 @@ namespace Flowframes
             inputIsFrames = IoUtils.IsPathDirectory(inPath);
         }
 
-        async Task RefreshInputRes ()
-        {
-            if (_inputResolution.IsEmpty)
-                _inputResolution = await GetMediaResolutionCached.GetSizeAsync(inPath);
-        }
-
         public void RefreshAlpha ()
         {
             try
@@ -239,7 +272,7 @@ namespace Flowframes
             s += $"OUTMODE|{outSettings.Format}\n";
             s += $"MODEL|{model.Name}\n";
             s += $"INPUTRES|{InputResolution.Width}x{InputResolution.Height}\n";
-            s += $"OUTPUTRES|{ScaledResolution.Width}x{ScaledResolution.Height}\n";
+            s += $"OUTPUTRES|{OutputResolution.Width}x{OutputResolution.Height}\n";
             s += $"ALPHA|{alpha}\n";
             s += $"STEPBYSTEP|{stepByStep}\n";
             s += $"FRAMESEXT|{framesExt}\n";

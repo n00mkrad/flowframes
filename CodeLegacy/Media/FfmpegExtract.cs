@@ -204,14 +204,16 @@ namespace Flowframes.Media
                     return false;
                 }
 
-                int div = GetModulo();
-                bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
+                Logger.Log($"---> TODO: Modulo check for images? Or just check later and apply padding before interpolation if needed...", hidden: true);
 
-                if (!allDivBy2)
-                {
-                    Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
-                    return false;
-                }
+                // int div = GetModulo();
+                // bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
+                // 
+                // if (!allDivBy2)
+                // {
+                //     Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
+                //     return false;
+                // }
 
                 bool allSmallEnough = randomSamples.All(i => (i.Height <= maxHeight));
 

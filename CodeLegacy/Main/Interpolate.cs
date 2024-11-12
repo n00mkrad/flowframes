@@ -128,7 +128,7 @@ namespace Flowframes
             if (!currentSettings.inputIsFrames)        // Extract if input is video, import if image sequence
                 await ExtractFrames(currentSettings.inPath, currentSettings.framesFolder, currentSettings.alpha);
             else
-                await FfmpegExtract.ImportImagesCheckCompat(currentSettings.inPath, currentSettings.framesFolder, currentSettings.alpha, currentSettings.ScaledResolution, true, currentSettings.framesExt);
+                await FfmpegExtract.ImportImagesCheckCompat(currentSettings.inPath, currentSettings.framesFolder, currentSettings.alpha, currentSettings.OutputResolution, true, currentSettings.framesExt);
         }
 
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha)
@@ -137,7 +137,7 @@ namespace Flowframes
             Program.mainForm.SetStatus("Extracting frames from video...");
             currentSettings.RefreshExtensions(InterpSettings.FrameType.Import);
             bool mpdecimate = Config.GetInt(Config.Key.dedupMode) == 2;
-            Size res = await Utils.GetOutputResolution(inPath, true, true);
+            Size res = await Utils.GetOutputResolution(FfmpegCommands.ModuloMode.ForEncoding, inPath, print: true);
             await FfmpegExtract.VideoToFrames(inPath, outPath, alpha, currentSettings.inFpsDetected, mpdecimate, false, res, currentSettings.framesExt);
 
             if (mpdecimate)

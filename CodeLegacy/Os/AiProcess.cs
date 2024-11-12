@@ -104,7 +104,12 @@ namespace Flowframes.Os
             if (!Interpolate.currentSettings.ai.Piped)
                 InterpolationProgress.UpdateInterpProgress(interpFramesCount, InterpolationProgress.targetFrames);
 
-            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}. Output FPS: {InterpolationProgress.LastFps.ToString("0.0")}";
+            string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}.";
+
+            if(InterpolationProgress.LastFps > 0.0001)
+            {
+                logStr += $" Output FPS: {InterpolationProgress.LastFps.ToString("0.0")}";
+            }
 
             if (Interpolate.currentlyUsingAutoEnc && AutoEncode.HasWorkToDo())
             {
@@ -198,7 +203,7 @@ namespace Flowframes.Os
         {
             string outPath = Path.Combine(inPath.GetParentDir(), outDir);
             Directory.CreateDirectory(outPath);
-            string uhdStr = await InterpolateUtils.UseUhd() ? "--UHD" : "";
+            string uhdStr = InterpolateUtils.UseUhd() ? "--UHD" : "";
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt(Config.Key.rifeCudaBufferSize, 200)}";
             //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
@@ -210,7 +215,7 @@ namespace Flowframes.Os
             SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
             rifePy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
-            Logger.Log($"Running RIFE (CUDA){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
+            Logger.Log($"Running RIFE (CUDA){(InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
             if (!OsUtils.ShowHiddenCmd())
@@ -297,7 +302,7 @@ namespace Flowframes.Os
 
             try
             {
-                Logger.Log($"Running RIFE (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
+                Logger.Log($"Running RIFE (NCNN){(InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
                 await RunRifeNcnnProcess(framesPath, factor, outPath, mdl);
                 await NcnnUtils.DeleteNcnnDupes(outPath, factor);
@@ -321,7 +326,7 @@ namespace Flowframes.Os
             int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()); // TODO: Maybe won't work with fractional factors ??
 
             string frames = mdl.Contains("v4") ? $"-n {targetFrames}" : "";
-            string uhdStr = await InterpolateUtils.UseUhd() ? "-u" : "";
+            string uhdStr = InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
@@ -355,10 +360,8 @@ namespace Flowframes.Os
 
             try
             {
-                Size scaledSize = await InterpolateUtils.GetOutputResolution(Interpolate.currentSettings.inPath, false, false);
-                Logger.Log($"Running RIFE (NCNN-VS){(InterpolateUtils.UseUhd(scaledSize) ? " (UHD Mode)" : "")}...", false);
-
-                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, scaledSize, rt);
+                Logger.Log($"Running RIFE (NCNN-VS){(InterpolateUtils.UseUhd(Interpolate.currentSettings.OutputResolution) ? " (UHD Mode)" : "")}...", false);
+                await RunRifeNcnnVsProcess(framesPath, factor, outPath, mdl, Interpolate.currentSettings.OutputResolution, rt);
             }
             catch (Exception e)
             {
@@ -406,7 +409,7 @@ namespace Flowframes.Os
                 AiStarted(rifeNcnnVs, 1000, inPath);
             }
 
-            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} -c y4m - | {pipedTargetArgs}";
+            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} {VapourSynthUtils.GetVsPipeArgs(vsSettings)} -c y4m - | {pipedTargetArgs}";
 
             Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
 
@@ -554,7 +557,7 @@ namespace Flowframes.Os
 
             try
             {
-                Logger.Log($"Running IFRNet (NCNN){(await InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
+                Logger.Log($"Running IFRNet (NCNN){(InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
 
                 await RunIfrnetNcnnProcess(framesPath, factor, outPath, mdl);
                 await NcnnUtils.DeleteNcnnDupes(outPath, factor);
@@ -576,7 +579,7 @@ namespace Flowframes.Os
             SetProgressCheck(outPath, factor);
             //int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()); // TODO: Maybe won't work with fractional factors ??
             //string frames = mdl.Contains("v4") ? $"-n {targetFrames}" : "";
-            string uhdStr = ""; // await InterpolateUtils.UseUhd() ? "-u" : "";
+            string uhdStr = ""; // InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = ""; // Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             ifrnetNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +

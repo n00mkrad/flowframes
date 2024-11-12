@@ -20,7 +20,7 @@ namespace Flowframes.Media
 
             IoUtils.RenameExistingFileOrDir(outPath);
             Directory.CreateDirectory(outPath.GetParentDir());
-            string[] encArgs = Utils.GetEncArgs(settings, (Interpolate.currentSettings.ScaledResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.ScaledResolution), Interpolate.currentSettings.outFps.Float);
+            string[] encArgs = Utils.GetEncArgs(settings, (Interpolate.currentSettings.OutputResolution.IsEmpty ? Interpolate.currentSettings.InputResolution : Interpolate.currentSettings.OutputResolution), Interpolate.currentSettings.outFps.Float);
 
             string inArg = $"-f concat -i {Path.GetFileName(framesFile)}";
             string linksDir = Path.Combine(framesFile + Paths.symlinksSuffix);
@@ -102,12 +102,7 @@ namespace Flowframes.Media
                     filters.Add($"zscale=transfer=linear,format={settings.PixelFormat.ToString().Lower()}".Wrap());
             }
 
-            // Only if encoder is not GIF and width and height are not divisible by 2
-            if (settings.Encoder != Enums.Encoding.Encoder.Gif && (mf.VideoStreams[0].Resolution.Width % 2 != 0 || mf.VideoStreams[0].Resolution.Height % 2 != 0))
-            {
-                filters.Add(GetPadFilter());
-            }
-            
+            filters.Add(GetPadFilter(Interpolate.currentSettings.ScaledResolution.Width, Interpolate.currentSettings.ScaledResolution.Height));
             filters = filters.Where(f => f.IsNotEmpty()).ToList();
 
             return filters.Count > 0 ?

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using I = Flowframes.Interpolate;
 using Padding = Flowframes.Data.Padding;
+using Flowframes.MiscUtils;
 
 namespace Flowframes.Main
 {
@@ -252,42 +253,42 @@ namespace Flowframes.Main
 
         public static bool IsVideoValid(string videoPath)
         {
-            if (videoPath == null || !IoUtils.IsFileValid(videoPath))
-                return false;
-            return true;
+            return videoPath != null && IoUtils.IsFileValid(videoPath);
         }
 
-        public static async Task<Size> GetOutputResolution(string inputPath, bool pad, bool print = false)
+        public static async Task<Size> GetOutputResolution(FfmpegCommands.ModuloMode moduloMode, string inputPath, bool print = false)
         {
             Size resolution = await GetMediaResolutionCached.GetSizeAsync(inputPath);
-            return GetOutputResolution(resolution, pad, print);
+            return GetInterpolationResolution(moduloMode, resolution, print);
         }
 
-        public static Size GetOutputResolution(Size inputRes, bool pad, bool print = false)
+        public static Size GetInterpolationResolution(FfmpegCommands.ModuloMode moduloMode, Size inputRes, bool onlyRoundUp = true, bool print = false)
         {
             Size res = new Size(inputRes.Width, inputRes.Height);
             int maxHeight = Config.GetInt(Config.Key.maxVidHeight);
-            int mod = pad ? FfmpegCommands.GetModulo() : 1;
+            int modulo = FfmpegCommands.GetModulo(moduloMode);
             float factor = res.Height > maxHeight ? (float)maxHeight / res.Height : 1f; // Calculate downscale factor if bigger than max, otherwise just use 1x
-            Logger.Log($"Un-rounded downscaled size: {(res.Width * factor).ToString("0.###")}x{(res.Height * factor).ToString("0.###")}", true);
-            int width = RoundDivisibleBy((res.Width * factor).RoundToInt(), mod);
-            int height = RoundDivisibleBy((res.Height * factor).RoundToInt(), mod);
+            int width = RoundDivisibleBy((res.Width * factor).RoundToInt(), modulo, onlyRoundUp);
+            int height = RoundDivisibleBy((res.Height * factor).RoundToInt(), modulo, onlyRoundUp);
             res = new Size(width, height);
 
             if (print && factor < 1f)
                 Logger.Log($"Video is bigger than the maximum - Downscaling to {width}x{height}.");
 
-            if (res != inputRes)
-                Logger.Log($"Scaled {inputRes.Width}x{inputRes.Height} to {res.Width}x{res.Height}", true);
-
+            Logger.Log($"Scaled input res {inputRes.Width}x{inputRes.Height} to {res.Width}x{res.Height} ({moduloMode})", true);
             return res;
         }
 
-        public static int RoundDivisibleBy(int number, int divisibleBy)     // Round to a number that's divisible by 2 (for h264 etc)
+        public static int RoundDivisibleBy(float number, int divisibleBy, bool onlyRoundUp = false)
         {
-            int a = (number / divisibleBy) * divisibleBy;    // Smaller multiple
-            int b = a + divisibleBy;   // Larger multiple
-            return (number - a > b - number) ? b : a; // Return of closest of two
+            int numberInt = number.RoundToInt();
+
+            if (divisibleBy == 0)
+                return numberInt;
+
+            return onlyRoundUp
+                ? (int)Math.Ceiling((double)number / divisibleBy) * divisibleBy
+                : (int)Math.Round((double)number / divisibleBy) * divisibleBy;
         }
 
         public static bool CanUseAutoEnc(bool stepByStep, InterpSettings current)
@@ -334,9 +335,9 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static async Task<bool> UseUhd()
+        public static bool UseUhd()
         {
-            return UseUhd(await GetOutputResolution(I.currentSettings.inPath, false));
+            return UseUhd(I.currentSettings.OutputResolution);
         }
 
         public static bool UseUhd(Size outputRes)
@@ -358,7 +359,7 @@ namespace Flowframes.Main
                 if (sceneFramesToDelete.Contains(scnFrame))
                     continue;
 
-                int sourceIndexForScnFrame = sourceFrames.IndexOf(scnFrame);            // Get source index of scene frame
+                int sourceIndexForScnFrame = sourceFrames.IndexOf(scnFrame); // Get source index of scene frame
                 if ((sourceIndexForScnFrame + 1) == sourceFrames.Count)
                     continue;
                 string followingFrame = sourceFrames[sourceIndexForScnFrame + 1];       // Get filename/timestamp of the next source frame

@@ -1,7 +1,6 @@
 ﻿using Flowframes.Media;
 using Flowframes.Data;
 using Flowframes.IO;
-using Flowframes.MiscUtils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
-using System.Drawing.Imaging;
 
 namespace Flowframes
 {
@@ -34,19 +32,36 @@ namespace Flowframes
             return wrap ? mpd.Wrap() : mpd;
         }
 
-        public static int GetModulo()
-        {
-            if (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal)
-                return 8;
+        public enum ModuloMode { Disabled, ForInterpolation, ForEncoding }
 
-            return Interpolate.currentSettings.outSettings.Encoder.GetInfo().Modulo;
+        public static int GetModulo(ModuloMode mode)
+        {
+            if (mode == ModuloMode.ForEncoding)
+            {
+                return Interpolate.currentSettings.outSettings.Encoder.GetInfo().Modulo;
+            }
+            else if (mode == ModuloMode.ForInterpolation)
+            {
+                bool RifeNeedsPadding(string ver) => ver.Split('.').Last().GetInt() >= 25; // e.g. "RIFE 4.25" needs padding
+
+                if (Interpolate.currentSettings.model.Name.Contains("RIFE") && RifeNeedsPadding(Interpolate.currentSettings.model.Name))
+                    return 64;
+
+                if (Interpolate.currentSettings.ai == Implementations.flavrCuda)
+                    return 8;
+            }
+
+            return 1;
         }
 
-        public static string GetPadFilter()
+        public static string GetPadFilter(int width = -1, int height = -1)
         {
-            int mod = GetModulo();
+            int mod = GetModulo(ModuloMode.ForEncoding);
 
             if (mod < 2)
+                return "";
+
+            if (width > 0 && width % mod == 0 && height > 0 && height % mod == 0)
                 return "";
 
             return $"pad=width=ceil(iw/{mod})*{mod}:height=ceil(ih/{mod})*{mod}:color=black@0";
@@ -154,14 +169,14 @@ namespace Flowframes
             }
         }
 
-        public static void CheckVfr (string inputFile, MediaFile mediaFile, List<string> outputLinesPackets = null)
+        public static void CheckVfr(string inputFile, MediaFile mediaFile, List<string> outputLinesPackets = null)
         {
             if (mediaFile.InputTimestamps.Any())
                 return;
 
             Logger.Log($"Checking frame timing...", true, false, "ffmpeg");
 
-            if(outputLinesPackets == null)
+            if (outputLinesPackets == null)
             {
                 string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=pts_time -read_intervals \"%+120\" -of csv=p=0 {inputFile.Wrap()}";
                 outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();

@@ -1,11 +1,7 @@
 ﻿using Flowframes.IO;
 using Flowframes.MiscUtils;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Flowframes.Data
 {
@@ -26,7 +22,7 @@ namespace Flowframes.Data
 
         public string LogFilename { get { return PkgDir + "-log"; } }
 
-        public AiInfo () { }
+        public AiInfo() { }
 
         public AiInfo(AiBackend backend, string aiName, string longName, InterpFactorSupport factorSupport = InterpFactorSupport.Fixed, int[] supportedFactors = null)
         {
@@ -37,7 +33,7 @@ namespace Flowframes.Data
             FactorSupport = factorSupport;
         }
 
-        public string GetVerboseInfo ()
+        public string GetVerboseInfo()
         {
             return $"Name:\n{NameShort}\n\n" +
                 $"Full Name:\n{NameLong}\n\n" +
@@ -48,12 +44,12 @@ namespace Flowframes.Data
                 $"Package Directory/Size:\n{PkgDir} ({FormatUtils.Bytes(IoUtils.GetDirSize(Path.Combine(Paths.GetPkgPath(), PkgDir), true))})";
         }
 
-        private string GetImplemString (AiBackend backend)
+        private string GetImplemString(AiBackend backend)
         {
             if (backend == AiBackend.Pytorch)
                 return $"CUDA/Pytorch Implementation";
 
-            if(backend == AiBackend.Ncnn)
+            if (backend == AiBackend.Ncnn)
                 return $"Vulkan/NCNN{(Piped ? "/VapourSynth" : "")} Implementation";
 
             if (backend == AiBackend.Tensorflow)
@@ -76,7 +72,7 @@ namespace Flowframes.Data
             return "Custom";
         }
 
-        private string GetHwAccelString (AiBackend backend)
+        private string GetHwAccelString(AiBackend backend)
         {
             if (Backend == AiBackend.Pytorch)
                 return $"GPU (Nvidia CUDA)";
@@ -87,7 +83,7 @@ namespace Flowframes.Data
             return "Unknown";
         }
 
-        private string GetFactorsString (InterpFactorSupport factorSupport)
+        private string GetFactorsString(InterpFactorSupport factorSupport)
         {
             if (factorSupport == InterpFactorSupport.Fixed)
                 return $"{string.Join(", ", SupportedFactors.Select(x => $"{x}x"))}";
@@ -103,5 +99,33 @@ namespace Flowframes.Data
 
             return "Unknown";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            var other = (AiInfo)obj;
+            return Backend == other.Backend && NameInternal == other.NameInternal;
+        }
+
+        // Combine hash codes of properties (using a simple hash approach for .NET Framework)
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 23 + Backend.GetHashCode();
+            hash = hash * 23 + (NameInternal?.GetHashCode() ?? 0);
+            return hash;
+        }
+
+        public static bool operator ==(AiInfo left, AiInfo right)
+        {
+            if (left is null)
+                return ReferenceEquals(right, null);
+            else
+                return left.Equals(right);
+        }
+
+        public static bool operator !=(AiInfo left, AiInfo right) => !(left == right);
     }
 }

@@ -19,8 +19,8 @@ namespace Flowframes.Main
 {
     class Export
     {
-        private static string MaxFps = Config.Get(Config.Key.maxFps);
-        private static Fraction MaxFpsFrac = new Fraction(MaxFps);
+        private static string MaxFps => Config.Get(Config.Key.maxFps);
+        private static Fraction MaxFpsFrac => new Fraction(MaxFps);
 
         public static async Task ExportFrames(string path, string outFolder, OutputSettings exportSettings, bool stepByStep)
         {
@@ -75,7 +75,7 @@ namespace Flowframes.Main
         public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
         {
             InterpSettings s = I.currentSettings;
-            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings, (s.ScaledResolution.IsEmpty ? s.InputResolution : s.ScaledResolution), s.outFps.Float, true).FirstOrDefault();
+            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings, (s.OutputResolution.IsEmpty ? s.InputResolution : s.OutputResolution), s.outFps.Float, true).FirstOrDefault();
             bool fpsLimit = MaxFpsFrac.Float > 0f && s.outFps.Float > MaxFpsFrac.Float;
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
             VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);

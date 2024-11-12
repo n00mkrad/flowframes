@@ -601,7 +601,7 @@ namespace Flowframes.IO
             Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
             float fps = fpsLimit ? maxFps.Float : curr.outFps.Float;
 
-            Size outRes = await InterpolateUtils.GetOutputResolution(curr.inPath, true);
+            Size outRes = curr.OutputResolution; // TODO: Replace with EncodeResolution once implemented?
             string pattern = Config.Get(Config.Key.exportNamePattern);
             string inName = Interpolate.currentSettings.inputIsFrames ? Path.GetFileName(curr.inPath) : Path.GetFileNameWithoutExtension(curr.inPath);
             bool encodeBoth = Config.GetInt(Config.Key.maxFpsMode) == 0;

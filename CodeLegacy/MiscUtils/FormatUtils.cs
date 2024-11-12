@@ -211,5 +211,16 @@ namespace Flowframes.MiscUtils
             string t = showTildeForApprox && !isPrecise ? "~" : "";
             return $"{f} ({t}{decimalStr})";
         }
+
+        public static string GetCallStack(int maxLevels = 10)
+        {
+            var trace = new System.Diagnostics.StackTrace().GetFrames()
+                            .Skip(1) // Skip the current method
+                            .Select(f => f.GetMethod().Name)
+                            .Take(maxLevels)
+                            .ToList();
+            return string.Join(", ", trace);
+        }
+
     }
 }
