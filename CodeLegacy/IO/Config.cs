@@ -282,7 +282,7 @@ namespace Flowframes.IO
             if (key == Key.uhdThresh)         return WriteDefault(key, "1600");
             if (key == Key.torchGpus)         return WriteDefault(key, "0");
             if (key == Key.ncnnGpus)          return WriteDefault(key, "0");
-            if (key == Key.ncnnThreads)       return WriteDefault(key, "4");
+            if (key == Key.ncnnThreads)       return WriteDefault(key, "0");
             if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
             // Debug / Other / Experimental
             if (key == Key.ffEncPreset)   return WriteDefault(key, "fast");

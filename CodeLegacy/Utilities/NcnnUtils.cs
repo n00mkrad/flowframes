@@ -17,6 +17,11 @@ namespace Flowframes.Utilities
             int threads = Config.GetInt(Config.Key.ncnnThreads);
             int maxThreads = VulkanUtils.GetMaxNcnnThreads(gpuId).Clamp(1, 64);
 
+            if(threads == 0)
+            {
+                threads = (maxThreads / 2f).RoundToInt().Clamp(1, maxThreads); // Default to half of max threads
+            }
+
             threads = threads.Clamp(1, maxThreads); // To avoid exceeding the max queue count
             Logger.Log($"Using {threads}/{maxThreads} GPU compute threads.", true, false, ai.LogFilename);
 

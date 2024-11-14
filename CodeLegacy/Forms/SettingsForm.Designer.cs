@@ -1188,11 +1188,6 @@
             0,
             0,
             0});
-            this.ncnnThreads.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.ncnnThreads.Name = "ncnnThreads";
             this.ncnnThreads.Size = new System.Drawing.Size(77, 20);
             this.ncnnThreads.TabIndex = 75;
@@ -1269,9 +1264,9 @@
             this.label44.Location = new System.Drawing.Point(370, 101);
             this.label44.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(358, 13);
+            this.label44.Size = new System.Drawing.Size(330, 13);
             this.label44.TabIndex = 60;
-            this.label44.Text = "Use 1 for small videos, 2 for >1080p, higher values might cause slowdown!";
+            this.label44.Text = "Higher will cause more GPU/VRAM load but can be faster. 0 = Auto.";
             // 
             // label43
             // 
