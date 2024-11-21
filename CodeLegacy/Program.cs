@@ -19,6 +19,7 @@ namespace Flowframes
 {
     static class Program
     {
+        public static bool Debug = false;
         public static string[] args = new string[0];
         public static bool initialRun = true;
         public static Form1 mainForm;
@@ -40,6 +41,7 @@ namespace Flowframes
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             Cli.HandleCli();
+            Debug = Cli.Debug || System.Diagnostics.Debugger.IsAttached;
             CmdMode = Paths.GetExe().EndsWith("Cmd.exe");
 
             // Show splash screen

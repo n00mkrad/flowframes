@@ -14,7 +14,7 @@ namespace Flowframes
 {
     public class Cli
     {
-        public static bool ShowConsole = false;
+        public static bool Debug = false;
         public static bool DisablePython = true;
         public static bool ShowMdlDownloader = false;
         public static bool CloseMdlDownloaderWhenDone = false;
@@ -43,6 +43,10 @@ namespace Flowframes
 
             var optsSet = new OptionSet
             {
+                {
+                    "d|debug", "Enable debug/developer features and experimental or deprecated options",
+                    v => Debug = v != null
+                },
                 {
                     "np|no_python", "Disable Python implementations",
                     v => DisablePython = v != null

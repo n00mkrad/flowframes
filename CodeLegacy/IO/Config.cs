@@ -1,4 +1,5 @@
 ﻿using Flowframes.Forms;
+using Flowframes.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -157,7 +158,7 @@ namespace Flowframes.IO
 
         public static bool GetBool(Key key, bool defaultVal = false)
         {
-            WriteIfDoesntExist(key.ToString(), (defaultVal ? "True" : "False"));
+            WriteIfDoesntExist(key.ToString(), (defaultVal ? true : false).ToString());
             return Get(key, Type.Bool).GetBool();
         }
 
@@ -168,7 +169,7 @@ namespace Flowframes.IO
 
         public static bool GetBool(string key, bool defaultVal)
         {
-            WriteIfDoesntExist(key.ToString(), (defaultVal ? "True" : "False"));
+            WriteIfDoesntExist(key.ToString(), (defaultVal ? true : false).ToString());
             return bool.Parse(Get(key, Type.Bool));
         }
 
@@ -258,22 +259,22 @@ namespace Flowframes.IO
                 return WriteDefault(keyStr, "");
             }
 
-            if (key == Key.disablePreview)        return WriteDefault(key, "True");
+            if (key == Key.disablePreview)        return WriteDefault(key, true);
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
-            if (key == Key.clearLogOnInput)       return WriteDefault(key, "True");
+            if (key == Key.clearLogOnInput)       return WriteDefault(key, true);
             if (key == Key.tempDirCustom)         return WriteDefault(key, "D:/");
             if (key == Key.exportNamePattern)     return WriteDefault(key, "[NAME]-[FACTOR]x-[MODEL]-[FPS]fps");
             if (key == Key.exportNamePatternLoop) return WriteDefault(key, "-Loop[LOOPS]");
             // Interpolation
             if (key == Key.dedupThresh)           return WriteDefault(key, "2");
-            if (key == Key.keepAudio)             return WriteDefault(key, "True");
-            if (key == Key.keepSubs)              return WriteDefault(key, "True");
-            if (key == Key.keepMeta)              return WriteDefault(key, "True");
-            if (key == Key.scnDetect)             return WriteDefault(key, "True");
+            if (key == Key.keepAudio)             return WriteDefault(key, true);
+            if (key == Key.keepSubs)              return WriteDefault(key, true);
+            if (key == Key.keepMeta)              return WriteDefault(key, true);
+            if (key == Key.scnDetect)             return WriteDefault(key, true);
             if (key == Key.scnDetectValue)        return WriteDefault(key, "0.2");
             if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "0");
             if (key == Key.autoEncMode)           return WriteDefault(key, "2");
-            if (key == Key.jpegFrames)            return WriteDefault(key, "True");
+            if (key == Key.jpegFrames)            return WriteDefault(key, true);
             // Video Export
             if (key == Key.minOutVidLength)   return WriteDefault(key, "5");
             if (key == Key.gifDitherType)     return WriteDefault(key, "bayer");
@@ -283,13 +284,19 @@ namespace Flowframes.IO
             if (key == Key.torchGpus)         return WriteDefault(key, "0");
             if (key == Key.ncnnGpus)          return WriteDefault(key, "0");
             if (key == Key.ncnnThreads)       return WriteDefault(key, "0");
-            if (key == Key.dainNcnnTilesize)  return WriteDefault(key, "768");
+            if (key == Key.dainNcnnTilesize)  return WriteDefault(key, NcnnUtils.GetDainNcnnTileSizeBasedOnVram(768).ToString());
             // Debug / Other / Experimental
             if (key == Key.ffEncPreset)   return WriteDefault(key, "fast");
-            if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, "True");
+            if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, true);
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
-            if (type == Type.Bool)                      return WriteDefault(key, "False");     // Write default bool (False)
+            if (type == Type.Bool)                      return WriteDefault(key, false);     // Write default bool (False)
             return WriteDefault(key, "");
+        }
+
+        private static string WriteDefault(Key key, object def)
+        {
+            Set(key, def.ToString());
+            return def.ToString();
         }
 
         private static string WriteDefault(Key key, string def)

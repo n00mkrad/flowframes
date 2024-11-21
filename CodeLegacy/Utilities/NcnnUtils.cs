@@ -64,7 +64,7 @@ namespace Flowframes.Utilities
             {
                 try
                 {
-                    files.ForEach(x => x.Delete());
+                    files.ForEach(x => IoUtils.DeleteIfExists(x.FullName));
                     break;
                 }
                 catch (Exception ex)
@@ -82,6 +82,25 @@ namespace Flowframes.Utilities
                     }
                 }
             }
+        }
+
+        public static int GetDainNcnnTileSizeBasedOnVram(int defaultTileSize = 512)
+        {
+            if(NvApi.NvGpus.Count < 1)
+                return defaultTileSize;
+
+            float vram = NvApi.GpuWithMostVram.GetVramGb();
+            int tileSize = defaultTileSize;
+
+            if (vram > 5.5f) tileSize = 640; // 6 GB VRAM default
+            else if (vram > 7.5f) tileSize = 768; // 8 GB VRAM default
+            else if (vram > 11.5f) tileSize = 1024; // 12 GB VRAM default
+            else if (vram > 15.5f) tileSize = 1536; // 16 GB VRAM default
+            else if (vram > 19.5f) tileSize = 2048; // 20+ GB VRAM default
+
+            Logger.Log($"Using DAIN NCNN tile size {tileSize} for {vram.ToString("0.")} GB GPU", true);
+
+            return tileSize;
         }
     }
 }

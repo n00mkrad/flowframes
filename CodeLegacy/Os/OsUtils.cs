@@ -291,9 +291,9 @@ namespace Flowframes.Os
                 gpusVk.AddRange(VulkanUtils.VkDevices.Select(d => $"{d.Name.Remove("NVIDIA ").Remove("GeForce ").Remove("AMD ").Remove("Intel ").Remove("(TM)")} ({d.Id})"));
             }
 
-            if (NvApi.gpuList != null && NvApi.gpuList.Any())
+            if (NvApi.NvGpus != null && NvApi.NvGpus.Any())
             {
-                gpusNv.AddRange(NvApi.gpuList.Select(d => $"{d.FullName.Remove("NVIDIA ").Remove("GeForce ")} ({NvApi.gpuList.IndexOf(d)})"));
+                gpusNv.AddRange(NvApi.NvGpus.Select(d => $"{d.FullName.Remove("NVIDIA ").Remove("GeForce ")} ({NvApi.NvGpus.IndexOf(d)})"));
             }
 
             if (!gpusVk.Any() && !gpusNv.Any())

@@ -437,5 +437,29 @@ namespace Flowframes
         {
             return Math.Abs(a - b) < tolerance;
         }
+
+        public static float GetVramGb(this NvAPIWrapper.GPU.PhysicalGPU gpu)
+        {
+            try
+            {
+                return gpu.MemoryInformation.AvailableDedicatedVideoMemoryInkB / 1024f / 1000f;
+            }
+            catch
+            {
+                return 0f;
+            }
+        }
+
+        public static float GetFreeVramGb(this NvAPIWrapper.GPU.PhysicalGPU gpu)
+        {
+            try
+            {
+                return gpu.MemoryInformation.CurrentAvailableDedicatedVideoMemoryInkB / 1024f / 1000f;
+            }
+            catch
+            {
+                return 0f;
+            }
+        }
     }
 }

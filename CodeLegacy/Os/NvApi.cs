@@ -4,14 +4,15 @@ using NvAPIWrapper.GPU;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Flowframes.Os
 {
     class NvApi
     {
-        public enum Architecture { Undetected, Fermi, Kepler, Maxwell, Pascal, Turing, Ampere };
-        public static List<PhysicalGPU> gpuList = new List<PhysicalGPU>();
+        public enum Architecture { Undetected, Fermi, Kepler, Maxwell, Pascal, Turing, Ampere, Ada, Blackwell };
+        public static List<PhysicalGPU> NvGpus = new List<PhysicalGPU>();
+        public static PhysicalGPU GpuWithMostVram = null;
+        public static int GpuWithMostVramId => NvGpus.IndexOf(GpuWithMostVram);
 
         public static void Init()
         {
@@ -24,16 +25,22 @@ namespace Flowframes.Os
                 if (gpus.Length == 0)
                     return;
 
-                gpuList = gpus.ToList();
-
-                List<string> gpuNames = new List<string>();
+                NvGpus = gpus.ToList();
+                float mostVram = -1f;
 
                 foreach (PhysicalGPU gpu in gpus)
-                    gpuNames.Add(gpu.FullName);
+                {
+                    float vramGb = gpu.GetVramGb();
+                    Logger.Log($"Nvidia GPU: {gpu.FullName} ({vramGb.ToString("0.")} GB) {GetArch(gpu)} Architecture", true);
 
-                string gpuNamesList = string.Join(", ", gpuNames);
+                    if (vramGb > mostVram)
+                    {
+                        mostVram = vramGb;
+                        GpuWithMostVram = gpu;
+                    }
+                }
 
-                Logger.Log($"Initialized Nvidia API in {sw.ElapsedMs} ms. GPU{(gpus.Length > 1 ? "s" : "")}: {gpuNamesList}", true);
+                Logger.Log($"Initialized Nvidia API in {sw.ElapsedMs} ms. GPU{(gpus.Length > 1 ? "s" : "")}: {string.Join(", ", gpus.Select(g => g.FullName))}. Most VRAM: {GpuWithMostVram.FullName} ({mostVram} GB)", true);
             }
             catch (Exception e)
             {
@@ -46,7 +53,7 @@ namespace Flowframes.Os
         {
             try
             {
-                return (gpuList[gpu].MemoryInformation.AvailableDedicatedVideoMemoryInkB / 1000f / 1024f);
+                return (NvGpus[gpu].MemoryInformation.AvailableDedicatedVideoMemoryInkB / 1000f / 1024f);
             }
             catch
             {
@@ -58,7 +65,7 @@ namespace Flowframes.Os
         {
             try
             {
-                return (gpuList[gpu].MemoryInformation.CurrentAvailableDedicatedVideoMemoryInkB / 1000f / 1024f);
+                return (NvGpus[gpu].MemoryInformation.CurrentAvailableDedicatedVideoMemoryInkB / 1000f / 1024f);
             }
             catch
             {
@@ -85,7 +92,7 @@ namespace Flowframes.Os
 
         public static bool HasAmpereOrNewer()
         {
-            foreach (PhysicalGPU gpu in gpuList)
+            foreach (PhysicalGPU gpu in NvGpus)
             {
                 Architecture arch = GetArch(gpu);
 
@@ -98,14 +105,16 @@ namespace Flowframes.Os
 
         public static Architecture GetArch(PhysicalGPU gpu)
         {
-            string gpuCode = gpu.ArchitectInformation.ShortName;
+            string arch = gpu.ArchitectInformation.ShortName.Trim();
 
-            if (gpuCode.Trim().StartsWith("GF")) return Architecture.Fermi;
-            if (gpuCode.Trim().StartsWith("GK")) return Architecture.Kepler;
-            if (gpuCode.Trim().StartsWith("GM")) return Architecture.Maxwell;
-            if (gpuCode.Trim().StartsWith("GP")) return Architecture.Pascal;
-            if (gpuCode.Trim().StartsWith("TU")) return Architecture.Turing;
-            if (gpuCode.Trim().StartsWith("GA")) return Architecture.Ampere;
+            if (arch.StartsWith("GF")) return Architecture.Fermi;
+            if (arch.StartsWith("GK")) return Architecture.Kepler;
+            if (arch.StartsWith("GM")) return Architecture.Maxwell;
+            if (arch.StartsWith("GP")) return Architecture.Pascal;
+            if (arch.StartsWith("TU")) return Architecture.Turing;
+            if (arch.StartsWith("GA")) return Architecture.Ampere;
+            if (arch.StartsWith("AD")) return Architecture.Ada;
+            if (arch.StartsWith("GB")) return Architecture.Blackwell;
 
             return Architecture.Undetected;
         }
@@ -114,14 +123,14 @@ namespace Flowframes.Os
         {
             try
             {
-                if (gpuList == null)
+                if (NvGpus == null)
                     Init();
 
-                if (gpuList == null)
+                if (NvGpus == null)
                     return false;
 
-                Architecture arch = GetArch(gpuList[gpu]);
-                return arch == Architecture.Turing || arch == Architecture.Ampere;
+                Architecture arch = GetArch(NvGpus[gpu]);
+                return arch >= Architecture.Turing;
             }
             catch (Exception e)
             {

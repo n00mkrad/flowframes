@@ -30,5 +30,36 @@ namespace Flowframes.Ui
             controls.ForEach(c => list.AddRange(c.GetControls()));
             return list;
         }
+
+        public static void SetEnabled(this Control control, bool enabled, bool includeChildren = false)
+        {
+            // Set Enabled property of the control only if it's different from the desired value to avoid event firing etc.
+            if (enabled && !control.Enabled)
+            {
+                control.Enabled = true;
+            }
+            else if (!enabled && control.Enabled)
+            {
+                control.Enabled = false;
+            }
+
+            if (includeChildren)
+            {
+                control.GetControls().ForEach(c => c.SetEnabled(enabled, includeChildren));
+            }
+        }
+
+        public static void SetVisible(this Control control, bool visible)
+        {
+            // Set Visible property of the control only if it's different from the desired value to avoid event firing etc.
+            if (visible && !control.Visible)
+            {
+                control.Visible = true;
+            }
+            else if (!visible && control.Visible)
+            {
+                control.Visible = false;
+            }
+        }
     }
 }

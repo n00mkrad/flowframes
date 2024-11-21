@@ -161,7 +161,7 @@ namespace Flowframes.Main
             }
         }
 
-        public static bool CheckAiAvailable(AiInfo ai, ModelCollection.ModelInfo model)
+        public static bool CheckAiAvailable(AiInfo ai, ModelCollection.ModelInfo model, bool allowNullModel = false)
         {
             if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), ai.PkgDir), true) < 1)
             {
@@ -170,14 +170,14 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (model == null || model.Dir.Trim() == "")
+            if (!allowNullModel && (model == null || model.Dir.Trim() == ""))
             {
                 UiUtils.ShowMessageBox("No valid AI model has been selected!", UiUtils.MessageType.Error);
                 I.Cancel("No valid model selected.", true);
                 return false;
             }
 
-            if (I.currentSettings.ai.NameInternal.Upper().Contains("CUDA") && NvApi.gpuList.Count < 1)
+            if (I.currentSettings.ai.NameInternal.Upper().Contains("CUDA") && NvApi.NvGpus.Count < 1)
             {
                 UiUtils.ShowMessageBox("Warning: No Nvidia GPU was detected. CUDA might fall back to CPU!\n\nTry an NCNN implementation instead if you don't have an Nvidia GPU.", UiUtils.MessageType.Error);
 

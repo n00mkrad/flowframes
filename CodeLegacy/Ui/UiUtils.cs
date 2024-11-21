@@ -70,7 +70,7 @@ namespace Flowframes.Ui
 
         static void SelectNcnnIfNoCudaAvail(ComboBox combox)
         {
-            if (NvApi.gpuList.Count < 1)
+            if (NvApi.NvGpus.Count < 1)
             {
                 for (int i = 0; i < combox.Items.Count; i++)
                 {
@@ -86,7 +86,7 @@ namespace Flowframes.Ui
         {
             Logger.Log($"MessageBox: {text} ({type}){(BatchProcessing.busy ? "[Batch Mode - Will not display messagebox]" : "")}", true);
 
-            if(Cli.ShowConsole)
+            if(Program.CmdMode)
                 return DialogResult.OK;
 
             if (BatchProcessing.busy)

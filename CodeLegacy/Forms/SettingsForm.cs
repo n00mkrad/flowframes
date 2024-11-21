@@ -2,9 +2,11 @@
 using Flowframes.IO;
 using Flowframes.Media;
 using Flowframes.MiscUtils;
+using Flowframes.Os;
 using Flowframes.Ui;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -169,6 +171,28 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ffEncArgs);
         }
 
+        private void SetVisibility ()
+        {
+            // Dev options
+            List<Control> devOptions = new List<Control> { panKeepTempFolder, };
+            devOptions.ForEach(c => c.SetVisible(Program.Debug));
+
+            // Legacy/deprecated/untested options
+            List<Control> legacyUntestedOptions = new List<Control> { panProcessingStyle, panEnableAlpha, panHqJpegImport };
+            legacyUntestedOptions.ForEach(c => c.SetVisible(Program.Debug));
+
+            // AutoEnc options
+            bool autoEncEnabled = autoEncMode.SelectedIndex != 0;
+            List<Control> autoEncOptions = new List<Control> { panAutoEncBackups, panAutoEncLowSpaceMode };
+            autoEncOptions.ForEach(c => c.SetVisible(autoEncEnabled));
+            panAutoEncInSbsMode.SetVisible(autoEncEnabled && panProcessingStyle.Visible);
+
+            var availAis = Implementations.NetworksAvailable;
+            panTorchGpus.SetVisible(NvApi.NvGpus.Count > 0 && Python.IsPytorchReady());
+            panNcnnGpus.SetVisible(VulkanUtils.VkDevices.Count > 0);
+            panRifeCudaHalfPrec.SetVisible(NvApi.NvGpus.Count > 0 && availAis.Contains(Implementations.rifeCuda));
+        }
+
         private void tempFolderLoc_SelectedIndexChanged(object sender, EventArgs e)
         {
             tempDirBrowseBtn.Visible = tempFolderLoc.SelectedIndex == 4;
@@ -229,7 +253,7 @@ namespace Flowframes.Forms
 
         private void autoEncMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            autoEncBlockPanel.Visible = autoEncMode.SelectedIndex == 0;
+            SetVisibility();
         }
 
         private async void resetBtn_Click(object sender, EventArgs e)
@@ -253,6 +277,8 @@ namespace Flowframes.Forms
 
         private void settingsTabList_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SetVisibility();
+
             if (!_sizeFixApplied)
             {
                 Size = new Size(Width + 1, Height + 1);
