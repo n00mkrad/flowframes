@@ -69,69 +69,90 @@
             this.label10 = new System.Windows.Forms.Label();
             this.btnResetHwEnc = new HTAlt.WinForms.HTButton();
             this.tabListPage2 = new Cyotek.Windows.Forms.TabListPage();
-            this.label70 = new System.Windows.Forms.Label();
-            this.alwaysWaitForAutoEnc = new System.Windows.Forms.CheckBox();
-            this.label58 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.label41 = new System.Windows.Forms.Label();
-            this.autoEncBackupMode = new System.Windows.Forms.ComboBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label74 = new System.Windows.Forms.Label();
-            this.jpegFrames = new System.Windows.Forms.CheckBox();
-            this.label63 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.keepMeta = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.enableAlpha = new System.Windows.Forms.CheckBox();
-            this.label25 = new System.Windows.Forms.Label();
+            this.flowPanelInterpolation = new System.Windows.Forms.FlowLayoutPanel();
+            this.panTitleInputMedia = new System.Windows.Forms.Panel();
+            this.label24 = new System.Windows.Forms.Label();
+            this.panCopyInputMedia = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.keepAudio = new System.Windows.Forms.CheckBox();
             this.keepSubs = new System.Windows.Forms.CheckBox();
-            this.scnDetectValue = new System.Windows.Forms.NumericUpDown();
-            this.sbsAllowAutoEnc = new System.Windows.Forms.CheckBox();
+            this.keepMeta = new System.Windows.Forms.CheckBox();
+            this.panEnableAlpha = new System.Windows.Forms.Panel();
+            this.label25 = new System.Windows.Forms.Label();
+            this.enableAlpha = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.panHqJpegImport = new System.Windows.Forms.Panel();
+            this.label63 = new System.Windows.Forms.Label();
+            this.jpegFrames = new System.Windows.Forms.CheckBox();
+            this.label74 = new System.Windows.Forms.Label();
+            this.panTitleInterpHelpers = new System.Windows.Forms.Panel();
+            this.label18 = new System.Windows.Forms.Label();
+            this.panDedupe = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.dedupMode = new System.Windows.Forms.ComboBox();
             this.dedupeSensLabel = new System.Windows.Forms.Label();
-            this.label53 = new System.Windows.Forms.Label();
-            this.autoEncMode = new System.Windows.Forms.ComboBox();
-            this.label49 = new System.Windows.Forms.Label();
-            this.panel14 = new System.Windows.Forms.Panel();
-            this.label52 = new System.Windows.Forms.Label();
-            this.label51 = new System.Windows.Forms.Label();
-            this.scnDetect = new System.Windows.Forms.CheckBox();
-            this.label50 = new System.Windows.Forms.Label();
             this.mpDedupePanel = new System.Windows.Forms.Panel();
             this.mpdecimateMode = new System.Windows.Forms.ComboBox();
             this.magickDedupePanel = new System.Windows.Forms.Panel();
             this.dedupThresh = new System.Windows.Forms.NumericUpDown();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label24 = new System.Windows.Forms.Label();
-            this.enableLoop = new System.Windows.Forms.CheckBox();
+            this.panLoop = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
-            this.dedupMode = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.keepAudio = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.enableLoop = new System.Windows.Forms.CheckBox();
+            this.panSceneChange = new System.Windows.Forms.Panel();
+            this.label50 = new System.Windows.Forms.Label();
+            this.scnDetect = new System.Windows.Forms.CheckBox();
+            this.label51 = new System.Windows.Forms.Label();
+            this.label52 = new System.Windows.Forms.Label();
+            this.panel14 = new System.Windows.Forms.Panel();
+            this.scnDetectValue = new System.Windows.Forms.NumericUpDown();
+            this.panAutoEnc = new System.Windows.Forms.Panel();
+            this.label49 = new System.Windows.Forms.Label();
+            this.autoEncMode = new System.Windows.Forms.ComboBox();
+            this.panAutoEncInSbsMode = new System.Windows.Forms.Panel();
+            this.label53 = new System.Windows.Forms.Label();
+            this.sbsAllowAutoEnc = new System.Windows.Forms.CheckBox();
+            this.panAutoEncBackups = new System.Windows.Forms.Panel();
+            this.label16 = new System.Windows.Forms.Label();
+            this.autoEncBackupMode = new System.Windows.Forms.ComboBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.panAutoEncLowSpaceMode = new System.Windows.Forms.Panel();
+            this.label58 = new System.Windows.Forms.Label();
+            this.label70 = new System.Windows.Forms.Label();
+            this.alwaysWaitForAutoEnc = new System.Windows.Forms.CheckBox();
             this.aiOptsPage = new Cyotek.Windows.Forms.TabListPage();
+            this.flowPanelAiOptions = new System.Windows.Forms.FlowLayoutPanel();
+            this.panTitleAiFramework = new System.Windows.Forms.Panel();
+            this.label32 = new System.Windows.Forms.Label();
+            this.panTorchGpus = new System.Windows.Forms.Panel();
+            this.label33 = new System.Windows.Forms.Label();
+            this.torchGpus = new System.Windows.Forms.ComboBox();
+            this.panNcnnGpus = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.ncnnGpus = new System.Windows.Forms.ComboBox();
+            this.panNcnnThreads = new System.Windows.Forms.Panel();
+            this.label43 = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.ncnnThreads = new System.Windows.Forms.NumericUpDown();
+            this.panTitleRife = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.panUhdThresh = new System.Windows.Forms.Panel();
+            this.label29 = new System.Windows.Forms.Label();
+            this.uhdThresh = new System.Windows.Forms.ComboBox();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label30 = new System.Windows.Forms.Label();
+            this.panRifeCudaHalfPrec = new System.Windows.Forms.Panel();
+            this.label65 = new System.Windows.Forms.Label();
             this.label66 = new System.Windows.Forms.Label();
             this.rifeCudaFp16 = new System.Windows.Forms.CheckBox();
-            this.label65 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
-            this.panel12 = new System.Windows.Forms.Panel();
-            this.dainNcnnTilesize = new System.Windows.Forms.ComboBox();
-            this.label27 = new System.Windows.Forms.Label();
+            this.panTitleDainNcnn = new System.Windows.Forms.Panel();
             this.label19 = new System.Windows.Forms.Label();
-            this.ncnnThreads = new System.Windows.Forms.NumericUpDown();
-            this.label30 = new System.Windows.Forms.Label();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.uhdThresh = new System.Windows.Forms.ComboBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label44 = new System.Windows.Forms.Label();
-            this.label43 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.torchGpus = new System.Windows.Forms.ComboBox();
-            this.label33 = new System.Windows.Forms.Label();
-            this.ncnnGpus = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label32 = new System.Windows.Forms.Label();
+            this.panDainNcnnTileSize = new System.Windows.Forms.Panel();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
+            this.dainNcnnTilesize = new System.Windows.Forms.ComboBox();
+            this.panel12 = new System.Windows.Forms.Panel();
             this.vidExportTab = new Cyotek.Windows.Forms.TabListPage();
             this.label73 = new System.Windows.Forms.Label();
             this.fixOutputDuration = new System.Windows.Forms.CheckBox();
@@ -162,29 +183,8 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.flowPanelInterpolation = new System.Windows.Forms.FlowLayoutPanel();
-            this.panCopyInputMedia = new System.Windows.Forms.Panel();
-            this.panEnableAlpha = new System.Windows.Forms.Panel();
-            this.panTitleInputMedia = new System.Windows.Forms.Panel();
-            this.panHqJpegImport = new System.Windows.Forms.Panel();
-            this.panTitleInterpHelpers = new System.Windows.Forms.Panel();
-            this.panDedupe = new System.Windows.Forms.Panel();
-            this.panLoop = new System.Windows.Forms.Panel();
-            this.panSceneChange = new System.Windows.Forms.Panel();
-            this.panAutoEnc = new System.Windows.Forms.Panel();
-            this.panAutoEncInSbsMode = new System.Windows.Forms.Panel();
-            this.panAutoEncBackups = new System.Windows.Forms.Panel();
-            this.panAutoEncLowSpaceMode = new System.Windows.Forms.Panel();
-            this.flowPanelAiOptions = new System.Windows.Forms.FlowLayoutPanel();
-            this.panTitleAiFramework = new System.Windows.Forms.Panel();
-            this.panTorchGpus = new System.Windows.Forms.Panel();
-            this.panNcnnGpus = new System.Windows.Forms.Panel();
-            this.panNcnnThreads = new System.Windows.Forms.Panel();
-            this.panTitleRife = new System.Windows.Forms.Panel();
-            this.panUhdThresh = new System.Windows.Forms.Panel();
-            this.panRifeCudaHalfPrec = new System.Windows.Forms.Panel();
-            this.panTitleDainNcnn = new System.Windows.Forms.Panel();
-            this.panDainNcnnTileSize = new System.Windows.Forms.Panel();
+            this.tooltipTorchGpu = new System.Windows.Forms.PictureBox();
+            this.tooltipNcnnGpu = new System.Windows.Forms.PictureBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.flowPanelApplication.SuspendLayout();
@@ -198,39 +198,41 @@
             this.panel5.SuspendLayout();
             this.panel11.SuspendLayout();
             this.tabListPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).BeginInit();
-            this.mpDedupePanel.SuspendLayout();
-            this.magickDedupePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dedupThresh)).BeginInit();
-            this.aiOptsPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).BeginInit();
-            this.vidExportTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
-            this.debugTab.SuspendLayout();
             this.flowPanelInterpolation.SuspendLayout();
+            this.panTitleInputMedia.SuspendLayout();
             this.panCopyInputMedia.SuspendLayout();
             this.panEnableAlpha.SuspendLayout();
-            this.panTitleInputMedia.SuspendLayout();
             this.panHqJpegImport.SuspendLayout();
             this.panTitleInterpHelpers.SuspendLayout();
             this.panDedupe.SuspendLayout();
+            this.mpDedupePanel.SuspendLayout();
+            this.magickDedupePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dedupThresh)).BeginInit();
             this.panLoop.SuspendLayout();
             this.panSceneChange.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).BeginInit();
             this.panAutoEnc.SuspendLayout();
             this.panAutoEncInSbsMode.SuspendLayout();
             this.panAutoEncBackups.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panAutoEncLowSpaceMode.SuspendLayout();
+            this.aiOptsPage.SuspendLayout();
             this.flowPanelAiOptions.SuspendLayout();
             this.panTitleAiFramework.SuspendLayout();
             this.panTorchGpus.SuspendLayout();
             this.panNcnnGpus.SuspendLayout();
             this.panNcnnThreads.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).BeginInit();
             this.panTitleRife.SuspendLayout();
             this.panUhdThresh.SuspendLayout();
             this.panRifeCudaHalfPrec.SuspendLayout();
             this.panTitleDainNcnn.SuspendLayout();
             this.panDainNcnnTileSize.SuspendLayout();
+            this.vidExportTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
+            this.debugTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipTorchGpu)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipNcnnGpu)).BeginInit();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -698,84 +700,170 @@
             this.tabListPage2.Size = new System.Drawing.Size(762, 771);
             this.tabListPage2.Text = "Interpolation";
             // 
-            // label70
+            // flowPanelInterpolation
             // 
-            this.label70.AutoSize = true;
-            this.label70.ForeColor = System.Drawing.Color.Silver;
-            this.label70.Location = new System.Drawing.Point(308, 10);
-            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(443, 13);
-            this.label70.TabIndex = 93;
-            this.label70.Text = "Avoids filling up your hard drive by temporarily pausing interpolation if encodin" +
-    "g can\'t keep up";
+            this.flowPanelInterpolation.Controls.Add(this.panTitleInputMedia);
+            this.flowPanelInterpolation.Controls.Add(this.panCopyInputMedia);
+            this.flowPanelInterpolation.Controls.Add(this.panEnableAlpha);
+            this.flowPanelInterpolation.Controls.Add(this.panHqJpegImport);
+            this.flowPanelInterpolation.Controls.Add(this.panTitleInterpHelpers);
+            this.flowPanelInterpolation.Controls.Add(this.panDedupe);
+            this.flowPanelInterpolation.Controls.Add(this.panLoop);
+            this.flowPanelInterpolation.Controls.Add(this.panSceneChange);
+            this.flowPanelInterpolation.Controls.Add(this.panAutoEnc);
+            this.flowPanelInterpolation.Controls.Add(this.panAutoEncInSbsMode);
+            this.flowPanelInterpolation.Controls.Add(this.panAutoEncBackups);
+            this.flowPanelInterpolation.Controls.Add(this.panAutoEncLowSpaceMode);
+            this.flowPanelInterpolation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowPanelInterpolation.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelInterpolation.Location = new System.Drawing.Point(0, 0);
+            this.flowPanelInterpolation.Margin = new System.Windows.Forms.Padding(0);
+            this.flowPanelInterpolation.Name = "flowPanelInterpolation";
+            this.flowPanelInterpolation.Size = new System.Drawing.Size(762, 771);
+            this.flowPanelInterpolation.TabIndex = 94;
             // 
-            // alwaysWaitForAutoEnc
+            // panTitleInputMedia
             // 
-            this.alwaysWaitForAutoEnc.AutoSize = true;
-            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 10);
-            this.alwaysWaitForAutoEnc.Name = "alwaysWaitForAutoEnc";
-            this.alwaysWaitForAutoEnc.Size = new System.Drawing.Size(15, 14);
-            this.alwaysWaitForAutoEnc.TabIndex = 92;
-            this.alwaysWaitForAutoEnc.UseVisualStyleBackColor = true;
+            this.panTitleInputMedia.Controls.Add(this.label24);
+            this.panTitleInputMedia.Location = new System.Drawing.Point(0, 0);
+            this.panTitleInputMedia.Margin = new System.Windows.Forms.Padding(0);
+            this.panTitleInputMedia.Name = "panTitleInputMedia";
+            this.panTitleInputMedia.Size = new System.Drawing.Size(762, 30);
+            this.panTitleInputMedia.TabIndex = 7;
             // 
-            // label58
+            // label24
             // 
-            this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(10, 10);
-            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(229, 13);
-            this.label58.TabIndex = 91;
-            this.label58.Text = "Low Disk Space Mode (Wait For Auto-Encode)";
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(10, 10);
+            this.label24.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(87, 16);
+            this.label24.TabIndex = 44;
+            this.label24.Text = "Input Media";
             // 
-            // pictureBox2
+            // panCopyInputMedia
             // 
-            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox2.Location = new System.Drawing.Point(536, 7);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
-            this.pictureBox2.TabIndex = 90;
-            this.pictureBox2.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            this.panCopyInputMedia.Controls.Add(this.label1);
+            this.panCopyInputMedia.Controls.Add(this.keepAudio);
+            this.panCopyInputMedia.Controls.Add(this.keepSubs);
+            this.panCopyInputMedia.Controls.Add(this.keepMeta);
+            this.panCopyInputMedia.Location = new System.Drawing.Point(0, 30);
+            this.panCopyInputMedia.Margin = new System.Windows.Forms.Padding(0);
+            this.panCopyInputMedia.Name = "panCopyInputMedia";
+            this.panCopyInputMedia.Size = new System.Drawing.Size(762, 30);
+            this.panCopyInputMedia.TabIndex = 5;
             // 
-            // label41
+            // label1
             // 
-            this.label41.AutoSize = true;
-            this.label41.ForeColor = System.Drawing.Color.Silver;
-            this.label41.Location = new System.Drawing.Point(578, 10);
-            this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(158, 13);
-            this.label41.TabIndex = 89;
-            this.label41.Text = "Can cause slowdown on HDDs!";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 10);
+            this.label1.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(124, 13);
+            this.label1.TabIndex = 24;
+            this.label1.Text = "Input Media To Preserve";
             // 
-            // autoEncBackupMode
+            // keepAudio
             // 
-            this.autoEncBackupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.autoEncBackupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.autoEncBackupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.autoEncBackupMode.ForeColor = System.Drawing.Color.White;
-            this.autoEncBackupMode.FormattingEnabled = true;
-            this.autoEncBackupMode.Items.AddRange(new object[] {
-            "Disabled",
-            "Enabled (Only Video)",
-            "Enabled (Complete - With Audio, Subtitles)"});
-            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 7);
-            this.autoEncBackupMode.Name = "autoEncBackupMode";
-            this.autoEncBackupMode.Size = new System.Drawing.Size(250, 21);
-            this.autoEncBackupMode.TabIndex = 88;
+            this.keepAudio.AutoSize = true;
+            this.keepAudio.Location = new System.Drawing.Point(280, 9);
+            this.keepAudio.Name = "keepAudio";
+            this.keepAudio.Size = new System.Drawing.Size(81, 17);
+            this.keepAudio.TabIndex = 25;
+            this.keepAudio.Text = "Keep Audio";
+            this.keepAudio.UseVisualStyleBackColor = true;
             // 
-            // label16
+            // keepSubs
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(10, 10);
-            this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(114, 13);
-            this.label16.TabIndex = 87;
-            this.label16.Text = "Auto-Encode Backups";
+            this.keepSubs.AutoSize = true;
+            this.keepSubs.Location = new System.Drawing.Point(367, 9);
+            this.keepSubs.Name = "keepSubs";
+            this.keepSubs.Size = new System.Drawing.Size(94, 17);
+            this.keepSubs.TabIndex = 75;
+            this.keepSubs.Text = "Keep Subtitles";
+            this.keepSubs.UseVisualStyleBackColor = true;
+            // 
+            // keepMeta
+            // 
+            this.keepMeta.AutoSize = true;
+            this.keepMeta.Location = new System.Drawing.Point(467, 9);
+            this.keepMeta.Name = "keepMeta";
+            this.keepMeta.Size = new System.Drawing.Size(99, 17);
+            this.keepMeta.TabIndex = 81;
+            this.keepMeta.Text = "Keep Metadata";
+            this.keepMeta.UseVisualStyleBackColor = true;
+            // 
+            // panEnableAlpha
+            // 
+            this.panEnableAlpha.Controls.Add(this.label25);
+            this.panEnableAlpha.Controls.Add(this.enableAlpha);
+            this.panEnableAlpha.Controls.Add(this.label4);
+            this.panEnableAlpha.Location = new System.Drawing.Point(0, 60);
+            this.panEnableAlpha.Margin = new System.Windows.Forms.Padding(0);
+            this.panEnableAlpha.Name = "panEnableAlpha";
+            this.panEnableAlpha.Size = new System.Drawing.Size(762, 30);
+            this.panEnableAlpha.TabIndex = 6;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(10, 10);
+            this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(177, 13);
+            this.label25.TabIndex = 76;
+            this.label25.Text = "Enable Transparency (Experimental)";
+            // 
+            // enableAlpha
+            // 
+            this.enableAlpha.AutoSize = true;
+            this.enableAlpha.Location = new System.Drawing.Point(280, 10);
+            this.enableAlpha.Name = "enableAlpha";
+            this.enableAlpha.Size = new System.Drawing.Size(15, 14);
+            this.enableAlpha.TabIndex = 77;
+            this.enableAlpha.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.Silver;
+            this.label4.Location = new System.Drawing.Point(308, 10);
+            this.label4.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(300, 13);
+            this.label4.TabIndex = 78;
+            this.label4.Text = "Enables Transparency (Alpha) support for GIFs and PNG input";
+            // 
+            // panHqJpegImport
+            // 
+            this.panHqJpegImport.Controls.Add(this.label63);
+            this.panHqJpegImport.Controls.Add(this.jpegFrames);
+            this.panHqJpegImport.Controls.Add(this.label74);
+            this.panHqJpegImport.Location = new System.Drawing.Point(0, 90);
+            this.panHqJpegImport.Margin = new System.Windows.Forms.Padding(0);
+            this.panHqJpegImport.Name = "panHqJpegImport";
+            this.panHqJpegImport.Size = new System.Drawing.Size(762, 30);
+            this.panHqJpegImport.TabIndex = 8;
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(10, 10);
+            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(170, 13);
+            this.label63.TabIndex = 84;
+            this.label63.Text = "Import HQ JPEGs instead of PNGs";
+            // 
+            // jpegFrames
+            // 
+            this.jpegFrames.AutoSize = true;
+            this.jpegFrames.Location = new System.Drawing.Point(280, 10);
+            this.jpegFrames.Name = "jpegFrames";
+            this.jpegFrames.Size = new System.Drawing.Size(15, 14);
+            this.jpegFrames.TabIndex = 85;
+            this.jpegFrames.UseVisualStyleBackColor = true;
             // 
             // label74
             // 
@@ -789,24 +877,14 @@
             this.label74.Text = "Makes frame extraction faster and take up less disk space with no visible quality" +
     " reduction.";
             // 
-            // jpegFrames
+            // panTitleInterpHelpers
             // 
-            this.jpegFrames.AutoSize = true;
-            this.jpegFrames.Location = new System.Drawing.Point(280, 10);
-            this.jpegFrames.Name = "jpegFrames";
-            this.jpegFrames.Size = new System.Drawing.Size(15, 14);
-            this.jpegFrames.TabIndex = 85;
-            this.jpegFrames.UseVisualStyleBackColor = true;
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(10, 10);
-            this.label63.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(170, 13);
-            this.label63.TabIndex = 84;
-            this.label63.Text = "Import HQ JPEGs instead of PNGs";
+            this.panTitleInterpHelpers.Controls.Add(this.label18);
+            this.panTitleInterpHelpers.Location = new System.Drawing.Point(0, 120);
+            this.panTitleInterpHelpers.Margin = new System.Windows.Forms.Padding(0);
+            this.panTitleInterpHelpers.Name = "panTitleInterpHelpers";
+            this.panTitleInterpHelpers.Size = new System.Drawing.Size(762, 30);
+            this.panTitleInterpHelpers.TabIndex = 9;
             // 
             // label18
             // 
@@ -819,94 +897,45 @@
             this.label18.TabIndex = 82;
             this.label18.Text = "Interpolation Helpers";
             // 
-            // keepMeta
+            // panDedupe
             // 
-            this.keepMeta.AutoSize = true;
-            this.keepMeta.Location = new System.Drawing.Point(467, 9);
-            this.keepMeta.Name = "keepMeta";
-            this.keepMeta.Size = new System.Drawing.Size(99, 17);
-            this.keepMeta.TabIndex = 81;
-            this.keepMeta.Text = "Keep Metadata";
-            this.keepMeta.UseVisualStyleBackColor = true;
+            this.panDedupe.Controls.Add(this.label2);
+            this.panDedupe.Controls.Add(this.dedupMode);
+            this.panDedupe.Controls.Add(this.dedupeSensLabel);
+            this.panDedupe.Controls.Add(this.mpDedupePanel);
+            this.panDedupe.Controls.Add(this.magickDedupePanel);
+            this.panDedupe.Location = new System.Drawing.Point(0, 150);
+            this.panDedupe.Margin = new System.Windows.Forms.Padding(0);
+            this.panDedupe.Name = "panDedupe";
+            this.panDedupe.Size = new System.Drawing.Size(762, 30);
+            this.panDedupe.TabIndex = 10;
             // 
-            // label4
+            // label2
             // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.Silver;
-            this.label4.Location = new System.Drawing.Point(308, 10);
-            this.label4.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(300, 13);
-            this.label4.TabIndex = 78;
-            this.label4.Text = "Enables Transparency (Alpha) support for GIFs and PNG input";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(10, 10);
+            this.label2.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(139, 13);
+            this.label2.TabIndex = 26;
+            this.label2.Text = "Frame De-Duplication Mode";
             // 
-            // enableAlpha
+            // dedupMode
             // 
-            this.enableAlpha.AutoSize = true;
-            this.enableAlpha.Location = new System.Drawing.Point(280, 10);
-            this.enableAlpha.Name = "enableAlpha";
-            this.enableAlpha.Size = new System.Drawing.Size(15, 14);
-            this.enableAlpha.TabIndex = 77;
-            this.enableAlpha.UseVisualStyleBackColor = true;
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(10, 10);
-            this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(177, 13);
-            this.label25.TabIndex = 76;
-            this.label25.Text = "Enable Transparency (Experimental)";
-            // 
-            // keepSubs
-            // 
-            this.keepSubs.AutoSize = true;
-            this.keepSubs.Location = new System.Drawing.Point(367, 9);
-            this.keepSubs.Name = "keepSubs";
-            this.keepSubs.Size = new System.Drawing.Size(94, 17);
-            this.keepSubs.TabIndex = 75;
-            this.keepSubs.Text = "Keep Subtitles";
-            this.keepSubs.UseVisualStyleBackColor = true;
-            // 
-            // scnDetectValue
-            // 
-            this.scnDetectValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.scnDetectValue.DecimalPlaces = 2;
-            this.scnDetectValue.ForeColor = System.Drawing.Color.White;
-            this.scnDetectValue.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            this.scnDetectValue.Location = new System.Drawing.Point(364, 8);
-            this.scnDetectValue.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.scnDetectValue.Minimum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            this.scnDetectValue.Name = "scnDetectValue";
-            this.scnDetectValue.Size = new System.Drawing.Size(100, 20);
-            this.scnDetectValue.TabIndex = 74;
-            this.scnDetectValue.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            131072});
-            // 
-            // sbsAllowAutoEnc
-            // 
-            this.sbsAllowAutoEnc.AutoSize = true;
-            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 10);
-            this.sbsAllowAutoEnc.Name = "sbsAllowAutoEnc";
-            this.sbsAllowAutoEnc.Size = new System.Drawing.Size(15, 14);
-            this.sbsAllowAutoEnc.TabIndex = 72;
-            this.sbsAllowAutoEnc.UseVisualStyleBackColor = true;
+            this.dedupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.dedupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.dedupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dedupMode.ForeColor = System.Drawing.Color.White;
+            this.dedupMode.FormattingEnabled = true;
+            this.dedupMode.Items.AddRange(new object[] {
+            "Disabled",
+            "1: After Extraction - Slow, Accurate",
+            "2: During Extraction - Fast, Less Accurate"});
+            this.dedupMode.Location = new System.Drawing.Point(280, 7);
+            this.dedupMode.Name = "dedupMode";
+            this.dedupMode.Size = new System.Drawing.Size(250, 21);
+            this.dedupMode.TabIndex = 27;
+            this.dedupMode.SelectedIndexChanged += new System.EventHandler(this.dedupMode_SelectedIndexChanged);
             // 
             // dedupeSensLabel
             // 
@@ -917,93 +946,6 @@
             this.dedupeSensLabel.Size = new System.Drawing.Size(57, 13);
             this.dedupeSensLabel.TabIndex = 29;
             this.dedupeSensLabel.Text = "Sensitivity:";
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(10, 10);
-            this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(203, 13);
-            this.label53.TabIndex = 71;
-            this.label53.Text = "Allow Auto-Encode in Step-By-Step Mode";
-            // 
-            // autoEncMode
-            // 
-            this.autoEncMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.autoEncMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.autoEncMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.autoEncMode.ForeColor = System.Drawing.Color.White;
-            this.autoEncMode.FormattingEnabled = true;
-            this.autoEncMode.Items.AddRange(new object[] {
-            "Disabled",
-            "Enabled (Keep Interpolated Frames)",
-            "Enabled (Delete Frames Once Encoded)"});
-            this.autoEncMode.Location = new System.Drawing.Point(280, 7);
-            this.autoEncMode.Name = "autoEncMode";
-            this.autoEncMode.Size = new System.Drawing.Size(250, 21);
-            this.autoEncMode.TabIndex = 70;
-            this.autoEncMode.SelectedIndexChanged += new System.EventHandler(this.autoEncMode_SelectedIndexChanged);
-            // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(10, 10);
-            this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(206, 13);
-            this.label49.TabIndex = 69;
-            this.label49.Text = "Auto-Encode (Encode While Interpolating)";
-            // 
-            // panel14
-            // 
-            this.panel14.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel14.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel14.Location = new System.Drawing.Point(475, 7);
-            this.panel14.Name = "panel14";
-            this.panel14.Size = new System.Drawing.Size(21, 21);
-            this.panel14.TabIndex = 68;
-            this.toolTip1.SetToolTip(this.panel14, "Allows custom input.");
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.ForeColor = System.Drawing.Color.Silver;
-            this.label52.Location = new System.Drawing.Point(509, 12);
-            this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(225, 13);
-            this.label52.TabIndex = 67;
-            this.label52.Text = "Lower values will detect more scene changes.";
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(301, 11);
-            this.label51.Margin = new System.Windows.Forms.Padding(3);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(57, 13);
-            this.label51.TabIndex = 66;
-            this.label51.Text = "Sensitivity:";
-            // 
-            // scnDetect
-            // 
-            this.scnDetect.AutoSize = true;
-            this.scnDetect.Location = new System.Drawing.Point(280, 10);
-            this.scnDetect.Name = "scnDetect";
-            this.scnDetect.Size = new System.Drawing.Size(15, 14);
-            this.scnDetect.TabIndex = 64;
-            this.scnDetect.UseVisualStyleBackColor = true;
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(10, 10);
-            this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(129, 13);
-            this.label50.TabIndex = 63;
-            this.label50.Text = "Fix Scene Changes (Cuts)";
             // 
             // mpDedupePanel
             // 
@@ -1081,25 +1023,15 @@
             this.panel3.TabIndex = 57;
             this.toolTip1.SetToolTip(this.panel3, "Allows custom input.");
             // 
-            // label24
+            // panLoop
             // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.Location = new System.Drawing.Point(10, 10);
-            this.label24.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(87, 16);
-            this.label24.TabIndex = 44;
-            this.label24.Text = "Input Media";
-            // 
-            // enableLoop
-            // 
-            this.enableLoop.AutoSize = true;
-            this.enableLoop.Location = new System.Drawing.Point(280, 10);
-            this.enableLoop.Name = "enableLoop";
-            this.enableLoop.Size = new System.Drawing.Size(15, 14);
-            this.enableLoop.TabIndex = 31;
-            this.enableLoop.UseVisualStyleBackColor = true;
+            this.panLoop.Controls.Add(this.label15);
+            this.panLoop.Controls.Add(this.enableLoop);
+            this.panLoop.Location = new System.Drawing.Point(0, 180);
+            this.panLoop.Margin = new System.Windows.Forms.Padding(0);
+            this.panLoop.Name = "panLoop";
+            this.panLoop.Size = new System.Drawing.Size(762, 30);
+            this.panLoop.TabIndex = 11;
             // 
             // label15
             // 
@@ -1111,52 +1043,276 @@
             this.label15.TabIndex = 30;
             this.label15.Text = "Loop Interpolation (Copy First Frame To End)";
             // 
-            // dedupMode
+            // enableLoop
             // 
-            this.dedupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.dedupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.dedupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.dedupMode.ForeColor = System.Drawing.Color.White;
-            this.dedupMode.FormattingEnabled = true;
-            this.dedupMode.Items.AddRange(new object[] {
+            this.enableLoop.AutoSize = true;
+            this.enableLoop.Location = new System.Drawing.Point(280, 10);
+            this.enableLoop.Name = "enableLoop";
+            this.enableLoop.Size = new System.Drawing.Size(15, 14);
+            this.enableLoop.TabIndex = 31;
+            this.enableLoop.UseVisualStyleBackColor = true;
+            // 
+            // panSceneChange
+            // 
+            this.panSceneChange.Controls.Add(this.label50);
+            this.panSceneChange.Controls.Add(this.scnDetect);
+            this.panSceneChange.Controls.Add(this.label51);
+            this.panSceneChange.Controls.Add(this.label52);
+            this.panSceneChange.Controls.Add(this.panel14);
+            this.panSceneChange.Controls.Add(this.scnDetectValue);
+            this.panSceneChange.Location = new System.Drawing.Point(0, 210);
+            this.panSceneChange.Margin = new System.Windows.Forms.Padding(0);
+            this.panSceneChange.Name = "panSceneChange";
+            this.panSceneChange.Size = new System.Drawing.Size(762, 30);
+            this.panSceneChange.TabIndex = 12;
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(10, 10);
+            this.label50.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(129, 13);
+            this.label50.TabIndex = 63;
+            this.label50.Text = "Fix Scene Changes (Cuts)";
+            // 
+            // scnDetect
+            // 
+            this.scnDetect.AutoSize = true;
+            this.scnDetect.Location = new System.Drawing.Point(280, 10);
+            this.scnDetect.Name = "scnDetect";
+            this.scnDetect.Size = new System.Drawing.Size(15, 14);
+            this.scnDetect.TabIndex = 64;
+            this.scnDetect.UseVisualStyleBackColor = true;
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(301, 11);
+            this.label51.Margin = new System.Windows.Forms.Padding(3);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(57, 13);
+            this.label51.TabIndex = 66;
+            this.label51.Text = "Sensitivity:";
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.ForeColor = System.Drawing.Color.Silver;
+            this.label52.Location = new System.Drawing.Point(509, 12);
+            this.label52.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(225, 13);
+            this.label52.TabIndex = 67;
+            this.label52.Text = "Lower values will detect more scene changes.";
+            // 
+            // panel14
+            // 
+            this.panel14.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel14.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel14.Location = new System.Drawing.Point(475, 7);
+            this.panel14.Name = "panel14";
+            this.panel14.Size = new System.Drawing.Size(21, 21);
+            this.panel14.TabIndex = 68;
+            this.toolTip1.SetToolTip(this.panel14, "Allows custom input.");
+            // 
+            // scnDetectValue
+            // 
+            this.scnDetectValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.scnDetectValue.DecimalPlaces = 2;
+            this.scnDetectValue.ForeColor = System.Drawing.Color.White;
+            this.scnDetectValue.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.scnDetectValue.Location = new System.Drawing.Point(364, 8);
+            this.scnDetectValue.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.scnDetectValue.Minimum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.scnDetectValue.Name = "scnDetectValue";
+            this.scnDetectValue.Size = new System.Drawing.Size(100, 20);
+            this.scnDetectValue.TabIndex = 74;
+            this.scnDetectValue.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            // 
+            // panAutoEnc
+            // 
+            this.panAutoEnc.Controls.Add(this.label49);
+            this.panAutoEnc.Controls.Add(this.autoEncMode);
+            this.panAutoEnc.Location = new System.Drawing.Point(0, 240);
+            this.panAutoEnc.Margin = new System.Windows.Forms.Padding(0);
+            this.panAutoEnc.Name = "panAutoEnc";
+            this.panAutoEnc.Size = new System.Drawing.Size(762, 30);
+            this.panAutoEnc.TabIndex = 13;
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(10, 10);
+            this.label49.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(206, 13);
+            this.label49.TabIndex = 69;
+            this.label49.Text = "Auto-Encode (Encode While Interpolating)";
+            // 
+            // autoEncMode
+            // 
+            this.autoEncMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.autoEncMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.autoEncMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.autoEncMode.ForeColor = System.Drawing.Color.White;
+            this.autoEncMode.FormattingEnabled = true;
+            this.autoEncMode.Items.AddRange(new object[] {
             "Disabled",
-            "1: After Extraction - Slow, Accurate",
-            "2: During Extraction - Fast, Less Accurate"});
-            this.dedupMode.Location = new System.Drawing.Point(280, 7);
-            this.dedupMode.Name = "dedupMode";
-            this.dedupMode.Size = new System.Drawing.Size(250, 21);
-            this.dedupMode.TabIndex = 27;
-            this.dedupMode.SelectedIndexChanged += new System.EventHandler(this.dedupMode_SelectedIndexChanged);
+            "Enabled (Keep Interpolated Frames)",
+            "Enabled (Delete Frames Once Encoded)"});
+            this.autoEncMode.Location = new System.Drawing.Point(280, 7);
+            this.autoEncMode.Name = "autoEncMode";
+            this.autoEncMode.Size = new System.Drawing.Size(250, 21);
+            this.autoEncMode.TabIndex = 70;
+            this.autoEncMode.SelectedIndexChanged += new System.EventHandler(this.autoEncMode_SelectedIndexChanged);
             // 
-            // label2
+            // panAutoEncInSbsMode
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 10);
-            this.label2.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(139, 13);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "Frame De-Duplication Mode";
+            this.panAutoEncInSbsMode.Controls.Add(this.label53);
+            this.panAutoEncInSbsMode.Controls.Add(this.sbsAllowAutoEnc);
+            this.panAutoEncInSbsMode.Location = new System.Drawing.Point(0, 270);
+            this.panAutoEncInSbsMode.Margin = new System.Windows.Forms.Padding(0);
+            this.panAutoEncInSbsMode.Name = "panAutoEncInSbsMode";
+            this.panAutoEncInSbsMode.Size = new System.Drawing.Size(762, 30);
+            this.panAutoEncInSbsMode.TabIndex = 14;
             // 
-            // keepAudio
+            // label53
             // 
-            this.keepAudio.AutoSize = true;
-            this.keepAudio.Location = new System.Drawing.Point(280, 9);
-            this.keepAudio.Name = "keepAudio";
-            this.keepAudio.Size = new System.Drawing.Size(81, 17);
-            this.keepAudio.TabIndex = 25;
-            this.keepAudio.Text = "Keep Audio";
-            this.keepAudio.UseVisualStyleBackColor = true;
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(10, 10);
+            this.label53.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(203, 13);
+            this.label53.TabIndex = 71;
+            this.label53.Text = "Allow Auto-Encode in Step-By-Step Mode";
             // 
-            // label1
+            // sbsAllowAutoEnc
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 10);
-            this.label1.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 13);
-            this.label1.TabIndex = 24;
-            this.label1.Text = "Input Media To Preserve";
+            this.sbsAllowAutoEnc.AutoSize = true;
+            this.sbsAllowAutoEnc.Location = new System.Drawing.Point(280, 10);
+            this.sbsAllowAutoEnc.Name = "sbsAllowAutoEnc";
+            this.sbsAllowAutoEnc.Size = new System.Drawing.Size(15, 14);
+            this.sbsAllowAutoEnc.TabIndex = 72;
+            this.sbsAllowAutoEnc.UseVisualStyleBackColor = true;
+            // 
+            // panAutoEncBackups
+            // 
+            this.panAutoEncBackups.Controls.Add(this.label16);
+            this.panAutoEncBackups.Controls.Add(this.autoEncBackupMode);
+            this.panAutoEncBackups.Controls.Add(this.label41);
+            this.panAutoEncBackups.Controls.Add(this.pictureBox2);
+            this.panAutoEncBackups.Location = new System.Drawing.Point(0, 300);
+            this.panAutoEncBackups.Margin = new System.Windows.Forms.Padding(0);
+            this.panAutoEncBackups.Name = "panAutoEncBackups";
+            this.panAutoEncBackups.Size = new System.Drawing.Size(762, 30);
+            this.panAutoEncBackups.TabIndex = 15;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(10, 10);
+            this.label16.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(114, 13);
+            this.label16.TabIndex = 87;
+            this.label16.Text = "Auto-Encode Backups";
+            // 
+            // autoEncBackupMode
+            // 
+            this.autoEncBackupMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.autoEncBackupMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.autoEncBackupMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.autoEncBackupMode.ForeColor = System.Drawing.Color.White;
+            this.autoEncBackupMode.FormattingEnabled = true;
+            this.autoEncBackupMode.Items.AddRange(new object[] {
+            "Disabled",
+            "Enabled (Only Video)",
+            "Enabled (Complete - With Audio, Subtitles)"});
+            this.autoEncBackupMode.Location = new System.Drawing.Point(280, 7);
+            this.autoEncBackupMode.Name = "autoEncBackupMode";
+            this.autoEncBackupMode.Size = new System.Drawing.Size(250, 21);
+            this.autoEncBackupMode.TabIndex = 88;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.ForeColor = System.Drawing.Color.Silver;
+            this.label41.Location = new System.Drawing.Point(578, 10);
+            this.label41.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(158, 13);
+            this.label41.TabIndex = 89;
+            this.label41.Text = "Can cause slowdown on HDDs!";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(536, 7);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(29, 21);
+            this.pictureBox2.TabIndex = 90;
+            this.pictureBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
+            // panAutoEncLowSpaceMode
+            // 
+            this.panAutoEncLowSpaceMode.Controls.Add(this.label58);
+            this.panAutoEncLowSpaceMode.Controls.Add(this.label70);
+            this.panAutoEncLowSpaceMode.Controls.Add(this.alwaysWaitForAutoEnc);
+            this.panAutoEncLowSpaceMode.Location = new System.Drawing.Point(0, 330);
+            this.panAutoEncLowSpaceMode.Margin = new System.Windows.Forms.Padding(0);
+            this.panAutoEncLowSpaceMode.Name = "panAutoEncLowSpaceMode";
+            this.panAutoEncLowSpaceMode.Size = new System.Drawing.Size(762, 30);
+            this.panAutoEncLowSpaceMode.TabIndex = 16;
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.Location = new System.Drawing.Point(10, 10);
+            this.label58.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(229, 13);
+            this.label58.TabIndex = 91;
+            this.label58.Text = "Low Disk Space Mode (Wait For Auto-Encode)";
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.ForeColor = System.Drawing.Color.Silver;
+            this.label70.Location = new System.Drawing.Point(308, 10);
+            this.label70.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(443, 13);
+            this.label70.TabIndex = 93;
+            this.label70.Text = "Avoids filling up your hard drive by temporarily pausing interpolation if encodin" +
+    "g can\'t keep up";
+            // 
+            // alwaysWaitForAutoEnc
+            // 
+            this.alwaysWaitForAutoEnc.AutoSize = true;
+            this.alwaysWaitForAutoEnc.Location = new System.Drawing.Point(280, 10);
+            this.alwaysWaitForAutoEnc.Name = "alwaysWaitForAutoEnc";
+            this.alwaysWaitForAutoEnc.Size = new System.Drawing.Size(15, 14);
+            this.alwaysWaitForAutoEnc.TabIndex = 92;
+            this.alwaysWaitForAutoEnc.UseVisualStyleBackColor = true;
             // 
             // aiOptsPage
             // 
@@ -1166,6 +1322,262 @@
             this.aiOptsPage.Name = "aiOptsPage";
             this.aiOptsPage.Size = new System.Drawing.Size(762, 771);
             this.aiOptsPage.Text = "AI Specific Options";
+            // 
+            // flowPanelAiOptions
+            // 
+            this.flowPanelAiOptions.Controls.Add(this.panTitleAiFramework);
+            this.flowPanelAiOptions.Controls.Add(this.panTorchGpus);
+            this.flowPanelAiOptions.Controls.Add(this.panNcnnGpus);
+            this.flowPanelAiOptions.Controls.Add(this.panNcnnThreads);
+            this.flowPanelAiOptions.Controls.Add(this.panTitleRife);
+            this.flowPanelAiOptions.Controls.Add(this.panUhdThresh);
+            this.flowPanelAiOptions.Controls.Add(this.panRifeCudaHalfPrec);
+            this.flowPanelAiOptions.Controls.Add(this.panTitleDainNcnn);
+            this.flowPanelAiOptions.Controls.Add(this.panDainNcnnTileSize);
+            this.flowPanelAiOptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowPanelAiOptions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelAiOptions.Location = new System.Drawing.Point(0, 0);
+            this.flowPanelAiOptions.Margin = new System.Windows.Forms.Padding(0);
+            this.flowPanelAiOptions.Name = "flowPanelAiOptions";
+            this.flowPanelAiOptions.Size = new System.Drawing.Size(762, 771);
+            this.flowPanelAiOptions.TabIndex = 95;
+            // 
+            // panTitleAiFramework
+            // 
+            this.panTitleAiFramework.Controls.Add(this.label32);
+            this.panTitleAiFramework.Location = new System.Drawing.Point(0, 0);
+            this.panTitleAiFramework.Margin = new System.Windows.Forms.Padding(0);
+            this.panTitleAiFramework.Name = "panTitleAiFramework";
+            this.panTitleAiFramework.Size = new System.Drawing.Size(762, 30);
+            this.panTitleAiFramework.TabIndex = 7;
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label32.Location = new System.Drawing.Point(10, 10);
+            this.label32.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(161, 16);
+            this.label32.TabIndex = 51;
+            this.label32.Text = "AI Framework Settings";
+            // 
+            // panTorchGpus
+            // 
+            this.panTorchGpus.Controls.Add(this.tooltipTorchGpu);
+            this.panTorchGpus.Controls.Add(this.label33);
+            this.panTorchGpus.Controls.Add(this.torchGpus);
+            this.panTorchGpus.Location = new System.Drawing.Point(0, 30);
+            this.panTorchGpus.Margin = new System.Windows.Forms.Padding(0);
+            this.panTorchGpus.Name = "panTorchGpus";
+            this.panTorchGpus.Size = new System.Drawing.Size(762, 30);
+            this.panTorchGpus.TabIndex = 5;
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(10, 10);
+            this.label33.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(83, 13);
+            this.label33.TabIndex = 54;
+            this.label33.Text = "Pytorch GPU ID";
+            // 
+            // torchGpus
+            // 
+            this.torchGpus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.torchGpus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.torchGpus.ForeColor = System.Drawing.Color.White;
+            this.torchGpus.FormattingEnabled = true;
+            this.torchGpus.Location = new System.Drawing.Point(280, 7);
+            this.torchGpus.Name = "torchGpus";
+            this.torchGpus.Size = new System.Drawing.Size(250, 21);
+            this.torchGpus.TabIndex = 55;
+            // 
+            // panNcnnGpus
+            // 
+            this.panNcnnGpus.Controls.Add(this.tooltipNcnnGpu);
+            this.panNcnnGpus.Controls.Add(this.label5);
+            this.panNcnnGpus.Controls.Add(this.ncnnGpus);
+            this.panNcnnGpus.Location = new System.Drawing.Point(0, 60);
+            this.panNcnnGpus.Margin = new System.Windows.Forms.Padding(0);
+            this.panNcnnGpus.Name = "panNcnnGpus";
+            this.panNcnnGpus.Size = new System.Drawing.Size(762, 30);
+            this.panNcnnGpus.TabIndex = 6;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 10);
+            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(78, 13);
+            this.label5.TabIndex = 52;
+            this.label5.Text = "NCNN GPU ID";
+            // 
+            // ncnnGpus
+            // 
+            this.ncnnGpus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.ncnnGpus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ncnnGpus.ForeColor = System.Drawing.Color.White;
+            this.ncnnGpus.FormattingEnabled = true;
+            this.ncnnGpus.Location = new System.Drawing.Point(280, 7);
+            this.ncnnGpus.Name = "ncnnGpus";
+            this.ncnnGpus.Size = new System.Drawing.Size(250, 21);
+            this.ncnnGpus.TabIndex = 53;
+            // 
+            // panNcnnThreads
+            // 
+            this.panNcnnThreads.Controls.Add(this.label43);
+            this.panNcnnThreads.Controls.Add(this.label44);
+            this.panNcnnThreads.Controls.Add(this.ncnnThreads);
+            this.panNcnnThreads.Location = new System.Drawing.Point(0, 90);
+            this.panNcnnThreads.Margin = new System.Windows.Forms.Padding(0);
+            this.panNcnnThreads.Name = "panNcnnThreads";
+            this.panNcnnThreads.Size = new System.Drawing.Size(762, 30);
+            this.panNcnnThreads.TabIndex = 8;
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(10, 10);
+            this.label43.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(161, 13);
+            this.label43.TabIndex = 58;
+            this.label43.Text = "NCNN GPU Processing Threads";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.ForeColor = System.Drawing.Color.Silver;
+            this.label44.Location = new System.Drawing.Point(370, 11);
+            this.label44.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(330, 13);
+            this.label44.TabIndex = 60;
+            this.label44.Text = "Higher will cause more GPU/VRAM load but can be faster. 0 = Auto.";
+            // 
+            // ncnnThreads
+            // 
+            this.ncnnThreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.ncnnThreads.ForeColor = System.Drawing.Color.White;
+            this.ncnnThreads.Location = new System.Drawing.Point(280, 8);
+            this.ncnnThreads.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.ncnnThreads.Name = "ncnnThreads";
+            this.ncnnThreads.Size = new System.Drawing.Size(77, 20);
+            this.ncnnThreads.TabIndex = 75;
+            this.ncnnThreads.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // panTitleRife
+            // 
+            this.panTitleRife.Controls.Add(this.label11);
+            this.panTitleRife.Location = new System.Drawing.Point(0, 120);
+            this.panTitleRife.Margin = new System.Windows.Forms.Padding(0);
+            this.panTitleRife.Name = "panTitleRife";
+            this.panTitleRife.Size = new System.Drawing.Size(762, 30);
+            this.panTitleRife.TabIndex = 9;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label11.Location = new System.Drawing.Point(10, 10);
+            this.label11.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(101, 16);
+            this.label11.TabIndex = 61;
+            this.label11.Text = "RIFE Settings";
+            // 
+            // panUhdThresh
+            // 
+            this.panUhdThresh.Controls.Add(this.label29);
+            this.panUhdThresh.Controls.Add(this.uhdThresh);
+            this.panUhdThresh.Controls.Add(this.panel6);
+            this.panUhdThresh.Controls.Add(this.label30);
+            this.panUhdThresh.Location = new System.Drawing.Point(0, 150);
+            this.panUhdThresh.Margin = new System.Windows.Forms.Padding(0);
+            this.panUhdThresh.Name = "panUhdThresh";
+            this.panUhdThresh.Size = new System.Drawing.Size(762, 30);
+            this.panUhdThresh.TabIndex = 10;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(10, 10);
+            this.label29.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(151, 13);
+            this.label29.TabIndex = 62;
+            this.label29.Text = "UHD Mode Threshold (Height)";
+            // 
+            // uhdThresh
+            // 
+            this.uhdThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.uhdThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.uhdThresh.ForeColor = System.Drawing.Color.White;
+            this.uhdThresh.FormattingEnabled = true;
+            this.uhdThresh.Items.AddRange(new object[] {
+            "4320",
+            "2160",
+            "1440",
+            "1080",
+            "720"});
+            this.uhdThresh.Location = new System.Drawing.Point(280, 7);
+            this.uhdThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
+            this.uhdThresh.Name = "uhdThresh";
+            this.uhdThresh.Size = new System.Drawing.Size(87, 21);
+            this.uhdThresh.TabIndex = 66;
+            // 
+            // panel6
+            // 
+            this.panel6.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel6.Location = new System.Drawing.Point(378, 7);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(21, 21);
+            this.panel6.TabIndex = 65;
+            this.toolTip1.SetToolTip(this.panel6, "Allows custom input.");
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.ForeColor = System.Drawing.Color.Silver;
+            this.label30.Location = new System.Drawing.Point(412, 11);
+            this.label30.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(335, 13);
+            this.label30.TabIndex = 67;
+            this.label30.Text = "Minimum height to enable UHD mode to improve high-res interpolation";
+            // 
+            // panRifeCudaHalfPrec
+            // 
+            this.panRifeCudaHalfPrec.Controls.Add(this.label65);
+            this.panRifeCudaHalfPrec.Controls.Add(this.label66);
+            this.panRifeCudaHalfPrec.Controls.Add(this.rifeCudaFp16);
+            this.panRifeCudaHalfPrec.Location = new System.Drawing.Point(0, 180);
+            this.panRifeCudaHalfPrec.Margin = new System.Windows.Forms.Padding(0);
+            this.panRifeCudaHalfPrec.Name = "panRifeCudaHalfPrec";
+            this.panRifeCudaHalfPrec.Size = new System.Drawing.Size(762, 30);
+            this.panRifeCudaHalfPrec.TabIndex = 11;
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(10, 10);
+            this.label65.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(165, 13);
+            this.label65.TabIndex = 81;
+            this.label65.Text = "Half-Precision Mode (CUDA Only)";
             // 
             // label66
             // 
@@ -1188,15 +1600,47 @@
             this.rifeCudaFp16.TabIndex = 82;
             this.rifeCudaFp16.UseVisualStyleBackColor = true;
             // 
-            // label65
+            // panTitleDainNcnn
             // 
-            this.label65.AutoSize = true;
-            this.label65.Location = new System.Drawing.Point(10, 10);
-            this.label65.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(165, 13);
-            this.label65.TabIndex = 81;
-            this.label65.Text = "Half-Precision Mode (CUDA Only)";
+            this.panTitleDainNcnn.Controls.Add(this.label19);
+            this.panTitleDainNcnn.Location = new System.Drawing.Point(0, 210);
+            this.panTitleDainNcnn.Margin = new System.Windows.Forms.Padding(0);
+            this.panTitleDainNcnn.Name = "panTitleDainNcnn";
+            this.panTitleDainNcnn.Size = new System.Drawing.Size(762, 30);
+            this.panTitleDainNcnn.TabIndex = 12;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label19.Location = new System.Drawing.Point(10, 10);
+            this.label19.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(151, 16);
+            this.label19.TabIndex = 76;
+            this.label19.Text = "DAIN-NCNN Settings";
+            // 
+            // panDainNcnnTileSize
+            // 
+            this.panDainNcnnTileSize.Controls.Add(this.label27);
+            this.panDainNcnnTileSize.Controls.Add(this.label35);
+            this.panDainNcnnTileSize.Controls.Add(this.dainNcnnTilesize);
+            this.panDainNcnnTileSize.Controls.Add(this.panel12);
+            this.panDainNcnnTileSize.Location = new System.Drawing.Point(0, 240);
+            this.panDainNcnnTileSize.Margin = new System.Windows.Forms.Padding(0);
+            this.panDainNcnnTileSize.Name = "panDainNcnnTileSize";
+            this.panDainNcnnTileSize.Size = new System.Drawing.Size(762, 30);
+            this.panDainNcnnTileSize.TabIndex = 13;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(10, 10);
+            this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(93, 13);
+            this.label27.TabIndex = 77;
+            this.label27.Text = "Tile Size (Splitting)";
             // 
             // label35
             // 
@@ -1208,16 +1652,6 @@
             this.label35.Size = new System.Drawing.Size(294, 13);
             this.label35.TabIndex = 80;
             this.label35.Text = "Lower values decrease VRAM usage but also reduce speed.";
-            // 
-            // panel12
-            // 
-            this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel12.Location = new System.Drawing.Point(378, 7);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(21, 21);
-            this.panel12.TabIndex = 78;
-            this.toolTip1.SetToolTip(this.panel12, "Allows custom input.");
             // 
             // dainNcnnTilesize
             // 
@@ -1239,207 +1673,15 @@
             this.dainNcnnTilesize.Size = new System.Drawing.Size(87, 21);
             this.dainNcnnTilesize.TabIndex = 79;
             // 
-            // label27
+            // panel12
             // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(10, 10);
-            this.label27.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(93, 13);
-            this.label27.TabIndex = 77;
-            this.label27.Text = "Tile Size (Splitting)";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label19.Location = new System.Drawing.Point(10, 10);
-            this.label19.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(151, 16);
-            this.label19.TabIndex = 76;
-            this.label19.Text = "DAIN-NCNN Settings";
-            // 
-            // ncnnThreads
-            // 
-            this.ncnnThreads.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ncnnThreads.ForeColor = System.Drawing.Color.White;
-            this.ncnnThreads.Location = new System.Drawing.Point(280, 8);
-            this.ncnnThreads.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.ncnnThreads.Name = "ncnnThreads";
-            this.ncnnThreads.Size = new System.Drawing.Size(77, 20);
-            this.ncnnThreads.TabIndex = 75;
-            this.ncnnThreads.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.ForeColor = System.Drawing.Color.Silver;
-            this.label30.Location = new System.Drawing.Point(412, 11);
-            this.label30.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(335, 13);
-            this.label30.TabIndex = 67;
-            this.label30.Text = "Minimum height to enable UHD mode to improve high-res interpolation";
-            // 
-            // panel6
-            // 
-            this.panel6.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel6.Location = new System.Drawing.Point(378, 7);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(21, 21);
-            this.panel6.TabIndex = 65;
-            this.toolTip1.SetToolTip(this.panel6, "Allows custom input.");
-            // 
-            // uhdThresh
-            // 
-            this.uhdThresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.uhdThresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.uhdThresh.ForeColor = System.Drawing.Color.White;
-            this.uhdThresh.FormattingEnabled = true;
-            this.uhdThresh.Items.AddRange(new object[] {
-            "4320",
-            "2160",
-            "1440",
-            "1080",
-            "720"});
-            this.uhdThresh.Location = new System.Drawing.Point(280, 7);
-            this.uhdThresh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
-            this.uhdThresh.Name = "uhdThresh";
-            this.uhdThresh.Size = new System.Drawing.Size(87, 21);
-            this.uhdThresh.TabIndex = 66;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(10, 10);
-            this.label29.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(151, 13);
-            this.label29.TabIndex = 62;
-            this.label29.Text = "UHD Mode Threshold (Height)";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label11.Location = new System.Drawing.Point(10, 10);
-            this.label11.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(101, 16);
-            this.label11.TabIndex = 61;
-            this.label11.Text = "RIFE Settings";
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.ForeColor = System.Drawing.Color.Silver;
-            this.label44.Location = new System.Drawing.Point(370, 11);
-            this.label44.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(330, 13);
-            this.label44.TabIndex = 60;
-            this.label44.Text = "Higher will cause more GPU/VRAM load but can be faster. 0 = Auto.";
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(10, 10);
-            this.label43.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(161, 13);
-            this.label43.TabIndex = 58;
-            this.label43.Text = "NCNN GPU Processing Threads";
-            // 
-            // panel2
-            // 
-            this.panel2.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel2.Location = new System.Drawing.Point(536, 7);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(21, 21);
-            this.panel2.TabIndex = 57;
-            this.toolTip1.SetToolTip(this.panel2, "Allows custom input.");
-            // 
-            // panel1
-            // 
-            this.panel1.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
-            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.panel1.Location = new System.Drawing.Point(536, 7);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(21, 21);
-            this.panel1.TabIndex = 56;
-            this.toolTip1.SetToolTip(this.panel1, "Allows custom input.");
-            // 
-            // torchGpus
-            // 
-            this.torchGpus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.torchGpus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.torchGpus.ForeColor = System.Drawing.Color.White;
-            this.torchGpus.FormattingEnabled = true;
-            this.torchGpus.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "0,1"});
-            this.torchGpus.Location = new System.Drawing.Point(280, 7);
-            this.torchGpus.Name = "torchGpus";
-            this.torchGpus.Size = new System.Drawing.Size(250, 21);
-            this.torchGpus.TabIndex = 55;
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(10, 10);
-            this.label33.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(205, 13);
-            this.label33.TabIndex = 54;
-            this.label33.Text = "Pytorch GPU IDs (For Multi GPU Systems)";
-            // 
-            // ncnnGpus
-            // 
-            this.ncnnGpus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ncnnGpus.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ncnnGpus.ForeColor = System.Drawing.Color.White;
-            this.ncnnGpus.FormattingEnabled = true;
-            this.ncnnGpus.Items.AddRange(new object[] {
-            "0",
-            "1",
-            "0,1"});
-            this.ncnnGpus.Location = new System.Drawing.Point(280, 7);
-            this.ncnnGpus.Name = "ncnnGpus";
-            this.ncnnGpus.Size = new System.Drawing.Size(250, 21);
-            this.ncnnGpus.TabIndex = 53;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 10);
-            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(200, 13);
-            this.label5.TabIndex = 52;
-            this.label5.Text = "NCNN GPU IDs (For Multi GPU Systems)";
-            // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label32.Location = new System.Drawing.Point(10, 10);
-            this.label32.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(161, 16);
-            this.label32.TabIndex = 51;
-            this.label32.Text = "AI Framework Settings";
+            this.panel12.BackgroundImage = global::Flowframes.Properties.Resources.baseline_create_white_18dp_semiTransparent;
+            this.panel12.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.panel12.Location = new System.Drawing.Point(378, 7);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(21, 21);
+            this.panel12.TabIndex = 78;
+            this.toolTip1.SetToolTip(this.panel12, "Allows custom input.");
             // 
             // vidExportTab
             // 
@@ -1461,7 +1703,7 @@
             this.vidExportTab.Controls.Add(this.label8);
             this.vidExportTab.ForeColor = System.Drawing.Color.White;
             this.vidExportTab.Name = "vidExportTab";
-            this.vidExportTab.Size = new System.Drawing.Size(762, 419);
+            this.vidExportTab.Size = new System.Drawing.Size(762, 771);
             this.vidExportTab.Text = "Export Options";
             // 
             // label73
@@ -1815,273 +2057,25 @@
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
-            // flowPanelInterpolation
+            // tooltipTorchGpu
             // 
-            this.flowPanelInterpolation.Controls.Add(this.panTitleInputMedia);
-            this.flowPanelInterpolation.Controls.Add(this.panCopyInputMedia);
-            this.flowPanelInterpolation.Controls.Add(this.panEnableAlpha);
-            this.flowPanelInterpolation.Controls.Add(this.panHqJpegImport);
-            this.flowPanelInterpolation.Controls.Add(this.panTitleInterpHelpers);
-            this.flowPanelInterpolation.Controls.Add(this.panDedupe);
-            this.flowPanelInterpolation.Controls.Add(this.panLoop);
-            this.flowPanelInterpolation.Controls.Add(this.panSceneChange);
-            this.flowPanelInterpolation.Controls.Add(this.panAutoEnc);
-            this.flowPanelInterpolation.Controls.Add(this.panAutoEncInSbsMode);
-            this.flowPanelInterpolation.Controls.Add(this.panAutoEncBackups);
-            this.flowPanelInterpolation.Controls.Add(this.panAutoEncLowSpaceMode);
-            this.flowPanelInterpolation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowPanelInterpolation.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowPanelInterpolation.Location = new System.Drawing.Point(0, 0);
-            this.flowPanelInterpolation.Margin = new System.Windows.Forms.Padding(0);
-            this.flowPanelInterpolation.Name = "flowPanelInterpolation";
-            this.flowPanelInterpolation.Size = new System.Drawing.Size(762, 771);
-            this.flowPanelInterpolation.TabIndex = 94;
+            this.tooltipTorchGpu.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.tooltipTorchGpu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.tooltipTorchGpu.Location = new System.Drawing.Point(536, 7);
+            this.tooltipTorchGpu.Name = "tooltipTorchGpu";
+            this.tooltipTorchGpu.Size = new System.Drawing.Size(29, 21);
+            this.tooltipTorchGpu.TabIndex = 91;
+            this.tooltipTorchGpu.TabStop = false;
             // 
-            // panCopyInputMedia
+            // tooltipNcnnGpu
             // 
-            this.panCopyInputMedia.Controls.Add(this.label1);
-            this.panCopyInputMedia.Controls.Add(this.keepAudio);
-            this.panCopyInputMedia.Controls.Add(this.keepSubs);
-            this.panCopyInputMedia.Controls.Add(this.keepMeta);
-            this.panCopyInputMedia.Location = new System.Drawing.Point(0, 30);
-            this.panCopyInputMedia.Margin = new System.Windows.Forms.Padding(0);
-            this.panCopyInputMedia.Name = "panCopyInputMedia";
-            this.panCopyInputMedia.Size = new System.Drawing.Size(762, 30);
-            this.panCopyInputMedia.TabIndex = 5;
-            // 
-            // panEnableAlpha
-            // 
-            this.panEnableAlpha.Controls.Add(this.label25);
-            this.panEnableAlpha.Controls.Add(this.enableAlpha);
-            this.panEnableAlpha.Controls.Add(this.label4);
-            this.panEnableAlpha.Location = new System.Drawing.Point(0, 60);
-            this.panEnableAlpha.Margin = new System.Windows.Forms.Padding(0);
-            this.panEnableAlpha.Name = "panEnableAlpha";
-            this.panEnableAlpha.Size = new System.Drawing.Size(762, 30);
-            this.panEnableAlpha.TabIndex = 6;
-            // 
-            // panTitleInputMedia
-            // 
-            this.panTitleInputMedia.Controls.Add(this.label24);
-            this.panTitleInputMedia.Location = new System.Drawing.Point(0, 0);
-            this.panTitleInputMedia.Margin = new System.Windows.Forms.Padding(0);
-            this.panTitleInputMedia.Name = "panTitleInputMedia";
-            this.panTitleInputMedia.Size = new System.Drawing.Size(762, 30);
-            this.panTitleInputMedia.TabIndex = 7;
-            // 
-            // panHqJpegImport
-            // 
-            this.panHqJpegImport.Controls.Add(this.label63);
-            this.panHqJpegImport.Controls.Add(this.jpegFrames);
-            this.panHqJpegImport.Controls.Add(this.label74);
-            this.panHqJpegImport.Location = new System.Drawing.Point(0, 90);
-            this.panHqJpegImport.Margin = new System.Windows.Forms.Padding(0);
-            this.panHqJpegImport.Name = "panHqJpegImport";
-            this.panHqJpegImport.Size = new System.Drawing.Size(762, 30);
-            this.panHqJpegImport.TabIndex = 8;
-            // 
-            // panTitleInterpHelpers
-            // 
-            this.panTitleInterpHelpers.Controls.Add(this.label18);
-            this.panTitleInterpHelpers.Location = new System.Drawing.Point(0, 120);
-            this.panTitleInterpHelpers.Margin = new System.Windows.Forms.Padding(0);
-            this.panTitleInterpHelpers.Name = "panTitleInterpHelpers";
-            this.panTitleInterpHelpers.Size = new System.Drawing.Size(762, 30);
-            this.panTitleInterpHelpers.TabIndex = 9;
-            // 
-            // panDedupe
-            // 
-            this.panDedupe.Controls.Add(this.label2);
-            this.panDedupe.Controls.Add(this.dedupMode);
-            this.panDedupe.Controls.Add(this.dedupeSensLabel);
-            this.panDedupe.Controls.Add(this.mpDedupePanel);
-            this.panDedupe.Controls.Add(this.magickDedupePanel);
-            this.panDedupe.Location = new System.Drawing.Point(0, 150);
-            this.panDedupe.Margin = new System.Windows.Forms.Padding(0);
-            this.panDedupe.Name = "panDedupe";
-            this.panDedupe.Size = new System.Drawing.Size(762, 30);
-            this.panDedupe.TabIndex = 10;
-            // 
-            // panLoop
-            // 
-            this.panLoop.Controls.Add(this.label15);
-            this.panLoop.Controls.Add(this.enableLoop);
-            this.panLoop.Location = new System.Drawing.Point(0, 180);
-            this.panLoop.Margin = new System.Windows.Forms.Padding(0);
-            this.panLoop.Name = "panLoop";
-            this.panLoop.Size = new System.Drawing.Size(762, 30);
-            this.panLoop.TabIndex = 11;
-            // 
-            // panSceneChange
-            // 
-            this.panSceneChange.Controls.Add(this.label50);
-            this.panSceneChange.Controls.Add(this.scnDetect);
-            this.panSceneChange.Controls.Add(this.label51);
-            this.panSceneChange.Controls.Add(this.label52);
-            this.panSceneChange.Controls.Add(this.panel14);
-            this.panSceneChange.Controls.Add(this.scnDetectValue);
-            this.panSceneChange.Location = new System.Drawing.Point(0, 210);
-            this.panSceneChange.Margin = new System.Windows.Forms.Padding(0);
-            this.panSceneChange.Name = "panSceneChange";
-            this.panSceneChange.Size = new System.Drawing.Size(762, 30);
-            this.panSceneChange.TabIndex = 12;
-            // 
-            // panAutoEnc
-            // 
-            this.panAutoEnc.Controls.Add(this.label49);
-            this.panAutoEnc.Controls.Add(this.autoEncMode);
-            this.panAutoEnc.Location = new System.Drawing.Point(0, 240);
-            this.panAutoEnc.Margin = new System.Windows.Forms.Padding(0);
-            this.panAutoEnc.Name = "panAutoEnc";
-            this.panAutoEnc.Size = new System.Drawing.Size(762, 30);
-            this.panAutoEnc.TabIndex = 13;
-            // 
-            // panAutoEncInSbsMode
-            // 
-            this.panAutoEncInSbsMode.Controls.Add(this.label53);
-            this.panAutoEncInSbsMode.Controls.Add(this.sbsAllowAutoEnc);
-            this.panAutoEncInSbsMode.Location = new System.Drawing.Point(0, 270);
-            this.panAutoEncInSbsMode.Margin = new System.Windows.Forms.Padding(0);
-            this.panAutoEncInSbsMode.Name = "panAutoEncInSbsMode";
-            this.panAutoEncInSbsMode.Size = new System.Drawing.Size(762, 30);
-            this.panAutoEncInSbsMode.TabIndex = 14;
-            // 
-            // panAutoEncBackups
-            // 
-            this.panAutoEncBackups.Controls.Add(this.label16);
-            this.panAutoEncBackups.Controls.Add(this.autoEncBackupMode);
-            this.panAutoEncBackups.Controls.Add(this.label41);
-            this.panAutoEncBackups.Controls.Add(this.pictureBox2);
-            this.panAutoEncBackups.Location = new System.Drawing.Point(0, 300);
-            this.panAutoEncBackups.Margin = new System.Windows.Forms.Padding(0);
-            this.panAutoEncBackups.Name = "panAutoEncBackups";
-            this.panAutoEncBackups.Size = new System.Drawing.Size(762, 30);
-            this.panAutoEncBackups.TabIndex = 15;
-            // 
-            // panAutoEncLowSpaceMode
-            // 
-            this.panAutoEncLowSpaceMode.Controls.Add(this.label58);
-            this.panAutoEncLowSpaceMode.Controls.Add(this.label70);
-            this.panAutoEncLowSpaceMode.Controls.Add(this.alwaysWaitForAutoEnc);
-            this.panAutoEncLowSpaceMode.Location = new System.Drawing.Point(0, 330);
-            this.panAutoEncLowSpaceMode.Margin = new System.Windows.Forms.Padding(0);
-            this.panAutoEncLowSpaceMode.Name = "panAutoEncLowSpaceMode";
-            this.panAutoEncLowSpaceMode.Size = new System.Drawing.Size(762, 30);
-            this.panAutoEncLowSpaceMode.TabIndex = 16;
-            // 
-            // flowPanelAiOptions
-            // 
-            this.flowPanelAiOptions.Controls.Add(this.panTitleAiFramework);
-            this.flowPanelAiOptions.Controls.Add(this.panTorchGpus);
-            this.flowPanelAiOptions.Controls.Add(this.panNcnnGpus);
-            this.flowPanelAiOptions.Controls.Add(this.panNcnnThreads);
-            this.flowPanelAiOptions.Controls.Add(this.panTitleRife);
-            this.flowPanelAiOptions.Controls.Add(this.panUhdThresh);
-            this.flowPanelAiOptions.Controls.Add(this.panRifeCudaHalfPrec);
-            this.flowPanelAiOptions.Controls.Add(this.panTitleDainNcnn);
-            this.flowPanelAiOptions.Controls.Add(this.panDainNcnnTileSize);
-            this.flowPanelAiOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowPanelAiOptions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowPanelAiOptions.Location = new System.Drawing.Point(0, 0);
-            this.flowPanelAiOptions.Margin = new System.Windows.Forms.Padding(0);
-            this.flowPanelAiOptions.Name = "flowPanelAiOptions";
-            this.flowPanelAiOptions.Size = new System.Drawing.Size(762, 771);
-            this.flowPanelAiOptions.TabIndex = 95;
-            // 
-            // panTitleAiFramework
-            // 
-            this.panTitleAiFramework.Controls.Add(this.label32);
-            this.panTitleAiFramework.Location = new System.Drawing.Point(0, 0);
-            this.panTitleAiFramework.Margin = new System.Windows.Forms.Padding(0);
-            this.panTitleAiFramework.Name = "panTitleAiFramework";
-            this.panTitleAiFramework.Size = new System.Drawing.Size(762, 30);
-            this.panTitleAiFramework.TabIndex = 7;
-            // 
-            // panTorchGpus
-            // 
-            this.panTorchGpus.Controls.Add(this.label33);
-            this.panTorchGpus.Controls.Add(this.torchGpus);
-            this.panTorchGpus.Controls.Add(this.panel1);
-            this.panTorchGpus.Location = new System.Drawing.Point(0, 30);
-            this.panTorchGpus.Margin = new System.Windows.Forms.Padding(0);
-            this.panTorchGpus.Name = "panTorchGpus";
-            this.panTorchGpus.Size = new System.Drawing.Size(762, 30);
-            this.panTorchGpus.TabIndex = 5;
-            // 
-            // panNcnnGpus
-            // 
-            this.panNcnnGpus.Controls.Add(this.label5);
-            this.panNcnnGpus.Controls.Add(this.ncnnGpus);
-            this.panNcnnGpus.Controls.Add(this.panel2);
-            this.panNcnnGpus.Location = new System.Drawing.Point(0, 60);
-            this.panNcnnGpus.Margin = new System.Windows.Forms.Padding(0);
-            this.panNcnnGpus.Name = "panNcnnGpus";
-            this.panNcnnGpus.Size = new System.Drawing.Size(762, 30);
-            this.panNcnnGpus.TabIndex = 6;
-            // 
-            // panNcnnThreads
-            // 
-            this.panNcnnThreads.Controls.Add(this.label43);
-            this.panNcnnThreads.Controls.Add(this.label44);
-            this.panNcnnThreads.Controls.Add(this.ncnnThreads);
-            this.panNcnnThreads.Location = new System.Drawing.Point(0, 90);
-            this.panNcnnThreads.Margin = new System.Windows.Forms.Padding(0);
-            this.panNcnnThreads.Name = "panNcnnThreads";
-            this.panNcnnThreads.Size = new System.Drawing.Size(762, 30);
-            this.panNcnnThreads.TabIndex = 8;
-            // 
-            // panTitleRife
-            // 
-            this.panTitleRife.Controls.Add(this.label11);
-            this.panTitleRife.Location = new System.Drawing.Point(0, 120);
-            this.panTitleRife.Margin = new System.Windows.Forms.Padding(0);
-            this.panTitleRife.Name = "panTitleRife";
-            this.panTitleRife.Size = new System.Drawing.Size(762, 30);
-            this.panTitleRife.TabIndex = 9;
-            // 
-            // panUhdThresh
-            // 
-            this.panUhdThresh.Controls.Add(this.label29);
-            this.panUhdThresh.Controls.Add(this.uhdThresh);
-            this.panUhdThresh.Controls.Add(this.panel6);
-            this.panUhdThresh.Controls.Add(this.label30);
-            this.panUhdThresh.Location = new System.Drawing.Point(0, 150);
-            this.panUhdThresh.Margin = new System.Windows.Forms.Padding(0);
-            this.panUhdThresh.Name = "panUhdThresh";
-            this.panUhdThresh.Size = new System.Drawing.Size(762, 30);
-            this.panUhdThresh.TabIndex = 10;
-            // 
-            // panRifeCudaHalfPrec
-            // 
-            this.panRifeCudaHalfPrec.Controls.Add(this.label65);
-            this.panRifeCudaHalfPrec.Controls.Add(this.label66);
-            this.panRifeCudaHalfPrec.Controls.Add(this.rifeCudaFp16);
-            this.panRifeCudaHalfPrec.Location = new System.Drawing.Point(0, 180);
-            this.panRifeCudaHalfPrec.Margin = new System.Windows.Forms.Padding(0);
-            this.panRifeCudaHalfPrec.Name = "panRifeCudaHalfPrec";
-            this.panRifeCudaHalfPrec.Size = new System.Drawing.Size(762, 30);
-            this.panRifeCudaHalfPrec.TabIndex = 11;
-            // 
-            // panTitleDainNcnn
-            // 
-            this.panTitleDainNcnn.Controls.Add(this.label19);
-            this.panTitleDainNcnn.Location = new System.Drawing.Point(0, 210);
-            this.panTitleDainNcnn.Margin = new System.Windows.Forms.Padding(0);
-            this.panTitleDainNcnn.Name = "panTitleDainNcnn";
-            this.panTitleDainNcnn.Size = new System.Drawing.Size(762, 30);
-            this.panTitleDainNcnn.TabIndex = 12;
-            // 
-            // panDainNcnnTileSize
-            // 
-            this.panDainNcnnTileSize.Controls.Add(this.label27);
-            this.panDainNcnnTileSize.Controls.Add(this.label35);
-            this.panDainNcnnTileSize.Controls.Add(this.dainNcnnTilesize);
-            this.panDainNcnnTileSize.Controls.Add(this.panel12);
-            this.panDainNcnnTileSize.Location = new System.Drawing.Point(0, 240);
-            this.panDainNcnnTileSize.Margin = new System.Windows.Forms.Padding(0);
-            this.panDainNcnnTileSize.Name = "panDainNcnnTileSize";
-            this.panDainNcnnTileSize.Size = new System.Drawing.Size(762, 30);
-            this.panDainNcnnTileSize.TabIndex = 13;
+            this.tooltipNcnnGpu.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.tooltipNcnnGpu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.tooltipNcnnGpu.Location = new System.Drawing.Point(536, 7);
+            this.tooltipNcnnGpu.Name = "tooltipNcnnGpu";
+            this.tooltipNcnnGpu.Size = new System.Drawing.Size(29, 21);
+            this.tooltipNcnnGpu.TabIndex = 92;
+            this.tooltipNcnnGpu.TabStop = false;
             // 
             // SettingsForm
             // 
@@ -2121,43 +2115,37 @@
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
             this.tabListPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).EndInit();
-            this.mpDedupePanel.ResumeLayout(false);
-            this.magickDedupePanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dedupThresh)).EndInit();
-            this.aiOptsPage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).EndInit();
-            this.vidExportTab.ResumeLayout(false);
-            this.vidExportTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
-            this.debugTab.ResumeLayout(false);
-            this.debugTab.PerformLayout();
             this.flowPanelInterpolation.ResumeLayout(false);
+            this.panTitleInputMedia.ResumeLayout(false);
+            this.panTitleInputMedia.PerformLayout();
             this.panCopyInputMedia.ResumeLayout(false);
             this.panCopyInputMedia.PerformLayout();
             this.panEnableAlpha.ResumeLayout(false);
             this.panEnableAlpha.PerformLayout();
-            this.panTitleInputMedia.ResumeLayout(false);
-            this.panTitleInputMedia.PerformLayout();
             this.panHqJpegImport.ResumeLayout(false);
             this.panHqJpegImport.PerformLayout();
             this.panTitleInterpHelpers.ResumeLayout(false);
             this.panTitleInterpHelpers.PerformLayout();
             this.panDedupe.ResumeLayout(false);
             this.panDedupe.PerformLayout();
+            this.mpDedupePanel.ResumeLayout(false);
+            this.magickDedupePanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dedupThresh)).EndInit();
             this.panLoop.ResumeLayout(false);
             this.panLoop.PerformLayout();
             this.panSceneChange.ResumeLayout(false);
             this.panSceneChange.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scnDetectValue)).EndInit();
             this.panAutoEnc.ResumeLayout(false);
             this.panAutoEnc.PerformLayout();
             this.panAutoEncInSbsMode.ResumeLayout(false);
             this.panAutoEncInSbsMode.PerformLayout();
             this.panAutoEncBackups.ResumeLayout(false);
             this.panAutoEncBackups.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panAutoEncLowSpaceMode.ResumeLayout(false);
             this.panAutoEncLowSpaceMode.PerformLayout();
+            this.aiOptsPage.ResumeLayout(false);
             this.flowPanelAiOptions.ResumeLayout(false);
             this.panTitleAiFramework.ResumeLayout(false);
             this.panTitleAiFramework.PerformLayout();
@@ -2167,6 +2155,7 @@
             this.panNcnnGpus.PerformLayout();
             this.panNcnnThreads.ResumeLayout(false);
             this.panNcnnThreads.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).EndInit();
             this.panTitleRife.ResumeLayout(false);
             this.panTitleRife.PerformLayout();
             this.panUhdThresh.ResumeLayout(false);
@@ -2177,6 +2166,13 @@
             this.panTitleDainNcnn.PerformLayout();
             this.panDainNcnnTileSize.ResumeLayout(false);
             this.panDainNcnnTileSize.PerformLayout();
+            this.vidExportTab.ResumeLayout(false);
+            this.vidExportTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
+            this.debugTab.ResumeLayout(false);
+            this.debugTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipTorchGpu)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipNcnnGpu)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2207,13 +2203,11 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label24;
         private Cyotek.Windows.Forms.TabListPage aiOptsPage;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ComboBox torchGpus;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.ComboBox ncnnGpus;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panel8;
@@ -2339,5 +2333,7 @@
         public System.Windows.Forms.Panel panRifeCudaHalfPrec;
         public System.Windows.Forms.Panel panTitleDainNcnn;
         public System.Windows.Forms.Panel panDainNcnnTileSize;
+        private System.Windows.Forms.PictureBox tooltipTorchGpu;
+        private System.Windows.Forms.PictureBox tooltipNcnnGpu;
     }
 }

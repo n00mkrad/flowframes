@@ -31,13 +31,35 @@ namespace Flowframes.Forms
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Width, (Height * 1.5f).RoundToInt());
 
+            InitGpus();
             InitServers();
             LoadSettings();
             initialized = true;
             Task.Run(() => CheckModelCacheSize());
         }
 
-        void InitServers()
+        private void InitGpus ()
+        {
+            string tooltipTorch = "";
+            string tooltipNcnn = "";
+
+            for (int i = 0; i < NvApi.NvGpus.Count; i++)
+            {
+                torchGpus.Items.Add(i);
+                tooltipTorch += $"{i} = {NvApi.NvGpus[i].FullName} ({NvApi.NvGpus[i].GetVramGb().ToString("0.")} GB)\n";
+            }
+
+            foreach(var vkGpu in VulkanUtils.VkDevices)
+            {
+                ncnnGpus.Items.Add(vkGpu.Id);
+                tooltipNcnn += $"{vkGpu.Id} = {vkGpu.Name}\n";
+            }
+
+            toolTip1.SetToolTip(tooltipTorchGpu, tooltipTorch.Trim());
+            toolTip1.SetToolTip(tooltipNcnnGpu, tooltipNcnn.Trim());
+        }
+
+        private void InitServers()
         {
             serverCombox.Items.Clear();
             serverCombox.Items.Add($"Automatic (Closest)");

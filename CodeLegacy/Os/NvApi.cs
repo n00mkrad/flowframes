@@ -25,7 +25,7 @@ namespace Flowframes.Os
                 if (gpus.Length == 0)
                     return;
 
-                NvGpus = gpus.ToList();
+                NvGpus = gpus.OrderByDescending(g => g.GetVramGb()).ThenBy(g => g.FullName).ToList();
                 float mostVram = -1f;
 
                 foreach (PhysicalGPU gpu in gpus)
