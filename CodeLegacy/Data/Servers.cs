@@ -36,6 +36,8 @@ namespace Flowframes.Data
             await Task.Run(() => Init());
         }
 
+        private const int _defaultPing = 10000;
+
         public static void Init(ComboBox comboBox = null)
         {
             Dictionary<string[], long> serversPings = new Dictionary<string[], long>();
@@ -44,15 +46,29 @@ namespace Flowframes.Data
             {
                 try
                 {
-                    Ping p = new Ping();
-                    PingReply replyEur = p.Send(server.host, 2000);
-                    serversPings[new string[] { server.name, server.host, server.pattern }] = replyEur.RoundtripTime;
-                    Logger.Log($"[Servers] Ping to {server.host}: {replyEur.RoundtripTime} ms", true);
+                    long ping = _defaultPing;
+                    int attempts = 0;
+
+                    while(ping == _defaultPing && attempts < 3)
+                    {
+                        Ping p = new Ping();
+                        PingReply pReply = p.Send(server.host, 3000);
+
+                        if(pReply.RoundtripTime > 0)
+                        {
+                            ping = pReply.RoundtripTime;
+                        }
+
+                        attempts++;
+                    }
+
+                    serversPings[new string[] { server.name, server.host, server.pattern }] = ping;
+                    Logger.Log($"[Servers] Ping to {server.host}: {ping} ms", true);
                 }
                 catch (Exception e)
                 {
                     Logger.Log($"[Servers] Failed to ping {server.host}: {e.Message}", true);
-                    serversPings[new string[] { server.name, server.host, server.pattern }] = 10000;
+                    serversPings[new string[] { server.name, server.host, server.pattern }] = _defaultPing;
                 }
             }
 
