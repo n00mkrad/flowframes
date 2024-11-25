@@ -12,6 +12,7 @@ using System.Drawing;
 using Flowframes.MiscUtils;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json;
+using Flowframes.Ui;
 
 namespace Flowframes
 {
@@ -299,7 +300,7 @@ namespace Flowframes
             if (key == null)
                 key = "";
 
-            for (int i = 0; i < dict.Count; i++)
+            for (int i = 0; i < (dict == null ? 0 : dict.Count); i++)
             {
                 if (ignoreCase)
                 {
@@ -319,13 +320,13 @@ namespace Flowframes
                 return "";
         }
 
-        public static void FillFromEnum<TEnum>(this ComboBox comboBox, Dictionary<string, string> stringMap = null, int defaultIndex = -1, List<TEnum> exclusionList = null) where TEnum : Enum
+        public static void FillFromEnum<TEnum>(this ComboBox comboBox, Dictionary<string, string> stringMap = null, int defaultIndex = -1, List<TEnum> exclusionList = null, bool useKeyNames = false) where TEnum : Enum
         {
             if (exclusionList == null)
                 exclusionList = new List<TEnum>();
 
             var entriesToAdd = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Except(exclusionList);
-            var strings = entriesToAdd.Select(x => stringMap.Get(x.ToString(), true));
+            var strings = useKeyNames ? entriesToAdd.Select(x => UiUtils.PascalCaseToText($"{x}")) : entriesToAdd.Select(x => stringMap.Get($"{x}", true));
             comboBox.FillFromStrings(strings, stringMap, defaultIndex);
         }
 

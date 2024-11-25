@@ -1265,11 +1265,6 @@
             this.mpdecimateMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.mpdecimateMode.ForeColor = System.Drawing.Color.White;
             this.mpdecimateMode.FormattingEnabled = true;
-            this.mpdecimateMode.Items.AddRange(new object[] {
-            "Normal",
-            "High",
-            "Very High",
-            "Extreme"});
             this.mpdecimateMode.Location = new System.Drawing.Point(0, 0);
             this.mpdecimateMode.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
             this.mpdecimateMode.Name = "mpdecimateMode";

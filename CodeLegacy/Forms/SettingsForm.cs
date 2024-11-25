@@ -1,6 +1,5 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
-using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Ui;
@@ -30,15 +29,17 @@ namespace Flowframes.Forms
         {
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Width, (Height * 1.5f).RoundToInt());
+            mpdecimateMode.FillFromEnum<Enums.Interpolation.MpDecimateSens>(useKeyNames: true);
 
             InitGpus();
             InitServers();
             LoadSettings();
+            AddTooltipClickFunction();
             initialized = true;
             Task.Run(() => CheckModelCacheSize());
         }
 
-        private void InitGpus ()
+        private void InitGpus()
         {
             string tooltipTorch = "";
             string tooltipNcnn = "";
@@ -49,7 +50,7 @@ namespace Flowframes.Forms
                 tooltipTorch += $"{i} = {NvApi.NvGpus[i].FullName} ({NvApi.NvGpus[i].GetVramGb().ToString("0.")} GB)\n";
             }
 
-            foreach(var vkGpu in VulkanUtils.VkDevices)
+            foreach (var vkGpu in VulkanUtils.VkDevices)
             {
                 ncnnGpus.Items.Add(vkGpu.Id);
                 tooltipNcnn += $"{vkGpu.Id} = {vkGpu.Name}\n";
@@ -70,7 +71,7 @@ namespace Flowframes.Forms
             serverCombox.SelectedIndex = 0;
         }
 
-        public async Task CheckModelCacheSize ()
+        public async Task CheckModelCacheSize()
         {
             await Task.Delay(200);
 
@@ -97,7 +98,7 @@ namespace Flowframes.Forms
             Program.mainForm.LoadQuickSettings();
         }
 
-        void SaveSettings ()
+        void SaveSettings()
         {
             // Remove spaces...
             torchGpus.Text = torchGpus.Text.Replace(" ", "");
@@ -183,7 +184,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(dainNcnnTilesize);
             // Export
             ConfigParser.LoadGuiElement(minOutVidLength);
-            ConfigParser.LoadGuiElement(maxFps); 
+            ConfigParser.LoadGuiElement(maxFps);
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
             // Debugging
@@ -193,7 +194,7 @@ namespace Flowframes.Forms
             ConfigParser.LoadGuiElement(ffEncArgs);
         }
 
-        private void SetVisibility ()
+        private void SetVisibility()
         {
             // Dev options
             List<Control> devOptions = new List<Control> { panKeepTempFolder, };
@@ -215,6 +216,39 @@ namespace Flowframes.Forms
             panRifeCudaHalfPrec.SetVisible(NvApi.NvGpus.Count > 0 && availAis.Contains(Implementations.rifeCuda));
         }
 
+        private static List<Control> GetAllControls(Control parent)
+        {
+            var controls = new List<Control>();
+
+            foreach (Control ctrl in parent.Controls)
+            {
+                controls.Add(ctrl);
+
+                if (ctrl.HasChildren)
+                {
+                    controls.AddRange(GetAllControls(ctrl));
+                }
+            }
+
+            return controls;
+        }
+
+        private void AddTooltipClickFunction()
+        {
+            foreach (Control control in GetAllControls(this))
+            {
+                if(!(control is PictureBox))
+                    continue;
+
+                string tooltipText = toolTip1.GetToolTip(control);
+
+                if (tooltipText.IsEmpty())
+                    continue;
+
+                control.Click += (sender, e) => { MessageBox.Show(tooltipText, "Tooltip", MessageBoxButtons.OK, MessageBoxIcon.Information); };
+            }
+        }
+
         private void tempFolderLoc_SelectedIndexChanged(object sender, EventArgs e)
         {
             tempDirBrowseBtn.Visible = tempFolderLoc.SelectedIndex == 4;
@@ -230,7 +264,7 @@ namespace Flowframes.Forms
         private void tempDirBrowseBtn_Click(object sender, EventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = tempDirCustom.Text.Trim(), IsFolderPicker = true };
-            
+
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 tempDirCustom.Text = dialog.FileName;
 

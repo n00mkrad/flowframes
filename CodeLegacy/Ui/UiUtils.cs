@@ -4,6 +4,7 @@ using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.Os;
 using System;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Flowframes.Ui
@@ -147,6 +148,15 @@ namespace Flowframes.Ui
                     listView.Items.Insert(index + 1, selected);
                 }
             }
+        }
+
+        // TODO: Move to NmkdUtils once implemented
+        public static string PascalCaseToText(string s)
+        {
+            if (s.IsEmpty())
+                return "";
+
+            return Regex.Replace(s, "([A-Z])", " $1").Trim();
         }
     }
 }

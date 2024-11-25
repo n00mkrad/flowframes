@@ -79,6 +79,8 @@ namespace Flowframes.Forms.Main
             UiUtils.InitCombox(outSpeedCombox, 0);
             // Video Utils
             UiUtils.InitCombox(trimCombox, 0);
+            // Quick Settings
+            mpdecimateMode.FillFromEnum<Enums.Interpolation.MpDecimateSens>(useKeyNames: true);
 
             Program.mainForm = this;
             Logger.textbox = logBox;

@@ -16,19 +16,19 @@ namespace Flowframes
         public static string hdrFilter = @"-vf zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
         public static string pngCompr = "-compression_level 3";
 
-        public enum MpDecSensitivity { Normal = 4, High = 20, VeryHigh = 32, Extreme = 40 }
-
-        public static string GetMpdecimate(int sensitivity = 4, bool wrap = true)
+        public static Dictionary<Enums.Interpolation.MpDecimateSens, int> MpDecSensLookup = new Dictionary<Enums.Interpolation.MpDecimateSens, int>
         {
-            string mpd = $"mpdecimate=hi=64*1024:lo=64*{sensitivity}:frac=1.0";
-            return wrap ? mpd.Wrap() : mpd;
-        }
+            { Enums.Interpolation.MpDecimateSens.Normal, 4 },
+            { Enums.Interpolation.MpDecimateSens.High, 20 },
+            { Enums.Interpolation.MpDecimateSens.VeryHigh, 32 },
+            { Enums.Interpolation.MpDecimateSens.Extreme, 40 }
+        };
 
         public static string GetMpdecimate(bool wrap = true)
         {
             int mpdValIndex = Config.GetInt(Config.Key.mpdecimateMode);
-            var mpdVal = ((MpDecSensitivity[])Enum.GetValues(typeof(MpDecSensitivity)))[mpdValIndex];
-            string mpd = $"mpdecimate=hi=64*1024:lo=64*{(int)mpdVal}:frac=1.0";
+            int mpdVal = MpDecSensLookup[(Enums.Interpolation.MpDecimateSens)mpdValIndex];
+            string mpd = $"mpdecimate=hi=64*1024:lo=64*{mpdVal}:frac=1.0";
             return wrap ? mpd.Wrap() : mpd;
         }
 
