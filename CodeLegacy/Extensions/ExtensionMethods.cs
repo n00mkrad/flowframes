@@ -62,6 +62,9 @@ namespace Flowframes
         {
             try
             {
+                if (str.IsEmpty())
+                    return false;
+
                 return bool.Parse(str);
             }
             catch

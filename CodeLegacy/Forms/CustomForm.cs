@@ -8,11 +8,29 @@ namespace Flowframes.Forms
     public class CustomForm : Form
     {
         public Control FocusedControl { get { return this.GetControls().Where(c => c.Focused).FirstOrDefault(); } }
+        public List<Control> AllControls => GetAllControls(this);
 
         public bool AllowTextboxTab { get; set; } = true;
         public bool AllowEscClose { get; set; } = true;
 
         private List<Control> _tabOrderedControls;
+
+        private static List<Control> GetAllControls(Control parent)
+        {
+            var controls = new List<Control>();
+
+            foreach (Control ctrl in parent.Controls)
+            {
+                controls.Add(ctrl);
+
+                if (ctrl.HasChildren)
+                {
+                    controls.AddRange(GetAllControls(ctrl));
+                }
+            }
+
+            return controls;
+        }
 
         public void TabOrderInit(List<Control> tabOrderedControls, int defaultFocusIndex = 0)
         {

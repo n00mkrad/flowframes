@@ -14,15 +14,18 @@ using System.Windows.Forms;
 
 namespace Flowframes.Forms
 {
-    public partial class SettingsForm : Form
+    public partial class SettingsForm : CustomForm
     {
-        bool initialized = false;
+        private bool _initialized = false;
+        private AiInfo _currentAi = null;
 
-        public SettingsForm(int index = 0)
+        public SettingsForm(int tabIndex = 0, AiInfo currentAi = null)
         {
             AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
-            settingsTabList.SelectedIndex = index;
+
+            _currentAi = currentAi == null ? Program.mainForm.GetAi() : currentAi;
+            settingsTabList.SelectedIndex = tabIndex;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
@@ -30,12 +33,13 @@ namespace Flowframes.Forms
             MinimumSize = new Size(Width, Height);
             MaximumSize = new Size(Width, (Height * 1.5f).RoundToInt());
             mpdecimateMode.FillFromEnum<Enums.Interpolation.MpDecimateSens>(useKeyNames: true);
+            onlyShowRelevantSettings.Click += (s, ea) => SetVisibility();
 
             InitGpus();
             InitServers();
             LoadSettings();
             AddTooltipClickFunction();
-            initialized = true;
+            _initialized = true;
             Task.Run(() => CheckModelCacheSize());
         }
 
@@ -105,6 +109,7 @@ namespace Flowframes.Forms
             ncnnGpus.Text = ncnnGpus.Text.Replace(" ", "");
 
             // General
+            ConfigParser.SaveGuiElement(onlyShowRelevantSettings);
             ConfigParser.SaveComboxIndex(processingMode);
             ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
             ConfigParser.SaveComboxIndex(tempFolderLoc);
@@ -150,6 +155,7 @@ namespace Flowframes.Forms
 
         void LoadSettings()
         {
+            ConfigParser.LoadGuiElement(onlyShowRelevantSettings);
             // General
             ConfigParser.LoadComboxIndex(processingMode);
             ConfigParser.LoadGuiElement(maxVidHeight);
@@ -196,6 +202,8 @@ namespace Flowframes.Forms
 
         private void SetVisibility()
         {
+            bool onlyRelevant = onlyShowRelevantSettings.Checked;
+
             // Dev options
             List<Control> devOptions = new List<Control> { panKeepTempFolder, };
             devOptions.ForEach(c => c.SetVisible(Program.Debug));
@@ -205,37 +213,27 @@ namespace Flowframes.Forms
             legacyUntestedOptions.ForEach(c => c.SetVisible(Program.Debug));
 
             // AutoEnc options
-            bool autoEncEnabled = autoEncMode.SelectedIndex != 0;
+            bool autoEncPossible = !_currentAi.Piped;
+            autoEncMode.Visible = !(onlyRelevant && !autoEncPossible);
+            bool autoEncEnabled = autoEncMode.Visible && autoEncMode.SelectedIndex != 0;
             List<Control> autoEncOptions = new List<Control> { panAutoEncBackups, panAutoEncLowSpaceMode };
             autoEncOptions.ForEach(c => c.SetVisible(autoEncEnabled));
             panAutoEncInSbsMode.SetVisible(autoEncEnabled && panProcessingStyle.Visible);
 
             var availAis = Implementations.NetworksAvailable;
-            panTorchGpus.SetVisible(NvApi.NvGpus.Count > 0 && Python.IsPytorchReady());
-            panNcnnGpus.SetVisible(VulkanUtils.VkDevices.Count > 0);
-            panRifeCudaHalfPrec.SetVisible(NvApi.NvGpus.Count > 0 && availAis.Contains(Implementations.rifeCuda));
-        }
-
-        private static List<Control> GetAllControls(Control parent)
-        {
-            var controls = new List<Control>();
-
-            foreach (Control ctrl in parent.Controls)
-            {
-                controls.Add(ctrl);
-
-                if (ctrl.HasChildren)
-                {
-                    controls.AddRange(GetAllControls(ctrl));
-                }
-            }
-
-            return controls;
+            bool showTorchSettings = !(onlyRelevant && _currentAi.Backend != AiInfo.AiBackend.Pytorch);
+            panTorchGpus.SetVisible(showTorchSettings && NvApi.NvGpus.Count > 0 && Python.IsPytorchReady());
+            bool showNcnnSettings = !(onlyRelevant && _currentAi.Backend != AiInfo.AiBackend.Ncnn);
+            panNcnnGpus.SetVisible(showNcnnSettings && VulkanUtils.VkDevices.Count > 0);
+            bool showRifeCudaSettings = !(onlyRelevant && _currentAi != Implementations.rifeCuda);
+            panRifeCudaHalfPrec.SetVisible(showRifeCudaSettings && NvApi.NvGpus.Count > 0 && availAis.Contains(Implementations.rifeCuda));
+            bool showDainNcnnSettings = !(onlyRelevant && _currentAi != Implementations.dainNcnn);
+            new List<Control> { panTitleDainNcnn, panDainNcnnTileSize }.ForEach(c => c.SetVisible(showDainNcnnSettings && availAis.Contains(Implementations.dainNcnn)));
         }
 
         private void AddTooltipClickFunction()
         {
-            foreach (Control control in GetAllControls(this))
+            foreach (Control control in AllControls)
             {
                 if(!(control is PictureBox))
                     continue;
@@ -283,7 +281,7 @@ namespace Flowframes.Forms
 
         private void cmdDebugMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (initialized && cmdDebugMode.SelectedIndex == 2)
+            if (_initialized && cmdDebugMode.SelectedIndex == 2)
                 UiUtils.ShowMessageBox("If you enable this, you need to close the CMD window manually after the process has finished, otherwise processing will be paused!", UiUtils.MessageType.Warning);
         }
 

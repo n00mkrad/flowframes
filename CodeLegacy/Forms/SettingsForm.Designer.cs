@@ -126,9 +126,11 @@
             this.panTitleAiFramework = new System.Windows.Forms.Panel();
             this.label32 = new System.Windows.Forms.Label();
             this.panTorchGpus = new System.Windows.Forms.Panel();
+            this.tooltipTorchGpu = new System.Windows.Forms.PictureBox();
             this.label33 = new System.Windows.Forms.Label();
             this.torchGpus = new System.Windows.Forms.ComboBox();
             this.panNcnnGpus = new System.Windows.Forms.Panel();
+            this.tooltipNcnnGpu = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.ncnnGpus = new System.Windows.Forms.ComboBox();
             this.panNcnnThreads = new System.Windows.Forms.Panel();
@@ -183,8 +185,8 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
-            this.tooltipTorchGpu = new System.Windows.Forms.PictureBox();
-            this.tooltipNcnnGpu = new System.Windows.Forms.PictureBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.onlyShowRelevantSettings = new System.Windows.Forms.CheckBox();
             this.settingsTabList.SuspendLayout();
             this.generalTab.SuspendLayout();
             this.flowPanelApplication.SuspendLayout();
@@ -220,7 +222,9 @@
             this.flowPanelAiOptions.SuspendLayout();
             this.panTitleAiFramework.SuspendLayout();
             this.panTorchGpus.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipTorchGpu)).BeginInit();
             this.panNcnnGpus.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipNcnnGpu)).BeginInit();
             this.panNcnnThreads.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).BeginInit();
             this.panTitleRife.SuspendLayout();
@@ -231,8 +235,7 @@
             this.vidExportTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).BeginInit();
             this.debugTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tooltipTorchGpu)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tooltipNcnnGpu)).BeginInit();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // settingsTabList
@@ -249,7 +252,7 @@
             this.settingsTabList.ForeColor = System.Drawing.Color.DodgerBlue;
             this.settingsTabList.Location = new System.Drawing.Point(12, 62);
             this.settingsTabList.Name = "settingsTabList";
-            this.settingsTabList.Size = new System.Drawing.Size(920, 779);
+            this.settingsTabList.Size = new System.Drawing.Size(920, 427);
             this.settingsTabList.TabIndex = 0;
             this.settingsTabList.SelectedIndexChanged += new System.EventHandler(this.settingsTabList_SelectedIndexChanged);
             // 
@@ -1320,7 +1323,7 @@
             this.aiOptsPage.Controls.Add(this.flowPanelAiOptions);
             this.aiOptsPage.ForeColor = System.Drawing.Color.White;
             this.aiOptsPage.Name = "aiOptsPage";
-            this.aiOptsPage.Size = new System.Drawing.Size(762, 771);
+            this.aiOptsPage.Size = new System.Drawing.Size(762, 419);
             this.aiOptsPage.Text = "AI Specific Options";
             // 
             // flowPanelAiOptions
@@ -1339,7 +1342,7 @@
             this.flowPanelAiOptions.Location = new System.Drawing.Point(0, 0);
             this.flowPanelAiOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flowPanelAiOptions.Name = "flowPanelAiOptions";
-            this.flowPanelAiOptions.Size = new System.Drawing.Size(762, 771);
+            this.flowPanelAiOptions.Size = new System.Drawing.Size(762, 419);
             this.flowPanelAiOptions.TabIndex = 95;
             // 
             // panTitleAiFramework
@@ -1373,6 +1376,16 @@
             this.panTorchGpus.Size = new System.Drawing.Size(762, 30);
             this.panTorchGpus.TabIndex = 5;
             // 
+            // tooltipTorchGpu
+            // 
+            this.tooltipTorchGpu.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.tooltipTorchGpu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.tooltipTorchGpu.Location = new System.Drawing.Point(536, 7);
+            this.tooltipTorchGpu.Name = "tooltipTorchGpu";
+            this.tooltipTorchGpu.Size = new System.Drawing.Size(29, 21);
+            this.tooltipTorchGpu.TabIndex = 91;
+            this.tooltipTorchGpu.TabStop = false;
+            // 
             // label33
             // 
             this.label33.AutoSize = true;
@@ -1404,6 +1417,16 @@
             this.panNcnnGpus.Name = "panNcnnGpus";
             this.panNcnnGpus.Size = new System.Drawing.Size(762, 30);
             this.panNcnnGpus.TabIndex = 6;
+            // 
+            // tooltipNcnnGpu
+            // 
+            this.tooltipNcnnGpu.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
+            this.tooltipNcnnGpu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.tooltipNcnnGpu.Location = new System.Drawing.Point(536, 7);
+            this.tooltipNcnnGpu.Name = "tooltipNcnnGpu";
+            this.tooltipNcnnGpu.Size = new System.Drawing.Size(29, 21);
+            this.tooltipNcnnGpu.TabIndex = 92;
+            this.tooltipNcnnGpu.TabStop = false;
             // 
             // label5
             // 
@@ -1885,7 +1908,7 @@
             this.debugTab.Controls.Add(this.cmdDebugMode);
             this.debugTab.ForeColor = System.Drawing.Color.White;
             this.debugTab.Name = "debugTab";
-            this.debugTab.Size = new System.Drawing.Size(762, 419);
+            this.debugTab.Size = new System.Drawing.Size(762, 771);
             this.debugTab.Text = "Developer Options";
             // 
             // label7
@@ -2057,32 +2080,35 @@
             this.resetBtn.UseVisualStyleBackColor = false;
             this.resetBtn.Click += new System.EventHandler(this.resetBtn_Click);
             // 
-            // tooltipTorchGpu
+            // flowLayoutPanel1
             // 
-            this.tooltipTorchGpu.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.tooltipTorchGpu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.tooltipTorchGpu.Location = new System.Drawing.Point(536, 7);
-            this.tooltipTorchGpu.Name = "tooltipTorchGpu";
-            this.tooltipTorchGpu.Size = new System.Drawing.Size(29, 21);
-            this.tooltipTorchGpu.TabIndex = 91;
-            this.tooltipTorchGpu.TabStop = false;
+            this.flowLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.flowLayoutPanel1.Controls.Add(this.onlyShowRelevantSettings);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(683, 12);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(200, 40);
+            this.flowLayoutPanel1.TabIndex = 41;
             // 
-            // tooltipNcnnGpu
+            // onlyShowRelevantSettings
             // 
-            this.tooltipNcnnGpu.BackgroundImage = global::Flowframes.Properties.Resources.questmark_72px_bordeer;
-            this.tooltipNcnnGpu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.tooltipNcnnGpu.Location = new System.Drawing.Point(536, 7);
-            this.tooltipNcnnGpu.Name = "tooltipNcnnGpu";
-            this.tooltipNcnnGpu.Size = new System.Drawing.Size(29, 21);
-            this.tooltipNcnnGpu.TabIndex = 92;
-            this.tooltipNcnnGpu.TabStop = false;
+            this.onlyShowRelevantSettings.Checked = true;
+            this.onlyShowRelevantSettings.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.onlyShowRelevantSettings.ForeColor = System.Drawing.Color.White;
+            this.onlyShowRelevantSettings.Location = new System.Drawing.Point(9, 3);
+            this.onlyShowRelevantSettings.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+            this.onlyShowRelevantSettings.Name = "onlyShowRelevantSettings";
+            this.onlyShowRelevantSettings.Size = new System.Drawing.Size(179, 34);
+            this.onlyShowRelevantSettings.TabIndex = 0;
+            this.onlyShowRelevantSettings.Text = "Only show relevant settings";
+            this.onlyShowRelevantSettings.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.ClientSize = new System.Drawing.Size(944, 853);
+            this.ClientSize = new System.Drawing.Size(944, 501);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.resetBtn);
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.settingsTabList);
@@ -2151,8 +2177,10 @@
             this.panTitleAiFramework.PerformLayout();
             this.panTorchGpus.ResumeLayout(false);
             this.panTorchGpus.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipTorchGpu)).EndInit();
             this.panNcnnGpus.ResumeLayout(false);
             this.panNcnnGpus.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tooltipNcnnGpu)).EndInit();
             this.panNcnnThreads.ResumeLayout(false);
             this.panNcnnThreads.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ncnnThreads)).EndInit();
@@ -2171,8 +2199,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.minOutVidLength)).EndInit();
             this.debugTab.ResumeLayout(false);
             this.debugTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tooltipTorchGpu)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tooltipNcnnGpu)).EndInit();
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2335,5 +2362,7 @@
         public System.Windows.Forms.Panel panDainNcnnTileSize;
         private System.Windows.Forms.PictureBox tooltipTorchGpu;
         private System.Windows.Forms.PictureBox tooltipNcnnGpu;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.CheckBox onlyShowRelevantSettings;
     }
 }

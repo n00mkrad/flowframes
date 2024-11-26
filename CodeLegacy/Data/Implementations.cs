@@ -121,7 +121,6 @@ namespace Flowframes.Data
             return NetworksAll[0];
         }
 
-        // New: Use enums
         public static AiInfo GetAi(Ai ai)
         {
             if (AiLookup.TryGetValue(ai, out AiInfo aiObj))

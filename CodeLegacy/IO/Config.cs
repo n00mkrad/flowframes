@@ -259,6 +259,7 @@ namespace Flowframes.IO
                 return WriteDefault(keyStr, "");
             }
 
+            if (key == Key.onlyShowRelevantSettings) return WriteDefault(key, true);
             if (key == Key.disablePreview)        return WriteDefault(key, true);
             if (key == Key.maxVidHeight)          return WriteDefault(key, "2160");
             if (key == Key.clearLogOnInput)       return WriteDefault(key, true);
@@ -368,6 +369,7 @@ namespace Flowframes.IO
             mpdecimateMode,
             ncnnGpus,
             ncnnThreads,
+            onlyShowRelevantSettings,
             opusBitrate,
             processingMode,
             rifeCudaBufferSize,
