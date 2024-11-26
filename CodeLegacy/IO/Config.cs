@@ -169,7 +169,7 @@ namespace Flowframes.IO
 
         public static bool GetBool(string key, bool defaultVal)
         {
-            WriteIfDoesntExist(key.ToString(), (defaultVal ? true : false).ToString());
+            WriteIfDoesntExist(key, (defaultVal ? true : false).ToString());
             return bool.Parse(Get(key, Type.Bool));
         }
 
@@ -195,7 +195,7 @@ namespace Flowframes.IO
 
         public static int GetInt(string key, int defaultVal)
         {
-            WriteIfDoesntExist(key.ToString(), defaultVal.ToString());
+            WriteIfDoesntExist(key, defaultVal.ToString());
             return GetInt(key);
         }
 
@@ -221,7 +221,7 @@ namespace Flowframes.IO
 
         public static float GetFloat(string key, float defaultVal)
         {
-            WriteIfDoesntExist(key.ToString(), defaultVal.ToStringDot());
+            WriteIfDoesntExist(key, defaultVal.ToStringDot());
             return Get(key, Type.Float).GetFloat();
         }
 
@@ -239,7 +239,7 @@ namespace Flowframes.IO
 
         static void WriteIfDoesntExist (string key, string val)
         {
-            if (CachedValues.ContainsKey(key.ToString()))
+            if (CachedValues.ContainsKey(key))
                 return;
 
             Set(key, val);
