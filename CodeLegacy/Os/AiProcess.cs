@@ -206,7 +206,7 @@ namespace Flowframes.Os
             string uhdStr = InterpolateUtils.UseUhd() ? "--UHD" : "";
             string wthreads = $"--wthreads {2 * (int)interpFactor}";
             string rbuffer = $"--rbuffer {Config.GetInt(Config.Key.rifeCudaBufferSize, 200)}";
-            //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToStringDot()}";
+            //string scale = $"--scale {Config.GetFloat("rifeCudaScale", 1.0f).ToString()}";
             string prec = Config.GetBool(Config.Key.rifeCudaFp16) ? "--fp16" : "";
             string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --multi {interpFactor} {uhdStr} {wthreads} {rbuffer} {prec}";
 

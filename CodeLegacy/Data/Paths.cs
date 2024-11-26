@@ -35,7 +35,7 @@ namespace Flowframes.IO
 
 		public static string GetFrameOrderFilename(float factor)
 		{
-			return $"{frameOrderPrefix}-{factor.ToStringDot()}x.ini";
+			return $"{frameOrderPrefix}-{factor.ToString()}x.ini";
 		}
 
 		public static string GetFrameOrderFilenameChunk (int from, int to)

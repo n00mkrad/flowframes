@@ -610,10 +610,10 @@ namespace Flowframes.IO
 
             filename = filename.Replace("[NAME]", inName);
             filename = filename.Replace("[FULLNAME]", Path.GetFileName(curr.inPath));
-            filename = filename.Replace("[FACTOR]", curr.interpFactor.ToStringDot());
+            filename = filename.Replace("[FACTOR]", curr.interpFactor.ToString());
             filename = filename.Replace("[AI]", curr.ai.NameShort.Upper());
             filename = filename.Replace("[MODEL]", curr.model.Name.Remove(" "));
-            filename = filename.Replace("[FPS]", fps.ToStringDot("0.###"));
+            filename = filename.Replace("[FPS]", fps.ToString("0.###"));
             filename = filename.Replace("[ROUNDFPS]", fps.RoundToInt().ToString());
             filename = filename.Replace("[RES]", $"{outRes.Width}x{outRes.Height}");
             filename = filename.Replace("[H]", $"{outRes.Height}p");

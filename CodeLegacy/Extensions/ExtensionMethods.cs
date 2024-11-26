@@ -239,14 +239,6 @@ namespace Flowframes
             return filename + suffix + ext;
         }
 
-        public static string ToStringDot(this float f, string format = "")
-        {
-            if (string.IsNullOrWhiteSpace(format))
-                return f.ToString().Replace(",", ".");
-            else
-                return f.ToString(format).Replace(",", ".");
-        }
-
         public static string[] Split(this string str, string trimStr)
         {
             return str?.Split(new string[] { trimStr }, StringSplitOptions.None);

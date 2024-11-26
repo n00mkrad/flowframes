@@ -526,11 +526,11 @@ namespace Flowframes.Media
                 return "";
 
             if (itsScale > 4)
-                return $"-af atempo=0.5,atempo=0.5,atempo={((1f / itsScale) * 4).ToStringDot()}";
+                return $"-af atempo=0.5,atempo=0.5,atempo={((1f / itsScale) * 4).ToString()}";
             else if (itsScale > 2)
-                return $"-af atempo=0.5,atempo={((1f / itsScale) * 2).ToStringDot()}";
+                return $"-af atempo=0.5,atempo={((1f / itsScale) * 2).ToString()}";
             else
-                return $"-af atempo={(1f / itsScale).ToStringDot()}";
+                return $"-af atempo={(1f / itsScale).ToString()}";
         }
 
         public static string GetSubCodecForContainer(string containerExt)

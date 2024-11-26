@@ -210,7 +210,7 @@ namespace Flowframes.IO
 
         public static float GetFloat(Key key, float defaultVal)
         {
-            WriteIfDoesntExist(key.ToString(), defaultVal.ToStringDot());
+            WriteIfDoesntExist(key.ToString(), defaultVal.ToString());
             return Get(key, Type.Float).GetFloat();
         }
 
@@ -221,7 +221,7 @@ namespace Flowframes.IO
 
         public static float GetFloat(string key, float defaultVal)
         {
-            WriteIfDoesntExist(key, defaultVal.ToStringDot());
+            WriteIfDoesntExist(key, defaultVal.ToString());
             return Get(key, Type.Float).GetFloat();
         }
 
