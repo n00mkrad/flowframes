@@ -108,19 +108,6 @@ namespace Flowframes.Data
             }
         }
 
-        // Legacy: Get by name
-        public static AiInfo GetAi(string aiName)
-        {
-            foreach (var ai in NetworksAll)
-            {
-                if (ai.NameInternal == aiName)
-                    return ai;
-            }
-
-            Logger.Log($"AI implementation lookup failed for '{aiName}'! This should not happen! Please tell the developer!");
-            return NetworksAll[0];
-        }
-
         public static AiInfo GetAi(Ai ai)
         {
             if (AiLookup.TryGetValue(ai, out AiInfo aiObj))
