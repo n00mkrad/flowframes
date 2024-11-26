@@ -381,7 +381,7 @@ namespace Flowframes.Os
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();
 
-            VapourSynthUtils.VsSettings vsSettings = new VapourSynthUtils.VsSettings()
+            var vsSettings = new VapourSynthUtils.VsSettings()
             {
                 InterpSettings = Interpolate.currentSettings,
                 ModelDir = mdl,
@@ -409,7 +409,8 @@ namespace Flowframes.Os
                 AiStarted(rifeNcnnVs, 1000, inPath);
             }
 
-            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {VapourSynthUtils.CreateScript(vsSettings).Wrap()} {VapourSynthUtils.GetVsPipeArgs(vsSettings)} -c y4m - | {pipedTargetArgs}";
+            string vsPipeArgs = $"{VapourSynthUtils.CreateScript(vsSettings).Wrap()} {VapourSynthUtils.GetVsPipeArgs(vsSettings)} -c y4m -";
+            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {vsPipeArgs} | {pipedTargetArgs}";
 
             Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
 

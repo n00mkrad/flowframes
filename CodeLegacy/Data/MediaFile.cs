@@ -41,6 +41,7 @@ namespace Flowframes.Data
         public bool SequenceInitialized = false;
         public bool IsVfr = false;
         public List<float> InputTimestamps = new List<float>();
+        public List<float> InputTimestampDurations = new List<float>();
 
         public int FileCount = 1;
         public int FrameCount { get { return VideoStreams.Count > 0 ? VideoStreams[0].FrameCount : 0; } }

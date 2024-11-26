@@ -32,6 +32,7 @@ namespace Flowframes
         public string framesFolder;
         public string interpFolder;
         public bool inputIsFrames;
+        public bool dedupe;
 
         private Size _inputResolution = new Size();
         public Size InputResolution

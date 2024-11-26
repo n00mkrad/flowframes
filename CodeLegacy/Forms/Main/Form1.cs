@@ -308,6 +308,7 @@ namespace Flowframes.Forms.Main
                 inPath = inputTbox.Text.Trim(),
                 outPath = outputTbox.Text.Trim(),
                 ai = ai,
+                dedupe = Config.GetInt(Config.Key.dedupMode) != 0,
                 inFpsDetected = currInFpsDetected,
                 inFps = currInFps,
                 interpFactor = interpFactorCombox.GetFloat(),

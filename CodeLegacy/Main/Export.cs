@@ -387,7 +387,16 @@ namespace Flowframes.Main
 
         public static void MuxTimestamps(string vidPath)
         {
-            Logger.Log($"Muxing timestamps for '{vidPath}'", hidden: true);
+            if (I.currentSettings.dedupe)
+            {
+                Logger.Log($"{nameof(MuxTimestamps)}: Dedupe was used; won't mux timestamps for '{vidPath}'", hidden: true);
+                return;
+            }
+
+            Logger.Log($"{nameof(MuxTimestamps)}: Muxing timestamps for '{vidPath}'", hidden: true);
+            float avgDuration = I.currentMediaFile.InputTimestampDurations.Average();
+            I.currentMediaFile.InputTimestamps.Add(I.currentMediaFile.InputTimestamps.Last() + avgDuration); // Add extra frame using avg. duration, needed for duration matching or looping
+
             var resampledTs = I.currentMediaFile.GetResampledTimestamps(I.currentMediaFile.InputTimestamps, I.currentSettings.interpFactor);
             var tsFileLines = new List<string>() { "# timecode format v2" };
 
@@ -401,14 +410,19 @@ namespace Flowframes.Main
             string outPath = Path.ChangeExtension(vidPath, ".tmp.mkv");
             string args = $"mkvmerge --output {outPath.Wrap()} --timestamps \"0:{tsFile}\" {vidPath.Wrap()}";
             var outputMux = NUtilsTemp.OsUtils.RunCommand($"cd /D {Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir).Wrap()} && {args}");
-            Logger.Log(outputMux, hidden: true);
 
             // Check if file exists and is not too small (min. 80% of input file)
             if (File.Exists(outPath) && ((double)new FileInfo(outPath).Length / (double)new FileInfo(vidPath).Length) > 0.8d)
             {
-                Logger.Log($"Deleting '{vidPath}' and moving '{outPath}' to '{vidPath}'", hidden: true);
+                Logger.Log($"{nameof(MuxTimestamps)}: Deleting '{vidPath}' and moving '{outPath}' to '{vidPath}'", hidden: true);
                 File.Delete(vidPath);
                 File.Move(outPath, vidPath);
+            }
+            else
+            {
+                Logger.Log(outputMux, hidden: true);
+                Logger.Log($"{nameof(MuxTimestamps)}: Timestamp muxing failed, keeping original video file", hidden: true);
+                IoUtils.TryDeleteIfExists(outPath);
             }
         }
     }

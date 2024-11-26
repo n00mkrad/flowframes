@@ -68,7 +68,7 @@ namespace Flowframes.Media
 
             if (resampleFps.Float >= 0.1f)
             {
-                if (Interpolate.currentMediaFile.IsVfr)
+                if (Interpolate.currentMediaFile.IsVfr && !Interpolate.currentSettings.dedupe)
                 {
                     Logger.Log($"Ignoring {resampleFps.Float} FPS limit as this is currently unsupported for variable framerate videos.");
                 }

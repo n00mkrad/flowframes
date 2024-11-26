@@ -154,12 +154,12 @@ namespace Flowframes.Os
             {
                 if (s.Loop)
                 {
-                    l.Add($"clip = clip.std.Trim(0, {targetFrameCountMatchDuration - 1}) # Trim, loop enabled"); // -1 because we use index, not count
+                    l.Add($"clip = clip.std.Trim(length={targetFrameCountMatchDuration}) # Trim, loop enabled");
                 }
                 else
                 {
                     if (!s.MatchDuration)
-                        l.Add($"clip = clip.std.Trim(0, {targetFrameCountTrue - 1}) # Trim, loop disabled, duration matching disabled"); // -1 because we use index, not count
+                        l.Add($"clip = clip.std.Trim(length={targetFrameCountTrue}) # Trim, loop disabled, duration matching disabled");
                 }
             }
 
