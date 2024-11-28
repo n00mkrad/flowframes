@@ -70,7 +70,7 @@ namespace Flowframes.Main
 
         public static string GetTempFolderLoc(string inPath, string outPath)
         {
-            string basePath = Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA"), "Temp", "Flowframes");
+            string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp", "Flowframes");
             int tempFolderLoc = Config.GetInt(Config.Key.tempFolderLoc);
 
             switch (tempFolderLoc)
@@ -96,7 +96,7 @@ namespace Flowframes.Main
                     break;
             }
 
-            string folderName = Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(30, false) + ".tmp";
+            string folderName = Path.GetFileNameWithoutExtension(inPath).StripBadChars().Remove(" ").Trunc(35, false) + "_tmp";
             return Path.Combine(basePath, folderName);
         }
 
@@ -131,23 +131,17 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                string fpsLimitValue = Config.Get(Config.Key.maxFps);
-                float fpsLimit = (fpsLimitValue.Contains("/") ? new Fraction(fpsLimitValue).Float : fpsLimitValue.GetFloat());
-                int maxFps = s.outSettings.Encoder.GetInfo().MaxFramerate;
+                float fpsLimit = s.outFpsResampled.Float;
+                int maxEncoderFps = s.outSettings.Encoder.GetInfo().MaxFramerate;
 
-                if (passes && s.outFps.Float < 1f || (s.outFps.Float > maxFps && !(fpsLimit > 0 && fpsLimit <= maxFps)))
+                if (passes && s.outFps.Float < 1f || (s.outFps.Float > maxEncoderFps && !(fpsLimit > 0 && fpsLimit <= maxEncoderFps)))
                 {
                     string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
-                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.Float}).\nMust be 1-{maxFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");
+                    UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.Float}).\nMust be 1-{maxEncoderFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");
                     passes = false;
                 }
 
-                float fpsLimitFloat = fpsLimitValue.GetFloat();
-
-                if (fpsLimitFloat > 0 && fpsLimitFloat < s.outFps.Float)
-                    Interpolate.InterpProgressMultiplier = s.outFps.Float / fpsLimitFloat;
-                else
-                    Interpolate.InterpProgressMultiplier = 1f;
+                I.InterpProgressMultiplier = s.FpsResampling ? s.outFps.Float / fpsLimit : 1f;
 
                 if (!passes)
                     I.Cancel("Invalid settings detected.", true);

@@ -19,8 +19,7 @@ namespace Flowframes.Main
 {
     class Export
     {
-        private static string MaxFps => Config.Get(Config.Key.maxFps);
-        private static Fraction MaxFpsFrac => new Fraction(MaxFps);
+        private static Fraction MaxFpsFrac => I.currentSettings.outFpsResampled;
 
         public static async Task ExportFrames(string path, string outFolder, OutputSettings exportSettings, bool stepByStep)
         {
@@ -67,7 +66,7 @@ namespace Flowframes.Main
             }
             catch (Exception e)
             {
-                Logger.Log("FramesToVideo Error: " + e.Message, false);
+                Logger.Log($"{nameof(ExportFrames)} Error: {e.Message}", false);
                 UiUtils.ShowMessageBox("An error occured while trying to convert the interpolated frames to a video.\nCheck the log for details.", UiUtils.MessageType.Error);
             }
         }
@@ -79,7 +78,7 @@ namespace Flowframes.Main
             bool fpsLimit = MaxFpsFrac.Float > 0f && s.outFps.Float > MaxFpsFrac.Float;
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
             VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);
-            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.outFps, s.outItsScale, extraData.Rotation);
+            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.FpsResampling ? s.outFpsResampled : s.outFps, s.outItsScale, extraData.Rotation);
             string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? MaxFpsFrac : new Fraction(), extraData, s.outSettings);
 
             // For EXR, force bt709 input flags. Not sure if this really does anything, EXR 
@@ -121,8 +120,7 @@ namespace Flowframes.Main
             Enums.Encoding.Encoder desiredFormat = I.currentSettings.outSettings.Encoder;
             string availableFormat = Path.GetExtension(IoUtils.GetFilesSorted(framesPath, "*.*")[0]).Remove(".").Upper();
 
-            Fraction maxFps = new Fraction(MaxFps);
-            bool fpsLimit = maxFps.Float > 0f && I.currentSettings.outFps.Float > maxFps.Float;
+            bool fpsLimit = MaxFpsFrac.Float > 0f && I.currentSettings.outFps.Float > MaxFpsFrac.Float;
             bool encodeFullFpsSeq = !(fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0);
             string framesFile = Path.Combine(framesPath.GetParentDir(), Paths.GetFrameOrderFilename(I.currentSettings.interpFactor));
 
@@ -141,8 +139,8 @@ namespace Flowframes.Main
             if (fpsLimit)
             {
                 string outputFolderPath = Path.Combine(I.currentSettings.outPath, await IoUtils.GetCurrentExportFilename(fpsLimit: true, isImgSeq: true));
-                Logger.Log($"Exporting {desiredFormat.ToString().Upper()} frames to '{Path.GetFileName(outputFolderPath)}' (Resampled to {maxFps} FPS)...");
-                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, 1, I.currentSettings.outFps, maxFps, desiredFormat, OutputUtils.GetImgSeqQ(I.currentSettings.outSettings));
+                Logger.Log($"Exporting {desiredFormat.ToString().Upper()} frames to '{Path.GetFileName(outputFolderPath)}' (Resampled to {MaxFpsFrac} FPS)...");
+                await FfmpegEncode.FramesToFrames(framesFile, outputFolderPath, 1, I.currentSettings.outFps, MaxFpsFrac, desiredFormat, OutputUtils.GetImgSeqQ(I.currentSettings.outSettings));
             }
 
             if (!stepByStep)
@@ -389,24 +387,19 @@ namespace Flowframes.Main
         {
             if (I.currentSettings.dedupe)
             {
-                Logger.Log($"{nameof(MuxTimestamps)}: Dedupe was used; won't mux timestamps for '{vidPath}'", hidden: true);
+                Logger.Log($"{nameof(MuxTimestamps)}: Dedupe was used; won't mux timestamps.", hidden: true);
+                return;
+            }
+
+            if(I.currentMediaFile.IsVfr && I.currentMediaFile.OutputFrameIndexes != null && I.currentMediaFile.OutputFrameIndexes.Count > 0)
+            {
+                Logger.Log($"{nameof(MuxTimestamps)}: CFR conversion due to FPS limit was applied (picked {I.currentMediaFile.OutputFrameIndexes.Count} frames for {I.currentSettings.outFpsResampled} FPS); won't mux timestamps.", hidden: true);
                 return;
             }
 
             Logger.Log($"{nameof(MuxTimestamps)}: Muxing timestamps for '{vidPath}'", hidden: true);
-            float avgDuration = I.currentMediaFile.InputTimestampDurations.Average();
-            I.currentMediaFile.InputTimestamps.Add(I.currentMediaFile.InputTimestamps.Last() + avgDuration); // Add extra frame using avg. duration, needed for duration matching or looping
-
-            var resampledTs = I.currentMediaFile.GetResampledTimestamps(I.currentMediaFile.InputTimestamps, I.currentSettings.interpFactor);
-            var tsFileLines = new List<string>() { "# timecode format v2" };
-
-            for (int i = 0; i < (resampledTs.Count - 1); i++)
-            {
-                tsFileLines.Add((resampledTs[i] * 1000f).ToString("0.000000"));
-            }
-
-            string tsFile = Path.Combine(Paths.GetSessionDataPath(), "ts.out.txt");
-            File.WriteAllLines(tsFile, tsFileLines);
+            string tsFile = Path.Combine(Paths.GetSessionDataPath(), "ts.txt");
+            TimestampUtils.WriteTsFile(I.currentMediaFile.OutputTimestamps, tsFile);
             string outPath = Path.ChangeExtension(vidPath, ".tmp.mkv");
             string args = $"mkvmerge --output {outPath.Wrap()} --timestamps \"0:{tsFile}\" {vidPath.Wrap()}";
             var outputMux = NUtilsTemp.OsUtils.RunCommand($"cd /D {Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir).Wrap()} && {args}");
@@ -414,14 +407,14 @@ namespace Flowframes.Main
             // Check if file exists and is not too small (min. 80% of input file)
             if (File.Exists(outPath) && ((double)new FileInfo(outPath).Length / (double)new FileInfo(vidPath).Length) > 0.8d)
             {
-                Logger.Log($"{nameof(MuxTimestamps)}: Deleting '{vidPath}' and moving '{outPath}' to '{vidPath}'", hidden: true);
+                Logger.Log($"{nameof(MuxTimestamps)}: Deleting original '{vidPath}' and moving muxed '{outPath}' to '{vidPath}'", hidden: true);
                 File.Delete(vidPath);
                 File.Move(outPath, vidPath);
             }
             else
             {
-                Logger.Log(outputMux, hidden: true);
                 Logger.Log($"{nameof(MuxTimestamps)}: Timestamp muxing failed, keeping original video file", hidden: true);
+                Logger.Log(outputMux, hidden: true);
                 IoUtils.TryDeleteIfExists(outPath);
             }
         }

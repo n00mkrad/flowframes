@@ -321,29 +321,6 @@ namespace Flowframes.Forms.Main
             return s;
         }
 
-        public InterpSettings UpdateCurrentSettings(InterpSettings settings)
-        {
-            SetTab(interpOptsTab.Name);
-            string inPath = inputTbox.Text.Trim();
-
-            if (settings.inPath != inPath)     // If path changed, get new instance
-            {
-                Logger.Log($"settings.inPath ({settings.inPath}) mismatches GUI inPath ({settings.inPath} - Returning fresh instance", true);
-                return GetCurrentSettings();
-            }
-
-            settings.inPath = inPath;
-            settings.ai = GetAi();
-            settings.inFpsDetected = currInFpsDetected;
-            settings.inFps = currInFps;
-            settings.interpFactor = interpFactorCombox.GetFloat();
-            settings.outFps = settings.inFps * settings.interpFactor;
-            settings.outSettings = GetOutputSettings();
-            settings.model = GetModel(GetAi());
-
-            return settings;
-        }
-
         public void LoadBatchEntry(InterpSettings entry)
         {
             inputTbox.Text = entry.inPath;

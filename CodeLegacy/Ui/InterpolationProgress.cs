@@ -136,7 +136,7 @@ namespace Flowframes.Ui
             if (I.canceled) return;
             interpolatedInputFramesCount = ((frames / I.currentSettings.interpFactor).RoundToInt() - 1);
             //ResumeUtils.Save();
-            target = (target / Interpolate.InterpProgressMultiplier).RoundToInt();
+            target = (target / I.InterpProgressMultiplier).RoundToInt();
             frames = frames.Clamp(0, target);
 
             if (_framesAtTime == null)

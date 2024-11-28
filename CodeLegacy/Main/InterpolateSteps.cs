@@ -20,17 +20,7 @@ namespace Flowframes.Main
             canceled = false;
             Program.mainForm.SetWorking(true);
 
-            if(currentSettings == null)
-            {
-                Logger.Log($"[SBS] Getting new current settings", true);
-                currentSettings = Program.mainForm.GetCurrentSettings();
-            }
-            else
-            {
-                Logger.Log($"[SBS] Updating current settings", true);
-                currentSettings = Program.mainForm.UpdateCurrentSettings(currentSettings);
-            }
-
+            currentSettings = Program.mainForm.GetCurrentSettings();
             currentSettings.RefreshAlpha();
             currentSettings.stepByStep = true;
 

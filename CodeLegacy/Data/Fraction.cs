@@ -2,11 +2,13 @@
 
 namespace Flowframes.Data
 {
-    public struct Fraction
+    public class Fraction
     {
-        public long Numerator;
-        public long Denominator;
+        public long Numerator = 0;
+        public long Denominator = 1;
         public static Fraction Zero = new Fraction(0, 0);
+
+        public Fraction() { }
 
         public Fraction(long numerator, long denominator)
         {
@@ -22,18 +24,6 @@ namespace Flowframes.Data
             }
         }
 
-        public Fraction(long numerator, Fraction denominator)
-        {
-            //divide the numerator by the denominator fraction
-            this = new Fraction(numerator, 1) / denominator;
-        }
-
-        public Fraction(Fraction numerator, long denominator)
-        {
-            //multiply the numerator fraction by 1 over the denominator
-            this = numerator * new Fraction(1, denominator);
-        }
-
         public Fraction(Fraction fraction)
         {
             Numerator = fraction.Numerator;
@@ -44,7 +34,9 @@ namespace Flowframes.Data
         {
             Numerator = (value * 10000f).RoundToInt();
             Denominator = 10000;
-            this = GetReduced();
+            var reducedFrac = GetReduced();
+            Numerator = reducedFrac.Numerator;
+            Denominator = reducedFrac.Denominator;
         }
 
         public Fraction(string text)
@@ -76,7 +68,9 @@ namespace Flowframes.Data
                     else
                     {
                         // Use float constructor if not a whole number
-                        this = new Fraction(numFloat);
+                        var floatFrac = new Fraction(numFloat);
+                        Numerator = floatFrac.Numerator;
+                        Denominator = floatFrac.Denominator;
                     }
                    
                     return;

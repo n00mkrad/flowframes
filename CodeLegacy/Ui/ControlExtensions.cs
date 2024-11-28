@@ -61,5 +61,10 @@ namespace Flowframes.Ui
                 control.Visible = false;
             }
         }
+
+        public static void Invoke(this Control control, MethodInvoker action)
+        {
+            control.Invoke(action);
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace Flowframes.Media
             return output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).Count();
         }
 
-        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction? defaultFps, bool countFrames, MediaFile mediaFile = null)
+        public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction defaultFps, bool countFrames, MediaFile mediaFile = null)
         {
             List<Stream> streamList = new List<Stream>();
 

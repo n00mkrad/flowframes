@@ -4,12 +4,9 @@ using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.MiscUtils;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace Flowframes
 {
@@ -19,10 +16,11 @@ namespace Flowframes
         public string outPath;
         public string FullOutPath { get; set; } = "";
         public AiInfo ai;
-        public string inPixFmt = "yuv420p";
         public Fraction inFps;
         public Fraction inFpsDetected;
         public Fraction outFps;
+        public Fraction outFpsResampled;
+        public bool FpsResampling => outFpsResampled != null && outFpsResampled.Float > 0.1f && outFpsResampled.Float < outFps.Float;
         public float outItsScale;
         public float interpFactor;
         public OutputSettings outSettings;
@@ -86,56 +84,23 @@ namespace Flowframes
 
         public InterpSettings() { }
 
-        public InterpSettings(string inPathArg, string outPathArg, AiInfo aiArg, Fraction inFpsDetectedArg, Fraction inFpsArg, float interpFactorArg, float itsScale, OutputSettings outSettingsArg, ModelCollection.ModelInfo modelArg)
-        {
-            inPath = inPathArg;
-            outPath = outPathArg;
-            ai = aiArg;
-            inFpsDetected = inFpsDetectedArg;
-            inFps = inFpsArg;
-            interpFactor = interpFactorArg;
-            outItsScale = itsScale;
-            outSettings = outSettingsArg;
-            model = modelArg;
-
-            InitArgs();
-        }
-
         public void InitArgs ()
         {
             outFps = inFps * (double)interpFactor;
-
+            outFpsResampled = new Fraction(Config.Get(Config.Key.maxFps));
             alpha = false;
             stepByStep = false;
-
             framesExt = "";
             interpExt = "";
-
-            try
-            {
-                tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);
-                framesFolder = Path.Combine(tempFolder, Paths.framesDir);
-                interpFolder = Path.Combine(tempFolder, Paths.interpDir);
-                inputIsFrames = IoUtils.IsPathDirectory(inPath);
-            }
-            catch
-            {
-                Logger.Log("Tried to create InterpSettings struct without an inpath. Can't set tempFolder, framesFolder and interpFolder.", true);
-                tempFolder = "";
-                framesFolder = "";
-                interpFolder = "";
-                inputIsFrames = false;
-            }
-
             _inputResolution = new Size(0, 0);
-
+            SetPaths(inPath);
             RefreshExtensions(ai: ai);
         }
 
-        public void UpdatePaths (string inPathArg, string outPathArg)
+        private void SetPaths (string inputPath)
         {
-            inPath = inPathArg;
-            outPath = outPathArg;
+            inPath = inputPath;
+            outPath = (Config.GetInt("outFolderLoc") == 0) ? inputPath.GetParentDir() : Config.Get("custOutDir").Trim();
             tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);
             framesFolder = Path.Combine(tempFolder, Paths.framesDir);
             interpFolder = Path.Combine(tempFolder, Paths.interpDir);

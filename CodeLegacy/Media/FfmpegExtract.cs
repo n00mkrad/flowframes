@@ -163,7 +163,7 @@ namespace Flowframes.Media
             }
         }
 
-        static bool AreImagesCompatible(string inpath, int maxHeight)
+        private static bool AreImagesCompatible(string inpath, int maxHeight)
         {
             NmkdStopwatch sw = new NmkdStopwatch();
             string[] validExtensions = Filetypes.imagesInterpCompat; // = new string[] { ".jpg", ".jpeg", ".png" };
@@ -203,17 +203,6 @@ namespace Flowframes.Media
                     Logger.Log($"Sequence not compatible: Not all images have the same dimensions.", true);
                     return false;
                 }
-
-                Logger.Log($"---> TODO: Modulo check for images? Or just check later and apply padding before interpolation if needed...", hidden: true);
-
-                // int div = GetModulo();
-                // bool allDivBy2 = randomSamples.All(i => (i.Width % div == 0) && (i.Height % div == 0));
-                // 
-                // if (!allDivBy2)
-                // {
-                //     Logger.Log($"Sequence not compatible: Not all image dimensions are divisible by {div}.", true);
-                //     return false;
-                // }
 
                 bool allSmallEnough = randomSamples.All(i => (i.Height <= maxHeight));
 

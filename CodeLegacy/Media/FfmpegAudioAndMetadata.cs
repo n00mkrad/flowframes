@@ -6,6 +6,7 @@ using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FfmpegUtils;
 using I = Flowframes.Interpolate;
 using Flowframes.Main;
+using System.Linq;
 
 namespace Flowframes.Media
 {
@@ -60,7 +61,7 @@ namespace Flowframes.Media
             string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
             string shortestArg = shortest ? "-shortest" : "";
 
-            if (I.currentMediaFile.IsVfr)
+            if (I.currentMediaFile.IsVfr && I.currentMediaFile.OutputTimestamps.Any())
             {
                 Export.MuxTimestamps(tempPath);
             }

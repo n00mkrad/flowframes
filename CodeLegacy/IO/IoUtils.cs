@@ -597,9 +597,7 @@ namespace Flowframes.IO
         public static async Task<string> GetCurrentExportFilename(bool fpsLimit, bool isImgSeq = false, bool includeExt = true)
         {
             InterpSettings curr = Interpolate.currentSettings;
-            string max = Config.Get(Config.Key.maxFps);
-            Fraction maxFps = max.Contains("/") ? new Fraction(max) : new Fraction(max.GetFloat());
-            float fps = fpsLimit ? maxFps.Float : curr.outFps.Float;
+            float fps = fpsLimit ? curr.outFpsResampled.Float : curr.outFps.Float;
 
             Size outRes = curr.OutputResolution; // TODO: Replace with EncodeResolution once implemented?
             string pattern = Config.Get(Config.Key.exportNamePattern);

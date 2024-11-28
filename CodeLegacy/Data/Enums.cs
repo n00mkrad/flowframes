@@ -2,6 +2,8 @@
 {
     public class Enums
     {
+        public enum Round { Near, Up, Down }
+
         public class Output
         {
             public enum Format { Mp4, Mkv, Webm, Mov, Avi, Gif, Images, Realtime };

@@ -172,6 +172,15 @@ namespace Flowframes.Os
             l.Add(Debugger.IsAttached ? $"clip = core.text.FrameNum(clip, alignment=9, scale={txtScale}) # Output frame counter" : "");
             l.Add(Debugger.IsAttached ? $"clip = core.text.Text(clip, f\"Frames: {{srcFrames}}/{{preInterpFrames}} -> {{len(clip)}} [{factor.GetString()}x]\", alignment=8, scale={txtScale})" : "");
             l.Add(Debugger.IsAttached ? $"clip = core.text.Text(clip, f\"targetMatchDuration: {targetFrameCountMatchDuration} - targetTrue: {targetFrameCountTrue} - endDupeCount: {endDupeCount}\", alignment=2, scale={txtScale})" : "");
+            
+            if(Interpolate.currentMediaFile.IsVfr && Interpolate.currentMediaFile.OutputFrameIndexes != null && Interpolate.currentMediaFile.OutputFrameIndexes.Count > 0 && s.InterpSettings.outFpsResampled.Float > 0.1f)
+            {
+                l.Add($"# Frames picked to resample VFR video to {s.InterpSettings.outFpsResampled.Float} FPS");
+                l.Add($"frameIndexes = [{string.Join(", ", Interpolate.currentMediaFile.OutputFrameIndexes)}]");
+                l.Add($"clip = core.std.Splice([clip[i] for i in frameIndexes if i < len(clip)])");
+                l.Add($"clip = core.std.AssumeFPS(clip, fpsnum={s.InterpSettings.outFpsResampled.Numerator}, fpsden={s.InterpSettings.outFpsResampled.Denominator})");
+            }
+
             l.Add($"clip.set_output()"); // Set output
             l.Add("");
 

@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using Utils = Flowframes.Main.InterpolateUtils;
+using System.Drawing.Imaging;
 
 namespace Flowframes
 {
@@ -27,7 +28,7 @@ namespace Flowframes
         public static MediaFile currentMediaFile;
         public static bool canceled = false;
         public static float InterpProgressMultiplier = 1f;
-        static Stopwatch sw = new Stopwatch();
+        private static Stopwatch sw = new Stopwatch();
 
         public static async Task Start()
         {
@@ -44,6 +45,11 @@ namespace Flowframes
             currentSettings.stepByStep = false;
             Program.mainForm.SetStatus("Starting...");
             sw.Restart();
+
+            if (currentMediaFile.IsVfr)
+            {
+                TimestampUtils.CalcTimestamps(currentMediaFile, currentSettings);
+            }
 
             if (!AutoEncodeResume.resumeNextRun && !(currentSettings.ai.Piped && !currentSettings.inputIsFrames /* && Config.GetInt(Config.Key.dedupMode) == 0) */))
             {

@@ -264,27 +264,21 @@ namespace Flowframes.Magick
 
         public static async Task CreateFramesFileVideo(string videoPath, bool loop)
         {
-            if (!Directory.Exists(Interpolate.currentSettings.tempFolder))
-                Directory.CreateDirectory(Interpolate.currentSettings.tempFolder);
-
+            Directory.CreateDirectory(Interpolate.currentSettings.tempFolder);
             Process ffmpeg = OsUtils.NewProcess(true);
             string baseCmd = $"/C cd /D {Path.Combine(IO.Paths.GetPkgPath(), IO.Paths.audioVideoDir).Wrap()}";
             string mpDec = FfmpegCommands.GetMpdecimate(wrap: false); // FfmpegCommands.GetMpdecimate((int)FfmpegCommands.MpDecSensitivity.Normal, false);
             ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
-            List<string> ffmpegOutputLines = (await Task.Run(() => OsUtils.GetProcStdOut(ffmpeg, true))).SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
+            var ffmpegOutputLines = (await Task.Run(() => OsUtils.GetProcStdOut(ffmpeg, true))).SplitIntoLines();
 
             var frames = new Dictionary<int, List<int>>();
-            var frameNums = new List<int>();
             int lastKeepFrameNum = 0;
 
-            for (int frameIdx = 0; frameIdx < ffmpegOutputLines.Count; frameIdx++)
+            for (int frameIdx = 0; frameIdx < ffmpegOutputLines.Length; frameIdx++)
             {
                 string line = ffmpegOutputLines[frameIdx];
-                bool drop = frameIdx != 0 && line.Contains(" drop ") && !line.Contains(" keep ");
-                // Console.WriteLine($"[Frame {frameIdx.ToString().PadLeft(6, '0')}] {(drop ? "DROP" : "KEEP")}");
-                // frameNums.Add(lastKeepFrameNum);
 
-                if (!drop)
+                if (line.Contains(" keep pts:"))
                 {
                     if (!frames.ContainsKey(frameIdx) || frames[frameIdx] == null)
                     {
@@ -293,13 +287,15 @@ namespace Flowframes.Magick
 
                     lastKeepFrameNum = frameIdx;
                 }
-                else
+                else if (line.Contains(" drop pts:"))
                 {
                     frames[lastKeepFrameNum].Add(frameIdx);
                 }
             }
 
             var inputFrames = new List<int>(frames.Keys);
+
+            Logger.Log($"Dedupe: Kept {inputFrames.Count}/{ffmpegOutputLines.Length} frames", true);
 
             if (loop)
             {

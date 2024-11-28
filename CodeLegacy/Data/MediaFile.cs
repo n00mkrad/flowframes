@@ -24,7 +24,7 @@ namespace Flowframes.Data
         public string Format;
         public string Title;
         public string Language;
-        public Fraction? InputRate = null;
+        public Fraction InputRate;
         public long DurationMs;
         public int StreamCount;
         public int TotalKbits;
@@ -42,6 +42,8 @@ namespace Flowframes.Data
         public bool IsVfr = false;
         public List<float> InputTimestamps = new List<float>();
         public List<float> InputTimestampDurations = new List<float>();
+        public List<float> OutputTimestamps = new List<float>();
+        public List<int> OutputFrameIndexes = null;
 
         public int FileCount = 1;
         public int FrameCount { get { return VideoStreams.Count > 0 ? VideoStreams[0].FrameCount : 0; } }
@@ -138,35 +140,6 @@ namespace Flowframes.Data
             DurationMs = await FfmpegCommands.GetDurationMs(path, this);
             FfmpegCommands.CheckVfr(path, this);
             TotalKbits = (await GetVideoInfo.GetFfprobeInfoAsync(path, GetVideoInfo.FfprobeMode.ShowFormat, "bit_rate")).GetInt() / 1000;
-        }
-
-        public List<float> GetResampledTimestamps(List<float> timestamps, double factor)
-        {
-            int originalCount = timestamps.Count;
-            int newCount = (int)Math.Round(originalCount * factor);
-            List<float> resampledTimestamps = new List<float>();
-
-            for (int i = 0; i < newCount; i++)
-            {
-                double x = i / factor;
-
-                if (x >= originalCount - 1)
-                {
-                    resampledTimestamps.Add(timestamps[originalCount - 1]);
-                }
-                else
-                {
-                    int index = (int)Math.Floor(x);
-                    double fraction = x - index;
-                    float startTime = timestamps[index];
-                    float endTime = timestamps[index + 1];
-
-                    float interpolatedTime = (float)(startTime + (endTime - startTime) * fraction);
-                    resampledTimestamps.Add(interpolatedTime);
-                }
-            }
-
-            return resampledTimestamps;
         }
 
         public string GetName()
