@@ -56,7 +56,7 @@ namespace Flowframes
                 Show(entry);
         }
 
-        public static void Show(LogEntry entry)
+        public static void Show(LogEntry entry, bool logToFile = true)
         {
             if (string.IsNullOrWhiteSpace(entry.logMessage))
                 return;
@@ -87,19 +87,24 @@ namespace Flowframes
             msg = msg.Replace("\n", Environment.NewLine);
 
             if (!entry.hidden && textbox != null)
-                textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + msg);
+                textbox.Invoke(() => textbox.AppendText((textbox.Text.Length > 1 ? Environment.NewLine : "") + msg));
 
             if (entry.replaceLastLine)
             {
                 textbox.Resume();
-                msg = "[REPL] " + msg;
+                msg = "[^] " + msg;
             }
 
             if (!entry.hidden)
                 msg = "[UI] " + msg;
 
-            LogToFile(msg, false, entry.filename);
+            if (logToFile)
+            {
+                LogToFile(msg, false, entry.filename);
+            }
         }
+
+        private const int _maxLogFileWriteAttempts = 10;
 
         public static void LogToFile(string logStr, bool noLineBreak, string filename)
         {
@@ -113,20 +118,25 @@ namespace Flowframes
             logStr = logStr.Replace(Environment.NewLine, " ").TrimWhitespaces();
             string time = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss");
 
-            try
+            string appendStr = noLineBreak ? $" {logStr}" : $"{Environment.NewLine}[{id.ToString().PadLeft(8, '0')}] [{time}]: {logStr}";
+            List<string> sessionLog = sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : new List<string>();
+            sessionLog.Add(appendStr);
+            if (sessionLog.Count > maxLogSize)
+                sessionLog.RemoveAt(0);
+            sessionLogs[filename] = sessionLog;
+
+            for(int attempt = 0; attempt < _maxLogFileWriteAttempts; attempt++)
             {
-                string appendStr = noLineBreak ? $" {logStr}" : $"{Environment.NewLine}[{id.ToString().PadLeft(8, '0')}] [{time}]: {logStr}";
-                List<string> sessionLog = sessionLogs.ContainsKey(filename) ? sessionLogs[filename] : new List<string>();
-                sessionLog.Add(appendStr);
-                if (sessionLog.Count > maxLogSize)
-                    sessionLog.RemoveAt(0);
-                sessionLogs[filename] = sessionLog;
-                File.AppendAllText(file, appendStr);
-                id++;
-            }
-            catch
-            {
-                // this if fine, i forgot why
+                try
+                {
+                    File.AppendAllText(file, appendStr);
+                    id++;
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine($"Failed to write to log file (attempt {attempt+1}/{_maxLogFileWriteAttempts})");
+                }
             }
         }
 
