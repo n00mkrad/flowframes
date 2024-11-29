@@ -71,6 +71,8 @@ namespace Flowframes.Main
             }
         }
 
+        private const bool _useNutPipe = true;
+
         public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
         {
             InterpSettings s = I.currentSettings;
@@ -78,7 +80,7 @@ namespace Flowframes.Main
             bool fpsLimit = MaxFpsFrac.Float > 0f && s.outFps.Float > MaxFpsFrac.Float;
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
             VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);
-            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(s.FpsResampling ? s.outFpsResampled : s.outFps, s.outItsScale, extraData.Rotation);
+            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(I.currentMediaFile.IsVfr ? s.outFpsResampled : s.outFps, s.outItsScale, extraData.Rotation);
             string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? MaxFpsFrac : new Fraction(), extraData, s.outSettings);
 
             // For EXR, force bt709 input flags. Not sure if this really does anything, EXR 
@@ -89,9 +91,8 @@ namespace Flowframes.Main
 
             if (ffplay)
             {
-                bool useNutPipe = true; // TODO: Make this bool a config flag
-                encArgs = useNutPipe ? "-c:v rawvideo -pix_fmt rgba" : $"-pix_fmt yuv444p16";
-                string format = useNutPipe ? "nut" : "yuv4mpegpipe";
+                encArgs = _useNutPipe ? "-c:v rawvideo -pix_fmt rgba" : $"-pix_fmt yuv444p16";
+                string format = _useNutPipe ? "nut" : "yuv4mpegpipe";
 
                 return
                     $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} -f {format} - | ffplay - " +
@@ -198,14 +199,14 @@ namespace Flowframes.Main
                 VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
                 await FfmpegEncode.FramesToVideo(framesFile, outPath, settings, fps, resampleFps, I.currentSettings.outItsScale, extraData);
                 await MuxOutputVideo(I.currentSettings.inPath, outPath);
-                await Loop(outPath, await GetLoopTimes());
+                await Loop(outPath, GetLoopTimes());
             }
         }
 
         public static async Task MuxPipedVideo(string inputVideo, string outputPath)
         {
             await MuxOutputVideo(inputVideo, Path.Combine(outputPath, outputPath));
-            await Loop(outputPath, await GetLoopTimes());
+            await Loop(outputPath, GetLoopTimes());
         }
 
         public static async Task ChunksToVideo(string tempFolder, string chunksFolder, string baseOutPath, bool isBackup = false)
@@ -268,7 +269,7 @@ namespace Flowframes.Main
                 await MuxOutputVideo(I.currentSettings.inPath, outPath, isBackup, !isBackup);
 
             if (!isBackup)
-                await Loop(outPath, await GetLoopTimes());
+                await Loop(outPath, GetLoopTimes());
         }
 
         public static async Task EncodeChunk(string outPath, string interpDir, int chunkNo, OutputSettings settings, int firstFrameNum, int framesAmount)
@@ -339,7 +340,7 @@ namespace Flowframes.Main
             await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt(Config.Key.loopMode) == 0);
         }
 
-        static async Task<int> GetLoopTimes()
+        private static int GetLoopTimes()
         {
             int times = -1;
             int minLength = Config.GetInt(Config.Key.minOutVidLength);
@@ -368,7 +369,13 @@ namespace Flowframes.Main
 
             if (I.currentSettings.inputIsFrames)
             {
-                Logger.Log("Skipping muxing from input step as there is no input video, only frames.", true);
+                Logger.Log("Skipping muxing additional streams from input as there is no input video, only frames.", true);
+                return;
+            }
+
+            if (I.currentMediaFile.Format.Upper() == "GIF")
+            {
+                Logger.Log("Skipping muxing additional streams from input as GIF can't have any audio or subtitles to copy", true);
                 return;
             }
 
@@ -379,7 +386,7 @@ namespace Flowframes.Main
             catch (Exception e)
             {
                 Logger.Log("Failed to merge audio/subtitles with output video!", !showLog);
-                Logger.Log("MergeAudio() Exception: " + e.Message, true);
+                Logger.Log($"{nameof(MuxOutputVideo)} Exception: {e.Message}", true);
             }
         }
 
