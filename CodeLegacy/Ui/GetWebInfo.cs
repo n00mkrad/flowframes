@@ -16,7 +16,7 @@ namespace Flowframes.Ui
                 string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/changelog.txt";
                 var client = new WebClient();
                 var str = await client.DownloadStringTaskAsync(new Uri(url));
-                newsLabel.Text = str;
+                newsLabel.Invoke(() => newsLabel.Text = str);
             }
             catch(Exception e)
             {
@@ -31,7 +31,7 @@ namespace Flowframes.Ui
                 string url = $"https://raw.githubusercontent.com/n00mkrad/flowframes/main/patrons.csv";
                 var client = new WebClient();
                 var csvData = await client.DownloadStringTaskAsync(new Uri(url));
-                patronsLabel.Text = ParsePatreonCsv(csvData);
+                patronsLabel.Invoke(() => patronsLabel.Text = ParsePatreonCsv(csvData));
             }
             catch (Exception e)
             {
