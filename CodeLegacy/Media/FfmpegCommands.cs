@@ -228,6 +228,19 @@ namespace Flowframes
 
             mediaFile.InputTimestampDurations = new List<float>(timestampDurations);
 
+            if(Config.GetInt(Config.Key.vfrHandling) == 1)
+            {
+                Logger.Log($"Ignoring VFR deviation threshold of {maxDeviationPercent.ToString("0.##")}%, force-enabling VFR mode due to settings");
+                mediaFile.IsVfr = true;
+                return;
+            }
+            else if (Config.GetInt(Config.Key.vfrHandling) == 2)
+            {
+                Logger.Log($"Ignoring VFR deviation threshold of {maxDeviationPercent.ToString("0.##")}%, force-disabling VFR mode due to settings");
+                mediaFile.IsVfr = false;
+                return;
+            }
+
             if (maxDeviationPercent > 20f)
             {
                 Logger.Log($"Max timestamp deviation is {maxDeviationPercent.ToString("0.##")}% or {maxDeviationMs} ms - Assuming VFR input!", hidden: true);

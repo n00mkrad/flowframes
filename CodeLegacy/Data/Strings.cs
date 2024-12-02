@@ -92,5 +92,12 @@ namespace Flowframes.Data
             { Enums.Encoding.Quality.JpegWebm.ImgLow.ToString(), "Low" },
             { Enums.Encoding.Quality.JpegWebm.ImgLowest.ToString(), "Lowest" },
         };
+
+        public static Dictionary<string, string> VfrMode = new Dictionary<string, string>
+        {
+            { Enums.VfrMode.Auto.ToString(), "Automatic" },
+            { Enums.VfrMode.All.ToString(), "Treat all videos as VFR" },
+            { Enums.VfrMode.None.ToString(), "Treat no videos as VFR" },
+        };
     }
 }

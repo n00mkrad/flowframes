@@ -285,11 +285,6 @@ namespace Flowframes
             return filePath.IsConcatFile() ? $"{rateStr}-safe 0 -f concat " : "";
         }
 
-        public static string GetFfmpegInputArg(this string filePath)
-        {
-            return $"{(filePath.IsConcatFile() ? filePath.GetConcStr() : "")} -i {filePath.Wrap()}";
-        }
-
         public static string Get(this Dictionary<string, string> dict, string key, bool returnKeyInsteadOfEmptyString = false, bool ignoreCase = false)
         {
             if (key == null)

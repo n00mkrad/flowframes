@@ -107,13 +107,13 @@ namespace Flowframes.Main
                 bool passes = true;
                 bool isFile = !IoUtils.IsPathDirectory(s.inPath);
 
-                if (passes && IoUtils.IsPathOneDrive(s.inPath) || IoUtils.IsPathOneDrive(s.outPath))
+                if (passes && (IoUtils.IsPathOneDrive(s.inPath) || IoUtils.IsPathOneDrive(s.outPath)))
                 {
                     UiUtils.ShowMessageBox("OneDrive paths are not supported. Please use a local path instead.");
                     passes = false;
                 }
 
-                if ((passes && isFile && !IoUtils.IsFileValid(s.inPath)) || (!isFile && !IoUtils.IsDirValid(s.inPath)))
+                if ((passes && (isFile && !IoUtils.IsFileValid(s.inPath)) || (!isFile && !IoUtils.IsDirValid(s.inPath))))
                 {
                     UiUtils.ShowMessageBox("Input path is not valid!");
                     passes = false;
@@ -125,7 +125,7 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                if (passes && s.tempFolder.StartsWith(@"\\") || IoUtils.IsPathOneDrive(s.tempFolder))
+                if (passes && (s.tempFolder.StartsWith(@"\\") || IoUtils.IsPathOneDrive(s.tempFolder)))
                 {
                     UiUtils.ShowMessageBox("Flowframes does not support network paths as a temp folder!\nPlease use a local path instead.");
                     passes = false;
@@ -134,7 +134,7 @@ namespace Flowframes.Main
                 float fpsLimit = s.outFpsResampled.Float;
                 int maxEncoderFps = s.outSettings.Encoder.GetInfo().MaxFramerate;
 
-                if (passes && s.outFps.Float < 1f || (s.outFps.Float > maxEncoderFps && !(fpsLimit > 0 && fpsLimit <= maxEncoderFps)))
+                if (passes && (s.outFps.Float < 1f || (s.outFps.Float > maxEncoderFps && !(fpsLimit > 0 && fpsLimit <= maxEncoderFps))))
                 {
                     string imgSeqNote = isFile ? "" : "\n\nWhen using an image sequence as input, you always have to specify the frame rate manually.";
                     UiUtils.ShowMessageBox($"Invalid output frame rate ({s.outFps.Float}).\nMust be 1-{maxEncoderFps}. Either lower the interpolation factor or use the \"Maximum Output Frame Rate\" option.{imgSeqNote}");

@@ -71,8 +71,6 @@ namespace Flowframes.Media
             float currentTargetTime = 0.0f; // Start time for the target frame rate
             int index = 0; // Index for iterating through the input timestamps
 
-            Console.WriteLine("--> Converting to constant frame rate...");
-
             while (currentTargetTime <= inputTimestamps.Last()) // Use ^1 to get the last element
             {
                 switch (roundMethod)
@@ -88,8 +86,10 @@ namespace Flowframes.Media
                         break;
                 }
 
-                // Debug message to show which frame index was picked
-                Console.WriteLine($"--> Frame {(outputTimestamps.Count + 1).ToString().PadLeft(3)} | Target Time: {(currentTargetTime * 1000f):F5} | Picked Input Index: {index} | Input TS: {(inputTimestamps[index] * 1000f):F3}");
+                if (Program.Debug)
+                {
+                    Console.WriteLine($"-> Frame {(outputTimestamps.Count + 1).ToString().PadLeft(4)} | Target Time: {(currentTargetTime * 1000f):F5} | Picked Input Index: {(index).ToString().PadLeft(4)} | Input TS: {(inputTimestamps[index] * 1000f):F3}");
+                }
 
                 // Add the closest timestamp to the output list, along with the index of the input timestamp
                 outputTimestamps.Add(new float[] { inputTimestamps[index], index });
@@ -98,6 +98,7 @@ namespace Flowframes.Media
                 currentTargetTime += targetFrameInterval;
             }
 
+            Logger.Log($"CFR Downsampling: Picked {outputTimestamps.Count} out of {inputTimestamps.Count} timestamps for {targetFrameRate} FPS (Round: {roundMethod})", true);
             return outputTimestamps;
         }
     }

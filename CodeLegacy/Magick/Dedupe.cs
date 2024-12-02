@@ -268,10 +268,11 @@ namespace Flowframes.Magick
             Process ffmpeg = OsUtils.NewProcess(true);
             string baseCmd = $"/C cd /D {Path.Combine(IO.Paths.GetPkgPath(), IO.Paths.audioVideoDir).Wrap()}";
             string mpDec = FfmpegCommands.GetMpdecimate(wrap: false); // FfmpegCommands.GetMpdecimate((int)FfmpegCommands.MpDecSensitivity.Normal, false);
-            ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
+            ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y {videoPath.GetConcStr()} -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
             var ffmpegOutputLines = (await Task.Run(() => OsUtils.GetProcStdOut(ffmpeg, true))).SplitIntoLines();
 
             var frames = new Dictionary<int, List<int>>();
+            int frameCount = 0;
             int lastKeepFrameNum = 0;
 
             for (int frameIdx = 0; frameIdx < ffmpegOutputLines.Length; frameIdx++)
@@ -286,16 +287,24 @@ namespace Flowframes.Magick
                     }
 
                     lastKeepFrameNum = frameIdx;
+                    frameCount++;
                 }
                 else if (line.Contains(" drop pts:"))
                 {
                     frames[lastKeepFrameNum].Add(frameIdx);
+                    frameCount++;
                 }
             }
 
             var inputFrames = new List<int>(frames.Keys);
+            float keepPercentage = (float)inputFrames.Count / frameCount * 100f;
+            Logger.Log($"Dedupe: Kept {inputFrames.Count}/{frameCount} frames ({keepPercentage.ToString("0.#")}%)");
 
-            Logger.Log($"Dedupe: Kept {inputFrames.Count}/{ffmpegOutputLines.Length} frames", true);
+            if (keepPercentage > 95f)
+            {
+                Logger.Log("Dedupe: Less than 5% duplicate frames detected, will not dedupe.");
+                Interpolate.currentSettings.dedupe = false;
+            }
 
             if (loop)
             {
@@ -303,7 +312,11 @@ namespace Flowframes.Magick
             }
 
             File.WriteAllText(Path.Combine(Interpolate.currentSettings.tempFolder, "input.json"), inputFrames.ToJson(true));
-            File.WriteAllText(Path.Combine(Interpolate.currentSettings.tempFolder, "dupes.test.json"), frames.ToJson(true));
+
+            if (Interpolate.currentSettings.dedupe)
+            {
+                File.WriteAllText(Path.Combine(Interpolate.currentSettings.tempFolder, "dupes.test.json"), frames.ToJson(true));
+            }
         }
     }
 }

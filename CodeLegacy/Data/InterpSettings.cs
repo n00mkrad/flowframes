@@ -99,6 +99,9 @@ namespace Flowframes
 
         private void SetPaths (string inputPath)
         {
+            if (!File.Exists(inputPath) && !Directory.Exists(inputPath))
+                return;
+
             inPath = inputPath;
             outPath = (Config.GetInt("outFolderLoc") == 0) ? inputPath.GetParentDir() : Config.Get("custOutDir").Trim();
             tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);

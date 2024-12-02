@@ -111,20 +111,6 @@ namespace Flowframes.IO
             }
         }
 
-        // Get using fixed key
-        public static string Get(Key key, string defaultVal)
-        {
-            WriteIfDoesntExist(key.ToString(), defaultVal);
-            return Get(key);
-        }
-
-        // Get using string
-        public static string Get(string key, string defaultVal)
-        {
-            WriteIfDoesntExist(key, defaultVal);
-            return Get(key);
-        }
-
         public static string Get(Key key, Type type = Type.String)
         {
             return Get(key.ToString(), type);
@@ -390,6 +376,7 @@ namespace Flowframes.IO
             lastOutputSettings,
             PerformedHwEncCheck,
             SupportedHwEncoders,
+            vfrHandling,
         }
     }
 }

@@ -204,19 +204,21 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            bool dedupe = Config.GetInt(Config.Key.dedupMode) != 0;
+            if (currentSettings.dedupe)
+            {
+                await Task.Run(async () => { await Dedupe.CreateDupesFile(currentSettings.framesFolder, currentSettings.framesExt); });
+            }
 
             if (!ai.Piped || (ai.Piped && currentSettings.inputIsFrames))
             {
-                await Task.Run(async () => { await Dedupe.CreateDupesFile(currentSettings.framesFolder, currentSettings.framesExt); });
                 await Task.Run(async () => { await FrameRename.Rename(); });
             }
-            else if (ai.Piped && dedupe)
+            else if (ai.Piped && currentSettings.dedupe)
             {
                 await Task.Run(async () => { await Dedupe.CreateFramesFileVideo(currentSettings.inPath, Config.GetBool(Config.Key.enableLoop)); });
             }
 
-            if (!ai.Piped || (ai.Piped && dedupe))
+            if (!ai.Piped || (ai.Piped && currentSettings.dedupe))
                 await Task.Run(async () => { await FrameOrder.CreateFrameOrderFile(currentSettings.tempFolder, Config.GetBool(Config.Key.enableLoop), currentSettings.interpFactor); });
 
             if (currentSettings.model.FixedFactors.Count() > 0 && (currentSettings.interpFactor != (int)currentSettings.interpFactor || !currentSettings.model.FixedFactors.Contains(currentSettings.interpFactor.RoundToInt())))
@@ -247,7 +249,7 @@ namespace Flowframes
                 tasks.Add(AiProcess.RunFlavrCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.Dir));
 
             if (ai.NameInternal == Implementations.dainNcnn.NameInternal)
-                tasks.Add(AiProcess.RunDainNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.Dir, Config.GetInt(Config.Key.dainNcnnTilesize, 512)));
+                tasks.Add(AiProcess.RunDainNcnn(currentSettings.framesFolder, outpath, currentSettings.interpFactor, currentSettings.model.Dir, Config.GetInt(Config.Key.dainNcnnTilesize)));
 
             if (ai.NameInternal == Implementations.xvfiCuda.NameInternal)
                 tasks.Add(AiProcess.RunXvfiCuda(currentSettings.framesFolder, currentSettings.interpFactor, currentSettings.model.Dir));

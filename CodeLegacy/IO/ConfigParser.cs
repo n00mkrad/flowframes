@@ -45,7 +45,7 @@ namespace Flowframes.IO
 
 		public static void SaveComboxIndex(ComboBox comboBox)
 		{
-			Config.Set(comboBox.Name, comboBox.SelectedIndex.ToString());
+            Config.Set(comboBox.Name, comboBox.SelectedIndex.Clamp(0, int.MaxValue).ToString());
 		}
 
 		public static void LoadGuiElement(ComboBox comboBox, string suffix = "")
@@ -70,7 +70,7 @@ namespace Flowframes.IO
 
 		public static void LoadComboxIndex(ComboBox comboBox)
 		{
-			comboBox.SelectedIndex = Config.GetInt(comboBox.Name);
+			comboBox.SelectedIndex = Config.GetInt(comboBox.Name).Clamp(0, int.MaxValue);
 		}
 	}
 }

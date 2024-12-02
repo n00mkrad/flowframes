@@ -335,7 +335,9 @@ namespace Flowframes.Main
 
         static async Task Loop(string outPath, int looptimes)
         {
-            if (looptimes < 1 || !Config.GetBool(Config.Key.enableLoop)) return;
+            if (looptimes < 1 || !Config.GetBool(Config.Key.enableLoop))
+                return;
+
             Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt(Config.Key.minOutVidLength)}s...");
             await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt(Config.Key.loopMode) == 0);
         }
@@ -347,7 +349,7 @@ namespace Flowframes.Main
             int minFrameCount = (minLength * I.currentSettings.outFps.Float).RoundToInt();
             int outFrames = (I.currentMediaFile.FrameCount * I.currentSettings.interpFactor).RoundToInt();
             if (outFrames / I.currentSettings.outFps.Float < minLength)
-                times = (int)Math.Ceiling((double)minFrameCount / (double)outFrames);
+                times = (int)Math.Ceiling((double)minFrameCount / outFrames);
             times--;    // Not counting the 1st play (0 loops)
             if (times <= 0) return -1;      // Never try to loop 0 times, idk what would happen, probably nothing
             return times;

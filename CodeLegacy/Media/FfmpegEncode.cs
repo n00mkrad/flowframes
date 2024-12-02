@@ -70,13 +70,12 @@ namespace Flowframes.Media
             {
                 if (Interpolate.currentMediaFile.IsVfr && !Interpolate.currentSettings.dedupe)
                 {
-                    // Logger.Log($"Ignoring {resampleFps.Float} FPS limit as this is currently unsupported for variable framerate videos.");
+                    Logger.Log($"Won't add fps filter as VFR handling already outputs at desired frame rate ({resampleFps.Float} FPS)", true);
                 }
                 else
                 {
                     filters.Add($"fps={resampleFps}");
                 }
-                // filters.Add($"fps={resampleFps}");
             }
 
             if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllColorValues())

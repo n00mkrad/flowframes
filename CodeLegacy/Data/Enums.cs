@@ -2,6 +2,7 @@
 {
     public class Enums
     {
+        public enum VfrMode { Auto, All, None }
         public enum Round { Near, Up, Down }
 
         public class Output

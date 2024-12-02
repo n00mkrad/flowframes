@@ -141,6 +141,8 @@
             this.cancelBtn = new System.Windows.Forms.Button();
             this.menuStripQueue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCurrentConfigurationToQueueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label5 = new System.Windows.Forms.Label();
+            this.vfrHandling = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -1163,6 +1165,8 @@
             // quickSettingsTab
             // 
             this.quickSettingsTab.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.quickSettingsTab.Controls.Add(this.vfrHandling);
+            this.quickSettingsTab.Controls.Add(this.label5);
             this.quickSettingsTab.Controls.Add(this.panel2);
             this.quickSettingsTab.Controls.Add(this.label20);
             this.quickSettingsTab.Controls.Add(this.maxFps);
@@ -1667,6 +1671,29 @@
             this.addCurrentConfigurationToQueueToolStripMenuItem.Text = "Add Current Configuration to Queue";
             this.addCurrentConfigurationToQueueToolStripMenuItem.Click += new System.EventHandler(this.addCurrentConfigurationToQueueToolStripMenuItem_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(6, 189);
+            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(185, 15);
+            this.label5.TabIndex = 91;
+            this.label5.Text = "Detect Variable Frame Rate Videos";
+            // 
+            // vfrHandling
+            // 
+            this.vfrHandling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.vfrHandling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.vfrHandling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vfrHandling.ForeColor = System.Drawing.Color.White;
+            this.vfrHandling.FormattingEnabled = true;
+            this.vfrHandling.Location = new System.Drawing.Point(280, 187);
+            this.vfrHandling.Name = "vfrHandling";
+            this.vfrHandling.Size = new System.Drawing.Size(249, 23);
+            this.vfrHandling.TabIndex = 92;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -1855,6 +1882,8 @@
         public System.Windows.Forms.TabPage quickSettingsTab;
         public System.Windows.Forms.TabPage abtTab;
         public System.Windows.Forms.TabPage welcomeTab;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox vfrHandling;
     }
 }
 

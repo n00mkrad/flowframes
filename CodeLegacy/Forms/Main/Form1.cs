@@ -35,6 +35,8 @@ namespace Flowframes.Forms.Main
 
         public bool ShowModelDownloader = false;
 
+        private Enums.VfrMode prevVfrMode = (Enums.VfrMode)(-1);
+
         protected override CreateParams CreateParams
         {
             get
@@ -68,6 +70,7 @@ namespace Flowframes.Forms.Main
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            Program.mainForm = this;
             Refresh();
             await Task.Delay(1);
 
@@ -77,12 +80,12 @@ namespace Flowframes.Forms.Main
             // Main Tab
             UiUtils.InitCombox(interpFactorCombox, 0);
             UiUtils.InitCombox(outSpeedCombox, 0);
-            // Video Utils
-            UiUtils.InitCombox(trimCombox, 0);
             // Quick Settings
+            UiUtils.InitCombox(trimCombox, 0);
             mpdecimateMode.FillFromEnum<Enums.Interpolation.MpDecimateSens>(useKeyNames: true);
+            vfrHandling.FillFromEnum<Enums.VfrMode>(stringMap: Strings.VfrMode);
+            vfrHandling.SelectedIndexChanged += (s, ev) => VfrModeChange();
 
-            Program.mainForm = this;
             Logger.textbox = logBox;
             VulkanUtils.Init();
             NvApi.Init();
@@ -101,17 +104,22 @@ namespace Flowframes.Forms.Main
             completionAction.SelectedIndex = 0;
         }
 
+        private void VfrModeChange()
+        {
+            var oldMode = (Enums.VfrMode)Config.GetInt(Config.Key.vfrHandling);
+            var newMode = ParseUtils.GetEnum<Enums.VfrMode>(vfrHandling.Text, stringMap: Strings.VfrMode);
+
+            if (newMode != oldMode)
+            {
+                SaveQuickSettings();
+                HandleInputFiles(new[] { inputTbox.Text });
+            }
+        }
+
         private void InitOutputUi()
         {
             comboxOutputFormat.FillFromEnum<Enums.Output.Format>(Strings.OutputFormat, 0);
             UpdateOutputUi();
-
-            if (Debugger.IsAttached)
-            {
-                Logger.Log($"Formats: {string.Join(", ", Enum.GetValues(typeof(Enums.Output.Format)).Cast<Enums.Output.Format>().Select(e => Strings.OutputFormat.Get(e.ToString())))}", true);
-                Logger.Log($"Encoders: {string.Join(", ", Enum.GetValues(typeof(Enums.Encoding.Encoder)).Cast<Enums.Encoding.Encoder>().Select(e => Strings.Encoder.Get(e.ToString())))}", true);
-                Logger.Log($"Pixel Formats: {string.Join(", ", Enum.GetValues(typeof(Enums.Encoding.PixelFormat)).Cast<Enums.Encoding.PixelFormat>().Select(e => Strings.PixelFormat.Get(e.ToString())))}", true);
-            }
         }
 
         public async void ResetOutputUi()
@@ -168,7 +176,7 @@ namespace Flowframes.Forms.Main
             labelOutput.Text = $"Set {string.Join(", ", infoStrings)}";
         }
 
-        async Task Checks()
+        private async Task Checks()
         {
             try
             {
@@ -187,14 +195,14 @@ namespace Flowframes.Forms.Main
             }
         }
 
-        void HandleArgs()
+        private void HandleArgs()
         {
             // Input & interpolation settings
 
             if (Cli.ValidFiles.Any())
             {
                 Logger.Log($"[CLI] Loading file(s): {string.Join(", ", Cli.ValidFiles)}", true);
-                DragDropHandler(Cli.ValidFiles.ToArray());
+                HandleInputFiles(Cli.ValidFiles.ToArray());
             }
 
             if (Cli.InterpAi != (Implementations.Ai)(-1))
@@ -403,7 +411,7 @@ namespace Flowframes.Forms.Main
             UpdateInputInfo();
         }
 
-        void InitAis()
+        private void InitAis()
         {
             bool pytorchAvailable = Python.IsPytorchReady();
 
@@ -457,7 +465,7 @@ namespace Flowframes.Forms.Main
             CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = inputTbox.Text.Trim(), IsFolderPicker = true };
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                DragDropHandler(new string[] { dialog.FileName });
+                HandleInputFiles(new string[] { dialog.FileName });
         }
 
         private void browseInputFileBtn_Click(object sender, EventArgs e)
@@ -465,7 +473,7 @@ namespace Flowframes.Forms.Main
             CommonOpenFileDialog dialog = new CommonOpenFileDialog { InitialDirectory = inputTbox.Text.Trim(), IsFolderPicker = false };
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                DragDropHandler(new string[] { dialog.FileName });
+                HandleInputFiles(new string[] { dialog.FileName });
         }
 
         private void browseOutBtn_Click(object sender, EventArgs e)
@@ -535,7 +543,7 @@ namespace Flowframes.Forms.Main
 
         private void inputTbox_DragDrop(object sender, DragEventArgs e)
         {
-            DragDropHandler((string[])e.Data.GetData(DataFormats.FileDrop));
+            HandleInputFiles((string[])e.Data.GetData(DataFormats.FileDrop));
         }
 
         void outputTbox_DragEnter(object sender, DragEventArgs e) { e.Effect = DragDropEffects.Copy; }
@@ -658,10 +666,10 @@ namespace Flowframes.Forms.Main
         {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             await Task.Delay(1); // Release drop
-            DragDropHandler(files);
+            HandleInputFiles(files);
         }
 
-        public void DragDropHandler(string[] files, bool first = true)
+        public void HandleInputFiles(string[] files)
         {
             if (Program.busy) return;
 
@@ -798,7 +806,7 @@ namespace Flowframes.Forms.Main
 
         #region Quick Settings
 
-        public void SaveQuickSettings(object sender, EventArgs e)
+        public void SaveQuickSettings(object sender = null, EventArgs e = null)
         {
             if (!_quickSettingsInitialized) return;
 
@@ -813,6 +821,7 @@ namespace Flowframes.Forms.Main
             ConfigParser.SaveGuiElement(scnDetect);
             ConfigParser.SaveGuiElement(scnDetectValue);
             ConfigParser.SaveGuiElement(maxFps);
+            ConfigParser.SaveComboxIndex(vfrHandling);
         }
 
         public void LoadQuickSettings(object sender = null, EventArgs e = null)
@@ -825,6 +834,7 @@ namespace Flowframes.Forms.Main
             ConfigParser.LoadGuiElement(scnDetect);
             ConfigParser.LoadGuiElement(scnDetectValue);
             ConfigParser.LoadGuiElement(maxFps);
+            ConfigParser.LoadComboxIndex(vfrHandling);
 
             _quickSettingsInitialized = true;
         }

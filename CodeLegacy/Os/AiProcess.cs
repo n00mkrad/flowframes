@@ -393,7 +393,7 @@ namespace Flowframes.Os
                 SceneDetectSensitivity = Config.GetBool(Config.Key.scnDetect) ? Config.GetFloat(Config.Key.scnDetectValue) * 0.7f : 0f,
                 Loop = Config.GetBool(Config.Key.enableLoop),
                 MatchDuration = Config.GetBool(Config.Key.fixOutputDuration),
-                Dedupe = Config.GetInt(Config.Key.dedupMode) != 0,
+                Dedupe = Interpolate.currentSettings.dedupe,
                 Realtime = rt,
                 Osd = Config.GetBool(Config.Key.vsRtShowOsd),
             };

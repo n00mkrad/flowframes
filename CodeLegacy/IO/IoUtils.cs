@@ -129,6 +129,9 @@ namespace Flowframes.IO
 
         public static bool IsPathOneDrive(string path)
         {
+            if (path.IsEmpty())
+                return false;
+
             return path.Lower().Replace("\\", "/").MatchesWildcard("*:/users/*/onedrive*");
         }
 
