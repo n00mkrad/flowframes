@@ -15,9 +15,7 @@ namespace Flowframes.Media
             if (Config.GetBool(Config.Key.PerformedHwEncCheck))
                 return;
 
-            Logger.Log($"Detecting hardare encoding support...");
             var statusForm = new SplashForm("Checking hardware encoders...", textSize: SplashForm.TextSize.Medium);
-
             var previousMainFormOpacity = Program.mainForm.Opacity;
 
             if (hideMainForm)
@@ -61,7 +59,11 @@ namespace Flowframes.Media
                     await Task.Delay(waitMs);
                 }
 
-                Logger.Log($"Available hardware encoders: {string.Join(", ", compEncsPretty)}");
+                if(compEncsPretty.Any())
+                {
+                    Logger.Log($"Available hardware encoders: {string.Join(", ", compEncsPretty)}");
+                }
+
                 Config.Set(Config.Key.SupportedHwEncoders, string.Join(",", compatEncoders));
                 Config.Set(Config.Key.PerformedHwEncCheck, true.ToString());
             }

@@ -297,7 +297,7 @@ namespace Flowframes.Os
             }
 
             if (!gpusVk.Any() && !gpusNv.Any())
-                return "No GPUs detected.";
+                return "No GPUs detected";
 
             string s = "";
 
