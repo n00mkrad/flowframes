@@ -141,6 +141,12 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
+                if(passes && (s.dedupe && I.currentMediaFile.IsVfr))
+                {
+                    UiUtils.ShowMessageBox($"Using de-duplication on VFR videos is currently not supported.\n\nGo to Quick Settings and either disable De-Duplication, or force VFR off.");
+                    passes = false;
+                }
+
                 I.InterpProgressMultiplier = s.FpsResampling ? s.outFps.Float / fpsLimit : 1f;
 
                 if (!passes)
