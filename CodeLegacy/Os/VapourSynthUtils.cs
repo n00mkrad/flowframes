@@ -138,7 +138,7 @@ namespace Flowframes.Os
 
             Fraction factor = new Fraction(s.Factor);
             string interpStr = alwaysPreferFactorOverFps || Interpolate.currentMediaFile.IsVfr ? $"factor_num={factor.Numerator}, factor_den={factor.Denominator}" : $"fps_num={outFps.Numerator}, fps_den={outFps.Denominator}";
-            l.Add($"clip = core.rife.RIFE(clip, {interpStr}, model_path={mdlPath}, gpu_id={s.GpuId}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
+            l.Add($"clip = core.rife.RIFE(clip, {interpStr}, model_path={mdlPath}, gpu_id={s.GpuId.ToString().Replace("-1", "None")}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
 
             if (s.Dedupe && !s.Realtime)
             {

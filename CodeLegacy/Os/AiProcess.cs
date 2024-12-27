@@ -26,7 +26,8 @@ namespace Flowframes.Os
         public static Stopwatch processTimeMulti = new Stopwatch();
 
         public static int lastStartupTimeMs = 1000;
-        static string lastInPath;
+        private static string lastInPath;
+        private static string NcnnGpuIds => Config.Get(Config.Key.ncnnGpus).Trim();
 
         public static void Kill()
         {
@@ -330,7 +331,7 @@ namespace Flowframes.Os
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.Lower()} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.Lower()} {ttaStr} {uhdStr} -g {NcnnGpuIds} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
 
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
 
@@ -379,7 +380,7 @@ namespace Flowframes.Os
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
             string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -loglevel warning -stats -y {await Export.GetPipedFfmpegCmd(rt)}";
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
-            int gpuId = Config.Get(Config.Key.ncnnGpus).Split(',')[0].GetInt();
+            int gpuId = NcnnGpuIds.Split(',')[0].GetInt();
 
             var vsSettings = new VapourSynthUtils.VsSettings()
             {
@@ -462,7 +463,7 @@ namespace Flowframes.Os
             int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt());
 
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.Lower()}" +
-                $" -t {NcnnUtils.GetNcnnTilesize(tilesize)} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j 2:1:2";
+                $" -t {NcnnUtils.GetNcnnTilesize(tilesize)} -g {NcnnGpuIds} -f {NcnnUtils.GetNcnnPattern()} -j 2:1:2";
 
             dain.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
             Logger.Log("Running DAIN...", false);
@@ -584,7 +585,7 @@ namespace Flowframes.Os
             string ttaStr = ""; // Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
             ifrnetNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +
-                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {Config.Get(Config.Key.ncnnGpus)} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.ifrnetNcnn)}";
+                $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {NcnnGpuIds} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.ifrnetNcnn)}";
 
             Logger.Log("cmd.exe " + ifrnetNcnn.StartInfo.Arguments, true);
 

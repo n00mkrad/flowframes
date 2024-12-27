@@ -262,7 +262,7 @@
             this.generalTab.Controls.Add(this.flowPanelApplication);
             this.generalTab.ForeColor = System.Drawing.Color.White;
             this.generalTab.Name = "generalTab";
-            this.generalTab.Size = new System.Drawing.Size(762, 771);
+            this.generalTab.Size = new System.Drawing.Size(762, 419);
             this.generalTab.Text = "Application";
             // 
             // flowPanelApplication
@@ -281,7 +281,7 @@
             this.flowPanelApplication.Location = new System.Drawing.Point(0, 0);
             this.flowPanelApplication.Margin = new System.Windows.Forms.Padding(0);
             this.flowPanelApplication.Name = "flowPanelApplication";
-            this.flowPanelApplication.Size = new System.Drawing.Size(762, 771);
+            this.flowPanelApplication.Size = new System.Drawing.Size(762, 419);
             this.flowPanelApplication.TabIndex = 96;
             // 
             // panProcessingStyle
@@ -700,7 +700,7 @@
             this.tabListPage2.Controls.Add(this.flowPanelInterpolation);
             this.tabListPage2.ForeColor = System.Drawing.Color.White;
             this.tabListPage2.Name = "tabListPage2";
-            this.tabListPage2.Size = new System.Drawing.Size(762, 771);
+            this.tabListPage2.Size = new System.Drawing.Size(762, 419);
             this.tabListPage2.Text = "Interpolation";
             // 
             // flowPanelInterpolation
@@ -722,7 +722,7 @@
             this.flowPanelInterpolation.Location = new System.Drawing.Point(0, 0);
             this.flowPanelInterpolation.Margin = new System.Windows.Forms.Padding(0);
             this.flowPanelInterpolation.Name = "flowPanelInterpolation";
-            this.flowPanelInterpolation.Size = new System.Drawing.Size(762, 771);
+            this.flowPanelInterpolation.Size = new System.Drawing.Size(762, 419);
             this.flowPanelInterpolation.TabIndex = 94;
             // 
             // panTitleInputMedia

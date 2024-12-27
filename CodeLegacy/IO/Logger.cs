@@ -3,6 +3,7 @@ using Flowframes.Ui;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -58,7 +59,10 @@ namespace Flowframes
 
         public static void Show(LogEntry entry, bool logToFile = true)
         {
-            if (string.IsNullOrWhiteSpace(entry.logMessage))
+            //if (entry.logMessage.Contains("frame order info"))
+            //    Debugger.Break();
+
+            if (entry.logMessage.IsEmpty())
                 return;
 
             string msg = entry.logMessage;
@@ -77,12 +81,18 @@ namespace Flowframes
             {
                 if (!entry.hidden && entry.replaceLastLine)
                 {
-                    textbox.Suspend();
-                    string[] lines = textbox.Text.SplitIntoLines();
-                    textbox.Text = string.Join(Environment.NewLine, lines.Take(lines.Count() - 1).ToArray());
+                    textbox.Invoke(new Action(() => {
+                        textbox.Suspend();
+                        string[] lines = textbox.Text.SplitIntoLines();
+                        textbox.Text = string.Join(Environment.NewLine, lines.Take(lines.Count() - 1).ToArray());
+                    }));
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.Message}\n{ex.StackTrace}");
+                if (Debugger.IsAttached) Debugger.Break();
+            }
 
             msg = msg.Replace("\n", Environment.NewLine);
 
@@ -91,7 +101,7 @@ namespace Flowframes
 
             if (entry.replaceLastLine)
             {
-                textbox.Resume();
+                textbox.Invoke(() => textbox.Resume());
                 msg = "[^] " + msg;
             }
 

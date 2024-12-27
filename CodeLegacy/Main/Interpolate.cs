@@ -35,7 +35,7 @@ namespace Flowframes
             if (!BatchProcessing.busy && Program.busy) return;
             canceled = false;
             Program.initialRun = false;
-            Program.mainForm.SetWorking(true);
+            Program.mainForm.Invoke(() => Program.mainForm.SetWorking(true));
             if (!Utils.InputIsValid(currentSettings)) return;     // General input checks
             if (!Utils.CheckPathValid(currentSettings.inPath)) return;           // Check if input path/file is valid
             if (!Utils.CheckAiAvailable(currentSettings.ai, currentSettings.model)) return;            // Check if selected AI pkg is installed
@@ -43,7 +43,7 @@ namespace Flowframes
             if (!(await Utils.CheckEncoderValid())) return;           // Check encoder compat
             Utils.ShowWarnings(currentSettings.interpFactor, currentSettings.ai);
             currentSettings.stepByStep = false;
-            Program.mainForm.SetStatus("Starting...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Starting..."));
             sw.Restart();
 
             if (currentMediaFile.IsVfr)
@@ -63,7 +63,7 @@ namespace Flowframes
             if (skip || canceled) return;
             await RunAi(currentSettings.interpFolder, currentSettings.ai);
             if (canceled) return;
-            Program.mainForm.SetProgress(100);
+            Program.mainForm.Invoke(() => Program.mainForm.SetProgress(100));
 
             if (!currentlyUsingAutoEnc)
             {
@@ -88,36 +88,36 @@ namespace Flowframes
         public static async Task Done()
         {
             await Cleanup();
-            Program.mainForm.SetWorking(false);
+            Program.mainForm.Invoke(() => Program.mainForm.SetWorking(false));
             Logger.Log("Total processing time: " + FormatUtils.Time(sw.Elapsed));
             sw.Stop();
 
             if (!BatchProcessing.busy)
                 OsUtils.ShowNotificationIfInBackground("Flowframes", $"Finished interpolation after {FormatUtils.Time(sw.Elapsed)}.");
 
-            Program.mainForm.InterpolationDone();
+            Program.mainForm.Invoke(() => Program.mainForm.InterpolationDone());
         }
 
         public static async Task Realtime ()
         {
             canceled = false;
 
-            Program.mainForm.SetWorking(true);
+            Program.mainForm.Invoke(() => Program.mainForm.SetWorking(true));
 
             if(currentSettings.ai.NameInternal != Implementations.rifeNcnnVs.NameInternal)
                 Cancel($"Real-time interpolation is only available when using {Implementations.rifeNcnnVs.FriendlyName}.");
 
             if (canceled) return;
 
-            Program.mainForm.SetStatus("Downloading models...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Downloading models..."));
             await ModelDownloader.DownloadModelFiles(currentSettings.ai, currentSettings.model.Dir);
 
             if (canceled) return;
 
-            Program.mainForm.SetStatus("Running real-time interpolation...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Running real-time interpolation..."));
             await AiProcess.RunRifeNcnnVs(currentSettings.framesFolder, "", currentSettings.interpFactor, currentSettings.model.Dir, true);
-            Program.mainForm.SetStatus("Ready");
-            Program.mainForm.SetWorking(false);
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Ready"));
+            Program.mainForm.Invoke(() => Program.mainForm.SetWorking(false));
         }
 
         public static async Task GetFrames()
@@ -127,7 +127,7 @@ namespace Flowframes
 
             if (Config.GetBool(Config.Key.scnDetect) && !currentSettings.ai.Piped)
             {
-                Program.mainForm.SetStatus("Extracting scenes from video...");
+                Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Extracting scenes from video..."));
                 await FfmpegExtract.ExtractSceneChanges(currentSettings.inPath, Path.Combine(currentSettings.tempFolder, Paths.scenesDir), new Fraction(), currentSettings.inputIsFrames, currentSettings.framesExt);
             }
 
@@ -140,7 +140,7 @@ namespace Flowframes
         public static async Task ExtractFrames(string inPath, string outPath, bool alpha)
         {
             if (canceled) return;
-            Program.mainForm.SetStatus("Extracting frames from video...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Extracting frames from video..."));
             currentSettings.RefreshExtensions(InterpSettings.FrameType.Import);
             bool mpdecimate = Config.GetInt(Config.Key.dedupMode) == 2;
             Size res = await Utils.GetOutputResolution(FfmpegCommands.ModuloMode.ForEncoding, inPath, print: true);
@@ -170,7 +170,7 @@ namespace Flowframes
         {
             if (canceled) return;
 
-            Program.mainForm.SetStatus("Processing frames...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Processing frames..."));
 
             int extractedFrames = IoUtils.GetAmountOfFiles(currentSettings.framesFolder, false, "*" + currentSettings.framesExt);
 
@@ -226,7 +226,7 @@ namespace Flowframes
 
             if (canceled) return;
 
-            Program.mainForm.SetStatus("Downloading models...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Downloading models..."));
             await ModelDownloader.DownloadModelFiles(ai, currentSettings.model.Dir);
 
             if (canceled) return;
@@ -263,18 +263,19 @@ namespace Flowframes
                 tasks.Add(AutoEncode.MainLoop(outpath));
             }
 
-            Program.mainForm.SetStatus("Running AI...");
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Running AI..."));
             await Task.WhenAll(tasks);
         }
 
         public static void Cancel(string reason = "", bool noMsgBox = false)
         {
-            if (currentSettings == null)
+            if (currentSettings == null || canceled)
                 return;
 
             canceled = true;
-            Program.mainForm.SetStatus("Canceled.");
-            Program.mainForm.SetProgress(0);
+
+            Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Canceled."));
+            Program.mainForm.Invoke(() => Program.mainForm.SetProgress(0));
             AiProcess.Kill();
             AvProcess.Kill();
 
@@ -296,8 +297,8 @@ namespace Flowframes
             }
 
             AutoEncode.busy = false;
-            Program.mainForm.SetWorking(false);
-            Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name);
+            Program.mainForm.Invoke(() => Program.mainForm.SetWorking(false));
+            Program.mainForm.Invoke(() => Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name));
             Logger.LogIfLastLineDoesNotContainMsg("Canceled interpolation.");
 
             if(Cli.AutoRun)

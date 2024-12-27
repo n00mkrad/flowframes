@@ -54,10 +54,13 @@ namespace Flowframes.Forms
                 tooltipTorch += $"{i} = {NvApi.NvGpus[i].FullName} ({NvApi.NvGpus[i].GetVramGb().ToString("0.")} GB)\n";
             }
 
+            ncnnGpus.Items.Add(-1);
+            tooltipNcnn += $"-1 = CPU\n";
+
             foreach (var vkGpu in VulkanUtils.VkDevices)
             {
                 ncnnGpus.Items.Add(vkGpu.Id);
-                tooltipNcnn += $"{vkGpu.Id} = {vkGpu.Name}\n";
+                tooltipNcnn += $"{vkGpu.Id.ToString().PadLeft(2)} = {vkGpu.Name}\n";
             }
 
             toolTip1.SetToolTip(tooltipTorchGpu, tooltipTorch.Trim());

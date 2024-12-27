@@ -53,19 +53,22 @@ namespace Flowframes.Os
                 // Clean up Vulkan resources
                 vkInstance.Destroy();
                 Logger.Log($"[VK] Vulkan device check completed after {sw.ElapsedMs} ms", true);
-
-                if (VkDevices.Count == 0)
-                    return;
-
-                // Set the device that has the most compute queues as default GPU
-                var maxQueuesDevice = VkDevices.OrderByDescending(d => d.ComputeQueueCount).First();
-                Config.Set(Config.Key.ncnnGpus, $"{maxQueuesDevice.Id}");
             }
             catch(Exception ex)
             {
                 Logger.Log($"Vulkan Error: {ex.Message}", true);
-                Logger.Log($"Vulkan initialization failed. NCNN implementations might not work, or run on the CPU.");
             }
+
+            if (VkDevices.Count == 0)
+            {
+                Logger.Log($"No Vulkan-capable GPUs found. NCNN implementations will run on the CPU instead and may be unstable.");
+                Config.Set(Config.Key.ncnnGpus, "-1"); // -1 = CPU
+                return;
+            }
+
+            // Set the device that has the most compute queues as default GPU
+            var maxQueuesDevice = VkDevices.OrderByDescending(d => d.ComputeQueueCount).First();
+            Config.Set(Config.Key.ncnnGpus, $"{maxQueuesDevice.Id}");
         }
 
         public static int GetMaxNcnnThreads(int deviceId)

@@ -158,8 +158,8 @@ namespace Flowframes.Main
             Array.Resize(ref frameFilesWithoutLast, frameFilesWithoutLast.Length - 1);
             string framesFile = Path.Combine(tempFolder, Paths.GetFrameOrderFilename(interpFactor));
             string fileContent = "";
-            string dupesFile = Path.Combine(tempFolder, "dupes.json");
-            LoadDupesFile(dupesFile);
+            // string dupesFile = Path.Combine(tempFolder, "dupes.json");
+            // LoadDupesFile(dupesFile);
 
             string scnFramesPath = Path.Combine(tempFolder, Paths.scenesDir);
 
