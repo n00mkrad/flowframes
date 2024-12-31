@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Flowframes.Forms.Main;
 using Flowframes.IO;
 using Flowframes.Ui;
 
@@ -119,6 +120,27 @@ namespace Flowframes.Os
                 }
 
                 IoUtils.TryDeleteIfExists(devmodeBatchPath);
+            }
+        }
+
+        public static void GpuCheck(bool exit = true)
+        {
+            bool anyGpu = OsUtils.HasGpu();
+
+            if (!anyGpu)
+            {
+                if (exit)
+                {
+                    Form1.CloseAllSplashForms();
+                }
+
+                UiUtils.ShowMessageBox("No GPU detected!\n\nFlowframes requires a GPU (graphics card or integrated) with Vulkan support to run AI interpolation models.\n\nRecommended:" +
+                    "\n- Nvidia GeForce GTX 1000 series or newer\n- AMD Radeon RX 5000 series or newer", UiUtils.MessageType.Error);
+
+                if (exit)
+                {
+                    Application.Exit();
+                }
             }
         }
     }

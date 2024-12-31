@@ -181,6 +181,7 @@ namespace Flowframes.Forms.Main
             try
             {
                 // Task.Run(() => Updater.UpdateModelList());
+                StartupChecks.GpuCheck();
                 Task.Run(() => Updater.AsyncUpdateCheck());
                 Task.Run(() => GetWebInfo.LoadNews(newsLabel));
                 Task.Run(() => GetWebInfo.LoadPatronListCsv(patronsLabel));

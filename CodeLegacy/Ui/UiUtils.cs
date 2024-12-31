@@ -100,7 +100,7 @@ namespace Flowframes.Ui
             if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
             else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
 
-            MessageForm form = new MessageForm(text, type.ToString());
+            MessageForm form = new MessageForm(text, type.ToString()) { TopMost = true };
             form.ShowDialog();
             return DialogResult.OK;
         }
