@@ -281,6 +281,23 @@ namespace Flowframes.Os
             ShowNotification(title, text);
         }
 
+        public static bool HasGpu()
+        {
+            int gpusCount = 0;
+
+            if (VulkanUtils.VkDevices != null)
+            {
+                gpusCount += VulkanUtils.VkDevices.Count;
+            }
+
+            if (NvApi.NvGpus != null && NvApi.NvGpus.Any())
+            {
+                gpusCount += NvApi.NvGpus.Count;
+            }
+
+            return gpusCount > 0;
+        }
+
         public static string GetGpus()
         {
             List<string> gpusVk = new List<string>();
