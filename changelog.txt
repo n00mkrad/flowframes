@@ -1,3 +1,25 @@
+Flowframes 1.41.0 Changelog:
+- New: Added new RIFE models up to 4.26
+- New: Added support for variable framerate (VFR) inputs, preserving their frame timing
+- New: Added H.264 and H.265 hardware encoding support for AMD and Intel GPUs
+- New: Various command-line option for automated use of Flowframes
+- New: Added TIFF output, added 16-bit color option to FFV1
+- Improved: Settings are now cleaner, added an option to show only relevant settings
+- Improved: Various GPU detection/selection improvements, should default to best dGPU
+- Improved: Faster program startup, now with a splash screen
+- Improved: Encoder list now hides unavailable encoders
+- Improved: Image sequence export folder names now include the format/extension
+- Improved: Drag-n-dropping no longer "blocks" the cursor while importing the file
+- Improved: Updated ffmpeg, software AV1 encoding is now 52% faster
+- Improved: Reworked Vulkan GPU check, fixing a delay before every interpolation
+- Improved: Updated RIFE-NCNN to support newer models (TNTwise fork)
+- Fixed: Lossless option was visible for encoders that don't support it (e.g. NVENC AV1)
+- Fixed: Incorrect interpolation progress bar when using FPS-limiting (downsampling)
+- Fixed: Unreliable video length and FPS check
+- Fixed: Unreliable or incorrect GPU list in window title bar
+- Fixed: Looped video outputs could lose all audio/subtitle tracks other than the first
+
+
 Flowframes 1.40.0 Changelog:
 - New: Added RIFE 4.6 model
 - New: RIFE-NCNN-VS now supports image sequence output
