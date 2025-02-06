@@ -285,29 +285,48 @@ namespace Flowframes
             return filePath.IsConcatFile() ? $"{rateStr}-safe 0 -f concat " : "";
         }
 
-        public static string Get(this Dictionary<string, string> dict, string key, bool returnKeyInsteadOfEmptyString = false, bool ignoreCase = false)
+        public static string Get<TKey>(this Dictionary<TKey, string> dict, string key, bool returnKeyInsteadOfEmptyString = false, bool ignoreCase = false)
         {
             if (key == null)
                 key = "";
 
+            // Safely handle a null dictionary
             for (int i = 0; i < (dict == null ? 0 : dict.Count); i++)
             {
+                var elementKey = dict.ElementAt(i).Key;
+                var elementValue = dict.ElementAt(i).Value;
+
+                // Convert the dictionary key to string (handling null)
+                string dictKeyString = (elementKey == null ? "" : elementKey.ToString());
+
                 if (ignoreCase)
                 {
-                    if (key.Lower() == dict.ElementAt(i).Key.Lower())
-                        return dict.ElementAt(i).Value;
+                    if (key.Lower() == dictKeyString.Lower())
+                        return elementValue;
                 }
                 else
                 {
-                    if (key == dict.ElementAt(i).Key)
-                        return dict.ElementAt(i).Value;
+                    if (key == dictKeyString)
+                        return elementValue;
                 }
             }
 
-            if (returnKeyInsteadOfEmptyString)
-                return key;
-            else
-                return "";
+            return returnKeyInsteadOfEmptyString ? key : "";
+        }
+
+        /// <summary> Get a value from a dictionary, returns <paramref name="fallback"/> if not found. For strings, the default fallback is an empty string instead of null. </summary>
+        public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue fallback = default)
+        {
+            // For string values, use empty string instead of null as default value
+            if (typeof(TValue) == typeof(string) && fallback != null)
+            {
+                fallback = (TValue)(object)string.Empty;
+            }
+
+            if (dictionary == null)
+                return fallback;
+
+            return dictionary.TryGetValue(key, out var value) ? value : fallback;
         }
 
         public static void FillFromEnum<TEnum>(this ComboBox comboBox, Dictionary<string, string> stringMap = null, int defaultIndex = -1, List<TEnum> exclusionList = null, bool useKeyNames = false) where TEnum : Enum

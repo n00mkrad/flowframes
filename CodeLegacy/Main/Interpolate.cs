@@ -1,5 +1,4 @@
-﻿using Flowframes;
-using Flowframes.Media;
+﻿using Flowframes.Media;
 using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.Magick;
@@ -17,7 +16,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Padding = Flowframes.Data.Padding;
 using Utils = Flowframes.Main.InterpolateUtils;
-using System.Drawing.Imaging;
 
 namespace Flowframes
 {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flowframes.Data;
+using static Flowframes.Ui.ControlExtensions;
 
 namespace Flowframes.Forms
 {
@@ -25,7 +26,7 @@ namespace Flowframes.Forms
             RefreshGui();
         }
 
-        public void RefreshGui ()
+        public void RefreshGui()
         {
             taskList.Items.Clear();
 
@@ -34,29 +35,29 @@ namespace Flowframes.Forms
                 InterpSettings entry = Program.batchQueue.ElementAt(i);
                 string outFormat = Strings.OutputFormat.Get(entry.outSettings.Format.ToString());
                 string inPath = string.IsNullOrWhiteSpace(entry.inPath) ? "No Path" : Path.GetFileName(entry.inPath).Trunc(40);
-                string str = $"#{i+1}: {inPath} - {entry.inFps.Float} FPS => {entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {outFormat}";
+                string str = $"#{i + 1}: {inPath} - {entry.inFps.Float} FPS => {entry.interpFactor}x {entry.ai.NameShort} ({entry.model.Name}) => {outFormat}";
                 taskList.Items.Add(str);
             }
         }
 
-        private void RefreshIndex ()
+        private void RefreshIndex()
         {
-            for(int i = 0; i < taskList.Items.Count; i++)
+            for (int i = 0; i < taskList.Items.Count; i++)
             {
                 string[] split = taskList.Items[i].ToString().Split(':');
-                split[0] = $"#{i+1}";
+                split[0] = $"#{i + 1}";
                 taskList.Items[i] = string.Join(":", split);
             }
         }
 
-        public void SetWorking (bool working)
+        public void SetWorking(bool working)
         {
             runBtn.Enabled = !working;
             addToQueue.Enabled = !working;
             stopBtn.Visible = working;
             forceStopBtn.Visible = working;
             stopBtn.Enabled = working;
-        } 
+        }
 
         private void BatchForm_Load(object sender, EventArgs e)
         {
@@ -119,7 +120,7 @@ namespace Flowframes.Forms
 
             Queue<InterpSettings> temp = new Queue<InterpSettings>();
 
-            for(int i = 0; i < Program.batchQueue.Count; i++)
+            for (int i = 0; i < Program.batchQueue.Count; i++)
             {
                 if (i != taskList.SelectedIndex)
                     temp.Enqueue(Program.batchQueue.ElementAt(i));
@@ -146,24 +147,40 @@ namespace Flowframes.Forms
             await LoadDroppedPaths(droppedPaths);
         }
 
-        public async Task LoadDroppedPaths (string[] droppedPaths, bool start = false)
-        {                
-            foreach (string path in droppedPaths)
+        public async Task LoadDroppedPaths(string[] droppedPaths, bool start = false)
+        {
+            if (droppedPaths == null || droppedPaths.Length < 1)
+                return;
+
+            var prevOpacity = Program.mainForm.Opacity;
+            Program.mainForm.Invoke(() => Program.mainForm.Opacity = 0f);
+
+            try
             {
-                Logger.Log($"BatchForm: Dropped path: '{path}'", true);
+                foreach (string path in droppedPaths)
+                {
+                    Logger.Log($"BatchForm: Dropped path: '{path}'", true);
 
-                InterpSettings current = Program.mainForm.GetCurrentSettings(path);
-                current.inFpsDetected = await IoUtils.GetFpsFolderOrVideo(path);
-                current.inFps = current.inFpsDetected;
+                    InterpSettings current = Program.mainForm.GetCurrentSettings(path);
+                    current.inFpsDetected = await IoUtils.GetFpsFolderOrVideo(path);
+                    current.inFps = current.inFpsDetected;
 
-                if(current.inFps.Float <= 0)
-                    current.inFps = InterpolateUtils.AskForFramerate(new DirectoryInfo(path).Name, false);
+                    if (current.inFps.Float <= 0)
+                        current.inFps = InterpolateUtils.AskForFramerate(new DirectoryInfo(path).Name, false);
 
-                current.outFps = current.inFps * current.interpFactor;
+                    current.outFps = current.inFps * current.interpFactor;
 
-                Program.batchQueue.Enqueue(current);
-                RefreshGui();
+                    Program.batchQueue.Enqueue(current);
+                    RefreshGui();
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.Log($"BatchForm: Error while loading dropped paths: {ex.Message}", true);
+            }
+
+            Program.mainForm.Invoke(() => Program.mainForm.Opacity = prevOpacity);
+            BringToFront();
 
             if (start)
                 runBtn_Click(null, null);
