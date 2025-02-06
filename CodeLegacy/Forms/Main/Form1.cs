@@ -307,14 +307,14 @@ namespace Flowframes.Forms.Main
             mainTabControl.Update();
         }
 
-        public InterpSettings GetCurrentSettings()
+        public InterpSettings GetCurrentSettings(string path = "")
         {
             SetTab(interpOptsTab.Name);
             AiInfo ai = GetAi();
 
             var s = new InterpSettings()
             {
-                inPath = inputTbox.Text.Trim(),
+                inPath = path.IsNotEmpty() ? path : inputTbox.Text.Trim(),
                 outPath = outputTbox.Text.Trim(),
                 ai = ai,
                 dedupe = Config.GetInt(Config.Key.dedupMode) != 0,

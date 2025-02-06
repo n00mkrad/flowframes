@@ -86,7 +86,7 @@ namespace Flowframes
 
         public void InitArgs ()
         {
-            outFps = inFps * (double)interpFactor;
+            outFps = inFps == null ? new Fraction() : inFps * (double)interpFactor;
             outFpsResampled = new Fraction(Config.Get(Config.Key.maxFps));
             alpha = false;
             stepByStep = false;

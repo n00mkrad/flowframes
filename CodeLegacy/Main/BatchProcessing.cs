@@ -80,14 +80,14 @@ namespace Flowframes.Main
                 return;
             }
 
-            MediaFile mf = new MediaFile(entry.inPath, false);
+            var mf = new MediaFile(entry.inPath, false);
+            Interpolate.currentMediaFile = mf;
             mf.InputRate = entry.inFps;
             await mf.Initialize();
-            Interpolate.currentMediaFile = mf;
 
             Logger.Log($"Queue: Processing {mf.Name} ({entry.interpFactor}x {entry.ai.NameShort}).");
 
-            Program.mainForm.LoadBatchEntry(entry);     // Load entry into GUI
+            Program.mainForm.LoadBatchEntry(entry); // Load entry into GUI
             Interpolate.currentSettings = entry;
             Program.mainForm.runBtn_Click(null, null);
 

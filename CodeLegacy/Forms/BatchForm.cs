@@ -152,7 +152,7 @@ namespace Flowframes.Forms
             {
                 Logger.Log($"BatchForm: Dropped path: '{path}'", true);
 
-                InterpSettings current = Program.mainForm.GetCurrentSettings();
+                InterpSettings current = Program.mainForm.GetCurrentSettings(path);
                 current.inFpsDetected = await IoUtils.GetFpsFolderOrVideo(path);
                 current.inFps = current.inFpsDetected;
 
