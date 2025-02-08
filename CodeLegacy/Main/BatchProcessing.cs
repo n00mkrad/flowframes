@@ -2,6 +2,7 @@
 using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Os;
+using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,7 +69,7 @@ namespace Flowframes.Main
             stopped = true;
         }
 
-        static async Task RunEntry(InterpSettings entry)
+        public static async Task RunEntry(InterpSettings entry)
         {
             SetBusy(true);
             Program.mainForm.SetWorking(true);
@@ -99,35 +100,35 @@ namespace Flowframes.Main
             Logger.Log($"Queue: Done processing {mf.Name} ({entry.interpFactor}x {entry.ai.NameShort}).");
         }
 
-        static void SetBusy(bool state)
+        private static void SetBusy(bool state)
         {
             busy = state;
-
-            if (currentBatchForm != null)
-                currentBatchForm.SetWorking(state);
-
+            currentBatchForm?.SetWorking(state);
             Program.mainForm.GetMainTabControl().Enabled = !state;   // Lock GUI
         }
 
-        static bool EntryIsValid(InterpSettings entry)
+        public static bool EntryIsValid(InterpSettings entry, bool msgBox = false)
         {
+            bool Fail(string err)
+            {
+                Logger.Log($"Queue: Can't process queue entry: {err}");
+                if (msgBox) UiUtils.ShowMessageBox(err, UiUtils.MessageType.Error);
+                return false;
+            }
 
             if (entry.inPath == null || (IoUtils.IsPathDirectory(entry.inPath) && !Directory.Exists(entry.inPath)) || (!IoUtils.IsPathDirectory(entry.inPath) && !File.Exists(entry.inPath)))
             {
-                Logger.Log("Queue: Can't process queue entry: Input path is invalid.");
-                return false;
+                return Fail("Input path is invalid.");
             }
 
             if (entry.outPath == null || (!Directory.Exists(entry.outPath) && Config.GetInt("outFolderLoc") != 1))
             {
-                Logger.Log("Queue: Can't process queue entry: Output path is invalid.");
-                return false;
+                return Fail("Output path is invalid.");
             }
 
             if (IoUtils.GetAmountOfFiles(Path.Combine(Paths.GetPkgPath(), entry.ai.PkgDir), true) < 1)
             {
-                Logger.Log("Queue: Can't process queue entry: Selected AI is not available.");
-                return false;
+                return Fail("Selected AI is not available.");
             }
 
             return true;

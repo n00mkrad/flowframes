@@ -22,6 +22,14 @@ namespace Flowframes.Forms
 
         private void addToQueue_Click(object sender, EventArgs e)
         {
+            var entry = Program.mainForm.GetCurrentSettings();
+
+            if (!BatchProcessing.EntryIsValid(entry, msgBox: true))
+            {
+                BringToFront();
+                return;
+            }
+
             Program.batchQueue.Enqueue(Program.mainForm.GetCurrentSettings());
             RefreshGui();
         }
