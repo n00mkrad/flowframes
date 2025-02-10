@@ -169,6 +169,9 @@ namespace Flowframes.Ui
 
         public static float ValidateInterpFactor (float factor)
         {
+            if (factor == 1)
+                return factor;
+
             AiInfo ai = Program.mainForm.GetAi();
 
             if (ai.NameInternal == Implementations.rifeNcnn.NameInternal && !Program.mainForm.GetModel(ai).Dir.Contains("v4"))

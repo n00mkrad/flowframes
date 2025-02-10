@@ -228,7 +228,7 @@ namespace Flowframes.Magick
 
         public static async Task CreateDupesFile(string framesPath, string ext)
         {
-            bool debug = Config.GetBool("dupeScanDebug", false);
+            bool debug = true; Config.GetBool("dupeScanDebug", false);
 
             FileInfo[] frameFiles = IoUtils.GetFileInfosSorted(framesPath, false, "*" + ext);
 
@@ -259,7 +259,8 @@ namespace Flowframes.Magick
                 }
             }
 
-            File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), frames.ToJson(true));
+            // string tempDir = 
+            // File.WriteAllText(Path.Combine(framesPath.GetParentDir(), "dupes.json"), frames.ToJson(true));
         }
 
         public static async Task CreateFramesFileVideo(string videoPath, bool loop)
@@ -299,6 +300,14 @@ namespace Flowframes.Magick
             var inputFrames = new List<int>(frames.Keys);
             float keepPercentage = (float)inputFrames.Count / frameCount * 100f;
             Logger.Log($"Dedupe: Kept {inputFrames.Count}/{frameCount} frames ({keepPercentage.ToString("0.#")}%)");
+
+            if(Interpolate.currentSettings != null && Interpolate.currentSettings.interpFactor == 1)
+            {
+                Interpolate.currentSettings.interpFactor = ((float)frameCount / inputFrames.Count);
+                Logger.Log($"Dedupe: Factor is 1, will not redupe; overriding factor to {frameCount}/{inputFrames.Count} = {Interpolate.currentSettings.interpFactor.ToString("0.######")}", true);
+            }
+
+            Logger.Log($"");
 
             if (keepPercentage > 95f)
             {

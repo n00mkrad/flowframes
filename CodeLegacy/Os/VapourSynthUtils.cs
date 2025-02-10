@@ -98,7 +98,10 @@ namespace Flowframes.Os
             l.Add($"");
             l.Add($"srcFrames = len(clip)");
             l.Add(Debugger.IsAttached ? $"clip = core.text.FrameNum(clip, alignment=7, scale={txtScale}) # Input frame counter" : "");
-            l.Add(GetDedupeLines(s));
+
+            if(s.InterpSettings.dedupe)
+                l.Add(GetDedupeLines(s));
+
             l.Add($"");
 
             if (trim)
@@ -140,7 +143,7 @@ namespace Flowframes.Os
             string interpStr = alwaysPreferFactorOverFps || Interpolate.currentMediaFile.IsVfr ? $"factor_num={factor.Numerator}, factor_den={factor.Denominator}" : $"fps_num={outFps.Numerator}, fps_den={outFps.Denominator}";
             l.Add($"clip = core.rife.RIFE(clip, {interpStr}, model_path={mdlPath}, gpu_id={s.GpuId.ToString().Replace("-1", "None")}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
 
-            if (s.Dedupe && !s.Realtime)
+            if (s.Dedupe && !s.InterpSettings.noRedupe && !s.Realtime)
             {
                 l.Add(GetRedupeLines(s));
                 l.Add($"");

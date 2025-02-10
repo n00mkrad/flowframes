@@ -31,6 +31,7 @@ namespace Flowframes
         public string interpFolder;
         public bool inputIsFrames;
         public bool dedupe;
+        public bool noRedupe;
 
         private Size _inputResolution = new Size();
         public Size InputResolution
@@ -93,6 +94,7 @@ namespace Flowframes
             framesExt = "";
             interpExt = "";
             _inputResolution = new Size(0, 0);
+            noRedupe = dedupe && interpFactor == 1;
             SetPaths(inPath);
             RefreshExtensions(ai: ai);
         }
