@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flowframes.MiscUtils;
+using System;
 
 namespace Flowframes.Data
 {
@@ -6,21 +7,21 @@ namespace Flowframes.Data
     {
         public long Numerator = 0;
         public long Denominator = 1;
-        public static Fraction Zero = new Fraction(0, 0);
+        public static Fraction Zero = new Fraction(0, 1);
 
         public Fraction() { }
 
         public Fraction(long numerator, long denominator)
         {
-            this.Numerator = numerator;
-            this.Denominator = denominator;
+            Numerator = numerator;
+            Denominator = denominator;
 
             //If denominator negative...
-            if (this.Denominator < 0)
+            if (Denominator < 0)
             {
                 //...move the negative up to the numerator
-                this.Numerator = -this.Numerator;
-                this.Denominator = -this.Denominator;
+                Numerator = -Numerator;
+                Denominator = -Denominator;
             }
         }
 
@@ -32,11 +33,10 @@ namespace Flowframes.Data
 
         public Fraction(float value)
         {
-            Numerator = (value * 10000f).RoundToInt();
-            Denominator = 10000;
-            var reducedFrac = GetReduced();
-            Numerator = reducedFrac.Numerator;
-            Denominator = reducedFrac.Denominator;
+            int maxDigits = 4;
+            var (num, den) = FractionHelper.FloatToApproxFraction(value, maxDigits);
+            Numerator = num;
+            Denominator = den;
         }
 
         public Fraction(string text)
@@ -72,7 +72,7 @@ namespace Flowframes.Data
                         Numerator = floatFrac.Numerator;
                         Denominator = floatFrac.Denominator;
                     }
-                   
+
                     return;
                 }
 
@@ -129,16 +129,16 @@ namespace Flowframes.Data
             Fraction modifiedFraction = this;
 
             //Cannot reduce to smaller denominators
-            if (targetDenominator < this.Denominator)
+            if (targetDenominator < Denominator)
                 return modifiedFraction;
 
             //The target denominator must be a factor of the current denominator
-            if (targetDenominator % this.Denominator != 0)
+            if (targetDenominator % Denominator != 0)
                 return modifiedFraction;
 
-            if (this.Denominator != targetDenominator)
+            if (Denominator != targetDenominator)
             {
-                long factor = targetDenominator / this.Denominator;
+                long factor = targetDenominator / Denominator;
                 modifiedFraction.Denominator = targetDenominator;
                 modifiedFraction.Numerator *= factor;
             }
@@ -165,8 +165,8 @@ namespace Flowframes.Data
                 //Make sure only a single negative sign is on the numerator
                 if (modifiedFraction.Denominator < 0)
                 {
-                    modifiedFraction.Numerator = -this.Numerator;
-                    modifiedFraction.Denominator = -this.Denominator;
+                    modifiedFraction.Numerator = -Numerator;
+                    modifiedFraction.Denominator = -Denominator;
                 }
             }
             catch (Exception e)
@@ -180,7 +180,7 @@ namespace Flowframes.Data
         public Fraction GetReciprocal()
         {
             //Flip the numerator and the denominator
-            return new Fraction(this.Denominator, this.Numerator);
+            return new Fraction(Denominator, Numerator);
         }
 
 

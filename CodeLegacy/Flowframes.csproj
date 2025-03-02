@@ -496,6 +496,7 @@
     <Compile Include="Media\HwEncCheck.cs" />
     <Compile Include="Media\TimestampUtils.cs" />
     <Compile Include="MiscUtils\Benchmarker.cs" />
+    <Compile Include="MiscUtils\FractionHelper.cs" />
     <Compile Include="MiscUtils\FrameRename.cs" />
     <Compile Include="MiscUtils\ModelDownloadFormUtils.cs" />
     <Compile Include="MiscUtils\NmkdStopwatch.cs" />
