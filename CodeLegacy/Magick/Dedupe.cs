@@ -271,6 +271,8 @@ namespace Flowframes.Magick
             string mpDec = FfmpegCommands.GetMpdecimate(wrap: false); // FfmpegCommands.GetMpdecimate((int)FfmpegCommands.MpDecSensitivity.Normal, false);
             ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y {videoPath.GetConcStr()} -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
             var ffmpegOutputLines = (await Task.Run(() => OsUtils.GetProcStdOut(ffmpeg, true))).SplitIntoLines();
+            ffmpegOutputLines = ffmpegOutputLines.Where(l => l.Contains("keep_count")).Select(l => l.Split(']').Last()).ToArray();
+            var test = string.Join("\n", ffmpegOutputLines);
 
             var frames = new Dictionary<int, List<int>>();
             int frameCount = 0;

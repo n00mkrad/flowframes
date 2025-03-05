@@ -291,8 +291,7 @@ namespace Flowframes.Forms
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             dedupeSensLabel.Visible = dedupMode.SelectedIndex != 0;
-            magickDedupePanel.Visible = dedupMode.SelectedIndex == 1;
-            mpDedupePanel.Visible = dedupMode.SelectedIndex == 2;
+            mpDedupePanel.Visible = dedupMode.SelectedIndex == 1;
         }
 
         private void clearModelCacheBtn_Click(object sender, EventArgs e)

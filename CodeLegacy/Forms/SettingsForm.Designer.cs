@@ -932,8 +932,7 @@
             this.dedupMode.FormattingEnabled = true;
             this.dedupMode.Items.AddRange(new object[] {
             "Disabled",
-            "1: After Extraction - Slow, Accurate",
-            "2: During Extraction - Fast, Less Accurate"});
+            "Enabled (mpdecimate)"});
             this.dedupMode.Location = new System.Drawing.Point(280, 7);
             this.dedupMode.Name = "dedupMode";
             this.dedupMode.Size = new System.Drawing.Size(250, 21);

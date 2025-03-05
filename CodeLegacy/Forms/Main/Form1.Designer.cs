@@ -107,6 +107,8 @@
             this.browseInputFileBtn = new HTAlt.WinForms.HTButton();
             this.browseInputBtn = new HTAlt.WinForms.HTButton();
             this.quickSettingsTab = new System.Windows.Forms.TabPage();
+            this.vfrHandling = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.maxFps = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
@@ -141,8 +143,6 @@
             this.cancelBtn = new System.Windows.Forms.Button();
             this.menuStripQueue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addCurrentConfigurationToQueueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label5 = new System.Windows.Forms.Label();
-            this.vfrHandling = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -1200,6 +1200,29 @@
             this.quickSettingsTab.Text = "Quick Settings";
             this.quickSettingsTab.Enter += new System.EventHandler(this.LoadQuickSettings);
             // 
+            // vfrHandling
+            // 
+            this.vfrHandling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.vfrHandling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.vfrHandling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vfrHandling.ForeColor = System.Drawing.Color.White;
+            this.vfrHandling.FormattingEnabled = true;
+            this.vfrHandling.Location = new System.Drawing.Point(280, 187);
+            this.vfrHandling.Name = "vfrHandling";
+            this.vfrHandling.Size = new System.Drawing.Size(249, 23);
+            this.vfrHandling.TabIndex = 92;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(6, 189);
+            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(185, 15);
+            this.label5.TabIndex = 91;
+            this.label5.Text = "Detect Variable Frame Rate Videos";
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
@@ -1338,8 +1361,7 @@
             this.dedupMode.FormattingEnabled = true;
             this.dedupMode.Items.AddRange(new object[] {
             "Disabled",
-            "1: After Extraction - Slow, Accurate",
-            "2: During Extraction - Fast, Less Accurate"});
+            "Enabled (mpdecimate)"});
             this.dedupMode.Location = new System.Drawing.Point(279, 67);
             this.dedupMode.Name = "dedupMode";
             this.dedupMode.Size = new System.Drawing.Size(250, 23);
@@ -1670,29 +1692,6 @@
             this.addCurrentConfigurationToQueueToolStripMenuItem.Size = new System.Drawing.Size(268, 22);
             this.addCurrentConfigurationToQueueToolStripMenuItem.Text = "Add Current Configuration to Queue";
             this.addCurrentConfigurationToQueueToolStripMenuItem.Click += new System.EventHandler(this.addCurrentConfigurationToQueueToolStripMenuItem_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(6, 189);
-            this.label5.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(185, 15);
-            this.label5.TabIndex = 91;
-            this.label5.Text = "Detect Variable Frame Rate Videos";
-            // 
-            // vfrHandling
-            // 
-            this.vfrHandling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.vfrHandling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.vfrHandling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.vfrHandling.ForeColor = System.Drawing.Color.White;
-            this.vfrHandling.FormattingEnabled = true;
-            this.vfrHandling.Location = new System.Drawing.Point(280, 187);
-            this.vfrHandling.Name = "vfrHandling";
-            this.vfrHandling.Size = new System.Drawing.Size(249, 23);
-            this.vfrHandling.TabIndex = 92;
             // 
             // Form1
             // 

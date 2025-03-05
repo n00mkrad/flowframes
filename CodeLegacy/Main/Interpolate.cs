@@ -294,6 +294,8 @@ namespace Flowframes
                 // }
             }
 
+            IoUtils.TryDeleteIfExists(currentSettings.FullOutPath); // Partial output file might exist
+
             AutoEncode.busy = false;
             Program.mainForm.Invoke(() => Program.mainForm.SetWorking(false));
             Program.mainForm.Invoke(() => Program.mainForm.SetTab(Program.mainForm.interpOptsTab.Name));

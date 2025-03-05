@@ -70,7 +70,7 @@ namespace Flowframes.IO
 
 		public static void LoadComboxIndex(ComboBox comboBox)
 		{
-			comboBox.SelectedIndex = Config.GetInt(comboBox.Name).Clamp(0, int.MaxValue);
+			comboBox.SelectedIndex = Config.GetInt(comboBox.Name).Clamp(0, comboBox.Items.Count - 1);
 		}
 	}
 }
