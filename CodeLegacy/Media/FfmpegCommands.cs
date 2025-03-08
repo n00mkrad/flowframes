@@ -28,7 +28,7 @@ namespace Flowframes
         {
             int mpdValIndex = Config.GetInt(Config.Key.mpdecimateMode);
             int mpdVal = MpDecSensLookup[(Enums.Interpolation.MpDecimateSens)mpdValIndex];
-            string mpd = $"mpdecimate=hi=64*1024:lo=64*{mpdVal}:frac=1.0";
+            string mpd = $"mpdecimate=hi=64*12:lo=64*{mpdVal}:frac=1.0";
             return wrap ? mpd.Wrap() : mpd;
         }
 
