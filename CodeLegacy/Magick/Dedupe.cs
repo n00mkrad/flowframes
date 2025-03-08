@@ -301,7 +301,7 @@ namespace Flowframes.Magick
 
             var inputFrames = new List<int>(frames.Keys);
             float keepPercentage = (float)inputFrames.Count / frameCount * 100f;
-            Logger.Log($"Dedupe: Kept {inputFrames.Count}/{frameCount} frames ({keepPercentage.ToString("0.#")}%)");
+            Logger.Log($"Deduplication: Kept {inputFrames.Count}/{frameCount} frames ({keepPercentage.ToString("0.#")}%)");
 
             if(Interpolate.currentSettings != null && Interpolate.currentSettings.interpFactor == 1)
             {
@@ -309,11 +309,9 @@ namespace Flowframes.Magick
                 Logger.Log($"Dedupe: Factor is 1, will not redupe; overriding factor to {frameCount}/{inputFrames.Count} = {Interpolate.currentSettings.interpFactor.ToString("0.######")}", true);
             }
 
-            Logger.Log($"");
-
             if (keepPercentage > 95f)
             {
-                Logger.Log("Dedupe: Less than 5% duplicate frames detected, will not dedupe.");
+                Logger.Log("Deduplication: Less than 5% duplicate frames detected; disabling for this video.");
                 Interpolate.currentSettings.dedupe = false;
             }
 
