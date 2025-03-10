@@ -81,11 +81,11 @@ namespace Flowframes
             {
                 if (!entry.hidden && entry.replaceLastLine)
                 {
-                    textbox.Invoke(new Action(() => {
+                    textbox.Invoke(() => {
                         textbox.Suspend();
                         string[] lines = textbox.Text.SplitIntoLines();
                         textbox.Text = string.Join(Environment.NewLine, lines.Take(lines.Count() - 1).ToArray());
-                    }));
+                    });
                 }
             }
             catch (Exception ex)
@@ -200,7 +200,7 @@ namespace Flowframes
 
         public static void ClearLogBox()
         {
-            textbox.Text = "";
+            textbox.Invoke(() => textbox.Text = "");
         }
 
         public static string GetLastLine(bool includeHidden = false)
@@ -210,7 +210,7 @@ namespace Flowframes
 
         public static void RemoveLastLine()
         {
-            textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine));
+            textbox.Invoke(() => textbox.Text = textbox.Text.Remove(textbox.Text.LastIndexOf(Environment.NewLine)));
         }
     }
 }

@@ -83,7 +83,7 @@ namespace Flowframes.Main
             string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(I.currentMediaFile.IsVfr ? s.outFpsResampled : s.outFps, s.outItsScale, extraData.Rotation);
             string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? MaxFpsFrac : new Fraction(), extraData, s.outSettings);
 
-            // For EXR, force bt709 input flags. Not sure if this really does anything, EXR 
+            // For EXR, force bt709 input flags. Not sure if this really does anything
             if (s.outSettings.Encoder == Enums.Encoding.Encoder.Exr)
             {
                 extraArgsIn += " -color_trc bt709 -color_primaries bt709 -colorspace bt709";
