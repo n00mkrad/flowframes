@@ -8,10 +8,7 @@ using Flowframes.Ui;
 using Flowframes.Main;
 using Flowframes.Data;
 using Flowframes.MiscUtils;
-using System.Collections.Generic;
-using ImageMagick;
 using Paths = Flowframes.IO.Paths;
-using Flowframes.Media;
 using System.Drawing;
 using Flowframes.Utilities;
 
@@ -401,6 +398,7 @@ namespace Flowframes.Os
 
             if (rt)
             {
+                Logger.ClearLogBox();
                 Logger.Log($"Starting. Use Space to pause, Left Arrow and Right Arrow to seek, though seeking can be slow.");
                 AiStartedRt(rifeNcnnVs, inPath);
             }
@@ -410,10 +408,11 @@ namespace Flowframes.Os
                 AiStarted(rifeNcnnVs, 1000, inPath);
             }
 
-            string vsPipeArgs = $"{VapourSynthUtils.CreateScript(vsSettings).Wrap()} {VapourSynthUtils.GetVsPipeArgs(vsSettings)} -c y4m -";
+            string scriptPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, "rife.py");
+            string vsPipeArgs = $"{scriptPath} {VapourSynthUtils.GetVsPipeArgs(vsSettings)} -c y4m -";
             rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {vsPipeArgs} | {pipedTargetArgs}";
 
-            Logger.Log("cmd.exe " + rifeNcnnVs.StartInfo.Arguments, true);
+            Logger.Log($"cmd.exe {rifeNcnnVs.StartInfo.Arguments}", true);
 
             if (!OsUtils.ShowHiddenCmd())
             {

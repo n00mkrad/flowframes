@@ -33,311 +33,82 @@ namespace Flowframes.Os
             public int PadY { get; set; } = 0;
         }
 
-        public const string VarInputPath = "inputPath";
-        public const string VarTempDirPath = "tempDirPath";
-        public const string VarLwiPath = "cacheLwiPath";
-
         public static string GetVsPipeArgs(VsSettings s)
         {
-            return $"--arg {VarInputPath}={s.InterpSettings.inPath.Wrap()} --arg {VarTempDirPath}={s.InterpSettings.tempFolder.Wrap()}";
-        }
-
-        public static string CreateScript(VsSettings s, bool alwaysPreferFactorOverFps = true)
-        {
-            Logger.Log($"Creating RIFE VS script. Model: {s.ModelDir}, Factor: {s.Factor}, Res: {s.Res.Width}x{s.Res.Height}, UHD: {s.Uhd}, SC Sens: {s.SceneDetectSensitivity}, " +
+            Logger.Log($"Preparing RIFE VS args. Model: {s.ModelDir}, Factor: {s.Factor}, Res: {s.Res.Width}x{s.Res.Height}, UHD: {s.Uhd}, SC Sens: {s.SceneDetectSensitivity}, " +
                 $"GPU ID: {s.GpuId}, GPU Threads: {s.GpuThreads}, TTA: {s.Tta}, Loop: {s.Loop}, Match Duration: {s.MatchDuration}, Dedupe: {s.Dedupe}, RT: {s.Realtime}{(s.Osd ? $", OSD: {s.Osd}" : "")}", true);
 
-            s.PadX = s.InterpSettings.InterpResolution.Width - s.InterpSettings.ScaledResolution.Width;
-            s.PadY = s.InterpSettings.InterpResolution.Height - s.InterpSettings.ScaledResolution.Height;
+            var args = new List<(string, object)>()
+            {
+                ("input", s.InterpSettings.inPath), // Input path
+                ("tmpDir", s.InterpSettings.tempFolder), // Temp dir path
+                ("inFps", s.InterpSettings.inFps), // Input FPS
+                ("outFps", !s.InterpSettings.inputIsFrames ? Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps * s.Factor : s.InterpSettings.inFps * s.Factor), // Output FPS
+                ("outFpsRes", s.InterpSettings.outFpsResampled),
+                ("resIn", s.InterpSettings.InputResolution.ToStringShort()),
+                ("resSc", s.InterpSettings.ScaledResolution.ToStringShort()),
+                ("resOut", s.InterpSettings.OutputResolution.ToStringShort()),
+                ("pad", $"{s.InterpSettings.InterpResolution.Width - s.InterpSettings.ScaledResolution.Width}x{s.InterpSettings.InterpResolution.Height - s.InterpSettings.ScaledResolution.Height}"), // Padding
+                ("frames", s.InterpSettings.inputIsFrames), // Input is frames?
+                ("dedupe", s.InterpSettings.dedupe), // Dedupe?
+                ("redupe", !s.InterpSettings.noRedupe), // Allow redupe?
+                ("matchDur", s.MatchDuration), // Match duration?
+                ("sc", s.SceneDetectSensitivity), // Scene change detection sensitivity
+                ("loop", s.Loop), // Loop?
+                ("factor", new Fraction(s.Factor)),
+                ("mdlPath", Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, s.ModelDir).Replace(@"\", "/")), // Model path
+                ("gpuThreads", s.GpuThreads), // GPU threads
+                ("uhd", s.Uhd), // UHD?
+                ("tta", s.Tta), // TTA?
+                ("gpu", s.GpuId), // GPU ID
+                ("rt", s.Realtime), // Realtime?
+                ("osd", s.Osd), // OSD?
+                ("debugFrNums", Program.Debug), // Show debug overlay with frame nums?
+                ("debugVars", Program.Debug), // Show debug overlay with variables?
+                ("txtScale", (s.InterpSettings.ScaledResolution.Width / 1000f).RoundToInt().Clamp(1, 4)), // Text scale
+            };
 
-            int txtScale = (s.InterpSettings.ScaledResolution.Width / 1000f).RoundToInt().Clamp(1, 4);
-            string mdlPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, s.ModelDir).Replace(@"\", "/").Wrap();
-
-            bool sc = s.SceneDetectSensitivity >= 0.01f;
-            long frameCount = (long)Interpolate.currentMediaFile.FrameCount;
-
+            long frameCount = Interpolate.currentMediaFile.FrameCount;
             bool trim = QuickSettingsTab.trimEnabled;
-            long srcTrimStartFrame = trim ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.Float)) : 0;
+            long srcTrimStartFrame = trim ? (long)Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimStart) / 1000f * s.InterpSettings.inFps.Float) : 0;
             long srcTrimEndFrame = trim && QuickSettingsTab.doTrimEnd ? (long)(Math.Round(FormatUtils.TimestampToMs(QuickSettingsTab.trimEnd) / 1000f * s.InterpSettings.inFps.Float)) - 1 : frameCount - 1;
-
-            if (trim)
-                frameCount = srcTrimEndFrame - srcTrimStartFrame;
-
             int endDupeCount = s.Factor.RoundToInt() - 1;
             int targetFrameCountMatchDuration = (frameCount * s.Factor).RoundToInt(); // Target frame count to match original duration (and for loops)
-            int targetFrameCountTrue = targetFrameCountMatchDuration - endDupeCount; // Target frame count without dupes at the end (only in-between frames added)
 
-            List<string> imports = new List<string> { "sys", "os", "json", "time", "functools", "vapoursynth as vs" }; // Imports
-
-            var l = new List<string>() { "# Generated by Flowframes. Will be overwritten on the next run!", "" };
-            l.AddRange(imports.Select(i => $"import {i}"));
-            l.Add("core = vs.core");
-            l.Add($"");
-            l.Add($"inputPath = globals()[{VarInputPath.Wrap()}]");
-            l.Add($"tempDirPath = globals()[{VarTempDirPath.Wrap()}]");
-            l.Add($"");
-
-            bool loadFrames = s.InterpSettings.inputIsFrames;
-
-            if (loadFrames)
+            if (trim)
             {
-                l.Add($"# Load frames");
-                FileInfo[] frames = IoUtils.GetFileInfosSorted(s.InterpSettings.framesFolder, false, "*.*");
-                string ext = frames.FirstOrDefault().Extension;
-                string first = Path.GetFileNameWithoutExtension(frames.FirstOrDefault().FullName);
-                l.Add($"clip = core.imwri.Read(r'{Path.Combine(s.InterpSettings.framesFolder, $"%0{first.Length}d{ext}")}', firstnum={first.GetInt()})"); // Load image sequence with imwri
-                l.Add($"clip = core.std.AssumeFPS(clip, fpsnum={s.InterpSettings.inFps.Numerator}, fpsden={s.InterpSettings.inFps.Denominator})"); // Set frame rate for img seq
+                frameCount = srcTrimEndFrame - srcTrimStartFrame;
+                args.Add(("trim", $"{srcTrimStartFrame}/{srcTrimEndFrame}"));
             }
             else
             {
-                l.Add($"# Load video");
-                l.Add("indexFilePath = os.path.join(tempDirPath, 'index.lwi') if os.path.isdir(tempDirPath) else f'{inputPath}.index.lwi'");
-                l.Add($"clip = core.lsmas.LWLibavSource(inputPath, cachefile=indexFilePath)"); // Load video with lsmash
+                args.Add(("trim", ""));
             }
 
-            l.Add($"");
-            l.Add($"srcFrames = len(clip)");
-            l.Add(Debugger.IsAttached ? $"clip = core.text.FrameNum(clip, alignment=7, scale={txtScale}) # Input frame counter" : "");
+            string frameIndexesJsonPath = Path.Combine(s.InterpSettings.tempFolder, "frameIndexes.json");
 
-            if(s.InterpSettings.dedupe)
-                l.Add(GetDedupeLines(s));
-
-            l.Add($"");
-
-            if (trim)
+            if (Interpolate.currentMediaFile.IsVfr && Interpolate.currentMediaFile.OutputFrameIndexes != null && Interpolate.currentMediaFile.OutputFrameIndexes.Count > 0 && s.InterpSettings.outFpsResampled.Float > 0.1f)
             {
-                l.Add($"# Trim");
-                l.Add($"clip = clip.std.Trim({srcTrimStartFrame}, {srcTrimEndFrame}) # Trim");
-                l.Add($"");
+                File.WriteAllText(frameIndexesJsonPath, Interpolate.currentMediaFile.OutputFrameIndexes.ToJson());
             }
-
-            if (s.Loop && !s.InterpSettings.inputIsFrames)
+            else
             {
-                l.Add($"# Loop: Copy first frame to end of clip");
-                l.Add($"firstFrame = clip[0]"); // Grab first frame
-                l.Add($"clip = clip + firstFrame"); // Add to end (for seamless loop interpolation)
-                l.Add($"");
+                IoUtils.TryDeleteIfExists(frameIndexesJsonPath);
             }
 
-            l.Add($"firstFrameProps = clip.get_frame(0).props");
-            l.Add(GetScaleLines(s, loadFrames));
-            l.Add($"");
+            bool use470bg = s.InterpSettings.inputIsFrames && !new[] { "GIF", "EXR" }.Contains(Interpolate.currentMediaFile.Format.Upper());
+            args.Add(("cMatrix", use470bg ? "470bg" : ""));
+            args.Add(("targetMatch", targetFrameCountMatchDuration));
 
-            if (sc)
-            {
-                l.Add($"# Scene detection");
-                l.Add($"clip = core.misc.SCDetect(clip=clip, threshold={s.SceneDetectSensitivity.ToString("0.0#####")})"); // Scene detection
-                l.Add($"");
-            }
-
-            Fraction outFps = s.InterpSettings.inFps * s.Factor;
-
-            if (!loadFrames)
-            {
-                outFps = Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps * s.Factor;
-            }
-
-            l.Add($"preInterpFrames = len(clip)");
-
-            Fraction factor = new Fraction(s.Factor);
-            string interpStr = alwaysPreferFactorOverFps || Interpolate.currentMediaFile.IsVfr ? $"factor_num={factor.Numerator}, factor_den={factor.Denominator}" : $"fps_num={outFps.Numerator}, fps_den={outFps.Denominator}";
-            l.Add($"clip = core.rife.RIFE(clip, {interpStr}, model_path={mdlPath}, gpu_id={s.GpuId.ToString().Replace("-1", "None")}, gpu_thread={s.GpuThreads}, tta={s.Tta}, uhd={s.Uhd}, sc={sc})"); // Interpolate
-
-            if (s.Dedupe && !s.InterpSettings.noRedupe && !s.Realtime)
-            {
-                l.Add(GetRedupeLines(s));
-                l.Add($"");
-            }
-
-            bool use470bg = loadFrames && !new[] { "GIF", "EXR" }.Contains(Interpolate.currentMediaFile.Format.Upper());
-            l.Add($"clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s={(use470bg ? "'470bg'" : "cMatrix")})"); // Convert RGB to YUV. Always use 470bg if input is YUV frames
-            l.Add($"clip = core.std.Crop(clip, right={s.PadX}, bottom={s.PadY})");
-
-            if (!s.Dedupe) // Ignore trimming code when using deduping that that already handles trimming in the frame order file
-            {
-                if (s.Loop)
-                {
-                    l.Add($"clip = clip.std.Trim(length={targetFrameCountMatchDuration}) # Trim, loop enabled");
-                }
-                else
-                {
-                    if (!s.MatchDuration)
-                        l.Add($"clip = clip.std.Trim(length={targetFrameCountTrue}) # Trim, loop disabled, duration matching disabled");
-                }
-            }
-
-            if (s.Realtime && s.Loop)
-                l.AddRange(new List<string> { $"clip = clip.std.Loop(0)", "" }); // Can't loop piped video so we loop it before piping it to ffplay
-
-            if (s.Realtime && s.Osd)
-                l.Add(GetOsdLines());
-
-            l.Add(Debugger.IsAttached ? $"clip = core.text.FrameNum(clip, alignment=9, scale={txtScale}) # Output frame counter" : "");
-            l.Add(Debugger.IsAttached ? $"clip = core.text.Text(clip, f\"Frames: {{srcFrames}}/{{preInterpFrames}} -> {{len(clip)}} [{factor.GetString()}x]\", alignment=8, scale={txtScale})" : "");
-            l.Add(Debugger.IsAttached ? $"clip = core.text.Text(clip, f\"targetMatchDuration: {targetFrameCountMatchDuration} - targetTrue: {targetFrameCountTrue} - endDupeCount: {endDupeCount}\", alignment=2, scale={txtScale})" : "");
-            
-            if(Interpolate.currentMediaFile.IsVfr && Interpolate.currentMediaFile.OutputFrameIndexes != null && Interpolate.currentMediaFile.OutputFrameIndexes.Count > 0 && s.InterpSettings.outFpsResampled.Float > 0.1f)
-            {
-                l.Add($"# Frames picked to resample VFR video to {s.InterpSettings.outFpsResampled.Float} FPS");
-                l.Add($"frameIndexes = [{string.Join(", ", Interpolate.currentMediaFile.OutputFrameIndexes)}]");
-                l.Add($"clip = core.std.Splice([clip[i] for i in frameIndexes if i < len(clip)])");
-                l.Add($"clip = core.std.AssumeFPS(clip, fpsnum={s.InterpSettings.outFpsResampled.Numerator}, fpsden={s.InterpSettings.outFpsResampled.Denominator})");
-            }
-
-            l.Add($"clip.set_output()"); // Set output
-            l.Add("");
-
-            l.Add("if os.path.isfile(r'{inputPath}.index.lwi'):");
-            l.Add("    os.remove(r'{inputPath}.index.lwi')");
-
-            string pkgPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
-            string vpyPath = Path.Combine(pkgPath, "rife.vpy");
-
-            File.WriteAllText(vpyPath, string.Join("\n", l));
-
-            return vpyPath;
-        }
-
-        static string GetScaleLines(VsSettings settings, bool loadFrames)
-        {
-            InterpSettings interp = settings.InterpSettings;
-            bool resize = !interp.ScaledResolution.IsEmpty && interp.ScaledResolution != interp.InputResolution;
-
-            string s = "";
-
-            s += $"\n";
-            s += $"cMatrix = '709'\n";
-            s += $"\n";
-            s += $"# Scaled Res: {interp.ScaledResolution.Width}x{interp.ScaledResolution.Height} - Interpolation Res: {interp.InterpResolution.Width}x{interp.InterpResolution.Height} - Output Res: {interp.OutputResolution.Width}x{interp.OutputResolution.Height}\n";
-            s += $"\n";
-
-            if (!loadFrames)
-            {
-                s += "try:\n";
-                s += "    m = firstFrameProps._Matrix\n";
-                s += "    if m == 0:    cMatrix = 'rgb'\n";
-                s += "    elif m == 4:  cMatrix = 'fcc'\n";
-                s += "    elif m == 5:  cMatrix = '470bg'\n";
-                s += "    elif m == 6:  cMatrix = '170m'\n";
-                s += "    elif m == 7:  cMatrix = '240m'\n";
-                s += "    elif m == 8:  cMatrix = 'ycgco'\n";
-                s += "    elif m == 9:  cMatrix = '2020ncl'\n";
-                s += "    elif m == 10: cMatrix = '2020cl'\n";
-                s += "    elif m == 12: cMatrix = 'chromancl'\n";
-                s += "    elif m == 13: cMatrix = 'chromacl'\n";
-                s += "    elif m == 14: cMatrix = 'ictcp'\n";
-                s += $"except:\n";
-                s += $"    cMatrix = '709'\n";
-                s += $"\n";
-                s += $"colRange = 'full' if firstFrameProps.get('_ColorRange') == 0 else 'limited'\n";
-                s += $"\n";
-            }
-
-            s += $"if clip.format.color_family == vs.YUV:\n";
-            s += $"    clip = core.resize.Bicubic(clip=clip, format=vs.RGBS, matrix_in_s=cMatrix, range_s=colRange{(resize ? $", width={interp.ScaledResolution.Width}, height={interp.ScaledResolution.Height}" : "")})\n";
-            s += $"\n";
-            s += $"if clip.format.color_family == vs.RGB:\n";
-            s += $"    clip = core.resize.Bicubic(clip=clip, format=vs.RGBS{(resize ? $", width={interp.ScaledResolution.Width}, height={interp.ScaledResolution.Height}" : "")})\n";
-            s += $"\n";
-
-            if (settings.PadX > 0 || settings.PadY > 0)
-            {
-                s += "# Padding to achieve a compatible resolution\n";
-                s += $"clip = core.std.AddBorders(clip, right={settings.PadX}, bottom={settings.PadY})\n";
-                s += $"\n";
-            }
-
-            return s;
-        }
-
-        static string GetDedupeLines(VsSettings settings)
-        {
-            string s = "";
-
-            string inputJsonPath = Path.Combine(settings.InterpSettings.tempFolder, "input.json");
-
-            if (!File.Exists(inputJsonPath))
-                return s;
-
-            s += "reorderedClip = clip[0]\n";
-            s += "\n";
-            s += $"with open(r'{inputJsonPath}') as json_file:\n";
-            s += "    frameList = json.load(json_file)\n";
-            s += "    \n";
-            s += "    for i in frameList:\n";
-            s += "        reorderedClip = reorderedClip + clip[i]\n";
-            s += "\n";
-            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1) # Dedupe trim\n";
-            //s += Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=9)\n" : "";
-
-            return s;
-        }
-
-        static string GetRedupeLines(VsSettings settings)
-        {
-            string s = "";
-
-            s += "reorderedClip = clip[0]\n";
-            s += "\n";
-            s += $"with open(r'{Path.Combine(settings.InterpSettings.tempFolder, "frames.vs.json")}') as json_file:\n";
-            s += "    frameList = json.load(json_file)\n";
-            s += "    \n";
-            s += "    for i in frameList:\n";
-            s += "        if(i < clip.num_frames):\n";
-            s += "            reorderedClip = reorderedClip + clip[i]\n";
-            s += "\n";
-            s += "clip = reorderedClip.std.Trim(1, reorderedClip.num_frames - 1) # Redupe trim\n";
-            //s += Debugger.IsAttached ? "clip = core.text.FrameNum(clip, alignment=1)\n" : "";
-
-            return s;
-        }
-
-        static string GetOsdLines()
-        {
-            string s = "";
-
-            s += $"framesProducedPrevious = 0 \n";
-            s += $"framesProducedCurrent = 0 \n";
-            s += $"lastFpsUpdateTime = time.time() \n";
-            s += $"startTime = time.time() \n";
-            s += $" \n";
-            s += $"def onFrame(n, clip): \n";
-            s += $"    global startTime \n";
-            s += $"    fpsAvgTime = 1 \n";
-            s += $"     \n";
-            s += $"    if time.time() - startTime > fpsAvgTime: \n";
-            s += $"        global framesProducedPrevious \n";
-            s += $"        global framesProducedCurrent \n";
-            s += $"        global lastFpsUpdateTime \n";
-            s += $"         \n";
-            s += $"        fpsFloat = (clip.fps.numerator / clip.fps.denominator) \n";
-            s += $"        videoTimeFloat = (1 / fpsFloat) * n \n";
-            s += $"        framesProducedCurrent+=1 \n";
-            s += $"         \n";
-            s += $"        if time.time() - lastFpsUpdateTime > fpsAvgTime: \n";
-            s += $"            lastFpsUpdateTime = time.time() \n";
-            s += $"            framesProducedPrevious = framesProducedCurrent / fpsAvgTime \n";
-            s += $"            framesProducedCurrent = 0 \n";
-            s += $"         \n";
-            s += $"        speed = (framesProducedPrevious / fpsFloat) * 100 \n";
-            s += $"        osdString = f\"Time: {{time.strftime(\'%H:%M:%S\', time.gmtime(videoTimeFloat))}} - FPS: {{framesProducedPrevious:.2f}}/{{fpsFloat:.2f}} ({{speed:.0f}}%){{\' [!]\' if speed < 95 else \'\'}}\" \n";
-            s += $"        clip = core.text.Text(clip, text=osdString, alignment=7, scale=1) \n";
-            s += $"    return clip \n";
-            s += $" \n";
-            s += $"clip = core.std.FrameEval(clip, functools.partial(onFrame, clip=clip)) \n";
-
-            return s;
+            return string.Join(" ", args.Select(a => $"--arg {a.Item1}={a.Item2.ToString().Wrap()}"));
         }
 
         public static int GetSeekSeconds(long videoLengthSeconds)
         {
-            int seekStep = 10;
-
-            if (videoLengthSeconds > 2 * 60) seekStep = 20;
-            if (videoLengthSeconds > 5 * 60) seekStep = 30;
-            if (videoLengthSeconds > 15 * 60) seekStep = 60;
-
-            return seekStep;
+            if (videoLengthSeconds > 15 * 60) return 60;
+            if (videoLengthSeconds > 5 * 60) return 30;
+            if (videoLengthSeconds > 2 * 60) return 20;
+            return 10;
         }
     }
 }
