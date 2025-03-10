@@ -844,6 +844,7 @@ namespace Flowframes.Forms.Main
         {
             dedupeSensLabel.Visible = dedupMode.SelectedIndex != 0;
             mpDedupePanel.Visible = dedupMode.SelectedIndex == 1;
+            magickDedupePanel.Visible = dedupMode.SelectedIndex == 2; // Never true atm
             SaveQuickSettings(null, null);
         }
 
