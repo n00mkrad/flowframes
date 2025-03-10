@@ -31,6 +31,9 @@ namespace Flowframes.Data
             Denominator = fraction.Denominator;
         }
 
+        /// <summary>
+        /// Initializes a new Fraction by approximating the <paramref name="value"/> as a fraction using up to 4 digits.
+        /// </summary>
         public Fraction(float value)
         {
             int maxDigits = 4;
@@ -39,6 +42,9 @@ namespace Flowframes.Data
             Denominator = den;
         }
 
+        /// <summary>
+        /// Initializes a new Fraction from a string <paramref name="text"/>. If the text represents a single number or a fraction, it parses accordingly.
+        /// </summary>
         public Fraction(string text)
         {
             try
@@ -94,13 +100,16 @@ namespace Flowframes.Data
             }
         }
 
+        /// <summary>
+        /// Calculates and returns the greatest common denominator (GCD) for <paramref name="a"/> and <paramref name="b"/> by dropping negative signs and using the modulo operation.
+        /// </summary>
         private static long GetGreatestCommonDenominator(long a, long b)
         {
             //Drop negative signs
             a = Math.Abs(a);
             b = Math.Abs(b);
 
-            //Return the greatest common denominator between two longegers
+            //Return the greatest common denominator between two longs
             while (a != 0 && b != 0)
             {
                 if (a > b)
@@ -115,30 +124,28 @@ namespace Flowframes.Data
                 return a;
         }
 
+        /// <summary>
+        /// Calculates and returns the least common denominator for <paramref name="a"/> and <paramref name="b"/> using their greatest common denominator.
+        /// </summary>
         private static long GetLeastCommonDenominator(long a, long b)
         {
-            //Return the Least Common Denominator between two longegers
             return (a * b) / GetGreatestCommonDenominator(a, b);
         }
 
-
+        /// <summary>
+        /// Converts the fraction to have the specified <paramref name="targetDenominator"/> if possible by scaling the numerator accordingly; returns a Fraction with the target denominator or the current fraction if conversion is not possible.
+        /// </summary>
         public Fraction ToDenominator(long targetDenominator)
         {
-            //Multiply the fraction by a factor to make the denominator
-            //match the target denominator
             Fraction modifiedFraction = this;
 
-            //Cannot reduce to smaller denominators
-            if (targetDenominator < Denominator)
-                return modifiedFraction;
-
-            //The target denominator must be a factor of the current denominator
-            if (targetDenominator % Denominator != 0)
+            // Cannot reduce to smaller denominators & target denominator must be a factor of the current denominator
+            if (targetDenominator < Denominator || targetDenominator % Denominator != 0)
                 return modifiedFraction;
 
             if (Denominator != targetDenominator)
             {
-                long factor = targetDenominator / Denominator;
+                long factor = targetDenominator / Denominator; // Find factor to multiply the fraction by to make the denominator match the target denominator
                 modifiedFraction.Denominator = targetDenominator;
                 modifiedFraction.Numerator *= factor;
             }
@@ -146,15 +153,16 @@ namespace Flowframes.Data
             return modifiedFraction;
         }
 
+        /// <summary>
+        /// Reduces the fraction to its lowest terms by repeatedly dividing the numerator and denominator by their greatest common denominator.
+        /// </summary>
         public Fraction GetReduced()
         {
-            //Reduce the fraction to lowest terms
             Fraction modifiedFraction = this;
 
             try
             {
-                //While the numerator and denominator share a greatest common denominator,
-                //keep dividing both by it
+                //While the numerator and denominator share a greatest common denominator, keep dividing both by it
                 long gcd = 0;
                 while (Math.Abs(gcd = GetGreatestCommonDenominator(modifiedFraction.Numerator, modifiedFraction.Denominator)) != 1)
                 {
@@ -177,91 +185,52 @@ namespace Flowframes.Data
             return modifiedFraction;
         }
 
+        /// <summary>
+        /// Returns a new Fraction that is the reciprocal of the current fraction by swapping the numerator and denominator.
+        /// </summary>
         public Fraction GetReciprocal()
         {
-            //Flip the numerator and the denominator
             return new Fraction(Denominator, Numerator);
         }
 
-
-        public static Fraction operator +(Fraction fraction1, Fraction fraction2)
+        /// <summary>
+        /// Combines two fractions <paramref name="f1"/> and <paramref name="f2"/> using the specified <paramref name="combine"/> function after converting them to a common denominator; returns the reduced combined Fraction.
+        /// </summary>
+        private static Fraction Combine(Fraction f1, Fraction f2, Func<long, long, long> combine)
         {
-            //Check if either fraction is zero
-            if (fraction1.Denominator == 0)
-                return fraction2;
-            else if (fraction2.Denominator == 0)
-                return fraction1;
+            if (f1.Denominator == 0)
+                return f2;
+            if (f2.Denominator == 0)
+                return f1;
 
-            //Get Least Common Denominator
-            long lcd = GetLeastCommonDenominator(fraction1.Denominator, fraction2.Denominator);
-
-            //Transform the fractions
-            fraction1 = fraction1.ToDenominator(lcd);
-            fraction2 = fraction2.ToDenominator(lcd);
-
-            //Return sum
-            return new Fraction(fraction1.Numerator + fraction2.Numerator, lcd).GetReduced();
+            long lcd = GetLeastCommonDenominator(f1.Denominator, f2.Denominator);
+            f1 = f1.ToDenominator(lcd);
+            f2 = f2.ToDenominator(lcd);
+            return new Fraction(combine(f1.Numerator, f2.Numerator), lcd).GetReduced();
         }
-
-        public static Fraction operator -(Fraction fraction1, Fraction fraction2)
-        {
-            //Get Least Common Denominator
-            long lcd = GetLeastCommonDenominator(fraction1.Denominator, fraction2.Denominator);
-
-            //Transform the fractions
-            fraction1 = fraction1.ToDenominator(lcd);
-            fraction2 = fraction2.ToDenominator(lcd);
-
-            //Return difference
-            return new Fraction(fraction1.Numerator - fraction2.Numerator, lcd).GetReduced();
-        }
-
-        public static Fraction operator *(Fraction fract, long multi)
-        {
-            long numerator = (long)fract.Numerator * (long)multi;
-            long denomenator = fract.Denominator;
-
-            return new Fraction(numerator, denomenator).GetReduced();
-        }
-
-        public static Fraction operator *(Fraction fract, double multi)
-        {
-            long numerator = (long)Math.Round((double)(fract.Numerator * (double)multi));
-            long denomenator = fract.Denominator;
-
-            return new Fraction(numerator, denomenator).GetReduced();
-        }
-
-        public static Fraction operator *(Fraction fract, float multi)
-        {
-            long numerator = (fract.Numerator * multi).RoundToInt();
-            long denomenator = fract.Denominator;
-
-            return new Fraction(numerator, denomenator).GetReduced();
-        }
-
-        public static Fraction operator *(Fraction fraction1, Fraction fraction2)
-        {
-            long numerator = fraction1.Numerator * fraction2.Numerator;
-            long denomenator = fraction1.Denominator * fraction2.Denominator;
-
-            return new Fraction(numerator, denomenator).GetReduced();
-        }
-
-        public static Fraction operator /(Fraction fraction1, Fraction fraction2)
-        {
-            return new Fraction(fraction1 * fraction2.GetReciprocal()).GetReduced();
-        }
-
-        public double Double() => (double)Numerator / Denominator;
 
         public override string ToString()
         {
             return $"{Numerator}/{Denominator}";
         }
 
+        // Conversion properties
         public float Float => Denominator < 1 ? 0f : (float)Numerator / (float)Denominator;
+        public double Double => (double)Numerator / Denominator;
         public long Long => Denominator < 1 ? 0L : (long)Numerator / (long)Denominator;
+
+        // Operators
+        public static bool operator >(Fraction frac, float value) => frac.Double > value;
+        public static bool operator <(Fraction frac, float value) => frac.Double < value;
+        public static bool operator >(float value, Fraction frac) => value > frac.Double;
+        public static bool operator <(float value, Fraction frac) => value < frac.Double;
+        public static Fraction operator +(Fraction frac1, Fraction frac2) => Combine(frac1, frac2, (a, b) => a + b);
+        public static Fraction operator -(Fraction frac1, Fraction frac2) => Combine(frac1, frac2, (a, b) => a - b);
+        public static Fraction operator *(Fraction frac1, Fraction frac2) => new Fraction(frac1.Numerator * frac2.Numerator, frac1.Denominator * frac2.Denominator).GetReduced();
+        public static Fraction operator /(Fraction frac1, Fraction frac2) => new Fraction(frac1 * frac2.GetReciprocal()).GetReduced();
+        public static Fraction operator *(Fraction frac, long mult) => new Fraction(frac.Numerator * mult, frac.Denominator).GetReduced();
+        public static Fraction operator *(Fraction frac, double mult) => new Fraction((long)Math.Round(frac.Numerator * mult), frac.Denominator).GetReduced();
+        public static Fraction operator *(Fraction frac, float mult) => new Fraction((frac.Numerator * mult).RoundToInt(), frac.Denominator).GetReduced();
 
         public string GetString(string format = "0.#####")
         {
