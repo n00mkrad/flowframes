@@ -47,9 +47,12 @@ namespace Flowframes.Media
         public static async Task<string> GetFfmpegExportArgsIn(Fraction fps, float itsScale, int rotation = 0)
         {
             var args = new List<string>();
-
             fps = fps / new Fraction(itsScale);
-            args.Add($"-r {fps}");
+
+            if(fps > 0.1f)
+            {
+                args.Add($"-r {fps}");
+            }
             
             if(rotation != 0)
             {
