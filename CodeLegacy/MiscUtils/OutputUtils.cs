@@ -187,7 +187,6 @@ namespace Flowframes.MiscUtils
                     QualityDefault = (int)Quality.GifColors.High128,
                     OverideExtension = "gif",
                     MaxFramerate = 50,
-                    Modulo = 1,
                 };
             }
 

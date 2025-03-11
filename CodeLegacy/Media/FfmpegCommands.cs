@@ -38,7 +38,9 @@ namespace Flowframes
         {
             if (mode == ModuloMode.ForEncoding)
             {
-                return Interpolate.currentSettings.outSettings.Encoder.GetInfo().Modulo;
+                string pixFmt = Interpolate.currentSettings.outSettings.PixelFormat.ToString().Lower();
+                bool subsampled = pixFmt.Contains("420") || pixFmt.Contains("422") || pixFmt.Contains("p010") || pixFmt.Contains("p016");
+                return subsampled ? 2 : 1;
             }
             else if (mode == ModuloMode.ForInterpolation)
             {
