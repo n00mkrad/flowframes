@@ -86,7 +86,14 @@ namespace Flowframes.IO
 			return path;
 		}
 
-		public static string GetSessionDataPath()
+        public static string GetCachePath()
+        {
+            string path = Path.Combine(GetDataPath(), "cache");
+            Directory.CreateDirectory(path);
+            return path;
+        }
+
+        public static string GetSessionDataPath()
 		{
 			string path = Path.Combine(GetSessionsPath(), sessionTimestamp);
 			Directory.CreateDirectory(path);

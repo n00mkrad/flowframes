@@ -18,6 +18,7 @@ namespace Flowframes.Os
             public InterpSettings InterpSettings { get; set; }
             public string ModelDir { get; set; } = "";
             public float Factor { get; set; } = 2.0f;
+            public bool Alpha { get; set; } = false;
             public Size Res { get; set; } = new Size();
             public bool Uhd { get; set; } = false;
             public float SceneDetectSensitivity { get; set; } = 0.15f;
@@ -37,17 +38,17 @@ namespace Flowframes.Os
         {
             Logger.Log($"Preparing RIFE VS args. Model: {s.ModelDir}, Factor: {s.Factor}, Res: {s.Res.Width}x{s.Res.Height}, UHD: {s.Uhd}, SC Sens: {s.SceneDetectSensitivity}, " +
                 $"GPU ID: {s.GpuId}, GPU Threads: {s.GpuThreads}, TTA: {s.Tta}, Loop: {s.Loop}, Match Duration: {s.MatchDuration}, Dedupe: {s.Dedupe}, RT: {s.Realtime}{(s.Osd ? $", OSD: {s.Osd}" : "")}", true);
+            bool debug = Program.Debug && !(System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Shift);
 
             var args = new List<(string, object)>()
             {
                 ("input", s.InterpSettings.inPath), // Input path
                 ("tmpDir", s.InterpSettings.tempFolder), // Temp dir path
+                ("cache", Path.Combine(Paths.GetCachePath(), PseudoHash.GetHash(s.InterpSettings.inPath) + ".lwi")), // File PseudoHash to allow caching
                 ("inFps", s.InterpSettings.inFps), // Input FPS
                 ("outFps", !s.InterpSettings.inputIsFrames ? Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps * s.Factor : s.InterpSettings.inFps * s.Factor), // Output FPS
                 ("outFpsRes", s.InterpSettings.outFpsResampled),
-                ("resIn", s.InterpSettings.InputResolution.ToStringShort()),
                 ("resSc", s.InterpSettings.ScaledResolution.ToStringShort()),
-                ("resOut", s.InterpSettings.OutputResolution.ToStringShort()),
                 ("pad", $"{s.InterpSettings.InterpResolution.Width - s.InterpSettings.ScaledResolution.Width}x{s.InterpSettings.InterpResolution.Height - s.InterpSettings.ScaledResolution.Height}"), // Padding
                 ("frames", s.InterpSettings.inputIsFrames), // Input is frames?
                 ("dedupe", s.InterpSettings.dedupe), // Dedupe?
@@ -56,16 +57,15 @@ namespace Flowframes.Os
                 ("sc", s.SceneDetectSensitivity), // Scene change detection sensitivity
                 ("loop", s.Loop), // Loop?
                 ("factor", new Fraction(s.Factor)),
-                ("mdlPath", Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, s.ModelDir).Replace(@"\", "/")), // Model path
-                ("gpuThreads", s.GpuThreads), // GPU threads
+                ("mdl", s.ModelDir), // Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, s.ModelDir).Replace(@"\", "/")), // Model path
+                ("gpuThrds", s.GpuThreads), // GPU threads
                 ("uhd", s.Uhd), // UHD?
                 ("tta", s.Tta), // TTA?
                 ("gpu", s.GpuId), // GPU ID
                 ("rt", s.Realtime), // Realtime?
-                ("osd", s.Osd), // OSD?
-                ("debugFrNums", Program.Debug), // Show debug overlay with frame nums?
-                ("debugVars", Program.Debug), // Show debug overlay with variables?
-                ("txtScale", (s.InterpSettings.ScaledResolution.Width / 1000f).RoundToInt().Clamp(1, 4)), // Text scale
+                ("osd", debug), // OSD?
+                ("debugFrNums", debug), // Show debug overlay with frame nums?
+                ("debugVars", debug), // Show debug overlay with variables?
             };
 
             long frameCount = Interpolate.currentMediaFile.FrameCount;
@@ -100,6 +100,7 @@ namespace Flowframes.Os
             args.Add(("cMatrix", use470bg ? "470bg" : ""));
             args.Add(("targetMatch", targetFrameCountMatchDuration));
 
+            args = args.Where(a => a.Item2.ToString() != "False" && a.Item2.ToString() != "").ToList();
             return string.Join(" ", args.Select(a => $"--arg {a.Item1}={a.Item2.ToString().Wrap()}"));
         }
 

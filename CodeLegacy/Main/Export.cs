@@ -72,16 +72,32 @@ namespace Flowframes.Main
         }
 
         private const bool _useNutPipe = true;
+        public enum AlphaMode { None, AlphaOut, AlphaIn }
 
-        public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false)
+        public static async Task<string> GetPipedFfmpegCmd(bool ffplay = false, AlphaMode alpha = AlphaMode.None)
         {
             InterpSettings s = I.currentSettings;
-            string encArgs = FfmpegUtils.GetEncArgs(s.outSettings, (s.OutputResolution.IsEmpty ? s.InputResolution : s.OutputResolution), s.outFps.Float, true).FirstOrDefault();
+            var alphaOutSettings = new OutputSettings { Encoder = Enums.Encoding.Encoder.X264, PixelFormat = Enums.Encoding.PixelFormat.Yuv444P, CustomQuality = "20" };
+            var outSettings = alpha == AlphaMode.AlphaOut ? alphaOutSettings : s.outSettings;
+            var outRes = s.OutputResolution.IsEmpty ? s.InputResolution : s.OutputResolution;
+            string encArgs = FfmpegUtils.GetEncArgs(outSettings, outRes, s.outFps.Float, true).First();
             bool fpsLimit = MaxFpsFrac.Float > 0f && s.outFps.Float > MaxFpsFrac.Float;
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
             VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);
             string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(I.currentMediaFile.IsVfr ? s.outFpsResampled : s.outFps, s.outItsScale, extraData.Rotation);
-            string extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fpsLimit ? MaxFpsFrac : new Fraction(), extraData, s.outSettings);
+            string extraArgsOut;
+            string alphaPassFile = Path.Combine(s.tempFolder, "alpha.mkv");
+            Fraction fps = fpsLimit ? MaxFpsFrac : new Fraction();
+
+            if (alpha == AlphaMode.AlphaOut)
+            {
+                extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fps, new VidExtraData(), alphaOutSettings);
+                return $"{extraArgsIn} -i - {extraArgsOut} {encArgs} {alphaPassFile.Wrap()}";
+            }
+            else
+            {
+                extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fps, extraData, s.outSettings, alphaPassFile: alpha == AlphaMode.AlphaIn ? alphaPassFile : "");
+            }
 
             // For EXR, force bt709 input flags. Not sure if this really does anything
             if (s.outSettings.Encoder == Enums.Encoding.Encoder.Exr)
@@ -95,7 +111,7 @@ namespace Flowframes.Main
                 string format = _useNutPipe ? "nut" : "yuv4mpegpipe";
 
                 return
-                    $"{extraArgsIn} -i pipe: {encArgs} {extraArgsOut} -f {format} - | ffplay - " +
+                    $"{extraArgsIn} -i - {encArgs} {""} -f {format} - | ffplay - " +
                     $"-autoexit -seek_interval {VapourSynthUtils.GetSeekSeconds(Program.mainForm.currInDuration)} " +
                     $"-window_title \"Flowframes Realtime Interpolation ({s.inFps.GetString()} FPS x{s.interpFactor} = {s.outFps.GetString()} FPS) ({s.model.Name})\" ";
             }
@@ -111,7 +127,13 @@ namespace Flowframes.Main
                     s.FullOutPath += $"/%{Padding.interpFrames}d.{s.outSettings.Encoder.GetInfo().OverideExtension}";
                 }
 
-                return $"{extraArgsIn} -i pipe: {extraArgsOut} {encArgs} {s.FullOutPath.Wrap()}";
+                // Merge alpha
+                if (alpha == AlphaMode.AlphaIn)
+                {
+                    return $"{extraArgsIn} -i - {extraArgsOut} {encArgs} {s.FullOutPath.Wrap()}";
+                }
+
+                return $"{extraArgsIn} -i - {extraArgsOut} {encArgs} {s.FullOutPath.Wrap()}";
             }
         }
 
@@ -400,7 +422,7 @@ namespace Flowframes.Main
                 return;
             }
 
-            if(I.currentMediaFile.IsVfr && I.currentMediaFile.OutputFrameIndexes != null && I.currentMediaFile.OutputFrameIndexes.Count > 0)
+            if (I.currentMediaFile.IsVfr && I.currentMediaFile.OutputFrameIndexes != null && I.currentMediaFile.OutputFrameIndexes.Count > 0)
             {
                 Logger.Log($"{nameof(MuxTimestamps)}: CFR conversion due to FPS limit was applied (picked {I.currentMediaFile.OutputFrameIndexes.Count} frames for {I.currentSettings.outFpsResampled} FPS); won't mux timestamps.", hidden: true);
                 return;

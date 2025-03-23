@@ -105,7 +105,7 @@ namespace Flowframes
                 return;
 
             inPath = inputPath;
-            outPath = (Config.GetInt("outFolderLoc") == 0) ? inputPath.GetParentDir() : Config.Get("custOutDir").Trim();
+            // outPath = (Config.GetInt("outFolderLoc") == 0) ? inputPath.GetParentDir() : Config.Get("custOutDir").Trim();
             tempFolder = InterpolateUtils.GetTempFolderLoc(inPath, outPath);
             framesFolder = Path.Combine(tempFolder, Paths.framesDir);
             interpFolder = Path.Combine(tempFolder, Paths.interpDir);

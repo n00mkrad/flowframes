@@ -16,20 +16,30 @@ namespace Flowframes
         public static string hdrFilter = @"-vf zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p";
         public static string pngCompr = "-compression_level 3";
 
-        public static Dictionary<Enums.Interpolation.MpDecimateSens, int> MpDecSensLookup = new Dictionary<Enums.Interpolation.MpDecimateSens, int>
+        /// <summary> Lookup table for mpdecimate sensitivity preset values (lo/hi/frac). </summary>
+        public static Dictionary<Enums.Interpolation.MpDecimateSens, (int, int, float)> MpDecSensLookup = new Dictionary<Enums.Interpolation.MpDecimateSens,(int, int, float)>
         {
-            { Enums.Interpolation.MpDecimateSens.Normal, 4 },
-            { Enums.Interpolation.MpDecimateSens.High, 20 },
-            { Enums.Interpolation.MpDecimateSens.VeryHigh, 32 },
-            { Enums.Interpolation.MpDecimateSens.Extreme, 40 }
+            { Enums.Interpolation.MpDecimateSens.Low,      (3,  10, 0.33f) },
+            { Enums.Interpolation.MpDecimateSens.Normal,   (4,  12, 0.50f) },
+            { Enums.Interpolation.MpDecimateSens.High,     (20, 18, 0.65f) },
+            { Enums.Interpolation.MpDecimateSens.VeryHigh, (32, 24, 0.75f) },
+            { Enums.Interpolation.MpDecimateSens.Extreme,  (40, 30, 0.90f) },
         };
 
-        public static string GetMpdecimate(bool wrap = true)
+        /// <summary>
+        /// Construct mpdecimate filter with prefiltering: <paramref name="scaleSize"/> limits resolution, <paramref name="cropSize"/> center-crops the frame using a factor,
+        /// <paramref name="lumaOnly"/> only processes luma channel.<br/><paramref name="wrap"/> wraps the filter in double quotes.
+        /// </summary>
+        public static string GetMpdecimate(bool wrap = true, int scaleSize = 640, float cropSize = 0.8f, bool lumaOnly = true)
         {
             int mpdValIndex = Config.GetInt(Config.Key.mpdecimateMode);
-            int mpdVal = MpDecSensLookup[(Enums.Interpolation.MpDecimateSens)mpdValIndex];
-            string mpd = $"mpdecimate=hi=64*12:lo=64*{mpdVal}:frac=1.0";
-            return wrap ? mpd.Wrap() : mpd;
+            (int lo, int hi, float frac) = MpDecSensLookup[(Enums.Interpolation.MpDecimateSens)mpdValIndex];
+            string format = lumaOnly ? $"format=yuv420p,extractplanes=y" : "";
+            string scale = scaleSize > 64 ? $"scale='min({scaleSize},iw)':min'({scaleSize},ih)':force_original_aspect_ratio=decrease:force_divisible_by=2" : "";
+            string crop = cropSize > 0.1f && cropSize < 0.99f ? $"crop=iw*{cropSize}:ih*{cropSize}" : "";
+            string mpdec = $"mpdecimate=hi=64*{hi}:lo=64*{lo}:frac={frac.ToString("0.0#")}";
+            string filters = string.Join(",", new string[] { format, crop, scale, mpdec }.Where(s => s.IsNotEmpty())); // Only take non-empty filter strings
+            return wrap ? filters.Wrap() : filters;
         }
 
         public enum ModuloMode { Disabled, ForInterpolation, ForEncoding }

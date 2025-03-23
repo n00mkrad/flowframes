@@ -382,6 +382,7 @@
     <Compile Include="Data\FpsInfo.cs" />
     <Compile Include="Data\MediaFile.cs" />
     <Compile Include="Data\ModelCollection.cs" />
+    <Compile Include="Data\PseudoHash.cs" />
     <Compile Include="Data\Servers.cs" />
     <Compile Include="Data\Streams\AttachmentStream.cs" />
     <Compile Include="Data\Streams\AudioStream.cs" />

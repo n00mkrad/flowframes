@@ -375,7 +375,6 @@ namespace Flowframes.Os
             IoUtils.CreateDir(outPath);
             Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-            string pipedTargetArgs = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -loglevel warning -stats -y {await Export.GetPipedFfmpegCmd(rt)}";
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = NcnnGpuIds.Split(',')[0].GetInt();
 
@@ -408,26 +407,26 @@ namespace Flowframes.Os
                 AiStarted(rifeNcnnVs, 1000, inPath);
             }
 
-            string scriptPath = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir, "rife.py");
-            string vsPipeArgs = $"{scriptPath} {VapourSynthUtils.GetVsPipeArgs(vsSettings)} -c y4m -";
-            rifeNcnnVs.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()} & vspipe {vsPipeArgs} | {pipedTargetArgs}";
+            IoUtils.TryDeleteIfExists(Path.Combine(Interpolate.currentSettings.tempFolder, "alpha.mkv"));
+            string vspipe = $"vspipe rife.py {VapourSynthUtils.GetVsPipeArgs(vsSettings)}";
+            string ffmpeg = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -loglevel warning -stats -y";
+            string baseArgs = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()}";
+
+            if(vsSettings.Alpha)
+            {
+                rifeNcnnVs.StartInfo.Arguments = $"{baseArgs} && {vspipe} --arg alpha=\"True\" -c y4m - | {ffmpeg} {await Export.GetPipedFfmpegCmd(alpha: Export.AlphaMode.AlphaOut)} && {vspipe} -c y4m - | {ffmpeg} {await Export.GetPipedFfmpegCmd(alpha: Export.AlphaMode.AlphaIn)}";
+            }
+            else
+            {
+                rifeNcnnVs.StartInfo.Arguments = $"{baseArgs} && {vspipe} -c y4m - | {ffmpeg} {await Export.GetPipedFfmpegCmd(rt)}";
+            }
 
             Logger.Log($"cmd.exe {rifeNcnnVs.StartInfo.Arguments}", true);
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                rifeNcnnVs.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.rifeNcnnVs); };
-                rifeNcnnVs.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.rifeNcnnVs, true); };
-            }
-
+            rifeNcnnVs.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.rifeNcnnVs); };
+            rifeNcnnVs.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.rifeNcnnVs, true); };
             rifeNcnnVs.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                rifeNcnnVs.BeginOutputReadLine();
-                rifeNcnnVs.BeginErrorReadLine();
-            }
-
+            rifeNcnnVs.BeginOutputReadLine();
+            rifeNcnnVs.BeginErrorReadLine();
             while (!rifeNcnnVs.HasExited) await Task.Delay(1);
         }
 

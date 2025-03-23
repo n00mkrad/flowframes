@@ -71,13 +71,11 @@ namespace Flowframes.MiscUtils
             }
 
             // Otherwise return "numerator/denominator"
-            Logger.Log($"Approximated fraction for {value}: {bestNum}/{bestDen} (={((float)bestNum / bestDen).ToString("0.0#######")})", true);
+            // Logger.Log($"Approximated fraction for {value}: {bestNum}/{bestDen} (={((float)bestNum / bestDen).ToString("0.0#######")})", true);
             return (bestNum, bestDen);
         }
 
-        /// <summary>
-        /// Computes the greatest common divisor (Euclid's algorithm).
-        /// </summary>
+        /// <summary> Computes the greatest common divisor (Euclid's algorithm). </summary>
         private static int GCD(int a, int b)
         {
             a = Math.Abs(a);

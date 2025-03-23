@@ -141,6 +141,14 @@ namespace Flowframes
                 {
                     IoUtils.TryDeleteIfExists(installerTempDir);
                 }
+
+                foreach (var cacheFile in IoUtils.GetFileInfosSorted(Paths.GetCachePath(), true))
+                {
+                    if ((DateTime.Now - cacheFile.LastWriteTime).TotalDays > 3d)
+                    {
+                        IoUtils.TryDeleteIfExists(cacheFile.FullName);
+                    }
+                }
             }
             catch (Exception e)
             {

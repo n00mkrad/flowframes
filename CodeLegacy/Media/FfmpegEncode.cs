@@ -49,12 +49,12 @@ namespace Flowframes.Media
             var args = new List<string>();
             fps = fps / new Fraction(itsScale);
 
-            if(fps > 0.1f)
+            if (fps > 0.1f)
             {
                 args.Add($"-r {fps}");
             }
-            
-            if(rotation != 0)
+
+            if (rotation != 0)
             {
                 args.Add($"-display_rotation {rotation}");
             }
@@ -62,24 +62,13 @@ namespace Flowframes.Media
             return string.Join(" ", args);
         }
 
-        public static async Task<string> GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false)
+        public static async Task<string> GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false, string alphaPassFile = "")
         {
             var beforeArgs = new List<string>();
             var filters = new List<string>();
             var extraArgs = new List<string> { Config.Get(Config.Key.ffEncArgs) };
             var mf = Interpolate.currentMediaFile;
-
-            if (resampleFps.Float >= 0.1f)
-            {
-                if (Interpolate.currentMediaFile.IsVfr && !Interpolate.currentSettings.dedupe)
-                {
-                    Logger.Log($"Won't add fps filter as VFR handling already outputs at desired frame rate ({resampleFps.Float} FPS)", true);
-                }
-                else
-                {
-                    filters.Add($"fps={resampleFps}");
-                }
-            }
+            int inputs = 1;
 
             if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllColorValues())
             {
@@ -93,24 +82,42 @@ namespace Flowframes.Media
             if (!isChunk && settings.Format == Enums.Output.Format.Mp4 || settings.Format == Enums.Output.Format.Mov)
                 extraArgs.Add($"-movflags +faststart");
 
+            if (resampleFps.Float >= 0.1f)
+            {
+                if (Interpolate.currentMediaFile.IsVfr && !Interpolate.currentSettings.dedupe)
+                {
+                    Logger.Log($"Won't add fps filter as VFR handling already outputs at desired frame rate ({resampleFps.Float} FPS)", true);
+                }
+                else
+                {
+                    filters.Add($"fps={resampleFps}");
+                }
+            }
+
+            if (alphaPassFile.IsNotEmpty())
+            {
+                beforeArgs.Add($"-i {alphaPassFile.Wrap()}");
+                filters.Add($"[{inputs}:v]alphamerge");
+                inputs++;
+            }
+
             if (settings.Format == Enums.Output.Format.Gif)
             {
                 string dither = Config.Get(Config.Key.gifDitherType).Split(' ').First();
-                string palettePath = Path.Combine(Paths.GetSessionDataPath(), "palette.png");
-                string paletteFilter = $"[1:v]paletteuse=dither={dither}";
-
                 int colors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
+                string palettePath = Path.Combine(Paths.GetSessionDataPath(), "palette.png");
                 await FfmpegExtract.GeneratePalette(mf.ImportPath, palettePath, colors);
 
                 if (File.Exists(palettePath))
                 {
                     beforeArgs.Add($"-i {palettePath.Wrap()}");
-                    filters.Add(paletteFilter);
+                    inputs++;
+                    filters.Add($"[{inputs - 1}:v]paletteuse=dither={dither}");
                 }
             }
             else if (settings.Encoder == Enums.Encoding.Encoder.Exr)
             {
-                if(mf.Format.Upper() != "EXR")
+                if (mf.Format.Upper() != "EXR")
                     filters.Add($"zscale=transfer=linear,format={settings.PixelFormat.ToString().Lower()}".Wrap());
             }
 

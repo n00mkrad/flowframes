@@ -35,7 +35,7 @@
 
         public class Interpolation
         {
-            public enum MpDecimateSens { Normal, High, VeryHigh, Extreme }
+            public enum MpDecimateSens { Low, Normal, High, VeryHigh, Extreme }
         }
     }
 }

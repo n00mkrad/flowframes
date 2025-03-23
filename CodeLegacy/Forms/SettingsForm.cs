@@ -115,8 +115,8 @@ namespace Flowframes.Forms
             ConfigParser.SaveGuiElement(onlyShowRelevantSettings);
             ConfigParser.SaveComboxIndex(processingMode);
             ConfigParser.SaveGuiElement(maxVidHeight, ConfigParser.StringMode.Int);
-            ConfigParser.SaveComboxIndex(tempFolderLoc);
-            ConfigParser.SaveComboxIndex(outFolderLoc);
+            ConfigParser.SaveComboxIndex(tempFolderLoc); ConfigParser.SaveGuiElement(tempDirCustom);
+            ConfigParser.SaveComboxIndex(outFolderLoc); ConfigParser.SaveGuiElement(custOutDir);
             ConfigParser.SaveGuiElement(keepTempFolder);
             ConfigParser.SaveGuiElement(exportNamePattern);
             ConfigParser.SaveGuiElement(exportNamePatternLoop);

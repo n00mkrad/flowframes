@@ -275,6 +275,7 @@ namespace Flowframes.IO
             // Debug / Other / Experimental
             if (key == Key.ffEncPreset)   return WriteDefault(key, "fast");
             if (key == Key.sbsRunPreviousStepIfNeeded) return WriteDefault(key, true);
+            if (keyStr == "mpdecimateMode") return WriteDefault(keyStr, "1");
             if (type == Type.Int || type == Type.Float) return WriteDefault(key, "0");     // Write default int/float (0)
             if (type == Type.Bool)                      return WriteDefault(key, false);     // Write default bool (False)
             return WriteDefault(key, "");

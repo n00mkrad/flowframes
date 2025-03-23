@@ -10,6 +10,7 @@ core = vs.core
 # Vars from command line (via VSPipe)
 input_path = globals()["input"]
 temp_dir_path = globals()["tmpDir"]
+cache_file = globals()["cache"]
 fps_in = globals()["inFps"]
 fps_out = globals()["outFps"]
 fps_out_resampled = globals()["outFpsRes"]
@@ -30,6 +31,12 @@ show_vars = globals()["debugVars"] == 'True'
 txt_scale = globals()["txtScale"]
 trim = globals()["trim"]
 override_c_matrix = globals()["cMatrix"]
+alpha = globals()["alpha"] == 'True'
+
+if alpha:
+    show_frame_nums = False
+    show_vars = False
+    perf_osd = False
 
 # Construct & parse additional variables
 frames_dir = os.path.join(temp_dir_path, 'frames')
@@ -52,8 +59,10 @@ if frames:
     clip = core.imwri.Read(rf"{pattern}", firstnum=int(first))   # Load the image sequence with imwri
     clip = core.std.AssumeFPS(clip, fpsnum=infps_num, fpsden=infps_den)  # Set the frame rate for the image sequence
 else:
-    index_file_path = os.path.join(temp_dir_path, 'index.lwi') if os.path.isdir(temp_dir_path) else f'{input_path}.index.lwi'
-    clip = core.lsmas.LWLibavSource(input_path, cachefile=index_file_path) # Load video with lsmash
+    clip = core.lsmas.LWLibavSource(input_path, cachefile=cache_file) # Load video with lsmash
+    if alpha:
+        clip = core.std.PropToClip(clip, prop='_Alpha') # Process only alpha channel
+
 
 src_frames = len(clip)  # Amount of source frames
 
@@ -107,6 +116,10 @@ resize = res_scaled and res_scaled != "0x0" and res_scaled != res_input
 res_w = res_scaled_x if resize else res_in_x
 res_h = res_scaled_y if resize else res_in_y
 
+# Scene change detection
+if sc_sens > 0.01:
+    clip = core.misc.SCDetect(clip=clip, threshold=sc_sens)
+
 # Convert to RGBS from YUV or RGB
 colors = "YUV" if clip.format.color_family == vs.YUV else "RGB"
 if colors == "YUV":
@@ -120,10 +133,6 @@ info_str += f"Loop: {loop}\nScn Detect: {sc_sens}\nMatch Dur: {match_duration}\n
 # Padding to achieve a compatible resolution (some models need a certain modulo)
 if pad_x > 0 or pad_y > 0:
     clip = core.std.AddBorders(clip, right=pad_x, bottom=pad_y)
-
-# Scene change detection
-if sc_sens > 0.01:
-    clip = core.misc.SCDetect(clip=clip, threshold=sc_sens)
 
 pre_interp_frames = len(clip)
 frames_processed_total = 0
@@ -153,17 +162,21 @@ r_fac_num, r_fac_den = map(int, factor.split('/'))
 clip = core.rife.RIFE(clip, factor_num=r_fac_num, factor_den=r_fac_den, model_path=r_mdlpath, gpu_id=(None if r_gpu < 0 else r_gpu), gpu_thread=r_threads, tta=r_tta, uhd=r_uhd, sc=sc_sens > 0.01)
 
 # Reduplication
-if dedupe and allow_redupe and not realtime:
+def reorder_clip(clip, frames_vs_json_path):
     reordered_clip = clip[0]
-    with open(frames_vs_json_path) as json_file:
+    with open(frames_vs_json_path, 'r') as json_file:
         frame_list = json.load(json_file)
         for i in frame_list:
             if i < clip.num_frames:
                 reordered_clip = reordered_clip + clip[i]
-    clip = reordered_clip.std.Trim(1, reordered_clip.num_frames - 1)  # Redupe trim
+    # Redupe trim and return the result
+    return reordered_clip.std.Trim(1, reordered_clip.num_frames - 1) # Redupe trim
+
+if dedupe and allow_redupe and not realtime:
+    clip = reorder_clip(clip, frames_vs_json_path)
 
 # Set output format & color matrix
-clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=c_matrix)
+clip = vs.core.resize.Bicubic(clip, format=vs.YUV444P16, matrix_s=c_matrix) if not alpha else vs.core.resize.Bicubic(clip, format=vs.GRAY8, matrix_s=c_matrix)
 
 # Undo compatibility padding by cropping the same area
 if pad_x > 0 or pad_y > 0:
@@ -232,6 +245,3 @@ if realtime and loop:
     clip = clip.std.Loop(0)
 
 clip.set_output()
-
-if os.path.isfile(index_file_path):
-    os.remove(index_file_path)
