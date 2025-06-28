@@ -309,7 +309,7 @@ namespace Flowframes.Magick
                 Logger.Log($"Dedupe: Factor is 1, will not redupe; overriding factor to {frameCount}/{inputFrames.Count} = {Interpolate.currentSettings.interpFactor.ToString("0.######")}", true);
             }
 
-            if (keepPercentage > 85f)
+            if (inputFrames.Count > 240 && keepPercentage > 85f)
             {
                 Logger.Log("Deduplication: Less than 15% duplicate frames detected; disabling for this video.");
                 Interpolate.currentSettings.dedupe = false;
