@@ -7,19 +7,22 @@ namespace Flowframes.Data
     class VidExtraData
     {
         // Color
-        public string colorSpace = "";
-        public string colorRange = "";
-        public string colorTransfer = "";
-        public string colorPrimaries = "";
+        public string ColSpace = "";
+        public string ColRange = "";
+        public string ColTransfer = "";
+        public string ColPrimaries = "";
 
         // Aspect Ratio
-        public string displayRatio = "";
+        public string Dar = "";
 
         // Rotation
         public int Rotation = 0;
 
-        private readonly string[] validColorSpaces = new string[] { "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100",
-            "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", "arib-std-b67" };
+        private readonly string[] _validColorSpaces = new string[] { "bt709", "bt470m", "bt470bg", "smpte170m", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "bt1361e", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "smpte428", "arib-std-b67" };
+
+        public bool HasAllColorValues => ColSpace.IsNotEmpty() && ColRange.IsNotEmpty() && ColTransfer.IsNotEmpty() && ColPrimaries.IsNotEmpty();
+        public bool HasAnyColorValues => ColSpace.IsNotEmpty() || ColRange.IsNotEmpty() || ColTransfer.IsNotEmpty() || ColPrimaries.IsNotEmpty();
+        public string ColorsStr => $"Color Primaries {(ColPrimaries.IsEmpty() ? "unset" : ColPrimaries)}, Space {(ColSpace.IsEmpty() ? "unset" : ColSpace)}, Transfer {(ColTransfer.IsEmpty() ? "unset" : ColTransfer)}, Range {(ColRange.IsEmpty() ? "unset" : ColRange)}";
 
         public VidExtraData () { }
 
@@ -28,89 +31,42 @@ namespace Flowframes.Data
             string[] lines = ffprobeOutput.SplitIntoLines();
             bool keepColorSpace = Config.GetBool(Config.Key.keepColorSpace, true);
 
-            foreach (string line in lines)
+            string GetValue (string key)
             {
-                if(line.StartsWith("rotation="))
-                {
-                    Rotation = line.Split('=').LastOrDefault().GetInt();
-                    continue;
-                }
-
-                if (keepColorSpace)
-                {
-                    if (line.StartsWith("color_range"))
-                    {
-                        colorRange = line.Split('=').LastOrDefault().Lower();
-                        continue;
-                    }
-
-                    if (line.StartsWith("color_space"))
-                    {
-                        colorSpace = line.Split('=').LastOrDefault().Lower();
-                        continue;
-                    }
-
-                    if (line.StartsWith("color_transfer"))
-                    {
-                        colorTransfer = line.Split('=').LastOrDefault().Lower();
-                        continue;
-                    }
-
-                    if (line.StartsWith("color_primaries"))
-                    {
-                        colorPrimaries = line.Split('=').LastOrDefault().Lower();
-                        continue;
-                    }
-                }
-
-                if (line.StartsWith("display_aspect_ratio") && Config.GetBool(Config.Key.keepAspectRatio, true))
-                {
-                    displayRatio = line.Split('=').LastOrDefault();
-                    continue;
-                }
+                return lines.FirstOrDefault(l => l.StartsWith(key + "="))?.Split('=').LastOrDefault();
             }
 
-            if (!validColorSpaces.Contains(colorSpace.Trim()))
+            Rotation = GetValue("display_rotation")?.GetInt() ?? 0;
+            Dar = GetValue("display_aspect_ratio") ?? "";
+
+            if (keepColorSpace)
             {
-                Logger.Log($"Warning: Ignoring invalid color space '{colorSpace.Trim()}'.", true, false, "ffmpeg");
-                colorSpace = "";
+                ColPrimaries = GetValue("color_primaries")?.Lower().Replace("unknown", "") ?? "";
+                ColRange = GetValue("color_range")?.Lower().Replace("unknown", "") ?? "";
+                ColSpace = GetValue("color_space")?.Lower().Replace("unknown", "") ?? "";
+                ColTransfer = GetValue("color_transfer")?.Lower().Replace("unknown", "") ?? "";
+                ColTransfer = ColTransfer.Replace("bt470bg", "gamma28").Replace("bt470m", "gamma28"); // https://forum.videohelp.com/threads/394596-Color-Matrix
             }
 
-            if (colorRange.Trim() == "unknown")
-                colorRange = "";
+            Logger.Log($"{ColorsStr}; Display Aspect Ratio {Dar.Wrap()}, Rotation {Rotation}", true, false, "ffmpeg");
 
-            if (!validColorSpaces.Contains(colorTransfer.Trim()))
+            if (!_validColorSpaces.Contains(ColSpace.Trim()))
             {
-                Logger.Log($"Warning: Color Transfer '{colorTransfer.Trim()}' not valid.", true, false, "ffmpeg");
-                colorTransfer = "";
-            }
-            else
-            {
-                colorTransfer = colorTransfer.Replace("bt470bg", "gamma28").Replace("bt470m", "gamma28"); // https://forum.videohelp.com/threads/394596-Color-Matrix
+                Logger.Log($"Warning: Ignoring invalid color space '{ColSpace.Trim()}'.", true, false, "ffmpeg");
+                ColSpace = "";
             }
 
-            if (!validColorSpaces.Contains(colorPrimaries.Trim()))
+            if (!_validColorSpaces.Contains(ColTransfer.Trim()))
             {
-                Logger.Log($"Warning: Color Primaries '{colorPrimaries.Trim()}' not valid.", true, false, "ffmpeg");
-                colorPrimaries = "";
+                Logger.Log($"Warning: Color Transfer '{ColTransfer.Trim()}' not valid.", true, false, "ffmpeg");
+                ColTransfer = "";
+            }
+
+            if (!_validColorSpaces.Contains(ColPrimaries.Trim()))
+            {
+                Logger.Log($"Warning: Color Primaries '{ColPrimaries.Trim()}' not valid.", true, false, "ffmpeg");
+                ColPrimaries = "";
             }  
-        }
-
-        public bool HasAllColorValues()
-        {
-            if (string.IsNullOrWhiteSpace(colorSpace))
-                return false;
-
-            if (string.IsNullOrWhiteSpace(colorRange))
-                return false;
-
-            if (string.IsNullOrWhiteSpace(colorTransfer))
-                return false;
-
-            if (string.IsNullOrWhiteSpace(colorPrimaries))
-                return false;
-
-            return true;
         }
     }
 }

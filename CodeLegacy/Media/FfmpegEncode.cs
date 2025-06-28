@@ -70,14 +70,17 @@ namespace Flowframes.Media
             var mf = Interpolate.currentMediaFile;
             int inputs = 1;
 
-            if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAllColorValues())
+            if (Config.GetBool(Config.Key.keepColorSpace) && extraData.HasAnyColorValues)
             {
-                Logger.Log($"Using color data: Space {extraData.colorSpace}; Primaries {extraData.colorPrimaries}; Transfer {extraData.colorTransfer}; Range {extraData.colorRange}", true, false, "ffmpeg");
-                extraArgs.Add($"-colorspace {extraData.colorSpace} -color_primaries {extraData.colorPrimaries} -color_trc {extraData.colorTransfer} -color_range:v {extraData.colorRange.Wrap()}");
+                Logger.Log($"Using color data: {extraData.ColorsStr}", true, false, "ffmpeg");
+                extraArgs.AddIf($"-colorspace {extraData.ColSpace}", extraData.ColSpace.IsNotEmpty());
+                extraArgs.AddIf($"-color_primaries {extraData.ColPrimaries}", extraData.ColPrimaries.IsNotEmpty());
+                extraArgs.AddIf($"-color_trc {extraData.ColTransfer}", extraData.ColTransfer.IsNotEmpty());
+                extraArgs.AddIf($"-color_range:v {extraData.ColRange.Wrap()}", extraData.ColRange.IsNotEmpty());
             }
 
-            if (!string.IsNullOrWhiteSpace(extraData.displayRatio) && !extraData.displayRatio.MatchesWildcard("*N/A*"))
-                extraArgs.Add($"-aspect {extraData.displayRatio}");
+            if (!string.IsNullOrWhiteSpace(extraData.Dar) && !extraData.Dar.MatchesWildcard("*N/A*"))
+                extraArgs.Add($"-aspect {extraData.Dar}");
 
             if (!isChunk && settings.Format == Enums.Output.Format.Mp4 || settings.Format == Enums.Output.Format.Mov)
                 extraArgs.Add($"-movflags +faststart");

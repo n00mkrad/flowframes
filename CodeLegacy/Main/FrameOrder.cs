@@ -77,13 +77,9 @@ namespace Flowframes.Main
             int frameCountWithoutLast = frameCount - 1;
             string dupesFile = Path.Combine(tempFolder, "dupes.test.json");
             var dupes = JsonConvert.DeserializeObject<Dictionary<int, List<int>>>(File.ReadAllText(dupesFile));
-
-            bool debug = Config.GetBool("frameOrderDebug", false);
-
+            bool debug = Debugger.IsAttached || Config.GetBool("frameOrderDebug", false);
             int targetFrameCount = (frameCount * interpFactor).RoundToInt() - InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor);
-
             Fraction step = new Fraction(frameCount, targetFrameCount + InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor));
-
             var framesList = new List<int>();
 
             for (int i = 0; i < targetFrameCount; i++)

@@ -471,5 +471,14 @@ namespace Flowframes
                 return 0f;
             }
         }
+
+        /// <summary> Add <paramref name="item"/> to list if <paramref name="condition"/> is true </summary>
+        public static void AddIf<T>(this IList<T> list, T item, bool condition = true)
+        {
+            if (list == null || !condition || item == null)
+                return;
+
+            list.Add(item);
+        }
     }
 }
