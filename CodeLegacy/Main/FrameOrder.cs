@@ -82,13 +82,19 @@ namespace Flowframes.Main
             Fraction step = new Fraction(frameCount, targetFrameCount + InterpolateUtils.GetRoundedInterpFramesPerInputFrame(interpFactor));
             var framesList = new List<int>();
 
+            void DebugLog(string message)
+            {
+                if (debug)
+                    Console.WriteLine(message);
+            }
+
             for (int i = 0; i < targetFrameCount; i++)
             {
                 float currentFrameTime = 1 + (step * i).Float;
                 int sourceFrameIdx = (int)Math.Floor(currentFrameTime) - 1;
 
                 framesList.Add(i);
-                Console.WriteLine($"Frame: #{i} - Idx: {sourceFrameIdx} - [Time: {currentFrameTime}]");
+                DebugLog($"Frame: #{i} - Idx: {sourceFrameIdx} - [Time: {currentFrameTime}]");
 
                 if (sourceFrameIdx < dupes.Count)
                 {
@@ -100,7 +106,7 @@ namespace Flowframes.Main
                     for (int dupeNum = 0; dupeNum < dupes.ElementAt(sourceFrameIdx).Value.Count; dupeNum++)
                     {
                         framesList.Add(framesList.Last());
-                        Console.WriteLine($"Frame: #{i} - Idx: {sourceFrameIdx} - (Dupe {dupeNum + 1}/{dupes.ElementAt(sourceFrameIdx).Value.Count})");
+                        DebugLog($"Frame: #{i} - Idx: {sourceFrameIdx} - (Dupe {dupeNum + 1}/{dupes.ElementAt(sourceFrameIdx).Value.Count})");
                     }
                 }
             }
