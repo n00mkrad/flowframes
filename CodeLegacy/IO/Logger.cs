@@ -124,7 +124,6 @@ namespace Flowframes
             if (Path.GetExtension(filename) != ".txt")
                 filename = Path.ChangeExtension(filename, "txt");
 
-            file = Path.Combine(Paths.GetLogPath(), filename);
             logStr = logStr.Replace(Environment.NewLine, " ").TrimWhitespaces();
             string time = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss");
 
@@ -139,6 +138,7 @@ namespace Flowframes
             {
                 try
                 {
+                    file = Path.Combine(Paths.GetLogPath(), filename);
                     File.AppendAllText(file, appendStr);
                     id++;
                     break;
@@ -181,12 +181,11 @@ namespace Flowframes
             if (Path.GetExtension(filename) != ".txt")
                 filename = Path.ChangeExtension(filename, "txt");
 
-            file = Path.Combine(Paths.GetLogPath(), filename);
-
-            string time = DT.Now.Month + "-" + DT.Now.Day + "-" + DT.Now.Year + " " + DT.Now.Hour + ":" + DT.Now.Minute + ":" + DT.Now.Second;
-
             try
             {
+                file = Path.Combine(Paths.GetLogPath(), filename);
+                string time = DT.Now.Month + "-" + DT.Now.Day + "-" + DT.Now.Year + " " + DT.Now.Hour + ":" + DT.Now.Minute + ":" + DT.Now.Second;
+
                 if (append)
                     File.AppendAllText(file, Environment.NewLine + time + ":" + Environment.NewLine + content);
                 else
