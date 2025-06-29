@@ -1,5 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
+using Flowframes.Ui;
 using System;
 using System.IO;
 using System.Linq;
@@ -91,14 +92,17 @@ namespace Flowframes.Os
             Logger.Log($"You are running Flowframes {installed}. The latest Patreon version is {latestPat}, the latest free version is {latestFree}.");
 
             string gpus = OsUtils.GetGpus();
+            string windowTitle = "Flowframes";
 
             if (installed.ToString() != "0.0.0")
-                Program.mainForm.Text = $"Flowframes {installed}";
+                windowTitle += $" {installed}";
             else
-                Program.mainForm.Text = $"Flowframes [Unknown Version]";
+                windowTitle += $" [Unknown Version]";
 
-            if (!string.IsNullOrWhiteSpace(gpus.Trim()))
-                Program.mainForm.Text = $"{Program.mainForm.Text} [{gpus}]";
+            if (gpus.Trim().IsEmpty())
+                windowTitle += $"[{gpus}]";
+
+            Program.mainForm.Invoke(() => Program.mainForm.Text = windowTitle);
         }
 
         public static async Task UpdateModelList()
