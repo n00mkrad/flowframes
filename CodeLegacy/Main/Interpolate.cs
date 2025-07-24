@@ -211,9 +211,11 @@ namespace Flowframes
             {
                 await Task.Run(async () => { await FrameRename.Rename(); });
             }
-            else if (ai.Piped && currentSettings.dedupe)
+            
+            if (ai.Piped && currentSettings.dedupe)
             {
-                await Task.Run(async () => { await Dedupe.CreateFramesFileVideo(currentSettings.inPath, Config.GetBool(Config.Key.enableLoop)); });
+                string path = currentMediaFile.IsDirectory ? currentMediaFile.ImportPath : currentSettings.inPath;
+                await Task.Run(async () => { await Dedupe.CreateFramesFileVideo(path, Config.GetBool(Config.Key.enableLoop)); });
             }
 
             if (!ai.Piped || (ai.Piped && currentSettings.dedupe))

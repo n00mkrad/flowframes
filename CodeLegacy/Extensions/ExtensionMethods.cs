@@ -279,7 +279,7 @@ namespace Flowframes
             }
         }
 
-        public static string GetConcStr(this string filePath, int rate = -1)
+        public static string GetConcStr(this string filePath, float rate = -1)
         {
             string rateStr = rate >= 0 ? $"-r {rate} " : "";
             return filePath.IsConcatFile() ? $"{rateStr}-safe 0 -f concat " : "";

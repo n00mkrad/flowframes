@@ -33,8 +33,9 @@ namespace Flowframes.Main
                     file.Delete();
 
                 benchmark.Restart();
+                bool vs = Interpolate.currentSettings.ai.NameInternal == Implementations.rifeNcnnVs.NameInternal;
 
-                if (Interpolate.currentSettings.ai.NameInternal == Implementations.rifeNcnnVs.NameInternal)
+                if (vs) // && !Interpolate.currentSettings.inputIsFrames)
                     CreateFramesFileVid(Interpolate.currentSettings.inPath, Interpolate.currentSettings.tempFolder, loopEnabled, interpFactor);
                 else
                     await CreateFramesFileImgSeq(tempFolder, loopEnabled, interpFactor);

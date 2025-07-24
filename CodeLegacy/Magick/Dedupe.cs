@@ -269,7 +269,7 @@ namespace Flowframes.Magick
             Process ffmpeg = OsUtils.NewProcess(true);
             string baseCmd = $"/C cd /D {Path.Combine(IO.Paths.GetPkgPath(), IO.Paths.audioVideoDir).Wrap()}";
             string mpDec = FfmpegCommands.GetMpdecimate(wrap: false); // FfmpegCommands.GetMpdecimate((int)FfmpegCommands.MpDecSensitivity.Normal, false);
-            ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y {videoPath.GetConcStr()} -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
+            ffmpeg.StartInfo.Arguments = $"{baseCmd} & ffmpeg -loglevel debug -y {videoPath.GetConcStr(Interpolate.currentSettings.inFps.Float)} -i {videoPath.Wrap()} -fps_mode vfr -vf {mpDec} -f null NUL 2>&1 | findstr keep_count:";
             var ffmpegOutputLines = (await Task.Run(() => OsUtils.GetProcStdOut(ffmpeg, true))).SplitIntoLines();
             ffmpegOutputLines = ffmpegOutputLines.Where(l => l.Contains("keep_count")).Select(l => l.Split(']').Last()).ToArray();
             var test = string.Join("\n", ffmpegOutputLines);
