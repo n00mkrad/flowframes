@@ -95,7 +95,7 @@ namespace Flowframes.Forms
             this.label1.ForeColor = System.Drawing.SystemColors.Control;
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(415, 60);
+            this.label1.Size = new System.Drawing.Size(416, 60);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -107,7 +107,7 @@ namespace Flowframes.Forms
             this.panel1.Controls.Add(this.configDataGrid);
             this.panel1.Location = new System.Drawing.Point(6, 80);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(900, 310);
+            this.panel1.Size = new System.Drawing.Size(180, 0);
             this.panel1.TabIndex = 4;
             // 
             // configDataGrid
@@ -124,7 +124,7 @@ namespace Flowframes.Forms
             this.configDataGrid.Location = new System.Drawing.Point(0, 0);
             this.configDataGrid.MultiSelect = false;
             this.configDataGrid.Name = "configDataGrid";
-            this.configDataGrid.Size = new System.Drawing.Size(900, 310);
+            this.configDataGrid.Size = new System.Drawing.Size(180, 0);
             this.configDataGrid.TabIndex = 0;
             this.configDataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.configDataGrid_CellValueChanged);
             this.configDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.configDataGrid_RowsAdded);
@@ -150,6 +150,7 @@ namespace Flowframes.Forms
             // 
             // copyTextClipboardBtn
             // 
+            this.copyTextClipboardBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.copyTextClipboardBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.copyTextClipboardBtn.FlatAppearance.BorderSize = 0;
             this.copyTextClipboardBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -215,6 +216,7 @@ namespace Flowframes.Forms
             // 
             // clearLogsBtn
             // 
+            this.clearLogsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearLogsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.clearLogsBtn.FlatAppearance.BorderSize = 0;
             this.clearLogsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -229,6 +231,7 @@ namespace Flowframes.Forms
             // 
             // openLogFolderBtn
             // 
+            this.openLogFolderBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.openLogFolderBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.openLogFolderBtn.FlatAppearance.BorderSize = 0;
             this.openLogFolderBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

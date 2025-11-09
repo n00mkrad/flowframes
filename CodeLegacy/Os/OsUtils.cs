@@ -127,21 +127,6 @@ namespace Flowframes.Os
             }
         }
 
-        public static string GetCmdArg()
-        {
-            bool stayOpen = Config.GetInt(Config.Key.cmdDebugMode) == 2;
-
-            if (stayOpen)
-                return "/K";
-            else
-                return "/C";
-        }
-
-        public static bool ShowHiddenCmd()
-        {
-            return Config.GetInt(Config.Key.cmdDebugMode) > 0;
-        }
-
         public static bool DriveIsSSD(string path)
         {
             try

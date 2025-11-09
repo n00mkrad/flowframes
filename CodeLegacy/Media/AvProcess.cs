@@ -59,9 +59,8 @@ namespace Flowframes
 
         public static async Task<string> RunFfmpeg(string args, string workingDir, LogMode logMode, string loglevel, bool reliableOutput = true, bool progressBar = false)
         {
-            bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
             string processOutput = "";
-            Process ffmpeg = OsUtils.NewProcess(!show);
+            Process ffmpeg = OsUtils.NewProcess(true);
             NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
             lastAvProcess = ffmpeg;
 
@@ -78,21 +77,12 @@ namespace Flowframes
             if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
             Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
 
-            if (!show)
-            {
-                ffmpeg.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.Sw.Restart(); };
-                ffmpeg.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.Sw.Restart(); };
-            }
-
+            ffmpeg.OutputDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.Sw.Restart(); };
+            ffmpeg.ErrorDataReceived += (sender, outLine) => { AvOutputHandler.LogOutput(outLine.Data, ref processOutput, "ffmpeg", logMode, progressBar); timeSinceLastOutput.Sw.Restart(); };
             ffmpeg.Start();
             ffmpeg.PriorityClass = ProcessPriorityClass.BelowNormal;
-
-            if (!show)
-            {
-                ffmpeg.BeginOutputReadLine();
-                ffmpeg.BeginErrorReadLine();
-            }
-
+            ffmpeg.BeginOutputReadLine();
+            ffmpeg.BeginErrorReadLine();
             while (!ffmpeg.HasExited) await Task.Delay(10);
             while (reliableOutput && timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);
 
@@ -149,10 +139,8 @@ namespace Flowframes
 
         public static async Task<string> RunFfprobe(FfprobeSettings settings, bool asyncOutput = false)
         {
-            bool show = Config.GetInt(Config.Key.cmdDebugMode) > 0;
-
             string processOutput = "";
-            Process ffprobe = OsUtils.NewProcess(!show);
+            Process ffprobe = OsUtils.NewProcess(true);
             NmkdStopwatch timeSinceLastOutput = new NmkdStopwatch();
 
             bool concat = settings.Args.Split(" \"").Last().Remove("\"").Trim().EndsWith(".concat");
@@ -165,21 +153,13 @@ namespace Flowframes
             if (!asyncOutput)
                 return await Task.Run(() => OsUtils.GetProcStdOut(ffprobe));
 
-            if (!show)
-            {
-                string[] ignore = new string[0];
-                ffprobe.OutputDataReceived += (sender, outLine) => { processOutput += outLine + Environment.NewLine; };
-                ffprobe.ErrorDataReceived += (sender, outLine) => { processOutput += outLine + Environment.NewLine; };
-            }
-
+            string[] ignore = new string[0];
+            ffprobe.OutputDataReceived += (sender, outLine) => { processOutput += outLine + Environment.NewLine; };
+            ffprobe.ErrorDataReceived += (sender, outLine) => { processOutput += outLine + Environment.NewLine; };
             ffprobe.Start();
             ffprobe.PriorityClass = ProcessPriorityClass.BelowNormal;
-
-            if (!show)
-            {
-                ffprobe.BeginOutputReadLine();
-                ffprobe.BeginErrorReadLine();
-            }
+            ffprobe.BeginOutputReadLine();
+            ffprobe.BeginErrorReadLine();
 
             while (!ffprobe.HasExited) await Task.Delay(10);
             while (timeSinceLastOutput.ElapsedMs < 200) await Task.Delay(50);

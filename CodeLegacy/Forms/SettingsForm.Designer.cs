@@ -180,8 +180,6 @@
             this.label47 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
             this.label45 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cmdDebugMode = new System.Windows.Forms.ComboBox();
             this.titleLabel = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.resetBtn = new HTAlt.WinForms.HTButton();
@@ -814,9 +812,9 @@
             this.label25.Location = new System.Drawing.Point(10, 10);
             this.label25.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(177, 13);
+            this.label25.Size = new System.Drawing.Size(209, 13);
             this.label25.TabIndex = 76;
-            this.label25.Text = "Enable Transparency (Experimental)";
+            this.label25.Text = "Enable Alpha/Transparency (Experimental)";
             // 
             // enableAlpha
             // 
@@ -834,9 +832,9 @@
             this.label4.Location = new System.Drawing.Point(308, 10);
             this.label4.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(300, 13);
+            this.label4.Size = new System.Drawing.Size(354, 13);
             this.label4.TabIndex = 78;
-            this.label4.Text = "Enables Transparency (Alpha) support for GIFs and PNG input";
+            this.label4.Text = "Enables transparency (alpha channel) interpolation with supported formats";
             // 
             // panHqJpegImport
             // 
@@ -1903,17 +1901,15 @@
             this.debugTab.Controls.Add(this.label47);
             this.debugTab.Controls.Add(this.label46);
             this.debugTab.Controls.Add(this.label45);
-            this.debugTab.Controls.Add(this.label3);
-            this.debugTab.Controls.Add(this.cmdDebugMode);
             this.debugTab.ForeColor = System.Drawing.Color.White;
             this.debugTab.Name = "debugTab";
-            this.debugTab.Size = new System.Drawing.Size(762, 771);
+            this.debugTab.Size = new System.Drawing.Size(762, 419);
             this.debugTab.Text = "Developer Options";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(10, 70);
+            this.label7.Location = new System.Drawing.Point(10, 40);
             this.label7.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(121, 13);
@@ -1935,7 +1931,7 @@
             "Slow",
             "Slower",
             "Very Slow"});
-            this.serverCombox.Location = new System.Drawing.Point(280, 67);
+            this.serverCombox.Location = new System.Drawing.Point(280, 37);
             this.serverCombox.Name = "serverCombox";
             this.serverCombox.Size = new System.Drawing.Size(250, 21);
             this.serverCombox.TabIndex = 86;
@@ -1944,16 +1940,16 @@
             // 
             this.ffEncArgs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ffEncArgs.ForeColor = System.Drawing.Color.White;
-            this.ffEncArgs.Location = new System.Drawing.Point(280, 180);
+            this.ffEncArgs.Location = new System.Drawing.Point(280, 160);
             this.ffEncArgs.MinimumSize = new System.Drawing.Size(4, 21);
             this.ffEncArgs.Name = "ffEncArgs";
-            this.ffEncArgs.Size = new System.Drawing.Size(400, 20);
+            this.ffEncArgs.Size = new System.Drawing.Size(400, 21);
             this.ffEncArgs.TabIndex = 85;
             // 
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(10, 183);
+            this.label56.Location = new System.Drawing.Point(10, 163);
             this.label56.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(147, 13);
@@ -1964,7 +1960,7 @@
             // 
             this.label54.AutoSize = true;
             this.label54.ForeColor = System.Drawing.Color.Silver;
-            this.label54.Location = new System.Drawing.Point(543, 154);
+            this.label54.Location = new System.Drawing.Point(543, 134);
             this.label54.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(118, 13);
@@ -1986,7 +1982,7 @@
             "Slow",
             "Slower",
             "Very Slow"});
-            this.ffEncPreset.Location = new System.Drawing.Point(280, 150);
+            this.ffEncPreset.Location = new System.Drawing.Point(280, 130);
             this.ffEncPreset.Name = "ffEncPreset";
             this.ffEncPreset.Size = new System.Drawing.Size(250, 21);
             this.ffEncPreset.TabIndex = 78;
@@ -1994,7 +1990,7 @@
             // label47
             // 
             this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(10, 153);
+            this.label47.Location = new System.Drawing.Point(10, 133);
             this.label47.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(174, 13);
@@ -2005,12 +2001,12 @@
             // 
             this.label46.AutoSize = true;
             this.label46.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label46.Location = new System.Drawing.Point(10, 120);
+            this.label46.Location = new System.Drawing.Point(10, 100);
             this.label46.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(64, 16);
+            this.label46.Size = new System.Drawing.Size(133, 16);
             this.label46.TabIndex = 76;
-            this.label46.Text = "FFmpeg";
+            this.label46.Text = "Encoding (ffmpeg)";
             // 
             // label45
             // 
@@ -2022,33 +2018,6 @@
             this.label45.Size = new System.Drawing.Size(62, 16);
             this.label45.TabIndex = 75;
             this.label45.Text = "General";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 40);
-            this.label3.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(148, 13);
-            this.label3.TabIndex = 28;
-            this.label3.Text = "Show Hidden CMD Windows ";
-            // 
-            // cmdDebugMode
-            // 
-            this.cmdDebugMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.cmdDebugMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmdDebugMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmdDebugMode.ForeColor = System.Drawing.Color.White;
-            this.cmdDebugMode.FormattingEnabled = true;
-            this.cmdDebugMode.Items.AddRange(new object[] {
-            "No",
-            "Yes, Close After Execution",
-            "Yes, Keep Open After Process Has Exited"});
-            this.cmdDebugMode.Location = new System.Drawing.Point(280, 37);
-            this.cmdDebugMode.Name = "cmdDebugMode";
-            this.cmdDebugMode.Size = new System.Drawing.Size(250, 21);
-            this.cmdDebugMode.TabIndex = 27;
-            this.cmdDebugMode.SelectedIndexChanged += new System.EventHandler(this.cmdDebugMode_SelectedIndexChanged);
             // 
             // titleLabel
             // 
@@ -2098,7 +2067,7 @@
             this.onlyShowRelevantSettings.Name = "onlyShowRelevantSettings";
             this.onlyShowRelevantSettings.Size = new System.Drawing.Size(179, 34);
             this.onlyShowRelevantSettings.TabIndex = 0;
-            this.onlyShowRelevantSettings.Text = "Only show relevant settings";
+            this.onlyShowRelevantSettings.Text = "Only Show Relevant Settings";
             this.onlyShowRelevantSettings.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
@@ -2215,8 +2184,6 @@
         private System.Windows.Forms.CheckBox keepAudio;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox dedupMode;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cmdDebugMode;
         private System.Windows.Forms.Label dedupeSensLabel;
         private System.Windows.Forms.CheckBox enableLoop;
         private System.Windows.Forms.Label label15;

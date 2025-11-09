@@ -317,7 +317,6 @@ namespace Flowframes.IO
             autoEncSafeBufferCuda,
             autoEncSafeBufferNcnn,
             clearLogOnInput,
-            cmdDebugMode,
             compressedPyVersion,
             customServer,
             dainNcnnTilesize,

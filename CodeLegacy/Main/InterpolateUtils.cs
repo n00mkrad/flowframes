@@ -202,12 +202,6 @@ namespace Flowframes.Main
             return true;
         }
 
-        public static void ShowWarnings(float factor, AiInfo ai)
-        {
-            if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
-                Logger.Log($"Warning: The CMD window for interpolation is enabled. This will disable Auto-Encode and the progress bar!");
-        }
-
         public static bool CheckPathValid(string path)
         {
             if (path.StartsWith(@"\\"))
@@ -298,12 +292,6 @@ namespace Flowframes.Main
             if (current.ai.Piped)
             {
                 Logger.Log($"Not Using AutoEnc: Using piped encoding.", true);
-                return false;
-            }
-
-            if (Config.GetInt(Config.Key.cmdDebugMode) > 0)
-            {
-                Logger.Log($"Not Using AutoEnc: CMD window is shown (cmdDebugMode > 0)", true);
                 return false;
             }
 

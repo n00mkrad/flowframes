@@ -212,27 +212,19 @@ namespace Flowframes.Os
             string prec = Config.GetBool(Config.Key.rifeCudaFp16) ? "--fp16" : "";
             string args = $" --input {inPath.Wrap()} --output {outDir} --model {mdl} --multi {interpFactor} {uhdStr} {wthreads} {rbuffer} {prec}";
 
-            Process rifePy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process rifePy = OsUtils.NewProcess(true);
             AiStarted(rifePy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
-            rifePy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir).Wrap()} & " +
+            rifePy.StartInfo.Arguments = $"/C cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running RIFE (CUDA){(InterpolateUtils.UseUhd() ? " (UHD Mode)" : "")}...", false);
             Logger.Log("cmd.exe " + rifePy.StartInfo.Arguments, true);
 
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, Implementations.rifeCuda); };
-                rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.rifeCuda, true); };
-            }
-
+            rifePy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, Implementations.rifeCuda); };
+            rifePy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.rifeCuda, true); };
             rifePy.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                rifePy.BeginOutputReadLine();
-                rifePy.BeginErrorReadLine();
-            }
+            rifePy.BeginOutputReadLine();
+            rifePy.BeginErrorReadLine();
 
             while (!rifePy.HasExited) await Task.Delay(1);
         }
@@ -272,27 +264,19 @@ namespace Flowframes.Os
             Directory.CreateDirectory(outPath);
             string args = $" --input {inPath.Wrap()} --output {outPath.Wrap()} --model {mdl}/{mdl}.pth --factor {interpFactor}";
 
-            Process flavrPy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process flavrPy = OsUtils.NewProcess(true);
             AiStarted(flavrPy, 4000);
             SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
-            flavrPy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.PkgDir).Wrap()} & " +
+            flavrPy.StartInfo.Arguments = $"/C cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.flavrCuda.PkgDir).Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running FLAVR (CUDA)...", false);
             Logger.Log("cmd.exe " + flavrPy.StartInfo.Arguments, true);
 
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                flavrPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, Implementations.flavrCuda); };
-                flavrPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.flavrCuda, true); };
-            }
-
+            flavrPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, Implementations.flavrCuda); };
+            flavrPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.flavrCuda, true); };
             flavrPy.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                flavrPy.BeginOutputReadLine();
-                flavrPy.BeginErrorReadLine();
-            }
+            flavrPy.BeginOutputReadLine();
+            flavrPy.BeginErrorReadLine();
 
             while (!flavrPy.HasExited) await Task.Delay(1);
         }
@@ -322,7 +306,7 @@ namespace Flowframes.Os
         {
             Directory.CreateDirectory(outPath);
             string logFileName = "rife-ncnn-log";
-            Process rifeNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process rifeNcnn = OsUtils.NewProcess(true);
             AiStarted(rifeNcnn, 1500, inPath);
             SetProgressCheck(outPath, factor);
             int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()); // TODO: Maybe won't work with fractional factors ??
@@ -331,24 +315,16 @@ namespace Flowframes.Os
             string uhdStr = InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
-            rifeNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
+            rifeNcnn.StartInfo.Arguments = $"/C cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnn.PkgDir).Wrap()} & rife-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} {frames} -m {mdl.Lower()} {ttaStr} {uhdStr} -g {NcnnGpuIds} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.rifeNcnn)}";
 
             Logger.Log("cmd.exe " + rifeNcnn.StartInfo.Arguments, true);
 
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.rifeNcnn); };
-                rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.rifeNcnn, true); };
-            }
-
+            rifeNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.rifeNcnn); };
+            rifeNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.rifeNcnn, true); };
             rifeNcnn.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                rifeNcnn.BeginOutputReadLine();
-                rifeNcnn.BeginErrorReadLine();
-            }
+            rifeNcnn.BeginOutputReadLine();
+            rifeNcnn.BeginErrorReadLine();
 
             while (!rifeNcnn.HasExited) await Task.Delay(1);
         }
@@ -377,7 +353,7 @@ namespace Flowframes.Os
         static async Task RunRifeNcnnVsProcess(string inPath, float factor, string outPath, string mdl, Size res, bool rt = false)
         {
             IoUtils.CreateDir(outPath);
-            Process rifeNcnnVs = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process rifeNcnnVs = OsUtils.NewProcess(true);
             string avDir = Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
             string pkgDir = Path.Combine(Paths.GetPkgPath(), Implementations.rifeNcnnVs.PkgDir);
             int gpuId = NcnnGpuIds.Split(',')[0].GetInt();
@@ -415,7 +391,7 @@ namespace Flowframes.Os
             IoUtils.TryDeleteIfExists(Path.Combine(Interpolate.currentSettings.tempFolder, "alpha.mkv"));
             string vspipe = $"vspipe rife.py {VapourSynthUtils.GetVsPipeArgs(vsSettings)}";
             string ffmpeg = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -loglevel warning -stats -y";
-            string baseArgs = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()}";
+            string baseArgs = $"/C cd /D {pkgDir.Wrap()}";
 
             if (vsSettings.Alpha)
             {
@@ -460,7 +436,7 @@ namespace Flowframes.Os
         {
             string dainDir = Path.Combine(Paths.GetPkgPath(), Implementations.dainNcnn.PkgDir);
             Directory.CreateDirectory(outPath);
-            Process dain = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process dain = OsUtils.NewProcess(true);
             AiStarted(dain, 1500);
             SetProgressCheck(outPath, factor);
             int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt());
@@ -468,23 +444,15 @@ namespace Flowframes.Os
             string args = $" -v -i {framesPath.Wrap()} -o {outPath.Wrap()} -n {targetFrames} -m {mdl.Lower()}" +
                 $" -t {NcnnUtils.GetNcnnTilesize(tilesize)} -g {NcnnGpuIds} -f {NcnnUtils.GetNcnnPattern()} -j 2:1:2";
 
-            dain.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
+            dain.StartInfo.Arguments = $"/C cd /D {dainDir.Wrap()} & dain-ncnn-vulkan.exe {args}";
             Logger.Log("Running DAIN...", false);
             Logger.Log("cmd.exe " + dain.StartInfo.Arguments, true);
 
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.dainNcnn); };
-                dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.dainNcnn, true); };
-            }
-
+            dain.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.dainNcnn); };
+            dain.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.dainNcnn, true); };
             dain.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                dain.BeginOutputReadLine();
-                dain.BeginErrorReadLine();
-            }
+            dain.BeginOutputReadLine();
+            dain.BeginErrorReadLine();
 
             while (!dain.HasExited)
                 await Task.Delay(100);
@@ -529,27 +497,19 @@ namespace Flowframes.Os
             string args = $" --custom_path {basePath.Wrap()} --input {inPath.Wrap()} --output {outPath.Wrap()} --mdl_dir {mdlDir}" +
                 $" --multiple {interpFactor} --gpu 0 {mdlArgs}";
 
-            Process xvfiPy = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process xvfiPy = OsUtils.NewProcess(true);
             AiStarted(xvfiPy, 3500);
             SetProgressCheck(Path.Combine(Interpolate.currentSettings.tempFolder, outDir), interpFactor);
-            xvfiPy.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {pkgPath.Wrap()} & " +
+            xvfiPy.StartInfo.Arguments = $"/C cd /D {pkgPath.Wrap()} & " +
                 $"set CUDA_VISIBLE_DEVICES={Config.Get(Config.Key.torchGpus)} & {Python.GetPyCmd()} {script} {args}";
             Logger.Log($"Running XVFI (CUDA)...", false);
             Logger.Log("cmd.exe " + xvfiPy.StartInfo.Arguments, true);
 
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                xvfiPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, Implementations.xvfiCuda); };
-                xvfiPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.xvfiCuda, true); };
-            }
-
+            xvfiPy.OutputDataReceived += (sender, outLine) => { LogOutput(outLine.Data, Implementations.xvfiCuda); };
+            xvfiPy.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.xvfiCuda, true); };
             xvfiPy.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                xvfiPy.BeginOutputReadLine();
-                xvfiPy.BeginErrorReadLine();
-            }
+            xvfiPy.BeginOutputReadLine();
+            xvfiPy.BeginErrorReadLine();
 
             while (!xvfiPy.HasExited) await Task.Delay(1);
         }
@@ -579,7 +539,7 @@ namespace Flowframes.Os
         static async Task RunIfrnetNcnnProcess(string inPath, float factor, string outPath, string mdl)
         {
             Directory.CreateDirectory(outPath);
-            Process ifrnetNcnn = OsUtils.NewProcess(!OsUtils.ShowHiddenCmd());
+            Process ifrnetNcnn = OsUtils.NewProcess(true);
             AiStarted(ifrnetNcnn, 1500, inPath);
             SetProgressCheck(outPath, factor);
             //int targetFrames = ((IoUtils.GetAmountOfFiles(lastInPath, false, "*.*") * factor).RoundToInt()); // TODO: Maybe won't work with fractional factors ??
@@ -587,24 +547,16 @@ namespace Flowframes.Os
             string uhdStr = ""; // InterpolateUtils.UseUhd() ? "-u" : "";
             string ttaStr = ""; // Config.GetBool(Config.Key.rifeNcnnUseTta, false) ? "-x" : "";
 
-            ifrnetNcnn.StartInfo.Arguments = $"{OsUtils.GetCmdArg()} cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +
+            ifrnetNcnn.StartInfo.Arguments = $"/C cd /D {Path.Combine(Paths.GetPkgPath(), Implementations.ifrnetNcnn.PkgDir).Wrap()} & ifrnet-ncnn-vulkan.exe " +
                 $" -v -i {inPath.Wrap()} -o {outPath.Wrap()} -m {mdl} {ttaStr} {uhdStr} -g {NcnnGpuIds} -f {NcnnUtils.GetNcnnPattern()} -j {NcnnUtils.GetNcnnThreads(Implementations.ifrnetNcnn)}";
 
             Logger.Log("cmd.exe " + ifrnetNcnn.StartInfo.Arguments, true);
 
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                ifrnetNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.ifrnetNcnn); };
-                ifrnetNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.ifrnetNcnn, true); };
-            }
-
+            ifrnetNcnn.OutputDataReceived += (sender, outLine) => { LogOutput("[O] " + outLine.Data, Implementations.ifrnetNcnn); };
+            ifrnetNcnn.ErrorDataReceived += (sender, outLine) => { LogOutput("[E] " + outLine.Data, Implementations.ifrnetNcnn, true); };
             ifrnetNcnn.Start();
-
-            if (!OsUtils.ShowHiddenCmd())
-            {
-                ifrnetNcnn.BeginOutputReadLine();
-                ifrnetNcnn.BeginErrorReadLine();
-            }
+            ifrnetNcnn.BeginOutputReadLine();
+            ifrnetNcnn.BeginErrorReadLine();
 
             while (!ifrnetNcnn.HasExited) await Task.Delay(1);
         }

@@ -1,6 +1,5 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
-using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Ui;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -146,7 +145,6 @@ namespace Flowframes.Forms
             ConfigParser.SaveComboxIndex(loopMode);
             ConfigParser.SaveGuiElement(fixOutputDuration);
             // Debugging
-            ConfigParser.SaveComboxIndex(cmdDebugMode);
             ConfigParser.SaveComboxIndex(serverCombox);
             ConfigParser.SaveGuiElement(ffEncPreset);
             ConfigParser.SaveGuiElement(ffEncArgs);
@@ -193,7 +191,6 @@ namespace Flowframes.Forms
             ConfigParser.LoadComboxIndex(loopMode);
             ConfigParser.LoadGuiElement(fixOutputDuration);
             // Debugging
-            ConfigParser.LoadComboxIndex(cmdDebugMode);
             ConfigParser.LoadComboxIndex(serverCombox);
             ConfigParser.LoadGuiElement(ffEncPreset);
             ConfigParser.LoadGuiElement(ffEncArgs);
@@ -276,12 +273,6 @@ namespace Flowframes.Forms
                 custOutDir.Text = dialog.FileName;
 
             ConfigParser.SaveGuiElement(custOutDir);
-        }
-
-        private void cmdDebugMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_initialized && cmdDebugMode.SelectedIndex == 2)
-                UiUtils.ShowMessageBox("If you enable this, you need to close the CMD window manually after the process has finished, otherwise processing will be paused!", UiUtils.MessageType.Warning);
         }
 
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
