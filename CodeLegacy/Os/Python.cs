@@ -52,7 +52,7 @@ namespace Flowframes.Os
 
                 Config.Set("compressedPyVersion", Updater.GetInstalledVer().ToString());
                 Logger.Log("Done compressing python runtime.");
-                Logger.WriteToFile(compactOutput, true, "compact");
+                Logger.LogToFile(compactOutput, noLineBreak: false, filename: "compact");
             }
             catch { }
             Program.mainForm.SetWorking(false);
