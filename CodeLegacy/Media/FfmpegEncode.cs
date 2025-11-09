@@ -37,32 +37,22 @@ namespace Flowframes.Media
             {
                 string pre = i == 0 ? "" : $" && ffmpeg {AvProcess.GetFfmpegDefaultArgs()}";
                 string post = (i == 0 && encArgs.Length > 1) ? $"-f null -" : outPath.Wrap();
-                args += $"{pre} {await GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {await GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
+                args += $"{pre} {GetFfmpegExportArgsIn(fps, itsScale)} {inArg} {encArgs[i]} {await GetFfmpegExportArgsOut(resampleFps, extraData, settings, isChunk)} {post} ";
             }
 
             await RunFfmpeg(args, framesFile.GetParentDir(), logMode, !isChunk);
             IoUtils.TryDeleteIfExists(linksDir);
         }
 
-        public static async Task<string> GetFfmpegExportArgsIn(Fraction fps, float itsScale, int rotation = 0)
+        public static string GetFfmpegExportArgsIn(Fraction fps, float itsScale, int rotation = 0)
         {
             var args = new List<string>();
             fps = fps / new Fraction(itsScale);
-
-            if (fps > 0.1f)
-            {
-                args.Add($"-r {fps}");
-            }
-
-            if (rotation != 0)
-            {
-                args.Add($"-display_rotation {rotation}");
-            }
-
+            args.AddIf($"-r {fps}", fps > 0.1f);
             return string.Join(" ", args);
         }
 
-        public static async Task<string> GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false, string alphaPassFile = "")
+        public static async Task<string> GetFfmpegExportArgsOut(Fraction resampleFps, VidExtraData extraData, OutputSettings settings, bool isChunk = false, string alphaPassFile = "", bool allowPad = true)
         {
             var beforeArgs = new List<string>();
             var filters = new List<string>();
@@ -79,10 +69,7 @@ namespace Flowframes.Media
                 extraArgs.AddIf($"-color_range:v {extraData.ColRange.Wrap()}", extraData.ColRange.IsNotEmpty());
             }
 
-            if (!string.IsNullOrWhiteSpace(extraData.Dar) && !extraData.Dar.MatchesWildcard("*N/A*"))
-                extraArgs.Add($"-aspect {extraData.Dar}");
-
-            if (!isChunk && settings.Format == Enums.Output.Format.Mp4 || settings.Format == Enums.Output.Format.Mov)
+            if (!isChunk && (settings.Format == Enums.Output.Format.Mp4 || settings.Format == Enums.Output.Format.Mov))
                 extraArgs.Add($"-movflags +faststart");
 
             if (resampleFps.Float >= 0.1f)
@@ -124,7 +111,7 @@ namespace Flowframes.Media
                     filters.Add($"zscale=transfer=linear,format={settings.PixelFormat.ToString().Lower()}".Wrap());
             }
 
-            filters.Add(GetPadFilter(Interpolate.currentSettings.ScaledResolution.Width, Interpolate.currentSettings.ScaledResolution.Height));
+            filters.AddIf(GetPadFilter(Interpolate.currentSettings.ScaledResolution.Width, Interpolate.currentSettings.ScaledResolution.Height), allowPad);
             filters = filters.Where(f => f.IsNotEmpty()).ToList();
 
             return filters.Count > 0 ?

@@ -83,20 +83,20 @@ namespace Flowframes.Main
             string encArgs = FfmpegUtils.GetEncArgs(outSettings, outRes, s.outFps.Float, true).First();
             bool fpsLimit = MaxFpsFrac.Float > 0f && s.outFps.Float > MaxFpsFrac.Float;
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
-            VidExtraData extraData = gifInput ? new VidExtraData() : await FfmpegCommands.GetVidExtraInfo(s.inPath);
-            string extraArgsIn = await FfmpegEncode.GetFfmpegExportArgsIn(I.currentMediaFile.IsVfr ? s.outFpsResampled : s.outFps, s.outItsScale, extraData.Rotation);
+            I.currentMediaFile.VideoExtraData = await FfmpegCommands.GetVidExtraInfo(s.inPath, allowColorData: !gifInput);
+            string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(I.currentMediaFile.IsVfr ? s.outFpsResampled : s.outFps, s.outItsScale, I.currentMediaFile.VideoExtraData.Rotation);
             string extraArgsOut;
             string alphaPassFile = Path.Combine(s.tempFolder, "alpha.mkv");
             Fraction fps = fpsLimit ? MaxFpsFrac : new Fraction();
 
             if (alpha == AlphaMode.AlphaOut)
             {
-                extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fps, new VidExtraData(), alphaOutSettings);
+                extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fps, new VidExtraData(), alphaOutSettings, allowPad: false);
                 return $"{extraArgsIn} -i - {extraArgsOut} {encArgs} {alphaPassFile.Wrap()}";
             }
             else
             {
-                extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fps, extraData, s.outSettings, alphaPassFile: alpha == AlphaMode.AlphaIn ? alphaPassFile : "");
+                extraArgsOut = await FfmpegEncode.GetFfmpegExportArgsOut(fps, I.currentMediaFile.VideoExtraData, s.outSettings, alphaPassFile: alpha == AlphaMode.AlphaIn ? alphaPassFile : "");
             }
 
             // For EXR, force bt709 input flags. Not sure if this really does anything
@@ -211,6 +211,9 @@ namespace Flowframes.Main
                 return;
             }
 
+            if (I.currentMediaFile.VideoExtraData == null)
+                I.currentMediaFile.VideoExtraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
+
             if (settings.Format == Enums.Output.Format.Gif)
             {
                 int paletteColors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
@@ -218,8 +221,7 @@ namespace Flowframes.Main
             }
             else
             {
-                VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
-                await FfmpegEncode.FramesToVideo(framesFile, outPath, settings, fps, resampleFps, I.currentSettings.outItsScale, extraData);
+                await FfmpegEncode.FramesToVideo(framesFile, outPath, settings, fps, resampleFps, I.currentSettings.outItsScale, I.currentMediaFile.VideoExtraData);
                 await MuxOutputVideo(I.currentSettings.inPath, outPath);
                 await Loop(outPath, GetLoopTimes());
             }
@@ -306,7 +308,8 @@ namespace Flowframes.Main
                 await Blend.BlendSceneChanges(concatFile, false);
 
             bool fpsLimit = MaxFpsFrac.Float != 0 && I.currentSettings.outFps.Float > MaxFpsFrac.Float;
-            VidExtraData extraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
+            if (I.currentMediaFile.VideoExtraData == null)
+                I.currentMediaFile.VideoExtraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
 
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
@@ -339,14 +342,14 @@ namespace Flowframes.Main
             else
             {
                 if (!dontEncodeFullFpsVid)
-                    await FfmpegEncode.FramesToVideo(concatFile, outPath, settings, I.currentSettings.outFps, new Fraction(), I.currentSettings.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode
+                    await FfmpegEncode.FramesToVideo(concatFile, outPath, settings, I.currentSettings.outFps, new Fraction(), I.currentSettings.outItsScale, I.currentMediaFile.VideoExtraData, AvProcess.LogMode.Hidden, true);     // Encode
 
                 if (fpsLimit)
                 {
                     string filename = Path.GetFileName(outPath);
                     string newParentDir = outPath.GetParentDir() + Paths.fpsLimitSuffix;
                     outPath = Path.Combine(newParentDir, filename);
-                    await FfmpegEncode.FramesToVideo(concatFile, outPath, settings, I.currentSettings.outFps, MaxFpsFrac, I.currentSettings.outItsScale, extraData, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
+                    await FfmpegEncode.FramesToVideo(concatFile, outPath, settings, I.currentSettings.outFps, MaxFpsFrac, I.currentSettings.outItsScale, I.currentMediaFile.VideoExtraData, AvProcess.LogMode.Hidden, true);     // Encode with limited fps
                 }
             }
 
@@ -360,7 +363,7 @@ namespace Flowframes.Main
             if (looptimes < 1 || !Config.GetBool(Config.Key.enableLoop))
                 return;
 
-            Logger.Log($"Looping {looptimes} {(looptimes == 1 ? "time" : "times")} to reach target length of {Config.GetInt(Config.Key.minOutVidLength)}s...");
+            Logger.Log($"Looping {looptimes} {looptimes}x to reach target length of {Config.GetInt(Config.Key.minOutVidLength)}s...");
             await FfmpegCommands.LoopVideo(outPath, looptimes, Config.GetInt(Config.Key.loopMode) == 0);
         }
 

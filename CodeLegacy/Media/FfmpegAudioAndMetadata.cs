@@ -1,12 +1,13 @@
 ﻿using Flowframes.IO;
+using Flowframes.Main;
 using Flowframes.Ui;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using static Flowframes.AvProcess;
-using Utils = Flowframes.Media.FfmpegUtils;
 using I = Flowframes.Interpolate;
-using Flowframes.Main;
-using System.Linq;
+using Utils = Flowframes.Media.FfmpegUtils;
 
 namespace Flowframes.Media
 {
@@ -57,9 +58,15 @@ namespace Flowframes.Media
                 subArgs = "-sn";
 
             bool isMkv = I.currentSettings.outSettings.Format == Data.Enums.Output.Format.Mkv;
-            string mkvFix = isMkv ? "-max_interleave_delta 0" : ""; // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
-            string metaArg = (isMkv && meta) ? "-map 1:t?" : ""; // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
-            string shortestArg = shortest ? "-shortest" : "";
+            var muxArgs = new List<string>() { "-map 0:v:0", "-map 1:a:?", "-map 1:s:?", "-c copy", audioArgs, subArgs };
+            muxArgs.AddIf("-max_interleave_delta 0", isMkv); // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
+            muxArgs.AddIf("-map 1:t?", isMkv && meta); // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
+            muxArgs.AddIf("-shortest", shortest);
+            muxArgs.AddIf($"-aspect {I.currentMediaFile.VideoExtraData.Dar}", I.currentMediaFile.VideoExtraData.Dar.MatchesWildcard("*:*"));
+            string muxArgsStr = $"{string.Join(" ", muxArgs)} {outName}";
+            var inputArgs = new List<string>();
+            inputArgs.AddIf($"-display_rotation {I.currentMediaFile.VideoExtraData.Rotation}", I.currentMediaFile.VideoExtraData.Rotation != 0);
+            string inputArgsStr = $"{string.Join(" ", inputArgs)} -i {inName}";
 
             if (I.currentMediaFile.IsVfr && I.currentMediaFile.OutputTimestamps.Any())
             {
@@ -74,14 +81,14 @@ namespace Flowframes.Media
                 string args1 = $"{trim[0]} -i {inputVideo.Wrap()} {trim[1]} -map 0 -map -0:v -map -0:d -c copy {audioArgs} {subArgs} {otherStreamsName}";  // Extract trimmed
                 await RunFfmpeg(args1, tempFolder, LogMode.Hidden);
 
-                string args2 = $"-i {inName} -i {otherStreamsName} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {shortestArg} {outName}"; // Merge interp + trimmed original
+                string args2 = $"{inputArgsStr} -i {otherStreamsName} {muxArgsStr}"; // Merge interp + trimmed original
                 await RunFfmpeg(args2, tempFolder, LogMode.Hidden);
 
                 IoUtils.TryDeleteIfExists(Path.Combine(tempFolder, otherStreamsName));
             }
             else   // If trimming is disabled we can pull the streams directly from the input file
             {
-                string args = $"-i {inName} -i {inputVideo.Wrap()} -map 0:v:0 -map 1:a:? -map 1:s:? {metaArg} -c copy {audioArgs} {subArgs} {mkvFix} {shortestArg} {outName}";
+                string args = $"{inputArgsStr} -i {inputVideo.Wrap()} {muxArgsStr}";
                 await RunFfmpeg(args, tempFolder, LogMode.Hidden);
             }
 

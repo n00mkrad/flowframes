@@ -56,6 +56,7 @@ namespace Flowframes
                 await PostProcessFrames(false);
             }
 
+            currentSettings.RefreshAlpha(currentSettings.ai.Piped);
             if (canceled) return;
             bool skip = await AutoEncodeResume.PrepareResumedRun();
             if (skip || canceled) return;
@@ -120,7 +121,6 @@ namespace Flowframes
 
         public static async Task GetFrames()
         {
-            currentSettings.RefreshAlpha();
             currentSettings.RefreshExtensions(InterpSettings.FrameType.Import);
 
             if (Config.GetBool(Config.Key.scnDetect) && !currentSettings.ai.Piped)

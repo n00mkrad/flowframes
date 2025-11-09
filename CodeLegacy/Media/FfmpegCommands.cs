@@ -408,7 +408,7 @@ namespace Flowframes
             }
         }
 
-        public static async Task<VidExtraData> GetVidExtraInfo(string inputFile)
+        public static async Task<VidExtraData> GetVidExtraInfo(string inputFile, bool allowColorData = true)
         {
             string ffprobeOutput = await GetVideoInfo.GetFfprobeInfoAsync(inputFile, GetVideoInfo.FfprobeMode.ShowBoth);
             VidExtraData data = new VidExtraData(ffprobeOutput);

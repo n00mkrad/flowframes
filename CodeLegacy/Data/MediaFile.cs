@@ -1,5 +1,4 @@
 ﻿using Flowframes.Data.Streams;
-using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.Media;
@@ -44,6 +43,8 @@ namespace Flowframes.Data
         public List<float> InputTimestampDurations = new List<float>();
         public List<float> OutputTimestamps = new List<float>();
         public List<int> OutputFrameIndexes = null;
+        public VidExtraData VideoExtraData = null;
+        public bool MayHaveAlpha = false;
 
         public int FileCount = 1;
         public int FrameCount { get { return VideoStreams.Count > 0 ? VideoStreams[0].FrameCount : 0; } }
@@ -114,6 +115,7 @@ namespace Flowframes.Data
                 SubtitleStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Subtitle).Select(x => (SubtitleStream)x).ToList();
                 DataStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Data).Select(x => (DataStream)x).ToList();
                 AttachmentStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Attachment).Select(x => (AttachmentStream)x).ToList();
+                MayHaveAlpha = VideoStreams.Any(vs => vs.CanHaveAlpha);
                 Logger.Log($"Loaded and sorted streams for {Name}", true);
             }
             catch (Exception e)

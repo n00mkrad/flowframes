@@ -6,7 +6,8 @@ using Flowframes.MiscUtils;
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
+using System.Collections.Generic;
+using Enc = Flowframes.Data.Enums.Encoding.Encoder;
 
 namespace Flowframes
 {
@@ -85,7 +86,7 @@ namespace Flowframes
 
         public InterpSettings() { }
 
-        public void InitArgs ()
+        public void InitArgs()
         {
             outFps = inFps == null ? new Fraction() : inFps * (double)interpFactor;
             outFpsResampled = new Fraction(Config.Get(Config.Key.maxFps));
@@ -99,7 +100,7 @@ namespace Flowframes
             RefreshExtensions(ai: ai);
         }
 
-        private void SetPaths (string inputPath)
+        private void SetPaths(string inputPath)
         {
             if (!File.Exists(inputPath) && !Directory.Exists(inputPath))
                 return;
@@ -112,18 +113,28 @@ namespace Flowframes
             inputIsFrames = IoUtils.IsPathDirectory(inPath);
         }
 
-        public void RefreshAlpha ()
+        public void RefreshAlpha(bool vs = false)
         {
             try
             {
-                bool alphaModel = model.SupportsAlpha;
-                bool pngOutput = outSettings.Encoder == Enums.Encoding.Encoder.Png;
-                bool gifOutput = outSettings.Encoder == Enums.Encoding.Encoder.Gif;
-                bool proResAlpha = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
-                bool outputSupportsAlpha = pngOutput || gifOutput || proResAlpha;
-                string ext = inputIsFrames ? Path.GetExtension(IoUtils.GetFilesSorted(inPath).First()).Lower() : Path.GetExtension(inPath).Lower();
-                alpha = (alphaModel && outputSupportsAlpha && (ext == ".gif" || ext == ".png" || ext == ".apng" || ext == ".mov"));
-                Logger.Log($"RefreshAlpha: model.supportsAlpha = {alphaModel} - outputSupportsAlpha = {outputSupportsAlpha} - input ext: {ext} => alpha = {alpha}", true);
+                if (Interpolate.currentMediaFile != null && !Interpolate.currentMediaFile.MayHaveAlpha)
+                {
+                    Logger.Log($"RefreshAlpha: Input video does not have alpha channel.", true);
+                    return;
+                }
+
+                string noAlphaReason = CantUseAlphaReason(vs);
+                alpha = string.IsNullOrEmpty(noAlphaReason);
+                Logger.Log($"RefreshAlpha: Alpha {(alpha ? "enabled" : $"disabled: {noAlphaReason}")}", true);
+
+                if (!alpha)
+                {
+                    Logger.Log($"Input may have alpha (transparency) which won't be interpolated - {noAlphaReason}");
+                }
+                else
+                {
+                    Logger.Log($"Input has alpha (transparency), interpolation will take longer. Alpha support can be toggled in the Settings.");
+                }
             }
             catch (Exception e)
             {
@@ -132,11 +143,30 @@ namespace Flowframes
             }
         }
 
+        private string CantUseAlphaReason(bool vs)
+        {
+            if (!Config.GetBool(Config.Key.enableAlpha))
+                return "Alpha interpolation is disabled.";
+
+            if (!vs && !model.SupportsAlpha)
+                return "Alpha requires VS backend or a compatible model.";
+
+            var supportedEncoders = new List<Enc> { Enc.Png, Enc.Gif, Enc.Webp, Enc.Exr, Enc.Tiff, Enc.ProResKs, Enc.VpxVp9, Enc.Ffv1, Enc.Huffyuv };
+
+            if(!supportedEncoders.Contains(outSettings.Encoder))
+                return $"Selected encoder ({Strings.Encoder.Get($"{outSettings.Encoder}", returnKeyInsteadOfEmptyString: true)}) does not support alpha.";
+
+            if(!OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat))
+                return $"Selected pixel format ({Strings.PixelFormat.Get($"{outSettings.PixelFormat}", returnKeyInsteadOfEmptyString: true)}) does not support alpha.";
+
+            return "";
+        }
+
         public enum FrameType { Import, Interp, Both };
 
         public void RefreshExtensions(FrameType type = FrameType.Both, AiInfo ai = null)
         {
-            if(ai == null)
+            if (ai == null)
             {
                 if (Interpolate.currentSettings == null)
                     return;
@@ -144,9 +174,9 @@ namespace Flowframes
                 ai = Interpolate.currentSettings.ai;
             }
 
-            bool pngOutput = outSettings.Encoder == Enums.Encoding.Encoder.Png;
+            bool pngOutput = outSettings.Encoder == Enc.Png;
             bool aviHqChroma = outSettings.Format == Enums.Output.Format.Avi && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
-            bool proresHqChroma = outSettings.Encoder == Enums.Encoding.Encoder.ProResKs && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
+            bool proresHqChroma = outSettings.Encoder == Enc.ProResKs && OutputUtils.AlphaFormats.Contains(outSettings.PixelFormat);
             bool forceHqChroma = pngOutput || aviHqChroma || proresHqChroma;
             bool tiffSupport = !ai.NameInternal.Upper().EndsWith("NCNN"); // NCNN binaries can't load TIFF (unlike OpenCV, ffmpeg etc)
             string losslessExt = tiffSupport ? ".tiff" : ".png";
@@ -164,7 +194,7 @@ namespace Flowframes
             Logger.Log($"RefreshExtensions - Using '{framesExt}' for imported frames, using '{interpExt}' for interpolated frames", true);
         }
 
-        public string Serialize ()
+        public string Serialize()
         {
             string s = $"INPATH|{inPath}\n";
             s += $"OUTPATH|{outPath}\n";
