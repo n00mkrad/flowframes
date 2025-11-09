@@ -60,7 +60,7 @@ namespace Flowframes.MiscUtils
                 {
                     Codec = Codec.VP9,
                     Name = "libvpx-vp9",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P, PixFmt.Yuv444P10Le },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P, PixFmt.Yuv444P10Le, PixFmt.Yuva420P },
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                 };
@@ -195,7 +195,7 @@ namespace Flowframes.MiscUtils
                 return new EncoderInfoVideo
                 {
                     Codec = Codec.Ffv1,
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv422P, PixFmt.Yuv422P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P10Le, PixFmt.Yuv444P12Le, PixFmt.Yuv444P16Le, PixFmt.Rgb48Le, PixFmt.Rgba64Le },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv422P, PixFmt.Yuv422P, PixFmt.Yuv420P10Le, PixFmt.Yuv444P10Le, PixFmt.Yuv444P12Le, PixFmt.Yuv444P16Le, PixFmt.Yuva420P, PixFmt.Yuva444P10Le, PixFmt.Rgb48Le, PixFmt.Rgba64Le },
                     Lossless = true,
                 };
             }
