@@ -83,7 +83,7 @@ namespace Flowframes.Ui
 
         public enum MessageType { Message, Warning, Error };
 
-        public static DialogResult ShowMessageBox(string text, MessageType type = MessageType.Message)
+        public static DialogResult ShowMessageBox(string text, MessageType type = MessageType.Message, bool monospace = false)
         {
             Logger.Log($"MessageBox: {text} ({type}){(BatchProcessing.busy ? "[Batch Mode - Will not display messagebox]" : "")}", true);
 
@@ -100,8 +100,8 @@ namespace Flowframes.Ui
             if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
             else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
 
-            MessageForm form = new MessageForm(text, type.ToString()) { TopMost = true };
-            form.ShowDialog();
+            var msgForm = new MessageForm(text, type.ToString(), monospace: monospace) { TopMost = true };
+            Program.mainForm.Invoke(() => msgForm.ShowDialog());
             return DialogResult.OK;
         }
 

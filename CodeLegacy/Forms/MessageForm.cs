@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Flowframes.Forms
@@ -15,14 +9,16 @@ namespace Flowframes.Forms
         private string _text = "";
         private string _title = "";
         private MessageBoxButtons _btns;
+        private bool _monospace;
 
         private bool _dialogResultSet = false;
 
-        public MessageForm(string text, string title, MessageBoxButtons buttons = MessageBoxButtons.OK)
+        public MessageForm(string text, string title, MessageBoxButtons buttons = MessageBoxButtons.OK, bool monospace = false)
         {
             _text = text;
             _title = title;
             _btns = buttons;
+            _monospace = monospace;
 
             InitializeComponent();
         }
@@ -31,6 +27,11 @@ namespace Flowframes.Forms
         {
             Text = _title;
             textLabel.Text = _text;
+
+            if (_monospace)
+            {
+                textLabel.Font = new Font("Cascadia Code", textLabel.Font.Size, textLabel.Font.Style);
+            }
 
             if(_btns == MessageBoxButtons.OK)
             {
