@@ -262,6 +262,7 @@ namespace Flowframes.IO
             if (key == Key.sceneChangeFillMode)   return WriteDefault(key, "0");
             if (key == Key.autoEncMode)           return WriteDefault(key, "2");
             if (key == Key.jpegFrames)            return WriteDefault(key, true);
+            if (key == Key.enableAlpha)           return WriteDefault(key, true);
             // Video Export
             if (key == Key.minOutVidLength)   return WriteDefault(key, "5");
             if (key == Key.gifDitherType)     return WriteDefault(key, "bayer");
@@ -378,6 +379,7 @@ namespace Flowframes.IO
             PerformedHwEncCheck,
             SupportedHwEncoders,
             vfrHandling,
+            enableAlpha,
         }
     }
 }
