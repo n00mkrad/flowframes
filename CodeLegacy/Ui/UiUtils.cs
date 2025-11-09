@@ -4,6 +4,7 @@ using Flowframes.IO;
 using Flowframes.Main;
 using Flowframes.Os;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -158,5 +159,40 @@ namespace Flowframes.Ui
 
             return Regex.Replace(s, "([A-Z])", " $1").Trim();
         }
+
+        private static Dictionary<string, bool> _fontAvailabilityCache = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
+
+        /// <summary> Checks if a <paramref name="font"/> is installed on the system, results are cached. </summary>
+        public static bool IsFontInstalled(string font)
+        {
+            if (_fontAvailabilityCache.TryGetValue(font, out bool isInstalledCached))
+                return isInstalledCached;
+
+            using (var testFont = new System.Drawing.Font(font, 8))
+            {
+                bool isInstalled = string.Equals(font, testFont.Name, StringComparison.InvariantCultureIgnoreCase);
+                Logger.Log($"Font is {(isInstalled ? "" : "not ")}available: {font}", true);
+                _fontAvailabilityCache[font] = isInstalled;
+                return isInstalled;
+            }
+        }
+
+        /// <summary> Gets a font or tries one of the fallbacks (if provided). If none are found, returns the default font. </summary>
+        public static System.Drawing.Font GetFontOrFallback(string preferredFont, float emSize, System.Drawing.FontStyle? style = null, params string[] fallbackFonts)
+        {
+            style = style ?? System.Drawing.FontStyle.Regular;
+            if (IsFontInstalled(preferredFont))
+                return new System.Drawing.Font(preferredFont, emSize, style.Value);
+            foreach (var fallback in fallbackFonts)
+            {
+                if (IsFontInstalled(fallback))
+                    return new System.Drawing.Font(fallback, emSize, style.Value);
+            }
+            // Last resort: use default font
+            return new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.FontFamily, emSize, style.Value);
+        }
+
+        public static System.Drawing.Font GetMonospaceFont(float emSize, System.Drawing.FontStyle? style = null)
+            => GetFontOrFallback("Cascadia Mono", emSize, style ?? System.Drawing.FontStyle.Regular, "Cascadia Code", "Consolas", "Courier New");
     }
 }

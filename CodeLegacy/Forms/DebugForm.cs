@@ -1,15 +1,9 @@
 ﻿using Flowframes.IO;
 using Flowframes.Ui;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Flowframes.Forms
@@ -21,11 +15,16 @@ namespace Flowframes.Forms
         public DebugForm()
         {
             InitializeComponent();
+
+            int smallestWidth = Screen.AllScreens.Min(s => s.WorkingArea.Width);
+            Width = Math.Min((Program.mainForm.Width * 1.25f).RoundToInt(), smallestWidth - 80);
+            Height = Program.mainForm.Height;
         }
 
         private void DebugForm_Shown(object sender, EventArgs e)
         {
-            configDataGrid.Font = new Font("Consolas", 9f);
+            configDataGrid.Font = UiUtils.GetMonospaceFont(9.5f);
+            logBox.Font = UiUtils.GetMonospaceFont(9f);
             RefreshLogs();
         }
 

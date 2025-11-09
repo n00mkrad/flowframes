@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Flowframes.Ui;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -30,7 +31,7 @@ namespace Flowframes.Forms
 
             if (_monospace)
             {
-                textLabel.Font = new Font("Cascadia Code", textLabel.Font.Size, textLabel.Font.Style);
+                textLabel.Font = UiUtils.GetMonospaceFont(textLabel.Font.Size, textLabel.Font.Style);
             }
 
             if(_btns == MessageBoxButtons.OK)

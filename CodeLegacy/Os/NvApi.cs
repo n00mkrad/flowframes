@@ -11,8 +11,8 @@ namespace Flowframes.Os
     {
         public enum Architecture { Undetected, Fermi, Kepler, Maxwell, Pascal, Turing, Ampere, Ada, Blackwell };
         public static List<PhysicalGPU> NvGpus = new List<PhysicalGPU>();
-        public static PhysicalGPU GpuWithMostVram = null;
-        public static int GpuWithMostVramId => NvGpus.IndexOf(GpuWithMostVram);
+        public static Dictionary<PhysicalGPU, float> GpuVram = new Dictionary<PhysicalGPU, float>();
+        public static PhysicalGPU GpuWithMostVram => GpuVram.OrderByDescending(kv => kv.Value).First().Key;
 
         public static void Init()
         {
@@ -25,22 +25,17 @@ namespace Flowframes.Os
                 if (gpus.Length == 0)
                     return;
 
-                NvGpus = gpus.OrderByDescending(g => g.GetVramGb()).ThenBy(g => g.FullName).ToList();
-                float mostVram = -1f;
-
                 foreach (PhysicalGPU gpu in gpus)
                 {
                     float vramGb = gpu.GetVramGb();
-                    Logger.Log($"Nvidia GPU: {gpu.FullName} ({vramGb.ToString("0.")} GB) {GetArch(gpu)} Architecture", true);
-
-                    if (vramGb > mostVram)
-                    {
-                        mostVram = vramGb;
-                        GpuWithMostVram = gpu;
-                    }
+                    vramGb = (float)(Math.Round(vramGb * 2, MidpointRounding.AwayFromZero) / 2); // Round to nearest 0.5 GB
+                    Logger.Log($"Nvidia GPU: {gpu.FullName} ({vramGb.ToString("0.#")} GB) {GetArch(gpu)} Architecture", true);
+                    GpuVram[gpu] = vramGb;
                 }
 
-                Logger.Log($"Initialized Nvidia API in {sw.ElapsedMs} ms. GPU{(gpus.Length > 1 ? "s" : "")}: {string.Join(", ", gpus.Select(g => g.FullName))}. Most VRAM: {GpuWithMostVram.FullName} ({mostVram} GB)", true);
+                NvGpus = gpus.OrderByDescending(g => GpuVram[g]).ThenBy(g => g.FullName).ToList();
+                string mostVramGpu = gpus.Length > 1 ? $" Most VRAM: {GpuWithMostVram.FullName} ({GpuVram[GpuWithMostVram].ToString("0.#")} GB)" : "";
+                Logger.Log($"Initialized Nvidia API in {sw.ElapsedMs} ms. GPU{(gpus.Length > 1 ? "s" : "")}: {string.Join(", ", gpus.Select(g => g.FullName))}.{mostVramGpu}", true);
             }
             catch (Exception e)
             {
