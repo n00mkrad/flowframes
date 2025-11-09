@@ -40,7 +40,6 @@ namespace Flowframes.Data
             Rotation = GetValue("display_rotation", "rotation").GetInt();
             Sar = GetValue("sample_aspect_ratio");
             Dar = GetValue("display_aspect_ratio");
-            // Dar = ValidateDar(w, h, Dar, Rotation);
 
             if (keepColorSpace)
             {
@@ -70,52 +69,6 @@ namespace Flowframes.Data
             }
 
             Logger.Log($"{ColorsStr}; SAR {Sar.Wrap()}, DAR {Dar.Wrap()}, Rot. {Rotation}", true, false, "ffmpeg");
-        }
-
-        public static string ValidateDar(int resW, int resH, string dar, int rotation)
-        {
-            if (dar.IsEmpty() || !dar.Contains(':'))
-                return "";
-            string[] parts = dar.Split(':');
-            if (parts.Length != 2)
-                return "";
-            var s = ValidateAspectRatio(new Size(resW, resH), new Size(parts[0].GetInt(), parts[1].GetInt()), rotation, out bool wasRotated);
-            if (wasRotated)
-                Logger.Log($"Fixed invalid DAR: {dar} -> {s.Width}:{s.Height}", true, false);
-            return $"{s.Width}:{s.Height}";
-        }
-
-        /// <summary>
-        /// Checks if the aspect ratio is valid after applying the provided rotation (degrees) to the resolution.
-        /// </summary>
-        public static Size ValidateAspectRatio(Size resolution, Size aspect, int rotationDeg, out bool wasRotated)
-        {
-            wasRotated = false;
-
-            if (resolution.Width <= 0 || resolution.Height <= 0 || aspect.Width <= 0 || aspect.Height <= 0 || rotationDeg % 90 != 0)
-                return aspect; // Invalid dimensions; return as-is
-
-            // Normalize rotation to 0/90/180/270
-            int rot = ((rotationDeg % 360) + 360) % 360; // Map negatives to positive rotation
-
-            // Square resolution or square aspect: treat as compatible
-            if (resolution.Width == resolution.Height || aspect.Width == aspect.Height)
-                return aspect;
-
-            // No need to rotate aspect ratio for 0 or 180 rotation, as orientation stays the same
-            if (rot == 0 || rot == 180)
-                return aspect;
-
-            // At this point we know rotation is 90 or 270, which flips orientation, so we flip video dimensions for comparison
-            resolution = new Size(resolution.Height, resolution.Width);
-            bool rotatedResIsPortrait = resolution.Height > resolution.Width;
-            bool aspectRatioIsPortrait = aspect.Height > aspect.Width;
-
-            if (rotatedResIsPortrait == aspectRatioIsPortrait)
-                return aspect;
-
-            wasRotated = true;
-            return new Size(aspect.Height, aspect.Width); // Swap DAR to match rotated orientation
         }
     }
 }
