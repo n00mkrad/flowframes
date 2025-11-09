@@ -39,7 +39,7 @@ namespace Flowframes.Media
 
         public static async Task<List<Stream>> GetStreams(string path, bool progressBar, int streamCount, Fraction defaultFps, bool countFrames, MediaFile mediaFile = null)
         {
-            List<Stream> streamList = new List<Stream>();
+            List<Stream> streams = new List<Stream>();
 
             try
             {
@@ -47,19 +47,19 @@ namespace Flowframes.Media
                     defaultFps = new Fraction(30, 1);
 
                 string output = await GetFfmpegInfoAsync(path, "Stream #0:");
-                string[] streams = output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).ToArray();
+                string[] streamStrings = output.SplitIntoLines().Where(x => x.MatchesWildcard("*Stream #0:*: *: *")).ToArray();
 
-                foreach (string streamStr in streams)
+                foreach (string str in streamStrings)
                 {
                     try
                     {
-                        int idx = streamStr.Split(':')[1].Split('[')[0].Split('(')[0].GetInt();
+                        int idx = str.Split(':')[1].Split('[')[0].Split('(')[0].GetInt();
                         bool def = await GetFfprobeInfoAsync(path, showStreams, "DISPOSITION:default", idx) == "1";
 
                         if (progressBar)
                             Program.mainForm.SetProgress(FormatUtils.RatioInt(idx + 1, streamCount));
 
-                        if (streamStr.Contains(": Video:"))
+                        if (str.Contains(": Video:"))
                         {
                             string lang = await GetFfprobeInfoAsync(path, showStreams, "TAG:language", idx);
                             string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
@@ -71,14 +71,14 @@ namespace Flowframes.Media
                             Size sar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "sample_aspect_ratio", idx));
                             Size dar = SizeFromString(await GetFfprobeInfoAsync(path, showStreams, "display_aspect_ratio", idx));
                             int frameCount = countFrames ? await GetFrameCountCached.GetFrameCountAsync(path) : 0;
-                            FpsInfo fps = await GetFps(path, streamStr, idx, (Fraction)defaultFps, frameCount, allowFpsOverride: !mediaFile.IsVfr);
+                            FpsInfo fps = await GetFps(path, str, idx, (Fraction)defaultFps, frameCount, allowFpsOverride: !mediaFile.IsVfr);
                             VideoStream vStream = new VideoStream(lang, title, codec, codecLong, pixFmt, kbits, res, sar, dar, fps, frameCount) { Index = idx, IsDefault = def };
-                            Logger.Log($"Added video stream: {vStream}", true);
-                            streamList.Add(vStream);
+                            Logger.Log($"Video stream: {vStream}", true);
+                            streams.Add(vStream);
                             continue;
                         }
 
-                        if (streamStr.Contains(": Audio:"))
+                        if (str.Contains(": Audio:"))
                         {
                             string lang = await GetFfprobeInfoAsync(path, showStreams, "TAG:language", idx);
                             string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
@@ -93,12 +93,12 @@ namespace Flowframes.Media
                             AudioStream aStream = new AudioStream(lang, title, codec, codecLong, kbits, sampleRate, channels, layout);
                             aStream.Index = idx;
                             aStream.IsDefault = def;
-                            Logger.Log($"Added audio stream: {aStream}", true);
-                            streamList.Add(aStream);
+                            Logger.Log($"Audio stream: {aStream}", true);
+                            streams.Add(aStream);
                             continue;
                         }
 
-                        if (streamStr.Contains(": Subtitle:"))
+                        if (str.Contains(": Subtitle:"))
                         {
                             string lang = await GetFfprobeInfoAsync(path, showStreams, "TAG:language", idx);
                             string title = await GetFfprobeInfoAsync(path, showStreams, "TAG:title", idx);
@@ -108,24 +108,24 @@ namespace Flowframes.Media
                             SubtitleStream sStream = new SubtitleStream(lang, title, codec, codecLong, bitmap);
                             sStream.Index = idx;
                             sStream.IsDefault = def;
-                            Logger.Log($"Added subtitle stream: {sStream}", true);
-                            streamList.Add(sStream);
+                            Logger.Log($"Subtitle stream: {sStream}", true);
+                            streams.Add(sStream);
                             continue;
                         }
 
-                        if (streamStr.Contains(": Data:"))
+                        if (str.Contains(": Data:"))
                         {
                             string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
                             string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
                             DataStream dStream = new DataStream(codec, codecLong);
                             dStream.Index = idx;
                             dStream.IsDefault = def;
-                            Logger.Log($"Added data stream: {dStream}", true);
-                            streamList.Add(dStream);
+                            Logger.Log($"Data stream: {dStream}", true);
+                            streams.Add(dStream);
                             continue;
                         }
 
-                        if (streamStr.Contains(": Attachment:"))
+                        if (str.Contains(": Attachment:"))
                         {
                             string codec = await GetFfprobeInfoAsync(path, showStreams, "codec_name", idx);
                             string codecLong = await GetFfprobeInfoAsync(path, showStreams, "codec_long_name", idx);
@@ -134,14 +134,14 @@ namespace Flowframes.Media
                             AttachmentStream aStream = new AttachmentStream(codec, codecLong, filename, mimeType);
                             aStream.Index = idx;
                             aStream.IsDefault = def;
-                            Logger.Log($"Added attachment stream: {aStream}", true);
-                            streamList.Add(aStream);
+                            Logger.Log($"Attachment stream: {aStream}", true);
+                            streams.Add(aStream);
                             continue;
                         }
 
-                        Logger.Log($"Unknown stream (not vid/aud/sub/dat/att): {streamStr}", true);
+                        Logger.Log($"Unknown stream (not vid/aud/sub/dat/att): {str}", true);
                         Stream stream = new Stream { Codec = "Unknown", CodecLong = "Unknown", Index = idx, IsDefault = def, Type = Stream.StreamType.Unknown };
-                        streamList.Add(stream);
+                        streams.Add(stream);
                     }
                     catch (Exception e)
                     {
@@ -154,14 +154,12 @@ namespace Flowframes.Media
                 Logger.Log($"GetStreams Exception: {e.Message}\n{e.StackTrace}", true);
             }
 
-            Logger.Log($"Video Streams: {string.Join(", ", streamList.Where(x => x.Type == Stream.StreamType.Video).Select(x => string.IsNullOrWhiteSpace(x.Title) ? "No Title" : x.Title))}", true);
-            Logger.Log($"Audio Streams: {string.Join(", ", streamList.Where(x => x.Type == Stream.StreamType.Audio).Select(x => string.IsNullOrWhiteSpace(x.Title) ? "No Title" : x.Title))}", true);
-            Logger.Log($"Subtitle Streams: {string.Join(", ", streamList.Where(x => x.Type == Stream.StreamType.Subtitle).Select(x => string.IsNullOrWhiteSpace(x.Title) ? "No Title" : x.Title))}", true);
+            Logger.Log($"Found {streams.Count} streams - {streams.Count(x => x.Type == Stream.StreamType.Video)} video, {streams.Count(x => x.Type == Stream.StreamType.Audio)} audio, {streams.Count(x => x.Type == Stream.StreamType.Subtitle)} subtitle, {streams.Count(x => x.Type == Stream.StreamType.Data)} data, {streams.Count(x => x.Type == Stream.StreamType.Attachment)} attachment, {streams.Count(x => x.Type == Stream.StreamType.Unknown)} unknown", true);
 
             if (progressBar)
                 Program.mainForm.SetProgress(0);
 
-            return streamList;
+            return streams;
         }
 
         private static async Task<FpsInfo> GetFps(string path, string streamStr, int streamIdx, Fraction defaultFps, int frameCount, bool allowFpsOverride = false)
