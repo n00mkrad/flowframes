@@ -1725,7 +1725,7 @@
             this.vidExportTab.Controls.Add(this.label8);
             this.vidExportTab.ForeColor = System.Drawing.Color.White;
             this.vidExportTab.Name = "vidExportTab";
-            this.vidExportTab.Size = new System.Drawing.Size(762, 771);
+            this.vidExportTab.Size = new System.Drawing.Size(762, 419);
             this.vidExportTab.Text = "Export Options";
             // 
             // label73

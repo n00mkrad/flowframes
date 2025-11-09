@@ -82,20 +82,16 @@ namespace Flowframes.Forms
         {
             await Task.Delay(200);
 
-            long modelFoldersBytes = 0;
+            float modelFoldersMib = 0;
 
             foreach (string modelFolder in ModelDownloader.GetAllModelFolders())
-                modelFoldersBytes += IoUtils.GetDirSize(modelFolder, true);
+                modelFoldersMib += IoUtils.GetDirSize(modelFolder, true) / (float)(1024 * 1024);
 
-            if (modelFoldersBytes > 1024 * 1024)
+            clearModelCacheBtn.Invoke(() => 
             {
-                clearModelCacheBtn.Enabled = true;
-                clearModelCacheBtn.Text = $"Clear Model Cache ({FormatUtils.Bytes(modelFoldersBytes)})";
-            }
-            else
-            {
-                clearModelCacheBtn.Enabled = false;
-            }
+                clearModelCacheBtn.Enabled = modelFoldersMib > 1f;
+                clearModelCacheBtn.Text = modelFoldersMib > 1f ? $"Clear Model Cache ({modelFoldersMib.ToString("0")} MB)" : "Clear Model Cache";
+            });
         }
 
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -217,7 +213,7 @@ namespace Flowframes.Forms
 
             // AutoEnc options
             bool autoEncPossible = !_currentAi.Piped;
-            autoEncMode.Visible = !(onlyRelevant && !autoEncPossible);
+            panAutoEnc.Visible = !(onlyRelevant && !autoEncPossible);
             bool autoEncEnabled = autoEncMode.Visible && autoEncMode.SelectedIndex != 0;
             List<Control> autoEncOptions = new List<Control> { panAutoEncBackups, panAutoEncLowSpaceMode };
             autoEncOptions.ForEach(c => c.SetVisible(autoEncEnabled));
@@ -290,7 +286,8 @@ namespace Flowframes.Forms
 
         private void dedupMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            dedupeSensLabel.Visible = dedupMode.SelectedIndex != 0;
+            magickDedupePanel.Visible = false; // dedupMode.SelectedIndex == 2;
+            dedupeSensLabel.Visible = false; // dedupMode.SelectedIndex != 0;
             mpDedupePanel.Visible = dedupMode.SelectedIndex == 1;
         }
 
