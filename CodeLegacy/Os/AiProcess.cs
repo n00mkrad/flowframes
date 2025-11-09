@@ -1,23 +1,24 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Data;
+using Flowframes.IO;
+using Flowframes.Main;
+using Flowframes.MiscUtils;
+using Flowframes.Ui;
+using Flowframes.Utilities;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Flowframes.Ui;
-using Flowframes.Main;
-using Flowframes.Data;
-using Flowframes.MiscUtils;
 using Paths = Flowframes.IO.Paths;
-using System.Drawing;
-using Flowframes.Utilities;
 
 namespace Flowframes.Os
 {
     class AiProcess
     {
         public static bool hasShownError;
-        public static string lastLogName;
+        public static string logName;
         public static Process lastAiProcess;
         public static Stopwatch processTime = new Stopwatch();
         public static Stopwatch processTimeMulti = new Stopwatch();
@@ -93,6 +94,7 @@ namespace Flowframes.Os
             if (rt)
             {
                 Logger.Log($"Stopped running {aiName}.");
+                lastAiProcess = null;
                 return;
             }
 
@@ -104,7 +106,7 @@ namespace Flowframes.Os
 
             string logStr = $"Done running {aiName} - Interpolation took {FormatUtils.Time(processTime.Elapsed)}.";
 
-            if(InterpolationProgress.LastFps > 0.0001)
+            if (InterpolationProgress.LastFps > 0.0001)
             {
                 logStr += $" Output FPS: {InterpolationProgress.LastFps.ToString("0.0")}";
             }
@@ -124,15 +126,15 @@ namespace Flowframes.Os
             {
                 string amount = interpFramesCount > 0 ? $"Only {interpFramesCount}" : "No";
 
-                if (lastLogName.IsEmpty())
+                if (logName.IsEmpty())
                 {
                     Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created, and no log was written.");
                     return;
                 }
 
-                string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), lastLogName + ".txt"));
+                string[] logLines = File.ReadAllLines(Path.Combine(Paths.GetLogPath(), logName + ".txt"));
                 string log = string.Join("\n", logLines.Reverse().Take(10).Reverse().Select(x => x.Split("]: ").Last()).ToList());
-                Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.\n\n\nLast 10 log lines:\n{log}\n\nCheck the log '{lastLogName}' for more details.");
+                Interpolate.Cancel($"Interpolation failed - {amount} interpolated frames were created.\n\n\nLast 10 log lines:\n{log}\n\nCheck the log '{logName}' for more details.");
                 return;
             }
 
@@ -142,8 +144,8 @@ namespace Flowframes.Os
                 {
                     if (AvProcess.lastAvProcess != null && !AvProcess.lastAvProcess.HasExited)
                     {
-                        if (Logger.LastLogLine.Lower().Contains("frame: "))
-                            Logger.Log(FormatUtils.BeautifyFfmpegStats(Logger.LastLogLine), false, Logger.LastUiLine.Lower().Contains("frame"));
+                        if (Logger.LastLogLine.Contains("frame: "))
+                            Logger.Log(FormatUtils.BeautifyFfmpegStats(Logger.LastLogLine), false, Logger.LastUiLine.Contains("frame"));
                     }
 
                     if (AvProcess.lastAvProcess.HasExited && !AutoEncode.HasWorkToDo())     // Stop logging if ffmpeg is not running & AE is done
@@ -156,6 +158,8 @@ namespace Flowframes.Os
             {
                 Logger.Log($"AiFinished encoder logging error: {e.Message}\n{e.StackTrace}", true);
             }
+
+            lastAiProcess = null;
         }
 
         public static async Task RunRifeCuda(string framesPath, float interpFactor, string mdl)
@@ -381,6 +385,7 @@ namespace Flowframes.Os
             var vsSettings = new VapourSynthUtils.VsSettings()
             {
                 InterpSettings = Interpolate.currentSettings,
+                Alpha = Interpolate.currentSettings.alpha,
                 ModelDir = mdl,
                 Factor = factor,
                 Res = res,
@@ -412,7 +417,7 @@ namespace Flowframes.Os
             string ffmpeg = $"{Path.Combine(avDir, "ffmpeg").Wrap()} -loglevel warning -stats -y";
             string baseArgs = $"{OsUtils.GetCmdArg()} cd /D {pkgDir.Wrap()}";
 
-            if(vsSettings.Alpha)
+            if (vsSettings.Alpha)
             {
                 rifeNcnnVs.StartInfo.Arguments = $"{baseArgs} && {vspipe} --arg alpha=\"True\" -c y4m - | {ffmpeg} {await Export.GetPipedFfmpegCmd(alpha: Export.AlphaMode.AlphaOut)} && {vspipe} -c y4m - | {ffmpeg} {await Export.GetPipedFfmpegCmd(alpha: Export.AlphaMode.AlphaIn)}";
             }
@@ -604,62 +609,73 @@ namespace Flowframes.Os
             while (!ifrnetNcnn.HasExited) await Task.Delay(1);
         }
 
-        static void LogOutput(string line, AiInfo ai, bool err = false)
+        private static readonly Regex FfmpegLogMemAddr = new Regex(@" @\s*(?:0x)?(?<addr>[0-9A-Fa-f]{8,16})(?=\])", RegexOptions.Compiled);
+
+        private static string GetLastLogLines(string logName, int lineCount = 6, bool beautify = true)
+        {
+            var lll = Logger.GetSessionLogLastLines(logName, lineCount);
+
+            if (!beautify)
+                return string.Join("\n", lll);
+
+            var beautified = lll.Select(l => $"[{string.Join(" ", l.Split(' ').Skip(2))}".Replace("]: [E]", "]").Replace("]: [O]", "]"));
+            beautified = beautified.Select(l => FfmpegLogMemAddr.Replace(l, ""));
+            return string.Join("\n", beautified);
+        }
+
+        private static void LogOutput(string line, AiInfo ai, bool err = false)
         {
             if (string.IsNullOrWhiteSpace(line) || line.Length < 6)
                 return;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Restart();
-
-            lastLogName = ai.LogFilename;
+            logName = ai.LogFilename;
             Logger.Log(line, true, false, ai.LogFilename);
-
-            string lastLogLines = string.Join("\n", Logger.GetSessionLogLastLines(lastLogName, 6).Select(x => $"[{x.Split("]: [").Skip(1).FirstOrDefault()}"));
+            void ShowErrorBox(string msg) => UiUtils.ShowMessageBox(msg, UiUtils.MessageType.Error, monospace: true);
+            string lineLow = line.Lower();
 
             if (ai.Backend == AiInfo.AiBackend.Pytorch) // Pytorch specific
             {
                 if (line.Contains("ff:nocuda-cpu"))
                     Logger.Log("WARNING: CUDA-capable GPU device is not available, running on CPU instead!");
 
-                if (!hasShownError && err && line.Lower().Contains("modulenotfounderror"))
+                if (!hasShownError && err && line.Contains("ModuleNotFoundError"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A python module is missing.\nCheck {ai.LogFilename} for details.\n\n{line}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"A python module is missing.\nCheck {ai.LogFilename} for details.\n\n{line}");
                 }
 
-                if (!hasShownError && line.Lower().Contains("no longer supports this gpu"))
+                if (!hasShownError && lineLow.Contains("no longer supports this gpu"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"Your GPU seems to be outdated and is not supported!\n\n{line}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"Your GPU seems to be outdated and is not supported!\n\n{line}");
                 }
 
-                if (!hasShownError && line.Lower().Contains("error(s) in loading state_dict"))
+                if (!hasShownError && lineLow.Contains("error(s) in loading state_dict"))
                 {
                     hasShownError = true;
                     string msg = (Interpolate.currentSettings.ai.NameInternal == Implementations.flavrCuda.NameInternal) ? "\n\nFor FLAVR, you need to select the correct model for each scale!" : "";
-                    UiUtils.ShowMessageBox($"Error loading the AI model!\n\n{line}{msg}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"Error loading the AI model!\n\n{line}{msg}");
                 }
 
-                if (!hasShownError && line.Lower().Contains("unicodeencodeerror"))
+                if (!hasShownError && line.Contains("UnicodeEncodeError"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"It looks like your path contains invalid characters - remove them and try again!\n\n{line}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"It looks like your path contains invalid characters - remove them and try again!\n\n{line}");
                 }
 
                 if (!hasShownError && err && (line.Contains("RuntimeError") || line.Contains("ImportError") || line.Contains("OSError")))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A python error occured during interpolation!\nCheck the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"A python error occured during interpolation!\nCheck the log for details:\n\n{GetLastLogLines(logName)}");
                 }
             }
 
             if (ai.Backend == AiInfo.AiBackend.Ncnn) // NCNN specific
             {
-                if (!hasShownError && err && line.MatchesWildcard("vk*Instance* failed"))
+                if (!hasShownError && err && line.Contains("vkCreateInstance failed"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.", UiUtils.MessageType.Error);
+                    ShowErrorBox($"Vulkan failed to start up!\n\n{line}\n\nThis most likely means your GPU is not compatible.");
                 }
 
                 if (!hasShownError && err && line.Contains("vkAllocateMemory failed"))
@@ -667,53 +683,53 @@ namespace Flowframes.Os
                     hasShownError = true;
                     bool usingDain = (Interpolate.currentSettings.ai.NameInternal == Implementations.dainNcnn.NameInternal);
                     string msg = usingDain ? "\n\nTry reducing the tile size in the AI settings." : "\n\nTry a lower resolution (Settings -> Max Video Size).";
-                    UiUtils.ShowMessageBox($"Vulkan ran out of memory!\n\n{line}{msg}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"Vulkan ran out of memory!\n\n{line}{msg}");
                 }
 
                 if (!hasShownError && err && line.Contains("invalid gpu device"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?", UiUtils.MessageType.Error);
+                    ShowErrorBox($"A Vulkan error occured during interpolation!\n\n{line}\n\nAre your GPU IDs set correctly?");
                 }
 
-                if (!hasShownError && err && line.MatchesWildcard("vk* failed"))
+                if (!hasShownError && err && line.Contains(" failed") && line.Contains("vk"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"A Vulkan error occured during interpolation!\n\n{lastLogLines}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"A Vulkan error occured during interpolation!\n\n{GetLastLogLines(logName)}");
                 }
             }
 
             if (ai.Piped) // VS specific
             {
-                if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && line.Lower().Contains("fwrite() call failed"))
+                if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && (line.Contains("Task finished with error code") || line.Contains("fwrite() call failed")))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{lastLogLines}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"VapourSynth interpolation failed with an unknown error. Check the log for details:\n\n{GetLastLogLines(logName)}");
                 }
 
-                if (!hasShownError && line.Lower().Contains("allocate memory failed"))
+                if (!hasShownError && lineLow.Contains("allocate memory failed"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"Out of memory!\nTry reducing your RAM usage by closing some programs.\n\n{line}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"Out of memory!\nTry reducing your RAM usage by closing some programs.\n\n{line}");
                 }
 
-                if (!hasShownError && line.Lower().Contains("vapoursynth.error:"))
+                if (!hasShownError && line.Contains("vapoursynth.Error:"))
                 {
                     hasShownError = true;
-                    UiUtils.ShowMessageBox($"VapourSynth Error:\n\n{line}", UiUtils.MessageType.Error);
+                    ShowErrorBox($"VapourSynth Error:\n\n{line}");
                 }
             }
 
-            if (!hasShownError && err && line.Lower().Contains("out of memory"))
+            if (!hasShownError && err && lineLow.Contains("out of memory"))
             {
                 hasShownError = true;
-                UiUtils.ShowMessageBox($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}", UiUtils.MessageType.Error);
+                ShowErrorBox($"Your GPU ran out of VRAM! Please try a video with a lower resolution or use the Max Video Size option in the settings.\n\n{line}");
             }
 
-            if (!hasShownError && line.Lower().Contains("illegal memory access"))
+            if (!hasShownError && lineLow.Contains("illegal memory access"))
             {
                 hasShownError = true;
-                UiUtils.ShowMessageBox($"Your GPU appears to be unstable! If you have an overclock enabled, please disable it!\n\n{line}", UiUtils.MessageType.Error);
+                ShowErrorBox($"Your GPU appears to be unstable! If you have an overclock enabled, please disable it!\n\n{line}");
             }
 
             if (hasShownError)
