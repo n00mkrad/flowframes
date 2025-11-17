@@ -17,8 +17,9 @@ namespace Flowframes.Forms
             InitializeComponent();
 
             int smallestWidth = Screen.AllScreens.Min(s => s.WorkingArea.Width);
+            int smallestHeight = Screen.AllScreens.Min(s => s.WorkingArea.Height);
             Width = Math.Min((Program.mainForm.Width * 1.25f).RoundToInt(), smallestWidth - 80);
-            Height = Program.mainForm.Height;
+            Height = Math.Min((Program.mainForm.Height * 1.2f).RoundToInt(), smallestHeight - 80);
         }
 
         private void DebugForm_Shown(object sender, EventArgs e)

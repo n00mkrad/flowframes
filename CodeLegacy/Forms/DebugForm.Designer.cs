@@ -95,7 +95,7 @@ namespace Flowframes.Forms
             this.label1.ForeColor = System.Drawing.SystemColors.Control;
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(416, 60);
+            this.label1.Size = new System.Drawing.Size(415, 60);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -107,16 +107,13 @@ namespace Flowframes.Forms
             this.panel1.Controls.Add(this.configDataGrid);
             this.panel1.Location = new System.Drawing.Point(6, 80);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(180, 0);
+            this.panel1.Size = new System.Drawing.Size(900, 310);
             this.panel1.TabIndex = 4;
             // 
             // configDataGrid
             // 
             this.configDataGrid.AllowUserToResizeColumns = false;
             this.configDataGrid.AllowUserToResizeRows = false;
-            this.configDataGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.configDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.configDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.configDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
@@ -124,7 +121,7 @@ namespace Flowframes.Forms
             this.configDataGrid.Location = new System.Drawing.Point(0, 0);
             this.configDataGrid.MultiSelect = false;
             this.configDataGrid.Name = "configDataGrid";
-            this.configDataGrid.Size = new System.Drawing.Size(180, 0);
+            this.configDataGrid.Size = new System.Drawing.Size(900, 310);
             this.configDataGrid.TabIndex = 0;
             this.configDataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.configDataGrid_CellValueChanged);
             this.configDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.configDataGrid_RowsAdded);
