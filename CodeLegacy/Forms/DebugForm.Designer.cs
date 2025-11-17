@@ -95,7 +95,7 @@ namespace Flowframes.Forms
             this.label1.ForeColor = System.Drawing.SystemColors.Control;
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(415, 60);
+            this.label1.Size = new System.Drawing.Size(416, 60);
             this.label1.TabIndex = 0;
             this.label1.Text = resources.GetString("label1.Text");
             // 
@@ -118,6 +118,7 @@ namespace Flowframes.Forms
             this.configDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.configDataGrid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.configDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.configDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.configDataGrid.Location = new System.Drawing.Point(0, 0);
             this.configDataGrid.MultiSelect = false;
             this.configDataGrid.Name = "configDataGrid";
