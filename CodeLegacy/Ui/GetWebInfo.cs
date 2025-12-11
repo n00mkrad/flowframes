@@ -5,7 +5,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Win32Interop.Structs;
 
 namespace Flowframes.Ui
 {
@@ -43,6 +42,9 @@ namespace Flowframes.Ui
 
         public static string ParsePatreonCsv(string csvData)
         {
+            var badNamesEnc = new List<string>() { "bmlnZ2Vy" };
+            var badNames = badNamesEnc.Select(n => Convert.FromBase64String(n)).Select(b => System.Text.Encoding.UTF8.GetString(b)).ToList();
+
             try
             {
                 List<string> goldPatrons = new List<string>();
@@ -60,7 +62,7 @@ namespace Flowframes.Ui
                     string status = parts[1].Trim();
                     string tier = parts[2].Trim();
 
-                    if (!status.StartsWith("Active"))
+                    if (!status.StartsWith("Active") || badNames.Contains(name))
                         continue;
 
                     if (tier.Contains("Gold"))
