@@ -39,13 +39,18 @@ namespace Flowframes.IO
             {
                 try
                 {
-                    MagickImage img = new MagickImage(path);
-                    Bitmap bitmap = img.ToBitmap();
-
                     if (log)
                         Logger.Log($"GetImage: Native image reading for '{Path.GetFileName(path)}' failed - Using Magick.NET fallback instead.", true);
 
-                    return bitmap;
+                    MagickImage img = new MagickImage(path);
+                    // Bitmap bitmap = img.ToBitmap();
+                    img.Format = MagickFormat.Bmp;
+
+                    using (var memStream = new MemoryStream())
+                    {
+                        img.Write(memStream);
+                        return new Bitmap(memStream);
+                    }
                 }
                 catch (Exception e)
                 {

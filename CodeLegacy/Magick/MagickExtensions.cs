@@ -30,58 +30,6 @@ namespace Flowframes.Magick
     public static class MagickExtensions
     {
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "False positive.")]
-        public static Bitmap ToBitmap(this MagickImage magickImg, BitmapDensity density)
-        {
-            string mapping = "BGR";
-            var format = PixelFormat.Format24bppRgb;
-
-            var image = magickImg;
-
-            try
-            {
-                if (image.ColorSpace != ColorSpace.sRGB)
-                {
-                    image = (MagickImage)magickImg.Clone();
-                    image.ColorSpace = ColorSpace.sRGB;
-                }
-
-                if (image.HasAlpha)
-                {
-                    mapping = "BGRA";
-                    format = PixelFormat.Format32bppArgb;
-                }
-
-                using (var pixels = image.GetPixelsUnsafe())
-                {
-                    var bitmap = new Bitmap(image.Width, image.Height, format);
-                    var data = bitmap.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadWrite, format);
-                    var destination = data.Scan0;
-
-                    for (int y = 0; y < image.Height; y++)
-                    {
-                        byte[] bytes = pixels.ToByteArray(0, y, image.Width, 1, mapping);
-                        Marshal.Copy(bytes, 0, destination, bytes.Length);
-
-                        destination = new IntPtr(destination.ToInt64() + data.Stride);
-                    }
-
-                    bitmap.UnlockBits(data);
-                    SetBitmapDensity(magickImg, bitmap, density);
-
-                    return bitmap;
-                }
-            }
-            finally
-            {
-                if (!ReferenceEquals(image, magickImg))
-                    image.Dispose();
-            }
-        }
-
-        public static Bitmap ToBitmap(this MagickImage imageMagick) => ToBitmap(imageMagick, BitmapDensity.Ignore);
-
-        public static Bitmap ToBitmap(this MagickImage imageMagick, ImageFormat imageFormat) => ToBitmap(imageMagick, imageFormat, BitmapDensity.Ignore);
-
         public static Bitmap ToBitmap(this MagickImage imageMagick, ImageFormat imageFormat, BitmapDensity bitmapDensity)
         {
             imageMagick.Format = InternalMagickFormatInfo.GetFormat(imageFormat);

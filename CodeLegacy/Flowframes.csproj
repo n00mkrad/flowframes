@@ -122,11 +122,11 @@
     <Reference Include="HTAlt.Standart, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\HTAlt.Standart.0.1.6\lib\netstandard2.0\HTAlt.Standart.dll</HintPath>
     </Reference>
-    <Reference Include="Magick.NET-Q8-x64, Version=13.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=AMD64">
-      <HintPath>packages\Magick.NET-Q8-x64.13.10.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
+    <Reference Include="Magick.NET-Q8-x64, Version=14.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=AMD64">
+      <HintPath>packages\Magick.NET-Q8-x64.14.10.0\lib\netstandard20\Magick.NET-Q8-x64.dll</HintPath>
     </Reference>
-    <Reference Include="Magick.NET.Core, Version=13.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-      <HintPath>packages\Magick.NET.Core.13.10.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
+    <Reference Include="Magick.NET.Core, Version=14.10.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>packages\Magick.NET.Core.14.10.0\lib\netstandard20\Magick.NET.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Build.Framework.15.9.20\lib\net46\Microsoft.Build.Framework.dll</HintPath>
@@ -154,7 +154,7 @@
       <HintPath>packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NvAPIWrapper, Version=0.8.1.100, Culture=neutral, PublicKeyToken=310fd07b25df79b3, processorArchitecture=MSIL">
       <HintPath>packages\NvAPIWrapper.Net.0.8.1.101\lib\net45\NvAPIWrapper.dll</HintPath>
@@ -473,7 +473,6 @@
     <Compile Include="IO\Symlinks.cs" />
     <Compile Include="Magick\Blend.cs" />
     <Compile Include="Magick\MagickExtensions.cs" />
-    <Compile Include="Magick\SceneDetect.cs" />
     <Compile Include="Main\AiModels.cs" />
     <Compile Include="Main\AutoEncode.cs" />
     <Compile Include="Main\AutoEncodeResume.cs" />
@@ -518,7 +517,6 @@
     <Compile Include="IO\IoUtils.cs" />
     <Compile Include="Data\Paths.cs" />
     <Compile Include="IO\Logger.cs" />
-    <Compile Include="Magick\Converter.cs" />
     <Compile Include="Magick\Dedupe.cs" />
     <Compile Include="Os\AiProcessSuspend.cs" />
     <Compile Include="Os\NvApi.cs" />
@@ -547,6 +545,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BatchForm.resx">
       <DependentUpon>BatchForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\BigPreviewForm.resx">
       <DependentUpon>BigPreviewForm.cs</DependentUpon>
@@ -665,7 +664,7 @@
     <Error Condition="!Exists('packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
     <Error Condition="!Exists('packages\ILRepack.2.0.34\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.2.0.34\build\ILRepack.props'))" />
     <Error Condition="!Exists('packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props'))" />
-    <Error Condition="!Exists('packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
+    <Error Condition="!Exists('packages\Magick.NET-Q8-x64.14.10.0\build\netstandard20\Magick.NET-Q8-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Magick.NET-Q8-x64.14.10.0\build\netstandard20\Magick.NET-Q8-x64.targets'))" />
   </Target>
   <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'ReleaseRepack'">
     <PropertyGroup>
@@ -677,5 +676,5 @@
     <ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).exe" OutputAssembly="$(AssemblyName).exe" InputAssemblies="@(RepackAssemblies)" WilcardInputAssemblies="true" WorkingDirectory="$(WorkingDirectory)" />
   </Target>
   <Import Project="packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
-  <Import Project="packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('packages\Magick.NET-Q8-x64.13.10.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
+  <Import Project="packages\Magick.NET-Q8-x64.14.10.0\build\netstandard20\Magick.NET-Q8-x64.targets" Condition="Exists('packages\Magick.NET-Q8-x64.14.10.0\build\netstandard20\Magick.NET-Q8-x64.targets')" />
 </Project>
