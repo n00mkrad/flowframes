@@ -333,5 +333,19 @@ namespace Flowframes.Os
 
             return string.Join(";", newPaths.Select(x => x.Replace("\\", "/"))) + ";";
         }
+
+        public static bool IsStillRunning(Func<Process> proc) // For .NET Core migration: Func<Process?> (nullable)
+        {
+            var p = proc(); // Snapshot of the process to avoid race condition
+
+            try
+            {
+                return p is null || !p.HasExited;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
