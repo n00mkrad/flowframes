@@ -1,7 +1,11 @@
+# Go to script directory
+Set-Location $PSScriptRoot
+
 # Define paths and tools
 $winDir = ${env:WINDIR}
 $progFiles64 = ${env:ProgramW6432}
-$msBuildPath = [IO.Path]::Combine($progFiles64, "Microsoft Visual Studio", "2022", "Community", "MSBuild", "Current", "Bin", "MSBuild.exe")
+# $msBuildPath = [IO.Path]::Combine($progFiles64, "Microsoft Visual Studio", "2022", "Community", "MSBuild", "Current", "Bin", "MSBuild.exe")
+$msBuildPath = [IO.Path]::Combine($progFiles64, "Microsoft Visual Studio", "18", "Insiders", "MSBuild", "Current", "Bin", "MSBuild.exe")
 $solutionRoot = $PSScriptRoot
 $ilRepackPath = [IO.Path]::Combine($solutionRoot, "packages", "ILRepack.2.0.34", "tools", "ILRepack.exe")
 $solutionPath = [IO.Path]::Combine($solutionPath, "Flowframes.sln")
