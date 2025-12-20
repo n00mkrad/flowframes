@@ -101,7 +101,7 @@ namespace Flowframes.Data
 
         public async Task Initialize(bool progressBar = true, bool countFrames = true)
         {
-            Logger.Log($"MediaFile {Name}: Initializing", true);
+            Logger.Log($"Analyzing media '{Name}'", true);
 
             try
             {
@@ -116,11 +116,10 @@ namespace Flowframes.Data
                 DataStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Data).Select(x => (DataStream)x).ToList();
                 AttachmentStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Attachment).Select(x => (AttachmentStream)x).ToList();
                 MayHaveAlpha = VideoStreams.Any(vs => vs.CanHaveAlpha);
-                Logger.Log($"Loaded and sorted streams for {Name}", true);
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to initialized MediaFile: {e.Message}", true);
+                Logger.Log($"Failed to initialize MediaFile: {e.Message}", true);
             }
 
             Initialized = true;

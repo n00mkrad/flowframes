@@ -11,11 +11,13 @@ namespace Flowframes.Os
 {
     class StartupChecks
     {
+        public static bool IsAdmin = OsUtils.IsUserAdministrator();
+
         static bool IsWin10Or11()
         {
             string winVer = OsUtils.GetWindowsVer();
 
-            if (winVer.IsEmpty())
+            if (winVer.Trim('?').IsEmpty())
                 return true;    // If it fails, return true for future-proofing
 
             return winVer.Lower().Contains("windows 10") || winVer.Lower().Contains("windows 11");
@@ -43,8 +45,8 @@ namespace Flowframes.Os
                 Application.Exit();
             }
 
-            string winVer = OsUtils.GetWindowsVer();
-            Logger.Log($"Running {winVer}", true);
+            string winVer = OsUtils.GetWindowsVerVerbose(out string winVerDesc);
+            Logger.Log($"[OS] Running {winVer} ({winVerDesc.Replace("Windows ", "")}) [{(IsAdmin ? "Admin" : "User")}]", true);
 
             if (!Environment.Is64BitOperatingSystem && !Config.GetBool("allow32Bit", false))
             {
@@ -70,7 +72,7 @@ namespace Flowframes.Os
             bool silent = Config.GetBool("silentDevmodeCheck", true);
             string ver = Updater.GetInstalledVer().ToString();
             bool symlinksAllowed = Symlinks.SymlinksAllowed();
-            Logger.Log($"Symlinks allowed: {symlinksAllowed}", true);
+            Logger.Log($"Symlink creation is {(symlinksAllowed ? "allowed." : $"not allowed!")} (Admin: {IsAdmin} - Dev Mode: {OsUtils.GetDeveloperModeState()})", true);
 
             if (!symlinksAllowed && Config.Get(Config.Key.askedForDevModeVersion) != ver)
             {

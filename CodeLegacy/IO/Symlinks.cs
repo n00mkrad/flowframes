@@ -18,13 +18,13 @@ namespace Flowframes.IO
         public static bool SymlinksAllowed()
         {
             string origFile = Paths.GetExe();
-            string linkPath = Paths.GetExe() + "lnktest";
-            bool success = CreateSymbolicLink(linkPath, origFile, Flag.Unprivileged);
+            string testLinkPath = Paths.GetExe() + "lnktest";
+            bool success = CreateSymbolicLink(testLinkPath, origFile, Flag.Unprivileged);
 
             if (!success)
                 return false;
 
-            File.Delete(linkPath);
+            File.Delete(testLinkPath);
             return true;
         }
 

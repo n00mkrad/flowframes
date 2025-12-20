@@ -2,15 +2,33 @@
 {
     class QueryInfo
     {
-        public string path;
-        public long filesize;
-        public string cmd = null;
+        public string Path;
+        public long SizeBytes;
+        public string Command = "";
 
-        public QueryInfo(string path, long filesize, string cmd = null)
+        public QueryInfo(string path, long filesize = 0, string cmd = "")
         {
-            this.path = path;
-            this.filesize = filesize;
-            this.cmd = cmd;
+            Path = path;
+            SizeBytes = filesize;
+            Command = cmd;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is QueryInfo other)
+                return Path == other.Path && SizeBytes == other.SizeBytes;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + (Path?.GetHashCode() ?? 0);
+                hash = hash * 31 + SizeBytes.GetHashCode();
+                return hash;
+            }
         }
     }
 }

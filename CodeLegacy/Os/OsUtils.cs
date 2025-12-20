@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Security.Principal;
+﻿using DiskDetector;
+using DiskDetector.Models;
+using Flowframes.MiscUtils;
+using Microsoft.VisualBasic.Devices;
+using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Flowframes.IO;
-using DiskDetector;
-using DiskDetector.Models;
-using Microsoft.VisualBasic.Devices;
-using Flowframes.MiscUtils;
-using System.Linq;
 using Tulpep.NotificationWindow;
-using System.Runtime.InteropServices;
 
 namespace Flowframes.Os
 {
@@ -50,8 +50,7 @@ namespace Flowframes.Os
             }
             finally
             {
-                if (user != null)
-                    user.Dispose();
+                user?.Dispose();
             }
             return isAdmin;
         }
@@ -167,28 +166,29 @@ namespace Flowframes.Os
             }
         }
 
-        public static string GetWindowsVer()
+        public static string GetWindowsVer() => GetWindowsVerVerbose(out _);
+
+        public static string GetWindowsVerVerbose(out string osDesc)
         {
-            string os = RuntimeInformation.OSDescription;
+            osDesc = RuntimeInformation.OSDescription.Replace("Microsoft ", "").Trim();
 
-            if (os.StartsWith("Microsoft Windows 6.1"))
-                return "Windows 7";
-            
-            if (os.StartsWith("Microsoft Windows 6.2"))
-                return "Windows 8";
-
-            if (os.StartsWith("Microsoft Windows 6.3"))
-                return "Windows 8.1";
-
-            if (os.StartsWith("Microsoft Windows 10.0"))
+            if (osDesc.StartsWith("Windows 10.0"))
             {
-                int buildNum = os.Split("Microsoft Windows 10.0").Last().GetInt();
+                int buildNum = osDesc.Split("Windows 10.0").Last().GetInt();
                 // Assuming build numbers for distinguishing Windows 10 and 11 - Windows 10: Builds 10240 to 19044 - Windows 11: Builds 22000 and above
                 return buildNum >= 22000 ? "Windows 11" : "Windows 10";
             }
 
-            return "";
-            // return os.Replace("Microsoft ", ""); // Fallback to raw description without "Microsoft "
+            if (osDesc.StartsWith("Windows 6.1"))
+                return "Windows 7";
+
+            if (osDesc.StartsWith("Windows 6.2"))
+                return "Windows 8";
+
+            if (osDesc.StartsWith("Windows 6.3"))
+                return "Windows 8.1";
+
+            return "???";
         }
 
         public static IEnumerable<Process> GetChildProcesses(Process process)
@@ -346,6 +346,32 @@ namespace Flowframes.Os
             {
                 return false;
             }
+        }
+
+        public enum DevModeState { Disabled, Enabled, Unknown }
+
+        public static DevModeState GetDeveloperModeState()
+        {
+            const string subKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock";
+            const string valueName = "AllowDevelopmentWithoutDevLicense";
+
+            foreach (var view in new[] { RegistryView.Registry64, RegistryView.Registry32 })
+            {
+                try
+                {
+                    using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                    using (var key = baseKey.OpenSubKey(subKey, writable: false))
+                    {
+                        if(key != null && key.GetValue(valueName) is int val)
+                        {
+                            return val == 1 ? DevModeState.Enabled : DevModeState.Disabled;
+                        }
+                    }
+                }
+                catch { }
+            }
+
+            return DevModeState.Unknown;
         }
     }
 }

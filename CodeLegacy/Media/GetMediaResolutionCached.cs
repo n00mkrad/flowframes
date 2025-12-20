@@ -38,12 +38,12 @@ namespace Flowframes.Media
 
         private static bool CacheContains(QueryInfo hash)
         {
-            return cache.Any(entry => entry.Key.path == hash.path && entry.Key.filesize == hash.filesize);
+            return cache.Any(entry => entry.Key.Path == hash.Path && entry.Key.SizeBytes == hash.SizeBytes);
         }
 
         private static Size GetFromCache(QueryInfo hash)
         {
-            return cache.Where(entry => entry.Key.path == hash.path && entry.Key.filesize == hash.filesize).Select(entry => entry.Value).FirstOrDefault();
+            return cache.Where(entry => entry.Key.Path == hash.Path && entry.Key.SizeBytes == hash.SizeBytes).Select(entry => entry.Value).FirstOrDefault();
         }
 
         public static void Clear()

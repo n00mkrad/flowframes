@@ -114,7 +114,7 @@ namespace Flowframes
 
             if (allowDurationFromMetadata)
             {
-                Logger.Log($"GetDuration({inputFile}) - Reading duration by checking metadata.", true, false, "ffmpeg");
+                Logger.Log($"[{nameof(GetDurationMs)}] Reading duration by checking metadata", true, false, "ffmpeg");
                 string argsMeta = $"ffprobe -v quiet -show_streams -select_streams v:0 -show_entries stream=duration {inputFile.Wrap()}";
                 var outputLinesMeta = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsMeta}").SplitIntoLines();
 
@@ -144,7 +144,7 @@ namespace Flowframes
 
             if (demuxInsteadOfPacketTs)
             {
-                Logger.Log($"GetDuration({inputFile}) - Reading duration by demuxing.", true, false, "ffmpeg");
+                Logger.Log($"[{nameof(GetDurationMs)}] Reading duration by demuxing", true, false, "ffmpeg");
                 string argsDemux = $"ffmpeg -loglevel panic -stats -i {inputFile.Wrap()} -map 0:v:0 -c copy -f null NUL";
                 var outputLinesDemux = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsDemux}").SplitIntoLines().Where(l => l.IsNotEmpty() && l.MatchesWildcard("*time=* *"));
 
@@ -156,7 +156,7 @@ namespace Flowframes
             }
             else
             {
-                Logger.Log($"GetDuration({inputFile}) - Reading duration using packet timestamps.", true, false, "ffmpeg");
+                Logger.Log($"[{nameof(GetDurationMs)}] Reading duration using packet timestamps", true, false, "ffmpeg");
                 string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=pts_time -of csv=p=0 {inputFile.Wrap()}";
                 var outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
 
@@ -405,10 +405,12 @@ namespace Flowframes
 
         public static async Task<bool> IsEncoderCompatible(string enc)
         {
-            Logger.Log($"IsEncoderCompatible('{enc}')", true, false, "ffmpeg");
+            Logger.Log($"Running ffmpeg to check if encoder '{enc}' is available...", true, false, "ffmpeg");
             string args = $"-loglevel error -f lavfi -i color=black:s=1920x1080 -vframes 1 -c:v {enc} -f null -";
             string output = await RunFfmpeg(args, LogMode.Hidden);
-            return !output.SplitIntoLines().Where(l => !l.Lower().StartsWith("frame") && l.IsNotEmpty()).Any();
+            bool compat = !output.SplitIntoLines().Where(l => !l.Lower().StartsWith("frame") && l.IsNotEmpty()).Any();
+            Logger.Log($"Encoder '{enc}' is {(compat ? "available!" : "not available.")}", true, false, "ffmpeg");
+            return compat;
         }
 
         public static List<string> GetAudioCodecs(string path, int streamIndex = -1)

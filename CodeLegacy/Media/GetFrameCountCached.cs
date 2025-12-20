@@ -19,19 +19,15 @@ namespace Flowframes.Media
 
         public static async Task<int> GetFrameCountAsync(string path, int retryCount = 3)
         {
-            Logger.Log($"Getting frame count ({path})", true);
+            Logger.Log($"Getting frame count ({path})...", true);
 
             long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize);
 
-            if (filesize > 0 && CacheContains(hash))
+            if (filesize > 0 && cache.ContainsKey(hash))
             {
-                Logger.Log($"Cache contains this hash, using cached value.", true);
-                return GetFromCache(hash);
-            }
-            else
-            {
-                Logger.Log($"Hash not cached, reading frame count.", true);
+                Logger.Log($"Using cached frame count value.", true);
+                return cache[hash];
             }
 
             int frameCount;
@@ -54,7 +50,7 @@ namespace Flowframes.Media
 
             if (frameCount > 0)
             {
-                Logger.Log($"Adding hash with value {frameCount} to cache.", true);
+                Logger.Log($"Caching frame count ({frameCount}).", true);
                 cache.Add(hash, frameCount);
             }
             else
@@ -72,24 +68,6 @@ namespace Flowframes.Media
             }
 
             return frameCount;
-        }
-
-        private static bool CacheContains(QueryInfo hash)
-        {
-            foreach (KeyValuePair<QueryInfo, int> entry in cache)
-                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
-                    return true;
-
-            return false;
-        }
-
-        private static int GetFromCache(QueryInfo hash)
-        {
-            foreach (KeyValuePair<QueryInfo, int> entry in cache)
-                if (entry.Key.path == hash.path && entry.Key.filesize == hash.filesize)
-                    return entry.Value;
-
-            return 0;
         }
 
         public static void Clear()
