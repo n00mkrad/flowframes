@@ -107,18 +107,6 @@ namespace Flowframes
                 DeleteSource(inputFile);
         }
 
-        public static async Task ChangeSpeed(string inputFile, float newSpeedPercent, bool delSrc = false)
-        {
-            string pathNoExt = Path.ChangeExtension(inputFile, null);
-            string ext = Path.GetExtension(inputFile);
-            float val = newSpeedPercent / 100f;
-            string speedVal = (1f / val).ToString("0.0000").Replace(",", ".");
-            string args = " -itsscale " + speedVal + " -i \"" + inputFile + "\" -c copy \"" + pathNoExt + "-" + newSpeedPercent + "pcSpeed" + ext + "\"";
-            await RunFfmpeg(args, LogMode.OnlyLastLine);
-            if (delSrc)
-                DeleteSource(inputFile);
-        }
-
         public static async Task<long> GetDurationMs(string inputFile, MediaFile mediaFile, bool demuxInsteadOfPacketTs = false, bool allowDurationFromMetadata = true)
         {
             if (mediaFile.IsDirectory)
@@ -421,22 +409,6 @@ namespace Flowframes
             string args = $"-loglevel error -f lavfi -i color=black:s=1920x1080 -vframes 1 -c:v {enc} -f null -";
             string output = await RunFfmpeg(args, LogMode.Hidden);
             return !output.SplitIntoLines().Where(l => !l.Lower().StartsWith("frame") && l.IsNotEmpty()).Any();
-        }
-
-        public static string GetAudioCodec(string path, int streamIndex = -1)
-        {
-            Logger.Log($"GetAudioCodec('{Path.GetFileName(path)}', {streamIndex})", true, false, "ffmpeg");
-            string stream = (streamIndex < 0) ? "a" : $"{streamIndex}";
-            string args = $"-v panic -show_streams -select_streams {stream} -show_entries stream=codec_name {path.Wrap()}";
-            string info = GetFfprobeOutput(args);
-            string[] entries = info.SplitIntoLines();
-
-            foreach (string entry in entries)
-            {
-                if (entry.Contains("codec_name="))
-                    return entry.Split('=')[1];
-            }
-            return "";
         }
 
         public static List<string> GetAudioCodecs(string path, int streamIndex = -1)
