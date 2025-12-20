@@ -70,9 +70,9 @@ namespace Flowframes
             string beforeArgs = $"-hide_banner -stats -loglevel {loglevel} -y";
 
             if (!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
+                ffmpeg.StartInfo.Arguments = $"/C cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg {beforeArgs} {args}";
+                ffmpeg.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffmpeg {beforeArgs} {args}";
 
             if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
             Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
@@ -103,9 +103,9 @@ namespace Flowframes
             string beforeArgs = $"-hide_banner -stats -loglevel {loglevel} -y";
 
             if (!string.IsNullOrWhiteSpace(workingDir))
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
+                ffmpeg.StartInfo.Arguments = $"/C cd /D {workingDir.Wrap()} & {Path.Combine(GetAvDir(), "ffmpeg.exe").Wrap()} {beforeArgs} {args}";
             else
-                ffmpeg.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffmpeg {beforeArgs} {args}";
+                ffmpeg.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffmpeg {beforeArgs} {args}";
 
             if (logMode != LogMode.Hidden) Logger.Log("Running FFmpeg...", false);
             Logger.Log($"ffmpeg {beforeArgs} {args}", true, false, "ffmpeg");
@@ -145,7 +145,7 @@ namespace Flowframes
 
             bool concat = settings.Args.Split(" \"").Last().Remove("\"").Trim().EndsWith(".concat");
             string args = $"-v {settings.LogLevel} {(concat ? "-f concat -safe 0 " : "")}{settings.Args}";
-            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe {args}";
+            ffprobe.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffprobe {args}";
 
             if (settings.LoggingMode != LogMode.Hidden) Logger.Log("Running FFprobe...", false);
             Logger.Log($"ffprobe {args}", true, false, "ffmpeg");
@@ -170,7 +170,7 @@ namespace Flowframes
         public static string GetFfprobeOutput(string args)
         {
             Process ffprobe = OsUtils.NewProcess(true);
-            ffprobe.StartInfo.Arguments = $"{GetCmdArg()} cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
+            ffprobe.StartInfo.Arguments = $"/C cd /D {GetAvDir().Wrap()} & ffprobe.exe {args}";
             Logger.Log($"ffprobe {args}", true, false, "ffmpeg");
             ffprobe.Start();
             ffprobe.WaitForExit();
@@ -183,11 +183,6 @@ namespace Flowframes
         public static string GetAvDir()
         {
             return Path.Combine(Paths.GetPkgPath(), Paths.audioVideoDir);
-        }
-
-        public static string GetCmdArg()
-        {
-            return "/C";
         }
 
         public static async Task SetBusyWhileRunning()
