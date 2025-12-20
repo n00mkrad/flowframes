@@ -103,33 +103,11 @@ namespace Flowframes
 
             try
             {
-                foreach (DirectoryInfo dir in new DirectoryInfo(Paths.GetLogPath(true)).GetDirectories())
-                {
-                    string[] split = dir.Name.Split('-');
-                    int daysOld = (DateTime.Now - new DateTime(split[0].GetInt(), split[1].GetInt(), split[2].GetInt())).Days;
-                    int fileCount = dir.GetFiles("*", SearchOption.AllDirectories).Length;
-
-                    if (daysOld > keepLogsDays || fileCount < 1) // keep logs for 4 days
-                    {
-                        Logger.Log($"Cleanup: Log folder {dir.Name} is {daysOld} days old and has {fileCount} files - Will Delete", true);
-                        IoUtils.TryDeleteIfExists(dir.FullName);
-                    }
-                }
-
+                CleanupOldDirectories(Paths.GetLogPath(true), keepLogsDays, "log");
+                
                 IoUtils.DeleteContentsOfDir(Paths.GetSessionDataPath()); // Clear this session's temp files...
-
-                foreach (DirectoryInfo dir in new DirectoryInfo(Paths.GetSessionsPath()).GetDirectories())
-                {
-                    string[] split = dir.Name.Split('-');
-                    int daysOld = (DateTime.Now - new DateTime(split[0].GetInt(), split[1].GetInt(), split[2].GetInt())).Days;
-                    int fileCount = dir.GetFiles("*", SearchOption.AllDirectories).Length;
-
-                    if (daysOld > keepSessionDataDays || fileCount < 1) // keep temp files for 2 days
-                    {
-                        Logger.Log($"Cleanup: Session folder {dir.Name} is {daysOld} days old and has {fileCount} files - Will Delete", true);
-                        IoUtils.TryDeleteIfExists(dir.FullName);
-                    }
-                }
+                
+                CleanupOldDirectories(Paths.GetSessionsPath(), keepSessionDataDays, "session");
 
                 IoUtils.GetFilesSorted(Paths.GetPkgPath(), false, "*.log*").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
                 string crashDumpsDir = Path.Combine(Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%"), "CrashDumps");
@@ -153,6 +131,30 @@ namespace Flowframes
             catch (Exception e)
             {
                 Logger.Log($"Cleanup Error: {e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        private static void CleanupOldDirectories(string basePath, int keepDays, string folderType)
+        {
+            foreach (DirectoryInfo dir in new DirectoryInfo(basePath).GetDirectories())
+            {
+                int fileCount = dir.GetFiles("*", SearchOption.AllDirectories).Length;
+
+                if (fileCount < 1)
+                {
+                    Logger.Log($"[Cleanup] Deleting {folderType} folder {dir.Name} (is empty)", true);
+                    IoUtils.TryDeleteIfExists(dir.FullName);
+                    continue;
+                }
+
+                string[] split = dir.Name.Split('-');
+                int daysOld = (DateTime.Now - new DateTime(split[0].GetInt(), split[1].GetInt(), split[2].GetInt())).Days;
+
+                if (daysOld > keepDays)
+                {
+                    Logger.Log($"[Cleanup] Deleting {folderType} folder {dir.Name} (is {daysOld} days old, {folderType} folders are only kept for {keepDays} days)", true);
+                    IoUtils.TryDeleteIfExists(dir.FullName);
+                }
             }
         }
 
