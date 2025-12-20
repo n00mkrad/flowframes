@@ -25,13 +25,18 @@ namespace Flowframes.IO
 		public const string audioVideoDir = "av";
 		public const string licensesDir = "licenses";
 
-		public static string sessionTimestamp;
+		private static string _sessionTimestamp;
+		public static string SessionTimestamp { get => _sessionTimestamp.IsNotEmpty() ? _sessionTimestamp : Init(); }
 
-		public static void Init()
+		public static string Init()
 		{
+			if(_sessionTimestamp.IsNotEmpty())
+				return _sessionTimestamp;
+
 			var n = DateTime.Now;
-			sessionTimestamp = $"{n.Year}-{n.Month}-{n.Day}-{n.Hour}-{n.Minute}-{n.Second}-{n.Millisecond}";
-		}
+			_sessionTimestamp = $"{n.Year}-{n.Month}-{n.Day}-{n.Hour}-{n.Minute}-{n.Second}-{n.Millisecond}";
+			return _sessionTimestamp;
+        }
 
 		public static string GetFrameOrderFilename(float factor)
 		{
@@ -81,7 +86,7 @@ namespace Flowframes.IO
 
 		public static string GetLogPath(bool noSession = false)
 		{
-			string path = Path.Combine(GetDataPath(), "logs", (noSession ? "" : sessionTimestamp));
+			string path = Path.Combine(GetDataPath(), "logs", (noSession ? "" : SessionTimestamp));
 			Directory.CreateDirectory(path);
 			return path;
 		}
@@ -95,7 +100,7 @@ namespace Flowframes.IO
 
         public static string GetSessionDataPath()
 		{
-			string path = Path.Combine(GetSessionsPath(), sessionTimestamp);
+			string path = Path.Combine(GetSessionsPath(), SessionTimestamp);
 			Directory.CreateDirectory(path);
 			return path;
 		}
