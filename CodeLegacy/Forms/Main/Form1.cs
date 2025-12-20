@@ -36,6 +36,7 @@ namespace Flowframes.Forms.Main
         public bool ShowModelDownloader = false;
 
         private Enums.VfrMode prevVfrMode = (Enums.VfrMode)(-1);
+        private ControlTextResizer _ctrlTextResizer;
 
         protected override CreateParams CreateParams
         {
@@ -59,7 +60,12 @@ namespace Flowframes.Forms.Main
             {
                 ShowInTaskbar = false;
                 Opacity = 0;
+                return;
             }
+
+            _ctrlTextResizer = new ControlTextResizer();
+            var resizableTextCtrls = new List<Control>() { logBox, newsLabel, patronsLabel };
+            _ctrlTextResizer.Register(resizableTextCtrls);
         }
 
         private void Form1_Load(object sender, EventArgs e)

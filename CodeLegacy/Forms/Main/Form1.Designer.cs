@@ -360,7 +360,7 @@
             this.label23.Location = new System.Drawing.Point(8, 130);
             this.label23.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(105, 15);
+            this.label23.Size = new System.Drawing.Size(104, 15);
             this.label23.TabIndex = 26;
             this.label23.Text = "Fix Scene Changes";
             // 
@@ -393,7 +393,7 @@
             this.label16.Location = new System.Drawing.Point(10, 10);
             this.label16.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(61, 15);
+            this.label16.Size = new System.Drawing.Size(62, 15);
             this.label16.TabIndex = 2;
             this.label16.Text = "Trim Input";
             // 
@@ -413,6 +413,7 @@
             this.runBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.runBtn.Enabled = false;
             this.runBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.runBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.runBtn.ForeColor = System.Drawing.Color.White;
             this.runBtn.Location = new System.Drawing.Point(12, 418);
             this.runBtn.Name = "runBtn";
@@ -803,9 +804,9 @@
             this.welcomeLabel2.Location = new System.Drawing.Point(142, 3);
             this.welcomeLabel2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.welcomeLabel2.Name = "welcomeLabel2";
-            this.welcomeLabel2.Size = new System.Drawing.Size(478, 40);
+            this.welcomeLabel2.Size = new System.Drawing.Size(268, 40);
             this.welcomeLabel2.TabIndex = 5;
-            this.welcomeLabel2.Text = "Click The Interpolation Tab To Begin.";
+            this.welcomeLabel2.Text = "Click Here To Begin.";
             this.welcomeLabel2.Click += new System.EventHandler(this.welcomeLabel2_Click);
             // 
             // panel8
@@ -814,10 +815,10 @@
             this.panel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.panel8.Controls.Add(this.patronsLabel);
             this.panel8.Controls.Add(this.label21);
-            this.panel8.Location = new System.Drawing.Point(593, 57);
+            this.panel8.Location = new System.Drawing.Point(593, 9);
             this.panel8.Margin = new System.Windows.Forms.Padding(5);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(300, 193);
+            this.panel8.Size = new System.Drawing.Size(300, 241);
             this.panel8.TabIndex = 4;
             // 
             // patronsLabel
@@ -1259,7 +1260,7 @@
             this.label24.Location = new System.Drawing.Point(6, 160);
             this.label24.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(165, 15);
+            this.label24.Size = new System.Drawing.Size(164, 15);
             this.label24.TabIndex = 87;
             this.label24.Text = "Maximum Output Frame Rate";
             // 
@@ -1448,7 +1449,7 @@
             this.label34.Location = new System.Drawing.Point(407, 42);
             this.label34.Margin = new System.Windows.Forms.Padding(10, 10, 10, 7);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(308, 15);
+            this.label34.Size = new System.Drawing.Size(307, 15);
             this.label34.TabIndex = 69;
             this.label34.Text = "Maximum Height. Video will be downscaled if it\'s bigger.";
             // 
@@ -1480,7 +1481,7 @@
             this.label18.Location = new System.Drawing.Point(8, 40);
             this.label18.Margin = new System.Windows.Forms.Padding(8, 0, 3, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(196, 15);
+            this.label18.Size = new System.Drawing.Size(195, 15);
             this.label18.TabIndex = 66;
             this.label18.Text = "Maximum Video Input Size (Height)";
             // 

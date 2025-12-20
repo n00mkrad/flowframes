@@ -530,6 +530,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MiscUtils\FormatUtils.cs" />
     <Compile Include="Ui\ControlExtensions.cs" />
+    <Compile Include="Ui\ControlTextResizer.cs" />
     <Compile Include="Ui\DebugFormHelper.cs" />
     <Compile Include="Ui\GetWebInfo.cs" />
     <Compile Include="Ui\InterpolationProgress.cs" />
