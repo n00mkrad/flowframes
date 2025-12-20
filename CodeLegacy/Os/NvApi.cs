@@ -29,13 +29,13 @@ namespace Flowframes.Os
                 {
                     float vramGb = gpu.GetVramGb();
                     vramGb = (float)(Math.Round(vramGb * 2, MidpointRounding.AwayFromZero) / 2); // Round to nearest 0.5 GB
-                    Logger.Log($"[NvAPI] Nvidia GPU: {gpu.FullName} ({vramGb.ToString("0.#")} GB) {GetArch(gpu)} Architecture", true);
+                    Logger.Log($"[NvAPI] Nvidia GPU: {gpu.FullName}, {vramGb.ToString("0.#")} GB, {GetArch(gpu)} Architecture", true);
                     GpuVram[gpu] = vramGb;
                 }
 
                 NvGpus = gpus.OrderByDescending(g => GpuVram[g]).ThenBy(g => g.FullName).ToList();
                 string mostVramGpu = gpus.Length > 1 ? $" Most VRAM: {GpuWithMostVram.FullName} ({GpuVram[GpuWithMostVram].ToString("0.#")} GB)" : "";
-                Logger.Log($"[NvAPI] Initialized Nvidia API in {sw.ElapsedMs} ms. GPU{(gpus.Length > 1 ? "s" : "")}: {string.Join(", ", gpus.Select(g => g.FullName))}.{mostVramGpu}", true);
+                Logger.Log($"[NvAPI] Initialized Nvidia API in {sw.ElapsedMs} ms - GPU{(gpus.Length > 1 ? "s" : "")}: {string.Join(", ", gpus.Select(g => g.FullName))}{mostVramGpu}", true);
             }
             catch (Exception e)
             {

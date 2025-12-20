@@ -52,7 +52,7 @@ namespace Flowframes.Os
 
                 // Clean up Vulkan resources
                 vkInstance.Destroy();
-                Logger.Log($"[VK] Vulkan device check completed after {sw.ElapsedMs} ms", true);
+                Logger.Log($"[VK] Vulkan device check completed in {sw.ElapsedMs} ms", true);
             }
             catch(Exception ex)
             {
@@ -79,11 +79,6 @@ namespace Flowframes.Os
                 return matchingDevices.First().ComputeQueueCount;
 
             return 0;
-        }
-
-        public static int GetMaxNcnnThreads(VkDevice device)
-        {
-            return device.ComputeQueueCount;
         }
     }
 }
