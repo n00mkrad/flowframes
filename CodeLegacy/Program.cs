@@ -98,7 +98,7 @@ namespace Flowframes
 
         public static void Cleanup()
         {
-            int keepLogsDays = 4;
+            int keepLogsDays = 7;
             int keepSessionDataDays = 4;
 
             try
