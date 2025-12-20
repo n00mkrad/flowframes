@@ -109,24 +109,20 @@ namespace Flowframes
                 
                 CleanupOldDirectories(Paths.GetSessionsPath(), keepSessionDataDays, "session");
 
-                IoUtils.GetFilesSorted(Paths.GetPkgPath(), false, "*.log*").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
+                List<string> delPaths = IoUtils.GetFilesSorted(Paths.GetPkgPath(), false, "*.log*").ToList();
                 string crashDumpsDir = Path.Combine(Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%"), "CrashDumps");
-                IoUtils.GetFilesSorted(crashDumpsDir, false, "rife*.exe.*.dmp").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
-                IoUtils.GetFilesSorted(crashDumpsDir, false, "flowframes*.exe.*.dmp").ToList().ForEach(x => IoUtils.TryDeleteIfExists(x));
+                delPaths.AddRange(IoUtils.GetFilesSorted(crashDumpsDir, false, "rife*.exe.*.dmp").ToList());
+                delPaths.AddRange(IoUtils.GetFilesSorted(crashDumpsDir, false, "flowframes*.exe.*.dmp").ToList());
 
                 string installerTempDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FlowframesInstallerTemp");
                 if (Directory.Exists(installerTempDir) && (DateTime.Now - Directory.GetLastWriteTime(installerTempDir)).TotalDays > 1d)
                 {
-                    IoUtils.TryDeleteIfExists(installerTempDir);
+                    delPaths.Add(installerTempDir);
                 }
 
-                foreach (var cacheFile in IoUtils.GetFileInfosSorted(Paths.GetCachePath(), true))
-                {
-                    if ((DateTime.Now - cacheFile.LastWriteTime).TotalDays > 3d)
-                    {
-                        IoUtils.TryDeleteIfExists(cacheFile.FullName);
-                    }
-                }
+                delPaths.AddRange(IoUtils.GetFileInfosSorted(Paths.GetCachePath(), true).Where(cf => (DateTime.Now - cf.LastWriteTime).TotalDays > 3d).Select(cf => cf.FullName));
+
+                delPaths.ForEach(p => IoUtils.TryDeleteIfExists(p));
             }
             catch (Exception e)
             {
