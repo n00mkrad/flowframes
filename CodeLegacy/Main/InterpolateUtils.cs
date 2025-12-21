@@ -141,7 +141,7 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
-                if(passes && s.dedupe && I.currentMediaFile.IsVfr)
+                if (passes && s.dedupe && I.currentMediaFile.IsVfr)
                 {
                     UiUtils.ShowMessageBox($"Using de-duplication on VFR videos is currently not supported.\n\nGo to Quick Settings and either disable De-Duplication, or force VFR off.");
                     passes = false;
@@ -211,43 +211,22 @@ namespace Flowframes.Main
                 return false;
             }
 
-            if (IoUtils.IsPathDirectory(path))
-            {
-                if (!IoUtils.IsDirValid(path))
-                {
-                    UiUtils.ShowMessageBox("Input directory is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
-                    I.Cancel();
-                    return false;
-                }
-            }
-            else
-            {
-                if (!IsVideoValid(path))
-                {
-                    UiUtils.ShowMessageBox("Input video file is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
-                    return false;
-                }
-            }
-            return true;
-        }
+            bool isDir = IoUtils.IsPathDirectory(path);
 
-        public static async Task<bool> CheckEncoderValid()
-        {
-            string enc = I.currentSettings.outSettings.Encoder.GetInfo().Name;
-
-            if (enc.Lower().Contains("nvenc") && !(await FfmpegCommands.IsEncoderCompatible(enc)))
+            if (isDir && !IoUtils.IsDirValid(path))
             {
-                UiUtils.ShowMessageBox("NVENC encoding is not available on your hardware!\nPlease use a different encoder.", UiUtils.MessageType.Error);
+                UiUtils.ShowMessageBox("Input directory is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
                 I.Cancel();
                 return false;
             }
 
-            return true;
-        }
+            if (!isDir && !IoUtils.IsFileValid(path))
+            {
+                UiUtils.ShowMessageBox("Input video file is not valid.\nMake sure it still exists and hasn't been renamed or moved!");
+                return false;
+            }
 
-        public static bool IsVideoValid(string videoPath)
-        {
-            return videoPath != null && IoUtils.IsFileValid(videoPath);
+            return true;
         }
 
         public static async Task<Size> GetOutputResolution(FfmpegCommands.ModuloMode moduloMode, string inputPath, bool print = false)
