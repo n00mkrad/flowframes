@@ -30,22 +30,24 @@ namespace Flowframes
             public bool hidden;
             public bool replaceLastLine;
             public string filename;
+            public bool toConsole;
 
-            public LogEntry(string logMessageArg, bool hiddenArg = false, bool replaceLastLineArg = false, string filenameArg = "")
+            public LogEntry(string logMessageArg, bool hiddenArg = false, bool replaceLastLineArg = false, string filenameArg = "", bool toConsoleArg = true)
             {
                 logMessage = logMessageArg;
                 hidden = hiddenArg;
                 replaceLastLine = replaceLastLineArg;
                 filename = filenameArg;
+                toConsole = toConsoleArg;
             }
         }
 
         private static ConcurrentQueue<LogEntry> logQueue = new ConcurrentQueue<LogEntry>();
         private static readonly string _logPath = Paths.GetLogPath();
 
-        public static void Log(string msg, bool hidden = false, bool replaceLastLine = false, string filename = "")
+        public static void Log(string msg, bool hidden = false, bool replaceLastLine = false, string filename = "", bool toConsole = true)
         {
-            logQueue.Enqueue(new LogEntry(msg, hidden, replaceLastLine, filename));
+            logQueue.Enqueue(new LogEntry(msg, hidden, replaceLastLine, filename, toConsole));
             ShowNext();
         }
 
@@ -70,7 +72,8 @@ namespace Flowframes
             if (!entry.hidden)
                 _lastUi = msg;
 
-            Console.WriteLine(msg);
+            if (entry.toConsole)
+                Console.WriteLine(msg);
 
             try
             {

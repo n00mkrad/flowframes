@@ -31,7 +31,7 @@ namespace Flowframes.Media
                 line = FormatUtils.BeautifyFfmpegStats(line);
 
             appendStr += Environment.NewLine + line;
-            Logger.Log($"{prefix} {line}", hidden, replaceLastLine, logFilename);
+            Logger.Log($"{prefix} {line}", hidden, replaceLastLine, logFilename, toConsole: Cli.Verbose || logMode != LogMode.Hidden);
 
             if (!hidden && showProgressBar && line.Contains("Time:"))
             {

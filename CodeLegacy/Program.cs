@@ -185,7 +185,7 @@ namespace Flowframes
 
                     // Logger.Log($"Disk space check for '{drivePath}/': {spaceGb} GB free, next check in {nextWaitTimeMs / 1024} sec", true);
 
-                    if (!Interpolate.canceled && OsUtils.IsStillRunning(() => AiProcess.lastAiProcess) && lowDiskSpace)
+                    if (!Interpolate.canceled && (AiProcess.lastAiProcess != null && !AiProcess.lastAiProcess.HasExited) && lowDiskSpace)
                     {
                         if (tooLowDiskSpace)
                         {

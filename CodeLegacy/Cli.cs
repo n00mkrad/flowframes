@@ -22,6 +22,7 @@ namespace Flowframes
         public static bool CloseMdlDownloaderWhenDone = false;
         public static bool DontSaveConfig = false;
         public static bool AutoRun = false;
+        public static bool Verbose = false;
         public static float InterpFactor = -1f;
         public static Implementations.Ai InterpAi = (Implementations.Ai)(-1);
         public static Enums.Output.Format OutputFormat = (Enums.Output.Format)(-1);
@@ -125,6 +126,10 @@ namespace Flowframes
                 {
                     "o|output_dir=", "Output folder to save the interpolated video in",
                     v => OutputDir = v.Trim()
+                },
+                {
+                    "v|verbose", "Log process outputs",
+                    v => Verbose = v != null
                 },
                 {
                     "<>", "Input file(s)",

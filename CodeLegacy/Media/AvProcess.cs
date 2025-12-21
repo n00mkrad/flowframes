@@ -115,7 +115,7 @@ namespace Flowframes
             ffmpeg.PriorityClass = ProcessPriorityClass.BelowNormal;
             string output = ffmpeg.StandardOutput.ReadToEnd();
             ffmpeg.WaitForExit();
-            Logger.Log($"Synchronous ffmpeg output:\n{output}", true, false, "ffmpeg");
+            Logger.Log($"Synchronous ffmpeg output:\n{output}", true, false, "ffmpeg", toConsole: Cli.Verbose);
             return output;
         }
 
