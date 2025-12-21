@@ -40,9 +40,14 @@ namespace Flowframes
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            CmdMode = Paths.GetExe().EndsWith("Cmd.exe");
             Cli.HandleCli();
             Debug = Cli.Debug || System.Diagnostics.Debugger.IsAttached;
-            CmdMode = Paths.GetExe().EndsWith("Cmd.exe");
+
+            if(CmdMode && !Cli.CanStart)
+            {
+                Environment.Exit(0);
+            }
 
             // Show splash screen
             Application.EnableVisualStyles();

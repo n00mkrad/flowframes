@@ -38,7 +38,6 @@ namespace Flowframes
             if (!Utils.CheckPathValid(currentSettings.inPath)) return;           // Check if input path/file is valid
             if (!Utils.CheckAiAvailable(currentSettings.ai, currentSettings.model)) return;            // Check if selected AI pkg is installed
             if (!AutoEncodeResume.resumeNextRun && !Utils.CheckDeleteOldTempFolder()) return;      // Try to delete temp folder if an old one exists
-            if (!(await Utils.CheckEncoderValid())) return;           // Check encoder compat
             currentSettings.stepByStep = false;
             Program.mainForm.Invoke(() => Program.mainForm.SetStatus("Starting..."));
             sw.Restart();

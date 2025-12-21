@@ -15,6 +15,8 @@ namespace Flowframes
     public class Cli
     {
         public static bool Debug = false;
+        public static bool ShowHelp = false;
+        public static bool CanStart = false;
         public static bool DisablePython = true;
         public static bool ShowMdlDownloader = false;
         public static bool CloseMdlDownloaderWhenDone = false;
@@ -37,12 +39,17 @@ namespace Flowframes
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern int FreeConsole();
 
-        public static void HandleCli()
+        /// <summary> Parses command line args. Returns if the program should continue (true) or exit (false). </summary>
+        public static bool HandleCli()
         {
             string GetEnums<T>() => string.Join(", ", Enum.GetNames(typeof(T)));
 
             var optsSet = new OptionSet
             {
+                {
+                    "h|help", "Show CLI help",
+                    v => ShowHelp = v != null
+                },
                 {
                     "d|debug", "Enable debug/developer features and experimental or deprecated options",
                     v => Debug = v != null
@@ -125,26 +132,34 @@ namespace Flowframes
                 },
             };
 
-            var opts = new ArgParseExtensions.Options() { OptionsSet = optsSet, BasicUsage = "<OPTIONS> <FILE(S)>", AddHelpArg = true };
+            var opts = new ArgParseExtensions.Options() { OptionsSet = optsSet, BasicUsage = "<OPTIONS> <FILE(S)>", AddHelpArg = false };
 
             try
             {
-                if (!opts.TryParseOptions(Environment.GetCommandLineArgs()))
-                    return;
+                var args = Environment.GetCommandLineArgs();
 
-                // if (!ShowConsole)
-                //     FreeConsole();
+                if (!opts.TryParseOptions(args))
+                    return false;
 
+                bool noArgs = args.Select(a => a.TrimStart('-').Lower().Trim('"')).Where(a => !a.EndsWith(".exe") && a != "h" && a != "help").Count() < 1; // No args passed (apart from program exe path and/or help flag)
+                
+                if (Program.CmdMode && (noArgs || ShowHelp))
+                {
+                    opts.PrintHelp();
+                }
+                
                 Python.DisablePython = DisablePython;
                 Config.NoWrite = DontSaveConfig;
 
                 ValidFiles = ValidFiles.Where(f => File.Exists(f) && Path.GetExtension(f).Lower() != ".exe").Distinct().ToList();
                 AutoRun = AutoRun && ValidFiles.Any(); // Only AutoRun if valid files are provided
                 DontSaveConfig = DontSaveConfig || AutoRun; // Never save config in AutoRun mode
+                return CanStart;
             }
             catch (OptionException e)
             {
                 Logger.Log($"Error parsing CLI options: {e.Message}", true);
+                return false;
             }
         }
     }
