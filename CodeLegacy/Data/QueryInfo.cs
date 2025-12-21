@@ -16,7 +16,7 @@
         public override bool Equals(object obj)
         {
             if (obj is QueryInfo other)
-                return Path == other.Path && SizeBytes == other.SizeBytes;
+                return Path == other.Path && SizeBytes == other.SizeBytes && Command == other.Command;
             return false;
         }
 
@@ -27,6 +27,7 @@
                 int hash = 17;
                 hash = hash * 31 + (Path?.GetHashCode() ?? 0);
                 hash = hash * 31 + SizeBytes.GetHashCode();
+                hash = hash * 31 + (Command?.GetHashCode() ?? 0);
                 return hash;
             }
         }
