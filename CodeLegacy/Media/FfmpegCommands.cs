@@ -405,6 +405,12 @@ namespace Flowframes
 
         public static async Task<bool> IsEncoderCompatible(string enc)
         {
+            if (!File.Exists(Path.Combine(AvProcess.GetAvDir(), "ffmpeg.exe")))
+            {
+                Logger.Log($"Can't check encoder '{enc}', ffmpeg not found!", true, false, "ffmpeg");
+                return false;
+            }
+
             Logger.Log($"Running ffmpeg to check if encoder '{enc}' is available...", true, false, "ffmpeg");
             string args = $"-loglevel error -f lavfi -i color=black:s=1920x1080 -vframes 1 -c:v {enc} -f null -";
             string output = await RunFfmpeg(args, LogMode.Hidden);
