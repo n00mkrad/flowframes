@@ -1,8 +1,12 @@
-﻿using Flowframes.IO;
+﻿using Flowframes.Forms.Main;
+using Flowframes.IO;
 using Flowframes.MiscUtils;
+using Flowframes.Ui;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using Vulkan;
 
 namespace Flowframes.Os
@@ -23,6 +27,7 @@ namespace Flowframes.Os
 
         public static List<VkDevice> VkDevices { get; private set; } = null;
 
+        [HandleProcessCorruptedStateExceptions] [SecurityCritical] // To catch AccessViolationException. Thanks EA Javelin Anticheat for causing this error.
         public static void Init()
         {
             var sw = new NmkdStopwatch();
@@ -53,6 +58,13 @@ namespace Flowframes.Os
                 // Clean up Vulkan resources
                 vkInstance.Destroy();
                 Logger.Log($"[VK] Vulkan device check completed in {sw.ElapsedMs} ms", true);
+            }
+            catch (AccessViolationException ave)
+            {
+                Form1.CloseAllSplashForms();
+                UiUtils.ShowMessageBox($"Failed to initialize Vulkan (Access Violation).\n\nThis may be caused by driver issues or Anti-Cheat software (e.g. EA Javelin).\n" +
+                    $"Ensure that your drivers are up to date and that no games are running.\n\nError Message:\n{ave.Message}", type: UiUtils.MessageType.Error, monospace: true);
+                Environment.Exit(-1);
             }
             catch(Exception ex)
             {
