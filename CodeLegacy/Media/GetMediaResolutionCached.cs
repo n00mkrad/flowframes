@@ -17,9 +17,9 @@ namespace Flowframes.Media
             long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize);
 
-            if (filesize > 0 && CacheContains(hash))
+            if (filesize > 0 && cache.ContainsKey(hash))
             {
-                Size cachedVal = GetFromCache(hash);
+                Size cachedVal = cache[hash];
                 Logger.Log($"Resolution of '{Path.GetFileName(path)}': {cachedVal.Width}x{cachedVal.Height} [Cached]", true);
                 return cachedVal;
             }
@@ -34,16 +34,6 @@ namespace Flowframes.Media
 
             Logger.Log($"Resolution of '{Path.GetFileName(path)}': {size.Width}x{size.Height}", true);
             return size;
-        }
-
-        private static bool CacheContains(QueryInfo hash)
-        {
-            return cache.Any(entry => entry.Key.Path == hash.Path && entry.Key.SizeBytes == hash.SizeBytes);
-        }
-
-        private static Size GetFromCache(QueryInfo hash)
-        {
-            return cache.Where(entry => entry.Key.Path == hash.Path && entry.Key.SizeBytes == hash.SizeBytes).Select(entry => entry.Value).FirstOrDefault();
         }
 
         public static void Clear()

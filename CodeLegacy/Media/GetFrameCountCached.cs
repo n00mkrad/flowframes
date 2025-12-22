@@ -26,7 +26,7 @@ namespace Flowframes.Media
 
             if (filesize > 0 && cache.ContainsKey(hash))
             {
-                Logger.Log($"Using cached frame count value.", true);
+                Logger.Log($"Using cached frame count: {cache[hash]}", true);
                 return cache[hash];
             }
 
@@ -50,7 +50,7 @@ namespace Flowframes.Media
 
             if (frameCount > 0)
             {
-                Logger.Log($"Caching frame count ({frameCount}).", true);
+                Logger.Log($"Got frame count of {frameCount} (caching)", true);
                 cache.Add(hash, frameCount);
             }
             else

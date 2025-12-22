@@ -38,7 +38,7 @@ namespace Flowframes.Os
             }
             catch (Exception e)
             {
-                Logger.Log($"Failed to kill currentAiProcess process tree: {e.Message}", true);
+                Logger.Log($"Failed to kill process tree: {e.Message}", true);
             }
         }
 

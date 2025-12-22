@@ -97,34 +97,13 @@ namespace Flowframes.Media
             long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize, process.StartInfo.Arguments);
 
-            if (!noCache && filesize > 0 && CacheContains(hash, ref cmdCache))
-            {
-                // Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' cached, won't re-run.", true, false, "ffmpeg");
-                return GetFromCache(hash, ref cmdCache);
-            }
+            if (!noCache && filesize > 0 && cmdCache.ContainsKey(hash))
+                return cmdCache[hash];
 
-            Logger.Log($"GetVideoInfo: '{process.StartInfo.FileName} {process.StartInfo.Arguments}' (not cached)", true, false, "ffmpeg");
+            Logger.Log($"GetVideoInfo: '{path}' (not cached)", true, false, "ffmpeg");
             string output = await OsUtils.GetOutputAsync(process);
             cmdCache.Add(hash, output);
             return output;
-        }
-
-        private static bool CacheContains(QueryInfo hash, ref Dictionary<QueryInfo, string> cacheDict)
-        {
-            foreach (KeyValuePair<QueryInfo, string> entry in cacheDict)
-                if (entry.Key.Path == hash.Path && entry.Key.SizeBytes == hash.SizeBytes && entry.Key.Command == hash.Command)
-                    return true;
-
-            return false;
-        }
-
-        private static string GetFromCache(QueryInfo hash, ref Dictionary<QueryInfo, string> cacheDict)
-        {
-            foreach (KeyValuePair<QueryInfo, string> entry in cacheDict)
-                if (entry.Key.Path == hash.Path && entry.Key.SizeBytes == hash.SizeBytes && entry.Key.Command == hash.Command)
-                    return entry.Value;
-
-            return "";
         }
 
         public static void ClearCache()

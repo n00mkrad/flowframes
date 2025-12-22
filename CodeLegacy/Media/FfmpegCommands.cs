@@ -223,7 +223,7 @@ namespace Flowframes
             float maxDeviationMs = (timestampDurations.Max() - timestampDurations.Min()) * 1000f;
             float maxDeviationPercent = ((timestampDurations.Max() / timestampDurations.Min()) * 100f) - 100;
             // float maxDeviationMsResampled = (timestampDurationsRes.Max() - timestampDurationsRes.Min()) * 1000f;
-            Logger.Log($"Timestamp durations - Min: {timestampDurations.Min() * 1000f} ms - Max: {timestampDurations.Max() * 1000f} ms - Avg: {avgDuration * 1000f} - Biggest deviation: {maxDeviationMs.ToString("0.##")} ms", hidden: true);
+            Logger.Log($"[VFR Check] Timestamp durations - Min: {timestampDurations.Min() * 1000f} ms - Max: {timestampDurations.Max() * 1000f} ms - Avg: {avgDuration * 1000f} - Biggest deviation: {maxDeviationMs.ToString("0.##")} ms", hidden: true);
             // Logger.Log($"Resampled - Min ts duration: {timestampDurationsRes.Min() * 1000f} ms - Max ts duration: {timestampDurationsRes.Max() * 1000f} ms - Biggest deviation: {maxDeviationMsResampled.ToString("0.##")} ms", hidden: true);
 
             mediaFile.InputTimestampDurations = new List<float>(timestampDurations);
@@ -305,7 +305,6 @@ namespace Flowframes
 
         public static Size GetSize(string inputFile)
         {
-            Logger.Log($"GetSize('{inputFile}')", true, false, "ffmpeg");
             string args = $" -v panic -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 {inputFile.Wrap()}";
             string[] outputLines = GetFfprobeOutput(args).SplitIntoLines();
 
