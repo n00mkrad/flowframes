@@ -64,7 +64,9 @@ namespace Flowframes.Os
                 Form1.CloseAllSplashForms();
                 UiUtils.ShowMessageBox($"Failed to initialize Vulkan (Access Violation).\n\nThis may be caused by driver issues or Anti-Cheat software (e.g. EA Javelin).\n" +
                     $"Ensure that your drivers are up to date and that no games are running.\n\nError Message:\n{ave.Message}", type: UiUtils.MessageType.Error, monospace: true);
-                Environment.Exit(-1);
+
+                if(!System.Diagnostics.Debugger.IsAttached)
+                    Environment.Exit(-1);
             }
             catch(Exception ex)
             {
