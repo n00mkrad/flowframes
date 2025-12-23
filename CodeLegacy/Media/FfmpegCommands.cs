@@ -395,11 +395,18 @@ namespace Flowframes
             }
         }
 
-        public static async Task<VidExtraData> GetVidExtraInfo(string inputFile, bool allowColorData = true)
+        public static async Task<VidExtraData> GetVidExtraInfo(string inputFile)
         {
-            string ffprobeOutput = await GetVideoInfo.GetFfprobeInfoAsync(inputFile, GetVideoInfo.FfprobeMode.ShowBoth);
-            VidExtraData data = new VidExtraData(ffprobeOutput);
-            return data;
+            try
+            {
+                string ffprobeOutput = await GetVideoInfo.GetFfprobeInfoAsync(inputFile, GetVideoInfo.FfprobeMode.ShowBoth);
+                VidExtraData data = new VidExtraData(ffprobeOutput);
+                return data;
+            }
+            catch
+            {
+                return new VidExtraData();
+            }
         }
 
         public static async Task<bool> IsEncoderCompatible(string enc)

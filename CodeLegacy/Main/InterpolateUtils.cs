@@ -147,6 +147,16 @@ namespace Flowframes.Main
                     passes = false;
                 }
 
+                if(passes && I.currentMediaFile.VideoExtraData.IsHdr)
+                {
+                    string badHdrSettingsStr = I.currentSettings.outSettings.GetHdrNotSuitableReason();
+
+                    if(badHdrSettingsStr.IsNotEmpty())
+                    {
+                        Logger.Log(badHdrSettingsStr);
+                    }
+                }
+
                 I.InterpProgressMultiplier = s.FpsResampling ? s.outFps.Float / fpsLimit : 1f;
 
                 if (!passes)

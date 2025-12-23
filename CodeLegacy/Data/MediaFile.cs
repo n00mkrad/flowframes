@@ -122,6 +122,7 @@ namespace Flowframes.Data
                 Logger.Log($"Failed to initialize MediaFile: {e.Message}", true);
             }
 
+            VideoExtraData = await FfmpegCommands.GetVidExtraInfo(ImportPath);
             Initialized = true;
         }
 

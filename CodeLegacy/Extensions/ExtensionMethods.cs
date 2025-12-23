@@ -480,5 +480,19 @@ namespace Flowframes
 
             list.Add(item);
         }
+
+        /// <summary> Checks if a string is equal to any of the provided <paramref name="strings"/>, optionally case-insensitive. </summary>
+        public static bool IsOneOf(this object s, bool caseSensitive, params object[] strings)
+        {
+            StringComparison strComp = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+
+            if (strings.Length == 0)
+                return false;
+
+            if (strings.Length == 1 && strings[0] is IEnumerable<string> col)
+                return col.Any(v => s.ToString().Equals(v, strComp));
+
+            return strings.Any(v => s.ToString().Equals(v.ToString(), strComp));
+        }
     }
 }

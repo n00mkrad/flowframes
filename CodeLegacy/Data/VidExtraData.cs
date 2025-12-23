@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Flowframes.Data
 {
@@ -12,6 +13,7 @@ namespace Flowframes.Data
         public string ColRange = "";
         public string ColTransfer = "";
         public string ColPrimaries = "";
+        public bool IsHdr => ColPrimaries == "bt2020" && (ColTransfer == "smpte2084" || ColTransfer == "arib-std-b67");
 
         // Sample/Display Aspect Ratios
         public string Sar = "";

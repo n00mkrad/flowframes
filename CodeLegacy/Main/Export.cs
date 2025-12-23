@@ -83,7 +83,6 @@ namespace Flowframes.Main
             string encArgs = FfmpegUtils.GetEncArgs(outSettings, outRes, s.outFps.Float, true).First();
             bool fpsLimit = MaxFpsFrac.Float > 0f && s.outFps.Float > MaxFpsFrac.Float;
             bool gifInput = I.currentMediaFile.Format.Upper() == "GIF"; // If input is GIF, we don't need to check the color space etc
-            I.currentMediaFile.VideoExtraData = await FfmpegCommands.GetVidExtraInfo(s.inPath, allowColorData: !gifInput);
             string extraArgsIn = FfmpegEncode.GetFfmpegExportArgsIn(I.currentMediaFile.IsVfr ? s.outFpsResampled : s.outFps, s.outItsScale, I.currentMediaFile.VideoExtraData.Rotation);
             string extraArgsOut;
             string alphaPassFile = Path.Combine(s.tempFolder, "alpha.mkv");
@@ -211,9 +210,6 @@ namespace Flowframes.Main
                 return;
             }
 
-            if (I.currentMediaFile.VideoExtraData == null)
-                I.currentMediaFile.VideoExtraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
-
             if (settings.Format == Enums.Output.Format.Gif)
             {
                 int paletteColors = OutputUtils.GetGifColors(ParseUtils.GetEnum<Enums.Encoding.Quality.GifColors>(settings.Quality, true, Strings.VideoQuality));
@@ -308,9 +304,6 @@ namespace Flowframes.Main
                 await Blend.BlendSceneChanges(concatFile, false);
 
             bool fpsLimit = MaxFpsFrac.Float != 0 && I.currentSettings.outFps.Float > MaxFpsFrac.Float;
-            if (I.currentMediaFile.VideoExtraData == null)
-                I.currentMediaFile.VideoExtraData = await FfmpegCommands.GetVidExtraInfo(I.currentSettings.inPath);
-
             bool dontEncodeFullFpsVid = fpsLimit && Config.GetInt(Config.Key.maxFpsMode) == 0;
 
             if (settings.Encoder.GetInfo().IsImageSequence)    // Image Sequence output mode, not video
