@@ -1,8 +1,6 @@
 ﻿using Flowframes.Data;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
-using Flowframes.Os;
-using Flowframes.Properties;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

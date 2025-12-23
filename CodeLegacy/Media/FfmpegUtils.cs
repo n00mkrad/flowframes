@@ -2,12 +2,8 @@
 using Flowframes.Data.Streams;
 using Flowframes.IO;
 using Flowframes.MiscUtils;
-using Flowframes.Os;
-using Flowframes.Properties;
-using ImageMagick;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;

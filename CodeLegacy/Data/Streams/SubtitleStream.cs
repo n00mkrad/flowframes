@@ -1,6 +1,4 @@
-﻿using Flowframes.Extensions;
-
-namespace Flowframes.Data.Streams
+﻿namespace Flowframes.Data.Streams
 {
     public class SubtitleStream : Stream
     {

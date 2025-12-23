@@ -1,5 +1,4 @@
 ﻿using Flowframes.Data;
-using Flowframes.Magick;
 using Flowframes.Main;
 using Flowframes.Media;
 using Flowframes.MiscUtils;

@@ -1,13 +1,4 @@
-﻿using Flowframes.Media;
-using Flowframes.IO;
-using Flowframes.Magick;
-using Flowframes.Main;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
 using Flowframes.MiscUtils;
 

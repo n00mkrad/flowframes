@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Win32Interop.Enums;
 using static Flowframes.AvProcess;
 using Utils = Flowframes.Media.FfmpegUtils;
 

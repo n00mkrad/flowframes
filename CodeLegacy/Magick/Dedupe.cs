@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Flowframes.IO;
 using ImageMagick;
-using Newtonsoft.Json;
 using Flowframes.Os;
-using System.Windows.Controls;
 
 namespace Flowframes.Magick
 {

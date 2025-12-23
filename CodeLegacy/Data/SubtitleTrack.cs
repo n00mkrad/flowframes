@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Flowframes.Data
+﻿namespace Flowframes.Data
 {
     class SubtitleTrack
     {

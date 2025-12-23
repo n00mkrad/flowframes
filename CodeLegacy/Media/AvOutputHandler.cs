@@ -1,12 +1,7 @@
 ﻿using Flowframes.Forms.Main;
 using Flowframes.MiscUtils;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using static Flowframes.AvProcess;
 
 namespace Flowframes.Media
