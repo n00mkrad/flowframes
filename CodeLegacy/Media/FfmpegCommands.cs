@@ -243,14 +243,14 @@ namespace Flowframes
 
             if (maxDeviationPercent > 20f)
             {
-                Logger.Log($"Max timestamp deviation is {maxDeviationPercent.ToString("0.##")}% or {maxDeviationMs} ms - Assuming VFR input!", hidden: true);
+                Logger.Log($"[VFR Check] Max timestamp deviation is {maxDeviationPercent.ToString("0.##")}% or {maxDeviationMs} ms - Assuming VFR input!", hidden: true);
                 mediaFile.IsVfr = true;
             }
         }
 
         public static async Task<Fraction> GetFramerate(string inputFile, bool preferFfmpeg = false)
         {
-            Logger.Log($"GetFramerate(inputFile = '{inputFile}', preferFfmpeg = {preferFfmpeg})", true, false, "ffmpeg");
+            Logger.Log($"Getting FPS from '{inputFile}', preferFfmpeg = {preferFfmpeg}", true, false, "ffmpeg");
             Fraction ffprobeFps = new Fraction(0, 1);
             Fraction ffmpegFps = new Fraction(0, 1);
 

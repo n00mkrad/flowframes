@@ -50,14 +50,14 @@ namespace Flowframes.Ui
                 string fpsStr = fps.Float > 0 ? FormatUtils.Fraction(fps) : "Not Found";
                 Program.mainForm.currInFpsDetected = fps;
                 fpsInTbox.Text = fps.GetString();
-                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}", false, true);
+                Logger.Log($"Video FPS: {fpsStr} - Total Number Of Frames: {Interpolate.currentMediaFile.FrameCount}{(Interpolate.currentMediaFile.VideoExtraData.IsHdr ? " - HDR" : "")}", false, true);
                 Program.mainForm.GetInputFpsTextbox().ReadOnly = (fps.Float > 0 && !Config.GetBool("allowCustomInputRate", false));
                 Program.mainForm.currInFps = fps;
                 Program.mainForm.currInFrames = Interpolate.currentMediaFile.FrameCount;
                 Program.mainForm.UpdateInputInfo();
                 CheckExistingFolder(path, outputTbox.Text.Trim());
                 // await Task.Delay(10);
-                await PrintResolution(path);
+                await UpdateRes(path);
                 // await Task.Delay(10);
                 // InterpolationProgress.SetPreviewImg(await GetThumbnail(path));
 
@@ -125,17 +125,14 @@ namespace Flowframes.Ui
             }
         }
 
-        static async Task PrintResolution (string path)
+        static async Task UpdateRes (string path)
         {
-            Size res = new Size();
+            var res = new Size();
 
             if(path == Interpolate.currentSettings?.inPath)
                 res = Interpolate.currentSettings.InputResolution;
             else
                 res = await GetMediaResolutionCached.GetSizeAsync(path);
-
-            if (res.Width > 1 && res.Height > 1)
-                Logger.Log($"Input Resolution: {res.Width}x{res.Height}");
 
             Program.mainForm.currInRes = res;
             Program.mainForm.UpdateInputInfo();
