@@ -391,7 +391,6 @@
     <Compile Include="Data\Streams\SubtitleStream.cs" />
     <Compile Include="Data\Streams\VideoStream.cs" />
     <Compile Include="Data\Strings.cs" />
-    <Compile Include="Data\VideoColorData.cs" />
     <Compile Include="Data\VidExtraData.cs" />
     <Compile Include="Data\Fraction.cs" />
     <Compile Include="Data\InterpSettings.cs" />
