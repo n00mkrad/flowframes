@@ -322,21 +322,19 @@ namespace Flowframes
 
         public static async Task<int> GetFrameCountAsync(string inputFile)
         {
-            Logger.Log($"GetFrameCountAsync - Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
+            Logger.Log($"[Get Frame Count] Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
             int frames = await ReadFrameCountFfprobePacketCount(inputFile);      // Try reading frame count with ffprobe packet counting
             if (frames > 0) return frames;
 
-            Logger.Log($"GetFrameCountAsync - Trying ffmpeg demuxing.", true, false, "ffmpeg");
+            Logger.Log($"[Get Frame Count] Trying ffmpeg demuxing.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
             if (frames > 0) return frames;
 
-            Logger.Log($"GetFrameCountAsync - Trying ffprobe demuxing.", true, false, "ffmpeg");
+            Logger.Log($"[Get Frame Count] Trying ffprobe demuxing.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfprobe(inputFile);      // Try reading frame count with ffprobe decoding
             if (frames > 0) return frames;
 
-
-
-            Logger.Log("Failed to get total frame count of video.", true);
+            Logger.Log("[Get Frame Count] Failed to get total frame count of video.", true);
             return 0;
         }
 
