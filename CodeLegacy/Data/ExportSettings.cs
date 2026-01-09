@@ -36,10 +36,10 @@ namespace Flowframes.Data
 
         public string GetHdrNotSuitableReason ()
         {
-            if(!Format.IsOneOf(true, HdrRecommendedFormats))
+            if(Format.IsOneOf(false, HdrRecommendedFormats))
                 return $"Output format may not work for HDR. Recommended: {string.Join(" - ", HdrRecommendedFormats.Select(x => Strings.OutputFormat[x.ToString()]))}";
         
-            if(Encoder.IsOneOf(true, HdrRecommendedEncs))
+            if(Encoder.IsOneOf(false, HdrRecommendedEncs))
                 return $"Output encoder may not work for HDR. Recommended: {string.Join(" - ", HdrRecommendedEncs.Select(x => Strings.Encoder[x.ToString()]))}";
 
             string pixFmt = Strings.PixelFormat[PixelFormat.ToString()];
