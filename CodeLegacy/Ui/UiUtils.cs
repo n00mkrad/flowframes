@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Flowframes.Ui
 {
-    class UiUtils
+    public class UiUtils
     {
         public static void InitCombox(ComboBox box, int index)
         {
@@ -100,7 +100,7 @@ namespace Flowframes.Ui
             if (type == MessageType.Warning) icon = MessageBoxIcon.Warning;
             else if (type == MessageType.Error) icon = MessageBoxIcon.Error;
 
-            var msgForm = new MessageForm(text, type.ToString(), monospace: monospace) { TopMost = true };
+            var msgForm = new MessageForm(text, type, monospace: monospace) { TopMost = true };
             Program.mainForm.Invoke(() => msgForm.ShowDialog());
             return DialogResult.OK;
         }

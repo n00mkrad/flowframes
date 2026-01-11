@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static Flowframes.Ui.UiUtils;
 
 namespace Flowframes.Forms
 {
@@ -10,9 +11,20 @@ namespace Flowframes.Forms
         private string _text = "";
         private string _title = "";
         private MessageBoxButtons _btns;
+        private MessageType _type = MessageType.Message;
         private bool _monospace;
 
         private bool _dialogResultSet = false;
+
+        public MessageForm(string text, MessageType type, MessageBoxButtons buttons = MessageBoxButtons.OK, bool monospace = false)
+        {
+            _type = type;
+            _text = text;
+            _title = $"{type}";
+            _btns = buttons;
+            _monospace = monospace;
+            Init();
+        }
 
         public MessageForm(string text, string title, MessageBoxButtons buttons = MessageBoxButtons.OK, bool monospace = false)
         {
@@ -20,7 +32,11 @@ namespace Flowframes.Forms
             _title = title;
             _btns = buttons;
             _monospace = monospace;
+            Init();
+        }
 
+        private void Init ()
+        {
             InitializeComponent();
         }
 
@@ -28,6 +44,7 @@ namespace Flowframes.Forms
         {
             Text = _title;
             textLabel.Text = _text;
+            bool isError = _type == MessageType.Error;
 
             if (_monospace)
             {
@@ -36,9 +53,15 @@ namespace Flowframes.Forms
 
             if(_btns == MessageBoxButtons.OK)
             {
-                SetButtons(true, false, false);
+                SetButtons(true, isError, false);
                 btn1.Text = "OK";
                 AcceptButton = btn1;
+
+                if(isError)
+                {
+                    btn2.Text = "Copy";
+                    btn2.Click += (s, ev) => Clipboard.SetText(_text);
+                }
             }
             else if(_btns == MessageBoxButtons.YesNo)
             {
@@ -95,6 +118,8 @@ namespace Flowframes.Forms
                 DialogResult = DialogResult.Yes;
             else if (_btns == MessageBoxButtons.YesNoCancel) // No Button
                 DialogResult = DialogResult.No;
+            else
+                return;
 
             _dialogResultSet = true;
             Close();

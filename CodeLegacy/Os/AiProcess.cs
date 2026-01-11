@@ -563,9 +563,17 @@ namespace Flowframes.Os
 
         private static readonly Regex FfmpegLogMemAddr = new Regex(@" @\s*(?:0x)?(?<addr>[0-9A-Fa-f]{8,16})(?=\])", RegexOptions.Compiled);
 
-        private static string GetLastLogLines(string logName, int lineCount = 6, bool beautify = true)
+        private static string GetLastLogLines(string log = "", int lineCount = 6, bool beautify = true)
         {
-            var lll = Logger.GetSessionLogLastLines(logName, lineCount);
+            if (log.IsEmpty())
+            {
+                if (logName.IsNotEmpty())
+                    log = logName;
+                else
+                    return "N/A";
+            }
+
+            var lll = Logger.GetSessionLogLastLines(log, lineCount);
 
             if (!beautify)
                 return string.Join("\n", lll);
@@ -668,7 +676,7 @@ namespace Flowframes.Os
                 if (!hasShownError && line.Contains("vapoursynth.Error:"))
                 {
                     hasShownError = true;
-                    ShowErrorBox($"VapourSynth Error:\n\n{line}");
+                    ShowErrorBox($"VapourSynth Error:\n\n{GetLastLogLines()}");
                 }
             }
 

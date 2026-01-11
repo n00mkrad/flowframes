@@ -377,7 +377,7 @@ namespace Flowframes.Main
         {
             if (!File.Exists(outVideo))
             {
-                I.Cancel($"No video was encoded!\n\nFFmpeg Output:\n{AvProcess.lastOutputFfmpeg}");
+                I.Cancel($"No video was encoded! Check logs and error messages.{(AvProcess.lastOutputFfmpeg.IsEmpty() ? "" : $"\n\nFFmpeg Output:\n{AvProcess.lastOutputFfmpeg}")}");
                 return;
             }
 
