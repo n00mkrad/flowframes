@@ -412,23 +412,6 @@ namespace Flowframes
             return compat;
         }
 
-        public static List<string> GetAudioCodecs(string path, int streamIndex = -1)
-        {
-            Logger.Log($"GetAudioCodecs('{Path.GetFileName(path)}', {streamIndex})", true, false, "ffmpeg");
-            List<string> codecNames = new List<string>();
-            string args = $"-loglevel panic -select_streams a -show_entries stream=codec_name {path.Wrap()}";
-            string info = GetFfprobeOutput(args);
-            string[] entries = info.SplitIntoLines();
-
-            foreach (string entry in entries)
-            {
-                if (entry.Contains("codec_name="))
-                    codecNames.Add(entry.Remove("codec_name=").Trim());
-            }
-
-            return codecNames;
-        }
-
         public static void DeleteSource(string path)
         {
             Logger.Log("[FFCmds] Deleting input file/dir: " + path, true);

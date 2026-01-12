@@ -38,27 +38,18 @@ namespace Flowframes.Media
             string inName = Path.GetFileName(tempPath);
             string outName = Path.GetFileName(outPath);
 
-            string subArgs = "-c:s " + Utils.GetSubCodecForContainer(containerExt);
-
-            bool audioCompat = Utils.ContainerSupportsAllAudioFormats(I.currentSettings.outSettings.Format, GetAudioCodecs(inputVideo));
-            bool slowmo = I.currentSettings.outItsScale != 0 && I.currentSettings.outItsScale != 1;
-            string audioArgs = audioCompat && !slowmo ? "" : await Utils.GetAudioFallbackArgs(inputVideo, I.currentSettings.outSettings.Format, I.currentSettings.outItsScale);
-
-            if (!audioCompat && !slowmo)
-                Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
+            // if (!audioCompat && !slowmo)
+            //     Logger.Log("Warning: Input audio format(s) not fully supported in output container - Will re-encode.", true, false, "ffmpeg");
 
             bool audio = Config.GetBool(Config.Key.keepAudio);
             bool subs = Config.GetBool(Config.Key.keepSubs);
             bool meta = Config.GetBool(Config.Key.keepMeta);
 
-            if (!audio)
-                audioArgs = "-an";
-
-            if (!subs || (subs && !Utils.ContainerSupportsSubs(containerExt)))
-                subArgs = "-sn";
+            string audioArgs = audio ? Utils.MapAudio(I.currentMediaFile, I.currentSettings.outSettings.Format, I.currentSettings.outItsScale) : "-an";
+            string subArgs = subs && Utils.ContainerSupportsSubs(containerExt) ? Utils.MapSubtitles(I.currentMediaFile, I.currentSettings.outSettings.Format) : "-sn";
 
             bool isMkv = I.currentSettings.outSettings.Format == Data.Enums.Output.Format.Mkv;
-            var muxArgs = new List<string>() { "-map 0:v:0", "-map 1:a:?", "-map 1:s:?", "-c copy", audioArgs, subArgs };
+            var muxArgs = new List<string>() { "-map 0:v:0", "-c:v copy", audioArgs, subArgs };
             muxArgs.AddIf("-max_interleave_delta 0", isMkv); // https://reddit.com/r/ffmpeg/comments/efddfs/starting_new_cluster_due_to_timestamp/
             muxArgs.AddIf("-map 1:t?", isMkv && meta); // https://reddit.com/r/ffmpeg/comments/fw4jnh/how_to_make_ffmpeg_keep_attached_images_in_mkv_as/
             muxArgs.AddIf("-shortest", shortest);

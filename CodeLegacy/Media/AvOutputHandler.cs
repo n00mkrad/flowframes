@@ -73,7 +73,7 @@ namespace Flowframes.Media
 
             if (line.MatchesWildcard("*codec*not supported*"))
             {
-                Interpolate.Cancel($"Error: {line}\n\nTry using a different codec.");
+                Interpolate.Cancel($"Error: {line}\n\nTry using a different codec or container format.");
                 return;
             }
 
