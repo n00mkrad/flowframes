@@ -52,5 +52,10 @@ namespace Flowframes.Extensions
                 ResumeThread(pOpenThread);
             }
         }
+
+        public static void AddPath(this ProcessStartInfo psi, string path)
+        {
+            psi.EnvironmentVariables["PATH"] = $"{path.Trim(';')}{System.IO.Path.PathSeparator}{psi.EnvironmentVariables["PATH"]}";
+        }
     }
 }
