@@ -27,23 +27,18 @@ namespace Flowframes.Media
 
         public static async Task<string> GetFfmpegOutputAsync(string path, string argsIn, string argsOut, string lineFilter = "", bool noCache = false)
         {
-            Process process = OsUtils.NewProcess(true);
-            process.StartInfo.Arguments = $"/C cd /D {AvProcess.GetAvDir().Wrap()} & " +
-                $"ffmpeg.exe -hide_banner -y {argsIn} {path.GetConcStr()} -i {path.Wrap()} {argsOut}";
+            string cmd = $"ffmpeg -hide_banner -y {argsIn} {path.GetConcStr()} -i {path.Wrap()} {argsOut}";
+            Process process = OsUtils.NewProcess(true, args: cmd);
             return await GetInfoAsync(path, process, lineFilter, noCache);
         }
 
         public static async Task<string> GetFfprobeInfoAsync(string path, FfprobeMode mode, string lineFilter = "", int streamIndex = -1, bool stripKeyName = true)
         {
-            Process process = OsUtils.NewProcess(true);
-            string showFormat = mode == FfprobeMode.ShowBoth || mode == FfprobeMode.ShowFormat ? "-show_format" : "";
-            string showStreams = mode == FfprobeMode.ShowBoth || mode == FfprobeMode.ShowStreams ? "-show_streams" : "";
-
-            process.StartInfo.Arguments = $"/C cd /D {AvProcess.GetAvDir().Wrap()} & " +
-                $"ffprobe -v quiet {path.GetConcStr()} {showFormat} {showStreams} {path.Wrap()}";
-
+            string showFormat = mode == FfprobeMode.ShowBoth || mode == FfprobeMode.ShowFormat ? "-show_format " : "";
+            string showStreams = mode == FfprobeMode.ShowBoth || mode == FfprobeMode.ShowStreams ? "-show_streams " : "";
+            string cmd = $"ffprobe -v quiet {path.GetConcStr()} {showFormat}{showStreams}{path.Wrap()}";
+            Process process = OsUtils.NewProcess(true, args: cmd);
             string output = await GetInfoAsync(path, process, lineFilter, streamIndex, stripKeyName);
-
             return output;
         }
 

@@ -1,5 +1,6 @@
 ﻿using DiskDetector;
 using DiskDetector.Models;
+using Flowframes.Extensions;
 using Flowframes.MiscUtils;
 using Microsoft.VisualBasic.Devices;
 using Microsoft.Win32;
@@ -93,10 +94,19 @@ namespace Flowframes.Os
             }
         }
 
-        public static Process NewProcess(bool hidden, string filename = "cmd.exe")
+        public static Process NewProcess(bool hidden, string filename = "cmd.exe", string args = "", bool setFfEnv = true)
         {
             Process proc = new Process();
-            return SetStartInfo(proc, hidden, filename);
+            proc = SetStartInfo(proc, hidden, filename);
+            proc.StartInfo.Arguments = args.IsEmpty() ? proc.StartInfo.Arguments : $"/C {args}";
+            if (setFfEnv)
+                SetFfEnv(proc.StartInfo);
+            return proc;
+        }
+
+        public static void SetFfEnv(ProcessStartInfo psi)
+        {
+            psi.AddPath(AvProcess.GetAvDir()); // Add A/V binaries to PATH to ensure bundled ffmpeg/ffprobe are used
         }
 
         public static void KillProcessTree(int pid)
