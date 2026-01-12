@@ -115,13 +115,13 @@ namespace Flowframes.Data
                 DataStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Data).Select(x => (DataStream)x).ToList();
                 AttachmentStreams = AllStreams.Where(x => x.Type == Stream.StreamType.Attachment).Select(x => (AttachmentStream)x).ToList();
                 MayHaveAlpha = VideoStreams.Any(vs => vs.CanHaveAlpha);
+                VideoExtraData = await FfmpegCommands.GetVidExtraInfo(ImportPath);
             }
             catch (Exception e)
             {
                 Logger.Log($"Failed to initialize MediaFile: {e.Message}", true);
             }
 
-            VideoExtraData = await FfmpegCommands.GetVidExtraInfo(ImportPath);
             Initialized = true;
         }
 
