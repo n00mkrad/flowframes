@@ -305,7 +305,10 @@ namespace Flowframes
                 Application.Exit();
 
             if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
-                UiUtils.ShowMessageBox($"Canceled:\n\n{reason}");
+            {
+                bool err = reason.Lower().Contains("error");
+                UiUtils.ShowMessageBox($"Canceled:\n\n{reason}", type: err ? UiUtils.MessageType.Error : UiUtils.MessageType.Message, monospace: err);
+            }
         }
 
         public static async Task Cleanup(bool ignoreKeepSetting = false, int retriesLeft = 3, bool isRetry = false)
