@@ -17,7 +17,7 @@ namespace Flowframes
         public static string pngCompr = "-compression_level 3";
 
         /// <summary> Lookup table for mpdecimate sensitivity preset values (lo/hi/frac). </summary>
-        public static Dictionary<Enums.Interpolation.MpDecimateSens, (int, int, float)> MpDecSensLookup = new Dictionary<Enums.Interpolation.MpDecimateSens,(int, int, float)>
+        public static Dictionary<Enums.Interpolation.MpDecimateSens, (int, int, float)> MpDecSensLookup = new Dictionary<Enums.Interpolation.MpDecimateSens, (int, int, float)>
         {
             { Enums.Interpolation.MpDecimateSens.Low,      (3,  10, 0.33f) },
             { Enums.Interpolation.MpDecimateSens.Normal,   (4,  12, 0.50f) },
@@ -228,7 +228,7 @@ namespace Flowframes
 
             mediaFile.InputTimestampDurations = new List<float>(timestampDurations);
 
-            if(Config.GetInt(Config.Key.vfrHandling) == 1)
+            if (Config.GetInt(Config.Key.vfrHandling) == 1)
             {
                 Logger.Log($"Ignoring VFR deviation threshold of {maxDeviationPercent.ToString("0.##")}%, force-enabling VFR mode due to settings");
                 mediaFile.IsVfr = true;
@@ -250,7 +250,7 @@ namespace Flowframes
 
         public static async Task<Fraction> GetFramerate(string inputFile, bool preferFfmpeg = false)
         {
-            Logger.Log($"Getting FPS from '{inputFile}', preferFfmpeg = {preferFfmpeg}", true, false, "ffmpeg");
+            Logger.Log($"Getting FPS from '{inputFile}', preferring {(preferFfmpeg ? "ffmpeg" : "ffprobe")}", true, false, "ffmpeg");
             Fraction ffprobeFps = new Fraction(0, 1);
             Fraction ffmpegFps = new Fraction(0, 1);
 
@@ -259,12 +259,12 @@ namespace Flowframes
                 string ffprobeOutput = await GetVideoInfo.GetFfprobeInfoAsync(inputFile, GetVideoInfo.FfprobeMode.ShowStreams, "r_frame_rate");
                 string fpsStr = ffprobeOutput.SplitIntoLines().First();
                 string[] numbers = fpsStr.Split('/');
-                Logger.Log($"Fractional FPS from ffprobe: {numbers[0]}/{numbers[1]} = {((float)numbers[0].GetInt() / numbers[1].GetInt())}", true, false, "ffmpeg");
+                Logger.Log($"Fractional FPS from ffprobe: {numbers[0]}/{numbers[1]} = {(float)numbers[0].GetInt() / numbers[1].GetInt()}", true, false, "ffmpeg");
                 ffprobeFps = new Fraction(numbers[0].GetInt(), numbers[1].GetInt());
             }
-            catch (Exception ffprobeEx)
+            catch (Exception ex)
             {
-                Logger.Log("GetFramerate ffprobe Error: " + ffprobeEx.Message, true, false);
+                Logger.Log($"GetFramerate ffprobe error: {ex.Message}", true, false);
             }
 
             try
@@ -282,25 +282,14 @@ namespace Flowframes
                     }
                 }
             }
-            catch (Exception ffmpegEx)
+            catch (Exception ex)
             {
-                Logger.Log("GetFramerate ffmpeg Error: " + ffmpegEx.Message, true, false);
+                Logger.Log($"GetFramerate ffmpeg error: {ex.Message}", true, false);
             }
 
-            if (preferFfmpeg)
-            {
-                if (ffmpegFps.Float > 0)
-                    return ffmpegFps;
-                else
-                    return ffprobeFps;
-            }
-            else
-            {
-                if (ffprobeFps.Float > 0)
-                    return ffprobeFps;
-                else
-                    return ffmpegFps;
-            }
+            Fraction preferredFps = preferFfmpeg ? ffmpegFps : ffprobeFps;
+            Fraction fallbackFps = preferFfmpeg ? ffprobeFps : ffmpegFps;
+            return preferredFps.Float > 0 ? preferredFps : fallbackFps;
         }
 
         public static Size GetSize(string inputFile)
@@ -322,19 +311,19 @@ namespace Flowframes
 
         public static async Task<int> GetFrameCountAsync(string inputFile)
         {
-            Logger.Log($"[Get Frame Count] Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
+            Logger.Log($"[Frame Count] Trying ffprobe packet counting first (fastest).", true, false, "ffmpeg");
             int frames = await ReadFrameCountFfprobePacketCount(inputFile);      // Try reading frame count with ffprobe packet counting
             if (frames > 0) return frames;
 
-            Logger.Log($"[Get Frame Count] Trying ffmpeg demuxing.", true, false, "ffmpeg");
+            Logger.Log($"[Frame Count] Trying ffmpeg demuxing.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfmpegAsync(inputFile);       // Try reading frame count with ffmpeg
             if (frames > 0) return frames;
 
-            Logger.Log($"[Get Frame Count] Trying ffprobe demuxing.", true, false, "ffmpeg");
+            Logger.Log($"[Frame Count] Trying ffprobe demuxing.", true, false, "ffmpeg");
             frames = await ReadFrameCountFfprobe(inputFile);      // Try reading frame count with ffprobe decoding
             if (frames > 0) return frames;
 
-            Logger.Log("[Get Frame Count] Failed to get total frame count of video.", true);
+            Logger.Log("[Frame Count] Failed to get total frame count of video.", true);
             return 0;
         }
 
@@ -343,7 +332,7 @@ namespace Flowframes
             float durationSeconds = durationMs / 1000f;
             float frameCount = durationSeconds * fps;
             int frameCountRounded = frameCount.RoundToInt();
-            Logger.Log($"ReadFrameCountFromDuration: Got frame count of {frameCount}, rounded to {frameCountRounded}");
+            Logger.Log($"[Frame Count] Estimated frame count to {frameCount}, rounded to {frameCountRounded}");
             return frameCountRounded;
         }
 

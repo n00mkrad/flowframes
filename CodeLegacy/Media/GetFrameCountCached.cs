@@ -17,14 +17,14 @@ namespace Flowframes.Media
 
         public static async Task<int> GetFrameCountAsync(string path, int retryCount = 3)
         {
-            Logger.Log($"Getting frame count ({path})...", true);
+            Logger.Log($"[Frame Count] Getting frame count ({path})...", true);
 
             long filesize = IoUtils.GetPathSize(path);
             QueryInfo hash = new QueryInfo(path, filesize);
 
             if (filesize > 0 && cache.ContainsKey(hash))
             {
-                Logger.Log($"Using cached frame count: {cache[hash]}", true);
+                Logger.Log($"[Frame Count] {cache[hash]} frames (cached)", true);
                 return cache[hash];
             }
 
@@ -48,20 +48,20 @@ namespace Flowframes.Media
 
             if (frameCount > 0)
             {
-                Logger.Log($"Got frame count of {frameCount} (caching)", true);
+                Logger.Log($"[Frame Count] {frameCount} frames", true);
                 cache.Add(hash, frameCount);
             }
             else
             {
                 if (retryCount > 0)
                 {
-                    Logger.Log($"Got {frameCount} frames, retrying ({retryCount} left)", true);
+                    Logger.Log($"[Frame Count] Got {frameCount} frames, retrying ({retryCount} left)", true);
                     Clear();
                     frameCount = await GetFrameCountAsync(path, retryCount - 1);
                 }
                 else
                 {
-                    Logger.Log($"Failed to get frames and out of retries ({frameCount} frames for {path})", true);
+                    Logger.Log($"[Frame Count] Failed to get frames and out of retries ({frameCount} frames for {path})", true);
                 }
             }
 
