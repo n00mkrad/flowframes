@@ -579,8 +579,26 @@ namespace Flowframes.Os
                 return string.Join("\n", lll);
 
             var beautified = lll.Select(l => $"[{string.Join(" ", l.Split(' ').Skip(2))}".Replace("]: [E]", "]").Replace("]: [O]", "]"));
-            beautified = beautified.Select(l => FfmpegLogMemAddr.Replace(l, ""));
+            beautified = beautified.Select(l => FfmpegLogMemAddr.Replace(l, "")); // Remove memory addresses from ffmpeg outputs
+            beautified = beautified.Where(l => !l.Contains("\\vapoursynth.pyx\", line ")); // Remove useless VS traceback lines
             return string.Join("\n", beautified);
+        }
+
+        private static string GetPyErrorDesc (string line)
+        {
+            // Module not found or failed to import
+            if (line.Contains("ImportError") || line.Contains("ModuleNotFoundError"))
+                return $"Python failed to find or import a module!";
+
+            // Unicode error
+            if (line.Contains("UnicodeEncodeError"))
+                return $"It looks like your path contains invalid characters - remove them and try again!";
+
+            // Generic errors
+            if (line.Contains("RuntimeError") || line.Contains("AttributeError") || line.Contains("OSError"))
+                return $"A python error occured during interpolation!";
+
+            return "";
         }
 
         private static void LogOutput(string line, AiInfo ai, bool err = false)
@@ -661,6 +679,15 @@ namespace Flowframes.Os
 
             if (ai.Piped) // VS specific
             {
+                // Check for python errors
+                var pyErr = GetPyErrorDesc(line);
+
+                if(!hasShownError && pyErr.IsNotEmpty())
+                {
+                    hasShownError = true;
+                    ShowErrorBox($"{pyErr}\n\n{GetLastLogLines()}");
+                }
+
                 if (!hasShownError && Interpolate.currentSettings.outSettings.Format != Enums.Output.Format.Realtime && (line.Contains("Task finished with error code") || line.Contains("fwrite() call failed")))
                 {
                     hasShownError = true;
