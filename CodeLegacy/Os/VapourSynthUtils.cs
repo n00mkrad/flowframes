@@ -43,7 +43,7 @@ namespace Flowframes.Os
             {
                 ("input", s.InterpSettings.inPath), // Input path
                 ("tmpDir", s.InterpSettings.tempFolder), // Temp dir path
-                ("cache", Path.Combine(Paths.GetCachePath(), PseudoHash.GetHash(s.InterpSettings.inPath) + ".lwi")), // File PseudoHash to allow caching
+                ("cache", Path.Combine(Paths.GetCachePath(), PseudoHash.GetHash(s.InterpSettings.inPath))), // File PseudoHash to allow caching
                 ("inFps", s.InterpSettings.inFps), // Input FPS
                 ("outFps", !s.InterpSettings.inputIsFrames ? Interpolate.currentMediaFile.VideoStreams.First().FpsInfo.SpecifiedFps * s.Factor : s.InterpSettings.inFps * s.Factor), // Output FPS
                 ("outFpsRes", s.InterpSettings.outFpsResampled),

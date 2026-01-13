@@ -458,7 +458,7 @@ namespace Flowframes.Media
                 case Enums.Output.Format.Avi: supported = formatsAvi.Contains(alias); break;
             }
 
-            Logger.Log($"Checking if {outFormat} supports audio format '{format}' ({alias}): {supported}", true, false, "ffmpeg");
+            // Logger.Log($"Checking if {outFormat} supports audio format '{format}' ({alias}): {supported}", true, false, "ffmpeg");
             return supported;
         }
 
@@ -481,7 +481,7 @@ namespace Flowframes.Media
                 case Enums.Output.Format.Avi: supported = formatsAvi.Contains(codec); break;
             }
 
-            Logger.Log($"Checking if {outFormat} supports subtitle format '{codec}': {supported}", true, false, "ffmpeg");
+            // Logger.Log($"Checking if {outFormat} supports subtitle format '{codec}': {supported}", true, false, "ffmpeg");
             return supported;
         }
 
@@ -535,6 +535,9 @@ namespace Flowframes.Media
 
         public static string MapAudio(MediaFile m, Enums.Output.Format outFormat, float itsScale)
         {
+            if (m.AudioStreams.Count == 0)
+                return "";
+
             string filters = GetAudioFilters(itsScale);
             Dictionary<string, bool> supported = new Dictionary<string, bool>();
 
@@ -545,20 +548,23 @@ namespace Flowframes.Media
             
             // If all are supported, simply copy all streams
             if (supported.All(x => x.Value))
+            {
+                Logger.Log($"All audio codecs are supported by {outFormat}, copying all.", true, false);
                 return "-map 1:a -c:a copy";
+            }
 
             // Otherwise, map each stream individually
+            string log = "";
             string args = "";
             int relIdx = 0;
             foreach (var a in m.AudioStreams)
             {
-                if (supported[a.Codec])
-                    args += $"-map 1:{a.Index} -c:a:{relIdx} copy ";
-                else
-                    args += $"-map 1:{a.Index} {GetAudioFallbackArgs(outFormat, a.Channels, relIdx)} ";
+                args += $"-map 1:{a.Index} {(supported[a.Codec] ? $"-c:a:{relIdx} copy " : $"{GetAudioFallbackArgs(outFormat, a.Channels, relIdx)} ")}";
+                log += $"[{a.Codec} => {(supported[a.Codec] ? "copy" : "convert")}] - ";
                 relIdx++;
             }
 
+            Logger.Log($"{outFormat} audio handling: {log.TrimEnd(' ', '-')}", true, false);
             return args.TrimEnd();
         }
 
@@ -575,6 +581,9 @@ namespace Flowframes.Media
 
         public static string MapSubtitles(MediaFile m, Enums.Output.Format outFormat)
         {
+            if(m.SubtitleStreams.Count == 0)
+                return "";
+
             Dictionary<string, string> codec = new Dictionary<string, string>();
 
             foreach (var a in m.SubtitleStreams)
@@ -584,17 +593,23 @@ namespace Flowframes.Media
 
             // If all are supported, simply copy all streams
             if (codec.All(x => x.Value == "copy"))
+            {
+                Logger.Log($"All subtitle codecs are supported by {outFormat}, copying all.", true, false);
                 return "-map 1:s -c:s copy";
+            }
 
             // Otherwise, map each stream individually
+            string log = "";
             string args = "";
             int relIdx = 0;
-            foreach (var a in m.SubtitleStreams)
+            foreach (var s in m.SubtitleStreams)
             {
-                args += codec[a.Codec].IsEmpty() ? "" : $"-map 1:{a.Index} -c:s:{relIdx} {codec[a.Codec]} ";
+                args += codec[s.Codec].IsEmpty() ? "" : $"-map 1:{s.Index} -c:s:{relIdx} {codec[s.Codec]} ";
+                log += $"[{s.Codec} => {(codec[s.Codec].IsEmpty() ? "drop" : (codec[s.Codec] == "copy" ? "copy" : "convert"))}] - ";
                 relIdx++;
             }
 
+            Logger.Log($"{outFormat} subtitle handling: {log.TrimEnd(' ', '-')}", true, false);
             return args.TrimEnd();
         }
 
