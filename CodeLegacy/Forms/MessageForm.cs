@@ -83,7 +83,8 @@ namespace Flowframes.Forms
 
             Size labelSize = GetLabelSize(textLabel);
             Size = new Size((labelSize.Width + 60).Clamp(360, Program.mainForm.Size.Width), (labelSize.Height + 120).Clamp(200, Program.mainForm.Size.Height));
-
+            textLabel.AutoSize = false;
+            textLabel.Size = new Size(Size.Width - 42, Size.Height - 100);
             CenterToScreen();
         }
 
