@@ -17,6 +17,7 @@ namespace Flowframes.Data
         public string PkgDir { get { return NameInternal.Replace("_", "-").Lower(); } }
         public enum InterpFactorSupport { Fixed, AnyPowerOfTwo, AnyInteger, AnyFloat }
         public InterpFactorSupport FactorSupport { get; set; } = InterpFactorSupport.Fixed;
+        public bool AllowLessThan2xFactor { get; set; } = false;
         public int[] SupportedFactors { get; set; } = new int[0];
         public bool Piped { get; set; } = false;
 

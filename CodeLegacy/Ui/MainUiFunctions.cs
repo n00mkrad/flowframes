@@ -171,7 +171,7 @@ namespace Flowframes.Ui
             if (ai.NameInternal == Implementations.rifeNcnn.NameInternal && !Program.mainForm.GetModel(ai).Dir.Contains("v4"))
             {
                 if (factor != 2)
-                    Logger.Log($"{ai.FriendlyName} models before 4.0 only support 2x interpolation!");
+                    Logger.Log($"RIFE NCNN models before 4.0 only support 2x interpolation!");
 
                 return 2;
             }
@@ -179,22 +179,30 @@ namespace Flowframes.Ui
             if (ai.FactorSupport == AiInfo.InterpFactorSupport.Fixed)
             {
                 int closest = ai.SupportedFactors.Min(i => (Math.Abs(factor.RoundToInt() - i), i)).i;
-                return (float)closest;
+                return closest;
             }
 
-            if(ai.FactorSupport == AiInfo.InterpFactorSupport.AnyPowerOfTwo)
+            float min = ai.AllowLessThan2xFactor ? 1f : 2f;
+
+            if(factor < min)
             {
-                return ToNearestPow2(factor.RoundToInt()).Clamp(2, 128);
+                Logger.Log($"The selected AI model does not support interpolation factors below {min}x.");
+                return factor = min;
+            }
+
+            if (ai.FactorSupport == AiInfo.InterpFactorSupport.AnyPowerOfTwo)
+            {
+                return ToNearestPow2(factor.RoundToInt()).Clamp(min.RoundToInt(), 128);
             }
 
             if(ai.FactorSupport == AiInfo.InterpFactorSupport.AnyInteger)
             {
-                return factor.RoundToInt().Clamp(2, 128);
+                return factor.RoundToInt().Clamp(min.RoundToInt(), 128);
             }
 
             if(ai.FactorSupport == AiInfo.InterpFactorSupport.AnyFloat)
             {
-                return factor.Clamp(2, 128);
+                return factor.Clamp(min, 128);
             }
 
             return factor;

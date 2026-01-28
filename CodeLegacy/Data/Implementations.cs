@@ -42,6 +42,7 @@ namespace Flowframes.Data
             NameLong = "Real-Time Intermediate Flow Estimation",
             FactorSupport = AiInfo.InterpFactorSupport.AnyFloat,
             SupportedFactors = Enumerable.Range(2, 15).ToArray(),  // 2 to 16
+            AllowLessThan2xFactor = true,
             Piped = true
         };
 
