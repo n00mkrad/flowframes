@@ -85,7 +85,7 @@ namespace Flowframes.MiscUtils
                 {
                     Codec = Codec.H265,
                     Name = "hevc_nvenc",
-                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv420P10Le },
+                    PixelFormats = new List<PixFmt>() { PixFmt.Yuv420P, PixFmt.Yuv444P, PixFmt.Yuv420P10Le },
                     QualityLevels = ParseUtils.GetEnumStrings<Quality.Common>(),
                     QualityDefault = (int)Quality.Common.VeryHigh,
                     HwAccelerated = true,
