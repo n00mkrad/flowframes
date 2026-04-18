@@ -1,4 +1,3 @@
-import sys
 import os
 import json
 import time
@@ -11,29 +10,31 @@ def log(msg):
     core.log_message(vs.MESSAGE_TYPE_INFORMATION, f"[VS] {msg}")
 
 # Vars from command line (via VSPipe)
-input_path = globals().get("input", "")
-temp_dir_path = globals().get("tmpDir", "")
-cache_file = globals().get("cache", "")
-fps_in = globals().get("inFps", "")
-fps_out = globals().get("outFps", "")
-fps_out_resampled = globals().get("outFpsRes", "")
-res_scaled = globals().get("resSc", "")
-pad = globals().get("pad", "0x0")
-frames = globals().get("frames", "") == 'True'
-dedupe = globals().get("dedupe", "") == 'True'
-allow_redupe = globals().get("redupe", "") == 'True'
-match_duration = globals().get("matchDur", "") == 'True'
-sc_sens = float(globals().get("sc", ""))
-loop = globals().get("loop", "") == 'True'
-factor = globals().get("factor", "")
-realtime = globals().get("rt", "") == 'True'
-perf_osd = realtime and globals().get("osd", "") == 'True'
-show_frame_nums = globals().get("debugFrNums", "") == 'True'
-show_vars = globals().get("debugVars", "") == 'True'
-trim = globals().get("trim", "")
-override_color_matrix = globals().get("cMatrix", "")
-alpha = globals().get("alpha", "") == 'True'
+g = globals().copy()
+input_path = g.get("input", "")
+temp_dir_path = g.get("tmpDir", "")
+cache_file = g.get("cache", "")
+fps_in = g.get("inFps", "")
+fps_out = g.get("outFps", "")
+fps_out_resampled = g.get("outFpsRes", "")
+res_scaled = g.get("resSc", "")
+pad = g.get("pad", "0x0")
+frames = g.get("frames", "") == 'True'
+dedupe = g.get("dedupe", "") == 'True'
+allow_redupe = g.get("redupe", "") == 'True'
+match_duration = g.get("matchDur", "") == 'True'
+sc_sens = float(g.get("sc", ""))
+loop = g.get("loop", "") == 'True'
+factor = g.get("factor", "")
+realtime = g.get("rt", "") == 'True'
+perf_osd = realtime and g.get("osd", "") == 'True'
+show_frame_nums = g.get("debugFrNums", "") == 'True'
+show_vars = g.get("debugVars", "") == 'True'
+trim = g.get("trim", "")
+override_color_matrix = g.get("cMatrix", "")
+alpha = g.get("alpha", "") == 'True'
 
+# Force disable OSD for alpha pass
 if alpha:
     show_frame_nums = False
     show_vars = False
@@ -69,9 +70,9 @@ else:
 
 width_src = clip.width  # Input resolution width
 height_src = clip.height  # Input resolution height
-framecount_src = len(clip)  # Amount of source frames
-chroma420 = "420" in clip.format.name # Store if input is 4:2:0 subsampled
-log(f"Input loaded: {clip.width}x{clip.height} at ~{(clip.fps.numerator / clip.fps.denominator):.3f} FPS, {clip.format.name}, {clip.num_frames} frames")
+framecount_src = clip.num_frames  # Amount of source frames
+format_src = clip.format.name # Store if input is 4:2:0 subsampled
+log(f"Input loaded: {width_src}x{height_src} at ~{(clip.fps.numerator / clip.fps.denominator):.3f} FPS, {format_src}, {framecount_src} frames")
 
 reordered_clip = clip[0]
 
@@ -148,11 +149,11 @@ if pad_x > 0 or pad_y > 0:
 pre_interp_frames = len(clip)
 
 # RIFE Variables
-r_mdlpath = globals().get("mdl", "")
-r_gpu = int(globals().get("gpu", "0"))
-r_threads = int(globals().get("gpuThrds", "1"))
-r_uhd = globals().get("uhd", "") == 'True'
-r_tta = globals().get("tta", "") == 'True'
+r_mdlpath = g.get("mdl", "")
+r_gpu = int(g.get("gpu", "0"))
+r_threads = int(g.get("gpuThrds", "1"))
+r_uhd = g.get("uhd", "") == 'True'
+r_tta = g.get("tta", "") == 'True'
 info_str += f"\nGPU: {r_gpu} ({r_threads} thrds)\nUHD: {r_uhd}\nMatrix: {c_matrix}"
 
 # OSD (input clip)
@@ -161,7 +162,9 @@ def on_frame_in(n, clip):
         clip = core.text.Text(clip, text=f"IN:  {n:06d}", alignment=7, scale=txt_scale)
     return clip
 
-clip = core.std.FrameEval(clip, functools.partial(on_frame_in, clip=clip))
+# Only do FrameEval if actually needed
+if show_frame_nums:
+    clip = core.std.FrameEval(clip, functools.partial(on_frame_in, clip=clip))
 
 # RIFE Interpolation
 r_fac_num, r_fac_den = map(int, factor.split('/'))
@@ -190,11 +193,15 @@ if frm_count_after_redupe != frm_count_after_interp:
 
 # Set output format & color matrix
 if not alpha:
-    out_format = vs.YUV420P16 if chroma420 else vs.YUV444P16 # No need to convert to 444 if input is already subsampled
-    log(f"Converting RGBS back to {out_format.name} using matrix {c_matrix}")
-    clip = core.resize.Bicubic(clip, format=out_format, matrix_s=c_matrix) # RGB: 16-bit YUV
+    out_format = vs.YUV444P16
+    if colors_in == "RGB":
+        log(f"Converting {clip.format.name} to {out_format.name}")
+        clip = core.resize.Bicubic(clip, format=out_format, matrix_in_s="rgb", matrix_s="470bg") # RGB: 16-bit YUV
+    else:
+        log(f"Converting {clip.format.name} back to {out_format.name} using matrix {c_matrix}")
+        clip = core.resize.Bicubic(clip, format=out_format, matrix_s=c_matrix) # RGB: 16-bit YUV
 else:
-    log(f"Converting RGBS back to GRAY8 using matrix {c_matrix}")
+    log(f"Converting {clip.format.name} back to GRAY8 using matrix {c_matrix}")
     clip = core.resize.Bicubic(clip, format=vs.GRAY8, matrix_s=c_matrix) # Alpha: Single channel
 
 # Undo compatibility padding by cropping the same area
@@ -203,7 +210,7 @@ if pad_x > 0 or pad_y > 0:
 
 # Factor rounded to int, minus 1
 end_dupe_count = r_fac_num // r_fac_den - 1
-target_count_match = int(globals().get("targetMatch", ""))
+target_count_match = int(g.get("targetMatch", ""))
 target_count_true = target_count_match - end_dupe_count
 
 if not dedupe:
@@ -246,7 +253,9 @@ def on_frame_out(n, clip):
         clip = core.text.Text(clip, text=osd_str, alignment=1, scale=txt_scale) 
     return clip 
 
-clip = core.std.FrameEval(clip, functools.partial(on_frame_out, clip=clip))
+# Only do FrameEval if actually needed
+if show_frame_nums or show_vars or perf_osd:
+    clip = core.std.FrameEval(clip, functools.partial(on_frame_out, clip=clip))
 
 # Frame number debug overlay
 if show_frame_nums:
