@@ -95,7 +95,7 @@ namespace Flowframes.Os
                 IoUtils.TryDeleteIfExists(frameIndexesJsonPath);
             }
 
-            bool use470bg = s.InterpSettings.inputIsFrames && !new[] { "GIF", "EXR" }.Contains(Interpolate.currentMediaFile.Format.Upper());
+            bool use470bg = s.InterpSettings.inputIsFrames && !new[] { "GIF", "EXR", "APNG" }.Contains(Interpolate.currentMediaFile.Format.Upper());
             args.Add(("cMatrix", use470bg ? "470bg" : ""));
             args.Add(("targetMatch", targetFrameCountMatchDuration));
 
