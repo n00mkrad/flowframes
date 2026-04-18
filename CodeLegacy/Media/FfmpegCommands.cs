@@ -157,7 +157,7 @@ namespace Flowframes
             else
             {
                 Logger.Log($"[{nameof(GetDurationMs)}] Reading duration using packet timestamps", true, false, "ffmpeg");
-                string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=pts_time -of csv=p=0 {inputFile.Wrap()}";
+                string argsPackets = $"ffprobe -v fatal -select_streams v:0 -show_packets -show_entries packet=pts_time -of csv=p=0 {inputFile.Wrap()}";
                 var outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
 
                 if (outputLinesPackets == null || outputLinesPackets.Count == 0)
@@ -178,7 +178,7 @@ namespace Flowframes
 
             if (outputLinesPackets == null)
             {
-                string argsPackets = $"ffprobe -v error  -select_streams v:0 -show_packets -show_entries packet=pts_time -read_intervals \"%+120\" -of csv=p=0 {inputFile.Wrap()}";
+                string argsPackets = $"ffprobe -v fatal -select_streams v:0 -show_packets -show_entries packet=pts_time -read_intervals \"%+120\" -of csv=p=0 {inputFile.Wrap()}";
                 outputLinesPackets = NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {argsPackets}").SplitIntoLines().Where(l => l.IsNotEmpty()).ToList();
             }
 
@@ -247,6 +247,7 @@ namespace Flowframes
             {
                 Logger.Log($"[VFR Check] Max timestamp deviation is {maxDevPercentStr} ({maxDevMsStr}) - Assuming VFR input!", hidden: true);
                 mediaFile.IsVfr = true;
+                return;
             }
 
             Logger.Log($"[VFR Check] Max timestamp deviation is only {maxDevPercentStr} ({maxDevMsStr}) - Assuming CFR input.", hidden: true);
@@ -342,7 +343,7 @@ namespace Flowframes
 
         public static async Task<int> ReadFrameCountFfprobePacketCount(string filePath)
         {
-            string args = $"ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}";
+            string args = $"ffprobe -v fatal -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 {filePath.Wrap()}";
             var outputLines = (await Task.Run(() => NUtilsTemp.OsUtils.RunCommand($"cd /D {GetAvDir().Wrap()} && {args}"))).SplitIntoLines().Where(l => l.IsNotEmpty());
 
             if (outputLines == null || !outputLines.Any())
