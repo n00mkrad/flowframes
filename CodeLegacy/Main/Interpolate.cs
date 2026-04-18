@@ -1,8 +1,9 @@
-﻿using Flowframes.Media;
-using Flowframes.Data;
+﻿using Flowframes.Data;
+using Flowframes.Forms;
 using Flowframes.IO;
 using Flowframes.Magick;
 using Flowframes.Main;
+using Flowframes.Media;
 using Flowframes.MiscUtils;
 using Flowframes.Os;
 using Flowframes.Ui;
@@ -304,11 +305,13 @@ namespace Flowframes
             if(Cli.AutoRun)
                 Application.Exit();
 
-            if (!string.IsNullOrWhiteSpace(reason) && !noMsgBox)
-            {
-                bool err = reason.Lower().Contains("error");
-                UiUtils.ShowMessageBox($"Canceled:\n\n{reason}", type: err ? UiUtils.MessageType.Error : UiUtils.MessageType.Message, monospace: err);
-            }
+            bool alreadyShowingError = Application.OpenForms.OfType<MessageForm>().Any(form => form.MsgType == UiUtils.MessageType.Error);
+
+            if (reason.IsEmpty() || noMsgBox || alreadyShowingError)
+                return;
+
+            bool err = reason.Lower().Contains("error");
+            UiUtils.ShowMessageBox($"Canceled:\n\n{reason}", type: err ? UiUtils.MessageType.Error : UiUtils.MessageType.Message, monospace: err);
         }
 
         public static async Task Cleanup(bool ignoreKeepSetting = false, int retriesLeft = 3, bool isRetry = false)

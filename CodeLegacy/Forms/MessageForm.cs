@@ -12,6 +12,7 @@ namespace Flowframes.Forms
         private string _title = "";
         private MessageBoxButtons _btns;
         private MessageType _type = MessageType.Message;
+        public MessageType MsgType { get { return _type; } }
         private bool _monospace;
 
         private bool _dialogResultSet = false;
